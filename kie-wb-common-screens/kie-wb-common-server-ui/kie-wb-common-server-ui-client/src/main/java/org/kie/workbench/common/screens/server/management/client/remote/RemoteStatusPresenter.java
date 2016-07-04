@@ -17,15 +17,16 @@
 package org.kie.workbench.common.screens.server.management.client.remote;
 
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.workbench.common.screens.server.management.client.remote.card.ContainerCardPresenter;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 public class RemoteStatusPresenter {
@@ -38,13 +39,13 @@ public class RemoteStatusPresenter {
     }
 
     private final View view;
-    private final IOCUtil iocUtil;
+    private final ManagedInstance<ContainerCardPresenter> presenterProvider;
 
     @Inject
     public RemoteStatusPresenter( final View view,
-                                  final IOCUtil iocUtil ) {
+                                  final ManagedInstance<ContainerCardPresenter> presenterProvider ) {
         this.view = view;
-        this.iocUtil = iocUtil;
+        this.presenterProvider = presenterProvider;
     }
 
     @PostConstruct
@@ -58,15 +59,10 @@ public class RemoteStatusPresenter {
     public void setup( final Collection<Container> containers ) {
         view.clear();
         for ( final Container container : containers ) {
-            final ContainerCardPresenter newCard = iocUtil.newInstance( this, ContainerCardPresenter.class );
+            final ContainerCardPresenter newCard = presenterProvider.get();
             newCard.setup( container );
             view.addCard( newCard.getView().asWidget() );
         }
-    }
-
-    @PreDestroy
-    public void destroy() {
-        iocUtil.cleanup( this );
     }
 
 }

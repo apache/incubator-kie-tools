@@ -15,19 +15,21 @@
  */
 package org.kie.workbench.common.screens.server.management.client.wizard.container;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.spec.Capability;
@@ -37,7 +39,6 @@ import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.workbench.common.screens.server.management.client.events.DependencyPathSelectedEvent;
 import org.kie.workbench.common.screens.server.management.client.util.ContentChangeHandler;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.artifact.ArtifactListWidgetPresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 public class NewContainerFormPresenter implements WizardPage {
@@ -111,10 +112,10 @@ public class NewContainerFormPresenter implements WizardPage {
 
     private final Logger logger;
     private final View view;
-    private final IOCUtil iocUtil;
     private final Caller<M2RepoService> m2RepoService;
     private final Caller<SpecManagementService> specManagementService;
     private final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
+    private final ManagedInstance<ArtifactListWidgetPresenter> artifactListWidgetPresenterProvider;
     //lazy load due init issues
     private ArtifactListWidgetPresenter artifactListWidgetPresenter;
 
@@ -124,13 +125,13 @@ public class NewContainerFormPresenter implements WizardPage {
     @Inject
     public NewContainerFormPresenter( final Logger logger,
                                       final View view,
-                                      final IOCUtil iocUtil,
+                                      final ManagedInstance<ArtifactListWidgetPresenter> artifactListWidgetPresenterProvider,
                                       final Caller<M2RepoService> m2RepoService,
                                       final Caller<SpecManagementService> specManagementService,
                                       final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
         this.logger = logger;
         this.view = view;
-        this.iocUtil = iocUtil;
+        this.artifactListWidgetPresenterProvider = artifactListWidgetPresenterProvider;
         this.m2RepoService = m2RepoService;
         this.specManagementService = specManagementService;
         this.wizardPageStatusChangeEvent = wizardPageStatusChangeEvent;
@@ -195,7 +196,7 @@ public class NewContainerFormPresenter implements WizardPage {
     @Override
     public Widget asWidget() {
         if ( artifactListWidgetPresenter == null ) {
-            artifactListWidgetPresenter = iocUtil.newInstance( this, ArtifactListWidgetPresenter.class );
+            artifactListWidgetPresenter = artifactListWidgetPresenterProvider.get();
             view.setArtifactListWidgetView( artifactListWidgetPresenter.getView() );
         }
         return view.asWidget();
@@ -320,11 +321,6 @@ public class NewContainerFormPresenter implements WizardPage {
 
     public View getView() {
         return this.view;
-    }
-
-    @PreDestroy
-    public void destroy() {
-        iocUtil.cleanup( this );
     }
 
 }

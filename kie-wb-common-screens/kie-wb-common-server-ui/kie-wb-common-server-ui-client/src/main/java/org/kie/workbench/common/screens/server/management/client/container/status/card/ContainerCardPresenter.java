@@ -16,21 +16,21 @@
 
 package org.kie.workbench.common.screens.server.management.client.container.status.card;
 
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.workbench.common.screens.server.management.client.events.ServerInstanceSelected;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.card.CardPresenter;
 import org.kie.workbench.common.screens.server.management.client.widget.card.body.BodyPresenter;
 import org.kie.workbench.common.screens.server.management.client.widget.card.footer.FooterPresenter;
 import org.kie.workbench.common.screens.server.management.client.widget.card.title.LinkTitlePresenter;
 import org.uberfire.mvp.Command;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 public class ContainerCardPresenter {
@@ -43,7 +43,7 @@ public class ContainerCardPresenter {
     }
 
     private final View view;
-    private final IOCUtil iocUtil;
+    private final ManagedInstance<Object> presenterProvider;
 
     private final Event<ServerInstanceSelected> remoteServerSelectedEvent;
 
@@ -53,10 +53,10 @@ public class ContainerCardPresenter {
 
     @Inject
     public ContainerCardPresenter( final View view,
-                                   final IOCUtil iocUtil,
+                                   final ManagedInstance<Object> presenterProvider,
                                    final Event<ServerInstanceSelected> remoteServerSelectedEvent ) {
         this.view = view;
-        this.iocUtil = iocUtil;
+        this.presenterProvider = presenterProvider;
         this.remoteServerSelectedEvent = remoteServerSelectedEvent;
     }
 
@@ -66,13 +66,13 @@ public class ContainerCardPresenter {
 
     public void setup( final ServerInstanceKey serverInstanceKey,
                        final Container container ) {
-        linkTitlePresenter = iocUtil.newInstance( this, LinkTitlePresenter.class );
-        bodyPresenter = iocUtil.newInstance( this, BodyPresenter.class );
-        footerPresenter = iocUtil.newInstance( this, FooterPresenter.class );
+        linkTitlePresenter = presenterProvider.select( LinkTitlePresenter.class ).get();
+        bodyPresenter = presenterProvider.select( BodyPresenter.class ).get();
+        footerPresenter = presenterProvider.select( FooterPresenter.class ).get();
 
         updateContent( serverInstanceKey, container );
 
-        final CardPresenter card = iocUtil.newInstance( this, CardPresenter.class );
+        final CardPresenter card = presenterProvider.select( CardPresenter.class ).get();
         card.addTitle( linkTitlePresenter );
         card.addBody( bodyPresenter );
         card.addFooter( footerPresenter );
@@ -95,11 +95,6 @@ public class ContainerCardPresenter {
                                   } );
         bodyPresenter.setup( container.getMessages() );
         footerPresenter.setup( container.getUrl(), container.getResolvedReleasedId().getVersion() );
-    }
-
-    @PreDestroy
-    public void destroy() {
-        iocUtil.cleanup( this );
     }
 
 }

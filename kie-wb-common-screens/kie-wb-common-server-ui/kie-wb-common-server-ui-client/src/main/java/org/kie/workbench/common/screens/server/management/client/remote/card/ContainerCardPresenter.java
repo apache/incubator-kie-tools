@@ -16,16 +16,15 @@
 
 package org.kie.workbench.common.screens.server.management.client.remote.card;
 
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.workbench.common.screens.server.management.client.events.ContainerSpecSelected;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.card.CardPresenter;
 import org.kie.workbench.common.screens.server.management.client.widget.card.body.BodyPresenter;
 import org.kie.workbench.common.screens.server.management.client.widget.card.footer.FooterPresenter;
@@ -36,15 +35,15 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class ContainerCardPresenter {
 
-    private final IOCUtil iocUtil;
+    private final ManagedInstance<Object> presenterProvider;
     private final org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter.View view;
     private final Event<ContainerSpecSelected> containerSpecSelectedEvent;
 
     @Inject
-    public ContainerCardPresenter( final IOCUtil iocUtil,
+    public ContainerCardPresenter( final ManagedInstance<Object> presenterProvider,
                                    final org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter.View view,
                                    final Event<ContainerSpecSelected> containerSpecSelectedEvent ) {
-        this.iocUtil = iocUtil;
+        this.presenterProvider = presenterProvider;
         this.view = view;
         this.containerSpecSelectedEvent = containerSpecSelectedEvent;
     }
@@ -54,7 +53,7 @@ public class ContainerCardPresenter {
     }
 
     public void setup( final Container container ) {
-        final LinkTitlePresenter linkTitlePresenter = iocUtil.newInstance( this, LinkTitlePresenter.class );
+        final LinkTitlePresenter linkTitlePresenter = presenterProvider.select( LinkTitlePresenter.class ).get();
         linkTitlePresenter.setup( container.getContainerName(),
                                   new Command() {
                                       @Override
@@ -63,16 +62,16 @@ public class ContainerCardPresenter {
                                       }
                                   } );
 
-        final InfoTitlePresenter infoTitlePresenter = iocUtil.newInstance( this, InfoTitlePresenter.class );
+        final InfoTitlePresenter infoTitlePresenter = presenterProvider.select( InfoTitlePresenter.class ).get();
         infoTitlePresenter.setup( container.getResolvedReleasedId() );
 
-        final BodyPresenter bodyPresenter = iocUtil.newInstance( this, BodyPresenter.class );
+        final BodyPresenter bodyPresenter = presenterProvider.select( BodyPresenter.class ).get();
         bodyPresenter.setup( container.getMessages() );
 
-        final FooterPresenter footerPresenter = iocUtil.newInstance( this, FooterPresenter.class );
+        final FooterPresenter footerPresenter = presenterProvider.select( FooterPresenter.class ).get();
         footerPresenter.setup( container.getUrl(), container.getResolvedReleasedId().getVersion() );
 
-        CardPresenter card = iocUtil.newInstance( this, CardPresenter.class );
+        CardPresenter card = presenterProvider.select( CardPresenter.class ).get();
         card.addTitle( linkTitlePresenter );
         card.addTitle( infoTitlePresenter );
         card.addBody( bodyPresenter );
@@ -86,10 +85,5 @@ public class ContainerCardPresenter {
                                      container.getContainerName(),
                                      new ServerTemplateKey( container.getServerInstanceKey().getServerTemplateId(), "" ) );
 
-    }
-
-    @PreDestroy
-    public void destroy() {
-        iocUtil.cleanup( this );
     }
 }

@@ -16,11 +16,22 @@
 
 package org.kie.workbench.common.screens.server.management.client.container.status;
 
+import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.screens.server.management.client.util.Convert.toKey;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,15 +48,12 @@ import org.kie.server.controller.api.model.spec.ContainerConfig;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
-import static org.junit.Assert.*;
-import static org.kie.workbench.common.screens.server.management.client.util.Convert.*;
-import static org.mockito.Mockito.*;
+import com.google.gwt.user.client.ui.IsWidget;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContainerRemoteStatusPresenterTest {
@@ -54,7 +62,7 @@ public class ContainerRemoteStatusPresenterTest {
     Logger logger;
 
     @Mock
-    IOCUtil iocUtil;
+    ManagedInstance<ContainerCardPresenter> presenterProvider;
 
     @Mock
     ContainerRemoteStatusPresenter.View view;
@@ -63,7 +71,7 @@ public class ContainerRemoteStatusPresenterTest {
 
     @Before
     public void init() {
-        presenter = spy( new ContainerRemoteStatusPresenter( logger, view, iocUtil ) );
+        presenter = spy( new ContainerRemoteStatusPresenter( logger, view, presenterProvider ) );
     }
 
     @Test
@@ -77,7 +85,7 @@ public class ContainerRemoteStatusPresenterTest {
     public void testOnDelete() {
         final ContainerCardPresenter cardPresenter = mock( ContainerCardPresenter.class );
         when( cardPresenter.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );
-        when( iocUtil.newInstance( presenter, ContainerCardPresenter.class ) ).thenReturn( cardPresenter );
+        when( presenterProvider.get() ).thenReturn( cardPresenter );
 
         final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "templateId", "serverName", "serverInstanceId", "url" );
         final Container container = new Container( "containerSpecId", "containerName", serverInstanceKey, Collections.<Message>emptyList(), null, null );
@@ -102,7 +110,7 @@ public class ContainerRemoteStatusPresenterTest {
     public void testOnServerInstanceUpdated() {
         final ContainerCardPresenter cardPresenter = mock( ContainerCardPresenter.class );
         when( cardPresenter.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );
-        when( iocUtil.newInstance( presenter, ContainerCardPresenter.class ) ).thenReturn( cardPresenter );
+        when( presenterProvider.get() ).thenReturn( cardPresenter );
 
         final ServerInstance serverInstance = new ServerInstance( "templateId", "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
         final Container container = new Container( "containerSpecId", "containerName", serverInstance, Collections.<Message>emptyList(), null, null );
@@ -128,7 +136,7 @@ public class ContainerRemoteStatusPresenterTest {
 
     @Test
     public void testOnServerInstanceUpdatedNewInstance() {
-        presenter = spy( new ContainerRemoteStatusPresenter( logger, view, iocUtil ) );
+        presenter = spy( new ContainerRemoteStatusPresenter( logger, view, presenterProvider ) );
 
         final ContainerCardPresenter cardPresenter = mock( ContainerCardPresenter.class );
         when( cardPresenter.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );
@@ -139,7 +147,7 @@ public class ContainerRemoteStatusPresenterTest {
         doReturn( cardPresenter )
                 .doReturn( cardPresenter2 )
                 .doReturn( cardPresenter3 )
-                .when( iocUtil ).newInstance( presenter, ContainerCardPresenter.class );
+                .when( presenterProvider ).get();
 
         final ServerInstance serverInstance = new ServerInstance( "templateId", "serverInstanceId", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
         final Container existingContainer = new Container( "containerToBeRemovedSpecId", "containerToBeRemovedName", serverInstance, Collections.<Message>emptyList(), null, null );

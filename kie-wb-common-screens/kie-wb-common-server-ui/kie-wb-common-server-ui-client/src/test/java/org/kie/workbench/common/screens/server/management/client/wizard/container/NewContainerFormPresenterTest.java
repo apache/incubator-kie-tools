@@ -16,14 +16,31 @@
 
 package org.kie.workbench.common.screens.server.management.client.wizard.container;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +52,6 @@ import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.server.management.client.events.DependencyPathSelectedEvent;
 import org.kie.workbench.common.screens.server.management.client.util.ContentChangeHandler;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.artifact.ArtifactListWidgetPresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.mockito.Mock;
@@ -48,9 +64,6 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 @RunWith(MockitoJUnitRunner.class)
 public class NewContainerFormPresenterTest {
 
@@ -60,7 +73,7 @@ public class NewContainerFormPresenterTest {
     Logger logger;
 
     @Mock
-    IOCUtil iocUtil;
+    ManagedInstance<ArtifactListWidgetPresenter> presenterProvider;
 
     @Mock
     M2RepoService m2RepoService;
@@ -113,10 +126,10 @@ public class NewContainerFormPresenterTest {
 
         presenter = spy( new NewContainerFormPresenter(
                 logger, view,
-                iocUtil, m2RepoServiceCaller,
+                presenterProvider, m2RepoServiceCaller,
                 specManagementServiceCaller,
                 wizardPageStatusChangeEvent ) );
-        doReturn( artifactListWidgetPresenter ).when( iocUtil ).newInstance( presenter, ArtifactListWidgetPresenter.class );
+        doReturn( artifactListWidgetPresenter ).when( presenterProvider ).get();
     }
 
     private void fireContentHandlers() {

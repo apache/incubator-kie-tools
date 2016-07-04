@@ -16,19 +16,20 @@
 
 package org.kie.workbench.common.screens.server.management.client.widget.card.body;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.server.api.model.Message;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.card.body.notification.NotificationPresenter;
 import org.uberfire.client.mvp.UberView;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 public class BodyPresenter {
@@ -41,13 +42,13 @@ public class BodyPresenter {
     }
 
     private final View view;
-    private final IOCUtil iocUtil;
+    private final ManagedInstance<NotificationPresenter> presenterProvider;
 
     @Inject
     public BodyPresenter( final View view,
-                          final IOCUtil iocUtil ) {
+                          final ManagedInstance<NotificationPresenter> presenterProvider         ) {
         this.view = view;
-        this.iocUtil = iocUtil;
+        this.presenterProvider = presenterProvider;
     }
 
     @PostConstruct
@@ -72,18 +73,13 @@ public class BodyPresenter {
     }
 
     private NotificationPresenter setupNotification( final Message message ) {
-        final NotificationPresenter presenter = iocUtil.newInstance( this, NotificationPresenter.class );
+        final NotificationPresenter presenter = presenterProvider.get();
         if ( message == null ) {
             presenter.setupOk();
         } else {
             presenter.setup( message );
         }
         return presenter;
-    }
-
-    @PreDestroy
-    public void destroy() {
-        iocUtil.cleanup( this );
     }
 
 }

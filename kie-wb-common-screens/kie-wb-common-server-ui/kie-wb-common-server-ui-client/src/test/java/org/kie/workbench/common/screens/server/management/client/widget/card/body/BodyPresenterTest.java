@@ -16,26 +16,28 @@
 
 package org.kie.workbench.common.screens.server.management.client.widget.card.body;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.api.model.Message;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.card.body.notification.NotificationPresenter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BodyPresenterTest {
 
     @Mock
-    IOCUtil iocUtil;
+    ManagedInstance<NotificationPresenter> presenterProvider;
 
     @Mock
     BodyPresenter.View view;
@@ -47,8 +49,8 @@ public class BodyPresenterTest {
 
     @Before
     public void setUp() {
-        presenter = new BodyPresenter( view, iocUtil );
-        doReturn( notificationPresenter ).when( iocUtil ).newInstance( presenter, NotificationPresenter.class );
+        presenter = new BodyPresenter( view, presenterProvider );
+        doReturn( notificationPresenter ).when( presenterProvider ).get();
     }
 
     @Test

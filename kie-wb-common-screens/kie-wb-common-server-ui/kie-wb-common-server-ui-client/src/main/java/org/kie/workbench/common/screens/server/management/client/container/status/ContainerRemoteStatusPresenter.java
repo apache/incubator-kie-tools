@@ -19,21 +19,22 @@ package org.kie.workbench.common.screens.server.management.client.container.stat
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.controller.api.model.events.ServerInstanceDeleted;
 import org.kie.server.controller.api.model.events.ServerInstanceUpdated;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.slf4j.Logger;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 public class ContainerRemoteStatusPresenter {
@@ -47,7 +48,7 @@ public class ContainerRemoteStatusPresenter {
 
     private final Logger logger;
     private final View view;
-    private final IOCUtil iocUtil;
+    private final ManagedInstance<ContainerCardPresenter> cardPresenterProvider;
 
     private final Map<String, Map<String, ContainerCardPresenter>> index = new HashMap<String, Map<String, ContainerCardPresenter>>();
 
@@ -56,10 +57,10 @@ public class ContainerRemoteStatusPresenter {
     @Inject
     public ContainerRemoteStatusPresenter( final Logger logger,
                                            final View view,
-                                           final IOCUtil iocUtil ) {
+                                           final ManagedInstance<ContainerCardPresenter> cardPresenterProvider ) {
         this.logger = logger;
         this.view = view;
-        this.iocUtil = iocUtil;
+        this.cardPresenterProvider = cardPresenterProvider;
     }
 
     @PostConstruct
@@ -138,7 +139,7 @@ public class ContainerRemoteStatusPresenter {
     }
 
     private ContainerCardPresenter buildContainer( final Container container ) {
-        final ContainerCardPresenter cardPresenter = iocUtil.newInstance( this, ContainerCardPresenter.class );
+        final ContainerCardPresenter cardPresenter = cardPresenterProvider.get();
         cardPresenter.setup( container.getServerInstanceKey(), container );
         view.addCard( cardPresenter.getView().asWidget() );
         return cardPresenter;
@@ -150,11 +151,6 @@ public class ContainerRemoteStatusPresenter {
             index.put( container.getServerInstanceKey().getServerInstanceId(), new HashMap<String, ContainerCardPresenter>() );
         }
         index.get( container.getServerInstanceKey().getServerInstanceId() ).put( container.getContainerName(), cardPresenter );
-    }
-
-    @PreDestroy
-    public void destroy() {
-        iocUtil.cleanup( this );
     }
 
 }

@@ -16,9 +16,16 @@
 
 package org.kie.workbench.common.screens.server.management.client.remote;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.Collections;
 
-import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,20 +33,18 @@ import org.kie.server.api.model.Message;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.workbench.common.screens.server.management.client.remote.card.ContainerCardPresenter;
-import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.google.gwt.user.client.ui.Widget;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RemoteStatusPresenterTest {
 
     @Mock
-    IOCUtil iocUtil;
+    ManagedInstance<ContainerCardPresenter> presenterProvider;
 
     @Mock
     RemoteStatusPresenter.View view;
@@ -53,7 +58,7 @@ public class RemoteStatusPresenterTest {
 
     @Before
     public void setup() {
-        doReturn( containerCardPresenter ).when( iocUtil ).newInstance( presenter, ContainerCardPresenter.class );
+        doReturn( containerCardPresenter ).when( presenterProvider ).get();
         when( containerCardPresenter.getView() ).thenReturn( mock( org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter.View.class ) );
     }
 
