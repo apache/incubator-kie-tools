@@ -46,8 +46,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,10 +94,7 @@ public class GuidedDecisionTableModellerPresenterTest {
                                             2000 );
 
     @Mock
-    private SyncBeanManager beanManager;
-
-    @Mock
-    private SyncBeanDef<GuidedDecisionTableView.Presenter> dtableBeanDef;
+    private ManagedInstance<GuidedDecisionTableView.Presenter> dtablePresenterProvider;
 
     @Mock
     private GuidedDecisionTableView.Presenter dtablePresenter;
@@ -120,15 +116,13 @@ public class GuidedDecisionTableModellerPresenterTest {
         when( view.getBounds() ).thenReturn( bounds );
 
         final GuidedDecisionTableModellerPresenter wrapped = new GuidedDecisionTableModellerPresenter( view,
+                                                                                                       dtablePresenterProvider,
                                                                                                        contextMenuSupport,
                                                                                                        updateRadarEvent,
-                                                                                                       pinnedEvent,
-                                                                                                       beanManager );
+                                                                                                       pinnedEvent );
         presenter = spy( wrapped );
 
-        when( beanManager.lookupBean( GuidedDecisionTableView.Presenter.class ) ).thenReturn( dtableBeanDef );
-        when( dtableBeanDef.getInstance() ).thenReturn( dtablePresenter );
-        when( dtableBeanDef.newInstance() ).thenReturn( dtablePresenter );
+        when( dtablePresenterProvider.get() ).thenReturn( dtablePresenter );
         when( dtablePresenter.getView() ).thenReturn( dtableView );
     }
 

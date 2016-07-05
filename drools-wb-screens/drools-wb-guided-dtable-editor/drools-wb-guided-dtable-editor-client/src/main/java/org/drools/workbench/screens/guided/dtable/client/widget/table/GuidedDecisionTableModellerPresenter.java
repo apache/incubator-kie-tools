@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -41,7 +42,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -53,9 +54,9 @@ import org.uberfire.mvp.PlaceRequest;
 public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTableModellerView.Presenter {
 
     private final GuidedDecisionTableModellerView view;
+    private final ManagedInstance<GuidedDecisionTableView.Presenter> dtPresenterProvider;
     private final Event<RadarMenuBuilder.UpdateRadarEvent> updateRadarEvent;
     private final Event<DecisionTablePinnedEvent> pinnedEvent;
-    private final SyncBeanManager beanManager;
 
     private GuidedDecisionTableView.Presenter activeDecisionTable = null;
     private Set<GuidedDecisionTableView.Presenter> availableDecisionTables = new HashSet<GuidedDecisionTableView.Presenter>();
@@ -63,14 +64,14 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
 
     @Inject
     public GuidedDecisionTableModellerPresenter( final GuidedDecisionTableModellerView view,
+                                                 final ManagedInstance<GuidedDecisionTableView.Presenter> dtPresenterProvider,
                                                  final GuidedDecisionTableModellerContextMenuSupport contextMenuSupport,
                                                  final Event<RadarMenuBuilder.UpdateRadarEvent> updateRadarEvent,
-                                                 final Event<DecisionTablePinnedEvent> pinnedEvent,
-                                                 final SyncBeanManager beanManager ) {
+                                                 final Event<DecisionTablePinnedEvent> pinnedEvent ) {
         this.view = view;
+        this.dtPresenterProvider = dtPresenterProvider;
         this.updateRadarEvent = updateRadarEvent;
         this.pinnedEvent = pinnedEvent;
-        this.beanManager = beanManager;
         this.view.init( this );
 
         //Add support for deleting cells' content with the DELETE key
@@ -89,6 +90,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     }
 
     @Override
+    @PreDestroy
     public void onClose() {
         view.clear();
         releaseDecisionTables();
@@ -99,7 +101,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         //Release objects created manually with BeanManager
         for ( GuidedDecisionTableView.Presenter dtPresenter : availableDecisionTables ) {
             dtPresenter.onClose();
-            beanManager.destroyBean( dtPresenter );
         }
         availableDecisionTables.clear();
     }
@@ -109,6 +110,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         for ( HandlerRegistration registration : handlerRegistrations ) {
             registration.removeHandler();
         }
+        handlerRegistrations.clear();
     }
 
     @Override
@@ -117,7 +119,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                                                final GuidedDecisionTableEditorContent content,
                                                                final boolean isReadOnly ) {
         //Instantiate a Presenter for the Decision Table
-        final GuidedDecisionTableView.Presenter dtPresenter = beanManager.lookupBean( GuidedDecisionTableView.Presenter.class ).getInstance();
+        final GuidedDecisionTableView.Presenter dtPresenter = dtPresenterProvider.get();
 
         //Set content of new Presenter
         dtPresenter.setContent( path,
