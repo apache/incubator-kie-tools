@@ -19,8 +19,7 @@ package org.kie.workbench.common.widgets.metadata.client.popups;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,10 +42,7 @@ public class SelectDocumentPopupTest {
     private SelectDocumentPopupView view;
 
     @Mock
-    private SyncBeanManager beanManager;
-
-    @Mock
-    private SyncBeanDef<SelectableDocumentView> selectableDocumentBeanDef;
+    private ManagedInstance<SelectableDocumentView> selectableDocumentViewProvider;
 
     @Mock
     private KieMultipleDocumentEditorPresenter editor;
@@ -62,7 +58,7 @@ public class SelectDocumentPopupTest {
     @Before
     public void setup() {
         final SelectDocumentPopupPresenter wrapped = new SelectDocumentPopup( view,
-                                                                              beanManager );
+                                                                              selectableDocumentViewProvider );
         wrapped.setEditorPresenter( editor );
         presenter = spy( wrapped );
 
@@ -110,8 +106,7 @@ public class SelectDocumentPopupTest {
         final Path documentPath1 = mock( Path.class );
         final Path documentPath2 = mock( Path.class );
 
-        when( beanManager.lookupBean( eq( SelectableDocumentView.class ) ) ).thenReturn( selectableDocumentBeanDef );
-        when( selectableDocumentBeanDef.newInstance() ).thenReturn( selectableDocumentBean1 ).thenReturn( selectableDocumentBean2 );
+        when( selectableDocumentViewProvider.get() ).thenReturn( selectableDocumentBean1 ).thenReturn( selectableDocumentBean2 );
         when( selectableDocumentBean1.getPath() ).thenReturn( documentPath1 );
         when( selectableDocumentBean2.getPath() ).thenReturn( documentPath2 );
         when( documentPath1.toURI() ).thenReturn( "default://p0/src/main/resources/dtable1.gdst" );
@@ -148,8 +143,7 @@ public class SelectDocumentPopupTest {
         final Path documentPath1 = mock( Path.class );
         final Path documentPath2 = mock( Path.class );
 
-        when( beanManager.lookupBean( eq( SelectableDocumentView.class ) ) ).thenReturn( selectableDocumentBeanDef );
-        when( selectableDocumentBeanDef.newInstance() ).thenReturn( selectableDocumentBean1 ).thenReturn( selectableDocumentBean2 );
+        when( selectableDocumentViewProvider.get() ).thenReturn( selectableDocumentBean1 ).thenReturn( selectableDocumentBean2 );
         when( selectableDocumentBean1.getPath() ).thenReturn( documentPath1 );
         when( selectableDocumentBean2.getPath() ).thenReturn( documentPath2 );
         when( documentPath1.toURI() ).thenReturn( "default://p0/src/main/resources/dtable1.gdst" );
@@ -279,16 +273,13 @@ public class SelectDocumentPopupTest {
 
         verify( view,
                 times( 2 ) ).clear();
-        verify( beanManager,
-                times( 1 ) ).destroyBean( any( SelectableDocumentView.class ) );
     }
 
     private SelectableDocumentView makeSelectableDocument( final String uri ) {
         final SelectableDocumentView selectableDocumentBean = mock( SelectableDocumentView.class );
         final Path documentPath = mock( Path.class );
 
-        when( beanManager.lookupBean( eq( SelectableDocumentView.class ) ) ).thenReturn( selectableDocumentBeanDef );
-        when( selectableDocumentBeanDef.newInstance() ).thenReturn( selectableDocumentBean );
+        when( selectableDocumentViewProvider.get() ).thenReturn( selectableDocumentBean );
         when( selectableDocumentBean.getPath() ).thenReturn( documentPath );
         when( documentPath.toURI() ).thenReturn( uri );
 

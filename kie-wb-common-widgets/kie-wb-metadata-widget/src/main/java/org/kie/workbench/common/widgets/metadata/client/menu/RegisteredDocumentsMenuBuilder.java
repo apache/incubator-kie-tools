@@ -19,12 +19,13 @@ package org.kie.workbench.common.widgets.metadata.client.menu;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.widgets.metadata.client.KieDocument;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuView.DocumentMenuItem;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -44,20 +45,27 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
     private ParameterizedCommand<KieDocument> removeDocumentCommand;
 
     private RegisteredDocumentsMenuView view;
-    private SyncBeanManager beanManager;
+    private ManagedInstance<DocumentMenuItem> documentMenuItemProvider;
 
     private Map<KieDocument, DocumentMenuItem> registeredDocuments = new HashMap<>();
 
     @Inject
     public RegisteredDocumentsMenuBuilder( final RegisteredDocumentsMenuView view,
-                                           final SyncBeanManager beanManager ) {
+                                           final ManagedInstance<DocumentMenuItem> documentMenuItemProvider ) {
         this.view = view;
-        this.beanManager = beanManager;
+        this.documentMenuItemProvider = documentMenuItemProvider;
     }
 
     @PostConstruct
     void setup() {
         view.init( this );
+    }
+
+    @Override
+    @PreDestroy
+    public void dispose() {
+        view.clear();
+        registeredDocuments.clear();
     }
 
     @Override
@@ -109,7 +117,7 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
     @Override
     public void deregisterDocument( final KieDocument document ) {
         final DocumentMenuItem documentMenuItem = registeredDocuments.remove( document );
-        beanManager.destroyBean( documentMenuItem );
+        documentMenuItemProvider.destroy( documentMenuItem );
         view.deleteDocument( documentMenuItem );
     }
 
@@ -158,17 +166,8 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
         }
     }
 
-    @Override
-    public void dispose() {
-        view.clear();
-        for ( DocumentMenuItem documentMenuItem : registeredDocuments.values() ) {
-            beanManager.destroyBean( documentMenuItem );
-        }
-        registeredDocuments.clear();
-    }
-
     DocumentMenuItem makeDocumentMenuItem( final KieDocument document ) {
-        final DocumentMenuItem documentMenuItem = beanManager.lookupBean( DocumentMenuItem.class ).newInstance();
+        final DocumentMenuItem documentMenuItem = documentMenuItemProvider.get();
         documentMenuItem.setName( document.getCurrentPath().getFileName() );
         documentMenuItem.setRemoveDocumentCommand( () -> onRemoveDocument( document ) );
         documentMenuItem.setActivateDocumentCommand( () -> onActivateDocument( document ) );

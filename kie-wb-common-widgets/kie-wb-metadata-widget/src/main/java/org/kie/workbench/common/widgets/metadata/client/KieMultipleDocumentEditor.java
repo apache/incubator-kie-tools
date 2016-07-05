@@ -391,7 +391,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     @Override
     public void onClose() {
         this.versionRecordManager.clear();
-        this.registeredDocumentsMenuBuilder.dispose();
     }
 
     @Override

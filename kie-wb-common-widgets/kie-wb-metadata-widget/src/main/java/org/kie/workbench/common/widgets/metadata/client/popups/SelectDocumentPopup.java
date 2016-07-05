@@ -21,10 +21,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorPresenter;
 import org.kie.workbench.common.widgets.metadata.client.popups.SelectDocumentPopupView.SelectableDocumentView;
 import org.uberfire.backend.vfs.Path;
@@ -34,7 +35,7 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
 
     private SelectDocumentPopupView view;
-    private SyncBeanManager beanManager;
+    private ManagedInstance<SelectableDocumentView> selectableDocumentProvider;
 
     private KieMultipleDocumentEditorPresenter presenter;
 
@@ -43,14 +44,22 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
 
     @Inject
     public SelectDocumentPopup( final SelectDocumentPopupView view,
-                                final SyncBeanManager beanManager ) {
+                                final ManagedInstance<SelectableDocumentView> selectableDocumentProvider ) {
         this.view = view;
-        this.beanManager = beanManager;
+        this.selectableDocumentProvider = selectableDocumentProvider;
     }
 
     @PostConstruct
     void init() {
         view.init( this );
+    }
+
+    @Override
+    @PreDestroy
+    public void dispose() {
+        view.clear();
+        selectedDocuments.clear();
+        selectableDocuments.clear();
     }
 
     @Override
@@ -99,18 +108,8 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
         dispose();
     }
 
-    @Override
-    public void dispose() {
-        view.clear();
-        selectedDocuments.clear();
-        for ( SelectableDocumentView selectableDocument : selectableDocuments ) {
-            beanManager.destroyBean( selectableDocument );
-        }
-        selectableDocuments.clear();
-    }
-
     SelectableDocumentView makeSelectableDocument( final Path path ) {
-        final SelectableDocumentView selectableDocument = beanManager.lookupBean( SelectableDocumentView.class ).newInstance();
+        final SelectableDocumentView selectableDocument = selectableDocumentProvider.get();
         selectableDocument.setPath( path );
         selectableDocument.setDocumentSelectedCommand( ( Boolean selected ) -> selectDocument( selectableDocument,
                                                                                                selected ) );

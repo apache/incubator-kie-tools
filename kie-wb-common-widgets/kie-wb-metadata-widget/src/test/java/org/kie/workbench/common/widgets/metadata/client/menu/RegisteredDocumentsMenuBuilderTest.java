@@ -16,8 +16,7 @@
 
 package org.kie.workbench.common.widgets.metadata.client.menu;
 
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,13 +43,10 @@ public class RegisteredDocumentsMenuBuilderTest {
     private RegisteredDocumentsMenuView view;
 
     @Mock
-    private SyncBeanDef<DocumentMenuItem> documentMenuItemBeanDef;
-
-    @Mock
     private DocumentMenuItem documentMenuItem;
 
     @Mock
-    private SyncBeanManager beanManager;
+    private ManagedInstance<DocumentMenuItem> documentMenuItemProvider;
 
     @Captor
     private ArgumentCaptor<Command> removeDocumentCommandCaptor;
@@ -61,13 +57,12 @@ public class RegisteredDocumentsMenuBuilderTest {
     @Before
     public void setup() {
         final RegisteredDocumentsMenuBuilder wrapped = new RegisteredDocumentsMenuBuilder( view,
-                                                                                           beanManager );
+                                                                                           documentMenuItemProvider );
         wrapped.setup();
 
         this.builder = spy( wrapped );
 
-        when( beanManager.lookupBean( eq( DocumentMenuItem.class ) ) ).thenReturn( documentMenuItemBeanDef );
-        when( documentMenuItemBeanDef.newInstance() ).thenReturn( documentMenuItem );
+        when( documentMenuItemProvider.get() ).thenReturn( documentMenuItem );
     }
 
     @Test
@@ -164,8 +159,8 @@ public class RegisteredDocumentsMenuBuilderTest {
 
         verify( view,
                 times( 1 ) ).deleteDocument( documentMenuItem );
-        verify( beanManager,
-                times( 1 ) ).destroyBean( documentMenuItem );
+        verify( documentMenuItemProvider,
+                times( 1 ) ).destroy( documentMenuItem );
     }
 
     private KieDocument makeKieDocument() {
@@ -249,8 +244,6 @@ public class RegisteredDocumentsMenuBuilderTest {
 
         verify( view,
                 times( 1 ) ).clear();
-        verify( beanManager,
-                times( 1 ) ).destroyBean( documentMenuItem );
     }
 
 }

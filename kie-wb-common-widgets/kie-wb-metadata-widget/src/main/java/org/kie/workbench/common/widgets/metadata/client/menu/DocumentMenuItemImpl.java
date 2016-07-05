@@ -64,7 +64,7 @@ public class DocumentMenuItemImpl implements RegisteredDocumentsMenuView.Documen
     @Override
     public void setName( final String name ) {
         this.name = name;
-        this.kieDocumentName.setInnerHTML( getSafeHtml( name ).asString());
+        this.kieDocumentName.setInnerHTML( getSafeHtml( name ).asString() );
     }
 
     private SafeHtml getSafeHtml( final String message ) {
