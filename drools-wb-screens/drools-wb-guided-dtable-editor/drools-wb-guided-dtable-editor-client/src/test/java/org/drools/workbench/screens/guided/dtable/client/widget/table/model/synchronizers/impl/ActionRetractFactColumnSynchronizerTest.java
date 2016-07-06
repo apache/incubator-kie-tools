@@ -24,8 +24,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.Ba
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BoundFactUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.junit.Test;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
@@ -33,12 +31,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTest {
-
-    @Override
-    protected AsyncPackageDataModelOracle getOracle() {
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
-        return oracle;
-    }
 
     @Test
     public void testAppend() throws ModelSynchronizer.MoveColumnVetoException {

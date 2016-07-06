@@ -17,6 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.inject.Instance;
 
 import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -34,18 +35,44 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryAction
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.validation.client.dynamic.DynamicValidator;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class RowExpanderTests {
+
+    @Mock
+    protected IncrementalDataModelService incrementalDataModelService;
+    protected Caller<IncrementalDataModelService> incrementalDataModelServiceCaller;
+
+    @Mock
+    protected Instance<DynamicValidator> validatorInstance;
+
+    @Before
+    public void setup() {
+        incrementalDataModelServiceCaller = new CallerMock<>( incrementalDataModelService );
+    }
+
+    private AsyncPackageDataModelOracle getOracle() {
+        return new AsyncPackageDataModelOracleImpl( incrementalDataModelServiceCaller,
+                                                    validatorInstance );
+    }
 
     @Test
     @SuppressWarnings("serial")
@@ -82,7 +109,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -207,7 +234,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -368,7 +395,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
@@ -517,7 +544,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
@@ -708,7 +735,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
@@ -855,7 +882,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
@@ -980,7 +1007,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
@@ -1105,7 +1132,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
@@ -1298,7 +1325,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
@@ -1364,7 +1391,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
@@ -1438,7 +1465,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -1549,7 +1576,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -1678,7 +1705,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -1814,7 +1841,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -1903,7 +1930,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -2015,7 +2042,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -2147,7 +2174,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -2291,7 +2318,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -2458,7 +2485,7 @@ public class RowExpanderTests {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );

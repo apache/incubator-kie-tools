@@ -16,10 +16,12 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import javax.enterprise.inject.Instance;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -55,11 +57,17 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.sync
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
+import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.mocks.CallerMock;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.*;
 import static org.mockito.Mockito.*;
@@ -73,6 +81,12 @@ public abstract class BaseSynchronizerTest {
     protected GridWidgetColumnFactory gridWidgetColumnFactory = new GridWidgetColumnFactoryImpl();
     protected AsyncPackageDataModelOracle oracle = getOracle();
 
+    @Mock
+    protected IncrementalDataModelService incrementalDataModelService;
+    protected Caller<IncrementalDataModelService> incrementalDataModelServiceCaller;
+
+    protected Instance<DynamicValidator> validatorInstance = new MockDynamicValidatorInstance();
+
     private GuidedDecisionTablePresenter.Access editable = new GuidedDecisionTablePresenter.Access();
 
     private GuidedDecisionTablePresenter.Access readOnly = new GuidedDecisionTablePresenter.Access() {{
@@ -84,6 +98,7 @@ public abstract class BaseSynchronizerTest {
         //Setup model related classes
         model = new GuidedDecisionTable52();
         uiModel = new GuidedDecisionTableUiModel( modelSynchronizer );
+        incrementalDataModelServiceCaller = new CallerMock<>( incrementalDataModelService );
 
         final BRLRuleModel rm = new BRLRuleModel( model );
         final CellUtilities cellUtilities = new CellUtilities();
@@ -145,7 +160,11 @@ public abstract class BaseSynchronizerTest {
         }} );
     }
 
-    protected abstract AsyncPackageDataModelOracle getOracle();
+    protected AsyncPackageDataModelOracle getOracle() {
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( incrementalDataModelServiceCaller,
+                                                                                        validatorInstance );
+        return oracle;
+    }
 
     protected List<BaseColumnConverter> getConverters() {
         final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
@@ -184,6 +203,47 @@ public abstract class BaseSynchronizerTest {
         synchronizers.add( new MetaDataColumnSynchronizer() );
         synchronizers.add( new RowSynchronizer() );
         return synchronizers;
+    }
+
+    //It was not possible to mock Instance<DynamicValidator> with GwtMockitoTestRunner so we have a mock implementation
+    private static class MockDynamicValidatorInstance implements Instance<DynamicValidator> {
+
+        @Override
+        public Instance<DynamicValidator> select( final Annotation... annotations ) {
+            return null;
+        }
+
+        @Override
+        public <U extends DynamicValidator> Instance<U> select( final Class<U> aClass,
+                                                                final Annotation... annotations ) {
+            return null;
+        }
+
+        @Override
+        public boolean isUnsatisfied() {
+            return true;
+        }
+
+        @Override
+        public boolean isAmbiguous() {
+            return false;
+        }
+
+        @Override
+        public void destroy( final DynamicValidator dynamicValidator ) {
+
+        }
+
+        @Override
+        public Iterator<DynamicValidator> iterator() {
+            return null;
+        }
+
+        @Override
+        public DynamicValidator get() {
+            return null;
+        }
+
     }
 
 }

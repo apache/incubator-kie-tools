@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.model;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.inject.Instance;
 
 import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -37,18 +38,44 @@ import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.validation.client.dynamic.DynamicValidator;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class GuidedDecisionTableTest {
+
+    @Mock
+    protected IncrementalDataModelService incrementalDataModelService;
+    protected Caller<IncrementalDataModelService> incrementalDataModelServiceCaller;
+
+    @Mock
+    protected Instance<DynamicValidator> validatorInstance;
+
+    @Before
+    public void setup() {
+        incrementalDataModelServiceCaller = new CallerMock<>( incrementalDataModelService );
+    }
+
+    private AsyncPackageDataModelOracle getOracle() {
+        return new AsyncPackageDataModelOracleImpl( incrementalDataModelServiceCaller,
+                                                    validatorInstance );
+    }
 
     @Test
     public void testValueLists() {
@@ -63,7 +90,7 @@ public class GuidedDecisionTableTest {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( loader.getPackageWorkbenchDefinitions() );
@@ -302,7 +329,7 @@ public class GuidedDecisionTableTest {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -427,7 +454,7 @@ public class GuidedDecisionTableTest {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -536,7 +563,7 @@ public class GuidedDecisionTableTest {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -592,7 +619,7 @@ public class GuidedDecisionTableTest {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -710,7 +737,7 @@ public class GuidedDecisionTableTest {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),
@@ -762,7 +789,7 @@ public class GuidedDecisionTableTest {
                 .build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
         populateDataModelOracle( mock( Path.class ),

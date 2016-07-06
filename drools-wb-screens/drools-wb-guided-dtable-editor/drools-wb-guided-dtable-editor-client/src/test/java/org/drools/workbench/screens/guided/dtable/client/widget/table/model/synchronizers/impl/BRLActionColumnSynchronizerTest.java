@@ -31,7 +31,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.St
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
@@ -42,7 +41,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Override
     protected AsyncPackageDataModelOracle getOracle() {
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final AsyncPackageDataModelOracle oracle = super.getOracle();
         oracle.addModelFields( new HashMap<String, ModelField[]>() {
                                    {
                                        put( "Applicant",

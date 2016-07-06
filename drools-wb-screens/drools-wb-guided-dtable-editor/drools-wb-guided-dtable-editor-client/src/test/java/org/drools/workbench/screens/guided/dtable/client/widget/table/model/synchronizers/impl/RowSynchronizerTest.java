@@ -23,19 +23,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.junit.Test;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 import static org.junit.Assert.*;
 
 public class RowSynchronizerTest extends BaseSynchronizerTest {
-
-    @Override
-    protected AsyncPackageDataModelOracle getOracle() {
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
-        return oracle;
-    }
 
     @Test
     public void testAppend() throws ModelSynchronizer.MoveColumnVetoException {
