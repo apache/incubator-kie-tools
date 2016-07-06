@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.enterprise.inject.Instance;
 
 import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.imports.HasImports;
@@ -31,6 +32,7 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
@@ -45,6 +47,7 @@ import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestDirectR
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestIndirectRecursionClassA;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSubClass;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSuperClass;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 
@@ -56,6 +59,9 @@ import static org.mockito.Mockito.*;
  */
 public class PackageDataModelOracleTest {
 
+    @Mock
+    private Instance<DynamicValidator> validatorInstance;
+
     @Test
     public void testDataTypes() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
@@ -65,9 +71,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -163,9 +169,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -221,9 +227,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -300,9 +306,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -367,9 +373,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -417,9 +423,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -485,9 +491,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -573,9 +579,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -663,9 +669,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -758,9 +764,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -814,9 +820,9 @@ public class PackageDataModelOracleTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );

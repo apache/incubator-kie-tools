@@ -83,11 +83,11 @@ public class ProjectDataModelFactAnnotationsTest {
         assertEquals( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfDescriptor",
                       annotation.getQualifiedTypeName() );
         assertEquals( "blue",
-                      annotation.getAttributes().get( "colour" ) );
+                      annotation.getParameters().get( "colour" ) );
         assertEquals( "M",
-                      annotation.getAttributes().get( "gender" ) );
+                      annotation.getParameters().get( "gender" ) );
         assertEquals( "Brains",
-                      annotation.getAttributes().get( "description" ) );
+                      annotation.getParameters().get( "description" ) );
     }
 
     @Test
@@ -114,8 +114,8 @@ public class ProjectDataModelFactAnnotationsTest {
         final Annotation annotation = annotations.iterator().next();
         assertEquals( "org.kie.api.definition.type.Role",
                       annotation.getQualifiedTypeName() );
-        assertEquals( Role.Type.EVENT.name(),
-                      annotation.getAttributes().get( "value" ) );
+        assertEquals( Role.Type.EVENT,
+                      annotation.getParameters().get( "value" ) );
     }
 
 }

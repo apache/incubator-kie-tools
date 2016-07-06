@@ -19,6 +19,7 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import javax.enterprise.inject.Instance;
 
 import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.datamodel.imports.Import;
@@ -29,11 +30,13 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 
@@ -42,6 +45,9 @@ import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModel
 import static org.mockito.Mockito.*;
 
 public class PackageDataModelMethodsTest {
+
+    @Mock
+    private Instance<DynamicValidator> validatorInstance;
 
     @Test
     public void testMethodsOnJavaClass_TreeMap() throws Exception {
@@ -52,9 +58,9 @@ public class PackageDataModelMethodsTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "java.util" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -172,9 +178,9 @@ public class PackageDataModelMethodsTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "java.util" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -209,9 +215,9 @@ public class PackageDataModelMethodsTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "p0" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );

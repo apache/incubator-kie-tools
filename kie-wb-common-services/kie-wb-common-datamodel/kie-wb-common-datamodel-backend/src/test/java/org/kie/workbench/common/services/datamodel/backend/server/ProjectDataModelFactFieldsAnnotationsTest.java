@@ -88,11 +88,11 @@ public class ProjectDataModelFactFieldsAnnotationsTest {
         assertEquals( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfFieldDescriptor",
                       annotation.getQualifiedTypeName() );
         assertEquals( "blue",
-                      annotation.getAttributes().get( "colour" ) );
+                      annotation.getParameters().get( "colour" ) );
         assertEquals( "M",
-                      annotation.getAttributes().get( "gender" ) );
+                      annotation.getParameters().get( "gender" ) );
         assertEquals( "Brains",
-                      annotation.getAttributes().get( "description" ) );
+                      annotation.getParameters().get( "description" ) );
 
         assertTrue( fieldsAnnotations.containsKey( "positionedOccupant" ) );
         final Set<Annotation> posOccupantAnnotations = fieldsAnnotations.get( "positionedOccupant" );
@@ -103,8 +103,8 @@ public class ProjectDataModelFactFieldsAnnotationsTest {
         final Annotation annotation2 = posOccupantAnnotations.iterator().next();
         assertEquals( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfFieldPositionDescriptor",
                       annotation2.getQualifiedTypeName() );
-        assertEquals( Integer.toString( 1 ),
-                      annotation2.getAttributes().get( "value" ) );
+        assertEquals( 1,
+                      annotation2.getParameters().get( "value" ) );
     }
 
 }

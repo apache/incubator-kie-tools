@@ -20,12 +20,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
 
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.Annotation;
@@ -39,14 +42,14 @@ import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.kie.workbench.common.services.datamodel.model.LazyModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
-import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
-
 
 /**
  * Default implementation of DataModelOracle
@@ -54,8 +57,9 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Dependent
 public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOracle {
 
-    @Inject
-    protected Caller<IncrementalDataModelService> service;
+    private Caller<IncrementalDataModelService> service;
+    private Instance<DynamicValidator> validatorInstance;
+    private DynamicValidator validator;
 
     //Path that this DMO is coupled to
     private Path resourcePath;
@@ -155,8 +159,11 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     // Keep the link between fact name and the full qualified class name inside the package
     private FactNameToFQCNHandleRegistry factNameToFQCNHandleRegistry = new FactNameToFQCNHandleRegistry();
 
-    //Public constructor is needed for Errai Marshaller :(
-    public AsyncPackageDataModelOracleImpl() {
+    @Inject
+    public AsyncPackageDataModelOracleImpl( final Caller<IncrementalDataModelService> service,
+                                            final Instance<DynamicValidator> validatorInstance ) {
+        this.service = service;
+        this.validatorInstance = validatorInstance;
     }
 
     @Override
@@ -481,6 +488,50 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         } else {
             callback.callback( typeFieldsAnnotations );
         }
+    }
+
+    @Override
+    public <T> void validateField( final String factType,
+                                   final String fieldName,
+                                   final T value,
+                                   final Callback<Set<ConstraintViolation<T>>> callback ) {
+        if ( factType == null || factType.isEmpty() ) {
+            callback.callback( Collections.emptySet() );
+            return;
+        }
+        if ( fieldName == null || fieldName.isEmpty() ) {
+            callback.callback( Collections.emptySet() );
+            return;
+        }
+        if ( callback == null ) {
+            return;
+        }
+
+        if ( validatorInstance.isUnsatisfied() ) {
+            callback.callback( Collections.emptySet() );
+            return;
+
+        } else if ( validator == null ) {
+            validator = validatorInstance.get();
+        }
+
+        getTypeFieldsAnnotations( factType,
+                                  ( Map<String, Set<Annotation>> result ) -> {
+                                      final Set<ConstraintViolation<T>> violations = new HashSet<>();
+                                      final Set<Annotation> fieldAnnotations = result.get( fieldName );
+                                      if ( fieldAnnotations == null || fieldAnnotations.isEmpty() ) {
+                                          callback.callback( violations );
+                                          return;
+                                      }
+
+                                      for ( Annotation fieldAnnotation : fieldAnnotations ) {
+                                          final Map<String, Object> fieldAnnotationAttributes = fieldAnnotation.getParameters();
+                                          violations.addAll( validator.validate( fieldAnnotation.getQualifiedTypeName(),
+                                                                                 fieldAnnotationAttributes,
+                                                                                 value ) );
+                                      }
+                                      callback.callback( violations );
+                                  } );
     }
 
     // ####################################

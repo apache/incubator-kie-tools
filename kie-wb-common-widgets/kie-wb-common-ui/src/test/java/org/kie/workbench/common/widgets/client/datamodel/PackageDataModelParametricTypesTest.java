@@ -18,23 +18,23 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import javax.enterprise.inject.Instance;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFieldInspector;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.Product;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.Purchase;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
@@ -44,6 +44,9 @@ import static org.mockito.Mockito.*;
  * Tests for MethodInfo and Parametric types
  */
 public class PackageDataModelParametricTypesTest {
+
+    @Mock
+    private Instance<DynamicValidator> validatorInstance;
 
     @Test
     public void testClassFieldInspector() throws Exception {
@@ -68,9 +71,9 @@ public class PackageDataModelParametricTypesTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
@@ -112,9 +115,9 @@ public class PackageDataModelParametricTypesTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );

@@ -106,7 +106,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
             final Annotation dmoa = new Annotation( a.annotationType().getName() );
             for ( Method m : a.annotationType().getDeclaredMethods() ) {
                 final String methodName = m.getName();
-                dmoa.addAttribute( methodName,
+                dmoa.addParameter( methodName,
                                    AnnotationUtils.getAnnotationAttributeValue( a,
                                                                                 methodName ) );
             }
@@ -136,7 +136,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
             final Annotation fieldAnnotation = new Annotation( a.annotationType().getName() );
             for ( Method m : a.annotationType().getDeclaredMethods() ) {
                 final String methodName = m.getName();
-                fieldAnnotation.addAttribute( methodName,
+                fieldAnnotation.addParameter( methodName,
                                               AnnotationUtils.getAnnotationAttributeValue( a,
                                                                                            methodName ) );
             }

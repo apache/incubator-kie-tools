@@ -29,7 +29,7 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.assertContains;
+import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.*;
 
 public class AsyncPackageDataModelOracleUtilitiesTest {
 

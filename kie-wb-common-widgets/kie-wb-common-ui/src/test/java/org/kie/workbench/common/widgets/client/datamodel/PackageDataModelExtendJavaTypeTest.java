@@ -17,6 +17,7 @@ package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.net.URL;
 import java.util.HashMap;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
@@ -24,6 +25,7 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.test.WeldJUnitRunner;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +55,9 @@ public class PackageDataModelExtendJavaTypeTest {
     @Inject
     private DataModelService dataModelService;
 
+    @Inject
+    private Instance<DynamicValidator> validatorInstance;
+
     @Before
     public void setUp() throws Exception {
         //Ensure URLs use the default:// scheme
@@ -68,9 +73,9 @@ public class PackageDataModelExtendJavaTypeTest {
         final PackageDataModelOracle projectLoader = dataModelService.getDataModel( packagePath );
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( projectLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( "t4p1" );
@@ -111,9 +116,9 @@ public class PackageDataModelExtendJavaTypeTest {
         final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel( packagePath );
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( "t4p1" );
@@ -153,9 +158,9 @@ public class PackageDataModelExtendJavaTypeTest {
         final PackageDataModelOracle projectLoader = dataModelService.getDataModel( packagePath );
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( projectLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( "t5p1" );
@@ -195,9 +200,9 @@ public class PackageDataModelExtendJavaTypeTest {
         final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel( packagePath );
 
         //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
-        oracle.setService( service );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( service,
+                                                                                        validatorInstance );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( "t5p1" );

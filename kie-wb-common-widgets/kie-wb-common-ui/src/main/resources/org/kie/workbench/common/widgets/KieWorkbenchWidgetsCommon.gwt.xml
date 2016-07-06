@@ -25,6 +25,9 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
+  <inherits name="org.jboss.errai.validation.Validation"/>
+  <inherits name="org.hibernate.validator.HibernateValidator"/>
+
   <inherits name="org.gwtbootstrap3.extras.select.Select"/>
 
   <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleClient"/>

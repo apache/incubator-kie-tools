@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.inject.Instance;
 
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
@@ -32,11 +33,13 @@ import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.model.LazyModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 
@@ -52,11 +55,13 @@ public class AsyncPackageDataModelOracleImplTest {
     private PackageDataModelOracleIncrementalPayload stringPayload;
     private PackageDataModelOracleIncrementalPayload defaultPayload;
 
+    @Mock
+    private Instance<DynamicValidator> validatorInstance;
+
     @Before
     public void setUp() throws Exception {
-        AsyncPackageDataModelOracleImpl oracle = new AsyncPackageDataModelOracleImpl();
-        oracle.service = new Service();
-
+        AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( new Service(),
+                                                                                  validatorInstance );
         personPayload = createPersonPayload();
         addressPayload = createAddressPayload();
         giantPayload = createGiantPayload();

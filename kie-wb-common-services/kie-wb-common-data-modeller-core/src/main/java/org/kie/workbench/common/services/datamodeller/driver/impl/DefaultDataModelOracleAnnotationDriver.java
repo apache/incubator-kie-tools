@@ -33,10 +33,10 @@ public class DefaultDataModelOracleAnnotationDriver implements AnnotationDriver 
         AnnotationImpl annotation = new AnnotationImpl(annotationDefinition);
         if (annotationDefinition.isMarker()) {
             return annotation;
-        } else if (oracleAnnotationToken.getAttributes() != null) {
-            String currentAttributeValue;
+        } else if (oracleAnnotationToken.getParameters() != null) {
+            Object currentAttributeValue;
             for (AnnotationValuePairDefinition annotationMember : annotationDefinition.getValuePairs()) {
-                currentAttributeValue = oracleAnnotationToken.getAttributes().get(annotationMember.getName());
+                currentAttributeValue = oracleAnnotationToken.getParameters().get(annotationMember.getName());
                 if (currentAttributeValue != null) {
                     annotation.setValue(annotationMember.getName(), currentAttributeValue);
                 }

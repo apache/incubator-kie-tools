@@ -28,12 +28,12 @@ public class AnnotationUtils {
      * @param attributeName
      * @return
      */
-    public static String getAnnotationAttributeValue( final Annotation annotation,
+    public static Object getAnnotationAttributeValue( final Annotation annotation,
                                                       final String attributeName ) {
-        String value = null;
+        Object value = null;
         if ( annotation != null ) {
             try {
-                value = annotation.annotationType().getMethod( attributeName ).invoke( annotation ).toString();
+                value = annotation.annotationType().getMethod( attributeName ).invoke( annotation );
             } catch ( Exception ex ) {
                 //Swallow
             }
