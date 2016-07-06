@@ -17,9 +17,9 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 
-public interface HasKeys {
+public interface HasKeys
+        extends HasUUID {
 
     Key[] keys();
-
 
 }

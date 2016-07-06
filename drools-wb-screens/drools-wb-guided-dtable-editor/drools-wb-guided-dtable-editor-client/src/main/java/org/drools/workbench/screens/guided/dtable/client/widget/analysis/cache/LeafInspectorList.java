@@ -17,31 +17,29 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.ArrayList;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsConflicting;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsRedundant;
 
 public class LeafInspectorList<T extends IsConflicting & IsRedundant>
-        extends ArrayList<T>
+        extends InspectorList<T>
         implements HasConflicts,
                    HasRedundancy {
 
     @Override
-    public ArrayList<T> hasConflicts() {
-        final ArrayList<T> result = new ArrayList<>();
-
-
+    public Conflict hasConflicts() {
         int index = 1;
         for ( final T inspector : this ) {
             for ( int j = index; j < size(); j++ ) {
                 if ( inspector.conflicts( get( j ) ) ) {
-                    result.add( inspector );
-                    result.add( get( j ) );
-                    return result;
+                    return new Conflict( inspector,
+                                         get( j ) );
                 }
             }
             index++;
         }
-        return result;
+
+        return Conflict.EMPTY;
     }
 
     @Override

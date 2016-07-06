@@ -16,8 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util;
 
-public interface IsRedundant {
+public interface IsRedundant<T> {
 
-    boolean isRedundant( Object other );
+    boolean isRedundant( final T other );
 
 }

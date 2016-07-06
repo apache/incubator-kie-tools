@@ -29,38 +29,16 @@ public class KeyDefinitionBuilderTest {
     @Test
     public void testDefaults() throws Exception {
         final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition().withId( "test" ).build();
-        assertFalse( keyDefinition.canBeEmpty() );
-        assertFalse( keyDefinition.isValueList() );
+        assertFalse( keyDefinition.isUpdatable() );
     }
 
     @Test
-    public void testCanBeEmpty() throws Exception {
+    public void testUpdatable() throws Exception {
         final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition()
                                                          .withId( "test" )
-                                                         .canBeEmpty()
+                                                         .updatable()
                                                          .build();
-        assertTrue( keyDefinition.canBeEmpty() );
-        assertFalse( keyDefinition.isValueList() );
+        assertTrue( keyDefinition.isUpdatable() );
     }
 
-    @Test
-    public void testIsValueList() throws Exception {
-        final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition()
-                                                         .withId( "test" )
-                                                         .valueList()
-                                                         .build();
-        assertFalse( keyDefinition.canBeEmpty() );
-        assertTrue( keyDefinition.isValueList() );
-    }
-
-    @Test
-    public void testIsValueListThatCanBeEmpty() throws Exception {
-        final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition()
-                                                         .withId( "test" )
-                                                         .canBeEmpty()
-                                                         .valueList()
-                                                         .build();
-        assertTrue( keyDefinition.canBeEmpty() );
-        assertTrue( keyDefinition.isValueList() );
-    }
 }

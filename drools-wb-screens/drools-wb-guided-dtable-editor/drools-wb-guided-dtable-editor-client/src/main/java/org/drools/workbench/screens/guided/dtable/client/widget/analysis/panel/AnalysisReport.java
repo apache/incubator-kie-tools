@@ -19,15 +19,13 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.uberfire.mvp.PlaceRequest;
 
 public class AnalysisReport {
 
-    private final SortedSet<Issue> issues = new TreeSet<Issue>();
+    private final ArrayList<Issue> issues = new ArrayList<Issue>();
     private PlaceRequest place;
 
     public AnalysisReport( final PlaceRequest place ) {
@@ -43,7 +41,7 @@ public class AnalysisReport {
     }
 
     public List<Issue> getAnalysisData() {
-        return new ArrayList<Issue>( issues );
+        return issues;
     }
 
     @Override
@@ -56,7 +54,7 @@ public class AnalysisReport {
             builder.append( "\n" );
         } else {
             for ( Issue issue : issues ) {
-                builder.append( issue.getExplanation().toHTML() );
+                builder.append( issue.getExplanationHTML() );
                 builder.append( "\n" );
             }
         }

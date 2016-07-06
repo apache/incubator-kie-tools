@@ -17,24 +17,40 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
-public class Issue
-        implements Comparable<Issue> {
+import com.google.gwt.safehtml.shared.SafeHtml;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+
+public class Issue {
+
+    public static final Issue EMPTY = new Issue();
 
     private final Severity severity;
-    private final TreeSet<Integer> rowNumbers = new TreeSet<Integer>();
+    private final HashSet<RuleInspector> ruleInspectors = new HashSet<>();
 
-    private final String title;
-    private final Explanation explanation = new Explanation();
+    private final String              title;
+    private final ExplanationProvider explanationProvider;
 
     public Issue( final Severity severity,
                   final String title,
-                  final Integer... rowNumbers ) {
+                  final ExplanationProvider explanationProvider,
+                  final RuleInspector... ruleInspectors ) {
         this.severity = severity;
         this.title = title;
-        this.rowNumbers.addAll( Arrays.asList( rowNumbers ) );
+        this.explanationProvider = explanationProvider;
+        this.ruleInspectors.addAll( Arrays.asList( ruleInspectors ) );
+    }
+
+    private Issue() {
+        severity = null;
+        explanationProvider = null;
+        title = null;
+    }
+
+    public boolean hasIssue() {
+        return title != null;
     }
 
     public Severity getSeverity() {
@@ -42,6 +58,12 @@ public class Issue
     }
 
     public Set<Integer> getRowNumbers() {
+        Set<Integer> rowNumbers = new HashSet<>();
+
+        for ( RuleInspector ruleInspector : ruleInspectors ) {
+            rowNumbers.add( ruleInspector.getRowIndex() + 1 );
+        }
+
         return rowNumbers;
     }
 
@@ -49,46 +71,13 @@ public class Issue
         return title;
     }
 
-    public Explanation getExplanation() {
-        return explanation;
-    }
-
     @Override
     public String toString() {
         return title;
     }
 
-    @Override
-    public int compareTo( final Issue issue ) {
-        int compareToSeverity = severity.compareTo( issue.getSeverity() );
 
-        if ( compareToSeverity == 0 ) {
-            int compareToTitle = title.compareTo( issue.getTitle() );
-            if ( compareToTitle == 0 ) {
-                return compareRowNumbers( issue.getRowNumbers() );
-
-            } else {
-                return compareToTitle;
-            }
-        } else {
-            return compareToSeverity;
-        }
-
+    public SafeHtml getExplanationHTML() {
+        return explanationProvider.toHTML();
     }
-
-    private int compareRowNumbers( final Set<Integer> rowNumbers ) {
-        if ( this.rowNumbers.equals( rowNumbers ) ) {
-            return 0;
-        } else {
-            for ( Integer a : this.rowNumbers ) {
-                for ( Integer b : rowNumbers ) {
-                    if ( a < b ) {
-                        return -1;
-                    }
-                }
-            }
-            return 1;
-        }
-    }
-
 }

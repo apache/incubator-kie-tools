@@ -15,8 +15,11 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util;
 
-public interface IsConflicting<T> {
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasUUID;
 
-    boolean conflicts( T other );
+public interface IsConflicting<T>
+        extends HasUUID {
+
+    boolean conflicts( final T other );
 
 }

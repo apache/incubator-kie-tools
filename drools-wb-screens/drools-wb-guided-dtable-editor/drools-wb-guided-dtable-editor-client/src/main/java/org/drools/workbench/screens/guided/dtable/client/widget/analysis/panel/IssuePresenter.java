@@ -45,7 +45,7 @@ public class IssuePresenter
         } else {
             view.setIssueTitle( issue.getTitle() );
         }
-        view.setExplanation( issue.getExplanation().toHTML() );
+        view.setExplanation( issue.getExplanationHTML() );
         view.setLines( makeRowNumbers( issue ) );
     }
 

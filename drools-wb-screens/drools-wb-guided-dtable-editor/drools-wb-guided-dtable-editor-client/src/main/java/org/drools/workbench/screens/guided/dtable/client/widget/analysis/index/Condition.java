@@ -16,11 +16,14 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 
+import java.util.Iterator;
+
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UpdatableKey;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ComparableMatchers;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.UUIDMatchers;
@@ -29,17 +32,24 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public abstract class Condition<T extends Comparable>
         implements HasKeys {
 
-    private final static KeyDefinition SUPER_TYPE  = KeyDefinition.newKeyDefinition().withId( "superType" ).build();
-    private final static KeyDefinition COLUMN_UUID = KeyDefinition.newKeyDefinition().withId( "columnUUID" ).build();
-    private final static KeyDefinition VALUE = KeyDefinition.newKeyDefinition()
-                                                            .withId( "value" )
-                                                            .valueList()
-                                                            .canBeEmpty().build();
+    private final static KeyDefinition SUPER_TYPE  = KeyDefinition.newKeyDefinition()
+                                                                  .withId( "superType" )
+                                                                  .updatable()
+                                                                  .build();
+    private final static KeyDefinition COLUMN_UUID = KeyDefinition.newKeyDefinition()
+                                                                  .withId( "columnUUID" )
+                                                                  .build();
+    private final static KeyDefinition VALUE       = KeyDefinition.newKeyDefinition()
+                                                                  .withId( "value" )
+                                                                  .updatable()
+                                                                  .build();
 
     protected final UUIDKey uuidKey = new UUIDKey( this );
     protected final Column                  column;
     private final   ConditionSuperType      superType;
     private UpdatableKey<Condition<T>> valueKey;
+
+    private final Values<Comparable> values = new Values<>();
 
     public Condition( final Column column,
                       final ConditionSuperType superType,
@@ -48,12 +58,20 @@ public abstract class Condition<T extends Comparable>
         this.superType = PortablePreconditions.checkNotNull( "superType", superType );
         this.valueKey = new UpdatableKey<>( VALUE,
                                             PortablePreconditions.checkNotNull( "values", values ) );
+        resetValues();
+    }
+
+    private void resetValues() {
+        for ( final Object o : valueKey.getValues() ) {
+            values.add( (( Value ) o).getComparable() );
+        }
     }
 
     public Column getColumn() {
         return column;
     }
 
+    @Override
     public UUIDKey getUuidKey() {
         return uuidKey;
     }
@@ -75,15 +93,20 @@ public abstract class Condition<T extends Comparable>
     }
 
     public T getFirstValue() {
-        return ( T ) valueKey.getValue().iterator().next();
+        final Iterator<Value> iterator = valueKey.getValues().iterator();
+        if ( iterator.hasNext() ) {
+            return ( T ) iterator.next().getComparable();
+        } else {
+            return null;
+        }
     }
 
-    public Values getValues() {
-        return Values.toValues( valueKey.getValue() );
+    public Values<Comparable> getValues() {
+        return values;
     }
 
     public void setValue( final Values<T> values ) {
-        if ( !Values.toValues( valueKey.getValue() ).isThereChanges( values ) ) {
+        if ( !valueKey.getValues().isThereChanges( values ) ) {
             return;
         } else {
             final UpdatableKey<Condition<T>> oldKey = valueKey;
@@ -95,6 +118,7 @@ public abstract class Condition<T extends Comparable>
 
             oldKey.update( newKey,
                            this );
+            resetValues();
         }
     }
 

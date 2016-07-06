@@ -16,74 +16,85 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.PairCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
-public class DetectRedundantRowsCheck
-        extends PairCheck {
+public class DetectRedundantRowsCheck {
 
-    private boolean isRedundant;
-    private boolean subsumes;
-
-    public DetectRedundantRowsCheck( final RuleInspector ruleInspector,
-                                     final RuleInspector other ) {
-        super( ruleInspector,
-               other );
-    }
-
-    @Override
-    public void check() {
-        hasIssues = false;
-        subsumes = false;
-        isRedundant = false;
+    public static Issue check( final RuleInspector ruleInspector,
+                               final RuleInspector other ) {
 
         if ( other.atLeastOneActionHasAValue() ) {
-            if ( ruleInspector.isRedundant( other ) ) {
-                hasIssues = true;
-                isRedundant = true;
-            } else if ( ruleInspector.subsumes( other ) ) {
-                hasIssues = true;
-                subsumes = true;
+
+            final boolean subsumes = ruleInspector.subsumes( other );
+
+            if ( subsumes && other.subsumes( ruleInspector ) ) {
+                return getIssue( ruleInspector,
+                                 other,
+                                 Status.REDUNDANT );
+            } else if ( subsumes ) {
+                return getIssue( ruleInspector,
+                                 other,
+                                 Status.SUBSUMES );
             }
         }
+
+        return Issue.EMPTY;
     }
 
-    @Override
-    public Issue getIssue() {
+    public static Issue getIssue( final RuleInspector ruleInspector,
+                                  final RuleInspector other,
+                                  final Status status ) {
         Issue issue = new Issue( Severity.WARNING,
-                                 getMessage(),
-                                 ruleInspector.getRowIndex() + 1,
-                                 other.getRowIndex() + 1 );
-
-        setExplanation( issue );
+                                 getMessage( status ),
+                                 new ExplanationProvider() {
+                                     @Override
+                                     public SafeHtml toHTML() {
+                                         return getExplanation( status )
+                                                 .toHTML();
+                                     }
+                                 },
+                                 ruleInspector,
+                                 other );
 
         return issue;
     }
 
-    private void setExplanation( final Issue issue ) {
-        if ( isRedundant ) {
-            issue.getExplanation()
-                    .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP1() )
-                    .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP2() )
-                    .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP3() );
+    private static String getMessage( final Status status ) {
+        switch ( status ) {
 
-        } else if ( subsumes ) {
-            issue.getExplanation()
-                    .addParagraph( AnalysisConstants.INSTANCE.SubsumptantRowsP1() )
-                    .addParagraph( AnalysisConstants.INSTANCE.SubsumptantRowsP2() );
+            case REDUNDANT:
+            return AnalysisConstants.INSTANCE.RedundantRows();
+            case SUBSUMES:
+            return AnalysisConstants.INSTANCE.SubsumptantRows();
+            default:
+                return "";
         }
     }
 
-    private String getMessage() {
-        if ( isRedundant ) {
-            return AnalysisConstants.INSTANCE.RedundantRows();
-        } else if ( subsumes ) {
-            return AnalysisConstants.INSTANCE.SubsumptantRows();
-        } else {
-            return "";
+    private static Explanation getExplanation( final Status status ) {
+        switch ( status ) {
+            case REDUNDANT:
+                return new Explanation()
+                     .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP1() )
+                     .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP2() )
+                     .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP3() );
+            case SUBSUMES:
+                return new Explanation()
+                     .addParagraph( AnalysisConstants.INSTANCE.SubsumptantRowsP1() )
+                     .addParagraph( AnalysisConstants.INSTANCE.SubsumptantRowsP2() );
+            default:
+                return new Explanation();
         }
+    }
+
+    enum Status {
+        REDUNDANT,
+        SUBSUMES
     }
 }

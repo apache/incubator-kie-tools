@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,12 +44,20 @@ public class KnownKeysKeyTreeMapTest {
     class Person
             implements HasKeys {
 
+        private UUIDKey uuidKey = new UUIDKey( this );
+
         @Override
         public Key[] keys() {
             return new Key[]{
+                    uuidKey,
                     new Key( KeyDefinition.newKeyDefinition().withId( "name" ).build(),
                              "hello" )
             };
+        }
+
+        @Override
+        public UUIDKey getUuidKey() {
+            return uuidKey;
         }
     }
 }

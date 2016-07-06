@@ -20,7 +20,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.K
 public class IndexKey
         extends Key {
 
-    public static final KeyDefinition INDEX_ID = KeyDefinition.newKeyDefinition().withId( "index---id" ).build();
+    public static final KeyDefinition INDEX_ID = KeyDefinition.newKeyDefinition().withId( "index---id" ).updatable().build();
 
     public IndexKey( int index ) {
         super( INDEX_ID,

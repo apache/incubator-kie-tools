@@ -17,12 +17,15 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.Util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -40,9 +43,15 @@ public class IssuePresenterTest {
     @Test
     public void testShow() throws Exception {
 
-        Issue issue = new Issue( Severity.WARNING, "some title", 1, 2, 3 );
+        Issue issue = new Issue( Severity.WARNING, "some title", new ExplanationProvider() {
+            @Override
+            public SafeHtml toHTML() {
+                return new Explanation()
+                        .addParagraph( "explanation" )
+                        .toHTML();
+            }
+        }, getMockRuleInspector( 0 ), getMockRuleInspector( 1 ), getMockRuleInspector( 2 ) );
 
-        issue.getExplanation().addParagraph( "explanation" );
 
         screen.show( issue );
 

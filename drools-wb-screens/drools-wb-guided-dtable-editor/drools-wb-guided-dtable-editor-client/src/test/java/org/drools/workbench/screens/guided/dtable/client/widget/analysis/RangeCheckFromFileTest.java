@@ -28,7 +28,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,8 +92,8 @@ public class RangeCheckFromFileTest {
             }
 
             @Override
-            protected Checks getChecks() {
-                return new Checks() {
+            protected CheckRunner getCheckRunner() {
+                return new CheckRunner() {
                     @Override
                     protected void doRun( final CancellableRepeatingCommand command ) {
                         while ( command.execute() ) {

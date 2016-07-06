@@ -52,7 +52,7 @@ public class MultiMap<Key extends Comparable, Value>
     }
 
     public void merge( final MultiMap<Key, Value> other ) {
-        for ( final Key key : other.keys() ) {
+        for ( final Key key : other.keySet() ) {
             ArrayList<Value> values = other.get( key );
             putAllValues( key,
                           values );

@@ -28,14 +28,17 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public abstract class Action
         implements HasKeys {
 
-    protected static final KeyDefinition VALUE       = KeyDefinition.newKeyDefinition().withId( "value" ).build();
-    protected static final KeyDefinition SUPER_TYPE  = KeyDefinition.newKeyDefinition().withId( "superType" ).build();
+    protected static final KeyDefinition VALUE       = KeyDefinition.newKeyDefinition().withId( "value" ).updatable().build();
+    protected static final KeyDefinition SUPER_TYPE  = KeyDefinition.newKeyDefinition().withId( "superType" ).updatable().build();
     protected static final KeyDefinition COLUMN_UUID = KeyDefinition.newKeyDefinition().withId( "columnUUID" ).build();
 
     protected final UUIDKey uuidKey = new UUIDKey( this );
     protected final Column               column;
     private final   ActionSuperType      superType;
+
     protected       UpdatableKey<Action> valueKey;
+
+    private final Values<Comparable> values = new Values<>();
 
     public Action( final Column column,
                    final ActionSuperType superType,
@@ -44,8 +47,16 @@ public abstract class Action
         this.superType = PortablePreconditions.checkNotNull( "superType", superType );
         this.valueKey = new UpdatableKey<>( Action.VALUE,
                                             values );
+        resetValues();
     }
 
+    private void resetValues() {
+        for ( final Object o : valueKey.getValues() ) {
+            values.add( (( Value ) o).getComparable() );
+        }
+    }
+
+    @Override
     public UUIDKey getUuidKey() {
         return uuidKey;
     }
@@ -63,11 +74,7 @@ public abstract class Action
     }
 
     public Values<Comparable> getValues() {
-        final Values result = new Values<>();
-        for ( final Value value : valueKey.getValue() ) {
-            result.add( value.getComparable() );
-        }
-        return result;
+        return values;
     }
 
     public static Matchers uuid() {
@@ -96,7 +103,7 @@ public abstract class Action
     }
 
     public void setValue( final Values values ) {
-        if ( !Values.toValues( valueKey.getValue() ).isThereChanges( values ) ) {
+        if ( !valueKey.getValues().isThereChanges( values ) ) {
             return;
         } else {
             final UpdatableKey<Action> oldKey = valueKey;
@@ -107,6 +114,7 @@ public abstract class Action
 
             oldKey.update( newKey,
                             this );
+            resetValues();
         }
     }
 }

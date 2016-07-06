@@ -29,7 +29,7 @@ public class Util {
     public static <T> void assertMapContent( final MultiMap<Value, T> objectMultiMap,
                                              final Comparable... keyValues ) {
 
-        final Set<Value> keys = objectMultiMap.keys();
+        final Set<Value> keys = objectMultiMap.keySet();
         assertEquals( new HashSet<>( Arrays.asList( keyValues ) ).size(), keys.size() );
 
         for ( final Comparable keyValue : keyValues ) {

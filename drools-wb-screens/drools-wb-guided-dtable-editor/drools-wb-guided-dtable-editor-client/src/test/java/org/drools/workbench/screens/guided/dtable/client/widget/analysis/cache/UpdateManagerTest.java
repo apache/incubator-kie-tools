@@ -67,7 +67,7 @@ public class UpdateManagerTest {
                 .withData( new Object[][]{
                         {1, "description", 1, true},
                         {2, "description", null, null}} )
-                .build();
+                .buildTable();
 
 
         updateManager = new UpdateManager( new IndexBuilder( table52,

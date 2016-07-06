@@ -18,23 +18,19 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.ExtendedGuidedDecisionTableBuilder;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalyzerProvider;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DataBuilderProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.UpdateHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.ArgumentCaptor;
@@ -55,27 +51,26 @@ public class RuleInspectorCacheTest {
     @GwtMock
     DateTimeFormat dateTimeFormat;
 
+    private AnalyzerProvider analyzerProvider;
+
     @Before
     public void setUp() throws Exception {
-        Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
-        ApplicationPreferences.setUp( preferences );
+        analyzerProvider = new AnalyzerProvider();
 
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        {1, "description", 0, 1, true},
-                        {2, "description", 0, 1, true},
-                        {3, "description", 0, 1, true},
-                        {4, "description", 0, 1, true},
-                        {5, "description", 0, 1, false},
-                        {6, "description", 0, 1, true},
-                        {7, "description", 0, 1, true}} )
-                .build();
+        table52 = analyzerProvider.makeAnalyser()
+                                  .withPersonAgeColumn( "==" )
+                                  .withPersonAgeColumn( "==" )
+                                  .withPersonApprovedActionSetField()
+                                  .withData( DataBuilderProvider
+                                                     .row( 0, 1, true )
+                                                     .row( 0, 1, true )
+                                                     .row( 0, 1, true )
+                                                     .row( 0, 1, true )
+                                                     .row( 0, 1, false )
+                                                     .row( 0, 1, true )
+                                                     .row( 0, 1, true )
+                                                     .end() )
+                                  .buildTable();
 
         cache = new RuleInspectorCache( mock( AsyncPackageDataModelOracle.class ),
                                         table52,
@@ -145,8 +140,7 @@ public class RuleInspectorCacheTest {
         List<List<DTCellValue52>> data = table52.getData();
         data.get( 3 ).get( 3 ).setNumericValue( 0 );
 
-        cache.updateRuleInspectors( coordinates,
-                                    table52 );
+        cache.updateRuleInspectors( coordinates );
 
         ArgumentCaptor<List> coordinatesCaptor = ArgumentCaptor.forClass( List.class );
         verify( updateHandler ).updateCoordinates( coordinatesCaptor.capture() );

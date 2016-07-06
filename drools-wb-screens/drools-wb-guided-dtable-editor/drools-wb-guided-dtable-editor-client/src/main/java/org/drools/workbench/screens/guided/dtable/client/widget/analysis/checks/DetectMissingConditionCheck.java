@@ -16,9 +16,12 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
@@ -43,10 +46,15 @@ public class DetectMissingConditionCheck
     public Issue getIssue() {
         Issue issue = new Issue( Severity.NOTE,
                                  AnalysisConstants.INSTANCE.RuleHasNoRestrictionsAndWillAlwaysFire(),
-                                 ruleInspector.getRowIndex() + 1 );
-
-        issue.getExplanation()
-                .addParagraph( AnalysisConstants.INSTANCE.MissingConditionP1() );
+                                 new ExplanationProvider() {
+                                     @Override
+                                     public SafeHtml toHTML() {
+                                         return new Explanation()
+                                                 .addParagraph( AnalysisConstants.INSTANCE.MissingConditionP1() )
+                                                 .toHTML();
+                                     }
+                                 },
+                                 ruleInspector );
 
         return issue;
     }

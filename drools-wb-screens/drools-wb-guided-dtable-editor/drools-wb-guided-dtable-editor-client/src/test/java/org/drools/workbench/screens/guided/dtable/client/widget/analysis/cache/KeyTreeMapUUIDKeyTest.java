@@ -24,23 +24,29 @@ public class KeyTreeMapUUIDKeyTest {
 
     @Test( expected = IllegalArgumentException.class )
     public void testNoKey() throws Exception {
-        final KeyTreeMap<NoKey> map = new KeyTreeMap<>();
+        final KeyTreeMap<NoKey> map = new KeyTreeMap<>( UUIDKey.UNIQUE_UUID );
 
         map.put( new NoKey() );
     }
 
     @Test( expected = IllegalArgumentException.class )
     public void testTwoKeys() throws Exception {
-        final KeyTreeMap<TwoKeys> map = new KeyTreeMap<>();
+        final KeyTreeMap<TwoKeys> map = new KeyTreeMap<>(UUIDKey.UNIQUE_UUID);
 
         map.put( new TwoKeys() );
     }
 
     private class NoKey
             implements HasKeys {
+
         @Override
         public Key[] keys() {
             return new Key[0];
+        }
+
+        @Override
+        public UUIDKey getUuidKey() {
+            return null;
         }
     }
 
@@ -52,6 +58,11 @@ public class KeyTreeMapUUIDKeyTest {
                     new UUIDKey( this ),
                     new UUIDKey( this )
             };
+        }
+
+        @Override
+        public UUIDKey getUuidKey() {
+            return null;
         }
     }
 }

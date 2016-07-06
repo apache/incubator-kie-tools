@@ -26,7 +26,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Analysis
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
@@ -38,6 +38,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.Appen
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -51,7 +52,7 @@ public class DecisionTableAnalyzer
                    InsertRowEvent.Handler,
                    AfterColumnInserted.Handler {
 
-    private final Checks                       checks       = getChecks();
+    private final CheckRunner                  checkRunner  = getCheckRunner();
     private final ParameterizedCommand<Status> onStatus     = getOnStatusCommand();
     private final Command                      onCompletion = getOnCompletionCommand();
 
@@ -64,12 +65,12 @@ public class DecisionTableAnalyzer
                                   final AsyncPackageDataModelOracle oracle,
                                   final GuidedDecisionTable52 model,
                                   final EventBus eventBus ) {
-        this.place = place;
-        this.model = model;
+        this.place = PortablePreconditions.checkNotNull( "place", place );
+        this.model = PortablePreconditions.checkNotNull( "model", model );
 
         cache = new RuleInspectorCache( oracle,
                                         model,
-                                        checks );
+                                        checkRunner );
 
         eventBus.addHandler( ValidateEvent.TYPE,
                              this );
@@ -88,8 +89,8 @@ public class DecisionTableAnalyzer
     }
 
     //Override for tests where we do not want to perform checks using a Scheduled RepeatingCommand
-    protected Checks getChecks() {
-        return new Checks();
+    protected CheckRunner getCheckRunner() {
+        return new CheckRunner();
     }
 
     //Override for tests where we do not want to provide feedback
@@ -118,14 +119,14 @@ public class DecisionTableAnalyzer
     }
 
     private void resetChecks() {
-        for ( RuleInspector ruleInspector : cache.all() ) {
-            checks.add( ruleInspector );
+        for ( final RuleInspector ruleInspector : cache.all() ) {
+            checkRunner.add( ruleInspector );
         }
     }
 
     private void analyze() {
-        this.checks.run( onStatus,
-                         onCompletion );
+        this.checkRunner.run( onStatus,
+                              onCompletion );
     }
 
     protected AnalysisReport makeAnalysisReport() {
@@ -133,7 +134,7 @@ public class DecisionTableAnalyzer
         final Set<Issue> unorderedIssues = new HashSet<Issue>();
 
         for ( final RuleInspector ruleInspector : cache.all() ) {
-            for ( final Check check : checks.get( ruleInspector ) ) {
+            for ( final Check check : checkRunner.get( ruleInspector ) ) {
                 if ( check.hasIssues() ) {
                     unorderedIssues.add( check.getIssue() );
                 }
@@ -151,11 +152,10 @@ public class DecisionTableAnalyzer
 
     @Override
     public void onValidate( final ValidateEvent event ) {
-        if ( event.getUpdates().isEmpty() || checks.isEmpty() ) {
+        if ( event.getUpdates().isEmpty() || checkRunner.isEmpty() ) {
             resetChecks();
         } else {
-            cache.updateRuleInspectors( event.getUpdates(),
-                                        model );
+            cache.updateRuleInspectors( event.getUpdates() );
         }
 
         analyze();
@@ -183,8 +183,8 @@ public class DecisionTableAnalyzer
             analyze();
 
         } else if ( hasTheRowCountDecreased( event ) ) {
-            RuleInspector removed = cache.removeRow( eventManager.rowDeleted );
-            checks.remove( removed );
+            final RuleInspector removed = cache.removeRow( eventManager.rowDeleted );
+            checkRunner.remove( removed );
             analyze();
         }
 
@@ -200,31 +200,30 @@ public class DecisionTableAnalyzer
     }
 
     private void addRow( final int index ) {
-        final RuleInspector ruleInspector = cache.addRow( index,
-                                                          model.getData().get( index ) );
-        checks.add( ruleInspector );
+        final RuleInspector ruleInspector = cache.addRow( index );
+        checkRunner.add( ruleInspector );
     }
 
     @Override
     public void onDeleteRow( final DeleteRowEvent event ) {
-        checks.cancelExistingAnalysis();
+        checkRunner.cancelExistingAnalysis();
         eventManager.rowDeleted = event.getIndex();
     }
 
     @Override
     public void onAppendRow( final AppendRowEvent event ) {
-        checks.cancelExistingAnalysis();
+        checkRunner.cancelExistingAnalysis();
         eventManager.rowAppended = true;
     }
 
     @Override
     public void onInsertRow( final InsertRowEvent event ) {
-        checks.cancelExistingAnalysis();
+        checkRunner.cancelExistingAnalysis();
         eventManager.rowInserted = event.getIndex();
     }
 
     public void onFocus() {
-        if ( checks.isEmpty() ) {
+        if ( checkRunner.isEmpty() ) {
             resetChecks();
             analyze();
         } else {
@@ -233,7 +232,7 @@ public class DecisionTableAnalyzer
     }
 
     public void onClose() {
-        checks.cancelExistingAnalysis();
+        checkRunner.cancelExistingAnalysis();
     }
 
     class EventManager {

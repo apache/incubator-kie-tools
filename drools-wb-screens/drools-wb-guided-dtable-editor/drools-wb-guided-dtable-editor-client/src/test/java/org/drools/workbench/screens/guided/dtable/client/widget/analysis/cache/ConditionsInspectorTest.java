@@ -41,15 +41,20 @@ public class ConditionsInspectorTest {
 
     @Before
     public void setUp() throws Exception {
-        field = new Field( mock( ObjectField.class ), "Person", "Integer", "age" );
+        field = new Field( new ObjectField( "Person",
+                                            "Integer",
+                                            "age" ),
+                           "Person",
+                           "Integer",
+                           "age" );
         pattern = mock( Pattern52.class );
 
     }
 
     @Test
     public void testSubsume001() throws Exception {
-        ConditionsInspector a = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ) );
-        ConditionsInspector b = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ) );
+        final ConditionsInspectorMultiMap a = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ) );
+        final ConditionsInspectorMultiMap b = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ) );
 
         assertTrue( a.subsumes( b ) );
         assertTrue( b.subsumes( a ) );
@@ -57,10 +62,10 @@ public class ConditionsInspectorTest {
 
     @Test
     public void testSubsume002() throws Exception {
-        ConditionsInspector a = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ) );
+        final ConditionsInspectorMultiMap a = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ) );
 
-        ConditionsInspector b = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ),
-                                               new ComparableConditionInspector<Integer>( new FieldCondition( new Field( mock( ObjectField.class ), "Person", "Integer", "balance" ), mock( Column.class ), "==", new Values<>( 111111111 ) ) ) );
+        final ConditionsInspectorMultiMap b = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ),
+                                                             new ComparableConditionInspector<Integer>( new FieldCondition( new Field( mock( ObjectField.class ), "Person", "Integer", "balance" ), mock( Column.class ), "==", new Values<>( 111111111 ) ) ) );
 
         assertFalse( a.subsumes( b ) );
         assertTrue( b.subsumes( a ) );
@@ -68,21 +73,43 @@ public class ConditionsInspectorTest {
 
     @Test
     public void testSubsume003() throws Exception {
-        Field nameField = new Field( mock( ObjectField.class ), "Person", "String", "name" );
-        Field lastNameField = new Field( mock( ObjectField.class ), "Person", "String", "lastName" );
-        ConditionsInspector a = getConditions( new ComparableConditionInspector<String>( new FieldCondition( nameField, mock( Column.class ), "==", new Values<>( "Toni" ) ) ) );
+        final Field nameField = new Field( new ObjectField( "Person",
+                                                            "String",
+                                                            "name" ),
+                                           "Person",
+                                           "String",
+                                           "name" );
+        final Field lastNameField = new Field( new ObjectField( "Person",
+                                                                "String",
+                                                                "lastName" ),
+                                               "Person",
+                                               "String",
+                                               "lastName" );
+        final ConditionsInspectorMultiMap a = getConditions( new ComparableConditionInspector<String>( new FieldCondition( nameField,
+                                                                                                                           mock( Column.class ),
+                                                                                                                           "==",
+                                                                                                                           new Values<>( "Toni" ) ) ) );
 
-        ConditionsInspector b = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 12 ) ) ),
-                                               new ComparableConditionInspector<String>( new FieldCondition( nameField, mock( Column.class ), "==", new Values<>( "Toni" ) ) ),
-                                               new ComparableConditionInspector<String>( new FieldCondition( lastNameField, mock( Column.class ), "==", new Values<>( "Rikkola" ) ) ) );
+        final ConditionsInspectorMultiMap b = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field,
+                                                                                                                            mock( Column.class ),
+                                                                                                                            "==",
+                                                                                                                            new Values<>( 12 ) ) ),
+                                                             new ComparableConditionInspector<String>( new FieldCondition( nameField,
+                                                                                                                           mock( Column.class ),
+                                                                                                                           "==",
+                                                                                                                           new Values<>( "Toni" ) ) ),
+                                                             new ComparableConditionInspector<String>( new FieldCondition( lastNameField,
+                                                                                                                           mock( Column.class ),
+                                                                                                                           "==",
+                                                                                                                           new Values<>( "Rikkola" ) ) ) );
 
         assertFalse( a.subsumes( b ) );
         assertTrue( b.subsumes( a ) );
     }
 
-    private ConditionsInspector getConditions( ConditionInspector... numericIntegerConditions ) {
-        ConditionsInspector conditionsInspector = new ConditionsInspector();
-        for ( ConditionInspector inspector : numericIntegerConditions ) {
+    private ConditionsInspectorMultiMap getConditions( final ConditionInspector... numericIntegerConditions ) {
+        final ConditionsInspectorMultiMap conditionsInspector = new ConditionsInspectorMultiMap(  );
+        for ( final ConditionInspector inspector : numericIntegerConditions ) {
             conditionsInspector.put( (( ComparableConditionInspector ) inspector).getField().getObjectField(), inspector );
         }
         return conditionsInspector;

@@ -16,9 +16,12 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
@@ -42,11 +45,16 @@ public class DetectMissingActionCheck
     public Issue getIssue() {
         Issue issue = new Issue( Severity.WARNING,
                                  AnalysisConstants.INSTANCE.RuleHasNoAction(),
-                                 ruleInspector.getRowIndex() + 1 );
-
-        issue.getExplanation()
-                .addParagraph( AnalysisConstants.INSTANCE.WhenARuleHasNoActionItDoesFireButSinceTheActionSideIsEmptyNothingHappens() )
-                .addParagraph( AnalysisConstants.INSTANCE.ItIsPossibleThatTheActionsWereLeftOutByAccidentInThisCasePleaseAddThemOtherwiseTheRuleCanNeRemoved() );
+                                 new ExplanationProvider() {
+                                     @Override
+                                     public SafeHtml toHTML() {
+                                         return new Explanation()
+                                                 .addParagraph( AnalysisConstants.INSTANCE.WhenARuleHasNoActionItDoesFireButSinceTheActionSideIsEmptyNothingHappens() )
+                                                 .addParagraph( AnalysisConstants.INSTANCE.ItIsPossibleThatTheActionsWereLeftOutByAccidentInThisCasePleaseAddThemOtherwiseTheRuleCanNeRemoved() )
+                                                 .toHTML();
+                                     }
+                                 },
+                                 ruleInspector );
 
         return issue;
     }

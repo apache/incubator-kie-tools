@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.PatternInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RedundancyResult;
@@ -23,6 +24,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.R
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
@@ -54,16 +57,22 @@ public class DetectRedundantConditionsCheck
         Issue issue = new Issue(
                 Severity.NOTE,
                 AnalysisConstants.INSTANCE.RedundantConditionsTitle(),
-                ruleInspector.getRowIndex() + 1 );
+                new ExplanationProvider() {
+                    @Override
+                    public SafeHtml toHTML() {
+                        return new Explanation()
+                                .startNote()
+                                .addParagraph( AnalysisConstants.INSTANCE.RedundantConditionsNote1P1( result.getParent().getFactType(),
+                                                                                                      result.getParent().getName() ) )
+                                .addParagraph( AnalysisConstants.INSTANCE.RedundantConditionsNote1P2( result.get( 0 ).toHumanReadableString(),
+                                                                                                      result.get( 1 ).toHumanReadableString() ) )
+                                .end()
+                                .addParagraph( AnalysisConstants.INSTANCE.RedundantConditionsP1() )
+                                .toHTML();
+                    }
+                },
+                ruleInspector );
 
-        issue.getExplanation()
-             .startNote()
-             .addParagraph( AnalysisConstants.INSTANCE.RedundantConditionsNote1P1( result.getParent().getFactType(),
-                                                                                   result.getParent().getName() ) )
-             .addParagraph( AnalysisConstants.INSTANCE.RedundantConditionsNote1P2( result.get( 0 ).toHumanReadableString(),
-                                                                                   result.get( 1 ).toHumanReadableString() ) )
-             .end()
-             .addParagraph( AnalysisConstants.INSTANCE.RedundantConditionsP1() );
 
         return issue;
     }

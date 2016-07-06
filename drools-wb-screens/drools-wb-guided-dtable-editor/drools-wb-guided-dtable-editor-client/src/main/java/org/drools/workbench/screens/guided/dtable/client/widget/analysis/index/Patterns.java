@@ -49,8 +49,17 @@ public class Patterns {
     }
 
     public Where<PatternsSelect, PatternsListen> where( final Matcher matcher ) {
-        return new Where<>( new PatternsSelect( matcher ),
-                            new PatternsListen( matcher ) );
+        return new Where<PatternsSelect, PatternsListen>() {
+            @Override
+            public PatternsSelect select() {
+                return new PatternsSelect( matcher );
+            }
+
+            @Override
+            public PatternsListen listen() {
+                return new PatternsListen( matcher );
+            }
+        };
     }
 
     void add( final Pattern... patterns ) {

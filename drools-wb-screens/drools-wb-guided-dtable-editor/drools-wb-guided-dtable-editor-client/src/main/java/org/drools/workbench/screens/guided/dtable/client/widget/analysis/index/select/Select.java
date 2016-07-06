@@ -25,7 +25,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.k
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.FromMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.NullOrEmptyMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ToMatcher;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -143,12 +142,6 @@ public class Select<T> {
                                true,
                                toMatcher.getTo(),
                                false );
-
-        } else if ( matcher instanceof NullOrEmptyMatcher ) {
-
-            return new NullOrEmptyMatcherSearch<T>(( NullOrEmptyMatcher ) this.matcher,
-                                                   this.map).search();
-
 
         } else if ( matcher instanceof ExactMatcher ) {
 

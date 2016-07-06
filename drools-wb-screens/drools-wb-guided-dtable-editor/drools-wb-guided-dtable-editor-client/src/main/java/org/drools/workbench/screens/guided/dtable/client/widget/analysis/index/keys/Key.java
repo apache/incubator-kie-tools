@@ -15,9 +15,6 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 
 public class Key
@@ -25,7 +22,7 @@ public class Key
 
     private final KeyDefinition keyDefinition;
 
-    private Set<Value> values = new TreeSet<>();
+    private Values<Value> values = new Values<>();
 
     public Key( final KeyDefinition keyDefinition,
                 final Comparable value ) {
@@ -52,7 +49,7 @@ public class Key
         return keyDefinition;
     }
 
-    public Set<Value> getValue() {
+    public Values<Value> getValues() {
         return values;
     }
 
@@ -61,7 +58,7 @@ public class Key
     }
 
     public Value getSingleValue() {
-        return values.iterator().next();
+        return ( Value ) values.iterator().next();
     }
 
     @Override

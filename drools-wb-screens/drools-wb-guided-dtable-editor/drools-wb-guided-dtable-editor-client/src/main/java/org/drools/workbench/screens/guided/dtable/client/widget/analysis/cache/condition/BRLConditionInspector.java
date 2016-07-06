@@ -17,7 +17,10 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.
 
 import java.util.Iterator;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.BRLCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 
 public class BRLConditionInspector
         extends ConditionInspector {

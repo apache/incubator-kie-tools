@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.PatternInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RedundancyResult;
@@ -23,6 +24,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.R
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
@@ -54,13 +57,18 @@ public class DetectRedundantActionCheck
     public Issue getIssue() {
         Issue issue = new Issue( Severity.WARNING,
                                  getMessage(),
-                                 ruleInspector.getRowIndex() + 1 );
-
-        issue.getExplanation()
-             .addParagraph( AnalysisConstants.INSTANCE.RedundantActionsP1() )
-             .startNote()
-             .addParagraph( AnalysisConstants.INSTANCE.RedundantActionsNote1P1( result.get( 0 ).toHumanReadableString(), result.get( 1 ).toHumanReadableString() ) )
-             .end();
+                                 new ExplanationProvider() {
+                                     @Override
+                                     public SafeHtml toHTML() {
+                                         return new Explanation()
+                                                 .addParagraph( AnalysisConstants.INSTANCE.RedundantActionsP1() )
+                                                 .startNote()
+                                                 .addParagraph( AnalysisConstants.INSTANCE.RedundantActionsNote1P1( result.get( 0 ).toHumanReadableString(), result.get( 1 ).toHumanReadableString() ) )
+                                                 .end()
+                                                 .toHTML();
+                                     }
+                                 },
+                                 ruleInspector );
 
         return issue;
     }

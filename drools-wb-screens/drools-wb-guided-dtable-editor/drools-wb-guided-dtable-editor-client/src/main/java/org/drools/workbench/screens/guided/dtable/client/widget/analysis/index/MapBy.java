@@ -29,7 +29,7 @@ public class MapBy<KeyType, ValueType> {
 
     public MapBy( final MultiMap<Value, ValueType> multiMap ) {
         this.multiMap = multiMap;
-        for ( final Value value : multiMap.keys() ) {
+        for ( final Value value : multiMap.keySet() ) {
             valueMap.put( ( KeyType ) value.getComparable(),
                           value );
         }

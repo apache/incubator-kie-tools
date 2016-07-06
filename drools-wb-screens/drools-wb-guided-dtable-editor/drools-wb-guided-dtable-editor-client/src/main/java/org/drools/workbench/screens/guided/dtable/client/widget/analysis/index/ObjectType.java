@@ -35,6 +35,7 @@ public class ObjectType
         this.type = PortablePreconditions.checkNotNull( "type", type );
     }
 
+    @Override
     public UUIDKey getUuidKey() {
         return uuidKey;
     }

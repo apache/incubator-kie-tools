@@ -21,6 +21,8 @@ import java.util.Set;
 
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 import org.junit.Before;
@@ -32,6 +34,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.mvp.PlaceRequest;
 
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.Util.getMockRuleInspector;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -60,7 +63,7 @@ public class AnalysisReportScreenTest {
 
     @Test
     public void testShowReport() throws Exception {
-        Issue issue1 = new Issue( Severity.WARNING, "something" );
+        Issue issue1 = new Issue( Severity.WARNING, "something", mock( ExplanationProvider.class ) );
         screen.showReport( getAnalysis( issue1 ) );
 
         verify( placeManager ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
@@ -68,8 +71,8 @@ public class AnalysisReportScreenTest {
         assertEquals( 1, dataProvider.getList().size() );
         assertTrue( dataProvider.getList().contains( issue1 ) );
 
-        Issue issue2 = new Issue( Severity.ERROR, "something else 1" );
-        Issue issue3 = new Issue( Severity.WARNING, "something else 2" );
+        Issue issue2 = new Issue( Severity.ERROR, "something else 1", mock( ExplanationProvider.class ) );
+        Issue issue3 = new Issue( Severity.WARNING, "something else 2", mock( ExplanationProvider.class ) );
         screen.showReport( getAnalysis( issue2, issue3 ) );
 
         verify( placeManager, times( 2 ) ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
@@ -96,10 +99,10 @@ public class AnalysisReportScreenTest {
     @Test
     public void testShowEverythingOnce() throws Exception {
 
-        Issue issue2 = new Issue( Severity.WARNING, "we are one" );
-        Issue issue3 = new Issue( Severity.WARNING, "we are one" );
-        Issue issue4 = new Issue( Severity.WARNING, "we are one", 1, 2, 3 );
-        Issue issue5 = new Issue( Severity.WARNING, "we are one", 1, 2, 3 );
+        Issue issue2 = new Issue( Severity.WARNING, "we are one", mock( ExplanationProvider.class ) );
+        Issue issue3 = new Issue( Severity.WARNING, "we are one", mock( ExplanationProvider.class ) );
+        Issue issue4 = new Issue( Severity.WARNING, "we are one", mock( ExplanationProvider.class ), getMockRuleInspector( 1 ), getMockRuleInspector( 2 ), getMockRuleInspector( 3 ) );
+        Issue issue5 = new Issue( Severity.WARNING, "we are one", mock( ExplanationProvider.class ), getMockRuleInspector( 1 ), getMockRuleInspector( 2 ), getMockRuleInspector( 3 ) );
         screen.showReport( getAnalysis( issue2, issue3, issue4, issue5 ) );
 
         assertEquals( 2, dataProvider.getList().size() );
@@ -108,8 +111,8 @@ public class AnalysisReportScreenTest {
 
     @Test
     public void testOnSelect() throws Exception {
-        Issue issue1 = new Issue( Severity.WARNING, "something" );
-        Issue issue2 = new Issue( Severity.WARNING, "something else" );
+        Issue issue1 = new Issue( Severity.WARNING, "something", mock( ExplanationProvider.class ) );
+        Issue issue2 = new Issue( Severity.WARNING, "something else", mock( ExplanationProvider.class ) );
         screen.showReport( getAnalysis( issue1, issue2 ) );
 
         screen.onSelect( issue2 );
@@ -119,7 +122,7 @@ public class AnalysisReportScreenTest {
 
     @Test
     public void testDTableCloses() throws Exception {
-        Issue issue1 = new Issue( Severity.WARNING, "something" );
+        Issue issue1 = new Issue( Severity.WARNING, "something", mock( ExplanationProvider.class ) );
 
         PlaceRequest thisPlace = mock( PlaceRequest.class );
         PlaceRequest someOtherPlace = mock( PlaceRequest.class );

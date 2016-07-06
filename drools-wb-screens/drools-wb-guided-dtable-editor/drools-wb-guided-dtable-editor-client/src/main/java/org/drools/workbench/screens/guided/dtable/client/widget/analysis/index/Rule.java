@@ -17,6 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasIndex;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasUUID;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.IndexKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
@@ -87,6 +88,7 @@ public class Rule
         };
     }
 
+    @Override
     public UUIDKey getUuidKey() {
         return uuidKey;
     }

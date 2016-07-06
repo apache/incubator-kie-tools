@@ -47,8 +47,17 @@ public class Conditions {
     }
 
     public Where<ConditionSelector, ConditionListen> where( final Matcher matcher ) {
-        return new Where<>( new ConditionSelector( matcher ),
-                            new ConditionListen( matcher ) );
+        return new Where<ConditionSelector, ConditionListen>() {
+            @Override
+            public ConditionSelector select() {
+                return new ConditionSelector( matcher );
+            }
+
+            @Override
+            public ConditionListen listen() {
+                return new ConditionListen( matcher );
+            }
+        };
     }
 
     public void merge( final Conditions conditions ) {

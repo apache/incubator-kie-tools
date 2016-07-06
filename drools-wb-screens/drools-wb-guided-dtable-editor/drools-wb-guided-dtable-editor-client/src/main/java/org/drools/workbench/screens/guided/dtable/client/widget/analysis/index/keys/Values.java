@@ -15,17 +15,16 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.HashSet;
 
 public class Values<T extends Comparable>
-        extends ArrayList<Comparable> {
+        extends HashSet<T> {
 
     public Values( final Comparable... list ) {
         super();
 
         for ( final Comparable comparable : list ) {
-            add( comparable );
+            add( ( T ) comparable );
         }
     }
 
@@ -59,24 +58,6 @@ public class Values<T extends Comparable>
         }
 
         return true;
-    }
-
-    public boolean areEqual( final Set<Value> valueSet ) {
-        final Values values = toValues( valueSet );
-
-        return areValuesEqual( values );
-    }
-
-    public static Values toValues( final Set<Value> set ) {
-        final Values values = new Values();
-        for ( final Value value : set ) {
-            values.add( value.getComparable() );
-        }
-        return values;
-    }
-
-    private boolean isOnlyValueNull( final Set<Comparable> comparable ) {
-        return comparable.size() == 1 && comparable.iterator().next() == null;
     }
 
     public boolean containsAny( final Values values ) {

@@ -41,6 +41,7 @@ public class Pattern
         this.name = objectType.getType();
     }
 
+    @Override
     public UUIDKey getUuidKey() {
         return uuidKey;
     }

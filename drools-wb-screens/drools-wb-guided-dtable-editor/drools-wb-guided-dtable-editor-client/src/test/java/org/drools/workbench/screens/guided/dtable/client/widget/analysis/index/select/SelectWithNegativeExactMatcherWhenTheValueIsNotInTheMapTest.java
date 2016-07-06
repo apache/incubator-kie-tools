@@ -84,6 +84,7 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
             implements HasKeys {
 
         private int cost;
+        private UUIDKey uuidKey = new UUIDKey( this );
 
         public Item( final int cost ) {
             this.cost = cost;
@@ -92,10 +93,15 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
         @Override
         public Key[] keys() {
             return new Key[]{
-                    new UUIDKey( this ),
+                    uuidKey,
                     new Key( KeyDefinition.newKeyDefinition().withId( "cost" ).build(),
                              cost )
             };
+        }
+
+        @Override
+        public UUIDKey getUuidKey() {
+            return uuidKey;
         }
     }
 }

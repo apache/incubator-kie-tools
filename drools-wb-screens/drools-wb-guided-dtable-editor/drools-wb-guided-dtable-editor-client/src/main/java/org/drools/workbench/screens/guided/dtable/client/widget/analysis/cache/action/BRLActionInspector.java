@@ -16,10 +16,13 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.BRLAction;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 
 public class BRLActionInspector
-        extends ActionInspector {
+        extends ActionInspector{
 
     public BRLActionInspector( final BRLAction action ) {
         super( action );

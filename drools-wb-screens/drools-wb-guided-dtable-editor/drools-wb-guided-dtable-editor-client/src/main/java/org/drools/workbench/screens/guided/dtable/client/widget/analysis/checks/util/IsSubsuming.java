@@ -16,8 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util;
 
-public interface IsSubsuming {
+public interface IsSubsuming<T> {
 
-    boolean subsumes( Object other );
+    boolean subsumes( final T other );
 
 }

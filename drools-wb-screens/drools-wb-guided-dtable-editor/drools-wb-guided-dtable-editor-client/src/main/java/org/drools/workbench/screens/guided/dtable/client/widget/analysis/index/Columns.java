@@ -24,7 +24,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.s
 
 public class Columns {
 
-    private final IndexedKeyTreeMap<Column> map = new IndexedKeyTreeMap<>();
+    private final IndexedKeyTreeMap<Column> map = new IndexedKeyTreeMap<>(Column.keyDefinitions());
 
     public Columns() {
 
@@ -46,8 +46,18 @@ public class Columns {
     }
 
     public Where<ColumnSelect, ColumnListen> where( final Matcher matcher ) {
-        return new Where<>( new ColumnSelect( matcher ),
-                            new ColumnListen( matcher ) );
+        return new Where<ColumnSelect, ColumnListen>() {
+
+            @Override
+            public ColumnSelect select() {
+                return new ColumnSelect( matcher );
+            }
+
+            @Override
+            public ColumnListen listen() {
+                return new ColumnListen( matcher );
+            }
+        };
     }
 
     public void remove( final Column column ) {

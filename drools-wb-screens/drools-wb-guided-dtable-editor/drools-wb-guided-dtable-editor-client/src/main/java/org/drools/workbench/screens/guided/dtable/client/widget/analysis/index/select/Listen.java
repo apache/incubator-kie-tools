@@ -36,46 +36,50 @@ public class Listen<T>
     private Entry<T>           last;
     private MultiMap<Value, T> all;
 
-    public Listen( final ChangeHandledMultiMap<T> map,
+    public Listen( final MultiMap<Value, T> map,
                    final Matcher matcher ) {
         super( map,
                matcher );
 
         checkNotNull( "map",
                       map );
+        if ( map instanceof ChangeHandledMultiMap ) {
 
-        map.addChangeListener( new MultiMapChangeHandler<T>() {
-            @Override
-            public void onChange( final ChangeSet<T> changeSet ) {
+            (( ChangeHandledMultiMap ) map).addChangeListener( new MultiMapChangeHandler<T>() {
+                @Override
+                public void onChange( final ChangeSet<T> changeSet ) {
 
-                if ( hasNoListeners() ) {
-                    return;
-                }
+                    if ( hasNoListeners() ) {
+                        return;
+                    }
 
-                final ChangeHelper<T> changeHelper = new ChangeHelper<T>( changeSet,
-                                                                          matcher );
+                    final ChangeHelper<T> changeHelper = new ChangeHelper<T>( changeSet,
+                                                                              matcher );
 
-                if ( !firstListeners.isEmpty() ) {
-                    if ( first == null || changeHelper.firstChanged( first ) ) {
-                        first = firstEntry();
-                        notifyFirstListeners();
+                    if ( !firstListeners.isEmpty() ) {
+                        if ( first == null || changeHelper.firstChanged( first ) ) {
+                            first = firstEntry();
+                            notifyFirstListeners();
+                        }
+                    }
+
+                    if ( !lastListeners.isEmpty() ) {
+                        if ( last == null || changeHelper.lastChanged( last ) ) {
+                            last = lastEntry();
+                            notifyLastListeners();
+                        }
+                    }
+
+                    if ( !allListeners.isEmpty() ) {
+                        all = asMap();
+                        notifyAllListeners();
                     }
                     }
 
-                if ( !lastListeners.isEmpty() ) {
-                    if ( last == null || changeHelper.lastChanged( last ) ) {
-                        last = lastEntry();
-                        notifyLastListeners();
-                    }
-                    }
-
-                if ( !allListeners.isEmpty() ) {
-                    all = asMap();
-                    notifyAllListeners();
-                }
-            }
-
-        } );
+            } );
+        } else {
+            throw new IllegalArgumentException( "Can not listend to this map." );
+        }
     }
 
     /**

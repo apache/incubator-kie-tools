@@ -30,13 +30,17 @@ public class KeyTreeMapMultiValueKeyTest {
 
     private KeyTreeMap<Country> map;
 
-    private Country             finland;
-    private Country             sweden;
+    private final KeyDefinition NAME      = KeyDefinition.newKeyDefinition().withId( "name" ).build();
+    private final KeyDefinition AREA_CODE = KeyDefinition.newKeyDefinition().withId( "areaCode" ).build();
+
     private Country norway;
+    private Country finland;
+    private Country sweden;
 
     @Before
     public void setUp() throws Exception {
-        map = new KeyTreeMap<>();
+        map = new KeyTreeMap<>( NAME,
+                                AREA_CODE );
 
         finland = new Country( "Finland", 48100 );
         sweden = new Country( "Sweden", 12345, 51000 );
@@ -54,12 +58,12 @@ public class KeyTreeMapMultiValueKeyTest {
 
     @Test
     public void testFindByAreaCodeKey() throws Exception {
-        assertMapContent( map.get( KeyDefinition.newKeyDefinition().withId( "areaCode" ).build() ), 48100, 12345, 51000, 00000 );
+        assertMapContent( map.get( AREA_CODE ), 48100, 12345, 51000, 00000 );
     }
 
     @Test
     public void testFindByAreaCode() throws Exception {
-        final ChangeHandledMultiMap<Country> areaCode = map.get( KeyDefinition.newKeyDefinition().withId( "areaCode" ).build() );
+        final MultiMap<Value, Country> areaCode = map.get( AREA_CODE );
         assertEquals( 1, areaCode.get( new Value( 48100 ) ).size() );
         assertTrue( areaCode.get( new Value( 48100 ) ).contains( finland ) );
         assertEquals( 1, areaCode.get( new Value( 12345 ) ).size() );
@@ -75,9 +79,6 @@ public class KeyTreeMapMultiValueKeyTest {
         private final UUIDKey uuidKey = new UUIDKey( this );
 
         final String name;
-
-        private final KeyDefinition NAME = KeyDefinition.newKeyDefinition().withId( "name" ).build();
-        private final KeyDefinition AREA_CODE = KeyDefinition.newKeyDefinition().withId( "areaCode" ).build();
 
         private UpdatableKey areaCode;
 
@@ -108,6 +109,11 @@ public class KeyTreeMapMultiValueKeyTest {
             oldKey.update( newKey,
                            this );
 
+        }
+
+        @Override
+        public UUIDKey getUuidKey() {
+            return uuidKey;
         }
     }
 }

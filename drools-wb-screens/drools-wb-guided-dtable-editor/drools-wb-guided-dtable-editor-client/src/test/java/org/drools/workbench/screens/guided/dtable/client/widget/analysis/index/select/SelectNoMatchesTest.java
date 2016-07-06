@@ -34,12 +34,13 @@ public class SelectNoMatchesTest {
 
     @Before
     public void setUp() throws Exception {
-        final KeyTreeMap<Address> map = new KeyTreeMap<>();
+        final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition().withId( "name" ).build();
+        final KeyTreeMap<Address> map = new KeyTreeMap<>(keyDefinition);
         final Address object = new Address();
         map.put( object );
 
         select = new Select<>( map.get( UUIDKey.UNIQUE_UUID ),
-                               new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "name" ).build(),
+                               new ExactMatcher( keyDefinition,
                                                  "Toni" ) );
     }
 
@@ -62,11 +63,19 @@ public class SelectNoMatchesTest {
 
     private class Address
             implements HasKeys {
+
+        private UUIDKey uuidKey = new UUIDKey( this );
+
         @Override
         public Key[] keys() {
             return new Key[]{
-                    new UUIDKey( this )
+                    uuidKey
             };
+        }
+
+        @Override
+        public UUIDKey getUuidKey() {
+            return uuidKey;
         }
     }
 }

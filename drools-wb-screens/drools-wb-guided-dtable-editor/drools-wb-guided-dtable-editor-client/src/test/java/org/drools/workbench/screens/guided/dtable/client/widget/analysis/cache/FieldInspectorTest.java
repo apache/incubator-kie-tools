@@ -15,19 +15,20 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.RelationResolver;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class FieldInspectorTest {
 
 
-    private FieldInspector a;
-    private FieldInspector b;
+    private FieldInspector   a;
+    private FieldInspector   b;
 
     @Before
     public void setUp() throws Exception {
@@ -35,11 +36,11 @@ public class FieldInspectorTest {
         a = new FieldInspector( new Field( objectField,
                                            "org.Person",
                                            "String",
-                                           "name" ) );
+                                           "name" ));
         b = new FieldInspector( new Field( objectField,
                                            "org.Person",
                                            "String",
-                                           "name" ) );
+                                           "name" ));
 
     }
 
@@ -54,7 +55,7 @@ public class FieldInspectorTest {
         final FieldInspector x = new FieldInspector( new Field( mock(ObjectField.class),
                                                                 "org.Address",
                                                                 "String",
-                                                                "name" ) );
+                                                                "name" ));
 
         assertFalse( x.isRedundant( b ) );
         assertFalse( b.isRedundant( x ) );
@@ -71,7 +72,7 @@ public class FieldInspectorTest {
         final FieldInspector x = new FieldInspector( new Field( mock(ObjectField.class),
                                                                 "org.Address",
                                                                 "String",
-                                                                "name" ) );
+                                                                "name" ));
 
         assertFalse( x.subsumes( b ) );
         assertFalse( b.subsumes( x ) );

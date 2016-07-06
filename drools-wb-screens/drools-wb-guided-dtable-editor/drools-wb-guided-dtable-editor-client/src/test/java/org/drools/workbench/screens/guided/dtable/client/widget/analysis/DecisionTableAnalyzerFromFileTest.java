@@ -16,9 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +29,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -148,6 +145,9 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
+        now = System.currentTimeMillis();
+        System.out.println( "Indexing took.. " + (now - baseline) + " ms" );
+
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertOnlyContains( analysisReport,
                             "SingleHitLost" );
@@ -177,13 +177,16 @@ public class DecisionTableAnalyzerFromFileTest {
 
         assertOnlyContains( analysisReport,
                             "SingleHitLost" );
+        long baseline = System.currentTimeMillis();
 
         for ( int iterations = 0; iterations < 10; iterations++ ) {
             analyzer.onDeleteRow( new DeleteRowEvent( 100 ) );
             table52.getData().remove( 100 );
             analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                     new ArrayList<CellValue<? extends Comparable<?>>>() ) );
-
+            long now = System.currentTimeMillis();
+            System.out.println( "Partial analysis took.. " + (now - baseline) + " ms" );
+            baseline = now;
             assertOnlyContains( analysisReport,
                                 "SingleHitLost" );
         }
@@ -200,8 +203,8 @@ public class DecisionTableAnalyzerFromFileTest {
             }
 
             @Override
-            protected Checks getChecks() {
-                return new Checks() {
+            protected CheckRunner getCheckRunner() {
+                return new CheckRunner() {
                     @Override
                     protected void doRun( final CancellableRepeatingCommand command ) {
                         while ( command.execute() ) {

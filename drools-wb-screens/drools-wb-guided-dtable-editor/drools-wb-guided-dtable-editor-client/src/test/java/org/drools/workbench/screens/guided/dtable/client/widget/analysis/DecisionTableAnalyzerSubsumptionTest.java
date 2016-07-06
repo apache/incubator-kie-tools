@@ -29,7 +29,7 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,7 +84,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
                         {1, "description", true, null, true},
                         {2, "description", null, false, true},
                 } )
-                .build();
+                .buildTable();
 
         final DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
@@ -104,7 +104,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
                         {1, "description", true, null, true},
                         {2, "description", null, true, true},
                 } )
-                .build();
+                .buildTable();
 
         final DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
@@ -125,7 +125,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
                         {1, "description", true, null, true},
                         {2, "description", null, false, true},
                 } )
-                .build();
+                .buildTable();
 
         final DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
@@ -145,7 +145,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
                         {1, "description", true, null, true},
                         {2, "description", null, true, true},
                 } )
-                .build();
+                .buildTable();
 
         final DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
@@ -165,7 +165,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
                         {1, "description", 0, null, true},
                         {2, "description", null, 0, true},
                 } )
-                .build();
+                .buildTable();
 
         final DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
@@ -185,7 +185,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
                         {1, "description", 0, null, true},
                         {2, "description", null, 1, true},
                 } )
-                .build();
+                .buildTable();
 
         final DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
@@ -204,8 +204,8 @@ public class DecisionTableAnalyzerSubsumptionTest {
             }
 
             @Override
-            protected Checks getChecks() {
-                return new Checks() {
+            protected CheckRunner getCheckRunner() {
+                return new CheckRunner() {
                     @Override
                     protected void doRun( final CancellableRepeatingCommand command ) {
                         while ( command.execute() ) {

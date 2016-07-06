@@ -44,15 +44,14 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordin
 
 public class RuleInspectorCache {
 
-    // rowInspectorList's entries' index correspond to the rowIndex to which they relate. This removed the
-    // need to have a separate RowInspectorList class that sorted RowInspectors "on demand" every time a
-    // list of (ordered) RowInspectors was required.. which hit performance really badly.
     private final Map<Rule, RuleInspector> ruleInspectors = new HashMap<>();
 
     private final Index           index;
+
     private final ColumnUtilities utils;
     private final UpdateManager   updateManager;
     private final GuidedDecisionTable52 model;
+
 
     public RuleInspectorCache( final AsyncPackageDataModelOracle oracle,
                                final GuidedDecisionTable52 model,
@@ -167,8 +166,7 @@ public class RuleInspectorCache {
         return result;
     }
 
-    public void updateRuleInspectors( final List<Coordinate> coordinates,
-                                      final GuidedDecisionTable52 model ) {
+    public void updateRuleInspectors( final List<Coordinate> coordinates ) {
         updateManager.update( coordinates );
     }
 
@@ -188,13 +186,11 @@ public class RuleInspectorCache {
         return remove;
     }
 
-    public RuleInspector addRow( final int index,
-                                final List<DTCellValue52> row ) {
-
+    public RuleInspector addRow( final int index ) {
         final Rule rule = new RuleBuilder( this.index,
                                            model,
                                            index,
-                                           row,
+                                           model.getData().get( index ),
                                            utils ).build();
         this.index.rules.add( rule );
 

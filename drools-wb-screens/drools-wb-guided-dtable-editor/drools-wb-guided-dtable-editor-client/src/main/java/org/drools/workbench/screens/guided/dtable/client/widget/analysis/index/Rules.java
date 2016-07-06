@@ -37,8 +37,17 @@ public class Rules {
     }
 
     public Where<RulesSelect, RulesListen> where( final Matcher matcher ) {
-        return new Where<>( new RulesSelect( matcher ),
-                            new RulesListen( matcher ) );
+        return new Where<RulesSelect, RulesListen>() {
+            @Override
+            public RulesSelect select() {
+                return new RulesSelect( matcher );
+            }
+
+            @Override
+            public RulesListen listen() {
+                return new RulesListen( matcher );
+            }
+        };
     }
 
     public void merge( final Rules rules ) {

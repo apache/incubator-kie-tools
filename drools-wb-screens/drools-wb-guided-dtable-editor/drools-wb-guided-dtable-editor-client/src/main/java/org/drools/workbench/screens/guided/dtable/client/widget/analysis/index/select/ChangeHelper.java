@@ -44,7 +44,7 @@ class ChangeHelper<T> {
 
     private boolean containsEntry( final Select<T> select,
                                    final Select.Entry entry ) {
-        return select.asMap().keys().contains( entry.getKey() ) && select.all().contains( entry.getValue() );
+        return select.asMap().keySet().contains( entry.getKey() ) && select.all().contains( entry.getValue() );
     }
 
     boolean lastChanged( final Select.Entry last ) {

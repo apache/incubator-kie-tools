@@ -58,8 +58,9 @@ public class AbstractDecisionTableBuilder {
         return this;
     }
 
-    public GuidedDecisionTable52 build() {
+    public GuidedDecisionTable52 buildTable() {
         return table;
     }
+
 
 }

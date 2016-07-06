@@ -28,8 +28,17 @@ public class Fields
 
 
     public Where<FieldSelector, FieldListen> where( final Matcher matcher ) {
-        return new Where<>( new FieldSelector( matcher ),
-                            new FieldListen( matcher ) );
+        return new Where<FieldSelector, FieldListen>() {
+            @Override
+            public FieldSelector select() {
+                return new FieldSelector( matcher );
+            }
+
+            @Override
+            public FieldListen listen() {
+                return new FieldListen( matcher );
+            }
+        };
     }
 
     public class FieldSelector

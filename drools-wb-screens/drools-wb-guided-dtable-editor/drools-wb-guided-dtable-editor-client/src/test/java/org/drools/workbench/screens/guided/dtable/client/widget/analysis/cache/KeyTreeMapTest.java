@@ -28,6 +28,9 @@ import static org.mockito.Mockito.*;
 
 public class KeyTreeMapTest {
 
+    private final KeyDefinition AGE  = KeyDefinition.newKeyDefinition().updatable().withId( "age" ).build();
+    private final KeyDefinition NAME = KeyDefinition.newKeyDefinition().withId( "name" ).build();
+
     private KeyTreeMap<Person> map;
     private Person             toni;
     private Person             eder;
@@ -35,7 +38,8 @@ public class KeyTreeMapTest {
 
     @Before
     public void setUp() throws Exception {
-        map = new KeyTreeMap<>();
+        map = new KeyTreeMap<>( AGE,
+                                NAME );
 
         toni = new Person( "Toni", 20 );
         eder = new Person( "Eder", 20 );
@@ -73,11 +77,11 @@ public class KeyTreeMapTest {
     @Test
     public void testUpdateAge() throws Exception {
         final MultiMapChangeHandler changeHandler = mock( MultiMapChangeHandler.class );
-        map.get( KeyDefinition.newKeyDefinition().withId( "age" ).build() ).addChangeListener( changeHandler );
+        (( ChangeHandledMultiMap ) map.get( AGE )).addChangeListener( changeHandler );
 
         toni.setAge( 10 );
 
-        final MultiMap<Value, Person> age = map.get( KeyDefinition.newKeyDefinition().withId( "age" ).build() );
+        final MultiMap<Value, Person> age = map.get( AGE );
 
         assertFalse( age.get( new Value( 20 ) ).contains( toni ) );
         assertTrue( age.get( new Value( 10 ) ).contains( toni ) );
@@ -108,7 +112,8 @@ public class KeyTreeMapTest {
         map.put( person );
     }
 
-    class Person implements HasKeys {
+    class Person
+            implements HasKeys {
 
         private final UUIDKey uuidKey = new UUIDKey( this );
 
@@ -119,7 +124,7 @@ public class KeyTreeMapTest {
         public Person( final String name,
                        final int age ) {
             this.name = name;
-            this.ageKey = new UpdatableKey( KeyDefinition.newKeyDefinition().withId( "age" ).build(),
+            this.ageKey = new UpdatableKey( AGE,
                                             age );
         }
 
@@ -127,7 +132,7 @@ public class KeyTreeMapTest {
         public Key[] keys() {
             return new Key[]{
                     uuidKey,
-                    new Key( KeyDefinition.newKeyDefinition().withId( "name" ).build(),
+                    new Key( NAME,
                              name ),
                     ageKey
             };
@@ -136,13 +141,18 @@ public class KeyTreeMapTest {
         public void setAge( final int age ) {
             final UpdatableKey oldKey = ageKey;
 
-            final UpdatableKey<Person> newKey = new UpdatableKey<>( KeyDefinition.newKeyDefinition().withId( "age" ).build(),
+            final UpdatableKey<Person> newKey = new UpdatableKey<>( AGE,
                                                                     age );
             ageKey = newKey;
 
             oldKey.update( newKey,
                            this );
 
+        }
+
+        @Override
+        public UUIDKey getUuidKey() {
+            return uuidKey;
         }
     }
 }

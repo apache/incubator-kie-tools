@@ -21,6 +21,7 @@ import java.util.Collection;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.IndexKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.FromMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.Select;
 import org.uberfire.client.callbacks.Callback;
@@ -54,7 +55,7 @@ public class IndexedKeyTreeMap<T extends HasIndex & HasKeys>
 
     private void doForAll( final int index,
                            final Callback<T> callback ) {
-        final ChangeHandledMultiMap<T> map = get( IndexKey.INDEX_ID );
+        final MultiMap<Value, T> map = get( IndexKey.INDEX_ID );
         final Collection<T> all = new Select<T>( map,
                                                  new FromMatcher( IndexKey.INDEX_ID,
                                                                   index,

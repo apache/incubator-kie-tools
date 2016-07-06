@@ -21,16 +21,10 @@ import java.util.ArrayList;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.FieldMatchers;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public class FieldCondition<T extends Comparable>
         extends Condition {
-
-    private final static KeyDefinition OPERATOR              = KeyDefinition.newKeyDefinition().withId( "operator" ).build();
-    private final static KeyDefinition FACT_TYPE__FIELD_NAME = KeyDefinition.newKeyDefinition().withId( "factType.fieldName" ).build();
-    private final static KeyDefinition FIELD                 = KeyDefinition.newKeyDefinition().withId( "field" ).build();
-    private final static KeyDefinition FIELD_TYPE = KeyDefinition.newKeyDefinition().withId( "fieldType" ).build();
 
     private final Field  field;
     private final String operator;
@@ -69,19 +63,6 @@ public class FieldCondition<T extends Comparable>
         }
     }
 
-
-    public static Matchers operator() {
-        return new Matchers( OPERATOR );
-    }
-
-    public static FieldMatchers field() {
-        return new FieldMatchers( FACT_TYPE__FIELD_NAME );
-    }
-
-    public static Matchers fieldType() {
-        return new Matchers( FIELD_TYPE );
-    }
-
     public Field getField() {
         return field;
     }
@@ -97,15 +78,6 @@ public class FieldCondition<T extends Comparable>
             keys.add( key );
         }
 
-        keys.add( new Key( OPERATOR,
-                           operator ) );
-        keys.add( new Key( FIELD,
-                           field ) );
-        keys.add( new Key( FIELD_TYPE,
-                           field.getFieldType() ) );
-        keys.add( new Key( FACT_TYPE__FIELD_NAME,
-                           field.getFactType() + "." + field.getName() ) );
-
         return keys.toArray( new Key[keys.size()] );
     }
 
@@ -114,11 +86,6 @@ public class FieldCondition<T extends Comparable>
         for ( final KeyDefinition keyDefinition : Condition.keyDefinitions() ) {
             keyDefinitions.add( keyDefinition );
         }
-
-        keyDefinitions.add( OPERATOR );
-        keyDefinitions.add( FIELD );
-        keyDefinitions.add( FACT_TYPE__FIELD_NAME );
-        keyDefinitions.add( FIELD_TYPE );
 
         return keyDefinitions.toArray( new KeyDefinition[keyDefinitions.size()] );
     }

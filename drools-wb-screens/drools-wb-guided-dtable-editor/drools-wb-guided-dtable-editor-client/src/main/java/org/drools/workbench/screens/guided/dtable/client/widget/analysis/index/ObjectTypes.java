@@ -49,8 +49,17 @@ public class ObjectTypes {
     }
 
     public Where<ObjectTypesSelect, ObjectTypesListen> where( final Matcher matcher ) {
-        return new Where<>( new ObjectTypesSelect( matcher ),
-                            new ObjectTypesListen( matcher ) );
+        return new Where<ObjectTypesSelect, ObjectTypesListen>() {
+            @Override
+            public ObjectTypesSelect select() {
+                return new ObjectTypesSelect( matcher );
+            }
+
+            @Override
+            public ObjectTypesListen listen() {
+                return new ObjectTypesListen( matcher );
+            }
+        };
     }
 
     void add( final ObjectType... objectTypes ) {

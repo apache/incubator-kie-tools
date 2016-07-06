@@ -18,14 +18,16 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.
 
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Set;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsConflicting;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsRedundant;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Action;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
@@ -33,9 +35,11 @@ public abstract class ActionInspector
         implements IsRedundant,
                    IsSubsuming,
                    IsConflicting,
-                   HumanReadable {
+                   HumanReadable,
+                   HasKeys {
 
-    private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final String         DATE_FORMAT    = ApplicationPreferences.getDroolsDateFormat();
+    private UUIDKey uuidKey = new UUIDKey( this );
     private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
 
     protected Action action;
@@ -146,5 +150,15 @@ public abstract class ActionInspector
 
     public boolean hasValue() {
         return action.getValues().isEmpty();
+    }
+
+    @Override
+    public UUIDKey getUuidKey() {
+        return uuidKey;
+    }
+
+    @Override
+    public Key[] keys() {
+        return new Key[0];
     }
 }

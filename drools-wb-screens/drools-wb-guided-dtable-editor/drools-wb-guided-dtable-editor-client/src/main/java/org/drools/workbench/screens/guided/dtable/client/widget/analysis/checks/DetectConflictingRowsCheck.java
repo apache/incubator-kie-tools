@@ -16,37 +16,40 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.PairCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
-public class DetectConflictingRowsCheck
-        extends PairCheck {
+public class DetectConflictingRowsCheck {
 
-    public DetectConflictingRowsCheck( final RuleInspector ruleInspector,
-                                       final RuleInspector other ) {
-        super( ruleInspector,
-               other );
+    public static Issue check( final RuleInspector ruleInspector,
+                               final RuleInspector other ) {
+        if ( ruleInspector.conflicts( other ) ) {
+            return getIssue( ruleInspector,
+                             other );
+        } else {
+            return Issue.EMPTY;
+        }
     }
 
-    @Override
-    public void check() {
-        hasIssues = ruleInspector.conflicts( other );
-    }
-
-    @Override
-    public Issue getIssue() {
-        Issue issue = new Issue( Severity.WARNING,
-                                 AnalysisConstants.INSTANCE.ConflictingRows(),
-                                 ruleInspector.getRowIndex() + 1,
-                                 other.getRowIndex() + 1 );
-
-        issue.getExplanation()
-                .addParagraph( AnalysisConstants.INSTANCE.ConflictingRowsP1() )
-                .addParagraph( AnalysisConstants.INSTANCE.ConflictingRowsP2() );
-
-        return issue;
+    public static Issue getIssue( final RuleInspector ruleInspector,
+                                  final RuleInspector other ) {
+        return new Issue( Severity.WARNING,
+                          AnalysisConstants.INSTANCE.ConflictingRows(),
+                          new ExplanationProvider() {
+                                     @Override
+                                     public SafeHtml toHTML() {
+                                         return new Explanation()
+                                                 .addParagraph( AnalysisConstants.INSTANCE.ConflictingRowsP1() )
+                                                 .addParagraph( AnalysisConstants.INSTANCE.ConflictingRowsP2() )
+                                                 .toHTML();
+                                     }
+                                 },
+                          ruleInspector,
+                          other );
     }
 }

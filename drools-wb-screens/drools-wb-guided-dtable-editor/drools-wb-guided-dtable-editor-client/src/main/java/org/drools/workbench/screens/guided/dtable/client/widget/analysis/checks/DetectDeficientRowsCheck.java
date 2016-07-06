@@ -16,10 +16,13 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.OneToManyCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
@@ -72,26 +75,31 @@ public class DetectDeficientRowsCheck
     public Issue getIssue() {
         Issue issue = new Issue( Severity.WARNING,
                                  AnalysisConstants.INSTANCE.DeficientRow(),
-                                 ruleInspector.getRowIndex() + 1 );
-
-        issue.getExplanation()
-                .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsP1() )
-                .startNote()
-                .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsNoteP1() )
-                .startExampleTable()
-                .startHeader()
-                .headerConditions( AnalysisConstants.INSTANCE.Salary(), AnalysisConstants.INSTANCE.Savings() )
-                .headerActions( AnalysisConstants.INSTANCE.ApproveLoan() )
-                .end()
-                .startRow()
-                .addConditions( "--", "100 000" ).addActions( "true" )
-                .end()
-                .startRow()
-                .addConditions( "30 000", "--" ).addActions( "false" )
-                .end()
-                .end()
-                .end()
-                .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsP2() );
+                                 new ExplanationProvider() {
+                                     @Override
+                                     public SafeHtml toHTML() {
+                                         return new Explanation()
+                                                 .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsP1() )
+                                                 .startNote()
+                                                 .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsNoteP1() )
+                                                 .startExampleTable()
+                                                 .startHeader()
+                                                 .headerConditions( AnalysisConstants.INSTANCE.Salary(), AnalysisConstants.INSTANCE.Savings() )
+                                                 .headerActions( AnalysisConstants.INSTANCE.ApproveLoan() )
+                                                 .end()
+                                                 .startRow()
+                                                 .addConditions( "--", "100 000" ).addActions( "true" )
+                                                 .end()
+                                                 .startRow()
+                                                 .addConditions( "30 000", "--" ).addActions( "false" )
+                                                 .end()
+                                                 .end()
+                                                 .end()
+                                                 .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsP2() )
+                                                 .toHTML();
+                                     }
+                                 },
+                                 ruleInspector );
 
         return issue;
     }

@@ -15,12 +15,10 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
-import java.util.Collection;
-import java.util.Set;
-
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ConditionsInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ConditionsInspectorMultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.InspectorList;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.LeafInspectorList;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
@@ -30,10 +28,12 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.c
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.NumericIntegerConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.OneToManyCheck;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Redundancy;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.SubsumptionResolver;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Rule;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
@@ -64,14 +64,14 @@ public class RangeCheck
     }
 
     private boolean isSubsumedByOtherRows( final RuleInspectorClone evilClone ) {
-        final Collection<RuleInspector> otherRows = getOtherRows();
+        final InspectorList<RuleInspector> otherRows = getOtherRows();
         if ( otherRows.isEmpty() ) {
             // Currently not reporting this issue if there is only one row.
             return true;
         } else {
-            return Redundancy.isSubsumedByAnObjectInThisList( otherRows,
-                                                              evilClone );
-    }
+            return !SubsumptionResolver.isSubsumedByAnObjectInThisList( otherRows,
+                                                                        evilClone ).foundIssue();
+        }
     }
 
     private FieldCondition invert( final FieldCondition condition ) {
@@ -110,10 +110,15 @@ public class RangeCheck
     public Issue getIssue() {
         final Issue issue = new Issue( Severity.NOTE,
                                        AnalysisConstants.INSTANCE.MissingRangeTitle(),
-                                       ruleInspector.getRowIndex() + 1 );
-
-        issue.getExplanation()
-             .addParagraph( AnalysisConstants.INSTANCE.MissingRangeP1( ruleInspector.getRowIndex() + 1 ) );
+                                       new ExplanationProvider() {
+                                           @Override
+                                           public SafeHtml toHTML() {
+                                               return new Explanation()
+                                                       .addParagraph( AnalysisConstants.INSTANCE.MissingRangeP1( ruleInspector.getRowIndex() + 1 ) )
+                                                       .toHTML();
+                                           }
+                                       },
+                                       ruleInspector );
 
         return issue;
     }
@@ -121,31 +126,29 @@ public class RangeCheck
     private class RuleInspectorClone
             extends RuleInspector {
 
-        private final InspectorList<ConditionsInspector> conditionsInspectors;
+        private final InspectorList<ConditionsInspectorMultiMap> conditionsInspectors = new InspectorList<>();
         boolean containsInvertedItems = false;
 
         public RuleInspectorClone( final Rule rule,
                                    final RuleInspectorCache cache ) {
             super( rule,
                    cache );
-            conditionsInspectors = makeConditionsInspectors();
+            makeConditionsInspectors();
         }
 
         @Override
-        public InspectorList<ConditionsInspector> getConditionsInspectors() {
+        public InspectorList<ConditionsInspectorMultiMap> getConditionsInspectors() {
             return conditionsInspectors;
         }
 
-        private InspectorList<ConditionsInspector> makeConditionsInspectors() {
-            final InspectorList<ConditionsInspector> clonedConditionInspectors = new InspectorList<>();
+        private void makeConditionsInspectors() {
+            conditionsInspectors.clear();
 
-            InspectorList<ConditionsInspector> conditionsInspectors1 = super.getConditionsInspectors();
-            for ( final ConditionsInspector original : conditionsInspectors1 ) {
+            for ( final ConditionsInspectorMultiMap original : super.getConditionsInspectors() ) {
 
-                final ConditionsInspector clone = new ConditionsInspector();
+                final ConditionsInspectorMultiMap clone = new ConditionsInspectorMultiMap();
 
-                Set<ObjectField> keys = original.keys();
-                for ( final ObjectField field : keys ) {
+                for ( final ObjectField field : original.keySet() ) {
 
                     LeafInspectorList<ConditionInspector> originalConditionInspectors = original.get( field );
                     if ( originalConditionInspectors.isEmpty() ) {
@@ -159,10 +162,9 @@ public class RangeCheck
                     }
                 }
 
-                clonedConditionInspectors.add( clone );
+                conditionsInspectors.add( clone );
             }
 
-            return clonedConditionInspectors;
         }
 
         private ConditionInspector resolveInspector( final ConditionInspector originalInspector ) {
@@ -194,10 +196,8 @@ public class RangeCheck
         @Override
         public boolean subsumes( final Object other ) {
             return other instanceof RuleInspector
-                    && Redundancy.subsumes( getBrlConditionsInspectors(),
-                                            (( RuleInspector ) other).getBrlConditionsInspectors() )
-                    && Redundancy.subsumes( getConditionsInspectors(),
-                                            (( RuleInspector ) other).getConditionsInspectors() );
+                    && getBrlConditionsInspectors().subsumes( (( RuleInspector ) other).getBrlConditionsInspectors() )
+                    && getConditionsInspectors().subsumes( (( RuleInspector ) other).getConditionsInspectors() );
         }
     }
 }

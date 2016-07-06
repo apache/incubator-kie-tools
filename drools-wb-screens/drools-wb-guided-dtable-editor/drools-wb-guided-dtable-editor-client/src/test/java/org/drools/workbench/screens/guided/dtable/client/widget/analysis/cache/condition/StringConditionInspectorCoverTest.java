@@ -48,9 +48,9 @@ public class StringConditionInspectorCoverTest {
 
         assertEquals( getAssertDescription( a,
                                             covers,
-                                            ( String ) value2.get( 0 ) ),
+                                            ( String ) value2.iterator().next() ),
                       covers,
-                      a.covers( value2.get( 0 ) ) );
+                      a.covers( value2.iterator().next() ) );
     }
 
     public StringConditionInspectorCoverTest( Values<String> value1,

@@ -15,42 +15,37 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.ActionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.FieldActionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.BooleanConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ComparableConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.NumericIntegerConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.StringConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsConflicting;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsRedundant;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Redundancy;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Action;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Condition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldAction;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.AllListener;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class FieldInspector
         implements HasConflicts,
                    IsConflicting,
                    IsSubsuming,
                    IsRedundant,
-                   HumanReadable {
+                   HumanReadable,
+                   HasKeys {
 
-    private final ObjectField objectField;
+    private final ObjectField      objectField;
 
-    private final List<ActionInspector> actionInspectorList = new ArrayList<>();
-    private final List<ConditionInspector> conditionInspectorList = new ArrayList<>();
+    private final UpdatableInspectorList<ActionInspector, Action>       actionInspectorList    = new UpdatableInspectorList<>( new ActionInspectorFactory() );
+    private final UpdatableInspectorList<ConditionInspector, Condition> conditionInspectorList = new UpdatableInspectorList<>( new ConditionInspectorFactory() );
+    private final UUIDKey                                               uuidKey                = new UUIDKey( this );
 
     public FieldInspector( final Field field ) {
         this( field.getObjectField() );
@@ -82,7 +77,7 @@ public class FieldInspector
     }
 
     public FieldInspector( final ObjectField field ) {
-        this.objectField = field;
+        this.objectField = PortablePreconditions.checkNotNull( "field", field );
     }
 
     public ObjectField getObjectField() {
@@ -90,57 +85,45 @@ public class FieldInspector
     }
 
     private void updateConditionInspectors( final Collection<Condition> all ) {
-        conditionInspectorList.clear();
-        for ( final Condition condition : all ) {
-            if ( condition instanceof FieldCondition ) {
-                conditionInspectorList.add( buildConditionInspector( ( FieldCondition ) condition ) );
-            }
-        }
+        conditionInspectorList.update( all );
     }
 
     private void updateActionInspectors( final Collection<Action> all ) {
-        actionInspectorList.clear();
-        for ( final Action action : all ) {
-            actionInspectorList.add( new FieldActionInspector( ( FieldAction ) action ) );
-        }
+        actionInspectorList.update( all );
     }
 
-    public List<ActionInspector> getActionInspectorList() {
+    public InspectorList<ActionInspector> getActionInspectorList() {
         return actionInspectorList;
     }
 
-    public List<ConditionInspector> getConditionInspectorList() {
+    public InspectorList<ConditionInspector> getConditionInspectorList() {
         return conditionInspectorList;
     }
 
     @Override
-    public ArrayList<ConditionInspector> hasConflicts() {
+    public Conflict hasConflicts() {
         int index = 1;
         for ( final ConditionInspector conditionInspector : conditionInspectorList ) {
             for ( int j = index; j < conditionInspectorList.size(); j++ ) {
                 if ( conditionInspector.conflicts( conditionInspectorList.get( j ) ) ) {
-                    final ArrayList<ConditionInspector> result = new ArrayList<>();
-                    result.add( conditionInspector );
-                    result.add( conditionInspectorList.get( j ) );
-                    return result;
+                    return new Conflict( conditionInspector,
+                                         conditionInspectorList.get( j ) );
                 }
             }
             index++;
         }
-        return new ArrayList<>();
+        return Conflict.EMPTY;
     }
 
     @Override
     public boolean conflicts( final Object other ) {
         if ( other instanceof FieldInspector && objectField.equals( (( FieldInspector ) other).objectField ) ) {
 
-            final boolean conflicting = Conflict.isConflicting( actionInspectorList,
-                                                                (( FieldInspector ) other).actionInspectorList );
+            final boolean conflicting = actionInspectorList.conflicts( (( FieldInspector ) other).actionInspectorList );
             if ( conflicting ) {
                 return true;
             } else {
-                return Conflict.isConflicting( conditionInspectorList,
-                                               (( FieldInspector ) other).conditionInspectorList );
+                return conditionInspectorList.conflicts( (( FieldInspector ) other).conditionInspectorList );
             }
         } else {
         return false;
@@ -150,10 +133,8 @@ public class FieldInspector
     @Override
     public boolean isRedundant( final Object other ) {
         if ( other instanceof FieldInspector && objectField.equals( (( FieldInspector ) other).objectField ) ) {
-            return Redundancy.isRedundant( actionInspectorList,
-                                           (( FieldInspector ) other).actionInspectorList )
-                    && Redundancy.isRedundant( conditionInspectorList,
-                                               (( FieldInspector ) other).conditionInspectorList );
+            return actionInspectorList.isRedundant( (( FieldInspector ) other).actionInspectorList )
+                    && conditionInspectorList.isRedundant( (( FieldInspector ) other).conditionInspectorList );
         } else {
             return false;
         }
@@ -162,34 +143,28 @@ public class FieldInspector
     @Override
     public boolean subsumes( final Object other ) {
         if ( other instanceof FieldInspector && objectField.equals( (( FieldInspector ) other).objectField ) ) {
-            return Redundancy.subsumes( actionInspectorList,
-                                        (( FieldInspector ) other).actionInspectorList )
-                    && Redundancy.subsumes( conditionInspectorList,
-                                            (( FieldInspector ) other).conditionInspectorList );
+            return actionInspectorList.subsumes( (( FieldInspector ) other).actionInspectorList )
+                    && conditionInspectorList.subsumes( (( FieldInspector ) other).conditionInspectorList );
 
         } else {
             return false;
         }
     }
 
-    private ConditionInspector buildConditionInspector( final FieldCondition condition ) {
-
-        if ( !condition.getValues().isEmpty() && condition.getValues().get( 0 ) instanceof String ) {
-            return new StringConditionInspector( condition );
-
-        } else if ( !condition.getValues().isEmpty() && condition.getValues().get( 0 ) instanceof Boolean ) {
-            return new BooleanConditionInspector( condition );
-
-        } else if ( !condition.getValues().isEmpty() && condition.getValues().get( 0 ) instanceof Integer ) {
-            return new NumericIntegerConditionInspector( condition );
-
-        } else {
-            return new ComparableConditionInspector<>( condition );
-        }
-    }
-
     @Override
     public String toHumanReadableString() {
         return objectField.getName();
+    }
+
+    @Override
+    public UUIDKey getUuidKey() {
+        return uuidKey;
+    }
+
+    @Override
+    public Key[] keys() {
+        return new Key[]{
+                uuidKey
+        };
     }
 }

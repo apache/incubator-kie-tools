@@ -30,7 +30,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,7 +92,7 @@ public class DecisionTableAnalyzerUpdateTest {
                 .withData( new Object[][]{
                         { 1, "description", 1, true },
                         { 2, "description", 1, true } } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -123,7 +123,7 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 2, "description", 0, 1, true },
                         { 3, "description", 2, 2, true },
                         { 4, "description", 1, 1, false } } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -165,7 +165,7 @@ public class DecisionTableAnalyzerUpdateTest {
                 .withData( new Object[][]{
                         { 1, "description", 1, 10, true },
                         { 2, "description", 1, 10, true } } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -195,7 +195,7 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 1, "description", 1, true },
                         { 2, "description", 2, true },
                         { 3, "description", 3, true } } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -226,7 +226,7 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 1, "description", 1, true },
                         { 2, "description", 2, true },
                         { 3, "description", 3, true } } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -259,7 +259,7 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 1, "description", 1, 1, true },
                         { 2, "description", 0, 1, true },
                         { 3, "description", 2, 2, true } } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -286,7 +286,7 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 1, "description", 1, 1, true },
                         { 2, "description", 0, 1, true },
                         { 3, "description", 2, 2, true } } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -333,8 +333,8 @@ public class DecisionTableAnalyzerUpdateTest {
             }
 
             @Override
-            protected Checks getChecks() {
-                return new Checks() {
+            protected CheckRunner getCheckRunner() {
+                return new CheckRunner() {
                     @Override
                     protected void doRun( final CancellableRepeatingCommand command ) {
                         while ( command.execute() ) {

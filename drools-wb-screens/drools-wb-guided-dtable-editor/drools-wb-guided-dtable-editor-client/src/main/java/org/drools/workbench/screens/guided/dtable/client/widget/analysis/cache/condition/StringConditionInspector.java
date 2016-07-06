@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Operator;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Redundancy;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 
@@ -158,9 +157,9 @@ public class StringConditionInspector
                             case SOUNDSLIKE:
                                 return otherInspector.containsAll( getValues() );
                             case IN:
-                                return otherInspector.valuesContains( getValues().get( 0 ) );
+                                return otherInspector.valuesContains( getValue() );
                             case NOT_IN:
-                                return !otherInspector.valuesContains( getValues().get( 0 ) );
+                                return !otherInspector.valuesContains( getValue() );
                             default:
                                 return super.overlaps( other );
                         }
@@ -182,7 +181,7 @@ public class StringConditionInspector
                             case NOT_EQUALS:
                                 return !otherInspector.containsAll( getValues() );
                             default:
-                                return !otherInspector.valuesContains( getValues().get( 0 ) );
+                                return !otherInspector.valuesContains( getValue() );
                         }
                     case IN:
                         switch ( otherInspector.getOperator() ) {
@@ -267,7 +266,7 @@ public class StringConditionInspector
         return getValues().contains( value );
     }
 
-    private boolean containsAll( final Values<String> otherValues ) {
+    private boolean containsAll( final Values<Comparable> otherValues ) {
         if ( getValues().isEmpty() || otherValues.isEmpty() ) {
             return false;
         } else {
@@ -280,7 +279,7 @@ public class StringConditionInspector
         }
     }
 
-    private boolean doesNotContainAll( final Values<String> otherValues ) {
+    private boolean doesNotContainAll( final Values<Comparable> otherValues ) {
         for ( final Object otherValue : otherValues ) {
             if ( !getValues().contains( otherValue ) ) {
                 return true;
@@ -289,7 +288,7 @@ public class StringConditionInspector
         return false;
     }
 
-    private boolean containsAny( final Values<String> otherValues ) {
+    private boolean containsAny( final Values<Comparable> otherValues ) {
         for ( final Object thisValue : getValues() ) {
             for ( final Object otherValue : otherValues ) {
                 if ( thisValue.equals( otherValue ) ) {
@@ -305,9 +304,7 @@ public class StringConditionInspector
         if ( other instanceof StringConditionInspector ) {
 
             if ( ( (StringConditionInspector) other ).getOperator().equals( operator ) ) {
-                boolean subsumes = Redundancy.subsumes( getValues(),
-                                                        ( (StringConditionInspector) other ).getValues() );
-                return subsumes;
+                return getValues().containsAll( ( (StringConditionInspector) other ).getValues() );
             }
 
             switch ( operator ) {
@@ -338,7 +335,7 @@ public class StringConditionInspector
                         case EQUALS:
                         case MATCHES:
                         case SOUNDSLIKE:
-                            return getValues().contains( ( (StringConditionInspector) other ).getValues().get( 0 ) );
+                            return getValues().contains( ( (StringConditionInspector) other ).getValue() );
                     }
 
                     break;
@@ -383,7 +380,6 @@ public class StringConditionInspector
         stringBuilder.append( " " );
         stringBuilder.append( operator );
         stringBuilder.append( " " );
-
         final Iterator<Comparable> iterator = getValues().iterator();
         while ( iterator.hasNext() ) {
             stringBuilder.append( iterator.next() );

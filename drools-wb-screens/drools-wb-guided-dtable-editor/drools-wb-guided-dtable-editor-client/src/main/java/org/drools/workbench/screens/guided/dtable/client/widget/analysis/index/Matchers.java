@@ -19,7 +19,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.K
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.KeyMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.NullOrEmptyMatcher;
 
 public class Matchers
         extends KeyMatcher {
@@ -43,12 +42,4 @@ public class Matchers
                                  true );
     }
 
-    public Matcher isNullOrEmpty() {
-        return new NullOrEmptyMatcher( keyDefinition );
-    }
-
-    public Matcher isNotNullOrEmpty() {
-        return new NullOrEmptyMatcher( keyDefinition,
-                                       true );
-    }
 }

@@ -15,40 +15,40 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.PairCheck;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Redundancy;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
-public class SingleHitCheck
-        extends PairCheck {
+public class SingleHitCheck {
 
-    public SingleHitCheck( final RuleInspector ruleInspector,
-                           final RuleInspector other ) {
-        super( ruleInspector,
-               other );
-    }
+    public static Issue check( final RuleInspector ruleInspector,
+                               final RuleInspector other ) {
 
-    @Override
-    public void check() {
-        hasIssues = false;
-
-        if ( Redundancy.subsumes( ruleInspector.getConditionsInspectors(),
-                                  other.getConditionsInspectors() ) ) {
-            hasIssues = true;
+        if ( ruleInspector.getConditionsInspectors().subsumes( other.getConditionsInspectors() ) ) {
+            return getIssue( ruleInspector,
+                             other );
+        } else {
+            return Issue.EMPTY;
         }
     }
 
-    @Override
-    public Issue getIssue() {
+    public static Issue getIssue( final RuleInspector ruleInspector,
+                                  final RuleInspector other ) {
         final Issue issue = new Issue( Severity.NOTE,
-                                       AnalysisConstants.INSTANCE.SingleHitLost() );
-
-        issue.getExplanation()
-             .addParagraph( AnalysisConstants.INSTANCE.SingleHitP1( ruleInspector.getRowIndex() + 1,
-                                                                    other.getRowIndex() + 1 ) );
+                                       AnalysisConstants.INSTANCE.SingleHitLost(),
+                                       new ExplanationProvider() {
+                                           @Override
+                                           public SafeHtml toHTML() {
+                                               return new Explanation()
+                                                       .addParagraph( AnalysisConstants.INSTANCE.SingleHitP1( ruleInspector.getRowIndex() + 1,
+                                                                                                              other.getRowIndex() + 1 ) )
+                                                       .toHTML();
+                                           }
+                                       } );
 
         return issue;
     }

@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -29,7 +28,6 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,9 +36,7 @@ import org.kie.workbench.common.services.shared.preferences.ApplicationPreferenc
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.client.callbacks.Callback;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
 import static org.mockito.Mockito.*;
@@ -87,7 +83,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
                         {3, "description", null, "Toni", "Rikkola", 100},
                         { 4, "description", null, null, null, null }
                 } )
-                .build();
+                .buildTable();
 
         final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -110,7 +106,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
                         {3, "description", null, "Toni", "Rikkola", 300},
                         {4, "description", null, null, null, null}
                 } )
-                .build();
+                .buildTable();
 
         final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -138,7 +134,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
                         { 3, "description", 12, "", "Rikkola", 300, "ok" },
                         { 4, "description", null, "", "", null, "" }
                 } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -178,7 +174,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
                         { 3, "description", 12, "", "Rikkola", 300, "ok" },
                         { 4, "description", null, "", "", null, "" }
                 } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -218,7 +214,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
                         { 3, "description", 12, "Toni", "Rikkola", 300, "ok" },
                         { 4, "description", null, "", "", null, "" }
                 } )
-                .build();
+                .buildTable();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
@@ -242,44 +238,15 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
     }
 
-    private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
-                                          oracle,
-                                          table52,
-                                          mock( EventBus.class ) ) {
-            @Override
-            protected void sendReport( AnalysisReport report ) {
-                DecisionTableAnalyzerDeficiencyTest.this.analysisReport = report;
-            }
-
-            @Override
-            protected Checks getChecks() {
-                return new Checks() {
-                    @Override
-                    protected void doRun( final CancellableRepeatingCommand command ) {
-                        while ( command.execute() ) {
-                            //loop
-                        }
-                    }
-                };
-            }
-
-            @Override
-            protected ParameterizedCommand<Status> getOnStatusCommand() {
-                return null;
-            }
-
-            @Override
-            protected Command getOnCompletionCommand() {
-                return new Command() {
-                    @Override
-                    public void execute() {
-                        sendReport( makeAnalysisReport() );
-                    }
-                };
-            }
-
-        };
+    private DecisionTableAnalyzer getDecisionTableAnalyzer( final GuidedDecisionTable52 table52 ) {
+        return new DecisionTableAnalyzerMock( oracle,
+                                              table52,
+                                              new Callback<AnalysisReport>() {
+                                                  @Override
+                                                  public void callback( final AnalysisReport result ) {
+                                                      analysisReport = result;
+                                                  }
+                                              } );
     }
 
 }

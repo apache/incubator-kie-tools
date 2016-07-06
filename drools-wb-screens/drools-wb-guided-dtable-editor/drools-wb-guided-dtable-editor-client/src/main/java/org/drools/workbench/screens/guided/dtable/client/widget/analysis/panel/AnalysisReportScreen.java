@@ -16,6 +16,10 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -73,13 +77,56 @@ public class AnalysisReportScreen {
             placeManager.closePlace( IDENTIFIER );
         }
 
-        dataProvider.setList( report.getAnalysisData() );
+        dataProvider.setList( getIssues( report ) );
 
         if ( dataProvider.getList().isEmpty() ) {
             view.clearIssue();
         } else {
             view.show( dataProvider.getList().get( 0 ) );
         }
+    }
+
+    private ArrayList<Issue> getIssues( final AnalysisReport report ) {
+        final TreeSet<Issue> issues = new TreeSet<>( new Comparator<Issue>() {
+            @Override
+            public int compare( final Issue issue,
+                                final Issue other ) {
+                int compareToSeverity = issue.getSeverity().compareTo( other.getSeverity() );
+
+                if ( compareToSeverity == 0 ) {
+                    int compareToTitle = issue.getTitle().compareTo( other.getTitle() );
+                    if ( compareToTitle == 0 ) {
+                        return compareRowNumbers( issue.getRowNumbers(),
+                                                  other.getRowNumbers() );
+                    } else {
+                        return compareToTitle;
+                    }
+                } else {
+                    return compareToSeverity;
+                }
+
+            }
+
+            private int compareRowNumbers( final Set<Integer> rowNumbers,
+                                           final Set<Integer> other ) {
+                if ( rowNumbers.equals( other ) ) {
+                    return 0;
+                } else {
+                    for ( Integer a : rowNumbers ) {
+                        for ( Integer b : other ) {
+                            if ( a < b ) {
+                                return -1;
+                            }
+                        }
+                    }
+                    return 1;
+                }
+            }
+        } );
+        for ( final Issue issue : report.getAnalysisData() ) {
+            issues.add( issue );
+        }
+        return new ArrayList<>( issues );
     }
 
     @DefaultPosition

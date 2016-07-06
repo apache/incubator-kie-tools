@@ -16,21 +16,23 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.PatternInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
+
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable.*;
 
 public class DetectMultipleValuesForOneActionCheck
         extends SingleCheck {
 
-    private List<ActionInspector> conflictingObjects = new ArrayList<>();
+    private Conflict conflict = Conflict.EMPTY;
 
     public DetectMultipleValuesForOneActionCheck( final RuleInspector ruleInspector ) {
         super( ruleInspector );
@@ -39,13 +41,13 @@ public class DetectMultipleValuesForOneActionCheck
     @Override
     public void check() {
 
-        conflictingObjects.clear();
+        conflict = Conflict.EMPTY;
 
         for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
-            final ArrayList<ActionInspector> result = patternInspector.getActionsInspector().hasConflicts();
-            if ( !result.isEmpty() ) {
+            final Conflict result = patternInspector.getActionsInspector().hasConflicts();
+            if ( result.foundIssue() ) {
                 hasIssues = true;
-                conflictingObjects.addAll( result );
+                conflict = result;
                 return;
 
             }
@@ -58,13 +60,18 @@ public class DetectMultipleValuesForOneActionCheck
     public Issue getIssue() {
         final Issue issue = new Issue( Severity.WARNING,
                                        AnalysisConstants.INSTANCE.MultipleValuesForOneAction(),
-                                       ruleInspector.getRowIndex() + 1 );
-
-        issue.getExplanation()
-                .startNote()
-                .addParagraph( AnalysisConstants.INSTANCE.MultipleValuesNote1P1( conflictingObjects.get( 0 ).toHumanReadableString(), conflictingObjects.get( 1 ).toHumanReadableString() ) )
-                .end()
-                .addParagraph( AnalysisConstants.INSTANCE.MultipleValuesP1() );
+                                       new ExplanationProvider() {
+                                           @Override
+                                           public SafeHtml toHTML() {
+                                               return new Explanation()
+                                                       .startNote()
+                                                       .addParagraph( AnalysisConstants.INSTANCE.MultipleValuesNote1P1( toHumanReadableString( conflict.getConflictedItem() ), toHumanReadableString( conflict.getConflictingItem() ) ) )
+                                                       .end()
+                                                       .addParagraph( AnalysisConstants.INSTANCE.MultipleValuesP1() )
+                                                       .toHTML();
+                                           }
+                                       },
+                                       ruleInspector );
 
         return issue;
     }

@@ -48,8 +48,17 @@ public class Actions {
     }
 
     public Where<ActionSelect, ActionListen> where( final Matcher matcher ) {
-        return new Where<>( new ActionSelect( matcher ),
-                            new ActionListen( matcher ) );
+        return new Where<ActionSelect, ActionListen>() {
+            @Override
+            public ActionSelect select() {
+                return new ActionSelect( matcher );
+            }
+
+            @Override
+            public ActionListen listen() {
+                return new ActionListen( matcher );
+            }
+        };
     }
 
     public <KeyType> MapBy<KeyType, Action> mapBy( final KeyMatcher matcher ) {

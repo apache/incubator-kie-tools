@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,53 +16,92 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasUUID;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.InspectorList;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
+import org.uberfire.commons.validation.PortablePreconditions;
 
-public class Conflict {
+public class Conflict
+        extends Relation<Conflict> {
 
-    public static boolean isConflicting( final Collection collection,
-                                         final Collection otherCollection ) {
+    public static Conflict EMPTY = new Conflict();
 
-        if ( collection == null || otherCollection == null ) {
+    private final HasUUID conflictedItem;
+    private final HasUUID conflictingItem;
+
+    public Conflict( final HasUUID conflictedItem,
+                     final HasUUID conflictingItem ) {
+        super( null );
+        this.conflictedItem = PortablePreconditions.checkNotNull( "conflictedItem", conflictedItem );
+        this.conflictingItem = PortablePreconditions.checkNotNull( "conflictingItem", conflictingItem );
+    }
+
+    public Conflict( final InspectorList conflictedItem,
+                     final InspectorList conflictingItem,
+                     final Conflict origin ) {
+        super( PortablePreconditions.checkNotNull( "origin", origin ) );
+        this.conflictedItem = PortablePreconditions.checkNotNull( "conflictedItem", conflictedItem );
+        this.conflictingItem = PortablePreconditions.checkNotNull( "conflictingItem", conflictingItem );
+    }
+
+    private Conflict() {
+        super( null );
+        this.conflictedItem = null;
+        this.conflictingItem = null;
+    }
+
+    @Override
+    public boolean foundIssue() {
+        return conflictingItem != null;
+    }
+
+    public HasUUID getConflictedItem() {
+        return conflictedItem;
+    }
+
+    public HasUUID getConflictingItem() {
+        return conflictingItem;
+    }
+
+    @Override
+    public UUIDKey otherUUID() {
+        return conflictingItem.getUuidKey() ;
+    }
+
+    @Override
+    public boolean doesRelationStillExist() {
+        if ( origin != null
+                && stillContainsConflictedItem( getOrigin().getConflictedItem() )
+                && stillContainsConflictingItem( getOrigin().getConflictingItem() ) ) {
+
+            return ConflictResolver.isConflicting( getOrigin().getConflictedItem(),
+                                                   getOrigin().getConflictingItem() ).foundIssue();
+        } else {
             return false;
         }
-
-        for ( Object o : collection ) {
-            if ( o instanceof IsConflicting ) {
-                if ( hasConflictingObjectInList( otherCollection,
-                                                 (IsConflicting) o ) ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
-    public static boolean hasConflictingObjectInList( final Collection collection,
-                                                      final IsConflicting isConflicting ) {
-        return !getConflictingObjects( collection,
-                                       isConflicting ).isEmpty();
-    }
-
-    public static List getConflictingObjects( final Collection collection,
-                                              final IsConflicting isConflicting ) {
-        ArrayList result = new ArrayList();
-
-        if ( isConflicting == null || collection == null ) {
-            return result;
-        }
-
-        for ( Object other : collection ) {
-            if ( isConflicting.conflicts( other ) ) {
-                result.add( isConflicting );
-                result.add( other );
-                return result;
+    private boolean stillContainsConflictedItem( final HasUUID item ) {
+        if ( this.conflictedItem instanceof InspectorList ) {
+            return (( InspectorList ) this.conflictedItem).contains( item );
+        } else {
+            if ( parent != null ) {
+                return parent.stillContainsConflictedItem( item );
+            } else {
+                return false;
             }
         }
+    }
 
-        return result;
+    private boolean stillContainsConflictingItem( final HasUUID item ) {
+        if ( this.conflictingItem instanceof InspectorList ) {
+            return (( InspectorList ) this.conflictingItem).contains( item );
+        } else {
+            if ( parent != null ) {
+                return parent.stillContainsConflictingItem( item );
+            } else {
+                return false;
+            }
+        }
     }
 }

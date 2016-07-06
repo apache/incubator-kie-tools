@@ -22,25 +22,48 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsConflicting;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsRedundant;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Redundancy;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.RelationResolver;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Pattern;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class PatternInspector
         implements HasConflicts,
                    IsConflicting,
                    IsSubsuming,
                    IsRedundant,
-                   HumanReadable {
+                   HumanReadable, HasKeys {
 
-    private final Pattern pattern;
+    private final UUIDKey uuidKey = new UUIDKey( this );
+
+    private final Pattern          pattern;
 
     private final InspectorList<FieldInspector> inspectorList       = new InspectorList<>();
+    private final RelationResolver relationResolver;
+
+    private final ActionsInspectorMultiMap actionsInspector;
 
     public PatternInspector( final Pattern pattern ) {
-        this.pattern = pattern;
+        this.pattern = PortablePreconditions.checkNotNull( "pattern", pattern );
+        this.actionsInspector = new ActionsInspectorMultiMap();
 
+        relationResolver = new RelationResolver( inspectorList );
+
+        makeFieldInspectors();
+        makeActionsInspectors();
+    }
+
+    private void makeActionsInspectors() {
+        for ( final FieldInspector fieldInspector : inspectorList ) {
+            actionsInspector.addAllValues( fieldInspector.getObjectField(),
+                                           fieldInspector.getActionInspectorList() );
+        }
+    }
+
+    private void makeFieldInspectors() {
         final ArrayList<ObjectField> alreadyAdded = new ArrayList<>();
 
         for ( final Field field : pattern.getFields()
@@ -67,8 +90,7 @@ public class PatternInspector
     public boolean conflicts( final Object other ) {
         if ( other instanceof PatternInspector ) {
             if ( pattern.getObjectType().getType().equals( (( PatternInspector ) other).getPattern().getObjectType().getType() ) ) {
-                return Conflict.isConflicting( inspectorList,
-                                           (( PatternInspector ) other).inspectorList );
+                return inspectorList.conflicts( (( PatternInspector ) other).inspectorList );
             } else {
                 return false;
             }
@@ -81,8 +103,7 @@ public class PatternInspector
     public boolean isRedundant( final Object other ) {
         if ( other instanceof PatternInspector ) {
             if ( pattern.getObjectType().getType().equals( (( PatternInspector ) other).getPattern().getObjectType().getType() ) ) {
-                return Redundancy.isRedundant( inspectorList,
-                                           (( PatternInspector ) other).inspectorList );
+                return inspectorList.isRedundant( (( PatternInspector ) other).inspectorList );
             } else {
                 return false;
             }
@@ -95,8 +116,7 @@ public class PatternInspector
     public boolean subsumes( final Object other ) {
         if ( other instanceof PatternInspector ) {
             if ( pattern.getObjectType().getType().equals( (( PatternInspector ) other).getPattern().getObjectType().getType() ) ) {
-                return Redundancy.subsumes( inspectorList,
-                                            (( PatternInspector ) other).inspectorList );
+                return inspectorList.subsumes( (( PatternInspector ) other).inspectorList );
             } else {
                 return false;
             }
@@ -106,23 +126,16 @@ public class PatternInspector
     }
 
     @Override
-    public ArrayList<FieldInspector> hasConflicts() {
-        return inspectorList.hasConflicts();
+    public Conflict hasConflicts() {
+        return relationResolver.resolveConflict( inspectorList );
     }
 
-    public ActionsInspector getActionsInspector() {
-        final ActionsInspector actionsInspector = new ActionsInspector();
-
-        for ( final FieldInspector fieldInspector : inspectorList ) {
-            actionsInspector.addAllValues( fieldInspector.getObjectField(),
-                                           fieldInspector.getActionInspectorList() );
-        }
-
+    public ActionsInspectorMultiMap getActionsInspector() {
         return actionsInspector;
     }
 
-    public ConditionsInspector getConditionsInspector() {
-        final ConditionsInspector conditionsInspector = new ConditionsInspector();
+    public ConditionsInspectorMultiMap getConditionsInspector() {
+        final ConditionsInspectorMultiMap conditionsInspector = new ConditionsInspectorMultiMap();
 
         for ( final FieldInspector fieldInspector : inspectorList ) {
             conditionsInspector.addAllValues( fieldInspector.getObjectField(),
@@ -135,5 +148,17 @@ public class PatternInspector
     @Override
     public String toHumanReadableString() {
         return pattern.getName();
+    }
+
+    @Override
+    public UUIDKey getUuidKey() {
+        return uuidKey;
+    }
+
+    @Override
+    public Key[] keys() {
+        return new Key[]{
+                uuidKey
+        };
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.RelationResolver;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Pattern;
 import org.junit.Before;
@@ -33,7 +34,7 @@ public class PatternInspectorTest {
         a = new PatternInspector( new Pattern( "a",
                                                new ObjectType( "org.Person" ) ) );
         b = new PatternInspector( new Pattern( "b",
-                                               new ObjectType( "org.Person" ) ) );
+                                               new ObjectType( "org.Person" ) ));
     }
 
     @Test
@@ -45,7 +46,7 @@ public class PatternInspectorTest {
     @Test
     public void testRedundancy02() throws Exception {
         final PatternInspector x = new PatternInspector( new Pattern( "x",
-                                                                      new ObjectType( "org.Address" ) ) );
+                                                                      new ObjectType( "org.Address" ) ));
 
         assertFalse( x.isRedundant( b ) );
         assertFalse( b.isRedundant( x ) );
@@ -60,7 +61,7 @@ public class PatternInspectorTest {
     @Test
     public void testSubsumpt02() throws Exception {
         final PatternInspector x = new PatternInspector( new Pattern( "x",
-                                                                      new ObjectType( "org.Address" ) ) );
+                                                                      new ObjectType( "org.Address" ) ));
 
         assertFalse( x.subsumes( b ) );
         assertFalse( b.subsumes( x ) );

@@ -16,21 +16,17 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.BRLActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.BRLConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsConflicting;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsDeficient;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsRedundant;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Redundancy;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Action;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ActionSuperType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.BRLAction;
@@ -42,48 +38,56 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.F
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Pattern;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Rule;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.AllListener;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class RuleInspector
         implements IsRedundant,
                    IsSubsuming,
                    IsConflicting,
                    IsDeficient<RuleInspector>,
-                   HumanReadable {
+                   HumanReadable,
+                   HasKeys {
 
-    private final Rule               rule;
+    private final Rule rule;
+
     private final RuleInspectorCache cache;
 
-    private final InspectorList<PatternInspector> patternInspectorList = new InspectorList<>();
+    private final UUIDKey uuidKey = new UUIDKey( this );
 
-    private final List<ConditionInspector> brlConditionsInspectors = new ArrayList<>();
-    private final List<ActionInspector>    brlActionInspectors     = new ArrayList<>();
+    private final InspectorList<PatternInspector>            patternInspectorList    = new InspectorList<>();
+    private final InspectorList<ConditionInspector>          brlConditionsInspectors = new InspectorList<>(true);
+    private final InspectorList<ActionInspector>             brlActionInspectors     = new InspectorList<>(true);
+    private final InspectorList<ActionsInspectorMultiMap>    actionsInspectors       = new InspectorList<>( true );
+    private final InspectorList<ConditionsInspectorMultiMap> conditionsInspectors    = new InspectorList<>(true);
 
     public RuleInspector( final Rule rule,
                           final RuleInspectorCache cache ) {
-        this.rule = rule;
-        this.cache = cache;
+        this.rule = PortablePreconditions.checkNotNull( "rule", rule );
+        this.cache = PortablePreconditions.checkNotNull( "cache", cache );
 
-        for ( final Pattern pattern : rule.getPatterns()
-                                          .where( Pattern.uuid().any() )
-                                          .select().all() ) {
-            final PatternInspector patternInspector = new PatternInspector( pattern );
+        makePatternsInspectors();
+        makeBRLActionInspectors();
+        makeBRLConditionInspectors();
+        makeActionsInspectors();
+        makeConditionsInspectors();
+    }
 
-            patternInspectorList.add( patternInspector );
+    private void makeConditionsInspectors() {
+        for ( final PatternInspector patternInspector : patternInspectorList ) {
+            conditionsInspectors.add( patternInspector.getConditionsInspector() );
         }
+    }
 
-        updateBRLActionInspectors( rule.getActions()
-                                       .where( Action.superType().is( ActionSuperType.BRL_ACTION ) )
-                                       .select().all() );
-        rule.getActions()
-            .where( Action.superType().is( ActionSuperType.BRL_ACTION ) )
-            .listen().all( new AllListener<Action>() {
-            @Override
-            public void onAllChanged( final Collection<Action> all ) {
-                updateBRLActionInspectors( all );
-            }
-        } );
+    private void makeActionsInspectors() {
+        for ( final PatternInspector patternInspector : patternInspectorList ) {
+            actionsInspectors.add( patternInspector.getActionsInspector() );
+        }
+    }
 
+    private void makeBRLConditionInspectors() {
         updateBRLConditionInspectors( rule.getConditions()
                                           .where( Condition.superType().is( ConditionSuperType.BRL_CONDITION ) )
                                           .select().all() );
@@ -95,6 +99,30 @@ public class RuleInspector
                 updateBRLConditionInspectors( all );
             }
         } );
+    }
+
+    private void makeBRLActionInspectors() {
+        updateBRLActionInspectors( rule.getActions()
+                                       .where( Action.superType().is( ActionSuperType.BRL_ACTION ) )
+                                       .select().all() );
+        rule.getActions()
+            .where( Action.superType().is( ActionSuperType.BRL_ACTION ) )
+            .listen().all( new AllListener<Action>() {
+            @Override
+            public void onAllChanged( final Collection<Action> all ) {
+                updateBRLActionInspectors( all );
+            }
+        } );
+    }
+
+    private void makePatternsInspectors() {
+        for ( final Pattern pattern : rule.getPatterns()
+                                          .where( Pattern.uuid().any() )
+                                          .select().all() ) {
+            final PatternInspector patternInspector = new PatternInspector( pattern );
+
+            patternInspectorList.add( patternInspector );
+        }
     }
 
 
@@ -112,21 +140,11 @@ public class RuleInspector
         }
     }
 
-    public InspectorList<ConditionsInspector> getConditionsInspectors() {
-        final InspectorList<ConditionsInspector> conditionsInspectors = new InspectorList<>();
-
-        for ( final PatternInspector patternInspector : patternInspectorList ) {
-            conditionsInspectors.add( patternInspector.getConditionsInspector() );
-        }
-
+    public InspectorList<ConditionsInspectorMultiMap> getConditionsInspectors() {
         return conditionsInspectors;
     }
 
-    public InspectorList<ActionsInspector> getActionsInspectors() {
-        final InspectorList<ActionsInspector> actionsInspectors = new InspectorList<>();
-        for ( final PatternInspector patternInspector : patternInspectorList ) {
-            actionsInspectors.add( patternInspector.getActionsInspector() );
-        }
+    public InspectorList<ActionsInspectorMultiMap> getActionsInspectors() {
         return actionsInspectors;
     }
 
@@ -145,36 +163,26 @@ public class RuleInspector
     @Override
     public boolean isRedundant( final Object other ) {
         return other instanceof RuleInspector
-                && Redundancy.isRedundant( brlConditionsInspectors,
-                                           (( RuleInspector ) other).brlConditionsInspectors )
-                && Redundancy.isRedundant( brlActionInspectors,
-                                           (( RuleInspector ) other).brlActionInspectors )
-                && Redundancy.isRedundant( getActionsInspectors(),
-                                           (( RuleInspector ) other).getActionsInspectors() )
-                && Redundancy.isRedundant( getConditionsInspectors(),
-                                           (( RuleInspector ) other).getConditionsInspectors() );
+                && brlConditionsInspectors.isRedundant( (( RuleInspector ) other).brlConditionsInspectors )
+                && brlActionInspectors.isRedundant( (( RuleInspector ) other).brlActionInspectors )
+                && getActionsInspectors().isRedundant( (( RuleInspector ) other).getActionsInspectors() )
+                && getConditionsInspectors().isRedundant( (( RuleInspector ) other).getConditionsInspectors() );
     }
 
     @Override
     public boolean subsumes( final Object other ) {
         return other instanceof RuleInspector
-                && Redundancy.subsumes( brlActionInspectors,
-                                        (( RuleInspector ) other).brlActionInspectors )
-                && Redundancy.subsumes( brlConditionsInspectors,
-                                        (( RuleInspector ) other).brlConditionsInspectors )
-                && Redundancy.subsumes( getActionsInspectors(),
-                                        (( RuleInspector ) other).getActionsInspectors() )
-                && Redundancy.subsumes( getConditionsInspectors(),
-                                        (( RuleInspector ) other).getConditionsInspectors() );
+                && brlActionInspectors.subsumes( (( RuleInspector ) other).brlActionInspectors )
+                && brlConditionsInspectors.subsumes( (( RuleInspector ) other).brlConditionsInspectors )
+                && getActionsInspectors().subsumes( (( RuleInspector ) other).getActionsInspectors() )
+                && getConditionsInspectors().subsumes( (( RuleInspector ) other).getConditionsInspectors() );
     }
 
     @Override
     public boolean conflicts( final Object other ) {
         if ( other instanceof RuleInspector ) {
-            if ( Conflict.isConflicting( getActionsInspectors(),
-                                         (( RuleInspector ) other).getActionsInspectors() ) ) {
-                if ( Redundancy.subsumes( getConditionsInspectors(),
-                                          (( RuleInspector ) other).getConditionsInspectors() ) ) {
+            if ( getActionsInspectors().conflicts( (( RuleInspector ) other).getActionsInspectors() ) ) {
+                if ( getConditionsInspectors().subsumes( (( RuleInspector ) other).getConditionsInspectors() ) ) {
                     return true;
                 }
             }
@@ -188,8 +196,7 @@ public class RuleInspector
 
     @Override
     public boolean isDeficient( final RuleInspector other ) {
-        if ( other.atLeastOneActionHasAValue() && !Conflict.isConflicting( getActionsInspectors(),
-                                                                           other.getActionsInspectors() ) ) {
+        if ( other.atLeastOneActionHasAValue() && !getActionsInspectors().conflicts( other.getActionsInspectors() ) ) {
             return false;
         }
 
@@ -245,11 +252,23 @@ public class RuleInspector
         return rule.getRowNumber().toString();
     }
 
-    public List<ConditionInspector> getBrlConditionsInspectors() {
+    public InspectorList<ConditionInspector> getBrlConditionsInspectors() {
         return brlConditionsInspectors;
     }
 
-    public List<ActionInspector> getBrlActionInspectors() {
+    public InspectorList<ActionInspector> getBrlActionInspectors() {
         return brlActionInspectors;
+    }
+
+    @Override
+    public UUIDKey getUuidKey() {
+        return uuidKey;
+    }
+
+    @Override
+    public Key[] keys() {
+        return new Key[]{
+                uuidKey
+        };
     }
 }

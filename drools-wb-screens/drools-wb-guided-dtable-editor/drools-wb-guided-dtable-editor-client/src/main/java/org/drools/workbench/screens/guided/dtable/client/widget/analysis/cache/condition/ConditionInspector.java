@@ -16,12 +16,16 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasUUID;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsConflicting;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsOverlapping;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsRedundant;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Condition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 
 public abstract class ConditionInspector<T extends Comparable<T>>
@@ -29,8 +33,10 @@ public abstract class ConditionInspector<T extends Comparable<T>>
                    IsOverlapping,
                    IsSubsuming,
                    IsConflicting,
-                   HumanReadable {
+                   HumanReadable,
+                   HasKeys {
 
+    private final UUIDKey uuidKey = new UUIDKey( this );
 
     private Condition<T> condition;
 
@@ -46,7 +52,7 @@ public abstract class ConditionInspector<T extends Comparable<T>>
         if ( condition.getValues().isEmpty() ) {
             return null;
         } else {
-            return ( T ) condition.getValues().get( 0 );
+            return ( T ) condition.getValues().iterator().next();
         }
     }
 
@@ -91,7 +97,7 @@ public abstract class ConditionInspector<T extends Comparable<T>>
         }
     }
 
-    public Values<T> getValues() {
+    public Values<Comparable> getValues() {
         return condition.getValues();
     }
 
@@ -109,12 +115,10 @@ public abstract class ConditionInspector<T extends Comparable<T>>
         if ( this == obj ) {
             return true;
         }
-        if ( !obj.getClass().equals( this.getClass() ) ) {
-            return false;
+        if ( obj instanceof HasUUID ) {
+            return uuidKey.equals( (( HasUUID ) obj).getUuidKey() );
         }
-        if ( this.toHumanReadableString().equals( (( ConditionInspector ) obj).toHumanReadableString() ) ) {
-            return true;
-        }
+
         return false;
     }
 
@@ -123,4 +127,15 @@ public abstract class ConditionInspector<T extends Comparable<T>>
         return toHumanReadableString().hashCode();
     }
 
+    @Override
+    public UUIDKey getUuidKey() {
+        return uuidKey;
+    }
+
+    @Override
+    public Key[] keys() {
+        return new Key[]{
+                uuidKey
+        };
+    }
 }

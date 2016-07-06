@@ -43,13 +43,15 @@ public class KeyTreeMapMergeTest {
     @Before
     public void setUp() throws Exception {
 
-        treeMap = new KeyTreeMap<>();
+        treeMap = new KeyTreeMap<>( NAME_KEY_DEFINITION,
+                                    AGE_KEY_DEFINITION );
         pat = new Person( "Pat",
                           10 );
         add( treeMap,
              pat );
 
-        otherKeyTreeMap = new KeyTreeMap<>();
+        otherKeyTreeMap = new KeyTreeMap<>( NAME_KEY_DEFINITION,
+                                            AGE_KEY_DEFINITION );
         mat = new Person( "mat",
                           15 );
         add( otherKeyTreeMap,
@@ -90,7 +92,8 @@ public class KeyTreeMapMergeTest {
 
     @Test
     public void testRetract() throws Exception {
-        KeyTreeMap<Person> thirdKeyTreeMap = new KeyTreeMap<>();
+        KeyTreeMap<Person> thirdKeyTreeMap = new KeyTreeMap<>( NAME_KEY_DEFINITION,
+                                                               AGE_KEY_DEFINITION );
         thirdKeyTreeMap.merge( treeMap );
         thirdKeyTreeMap.merge( otherKeyTreeMap );
 
@@ -108,7 +111,7 @@ public class KeyTreeMapMergeTest {
 
     private Collection<Person> allPersons( final KeyTreeMap<Person> personKeyTreeMap ) {
         final Matcher age = new Matcher( KeyDefinition.newKeyDefinition().withId(  "age" ).build() );
-        final ChangeHandledMultiMap<Person> personChangeHandledMultiMap = personKeyTreeMap.get( age.getKeyDefinition() );
+        final MultiMap<Value, Person> personChangeHandledMultiMap = personKeyTreeMap.get( age.getKeyDefinition() );
         if ( personChangeHandledMultiMap != null ) {
             return personChangeHandledMultiMap.allValues();
         } else {
@@ -146,6 +149,11 @@ public class KeyTreeMapMergeTest {
                              name ),
                     new Key( AGE_KEY_DEFINITION,
                              age )};
+        }
+
+        @Override
+        public UUIDKey getUuidKey() {
+            return uuidKey;
         }
     }
 }

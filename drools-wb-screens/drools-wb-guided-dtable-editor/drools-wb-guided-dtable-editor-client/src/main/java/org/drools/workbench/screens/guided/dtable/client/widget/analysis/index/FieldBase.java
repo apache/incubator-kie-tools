@@ -30,7 +30,6 @@ public abstract class FieldBase
                    HumanReadable{
 
     private static KeyDefinition NAME           = KeyDefinition.newKeyDefinition().withId( "name" ).build();
-    private static KeyDefinition FACT_TYPE_NAME = KeyDefinition.newKeyDefinition().withId( "factTypeName" ).build();
 
     private final UUIDKey uuidKey = new UUIDKey( this );
     private final String factType;
@@ -45,6 +44,7 @@ public abstract class FieldBase
         this.name = PortablePreconditions.checkNotNull( "name", name );
     }
 
+    @Override
     public UUIDKey getUuidKey() {
         return uuidKey;
     }
@@ -111,8 +111,6 @@ public abstract class FieldBase
     public Key[] keys() {
         return new Key[]{
                 uuidKey,
-                new Key( FACT_TYPE_NAME,
-                         factType ),
                 new Key( NAME,
                          name )
         };
@@ -121,14 +119,13 @@ public abstract class FieldBase
     public static KeyDefinition[] keyDefinitions() {
         return new KeyDefinition[]{
                 UUIDKey.UNIQUE_UUID,
-                FACT_TYPE_NAME,
                 NAME
         };
     }
 
     @Override
     public String toHumanReadableString() {
-        return null;
+        return name;
     }
 
 }

@@ -21,8 +21,7 @@ public class KeyDefinition
         implements Comparable<KeyDefinition> {
 
     private final String  id;
-    private       boolean canBeEmpty;
-    private       boolean isValueList;
+    private boolean updatable;
 
     private KeyDefinition( final String id ) {
         this.id = PortablePreconditions.checkNotNull( "id", id );
@@ -41,19 +40,14 @@ public class KeyDefinition
         return new Builder();
     }
 
-    public boolean canBeEmpty() {
-        return canBeEmpty;
-    }
-
-    public boolean isValueList() {
-        return isValueList;
+    public boolean isUpdatable() {
+        return updatable;
     }
 
     public static class Builder {
         private String id;
 
-        private boolean canBeEmpty = false;
-        private boolean valueList  = false;
+        private boolean updatable = false;
 
         public Builder withId( final String id ) {
             this.id = id;
@@ -62,21 +56,13 @@ public class KeyDefinition
 
         public KeyDefinition build() {
             final KeyDefinition keyDefinition = new KeyDefinition( id );
-            keyDefinition.canBeEmpty = canBeEmpty;
-            keyDefinition.isValueList = valueList;
+            keyDefinition.updatable = updatable;
             return keyDefinition;
         }
 
-        public Builder canBeEmpty() {
-            canBeEmpty = true;
+        public Builder updatable() {
+            updatable = true;
             return this;
         }
-
-        public Builder valueList() {
-            valueList = true;
-            return this;
-        }
-
-
     }
 }

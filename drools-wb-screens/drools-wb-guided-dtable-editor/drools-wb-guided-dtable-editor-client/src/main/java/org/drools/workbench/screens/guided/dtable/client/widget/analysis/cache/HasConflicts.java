@@ -17,8 +17,10 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.ArrayList;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
+
 public interface HasConflicts<T> {
 
-    ArrayList<T> hasConflicts();
+    Conflict hasConflicts();
 
 }

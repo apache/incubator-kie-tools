@@ -16,23 +16,26 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
-import java.util.ArrayList;
-
+import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ConditionsInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ConditionsInspectorMultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.PatternInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ComparableConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
+
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable.*;
 
 public class DetectImpossibleMatchCheck
         extends SingleCheck {
 
-    private final ArrayList<ConditionInspector> conflictingConditions = new ArrayList<>();
+    private Conflict conflict = Conflict.EMPTY;
 
     public DetectImpossibleMatchCheck( final RuleInspector ruleInspector ) {
         super( ruleInspector );
@@ -41,14 +44,14 @@ public class DetectImpossibleMatchCheck
     @Override
     public void check() {
         hasIssues = false;
-        conflictingConditions.clear();
+        conflict = Conflict.EMPTY;
 
         for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
-            final ConditionsInspector conditionsInspector = patternInspector.getConditionsInspector();
-            final ArrayList<ConditionInspector> conditionInspectors = conditionsInspector.hasConflicts();
-            if ( !conditionInspectors.isEmpty() ) {
+            final ConditionsInspectorMultiMap conditionsInspector = patternInspector.getConditionsInspector();
+            final Conflict conflict = conditionsInspector.hasConflicts();
+            if ( conflict.foundIssue() ) {
                 hasIssues = true;
-                conflictingConditions.addAll( conditionInspectors );
+                this.conflict = conflict;
             }
 
         }
@@ -58,24 +61,32 @@ public class DetectImpossibleMatchCheck
     public Issue getIssue() {
         Issue issue = new Issue( Severity.ERROR,
                                  AnalysisConstants.INSTANCE.ImpossibleMatch(),
-                                 ruleInspector.getRowIndex() + 1 );
+                                 new ExplanationProvider() {
+                                     @Override
+                                     public SafeHtml toHTML() {
 
-        String fieldName = "";
-        String fieldFactType = "";
+                                         String fieldName = "";
+                                         String fieldFactType = "";
 
-        if ( conflictingConditions.get( 0 ) instanceof ComparableConditionInspector ) {
-            final Field field = (( ComparableConditionInspector ) conflictingConditions.get( 0 )).getField();
-            fieldName = field.getName();
-            fieldFactType = field.getFactType();
-        }
+                                         if ( conflict.getOrigin().getConflictedItem() instanceof ComparableConditionInspector ) {
+                                             final Field field = (( ComparableConditionInspector ) conflict.getOrigin().getConflictedItem()).getField();
+                                             fieldName = field.getName();
+                                             fieldFactType = field.getFactType();
+                                         }
 
-        issue.getExplanation()
-             .startNote()
-             .addParagraph(
-                     AnalysisConstants.INSTANCE.ImpossibleMatchNote1P1( (ruleInspector.getRowIndex() + 1), fieldName, fieldFactType ) )
-             .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchNote1P2( conflictingConditions.get( 0 ).toHumanReadableString(), conflictingConditions.get( 1 ).toHumanReadableString() ) )
-             .end()
-             .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchP1( fieldName ) );
+                                         return new Explanation()
+                                                 .startNote()
+                                                 .addParagraph(
+                                                         AnalysisConstants.INSTANCE.ImpossibleMatchNote1P1( (ruleInspector.getRowIndex() + 1), fieldName, fieldFactType ) )
+                                                 .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchNote1P2( toHumanReadableString( conflict.getOrigin().getConflictedItem() ),
+                                                                                                                   toHumanReadableString( conflict.getOrigin().getConflictingItem() ) ) )
+                                                 .end()
+                                                 .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchP1( fieldName ) )
+                                                 .toHTML();
+                                     }
+                                 },
+                                 ruleInspector );
+
 
         return issue;
     }

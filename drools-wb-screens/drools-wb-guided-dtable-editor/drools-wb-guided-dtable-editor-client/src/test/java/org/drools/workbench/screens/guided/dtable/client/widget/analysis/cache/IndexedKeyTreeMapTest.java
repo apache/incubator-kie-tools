@@ -27,6 +27,9 @@ import static org.junit.Assert.*;
 
 public class IndexedKeyTreeMapTest {
 
+    private final static KeyDefinition NAME_KEY_DEFINITION = KeyDefinition.newKeyDefinition().withId( "name" ).build();
+    private final static KeyDefinition AGE_KEY_DEFINITION  = KeyDefinition.newKeyDefinition().withId( "age" ).updatable().build();
+
     private IndexedKeyTreeMap<Person> map;
     private Person                      toni;
     private Person                      eder;
@@ -34,7 +37,8 @@ public class IndexedKeyTreeMapTest {
 
     @Before
     public void setUp() throws Exception {
-        map = new IndexedKeyTreeMap<>();
+        map = new IndexedKeyTreeMap<>( NAME_KEY_DEFINITION,
+                                       AGE_KEY_DEFINITION );
 
         toni = new Person( "Toni", 20 );
         eder = new Person( "Eder", 20 );
@@ -65,8 +69,6 @@ public class IndexedKeyTreeMapTest {
         map.put( smurf,
                  1 );
 
-        final ChangeHandledMultiMap<Person> personChangeHandledMultiMap = map.get( IndexKey.INDEX_ID );
-
         assertEquals( 4, map.get( IndexKey.INDEX_ID ).size() );
         assertEquals( toni, map.get( IndexKey.INDEX_ID ).get( new Value( 0 ) ).iterator().next() );
         assertEquals( smurf, map.get( IndexKey.INDEX_ID ).get( new Value( 1 ) ).iterator().next() );
@@ -96,7 +98,7 @@ public class IndexedKeyTreeMapTest {
 
         assertEquals( 100, toni.getAge() );
 
-        final Person person = map.get( KeyDefinition.newKeyDefinition().withId( "age" ).build() ).get( new Value( 100 ) ).iterator().next();
+        final Person person = map.get( AGE_KEY_DEFINITION ).get( new Value( 100 ) ).iterator().next();
         assertEquals( toni, person );
         assertEquals( 100, person.getAge() );
     }
@@ -116,7 +118,7 @@ public class IndexedKeyTreeMapTest {
         public Person( final String name,
                        final int age ) {
             this.name = name;
-            ageKey = new UpdatableKey<Person>( KeyDefinition.newKeyDefinition().withId( "age" ).build(),
+            ageKey = new UpdatableKey<Person>( AGE_KEY_DEFINITION,
                                                age );
         }
 
@@ -124,7 +126,7 @@ public class IndexedKeyTreeMapTest {
             return new Key[]{
                     uuidKey,
                     indexKey,
-                    new Key( KeyDefinition.newKeyDefinition().withId( "name" ).build(),
+                    new Key( NAME_KEY_DEFINITION,
                              name ),
                     ageKey
             };
@@ -161,13 +163,18 @@ public class IndexedKeyTreeMapTest {
             } else {
                 final UpdatableKey<Person> oldKey = ageKey;
 
-                final UpdatableKey<Person> newKey = new UpdatableKey<>( KeyDefinition.newKeyDefinition().withId( "age" ).build(),
+                final UpdatableKey<Person> newKey = new UpdatableKey<>( AGE_KEY_DEFINITION,
                                                                         age );
                 ageKey = newKey;
 
                 oldKey.update( newKey,
                                this );
             }
+        }
+
+        @Override
+        public UUIDKey getUuidKey() {
+            return uuidKey;
         }
     }
 }

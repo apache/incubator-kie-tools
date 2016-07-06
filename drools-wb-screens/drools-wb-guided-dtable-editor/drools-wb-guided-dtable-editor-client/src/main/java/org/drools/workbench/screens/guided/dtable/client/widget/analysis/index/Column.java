@@ -17,6 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasIndex;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.IndexKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
@@ -49,6 +50,7 @@ public class Column
         };
     }
 
+    @Override
     public UUIDKey getUuidKey() {
         return uuidKey;
     }
@@ -73,6 +75,14 @@ public class Column
             oldKey.update( newKey,
                              this );
         }
+
+    }
+
+    public static KeyDefinition[] keyDefinitions() {
+        return new KeyDefinition[]{
+                UUIDKey.UNIQUE_UUID,
+                IndexKey.INDEX_ID
+        };
 
     }
 }

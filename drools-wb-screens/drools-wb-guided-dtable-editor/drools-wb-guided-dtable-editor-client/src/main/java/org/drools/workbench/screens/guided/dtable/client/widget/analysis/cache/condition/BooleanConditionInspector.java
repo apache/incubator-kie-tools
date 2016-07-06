@@ -38,14 +38,14 @@ public class BooleanConditionInspector
                         case EQUALS:
                             return getValues().containsAll( (( BooleanConditionInspector ) other).getValues() );
                         case NOT_EQUALS:
-                            return !getValues().get( 0 ).equals( (( BooleanConditionInspector ) other).getValues().get( 0 ) );
+                            return !getValue().equals( (( BooleanConditionInspector ) other).getValue() );
                         default:
                             return false;
                     }
                 case NOT_EQUALS:
                     switch ( (( BooleanConditionInspector ) other).operator ) {
                         case EQUALS:
-                            return !getValues().get( 0 ).equals( (( BooleanConditionInspector ) other).getValues().get( 0 ) );
+                            return !getValues().equals( (( BooleanConditionInspector ) other).getValues() );
                         case NOT_EQUALS:
                             return getValues().containsAll( (( BooleanConditionInspector ) other).getValues() );
                         default:

@@ -17,9 +17,6 @@
 public class Index {
 
     public Rules      rules      = new Rules();
-    public Patterns   patterns   = new Patterns();
-    public Conditions conditions = new Conditions();
-    public Actions    actions    = new Actions();
 
     public Columns columns = new Columns();
 

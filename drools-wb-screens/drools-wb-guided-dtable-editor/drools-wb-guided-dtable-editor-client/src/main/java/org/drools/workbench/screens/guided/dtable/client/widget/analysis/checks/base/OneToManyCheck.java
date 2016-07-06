@@ -16,8 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
 
-import java.util.Collection;
-
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.InspectorList;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 
@@ -25,6 +24,8 @@ public abstract class OneToManyCheck
         extends SingleCheck {
 
     private RuleInspectorCache.Filter filter;
+
+    private final InspectorList<RuleInspector> ruleInspectors = new InspectorList<>();
 
     public OneToManyCheck( final RuleInspector ruleInspector,
                            final RuleInspectorCache.Filter filter ) {
@@ -44,7 +45,11 @@ public abstract class OneToManyCheck
         return ruleInspector;
     }
 
-    public Collection<RuleInspector> getOtherRows() {
-        return ruleInspector.getCache().all( filter );
+    public InspectorList<RuleInspector> getOtherRows() {
+        ruleInspectors.clear();
+
+        ruleInspectors.addAll( ruleInspector.getCache().all( filter ) );
+
+        return ruleInspectors;
     }
 }
