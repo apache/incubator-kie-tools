@@ -46,6 +46,8 @@
   <inherits name="org.uberfire.ext.wires.bpmn.WiresBpmnApi"/>
   <inherits name="org.uberfire.ext.wires.bpmn.WiresBpmnClient"/>
 
+  <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
+  <inherits name="org.uberfire.ext.preferences.UberfirePreferencesAPI"/>
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
 

@@ -85,6 +85,7 @@
    * [Guvnor](uberfireExtensions/guvnor.md)
    * [Dashbuilder](uberfireExtensions/dashbuilder.md)
    * [Simple Docks](uberfireExtensions/docks.md)
+   * [Preferences](uberfireExtensions/preferences.md)
 * [Integration](integration/integration.md)
    * [From Angular](integration/fromAngular.md)
    * [To Angular](integration/toAngular.md)

@@ -37,6 +37,7 @@
     <module>uberfire-metadata</module>
     <module>uberfire-widgets</module>
     <module>uberfire-commons-editor</module>
+    <module>uberfire-preferences</module>
     <module>uberfire-runtime-plugins</module>
     <module>uberfire-wires</module> 
     <module>uberfire-apps</module>

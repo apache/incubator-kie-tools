@@ -22,11 +22,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.ext.preferences.shared.PreferenceStore;
+import org.uberfire.ext.preferences.shared.impl.DefaultScopes;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuPosition;
@@ -49,9 +52,13 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
+    @Inject
+    private Caller<PreferenceStore> preferenceStore;
+
     @AfterInitialization
     public void startApp() {
         setupMenu();
+        setupGlobalPreferences();
         hideLoadingPopup();
     }
 
@@ -96,6 +103,11 @@ public class ShowcaseEntryPoint {
             public void execute() {
                 placeManager.goTo( new DefaultPlaceRequest( "UFWidgets" ) );
             }
+        } ).endMenu().newTopLevelMenu( "Preferences" ).respondsWith( new Command() {
+            @Override
+            public void execute() {
+                placeManager.goTo( new DefaultPlaceRequest( PreferencesPerspective.PREFERENCES_PERSPECTIVE ) );
+            }
         } ).endMenu().newTopLevelMenu( "Logout" ).position( MenuPosition.RIGHT ).respondsWith( new Command() {
             @Override
             public void execute() {
@@ -103,6 +115,11 @@ public class ShowcaseEntryPoint {
             }
         } ).endMenu().build();
         menubar.addMenus( menus );
+    }
+
+    private void setupGlobalPreferences() {
+        preferenceStore.call().putIfAbsent( DefaultScopes.GLOBAL.type(), "my.preference.key", "my-value" );
+        preferenceStore.call().putIfAbsent( "my.other.preference.key", "my-other-value" );
     }
 
     // Fade out the "Loading application" pop-up
