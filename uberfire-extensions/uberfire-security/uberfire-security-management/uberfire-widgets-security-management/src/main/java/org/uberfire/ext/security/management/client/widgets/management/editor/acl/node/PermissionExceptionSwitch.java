@@ -39,6 +39,8 @@ public class PermissionExceptionSwitch implements PermissionSwitchToogle {
         boolean isOn();
 
         void setOn(boolean on);
+
+        void setEnabled(boolean enabled);
     }
 
     View view;
@@ -70,8 +72,24 @@ public class PermissionExceptionSwitch implements PermissionSwitchToogle {
         this.onChange = onChange;
     }
 
+    @Override
     public boolean isOn() {
         return view.isOn();
+    }
+
+    @Override
+    public void setOn(boolean on) {
+        view.setOn(on);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        view.setEnabled(enabled);
+    }
+
+    @Override
+    public void setNumberOfExceptions(int n) {
+
     }
 
     @Override

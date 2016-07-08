@@ -27,6 +27,11 @@ public class PermissionTreeI18NImpl implements PermissionTreeI18n {
     }
 
     @Override
+    public String perspectivesNodeHelp() {
+        return PermissionTreeConstants.INSTANCE.perspectivesNodeHelp();
+    }
+
+    @Override
     public String perspectiveResourceName() {
         return PermissionTreeConstants.INSTANCE.perspectiveResourceName();
     }

@@ -42,7 +42,10 @@ public class LeafPermissionNodeEditorTest {
     LeafPermissionNodeEditor.View view;
 
     @Mock
-    PermissionSwitch.View permissionSwitchView;
+    PermissionSwitch.View permissionSwitchView1;
+
+    @Mock
+    PermissionSwitch.View permissionSwitchView2;
 
     @Mock
     PermissionWidgetFactory widgetFactory;
@@ -67,8 +70,8 @@ public class LeafPermissionNodeEditorTest {
     @Before
     public void setUp() {
         presenter = new LeafPermissionNodeEditor(view, widgetFactory, changedEvent);
-        permissionSwitch1 = spy(new PermissionSwitch(permissionSwitchView));
-        permissionSwitch2 = spy(new PermissionSwitch(permissionSwitchView));
+        permissionSwitch1 = spy(new PermissionSwitch(permissionSwitchView1));
+        permissionSwitch2 = spy(new PermissionSwitch(permissionSwitchView2));
 
         when(widgetFactory.createSwitch()).thenReturn(permissionSwitch1, permissionSwitch2);
         when(permission1.getResult()).thenReturn(AuthorizationResult.ACCESS_DENIED);
@@ -80,11 +83,12 @@ public class LeafPermissionNodeEditorTest {
         permissionNode.setNodeName("r1");
         permissionNode.addPermission(permission1, "grant1", "deny1");
         permissionNode.addPermission(permission2, "grant2", "deny2");
-        presenter.edit(permissionNode);
     }
     
     @Test
     public void testInit() {
+        presenter.edit(permissionNode);
+
         assertTrue(presenter.getChildEditors().isEmpty());
         assertEquals(presenter.getPermissionNode(), permissionNode);
 
@@ -98,9 +102,47 @@ public class LeafPermissionNodeEditorTest {
 
     @Test
     public void testSwitchChange() {
+        presenter.edit(permissionNode);
+
         permissionSwitch1.onChange();
 
         verify(permission1).setResult(any());
         verify(changedEvent).fire(any());
+    }
+
+    @Test
+    public void testSwitchInitDependencies() {
+        when(permissionSwitchView1.isOn()).thenReturn(false);
+        when(permissionSwitchView2.isOn()).thenReturn(true);
+
+        reset(permission2);
+        permissionNode.addDependencies(permission1, permission2);
+        presenter.edit(permissionNode);
+
+        verify(permission2).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitch2).setEnabled(false);
+        verify(permissionSwitch2).setOn(false);
+    }
+
+    @Test
+    public void testSwitchChangeDependencies() {
+        permissionNode.addDependencies(permission1, permission2);
+        presenter.edit(permissionNode);
+
+        reset(permission2);
+        reset(permissionSwitch2);
+        when(permissionSwitch1.isOn()).thenReturn(false);
+        permissionSwitch1.onChange();
+
+        verify(permission2).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitch2).setEnabled(false);
+        verify(permissionSwitch2).setOn(false);
+
+        reset(permissionSwitch2);
+        when(permissionSwitch1.isOn()).thenReturn(true);
+        permissionSwitch1.onChange();
+
+        verify(permissionSwitch2).setEnabled(true);
+        verify(permissionSwitch2, never()).setOn(anyBoolean());
     }
 }

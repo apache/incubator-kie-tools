@@ -17,9 +17,12 @@
 package org.uberfire.ext.security.management.client.widgets.management.editor.acl.node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.ACLEditor;
+import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.client.authz.tree.PermissionNode;
 
@@ -29,6 +32,7 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
     protected PermissionNode permissionNode;
     private PermissionNodeEditor parentEditor = null;
     private List<PermissionNodeEditor> childEditorList = new ArrayList<>();
+    protected Map<Permission, PermissionSwitchToogle> permissionSwitchMap = new HashMap<>();
     protected int width = 240;
     protected int leftMargin = 0;
     protected int treeLevel = 0;
@@ -143,16 +147,49 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
 
     }
 
+    protected void onNodePanelWidthChanged() {
+
+    }
+
     protected void onPermissionChanged(Permission permission, boolean on) {
+        // Notify the parent editor
         if (parentEditor != null) {
             parentEditor.onChildPermissionChanged(this, permission, on);
         }
+        // Notify the children editors
         for (PermissionNodeEditor child : getChildEditors()) {
             child.onParentPermissionChanged(permission, on);
         }
+        // Update permissions inter-dependencies
+        processPermissionDependencies(permission);
     }
 
-    protected void onNodePanelWidthChanged() {
 
+    protected void processAllPermissionDependencies() {
+        for (Permission permission : permissionSwitchMap.keySet()) {
+            processPermissionDependencies(permission);
+        }
+    }
+
+    protected void processPermissionDependencies(Permission permission) {
+        List<Permission> dependencyList = this.getPermissionNode().getDependencies(permission);
+        if (dependencyList != null) {
+            PermissionSwitchToogle permissionSwitch = permissionSwitchMap.get(permission);
+            for (Permission dep : dependencyList) {
+                PermissionSwitchToogle depSwitch = permissionSwitchMap.get(dep);
+
+                if (!permissionSwitch.isOn()) {
+                    dep.setResult(AuthorizationResult.ACCESS_DENIED);
+                    depSwitch.setOn(false);
+                    depSwitch.setEnabled(false);
+                } else {
+                    depSwitch.setEnabled(true);
+                }
+            }
+        }
+    }
+
+    protected void registerPermissionSwitch(Permission permission, PermissionSwitchToogle permissionSwitch) {
+        permissionSwitchMap.put(permission, permissionSwitch);
     }
 }

@@ -85,4 +85,9 @@ public class PermissionExceptionSwitchView extends Composite
     public void setOn(boolean on) {
         switchControl.setValue(on);
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        switchControl.setEnabled(enabled);
+    }
 }

@@ -114,11 +114,21 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
     public PermissionNode buildRootNode() {
         PermissionResourceNode rootNode = new PermissionResourceNode(resourceName, this);
         rootNode.setNodeName(rootNodeName);
+        rootNode.setNodeFullName(i18n.perspectivesNodeHelp());
         rootNode.setPositionInTree(rootNodePosition);
-        rootNode.addPermission(newPermission(READ), i18n.perspectiveRead());
-        rootNode.addPermission(newPermission(UPDATE), i18n.perspectiveUpdate());
-        rootNode.addPermission(newPermission(DELETE), i18n.perspectiveDelete());
-        rootNode.addPermission(newPermission(CREATE), i18n.perspectiveCreate());
+
+        Permission readPermission = newPermission(READ);
+        Permission updatePermission = newPermission(UPDATE);
+        Permission deletePermission = newPermission(DELETE);
+        Permission createPermission = newPermission(CREATE);
+
+        rootNode.addPermission(readPermission, i18n.perspectiveRead());
+        rootNode.addPermission(updatePermission, i18n.perspectiveUpdate());
+        rootNode.addPermission(deletePermission, i18n.perspectiveDelete());
+        rootNode.addPermission(createPermission, i18n.perspectiveCreate());
+
+        rootNode.addDependencies(readPermission, updatePermission, deletePermission);
+
         return rootNode;
     }
 
@@ -157,12 +167,17 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
 
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(name);
-        node.addPermission(newPermission(p, READ), i18n.perspectiveRead());
+
+        Permission readPermission = newPermission(p, READ);
+        node.addPermission(readPermission, i18n.perspectiveRead());
 
         // Only runtime created perspectives can be modified
         if (!(p instanceof AbstractWorkbenchPerspectiveActivity)) {
-            node.addPermission(newPermission(p, UPDATE), i18n.perspectiveUpdate());
-            node.addPermission(newPermission(p, DELETE), i18n.perspectiveDelete());
+            Permission updatePermission = newPermission(p, UPDATE);
+            Permission deletePermission = newPermission(p, DELETE);
+            node.addPermission(updatePermission, i18n.perspectiveUpdate());
+            node.addPermission(deletePermission, i18n.perspectiveDelete());
+            node.addDependencies(readPermission, updatePermission, deletePermission);
         }
         return node;
     }

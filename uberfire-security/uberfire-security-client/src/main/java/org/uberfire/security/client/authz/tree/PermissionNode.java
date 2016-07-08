@@ -123,6 +123,25 @@ public interface PermissionNode {
     String getPermissionDenyName(Permission permission);
 
     /**
+     * Attach to the given {@link Permission} instance a set of permissions which depends on it so that if the
+     * permission is denied then all its dependencies must be denied as well.
+     *
+     * <p>For instance, the update and delete permission over a resource depends on the read permission.</p>
+     *
+     * @param permission The {@link Permission} instance
+     * @param dependencies The set of dependencies
+     */
+    void addDependencies(Permission permission, Permission... dependencies);
+
+    /**
+     * Get the dependencies (if any) attached to a given permission instance.
+     *
+     * @param permission The permission to check
+     * @return A list of permissions
+     */
+    List<Permission> getDependencies(Permission permission);
+
+    /**
      * Get the expand status
      *
      * @return true if expanded, false if collapsed

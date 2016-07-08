@@ -20,6 +20,8 @@ public interface PermissionTreeI18n {
 
     String perspectivesNodeName();
 
+    String perspectivesNodeHelp();
+
     String perspectiveResourceName();
 
     String perspectiveCreate();

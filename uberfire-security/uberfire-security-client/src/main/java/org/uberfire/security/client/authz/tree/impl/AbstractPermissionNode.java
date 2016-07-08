@@ -35,6 +35,7 @@ public class AbstractPermissionNode implements PermissionNode {
     private PermissionTreeProvider permissionTreeProvider = null;
     private PermissionNode parentNode = null;
     private List<Permission> permissionList = new ArrayList<>();
+    private Map<Permission, List<Permission>> dependencyMap = new HashMap<>();
     private Map<String,Object> propertyMap = new HashMap<>();
     private Map<String,String> grantNameMap = new HashMap<>();
     private Map<String,String> denyNameMap = new HashMap<>();
@@ -210,6 +211,25 @@ public class AbstractPermissionNode implements PermissionNode {
             parent = parent.getParentNode();
         }
         return parent;
+    }
+
+    @Override
+    public void addDependencies(Permission permission, Permission... dependencies) {
+        if (dependencies != null) {
+            List<Permission> dependencyList = dependencyMap.get(permission);
+            if (dependencyList == null) {
+                dependencyList = new ArrayList<>();
+                dependencyMap.put(permission, dependencyList);
+            }
+            for (Permission dependency : dependencies) {
+                dependencyList.add(dependency);
+            }
+        }
+    }
+
+    @Override
+    public List<Permission> getDependencies(Permission permission) {
+        return dependencyMap.get(permission);
     }
 
     @Override

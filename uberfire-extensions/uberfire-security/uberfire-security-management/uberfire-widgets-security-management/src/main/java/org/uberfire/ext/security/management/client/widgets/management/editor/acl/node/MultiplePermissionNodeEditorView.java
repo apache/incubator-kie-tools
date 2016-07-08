@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -56,6 +57,10 @@ public class MultiplePermissionNodeEditorView extends Composite
     @Inject
     @DataField
     Div nodeAnchorPanel;
+
+    @Inject
+    @DataField
+    Span nodeAnchorHelp;
 
     @Inject
     @DataField
@@ -121,6 +126,8 @@ public class MultiplePermissionNodeEditorView extends Composite
     @Override
     public void setNodeFullName(String name) {
         nodeAnchor.setTitle(name);
+        nodeAnchorHelp.setTitle(name);
+        nodeAnchorHelp.getStyle().removeProperty("display");
     }
 
     @Override
@@ -129,7 +136,7 @@ public class MultiplePermissionNodeEditorView extends Composite
     }
 
     @Override
-    public void addPermission(PermissionSwitch permissionSwitch) {
+    public void addPermission(PermissionSwitchToogle permissionSwitch) {
         nodePermissions.add(permissionSwitch);
     }
 

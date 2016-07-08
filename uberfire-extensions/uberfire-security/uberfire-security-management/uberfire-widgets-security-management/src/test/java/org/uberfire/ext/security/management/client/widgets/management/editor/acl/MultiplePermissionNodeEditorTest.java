@@ -37,6 +37,7 @@ import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.client.authz.tree.LoadCallback;
 import org.uberfire.security.client.authz.tree.PermissionNode;
+import org.uberfire.security.client.authz.tree.PermissionTreeProvider;
 import org.uberfire.security.client.authz.tree.impl.PermissionGroupNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionResourceNode;
 
@@ -50,10 +51,16 @@ public class MultiplePermissionNodeEditorTest {
     MultiplePermissionNodeEditor.View view;
 
     @Mock
-    PermissionSwitch.View permissionSwitchView;
+    PermissionSwitch.View permissionSwitchView1;
+
+    @Mock
+    PermissionSwitch.View permissionSwitchView2;
 
     @Mock
     LiveSearchDropDown liveSearchDropDown;
+
+    @Mock
+    PermissionTreeProvider permissionTreeProvider;
 
     @Mock
     PermissionWidgetFactory widgetFactory;
@@ -74,12 +81,6 @@ public class MultiplePermissionNodeEditorTest {
     Permission permission2;
 
     @Mock
-    PermissionGroupNode permissionGroupNode;
-
-    @Mock
-    PermissionResourceNode permissionResourceNode;
-
-    @Mock
     PermissionNode childNode1;
 
     @Mock
@@ -94,6 +95,8 @@ public class MultiplePermissionNodeEditorTest {
     @Mock
     Command onChange;
 
+    PermissionGroupNode permissionGroupNode;
+    PermissionResourceNode permissionResourceNode;
     MultiplePermissionNodeEditor presenter;
     PermissionSwitch permissionSwitch1;
     PermissionSwitch permissionSwitch2;
@@ -102,8 +105,9 @@ public class MultiplePermissionNodeEditorTest {
     public void setUp() {
         presenter = new MultiplePermissionNodeEditor(view, liveSearchDropDown, widgetFactory,
                 changedEvent, nodeAddedEvent, nodeRemovedEvent);
-        permissionSwitch1 = spy(new PermissionSwitch(permissionSwitchView));
-        permissionSwitch2 = spy(new PermissionSwitch(permissionSwitchView));
+
+        permissionSwitch1 = spy(new PermissionSwitch(permissionSwitchView1));
+        permissionSwitch2 = spy(new PermissionSwitch(permissionSwitchView2));
 
         when(widgetFactory.createSwitch()).thenReturn(permissionSwitch1, permissionSwitch2);
         when(widgetFactory.createEditor(childNode1)).thenReturn(childEditor1);
@@ -114,19 +118,15 @@ public class MultiplePermissionNodeEditorTest {
         when(permission2.getResult()).thenReturn(AuthorizationResult.ACCESS_GRANTED);
         when(permission2.getName()).thenReturn("p2");
 
-        when(permissionGroupNode.getNodeName()).thenReturn("r1");
-        when(permissionGroupNode.getPermissionList()).thenReturn(Arrays.asList(permission1, permission2));
-        when(permissionGroupNode.getPermissionGrantName(permission1)).thenReturn("grant1");
-        when(permissionGroupNode.getPermissionDenyName(permission1)).thenReturn("deny1");
-        when(permissionGroupNode.getPermissionGrantName(permission2)).thenReturn("grant2");
-        when(permissionGroupNode.getPermissionDenyName(permission2)).thenReturn("deny2");
+        permissionGroupNode = spy(new PermissionGroupNode(permissionTreeProvider));
+        permissionGroupNode.setNodeName("r1");
+        permissionGroupNode.addPermission(permission1, "grant1", "deny1");
+        permissionGroupNode.addPermission(permission2, "grant2", "deny2");
 
-        when(permissionResourceNode.getNodeName()).thenReturn("r2");
-        when(permissionResourceNode.getPermissionList()).thenReturn(Arrays.asList(permission1, permission2));
-        when(permissionResourceNode.getPermissionGrantName(permission1)).thenReturn("grant1");
-        when(permissionResourceNode.getPermissionDenyName(permission1)).thenReturn("deny1");
-        when(permissionResourceNode.getPermissionGrantName(permission2)).thenReturn("grant2");
-        when(permissionResourceNode.getPermissionDenyName(permission2)).thenReturn("deny2");
+        permissionResourceNode = spy(new PermissionResourceNode("resource", permissionTreeProvider));
+        permissionResourceNode.setNodeName("r2");
+        permissionResourceNode.addPermission(permission1, "grant1", "deny1");
+        permissionResourceNode.addPermission(permission2, "grant2", "deny2");
 
         doAnswer(invocationOnMock -> {
             LoadCallback callback = (LoadCallback) invocationOnMock.getArguments()[0];
@@ -172,7 +172,6 @@ public class MultiplePermissionNodeEditorTest {
         verify(view).setChildSelector(liveSearchDropDown);
     }
 
-
     @Test
     public void testExpandGroupNode() {
         presenter.edit(permissionGroupNode);
@@ -210,5 +209,41 @@ public class MultiplePermissionNodeEditorTest {
 
         verify(permission1).setResult(any());
         verify(changedEvent).fire(any());
+    }
+
+    @Test
+    public void testSwitchInitDependencies() {
+        when(permissionSwitchView1.isOn()).thenReturn(false);
+        when(permissionSwitchView2.isOn()).thenReturn(true);
+
+        reset(permission2);
+        permissionGroupNode.addDependencies(permission1, permission2);
+        presenter.edit(permissionGroupNode);
+
+        verify(permission2).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitch2).setEnabled(false);
+        verify(permissionSwitch2).setOn(false);
+    }
+
+    @Test
+    public void testSwitchChangeDependencies() {
+        permissionGroupNode.addDependencies(permission1, permission2);
+        presenter.edit(permissionGroupNode);
+
+        reset(permission2);
+        reset(permissionSwitch2);
+        when(permissionSwitch1.isOn()).thenReturn(false);
+        permissionSwitch1.onChange();
+
+        verify(permission2).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitch2).setEnabled(false);
+        verify(permissionSwitch2).setOn(false);
+
+        reset(permissionSwitch2);
+        when(permissionSwitch1.isOn()).thenReturn(true);
+        permissionSwitch1.onChange();
+
+        verify(permissionSwitch2).setEnabled(true);
+        verify(permissionSwitch2, never()).setOn(anyBoolean());
     }
 }

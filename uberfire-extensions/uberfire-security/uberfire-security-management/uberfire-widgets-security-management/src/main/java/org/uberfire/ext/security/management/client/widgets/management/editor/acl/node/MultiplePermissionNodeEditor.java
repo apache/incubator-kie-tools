@@ -17,7 +17,6 @@
 package org.uberfire.ext.security.management.client.widgets.management.editor.acl.node;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -55,7 +54,7 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
 
         void setResourceName(String name);
 
-        void addPermission(PermissionSwitch permissionSwitch);
+        void addPermission(PermissionSwitchToogle permissionSwitch);
 
         void addChildEditor(PermissionNodeEditor editor, boolean dynamic);
 
@@ -91,7 +90,6 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
     Event<PermissionNodeAddedEvent> permissionNodeAddedEvent;
     Event<PermissionNodeRemovedEvent> permissionNodeRemovedEvent;
     Map<String,PermissionNode> childSelectorNodeMap = new TreeMap<>();
-    Map<Permission, PermissionSwitch> permissionSwitchMap = new HashMap<>();
     boolean expanded = false;
 
     @Inject
@@ -174,9 +172,17 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
                 int n = getExceptionNumber(permission);
                 permissionSwitch.setNumberOfExceptions(n);
             });
-            permissionSwitchMap.put(permission, permissionSwitch);
-            view.addPermission(permissionSwitch);
+            super.registerPermissionSwitch(permission, permissionSwitch);
         }
+        // Update the switches status according to the inter-dependencies between the permissions
+        super.processAllPermissionDependencies();
+
+        // Add the switch controls to the view once initialized
+        for (PermissionSwitchToogle switchToogle : permissionSwitchMap.values()) {
+            view.addPermission(switchToogle);
+        }
+
+        // Load the children in order to initialize the exception counters properly
         loadChildren();
     }
 
@@ -237,7 +243,7 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
 
     private void updateExceptionCounters() {
         for (Permission p : permissionSwitchMap.keySet()) {
-            PermissionSwitch pswitch = permissionSwitchMap.get(p);
+            PermissionSwitchToogle pswitch = permissionSwitchMap.get(p);
             int n = getExceptionNumber(p);
             pswitch.setNumberOfExceptions(n);
         }

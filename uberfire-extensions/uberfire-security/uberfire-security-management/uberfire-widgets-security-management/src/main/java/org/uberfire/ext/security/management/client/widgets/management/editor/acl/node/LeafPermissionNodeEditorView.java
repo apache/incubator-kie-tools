@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -36,6 +37,10 @@ public class LeafPermissionNodeEditorView extends Composite
     @Inject
     @DataField
     Label nodeName;
+
+    @Inject
+    @DataField
+    Span nodeNameHelp;
 
     @Inject
     @DataField
@@ -63,6 +68,8 @@ public class LeafPermissionNodeEditorView extends Composite
     @Override
     public void setNodeFullName(String name) {
         nodeName.setTitle(name);
+        nodeNameHelp.setTitle(name);
+        nodeNameHelp.getStyle().removeProperty("display");
     }
 
     @Override

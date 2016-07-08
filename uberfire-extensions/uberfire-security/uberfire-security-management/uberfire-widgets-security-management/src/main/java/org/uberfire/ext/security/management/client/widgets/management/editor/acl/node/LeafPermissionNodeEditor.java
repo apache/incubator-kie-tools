@@ -16,9 +16,6 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.acl.node;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -48,7 +45,6 @@ public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
     View view;
     PermissionWidgetFactory widgetFactory;
     Event<PermissionChangedEvent> permissionChangedEvent;
-    Map<Permission, PermissionSwitchToogle> permissionSwitchMap = new HashMap<>();
 
     @Inject
     public LeafPermissionNodeEditor(View view, PermissionWidgetFactory widgetFactory, Event<PermissionChangedEvent> permissionChangedEvent) {
@@ -101,7 +97,14 @@ public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
                 switchToogle = permissionSwitch;
             }
             initPermissionSwitchToogle(switchToogle, permission);
-            permissionSwitchMap.put(permission, switchToogle);
+            super.registerPermissionSwitch(permission, switchToogle);
+        }
+
+        // Update the switches status according to the inter-dependencies between the permissions
+        super.processAllPermissionDependencies();
+
+        // Add the switch controls to the view once initialized
+        for (PermissionSwitchToogle switchToogle : permissionSwitchMap.values()) {
             view.addPermission(switchToogle);
         }
     }

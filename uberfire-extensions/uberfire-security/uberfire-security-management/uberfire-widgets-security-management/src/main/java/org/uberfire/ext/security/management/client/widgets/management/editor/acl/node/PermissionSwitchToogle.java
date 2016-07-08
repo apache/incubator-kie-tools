@@ -23,6 +23,12 @@ public interface PermissionSwitchToogle extends IsWidget {
 
     boolean isOn();
 
+    void setOn(boolean on);
+
+    void setEnabled(boolean enabled);
+
+    void setNumberOfExceptions(int n);
+
     void toogle();
 
     void setOnChange(Command onChange);
