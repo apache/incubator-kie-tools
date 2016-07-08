@@ -38,7 +38,6 @@ public class ShowcaseEntryPoint {
 
     @PostConstruct
     public void startApp() {
-        AppResource.INSTANCE.CSS().ensureInjected();
         hideLoadingPopup();
     }
 
@@ -60,12 +59,7 @@ public class ShowcaseEntryPoint {
     @Produces
     @ApplicationScoped
     public MainBrand createBrandLogo() {
-        return new MainBrand() {
-            @Override
-            public Widget asWidget() {
-                return new Image( AppResource.INSTANCE.images().ufBrandLogo() );
-            }
-        };
+        return () -> new Image( AppResource.INSTANCE.images().ufBrandLogo() );
     }
 
     //Fade out the "Loading application" pop-up

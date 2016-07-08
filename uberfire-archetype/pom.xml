@@ -31,6 +31,5 @@
 
   <modules>
     <module>uberfire-project-archetype</module>
-    <module>uberfire-component-archetype</module>
   </modules>
 </project>

@@ -15,16 +15,4 @@ public interface AppResource
 
     AppImages images();
 
-    @Source("css/welcome.css")
-    WelcomeCss CSS();
-
-    @Source("images/downloads-bgr.png")
-    DataResource downloadsBgr();
-
-    @Source("images/get-started-bgr.png")
-    DataResource getStartedBgr();
-
-    @Source("images/git-bgr.png")
-    DataResource gitBgr();
-
 }
