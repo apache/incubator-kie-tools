@@ -150,9 +150,13 @@ public class AuthzPolicyDeployerTest {
         assertTrue(roles.contains(managerRole));
         assertEquals(policy.getRoleDescription(managerRole), "Manager");
         assertEquals(policy.getPriority(managerRole), 3);
-        assertEquals(permissions.collection().size(), 2);
+        assertEquals(permissions.collection().size(), 3);
 
         permission = permissions.get("perspective.read");
+        assertNotNull(permission);
+        assertEquals(permission.getResult(), AuthorizationResult.ACCESS_GRANTED);
+
+        permission = permissions.get("repository.read.git://repo1");
         assertNotNull(permission);
         assertEquals(permission.getResult(), AuthorizationResult.ACCESS_GRANTED);
     }

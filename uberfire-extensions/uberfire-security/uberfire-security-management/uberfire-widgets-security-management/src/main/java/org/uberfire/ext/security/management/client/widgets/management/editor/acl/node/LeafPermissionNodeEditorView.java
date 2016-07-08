@@ -69,7 +69,7 @@ public class LeafPermissionNodeEditorView extends Composite
     public void setNodeFullName(String name) {
         nodeName.setTitle(name);
         nodeNameHelp.setTitle(name);
-        nodeNameHelp.getStyle().removeProperty("display");
+        nodeNameHelp.setClassName("acl-help-panel");
     }
 
     @Override

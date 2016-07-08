@@ -80,6 +80,16 @@ public class AuthzPolicyMarshallerTest {
         assertEquals(tokens.get(3), "perspective.read");
     }
 
+    @Test
+    public void testPermissionEntry2() {
+        List<String> tokens = marshaller.split("role.manager.permission.repository.update.git://repo1");
+        assertEquals(tokens.size(), 4);
+        assertEquals(tokens.get(0), "role");
+        assertEquals(tokens.get(1), "manager");
+        assertEquals(tokens.get(2), "permission");
+        assertEquals(tokens.get(3), "repository.update.git://repo1");
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidEntry1() {
         marshaller.split("role..priority");
@@ -99,7 +109,7 @@ public class AuthzPolicyMarshallerTest {
     public void testPolicyRead() throws Exception {
         URL fileURL = Thread.currentThread().getContextClassLoader().getResource("WEB-INF/classes/security-policy.properties");
         Path policyPath = Paths.get(fileURL.toURI());
-        Properties input = new Properties();
+        NonEscapedProperties input = new NonEscapedProperties();
         input.load(Files.newBufferedReader(policyPath));
         marshaller.read(builder, input);
 
@@ -148,9 +158,13 @@ public class AuthzPolicyMarshallerTest {
         assertTrue(roles.contains(managerRole));
         assertEquals(policy.getRoleDescription(managerRole), "Manager");
         assertEquals(policy.getPriority(managerRole), 3);
-        assertEquals(permissions.collection().size(), 2);
+        assertEquals(permissions.collection().size(), 3);
 
         permission = permissions.get("perspective.read");
+        assertNotNull(permission);
+        assertEquals(permission.getResult(), AuthorizationResult.ACCESS_GRANTED);
+
+        permission = permissions.get("repository.read.git://repo1");
         assertNotNull(permission);
         assertEquals(permission.getResult(), AuthorizationResult.ACCESS_GRANTED);
     }

@@ -1,27 +1,27 @@
-.root-panel {
+.acl-root-panel {
     margin-top: 5px;
 }
 
-.root-panel-expanded {
+.acl-root-panel-expanded {
     margin-top: 5px;
     border: 1px solid lightgrey;
 }
 
-.header-panel {
+.acl-header-panel {
     margin-top: 5px;
     padding-left: 15px;
     padding-top: 10px;
     padding-bottom: 10px;
 }
 
-.header-panel-expanded {
+.acl-header-panel-expanded {
     padding-left: 15px;
     padding-top: 10px;
     padding-bottom: 10px;
     background-color: #e9e8e8;
 }
 
-.header-panel-over {
+.acl-header-panel-over {
     margin-top: 5px;
     padding-left: 15px;
     padding-top: 10px;
@@ -29,20 +29,61 @@
     background-color: #e9e8e8;
 }
 
-.add-child-panel {
-    margin-top: 10px;
-    padding-left: 20px;
+.acl-display-none {
+    display: none;
 }
 
-.clear-children-panel {
-    margin-top: 10px;
-    padding-left: 20px;
+.acl-node-name-panel {
+    display: table-cell;
+    vertical-align: middle;
 }
 
-.details-panel {
-    margin-left: 25px;
+.acl-node-help-panel {
+    vertical-align: middle;
+    font-size: small;
+}
+
+.acl-node-help-icon {
+    margin-left: 5px;
+}
+
+.acl-collapse-panel {
+    margin-left: 10px;
     margin-bottom: 10px;
     padding-right: 10px;
+}
+
+.acl-permissions-panel {
+    display: table-cell;
+}
+
+.acl-add-child-panel {
+    margin-top: 10px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+}
+
+.acl-clear-children-panel {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.acl-child-selector-panel {
+    display: table-cell;
+}
+
+.acl-add-child-anchor {
+    display: table-cell;
+}
+
+.acl-cancel-anchor {
+    display: table-cell;
+    width: 20px;
+}
+
+.acl-clear-children-anchor {
+    display: table-cell;
+    padding-left: 20px;
 }
 
 

@@ -137,20 +137,45 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
         return width - leftMargin - (treeLevel*padding);
     }
 
+    /**
+     * Invoked when any of the parent permissions of a permission editor changes.
+     *
+     * <p>By default, it does nothing as it is up to each subclass to provide its own implementation.</p>
+     *
+     * <p>Only leaf or intermediate nodes are invoked.</p>
+     */
     @Override
     public void onParentPermissionChanged(Permission permission, boolean on) {
 
     }
 
+    /**
+     * Invoked when any of the permissions of a child editor changes.
+     *
+     * <p>By default, it does nothing as it is up to each subclass to provide its own implementation.</p>
+     *
+     * <p>This method is never invoked on leaf nodes.</p>
+     */
     @Override
     public void onChildPermissionChanged(PermissionNodeEditor childEditor, Permission permission, boolean on) {
 
     }
 
+    /**
+     * Invoked when the width of a node editor panel changes.
+     *
+     * <p>By default, it  does nothing as it is up to each subclass to provide its own implementation.</p>
+     */
     protected void onNodePanelWidthChanged() {
 
     }
 
+    /**
+     * Invoked when a permission toogle switch changes its value.
+     *
+     * @param permission The changing permission
+     * @param on The switch status
+     */
     protected void onPermissionChanged(Permission permission, boolean on) {
         // Notify the parent editor
         if (parentEditor != null) {
@@ -164,13 +189,25 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
         processPermissionDependencies(permission);
     }
 
-
+    /**
+     * Make sure all the permission switch controls are updated according the inter-dependencies
+     * declared between them.
+     *
+     * <p>For instance, given an update & delete permissions that depends on a read permission,
+     * if the read permission is turned off then the update & delete permission switches are
+     * turned off as well.</p>
+     */
     protected void processAllPermissionDependencies() {
         for (Permission permission : permissionSwitchMap.keySet()) {
             processPermissionDependencies(permission);
         }
     }
 
+    /**
+     * Updates any permission switch which has a dependency with the given permission.
+     *
+     * @param permission The permission which dependencies needs to be revisited.
+     */
     protected void processPermissionDependencies(Permission permission) {
         List<Permission> dependencyList = this.getPermissionNode().getDependencies(permission);
         if (dependencyList != null) {
@@ -189,6 +226,12 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
         }
     }
 
+    /**
+     * Links the given switch widget with the specified permission instance.
+     *
+     * @param permission The permission
+     * @param permissionSwitch The switch widget related
+     */
     protected void registerPermissionSwitch(Permission permission, PermissionSwitchToogle permissionSwitch) {
         permissionSwitchMap.put(permission, permissionSwitch);
     }

@@ -29,13 +29,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.resources.i18n.PermissionTreeI18n;
-import org.uberfire.security.Resource;
-import org.uberfire.security.ResourceAction;
-import org.uberfire.security.ResourceType;
+import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.client.authz.tree.PermissionNode;
+import org.uberfire.security.client.authz.tree.PermissionTree;
 import org.uberfire.security.client.authz.tree.impl.DefaultLoadOptions;
-import org.uberfire.security.impl.authz.DotNamedPermission;
+import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -47,11 +46,12 @@ public class PerspectiveTreeProviderTest {
     SyncBeanManager beanManager;
 
     @Mock
-    PermissionManager permissionManager;
-
-    @Mock
     PermissionTreeI18n i18n;
 
+    @Mock
+    PermissionTree permissionTree;
+
+    PermissionManager permissionManager;
     PerspectiveTreeProvider provider;
     PermissionNode root;
 
@@ -70,17 +70,13 @@ public class PerspectiveTreeProviderTest {
         beanDefs.add(bean2);
         when(beanManager.lookupBeans(PerspectiveActivity.class)).thenReturn(beanDefs);
 
-        when(permissionManager.createPermission(any(ResourceType.class), any(ResourceAction.class), anyBoolean()))
-                .thenReturn(new DotNamedPermission("name", true));
-
-        when(permissionManager.createPermission(any(Resource.class), any(ResourceAction.class), anyBoolean()))
-                .thenReturn(new DotNamedPermission("name", true));
-
+        permissionManager = new DefaultPermissionManager();
         provider = new PerspectiveTreeProvider(beanManager, permissionManager, i18n);
         provider.setRootNodeName("root");
         provider.setPerspectiveName("Perspective1", "A nice perspective");
         provider.setPerspectiveName("Perspective2", "Another nice perspective");
         root = provider.buildRootNode();
+        root.setPermissionTree(permissionTree);
     }
 
     @Test
@@ -144,5 +140,34 @@ public class PerspectiveTreeProviderTest {
         provider.loadChildren(root, options, children -> {
             assertEquals(children.size(), 1);
         });
+    }
+
+    @Test
+    public void testRootNode() {
+        assertEquals(root.getPermissionList().size(), 4);
+        checkDependencies(root);
+    }
+
+    @Test
+    public void testChildrenNodes() {
+        root.expand(children -> {
+            for (PermissionNode child : children) {
+                assertEquals(child.getPermissionList().size(), 3);
+                checkDependencies(child);
+            }
+        });
+    }
+
+    protected void checkDependencies(PermissionNode permissionNode) {
+        for (Permission permission : permissionNode.getPermissionList()) {
+            Collection<Permission> dependencies = permissionNode.getDependencies(permission);
+
+            if (permission.getName().startsWith("perspective.read")) {
+                assertEquals(dependencies.size(), 2);
+            }
+            else {
+                assertNull(dependencies);
+            }
+        }
     }
 }

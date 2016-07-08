@@ -174,7 +174,7 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
             });
             super.registerPermissionSwitch(permission, permissionSwitch);
         }
-        // Update the switches status according to the inter-dependencies between the permissions
+        // Update the switches status according to the inter-dependencies between their permissions
         super.processAllPermissionDependencies();
 
         // Add the switch controls to the view once initialized

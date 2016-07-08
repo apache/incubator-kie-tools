@@ -18,9 +18,8 @@ package org.uberfire.backend.server.authz;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Properties;
-import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -115,7 +114,7 @@ public class AuthorizationPolicyVfsStorage implements AuthorizationPolicyStorage
 
                     if (isPolicyFile(file)) {
                         String content = ioService.readAllString(file);
-                        Properties props = new Properties();
+                        NonEscapedProperties props = new NonEscapedProperties();
                         props.load(new StringReader(content));
                         marshaller.read(builder, props);
                     }
@@ -143,18 +142,15 @@ public class AuthorizationPolicyVfsStorage implements AuthorizationPolicyStorage
         }
 
         try {
-            // Dump the entire authz policy into a sorted map
+            // Dump the entire authz policy into a properties map
             AuthorizationPolicyMarshaller marshaller = new AuthorizationPolicyMarshaller();
-            TreeMap<String,String> entries = new TreeMap();
+            NonEscapedProperties entries = new NonEscapedProperties();
             marshaller.write(policy, entries);
 
-            // Store the map into a properties file
-            StringBuilder out = new StringBuilder();
-            out.append("# Authorization Policy\n");
-            out.append("\n");
-            entries.forEach((key,value) -> out.append(key).append("=").append(value).append("\n"));
-            String policyContent = out.toString();
-
+            // Store the entries into a properties file
+            StringWriter sw = new StringWriter();
+            entries.store(sw, "Authorization Policy", "Last update: " + new Date().toString());
+            String policyContent = sw.toString();
             Path policyPath = getAuthzPath().resolve("security-policy.properties");
             ioService.write(policyPath, policyContent);
         }

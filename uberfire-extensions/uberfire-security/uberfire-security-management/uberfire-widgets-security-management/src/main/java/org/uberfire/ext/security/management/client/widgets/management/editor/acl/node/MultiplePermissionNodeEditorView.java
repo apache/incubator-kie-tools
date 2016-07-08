@@ -127,7 +127,7 @@ public class MultiplePermissionNodeEditorView extends Composite
     public void setNodeFullName(String name) {
         nodeAnchor.setTitle(name);
         nodeAnchorHelp.setTitle(name);
-        nodeAnchorHelp.getStyle().removeProperty("display");
+        nodeAnchorHelp.setClassName("acl-node-help-panel");
     }
 
     @Override
@@ -236,10 +236,10 @@ public class MultiplePermissionNodeEditorView extends Composite
     public void setExpanded(boolean expanded) {
         this.expanded = expanded;
         this.mouseOver = false;
-        String rootPanelCss = expanded ? "root-panel-expanded" : "root-panel";
-        String headerPanelCss = expanded ? "header-panel-expanded" : "header-panel";
-        rootPanel.setAttribute("class", rootPanelCss);
-        headerPanel.setAttribute("class", headerPanelCss);
+        String rootPanelCss = expanded ? "acl-root-panel-expanded" : "acl-root-panel";
+        String headerPanelCss = expanded ? "acl-header-panel-expanded" : "acl-header-panel";
+        rootPanel.setClassName(rootPanelCss);
+        headerPanel.setClassName(headerPanelCss);
     }
 
 
@@ -266,7 +266,7 @@ public class MultiplePermissionNodeEditorView extends Composite
     @EventHandler("headerPanel")
     private void onHeaderMouseOver(MouseOverEvent event) {
         if (!expanded) {
-            headerPanel.setAttribute("class", "header-panel-over");
+            headerPanel.setClassName("acl-header-panel-over");
             mouseOver = true;
         }
     }
@@ -274,7 +274,7 @@ public class MultiplePermissionNodeEditorView extends Composite
     @EventHandler("headerPanel")
     private void onHeaderMouseOut(MouseOutEvent event) {
         if (mouseOver) {
-            headerPanel.setAttribute("class", "header-panel");
+            headerPanel.setClassName("acl-header-panel");
             mouseOver = false;
         }
     }

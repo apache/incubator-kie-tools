@@ -1,8 +1,9 @@
-.switch-panel {
+.acl-switch-panel {
+    display: table-cell;
     min-width: 170px;
 }
 
-.separator-vert {
+.acl-separator-vert {
     margin-right: 10px;
     width: 1px;
     height: 30px;
@@ -10,19 +11,19 @@
     background-color: lightgray;
 }
 
-.badge-panel {
+.acl-badge-panel {
     float: left;
     width: 20px;
     margin-right: 5px;
     margin-top: 7px;
 }
 
-.badge-red {
+.acl-badge-red {
     color: white;
     background-color: #c00;
     font-size: smaller;
 }
 
-.toggle-panel {
+.acl-toggle-panel {
     float: left;
 }

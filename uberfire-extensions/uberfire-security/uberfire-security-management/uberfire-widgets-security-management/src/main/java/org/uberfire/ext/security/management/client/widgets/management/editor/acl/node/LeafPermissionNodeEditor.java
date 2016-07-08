@@ -100,7 +100,7 @@ public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
             super.registerPermissionSwitch(permission, switchToogle);
         }
 
-        // Update the switches status according to the inter-dependencies between the permissions
+        // Update the switches status according to the inter-dependencies between their permissions
         super.processAllPermissionDependencies();
 
         // Add the switch controls to the view once initialized
@@ -112,7 +112,9 @@ public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
     private void initPermissionSwitchToogle(PermissionSwitchToogle permissionSwitch, Permission permission) {
         permissionSwitch.setOnChange(() -> {
             permission.setResult(permissionSwitch.isOn() ? AuthorizationResult.ACCESS_GRANTED : AuthorizationResult.ACCESS_DENIED);
-            onPermissionChanged(permission, permissionSwitch.isOn());
+
+            // Notify the change
+            super.onPermissionChanged(permission, permissionSwitch.isOn());
             permissionChangedEvent.fire(new PermissionChangedEvent(getACLEditor(), permission, permissionSwitch.isOn()));
         });
     }

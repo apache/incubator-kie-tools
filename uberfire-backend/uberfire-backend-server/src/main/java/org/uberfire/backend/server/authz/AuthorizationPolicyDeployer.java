@@ -139,9 +139,9 @@ public class AuthorizationPolicyDeployer {
     }
 
     public void loadPolicyFile(AuthorizationPolicyBuilder builder, AuthorizationPolicyMarshaller marshaller, Path path) {
-        try (BufferedReader reader = Files.newBufferedReader(path)) {
-            Properties p = new Properties();
-            p.load(reader);
+        try {
+            NonEscapedProperties p = new NonEscapedProperties();
+            p.load(path);
             marshaller.read(builder, p);
         }
         catch (IOException e) {
