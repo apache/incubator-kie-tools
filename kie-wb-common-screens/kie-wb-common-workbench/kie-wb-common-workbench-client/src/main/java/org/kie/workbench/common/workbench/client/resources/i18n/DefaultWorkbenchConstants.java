@@ -93,7 +93,23 @@ public interface DefaultWorkbenchConstants
 
     String ReleaseProjects();
 
+    String DataModelerEditSources();
+
     String ManageDashboards();
 
     String ResourcePlanner();
+
+    String WorkbenchRootNodeHelp();
+
+    String ConfigureRepositoriesHelp();
+
+    String PromoteAssetsHelp();
+
+    String ReleaseProjectsHelp();
+
+    String DataModelerEditSourcesHelp();
+
+    String ManageDashboardsHelp();
+
+    String ResourcePlannerHelp();
 }

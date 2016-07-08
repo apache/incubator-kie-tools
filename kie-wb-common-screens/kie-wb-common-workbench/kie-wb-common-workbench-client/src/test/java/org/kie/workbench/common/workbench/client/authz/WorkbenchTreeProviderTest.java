@@ -37,6 +37,7 @@ public class WorkbenchTreeProviderTest {
             CONFIGURE_REPOSITORY,
             PROMOTE_ASSETS,
             RELEASE_PROJECT,
+            EDIT_SOURCES,
             MANAGE_DASHBOARDS,
             PLANNER_AVAILABLE
     };

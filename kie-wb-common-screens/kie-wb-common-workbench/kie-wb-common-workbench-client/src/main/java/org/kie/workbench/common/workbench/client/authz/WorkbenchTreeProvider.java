@@ -67,6 +67,7 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
         PermissionGroupNode rootNode = new PermissionGroupNode(this);
         rootNode.setPositionInTree(rootNodePosition);
         rootNode.setNodeName(i18n.WorkbenchRootNodeName());
+        rootNode.setNodeFullName(i18n.WorkbenchRootNodeHelp());
         rootNode.setProperty(NODE_TYPE, NODE_ROOT);
         return rootNode;
     }
@@ -77,26 +78,29 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
         if (parent.propertyEquals(NODE_TYPE, NODE_ROOT)) {
             List<PermissionNode> result = new ArrayList<>();
 
-            PermissionLeafNode node1 = createPermissionLeafNode(CONFIGURE_REPOSITORY, i18n.ConfigureRepositories());
-            PermissionLeafNode node2 = createPermissionLeafNode(PROMOTE_ASSETS, i18n.PromoteAssets());
-            PermissionLeafNode node3 = createPermissionLeafNode(RELEASE_PROJECT, i18n.ReleaseProjects());
-            PermissionLeafNode node4 = createPermissionLeafNode(MANAGE_DASHBOARDS, i18n.ManageDashboards());
-            PermissionLeafNode node5 = createPermissionLeafNode(PLANNER_AVAILABLE, i18n.ResourcePlanner());
+            PermissionLeafNode node1 = createPermissionLeafNode(CONFIGURE_REPOSITORY, i18n.ConfigureRepositories(), i18n.ConfigureRepositoriesHelp());
+            PermissionLeafNode node2 = createPermissionLeafNode(PROMOTE_ASSETS, i18n.PromoteAssets(), i18n.PromoteAssetsHelp());
+            PermissionLeafNode node3 = createPermissionLeafNode(RELEASE_PROJECT, i18n.ReleaseProjects(), i18n.ReleaseProjectsHelp());
+            PermissionLeafNode node4 = createPermissionLeafNode(EDIT_SOURCES, i18n.DataModelerEditSources(), i18n.DataModelerEditSourcesHelp());
+            PermissionLeafNode node5 = createPermissionLeafNode(MANAGE_DASHBOARDS, i18n.ManageDashboards(), i18n.ManageDashboardsHelp());
+            PermissionLeafNode node6 = createPermissionLeafNode(PLANNER_AVAILABLE, i18n.ResourcePlanner(), i18n.ResourcePlannerHelp());
 
             result.add(node1);
             result.add(node2);
             result.add(node3);
             result.add(node4);
             result.add(node5);
+            result.add(node6);
 
             callback.afterLoad(result);
         }
     }
 
-    private PermissionLeafNode createPermissionLeafNode(String permissionName, String nodeName) {
+    private PermissionLeafNode createPermissionLeafNode(String permissionName, String nodeName, String nodeHelp) {
         Permission permission = permissionManager.createPermission(permissionName, true);
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(nodeName);
+        node.setNodeFullName(nodeHelp);
         node.addPermission(permission, i18n.PermissionAllow(), i18n.PermissionDeny());
         return node;
     }
