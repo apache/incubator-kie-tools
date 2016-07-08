@@ -11,6 +11,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
@@ -36,6 +37,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -220,13 +222,13 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         config.add( newColumn() );
 
         disclosurePanelMetaData = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.MetadataColumns(),
-                                                        getMetaDataWidget() );
+                                                        wrapDisclosurePanelContent( getMetaDataWidget() ) );
         disclosurePanelAttributes = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.AttributeColumns(),
-                                                          getAttributesWidget() );
+                                                          wrapDisclosurePanelContent( getAttributesWidget() ) );
         disclosurePanelConditions = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.ConditionColumns(),
-                                                          getConditionsWidget() );
+                                                          wrapDisclosurePanelContent( getConditionsWidget() ) );
         disclosurePanelActions = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.ActionColumns(),
-                                                       getActionsWidget() );
+                                                       wrapDisclosurePanelContent( getActionsWidget() ) );
 
         config.add( disclosurePanelMetaData );
         config.add( disclosurePanelAttributes );
@@ -524,6 +526,14 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     private Widget getAttributesWidget() {
         attributeConfigWidget = new VerticalPanel();
         return attributeConfigWidget;
+    }
+
+    private Widget wrapDisclosurePanelContent( final Widget content ) {
+        final SimplePanel container = new SimplePanel();
+        container.getElement().getStyle().setProperty( "maxHeight", "200px" );
+        container.getElement().getStyle().setOverflowY( Style.Overflow.SCROLL );
+        container.add( content );
+        return container;
     }
 
     @Override
