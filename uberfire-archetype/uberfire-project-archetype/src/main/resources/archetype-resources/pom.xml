@@ -36,6 +36,39 @@
     <maven.compiler.argument.source>\${maven.compiler.source}</maven.compiler.argument.source>
   </properties>
 
+<!--
+  In ideal world, users should not need the repository.jboss.org Maven repo. 
+  However, due to different reasons, sometimes we need to release patched version of some third party lib. This configuration could be moved to your settings.xml file.
+-->
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+  
   <modules>
     <module>\${artifactId}-bom</module>
     <module>\${artifactId}-parent-with-dependencies</module>
