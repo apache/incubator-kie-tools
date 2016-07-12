@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.client.mvp.UberElement;
 import ${package}.component.model.MyModel;
 import ${package}.component.service.MyService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -20,7 +21,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 @Dependent
 public class ComponentPresenter {
 
-    public interface View extends IsWidget {
+    public interface View extends UberElement<ComponentPresenter> {
 
         void setValue( String value );
     }
@@ -47,7 +48,7 @@ public class ComponentPresenter {
     }
 
     @WorkbenchPartView
-    public IsWidget getView() {
+    public UberElement<ComponentPresenter> getView() {
         return view;
     }
 

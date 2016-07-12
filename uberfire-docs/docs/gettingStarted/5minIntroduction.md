@@ -4,7 +4,9 @@ This session teaches you how to build your first Uberfire App in just 5 minutes.
 ## Prerequisites
 This guide assumes you have the following software set up and working on your computer:
 
-* A Java Development Kit (JDK) version 8 or newer. **Microsoft Windows users:** be sure to use a 64-bit version of the JDK because Uberfire requires more heap space than can be addressed by a 32-bit VM.
+* A Java Development Kit (JDK) version 8 or newer.
+
+**Microsoft Windows users:** be sure to use a 64-bit version of the JDK because Uberfire requires more heap space than can be addressed by a 32-bit VM.
 
 * Maven 3.x
 
@@ -16,7 +18,7 @@ This guide assumes you have the following software set up and working on your co
  mvn archetype:generate -B \
 -DarchetypeGroupId=org.uberfire \
 -DarchetypeArtifactId=uberfire-project-archetype \
--DarchetypeVersion=0.9.0-SNAPSHOT \
+-DarchetypeVersion=1.0.0-SNAPSHOT \
 -DgroupId=org.uberfire \
 -DartifactId=demo \
 -Dversion=1.0-SNAPSHOT\

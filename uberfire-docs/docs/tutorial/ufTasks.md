@@ -51,16 +51,16 @@ package org.uberfire.client.screens;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = "ProjectsPresenter")
+@WorkbenchScreen( identifier = "ProjectsPresenter" )
 public class ProjectsPresenter {
 
-    public interface View extends UberView<ProjectsPresenter> {
+    public interface View extends UberElement<ProjectsPresenter> {
     }
 
     @Inject
@@ -72,9 +72,10 @@ public class ProjectsPresenter {
     }
 
     @WorkbenchPartView
-    public UberView<ProjectsPresenter> getView() {
+    public UberElement<ProjectsPresenter> getView() {
         return view;
     }
+
 }
 ```
 The presenter itself is a CDI bean with one injected field (the view). But whether or not we’re familiar with CDI, we’re seeing a bunch of Uberfire annotations for the first time. Let’s examine some of them:
@@ -86,22 +87,28 @@ Tells Uberfire that the class defines a Screen in the application. Each screen h
 Denotes the method that returns the Screen’s title. Every Screen must have a @WorkbenchPartTitle method.
 
 **@WorkbenchPartView**
-Denotes the method that returns the Panel’s view. The view can be any class that extends GWT’s Widget class or implements GWT’s IsWidget interface. In this example, we’re returning a CDI bean that implements UberView<ProjectsPresenter>, which is the specific view, for this presenter (following MVP pattern). Every Screen must have a @WorkbenchPartView method, extend Widget, or implement IsWidget. Let's define our view (inside org.uberfire.client.screens package):
+Denotes the method that returns the Panel’s view. The view can be any class that extends GWT’s Widget class or implements GWT’s IsWidget interface. In this example, we’re returning a CDI bean that implements UberElement<ProjectsPresenter>, which is the specific view, for this presenter (following MVP pattern).
 
+Every Screen must have a @WorkbenchPartView method returning a com.google.gwt.user.client.ui.IsWidget or **preferably** org.jboss.errai.common.client.api.IsElement, extend Widget, or implement IsWidget.
+
+Let's define our view (inside org.uberfire.client.screens package):
 
 - ProjectsView.java
 
 ```
 package org.uberfire.client.screens;
 
-import javax.enterprise.context.Dependent;
-
-import com.google.gwt.user.client.ui.Composite;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 @Dependent
 @Templated
-public class ProjectsView extends Composite implements ProjectsPresenter.View {
+public class ProjectsView implements ProjectsPresenter.View, IsElement {
 
     private ProjectsPresenter presenter;
 
@@ -109,16 +116,17 @@ public class ProjectsView extends Composite implements ProjectsPresenter.View {
     public void init( ProjectsPresenter presenter ) {
         this.presenter = presenter;
     }
+
 }
 ```
 - ProjectsView.html
 
 ```
-<div class="container-fluid">
+<div>
     <label>Project View</label>
 </div>
 ```
-For now, this view only has a label with the text "Project View".
+For now, this view only has a label with the text "Project View". "Div view" is the property that will be referenced by the presenter as the root element of this template.
 
 ###Creating Tasks Screen
 Our second screen is the Task Screen. Let's create it (inside org.uberfire.client.screens package):
@@ -131,16 +139,16 @@ package org.uberfire.client.screens;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = "TasksPresenter")
+@WorkbenchScreen( identifier = "TasksPresenter" )
 public class TasksPresenter {
 
-    public interface View extends UberView<TasksPresenter> {
+    public interface View extends UberElement<TasksPresenter> {
     }
 
     @Inject
@@ -152,7 +160,7 @@ public class TasksPresenter {
     }
 
     @WorkbenchPartView
-    public UberView<TasksPresenter> getView() {
+    public UberElement<TasksPresenter> getView() {
         return view;
     }
 }
@@ -162,27 +170,32 @@ public class TasksPresenter {
 ```
 package org.uberfire.client.screens;
 
-import javax.enterprise.context.Dependent;
-
-import com.google.gwt.user.client.ui.Composite;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.jboss.errai.ui.client.local.api.IsElement;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 @Dependent
 @Templated
-public class TasksView extends Composite implements TasksPresenter.View {
+public class TasksView implements TasksPresenter.View, IsElement {
 
     private TasksPresenter presenter;
 
     @Override
-    public void init( final TasksPresenter presenter ) {
+    public void init( TasksPresenter presenter ) {
         this.presenter = presenter;
     }
+
 }
 ```
 - TasksView.html
 
 ```
-<div class="container-fluid">
+<div>
     <label>Tasks View</label>
 </div>
 ```
@@ -344,14 +357,14 @@ public class ProjectsPresenter {
 ```
 
 ###ProjectsView
-Our view has two components: a [Bootstrap3](https://gwtbootstrap3.github.io/gwtbootstrap3-demo/#listGroup) LinkedGroup to list our projects and a button to create new ones.
+Our view has two components: a [Bootstrap](http://getbootstrap.com/components/#list-group) List Group to list our projects and a button to create new ones.
 
 Here’s what ProjectsView.html looks like:
 ```
 <div>
-    <div class="list-group" id="projects"></div>
-    <button type="button" class="btn btn-primary" id="new-project"
-            style="float: right; margin-right: 5px;">
+    <ul class="list-group" data-field="projects-list">
+    </ul>
+    <button type="button" class="btn btn-primary test" data-field="new-project">
         <i class="fa fa-plus"></i> New Project
     </button>
 </div>
@@ -360,70 +373,74 @@ And the owner class for the above template might look like this:
 ```
 package org.uberfire.client.screens;
 
+import com.google.gwt.user.client.Event;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.UnorderedList;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.SinkNative;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.LinkedGroup;
-import org.gwtbootstrap3.client.ui.LinkedGroupItem;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 
 @Dependent
 @Templated
-public class ProjectsView extends Composite implements ProjectsPresenter.View {
-
-    private ProjectsPresenter presenter;
+public class ProjectsView implements ProjectsPresenter.View {
 
     @Inject
-    @DataField("new-project")
+    @DataField( "projects-view" )
+    Div view;
+
+    @Inject
+    @DataField( "new-project" )
     Button newProject;
 
     @Inject
-    @DataField("projects")
-    LinkedGroup projects;
+    @DataField( "projects-list" )
+    UnorderedList projectsList;
+
+    private ProjectsPresenter presenter;
 
     @Override
     public void init( ProjectsPresenter presenter ) {
         this.presenter = presenter;
     }
 
-    @Override
-    public void clearProjects() {
-        projects.clear();
+    @SinkNative( Event.ONCLICK )
+    @EventHandler( "new-project" )
+    public void newProject( final Event event ) {
+        presenter.newProject();
     }
 
     @Override
     public void addProject( final String projectName,
                             final boolean active ) {
-        final LinkedGroupItem projectItem = createProjectItems( projectName, active );
-        projects.add( projectItem );
+        //TODO
     }
 
-    private LinkedGroupItem createProjectItems( final String projectName,
-                                                final boolean active ) {
-        final LinkedGroupItem projectItem = GWT.create( LinkedGroupItem.class );
-        projectItem.setText( projectName );
-        projectItem.setActive( active );
-        projectItem.addClickHandler( ( event ) -> presenter.selectProject( projectName ) );
-        return projectItem;
+    @Override
+    public void clearProjects() {
+        removeAllChildren( projectsList );
     }
 
-    @EventHandler("new-project")
-    public void newProject( ClickEvent event ) {
-        presenter.newProject();
+
+    @Override
+    public HTMLElement getElement() {
+        return view;
     }
+
 }
 ```
-Two @DataField attributes to bind the template with the view Java class, a click handler for the "New Project" button and a method to add a project.
-This method should receive as parameters the projectName and a boolean representing if the project is active in the screen.
+Three @DataField attributes to bind the template with the view Java class, a click handler for the "New Project" button, a method to add a project and a method to clear projects.
+This method should receive as parameters the projectName and a boolean representing if the project is active on the screen.
 
-##Time to see our view working.
-Refresh the browser, let GWT Super Dev mode do its magic, and we should see the New Project button.
+##Time to see it work!
+Let’s see the results of all our hard work: start the app and we should see the New Project button.
 
 ![New Project Clicked](newProjectClicked.png)
 
@@ -434,23 +451,24 @@ The next step of our project is to provide a real implementation for the New Pro
 ```
 package org.uberfire.client.screens.popup;
 
+import org.uberfire.client.screens.ProjectsPresenter;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.screens.ProjectsPresenter;
 
 @Dependent
 public class NewProjectPresenter {
 
     private ProjectsPresenter projectsPresenter;
 
-    public interface View extends UberView<NewProjectPresenter> {
+    public interface View {
 
         void show();
 
         void hide();
+
+        void init( NewProjectPresenter presenter );
     }
 
     @Inject
@@ -482,46 +500,36 @@ The method show(projectsPresenter) will open the modal dialog on the view. The m
 ```
 package org.uberfire.client.screens.popup;
 
+import com.google.gwt.core.client.GWT;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Modal;
-import org.gwtbootstrap3.client.ui.ModalBody;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 @Dependent
-@Templated
-public class NewProjectView extends Composite implements NewProjectPresenter.View {
+public class NewProjectView implements NewProjectPresenter.View {
 
     private NewProjectPresenter presenter;
 
     private Modal modal;
 
     @Inject
-    @DataField("project-name")
-    TextBox projectNameTextBox;
-
-    @Inject
-    @DataField("ok-button")
-    Button okButton;
-
-    @Inject
-    @DataField("cancel-button")
-    Button cancelButton;
+    NewProjectContentView contentView;
 
     @Override
     public void init( NewProjectPresenter presenter ) {
         this.presenter = presenter;
+        contentView.init( projectName -> presenter.newProject( projectName ),
+                          () -> presenter.close() );
+        createModal();
+    }
 
-        this.modal = new Modal();
-        final ModalBody body = new ModalBody();
-        body.add( this );
+    private void createModal() {
+        this.modal = GWT.create( Modal.class );
+        final ModalBody body = GWT.create( ModalBody.class );
+        body.add( ElementWrapperWidget.getWidget( contentView.getElement() ) );
         modal.add( body );
     }
 
@@ -532,22 +540,73 @@ public class NewProjectView extends Composite implements NewProjectPresenter.Vie
 
     @Override
     public void hide() {
+        contentView.clearContent();
         modal.hide();
-        projectNameTextBox.setText( "" );
     }
 
-    @EventHandler("ok-button")
-    public void addProject( ClickEvent event ) {
-        presenter.newProject( projectNameTextBox.getText() );
-    }
-
-    @EventHandler("cancel-button")
-    public void cancel( ClickEvent event ) {
-        presenter.close();
-    }
 }
 ```
-**NewProjectView.html**
+The NewProjectView is a simple wrapper for an org.gwtbootstrap3.client.ui.Modal. The content of the modal will be implemented by NewProjectContentView. Let's create this class inside popup package:
+```
+package org.uberfire.client.screens.popup;
+
+import com.google.gwt.user.client.Event;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.SinkNative;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
+@Templated
+public class NewProjectContentView implements IsElement {
+
+    @Inject
+    @DataField( "project-name" )
+    Input projectNameTextBox;
+
+    @Inject
+    @DataField( "ok-button" )
+    Button okButton;
+
+    @Inject
+    @DataField( "cancel-button" )
+    Button cancelButton;
+
+    private ParameterizedCommand<String> addProject;
+    private Command cancel;
+
+    public void init( ParameterizedCommand<String> addProject, Command cancel ) {
+        this.addProject = addProject;
+        this.cancel = cancel;
+    }
+
+    public void clearContent() {
+        projectNameTextBox.setValue( "" );
+    }
+
+    @SinkNative( Event.ONCLICK )
+    @EventHandler( "ok-button" )
+    public void addProject( Event event ) {
+        addProject.execute( projectNameTextBox.getValue() );
+    }
+
+    @SinkNative( Event.ONCLICK )
+    @EventHandler( "cancel-button" )
+    public void cancel( Event event ) {
+        cancel.execute();
+    }
+
+}
+```
+And also, create NewProjectContentView.html:
 ```
 <div>
     <form data-field="new-project-modal">
@@ -569,6 +628,12 @@ public class NewProjectView extends Composite implements NewProjectPresenter.Vie
     </div>
 </div>
 ```
+It is important to take a look that NewProjectView interacts with NewProjectContentView through two important Uberfire classes: [ParameterizedCommand<T>](https://github.com/uberfire/uberfire/blob/master/uberfire-api/src/main/java/org/uberfire/mvp/ParameterizedCommand.java) and [Command](https://github.com/uberfire/uberfire/blob/master/uberfire-api/src/main/java/org/uberfire/mvp/Command.java).
+```
+public void init( ParameterizedCommand<String> addProject, Command cancel ){...}
+```
+This commands will delegate the **OK** and **Cancel** actions for NewProjectPresenter.
+
 We also have to change **ProjectsPresenter.java** in order to open the popup and receive the name of the new project created. Add this snippet to our class:
 ```
 import com.google.gwt.user.client.Window;
@@ -649,6 +714,65 @@ import java.util.List;
         }
     }
 ```
+Now it's time to place this new projects in our view. In order to do that let's create an Errai UI template in package widgets called ProjectItem.java:
+
+```
+package org.uberfire.client.screens.widgets;
+
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.ListItem;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.mvp.Command;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
+@Templated
+public class ProjectItem implements IsElement {
+
+    @Inject
+    @DataField
+    ListItem project;
+
+    public void init( String projectName, boolean active, Command onClick ) {
+        if ( active ) {
+            project.setClassName( "list-group-item active" );
+        }
+        project.setTextContent( projectName );
+        project.setOnclick( e -> onClick.execute() );
+        project.setTextContent( projectName );
+    }
+
+}
+```
+And its html template, called ProjectItem.html
+```
+<li data-field="project" class="list-group-item">
+
+</li>
+```
+Let's create this widget in ProjectsView. Add the following code to ProjectsView.java:
+```
+@Inject
+ManagedInstance<ProjectItem> projects;
+
+@Override
+public void addProject( final String projectName,
+                        final boolean active ) {
+
+    ProjectItem projectItem = projects.get();
+    projectItem.init( projectName,
+                      active,
+                      () -> presenter.selectProject( projectName ) );
+    projectsList.appendChild( projectItem.getElement() );
+}
+```
+ManagedInstance is an Errai class that allows the application to dynamically obtain instances of beans (our widgets). ManagedInstances have their life-cycle automatically controlled by Errai. So no need to worry to destroy your CDI instances. ;)
+
+We create ProjectItem instances via projects.get(), and provide a name, a boolean telling if the project is active and an onClick command, that will be used in the future in order to select projects.
 
 ##Time to see it work!
 
@@ -743,6 +867,13 @@ Our next step is to create a new folder button. A folder is an aggregator of tas
     </button>
 </div>
 ```
+Errai UI templates, can have their own CSS definitions. Let's create one for TasksView.html? Create TaskView.css file inside screens package:
+```
+[data-field='projects-view'] [data-field='new-project'] {
+  float: right;
+  margin-right: 5px
+}
+```
 Update your **TaskPresenter.java** with the following code:
 ```
 package org.uberfire.client.screens;
@@ -825,21 +956,22 @@ We're going to use a popup structure, like the **NewProject** structure. Let's c
 ```
 package org.uberfire.client.screens.popup;
 
+import org.uberfire.client.screens.TasksPresenter;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.screens.TasksPresenter;
-
 @Dependent
 public class NewFolderPresenter {
 
-    public interface View extends UberView<NewFolderPresenter> {
+    public interface View {
 
         void show();
 
         void hide();
+
+        void init( NewFolderPresenter presenter );
     }
 
     @Inject
@@ -866,52 +998,42 @@ public class NewFolderPresenter {
         view.hide();
     }
 }
+
 ```
 **NewFolderView.java**
 ```
 package org.uberfire.client.screens.popup;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.ui.Button;
+import com.google.gwt.core.client.GWT;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-@Dependent
-@Templated
-public class NewFolderView extends Composite
-        implements NewFolderPresenter.View {
+import javax.inject.Inject;
+
+public class NewFolderView implements NewFolderPresenter.View {
 
     private NewFolderPresenter presenter;
 
     private Modal modal;
 
     @Inject
-    @DataField("folder-name")
-    TextBox folderNameTextBox;
+    NewFolderContentView contentView;
 
-    @Inject
-    @DataField("ok-button")
-    Button okButton;
-
-    @Inject
-    @DataField("cancel-button")
-    Button cancelButton;
 
     @Override
     public void init( NewFolderPresenter presenter ) {
         this.presenter = presenter;
+        contentView.init( folderName -> presenter.newFolder( folderName ),
+                          () -> presenter.close() );
+        createModal();
+    }
 
-        this.modal = new Modal();
-        final ModalBody body = new ModalBody();
-        body.add( this );
+    private void createModal() {
+        this.modal = GWT.create( Modal.class );
+        final ModalBody body = GWT.create( ModalBody.class );
+        body.add( ElementWrapperWidget.getWidget( contentView.getElement() ) );
         modal.add( body );
     }
 
@@ -923,21 +1045,76 @@ public class NewFolderView extends Composite
     @Override
     public void hide() {
         modal.hide();
-        folderNameTextBox.setText( "" );
+        contentView.clearContent();
     }
 
-    @EventHandler("ok-button")
-    public void addFolder( ClickEvent event ) {
-        presenter.newFolder( folderNameTextBox.getText() );
-    }
-
-    @EventHandler("cancel-button")
-    public void cancel( ClickEvent event ) {
-        presenter.close();
-    }
 }
 ```
-**NewFolderView.html**
+**NewFolderContentView.java**
+```
+
+package org.uberfire.client.screens.popup;
+
+import com.google.gwt.user.client.Event;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.SinkNative;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
+@Templated
+public class NewFolderContentView implements IsElement {
+
+    @Inject
+    @DataField( "folder-name" )
+    Input folderNameTextBox;
+
+    @Inject
+    @DataField( "ok-button" )
+    Button okButton;
+
+    @Inject
+    @DataField( "cancel-button" )
+    Button cancelButton;
+
+    private ParameterizedCommand<String> addFolder;
+    private Command cancel;
+
+    public void init( ParameterizedCommand<String> addFolder, Command cancel ) {
+        this.addFolder = addFolder;
+        this.cancel = cancel;
+    }
+
+
+    public void clearContent() {
+        folderNameTextBox.setValue( "" );
+    }
+
+    @SinkNative( Event.ONCLICK )
+    @EventHandler( "ok-button" )
+    public void addFolder( Event event ) {
+        addFolder.execute( folderNameTextBox.getValue() );
+    }
+
+    @EventHandler( "cancel-button" )
+    public void cancel( Event event ) {
+        cancel.execute();
+    }
+
+}
+
+```
+NewFolderContentView.html
 ```
 <div>
     <form data-field="new-folder-modal">
@@ -959,7 +1136,6 @@ public class NewFolderView extends Composite
     </div>
 </div>
 ```
-
 ####Time to add some tasks
 It's time to add some tasks to our project. At this point, you're probably very comfortable with basic Uberfire concepts, so we'll just quickly run through the necessary changes to implement the tasks support in our project.
 Let's begin by creating a model class (package org.uberfire.shared.model):
@@ -1131,139 +1307,237 @@ Let's update the **TasksView.java** to support task creation.
 ```
 package org.uberfire.client.screens;
 
-import java.util.List;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import org.gwtbootstrap3.client.ui.Badge;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.InlineCheckBox;
-import org.gwtbootstrap3.client.ui.InputGroup;
-import org.gwtbootstrap3.client.ui.ListGroup;
-import org.gwtbootstrap3.client.ui.ListGroupItem;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ListGroupItemType;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.screens.widgets.FolderItem;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.util.List;
+
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 
 @Dependent
 @Templated
-public class TasksView extends Composite implements TasksPresenter.View {
+public class TasksView implements TasksPresenter.View, IsElement {
 
     private TasksPresenter presenter;
 
     @Inject
-    @DataField("new-folder")
+    Document document;
+
+    @Inject
+    @DataField( "view" )
+    Div view;
+
+    @Inject
+    @DataField( "new-folder" )
     Button newFolder;
 
     @Inject
-    @DataField("tasks")
-    FlowPanel tasks;
+    @DataField( "tasks" )
+    Div tasks;
+
+    @Inject
+    ManagedInstance<FolderItem> folders;
 
     @Override
     public void init( final TasksPresenter presenter ) {
         this.presenter = presenter;
-        this.newFolder.setVisible( false );
+        this.newFolder.setDisabled( true );
     }
 
     @Override
     public void activateNewFolder() {
-        newFolder.setVisible( true );
+        newFolder.setDisabled( false );
     }
 
     @Override
     public void clearTasks() {
-        tasks.clear();
+        removeAllChildren( tasks );
     }
 
     @Override
-    public void newFolder( String folderName,
-                           Integer numberOfTasks,
-                           List<String> tasksList ) {
+    public void newFolder( String folderName, Integer numberOfTasks, List<String> tasksList ) {
+        FolderItem folderItem = createFolder( folderName, String.valueOf( numberOfTasks ) );
+        createTasks( folderName, tasksList, folderItem );
 
-        ListGroup folder = GWT.create( ListGroup.class );
-        folder.add( generateFolderTitle( folderName, numberOfTasks ) );
+        tasks.appendChild( folderItem.getElement() );
+    }
+
+    private void createTasks( String folderName, List<String> tasksList, FolderItem folderItem ) {
         for ( String task : tasksList ) {
-            folder.add( generateTask( folderName, task ) );
+            folderItem.createTask( task,
+                                   () -> presenter.doneTask( folderName, task ) );
         }
-        folder.add( generateNewTask( folderName ) );
-
-        tasks.add( folder );
     }
 
-    private ListGroupItem generateNewTask( String folderName ) {
-        ListGroupItem newTask = GWT.create( ListGroupItem.class );
-
-        InputGroup inputGroup = GWT.create( InputGroup.class );
-        inputGroup.add( createTextBox( folderName ) );
-
-        newTask.add( inputGroup );
-
-        return newTask;
+    private FolderItem createFolder( String folderName, String numberOfTasks ) {
+        FolderItem folderItem = folders.get();
+        folderItem.init( folderName,
+                         numberOfTasks,
+                         newTaskText -> presenter.createTask( folderName, newTaskText ) );
+        return folderItem;
     }
 
-    private TextBox createTextBox( final String folderName ) {
-        final TextBox taskText = GWT.create( TextBox.class );
-        taskText.setWidth( "400" );
-        taskText.setPlaceholder( "New task..." );
-        taskText.addKeyDownHandler( event -> {
-            if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
-                presenter.createTask( folderName, taskText.getText() );
-            }
-        } );
 
-        return taskText;
-    }
-
-    private ListGroupItem generateFolderTitle( String name,
-                                               Integer numberOfTasks ) {
-        ListGroupItem folderTitle = GWT.create( ListGroupItem.class );
-        folderTitle.setText( name );
-        folderTitle.setType( ListGroupItemType.INFO );
-
-        Badge number = GWT.create( Badge.class );
-        number.setText( String.valueOf( numberOfTasks ) );
-
-        folderTitle.add( number );
-
-        return folderTitle;
-    }
-
-    private ListGroupItem generateTask( String folderName,
-                                        String taskText ) {
-        ListGroupItem tasks = GWT.create( ListGroupItem.class );
-        tasks.add( createTaskCheckbox( folderName, taskText ) );
-
-        return tasks;
-    }
-
-    private InlineCheckBox createTaskCheckbox( final String folderName,
-                                               final String taskText ) {
-        InlineCheckBox checkBox = GWT.create( InlineCheckBox.class );
-        checkBox.setText( taskText );
-        checkBox.addClickHandler( event -> presenter.doneTask( folderName, taskText ) );
-
-        return checkBox;
-    }
-
-    @EventHandler("new-folder")
+    @EventHandler( "new-folder" )
     public void newFolderClick( ClickEvent event ) {
         presenter.showNewFolder();
     }
 }
 ```
+Pay attention to the method newFolder(folderName, numberOfTasks, tasksList), because here is where we create folder items and their tasks.
 
-Pay attention to the method newFolder(folderName, numberOfTasks, tasksList), because here is where we create the components for task folder: a folderTitle, a list of tasks and newTask textbox.
+We also have to create at widgets package a FolderItem template in order to display our folders:
+***FolderItem.java***
+```
+package org.uberfire.client.screens.widgets;
+
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.common.client.dom.*;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
+@Templated
+public class FolderItem implements IsElement {
+
+    @Inject
+    @DataField
+    UnorderedList folder;
+
+    @Inject
+    @DataField
+    Span folderName;
+
+    @Inject
+    @DataField
+    Span numberOfTasks;
+
+    @Inject
+    @DataField
+    Div tasksList;
+
+    @Inject
+    @DataField
+    Form newTaskForm;
+
+    @Inject
+    @DataField
+    Input taskName;
+
+    @Inject
+    ManagedInstance<TaskItem> tasks;
+
+    public void init( String folderName, String numberOfTasks, ParameterizedCommand<String> newTask ) {
+        this.folderName.setTextContent( folderName );
+        this.numberOfTasks.setTextContent( numberOfTasks );
+        newTaskForm.setOnsubmit( e -> {
+            e.preventDefault();
+            newTask.execute( taskName.getValue() );
+        } );
+    }
+
+    public void createTask( String taskTitle, Command doneCommand ) {
+        TaskItem taskItem = tasks.get();
+        taskItem.init( taskTitle, doneCommand );
+        tasksList.appendChild( taskItem.getElement() );
+    }
+}
+```
+
+***FolderItem.html***
+```
+<ul data-field="folder" class="list-group">
+    <li class="list-group-item list-group-item-info">
+        <span data-field="folderName"></span>
+        <span data-field="numberOfTasks" class="badge"></span>
+    </li>
+    <div data-field="tasksList">
+
+    </div>
+    <li class="list-group-item">
+        <form data-field="newTaskForm">
+            <div class="input-group">
+                <input data-field="taskName" type="text" class="form-control" placeholder="New task...">
+            </div>
+        </form>
+    </li>
+</ul>
+```
+A Folder Item, has Tasks Items:
+
+
+*TaskItem.java
+```
+package org.uberfire.client.screens.widgets;
+
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.common.client.dom.ListItem;
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.mvp.Command;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
+@Templated
+public class TaskItem implements IsElement {
+
+    @Inject
+    @DataField
+    ListItem task;
+
+    @Inject
+    @DataField
+    Input done;
+
+    @Inject
+    @DataField
+    Span taskName;
+
+    public void init( String taskTitle, Command doneCommand ) {
+        taskName.setTextContent( taskTitle );
+        done.setOnclick( e -> doneCommand.execute() );
+    }
+
+}
+```
+
+***TaskItem.html***
+
+```
+<li data-field="task" class="list-group-item">
+    <label class="checkbox-inline">
+        <input data-field="done" type="checkbox">
+        <span data-field="taskName"></span>
+    </label>
+</li>
+
+```
 
 ##Time to see it work!
 
-Refresh the browser, create two projects and click in one of them. Create a new folder and add some tasks for it.
+Stop the server, run the app, login, create two projects and click in one of them. Create a new folder and add some tasks to it.
 
 ![uftasks final](ufTasksFinal.png)
 
@@ -1320,6 +1594,7 @@ package org.uberfire.client.screens;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.shared.events.TaskCreated;
@@ -1335,7 +1610,7 @@ import java.util.Map;
 @WorkbenchScreen(identifier = "DashboardPresenter")
 public class DashboardPresenter {
 
-    public interface View extends UberView<DashboardPresenter> {
+    public interface View extends UberElement<DashboardPresenter> {
 
         void addProject( String project,
                          String tasksCreated,
@@ -1355,7 +1630,7 @@ public class DashboardPresenter {
     }
 
     @WorkbenchPartView
-    public UberView<DashboardPresenter> getView() {
+    public UberElement<DashboardPresenter> getView() {
         return view;
     }
 
@@ -1520,28 +1795,31 @@ Now it's time to create our view classes (org.uberfire.client.screens package):
 ```
 package org.uberfire.client.screens;
 
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.screens.widgets.DashboardItem;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import org.gwtbootstrap3.client.ui.Badge;
-import org.gwtbootstrap3.client.ui.ListGroup;
-import org.gwtbootstrap3.client.ui.ListGroupItem;
-import org.gwtbootstrap3.client.ui.constants.ListGroupItemType;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 
 @Dependent
 @Templated
-public class DashboardView extends Composite implements DashboardPresenter.View {
+public class DashboardView implements DashboardPresenter.View, IsElement {
 
     private DashboardPresenter presenter;
 
     @Inject
-    @DataField("projects")
-    FlowPanel projects;
+    @DataField( "projects" )
+    Div projects;
+
+    @Inject
+    ManagedInstance<DashboardItem> dashboardItems;
 
     @Override
     public void init( DashboardPresenter presenter ) {
@@ -1552,40 +1830,89 @@ public class DashboardView extends Composite implements DashboardPresenter.View 
     public void addProject( final String project,
                             final String tasksCreated,
                             final String tasksDone ) {
-        ListGroup projectGroup = GWT.create( ListGroup.class );
+        DashboardItem dashboardItem = dashboardItems.get();
+        dashboardItem.init( project,
+                            String.valueOf( tasksCreated ),
+                            String.valueOf( tasksDone ) );
 
-        projectGroup.add( createListGroupItem( ListGroupItemType.INFO, project.toUpperCase(), null ) );
-        projectGroup.add( createListGroupItem( ListGroupItemType.WARNING, "TODO", String.valueOf( tasksCreated ) ) );
-        projectGroup.add( createListGroupItem( ListGroupItemType.SUCCESS, "DONE", String.valueOf( tasksDone ) ) );
-
-        projects.add( projectGroup );
+        projects.appendChild( dashboardItem.getElement() );
     }
 
     @Override
     public void clear() {
-        projects.clear();
+        removeAllChildren( projects );
     }
 
-    private ListGroupItem createListGroupItem( final ListGroupItemType type,
-                                               final String text,
-                                               final String number ) {
-        ListGroupItem item = GWT.create( ListGroupItem.class );
-
-        item.setType( type );
-        item.setText( text );
-        if ( number != null ) {
-            Badge numberBadge = GWT.create( Badge.class );
-            numberBadge.setText( number );
-            item.add( numberBadge );
-        }
-
-        return item;
-    }
 }
 ```
 **DashboardView.html**
 ```
 <div class="list-group" data-field="projects"></div>
+```
+Our dashboard creates DashboardItem templates. Let's create them in package org.uberfire.client.screens.widgets.
+
+**DashboardItem.java**
+```
+package org.uberfire.client.screens.widgets;
+
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.common.client.dom.UnorderedList;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.jboss.errai.ui.client.local.api.IsElement;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+@Dependent
+@Templated
+public class DashboardItem implements IsElement {
+
+    @Inject
+    @DataField( "dashboard-item" )
+    UnorderedList dashboardItem;
+
+    @Inject
+    @DataField( "project-name" )
+    Span projectName;
+
+    @Inject
+    @DataField( "todo" )
+    Span todo;
+
+
+    @Inject
+    @DataField( "done" )
+    Span done;
+
+
+    public void init( String projectName, String todo, String done ) {
+
+        this.projectName.setTextContent( projectName.toUpperCase() );
+        this.todo.setTextContent( todo );
+        this.done.setTextContent( done );
+
+    }
+
+}
+```
+**DashboardItem.html**
+```
+<ul class="list-group" data-field="dashboard-item">
+
+    <li class="list-group-item-info">
+        <span data-field="project-name"></span>
+    </li>
+    <li class="list-group-item-warning">
+        <span> TODO </span>
+        <span data-field="todo" class="badge"></span>
+    </li>
+    <li class="list-group-item-success">
+        <span> DONE </span>
+        <span data-field="done" class="badge"></span>
+    </li>
+
+</ul>
 ```
 
 ###Create Perspective Menu

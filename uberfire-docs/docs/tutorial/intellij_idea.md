@@ -22,7 +22,7 @@ The Ultimate Edition for Intellij IDEA comes with a built-in GWT plugin that all
 
 (if your Gwt Modules are not displayed jin this combobox, go to FAQ section and look for "fix maven version on IDEA").
 
- **VM options**: -Xmx2048m -XX:MaxPermSize=512M -Derrai.jboss.home=/Users/ederign/projects/uftasks/uftasks-showcase/uftasks-webapp/target/wildfly-8.1.0.Final/
+ **VM options**: -Xmx2048m -XX:MaxPermSize=512M -Derrai.jboss.home=/Users/ederign/projects/uftasks/uftasks-showcase/uftasks-webapp/target/wildfly-10.0.0.Final/ -Dorg.uberfire.nio.git.dir=/tmp/dir
 
 The errai.jboss.home parameter must point to your local WildFly installation directory or the Wildfly within the target/ directory of your app. For the UFTasks app, errai.jboss.home points to the WildFly installation within the target/ directory, which is redownloaded and installed as part of the build.
 

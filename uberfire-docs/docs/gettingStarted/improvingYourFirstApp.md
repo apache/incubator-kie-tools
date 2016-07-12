@@ -41,39 +41,43 @@ Create a HTML file named MoodScreen.html inside Java package org.uberfire.client
 
 
 ```
-<div>
-    <div style="border: 1px solid red; padding: 30px">
+<form data-field="moodForm">
+    <div class="input-group">
         <input data-field="moodTextBox" type="text" placeholder="How do you feel?">
     </div>
-</div>
+</form>
 ```
 Create a Java class "MoodScreen.java" in the package org.uberfire.client.screens. This file will be used as a client-side template for the new MoodScreen widget. Here’s what that looks like:
 ```
 package org.uberfire.client.screens;
 
+import org.jboss.errai.common.client.dom.Form;
+import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.shared.Mood;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextBox;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.shared.Mood;
-
 @Dependent
 @Templated
-@WorkbenchScreen(identifier = "MoodScreen")
-public class MoodScreen extends Composite {
+@WorkbenchScreen( identifier = "MoodScreen" )
+public class MoodScreen implements IsElement {
 
     @Inject
     @DataField
-    private TextBox moodTextBox;
+    Form moodForm;
+
+    @Inject
+    @DataField
+    Input moodTextBox;
 
     @Inject
     Event<Mood> moodEvent;
@@ -83,54 +87,67 @@ public class MoodScreen extends Composite {
         return "Change Mood";
     }
 
-    @EventHandler("moodTextBox")
-    private void onKeyDown( KeyDownEvent event ) {
-        if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
-            moodEvent.fire( new Mood( moodTextBox.getText() ) );
-            moodTextBox.setText( "" );
-        }
+
+    @PostConstruct
+    public void init() {
+        moodForm.setOnsubmit( e -> {
+            e.preventDefault();
+            moodEvent.fire( new Mood( moodTextBox.getValue() ) );
+            moodTextBox.setValue( "" );
+        } );
     }
+
+    @WorkbenchPartView
+    public IsElement getView() {
+        return this;
+    }
+
 }
 ```
-MoodScreen is very similar to HelloWorldScreen. The only structural differences are related to our choice to use an Errai UI Template. See more about Errai UI templates in [this guide](https://docs.jboss.org/author/display/ERRAI/Errai+UI).
+MoodScreen is very similar to HelloWorldScreen. The structurals differences are related to our choice to use just an Errai UI Template instead of a full MVP (Model View Presenter) structure. See more about Errai UI templates in [this guide](https://docs.jboss.org/author/display/ERRAI/Errai+UI).
 
 ### Creating MoodListenerScreen
 Create a HTML file named MoodListenerScreen.html inside Java package org.uberfire.client.screens with this content:
 ```
-<div>
-    <div style="border: 1px solid red; padding: 30px">
-        <input data-field="moodTextBox" type="text"
-               placeholder="I understand that you are feeling...">
-    </div>
+<div data-field="view">
+    <input data-field="moodTextBox" type="text"
+           placeholder="I understand that you are feeling...">
 </div>
 ```
 And create MoodListenerScreen.java, inside org.uberfire.cliente.screens:
 ```
 package org.uberfire.client.screens;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextBox;
+import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 @Dependent
 @Templated
-@WorkbenchScreen(identifier = "MoodListenerScreen")
-public class MoodListenerScreen extends Composite {
+@WorkbenchScreen( identifier = "MoodListenerScreen" )
+public class MoodListenerScreen implements IsElement {
 
     @Inject
     @DataField
-    private TextBox moodTextBox;
+    Input moodTextBox;
 
     @WorkbenchPartTitle
     public String getScreenTitle() {
         return "MoodListenerScreen";
     }
+
+    @WorkbenchPartView
+    public IsElement getView() {
+        return this;
+    }
+
 }
 ```
 
@@ -210,7 +227,7 @@ Click on MoodPerspective menu:
 ![hello world](moodPerspective.png)
 
 ### Let's make the screens communicate
-Did you notice the CDI event raised by MoodScreen? If no, take a look at onKeyDownMethod.
+Did you notice the CDI event raised by MoodScreen? If no, take a look at moodForm.setOnsubmit(..) call at init() method.
 
 Now let’s do something in response to the the event we fire in MoodListenerScreen when the user presses Enter. To do this we’ll add a CDI observer method at MoodListenerScreen:
 ```

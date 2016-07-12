@@ -34,7 +34,7 @@ This will create the archetype and store it in your ~/.m2 directory.
 $ mvn archetype:generate -B \
 -DarchetypeGroupId=org.uberfire \
 -DarchetypeArtifactId=uberfire-project-archetype \
--DarchetypeVersion=0.9.0-SNAPSHOT \
+-DarchetypeVersion=1.0.0-SNAPSHOT \
 -DgroupId=org.uberfire \
 -DartifactId=uftasks \
 -Dversion=1.0-SNAPSHOT\

@@ -15,3 +15,6 @@ This guide assumes you have the following software set up and working on your co
 * A Java Development Kit (JDK) version 6 or newer
 * Maven 3.x
 * IntelliJ IDEA or Eclipse IDE for Java EE Developers
+
+**Microsoft Windows users:** be sure to use a 64-bit version of the JDK because Uberfire requires more heap space than can be addressed by a 32-bit VM.
+

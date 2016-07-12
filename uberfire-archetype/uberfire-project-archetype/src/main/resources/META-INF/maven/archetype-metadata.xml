@@ -110,6 +110,7 @@
               <directory>src/main/java</directory>
               <includes>
                 <include>**/*.java</include>
+                <include>**/*.html</include>
               </includes>
             </fileSet>
             <fileSet filtered="true" packaged="true" encoding="UTF-8">

@@ -3,28 +3,32 @@
 #set( $symbol_escape = '\' )
 package ${package}.component.client;
 
-import javax.annotation.PostConstruct;
+
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import org.gwtbootstrap3.client.ui.Label;
-
+@Templated
 @Dependent
-public class ComponentView extends Composite implements ComponentPresenter.View {
+public class ComponentView implements ComponentPresenter.View, IsElement {
 
-    private FlowPanel container = new FlowPanel();
+    @Inject
+    @DataField
+    Div component;
 
-    private Label label = new Label( "Empty" );
-
-    @PostConstruct
-    public void setup() {
-        initWidget( container );
-        container.add( label );
-    }
+    private ComponentPresenter presenter;
 
     @Override
     public void setValue( String value ) {
-        label.setText( value );
+        component.setTextContent( value );
+    }
+
+    @Override
+    public void init( ComponentPresenter presenter ) {
+        this.presenter = presenter;
     }
 }
