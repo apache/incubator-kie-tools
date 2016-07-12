@@ -16,9 +16,10 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
+import com.google.gwt.http.client.URL;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
 public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
@@ -48,8 +49,8 @@ public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
                                                              final Command onForceSave,
                                                              final Command onCancel,
                                                              final Command onReOpen ) {
-        final String message = CommonConstants.INSTANCE.ConcurrentUpdate( identity.getIdentifier(), path.toURI() );
 
+        final String message = CommonConstants.INSTANCE.ConcurrentUpdate( identity.getIdentifier(), decode( path ) );
         return new ConcurrentChangePopup( message, onForceSave, onCancel, onReOpen );
     }
 
@@ -58,7 +59,7 @@ public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
                                                              final User identity,
                                                              final Command onIgnore,
                                                              final Command onReOpen ) {
-        final String message = CommonConstants.INSTANCE.ConcurrentRename( identity.getIdentifier(), source.toURI(), target.toURI() );
+        final String message = CommonConstants.INSTANCE.ConcurrentRename( identity.getIdentifier(), decode( source ), decode( target ) );
         return new ConcurrentChangePopup( message, onIgnore, onReOpen );
     }
 
@@ -66,7 +67,11 @@ public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
                                                              final User identity,
                                                              final Command onIgnore,
                                                              final Command onClose ) {
-        final String message = CommonConstants.INSTANCE.ConcurrentDelete( identity.getIdentifier(), path.toURI() );
+        final String message = CommonConstants.INSTANCE.ConcurrentDelete( identity.getIdentifier(), decode( path ) );
         return new ConcurrentChangePopup( message, onIgnore, onClose, CommonConstants.INSTANCE.Close() );
+    }
+
+    private static String decode( final Path path ) {
+        return URL.decode( path.toURI() );
     }
 }
