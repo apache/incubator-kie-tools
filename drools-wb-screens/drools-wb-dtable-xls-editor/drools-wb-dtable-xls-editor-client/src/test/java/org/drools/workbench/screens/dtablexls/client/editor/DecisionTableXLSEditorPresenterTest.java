@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSResources;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
@@ -41,11 +42,17 @@ import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
+@WithClassesToStub({ ConcurrentChangePopup.class })
 public class DecisionTableXLSEditorPresenterTest {
 
     @GwtMock
@@ -73,7 +80,16 @@ public class DecisionTableXLSEditorPresenterTest {
     DecisionTableXLSEditorView view;
 
     @Mock
+    BusyIndicatorView busyIndicatorView;
+
+    @Mock
     KieEditorWrapperView kieView;
+
+    @Mock
+    VersionRecordManager versionRecordManagerMock;
+
+    @Mock
+    EventSourceMock<NotificationEvent> notification;
 
     DecisionTableXLSEditorPresenter presenter;
 
@@ -91,11 +107,15 @@ public class DecisionTableXLSEditorPresenterTest {
         presenter = new DecisionTableXLSEditorPresenter( view,
                                                          decisionTableXLSResourceType,
                                                          decisionTableXLSXResourceType,
-                                                         new ServiceMock() ) {
+                                                         busyIndicatorView,
+                                                         notification,
+                                                         new ServiceMock()
+        ) {
             {
                 kieView = mock( KieEditorWrapperView.class );
-                versionRecordManager = mock( VersionRecordManager.class );
                 overviewWidget = mock( OverviewWidgetPresenter.class );
+                versionRecordManager = versionRecordManagerMock;
+                concurrentUpdateSessionInfo = null;
             }
 
             protected void makeMenuBar() {
@@ -130,6 +150,29 @@ public class DecisionTableXLSEditorPresenterTest {
         verify( view ).setReadOnly( false );
     }
 
+    @Test
+    public void testOnUploadWhenConcurrentUpdateSessionInfoIsNull() {
+        presenter.onUpload();
+
+        verify( view ).submit( versionRecordManagerMock.getCurrentPath() );
+
+        assertNull( presenter.getConcurrentUpdateSessionInfo() );
+    }
+
+    @Test
+    public void testOnUploadWhenConcurrentUpdateSessionInfoIsNotNull() {
+        presenter = spy( new DecisionTableXLSEditorPresenter( null, null, null, busyIndicatorView, null, null ) {
+            {
+                concurrentUpdateSessionInfo = mock( ObservablePath.OnConcurrentUpdateEvent.class );
+            }
+        } );
+
+        presenter.onUpload();
+
+        verify( busyIndicatorView ).hideBusyIndicator();
+        verify( presenter ).showConcurrentUpdateError();
+    }
+
     private class ServiceMock
             implements Caller<DecisionTableXLSService> {
 
@@ -147,7 +190,8 @@ public class DecisionTableXLSEditorPresenterTest {
         }
 
         @Override
-        public DecisionTableXLSService call( RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback ) {
+        public DecisionTableXLSService call( RemoteCallback<?> remoteCallback,
+                                             ErrorCallback<?> errorCallback ) {
             this.remoteCallback = remoteCallback;
             return decisionTableXLSService;
         }
@@ -155,7 +199,8 @@ public class DecisionTableXLSEditorPresenterTest {
         private class DecisionTableXLSServiceMock
                 implements DecisionTableXLSService {
 
-            @Override public ConversionResult convert( Path path ) {
+            @Override
+            public ConversionResult convert( Path path ) {
                 return null;
             }
 
@@ -167,27 +212,42 @@ public class DecisionTableXLSEditorPresenterTest {
                 return null;
             }
 
-            @Override public String getSource( Path path ) {
+            @Override
+            public String getSource( Path path ) {
                 return null;
             }
 
-            @Override public Path copy( Path path, String newName, String comment ) {
+            @Override
+            public Path copy( Path path,
+                              String newName,
+                              String comment ) {
                 return null;
             }
 
-            @Override public Path copy( Path path, String newName, Path targetDirectory, String comment ) {
+            @Override
+            public Path copy( Path path,
+                              String newName,
+                              Path targetDirectory,
+                              String comment ) {
                 return null;
             }
 
-            @Override public void delete( Path path, String comment ) {
+            @Override
+            public void delete( Path path,
+                                String comment ) {
 
             }
 
-            @Override public Path rename( Path path, String newName, String comment ) {
+            @Override
+            public Path rename( Path path,
+                                String newName,
+                                String comment ) {
                 return null;
             }
 
-            @Override public List<ValidationMessage> validate( Path path, Path content ) {
+            @Override
+            public List<ValidationMessage> validate( Path path,
+                                                     Path content ) {
                 return null;
             }
         }

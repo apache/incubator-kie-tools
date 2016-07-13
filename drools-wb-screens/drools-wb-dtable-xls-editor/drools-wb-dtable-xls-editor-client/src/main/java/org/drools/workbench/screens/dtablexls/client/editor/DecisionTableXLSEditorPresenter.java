@@ -70,10 +70,8 @@ public class DecisionTableXLSEditorPresenter
 
     private Caller<DecisionTableXLSService> decisionTableXLSService;
 
-    @Inject
     private Event<NotificationEvent> notification;
 
-    @Inject
     private BusyIndicatorView busyIndicatorView;
 
     private DecisionTableXLSResourceType decisionTableXLSResourceType;
@@ -86,12 +84,16 @@ public class DecisionTableXLSEditorPresenter
     public DecisionTableXLSEditorPresenter( final DecisionTableXLSEditorView baseView,
                                             final DecisionTableXLSResourceType decisionTableXLSResourceType,
                                             final DecisionTableXLSXResourceType decisionTableXLSXResourceType,
+                                            final BusyIndicatorView busyIndicatorView,
+                                            final Event<NotificationEvent> notification,
                                             final Caller<DecisionTableXLSService> decisionTableXLSService ) {
         super( baseView );
         view = baseView;
         this.decisionTableXLSResourceType = decisionTableXLSResourceType;
         this.decisionTableXLSXResourceType = decisionTableXLSXResourceType;
         this.decisionTableXLSService = decisionTableXLSService;
+        this.busyIndicatorView = busyIndicatorView;
+        this.notification = notification;
     }
 
     @OnStartup
@@ -107,34 +109,46 @@ public class DecisionTableXLSEditorPresenter
 
     @Override
     public void onUpload() {
-
         if ( concurrentUpdateSessionInfo != null ) {
-            newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                                 concurrentUpdateSessionInfo.getIdentity(),
-                                 new org.uberfire.mvp.Command() {
-                                     @Override
-                                     public void execute() {
-                                         view.submit( versionRecordManager.getCurrentPath() );
-                                     }
-                                 },
-                                 new org.uberfire.mvp.Command() {
-                                     @Override
-                                     public void execute() {
-                                         //cancel?
-                                     }
-                                 },
-                                 new org.uberfire.mvp.Command() {
-                                     @Override
-                                     public void execute() {
-                                         reload();
-                                         concurrentUpdateSessionInfo = null;
-                                     }
-                                 }
-                               ).show();
+            busyIndicatorView.hideBusyIndicator();
+            showConcurrentUpdateError();
         } else {
-            view.submit( versionRecordManager.getCurrentPath() );
+            submit();
         }
+    }
+
+    void submit() {
+        view.submit( versionRecordManager.getCurrentPath() );
         concurrentUpdateSessionInfo = null;
+    }
+
+    void showConcurrentUpdateError() {
+        newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
+                             concurrentUpdateSessionInfo.getIdentity(),
+                             new Command() {
+                                 @Override
+                                 public void execute() {
+                                     submit();
+                                 }
+                             },
+                             new Command() {
+                                 @Override
+                                 public void execute() {
+                                     //cancel?
+                                 }
+                             },
+                             new Command() {
+                                 @Override
+                                 public void execute() {
+                                     reload();
+                                     concurrentUpdateSessionInfo = null;
+                                 }
+                             }
+                           ).show();
+    }
+
+    ObservablePath.OnConcurrentUpdateEvent getConcurrentUpdateSessionInfo(){
+        return this.concurrentUpdateSessionInfo;
     }
 
     private ClientResourceType getType( ObservablePath path ) {
@@ -289,5 +303,6 @@ public class DecisionTableXLSEditorPresenter
             }
         } ).convert( versionRecordManager.getCurrentPath() );
     }
+
 
 }
