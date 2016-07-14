@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -23,4 +23,19 @@ public class SmurfHouse {
     @SmurfFieldPositionDescriptor(value = 1)
     private Smurf positionedOccupant;
 
+    public Smurf getOccupant() {
+        return occupant;
+    }
+
+    public void setOccupant( Smurf occupant ) {
+        this.occupant = occupant;
+    }
+
+    public Smurf getPositionedOccupant() {
+        return positionedOccupant;
+    }
+
+    public void setPositionedOccupant( Smurf positionedOccupant ) {
+        this.positionedOccupant = positionedOccupant;
+    }
 }

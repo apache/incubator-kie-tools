@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -26,6 +26,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.projec
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.Product;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfHouse;
+import org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfMajorHouse;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.services.datamodel.backend.server.ProjectDataModelOracleTestUtils.*;
@@ -78,33 +79,77 @@ public class ProjectDataModelFactFieldsAnnotationsTest {
         assertEquals( 2,
                       fieldsAnnotations.size() );
 
+        testBaseAnnotations( fieldsAnnotations );
+    }
+
+    protected void testBaseAnnotations( final Map<String, Set<Annotation>> fieldsAnnotations ) {
         assertTrue( fieldsAnnotations.containsKey( "occupant" ) );
         final Set<Annotation> occupantAnnotations = fieldsAnnotations.get( "occupant" );
         assertNotNull( occupantAnnotations );
         assertEquals( 1,
-                      occupantAnnotations.size() );
+                occupantAnnotations.size() );
 
-        final Annotation annotation = occupantAnnotations.iterator().next();
+        final Annotation occupantAnnotation = occupantAnnotations.iterator().next();
         assertEquals( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfFieldDescriptor",
-                      annotation.getQualifiedTypeName() );
+                occupantAnnotation.getQualifiedTypeName() );
         assertEquals( "blue",
-                      annotation.getParameters().get( "colour" ) );
+                occupantAnnotation.getParameters().get( "colour" ) );
         assertEquals( "M",
-                      annotation.getParameters().get( "gender" ) );
+                occupantAnnotation.getParameters().get( "gender" ) );
         assertEquals( "Brains",
-                      annotation.getParameters().get( "description" ) );
+                occupantAnnotation.getParameters().get( "description" ) );
 
         assertTrue( fieldsAnnotations.containsKey( "positionedOccupant" ) );
         final Set<Annotation> posOccupantAnnotations = fieldsAnnotations.get( "positionedOccupant" );
         assertNotNull( posOccupantAnnotations );
         assertEquals( 1,
-                      posOccupantAnnotations.size() );
+                posOccupantAnnotations.size() );
 
         final Annotation annotation2 = posOccupantAnnotations.iterator().next();
         assertEquals( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfFieldPositionDescriptor",
-                      annotation2.getQualifiedTypeName() );
+                annotation2.getQualifiedTypeName() );
         assertEquals( 1,
-                      annotation2.getParameters().get( "value" ) );
+                annotation2.getParameters().get( "value" ) );
+    }
+
+    @Test
+    public void testProjectDMOInheritedAnnotationAttributes() throws Exception {
+        final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+        final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
+
+        final ClassFactBuilder cb = new ClassFactBuilder( builder,
+                SmurfMajorHouse.class,
+                false,
+                TypeSource.JAVA_PROJECT );
+        cb.build( oracle );
+
+        assertEquals( 1,
+                oracle.getProjectModelFields().size() );
+        assertContains( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfMajorHouse",
+                oracle.getProjectModelFields().keySet() );
+
+        final Map<String, Set<Annotation>> fieldsAnnotations = oracle.getProjectTypeFieldsAnnotations().get( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfMajorHouse" );
+        assertNotNull( fieldsAnnotations );
+        assertEquals( 3,
+                fieldsAnnotations.size() );
+
+        assertTrue( fieldsAnnotations.containsKey( "major" ) );
+        final Set<Annotation> majorAnnotations = fieldsAnnotations.get( "major" );
+        assertNotNull( majorAnnotations );
+        assertEquals( 1,
+                majorAnnotations.size() );
+
+        final Annotation majorAnnotation = majorAnnotations.iterator().next();
+        assertEquals( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.SmurfFieldDescriptor",
+                majorAnnotation.getQualifiedTypeName() );
+        assertEquals( "red",
+                majorAnnotation.getParameters().get( "colour" ) );
+        assertEquals( "M",
+                majorAnnotation.getParameters().get( "gender" ) );
+        assertEquals( "Papa Smurf",
+                majorAnnotation.getParameters().get( "description" ) );
+
+        testBaseAnnotations( fieldsAnnotations );
     }
 
 }

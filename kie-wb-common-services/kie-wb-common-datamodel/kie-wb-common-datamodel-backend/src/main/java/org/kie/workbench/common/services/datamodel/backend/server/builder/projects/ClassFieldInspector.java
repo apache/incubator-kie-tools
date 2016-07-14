@@ -16,7 +16,6 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
 import java.beans.Introspector;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -28,21 +27,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.util.AnnotationUtils;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.BlackLists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Find information for all "fields" on a class. A "field" is either a public property or a non-public property for which there is a "getter" and/or a "setter"
  */
 public class ClassFieldInspector {
 
+    private static final Logger log = LoggerFactory.getLogger( ClassFieldInspector.class );
+
     private final Map<String, FieldInfo> fieldTypesFieldInfo = new HashMap<String, FieldInfo>();
 
-    public ClassFieldInspector( final Class<?> clazz ) throws IOException {
+    public ClassFieldInspector( final Class<?> clazz ) {
         //Handle fields
         final List<Field> fields = new ArrayList<Field>( getAllFields( clazz ).values() );
         final List<Field> declaredFields = Arrays.asList( clazz.getDeclaredFields() );
+        final Map<String, Field> inaccessibleFields = new HashMap<>();
+
         for ( Field field : fields ) {
             if ( BlackLists.isClassMethodBlackListed( clazz,
                                                       field.getName() ) ) {
@@ -53,11 +60,18 @@ public class ClassFieldInspector {
             }
 
             if ( Modifier.isPublic( field.getModifiers() ) && !Modifier.isStatic( field.getModifiers() ) ) {
+
+                ModelField.FIELD_ORIGIN origin = declaredFields.contains( field ) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED;
+
                 this.fieldTypesFieldInfo.put( field.getName(),
                                               new FieldInfo( FieldAccessorsAndMutators.BOTH,
                                                              field.getGenericType(),
                                                              field.getType(),
-                                                             declaredFields.contains( field ) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED ) );
+                                                             origin,
+                                                             AnnotationUtils.getFieldAnnotations( field,
+                                                                     origin.equals( ModelField.FIELD_ORIGIN.INHERITED ) ) ) );
+            } else {
+                inaccessibleFields.put( field.getName(), field );
             }
         }
 
@@ -113,11 +127,16 @@ public class ClassFieldInspector {
                         final ModelField.FIELD_ORIGIN origin = getOrigin( methodName,
                                                                           getNames( fields ),
                                                                           getNames( declaredFields ) );
+
+                        Field inaccessibleField = inaccessibleFields.get( methodName );
+
                         this.fieldTypesFieldInfo.put( methodName,
                                                       new FieldInfo( accessorsAndMutators,
                                                                      method.getGenericReturnType(),
                                                                      method.getReturnType(),
-                                                                     origin ) );
+                                                                     origin,
+                                                                     AnnotationUtils.getFieldAnnotations( inaccessibleField,
+                                                                             origin.equals( ModelField.FIELD_ORIGIN.INHERITED )) ) );
                     }
                 }
             }
@@ -207,15 +226,18 @@ public class ClassFieldInspector {
         private Type genericType;
         private Class<?> returnType;
         private ModelField.FIELD_ORIGIN origin;
+        private Set<Annotation> annotations;
 
         private FieldInfo( final FieldAccessorsAndMutators accessorAndMutator,
                            final Type genericType,
                            final Class<?> returnType,
-                           final ModelField.FIELD_ORIGIN origin ) {
+                           final ModelField.FIELD_ORIGIN origin,
+                           final Set<Annotation> annotations ) {
             this.accessorAndMutator = accessorAndMutator;
             this.genericType = genericType;
             this.returnType = returnType;
             this.origin = origin;
+            this.annotations = annotations;
         }
 
         public FieldAccessorsAndMutators getAccessorAndMutator() {
@@ -234,6 +256,9 @@ public class ClassFieldInspector {
             return origin;
         }
 
+        public Set<Annotation> getAnnotations() {
+            return annotations;
+        }
     }
 
 }

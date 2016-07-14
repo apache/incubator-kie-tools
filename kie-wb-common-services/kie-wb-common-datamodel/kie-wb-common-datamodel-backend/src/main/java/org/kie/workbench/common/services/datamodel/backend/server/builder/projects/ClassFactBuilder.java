@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -17,7 +17,6 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.proje
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -72,8 +71,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                isEvent,
                typeSource );
         this.superTypes = getSuperTypes( clazz );
-        this.annotations.addAll( getAnnotations( clazz ) );
-        this.fieldAnnotations.putAll( getFieldsAnnotations( clazz ) );
+        this.annotations.addAll( AnnotationUtils.getClassAnnotations( clazz ) );
         loadClassFields( clazz,
                          discoveredFieldFactBuilders );
     }
@@ -97,52 +95,6 @@ public class ClassFactBuilder extends BaseFactBuilder {
         }
 
         return strings;
-    }
-
-    protected Set<Annotation> getAnnotations( final Class<?> clazz ) {
-        final Set<Annotation> dmoAnnotations = new LinkedHashSet<Annotation>();
-        final java.lang.annotation.Annotation annotations[] = clazz.getAnnotations();
-        for ( java.lang.annotation.Annotation a : annotations ) {
-            final Annotation dmoa = new Annotation( a.annotationType().getName() );
-            for ( Method m : a.annotationType().getDeclaredMethods() ) {
-                final String methodName = m.getName();
-                dmoa.addParameter( methodName,
-                                   AnnotationUtils.getAnnotationAttributeValue( a,
-                                                                                methodName ) );
-            }
-            dmoAnnotations.add( dmoa );
-        }
-        return dmoAnnotations;
-    }
-
-    private Map<String, Set<Annotation>> getFieldsAnnotations( final Class<?> clazz ) {
-        final Field[] fields = clazz.getDeclaredFields();
-        final Map<String, Set<Annotation>> fieldsAnnotations = new HashMap<String, Set<Annotation>>();
-        for ( Field field : fields ) {
-            final String fieldName = field.getName();
-            final Set<Annotation> fieldAnnotations = getFieldAnnotations( field );
-            if ( fieldAnnotations.size() > 0 ) {
-                fieldsAnnotations.put( fieldName,
-                                       fieldAnnotations );
-            }
-        }
-        return fieldsAnnotations;
-    }
-
-    private Set<Annotation> getFieldAnnotations( final Field field ) {
-        final java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
-        final Set<Annotation> fieldAnnotations = new LinkedHashSet<Annotation>();
-        for ( java.lang.annotation.Annotation a : annotations ) {
-            final Annotation fieldAnnotation = new Annotation( a.annotationType().getName() );
-            for ( Method m : a.annotationType().getDeclaredMethods() ) {
-                final String methodName = m.getName();
-                fieldAnnotation.addParameter( methodName,
-                                              AnnotationUtils.getAnnotationAttributeValue( a,
-                                                                                           methodName ) );
-            }
-            fieldAnnotations.add( fieldAnnotation );
-        }
-        return fieldAnnotations;
     }
 
     private void loadClassFields( final Class<?> clazz,
@@ -196,6 +148,11 @@ public class ClassFactBuilder extends BaseFactBuilder {
             if ( discoveredFieldFactBuilders.get( genericReturnType ) != null ) {
                 fieldFactBuilders.put( genericReturnType,
                                        discoveredFieldFactBuilders.get( genericReturnType ) );
+            }
+
+            Set<Annotation> fieldAnnotations = f.getAnnotations();
+            if ( fieldAnnotations != null && !fieldAnnotations.isEmpty() ) {
+                this.fieldAnnotations.put( fieldName, f.getAnnotations() );
             }
         }
 

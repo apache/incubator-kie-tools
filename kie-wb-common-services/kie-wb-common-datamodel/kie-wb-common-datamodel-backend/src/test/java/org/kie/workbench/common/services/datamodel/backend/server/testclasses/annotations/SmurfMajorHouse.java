@@ -3,7 +3,6 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -12,22 +11,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
-package org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations;
+package org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations;
 
-import javax.validation.constraints.NotNull;
+public class SmurfMajorHouse extends SmurfHouse {
 
-public class SmurfValidation1 {
+    @SmurfFieldDescriptor( gender = "M", description = "Papa Smurf", colour = "red" )
+    private Smurf major;
 
-    @NotNull
-    private String name;
-
-    public String getName() {
-        return name;
+    public Smurf getMajor() {
+        return major;
     }
 
-    public void setName( String name ) {
-        this.name = name;
+    public void setMajor( Smurf major ) {
+        this.major = major;
     }
 }
