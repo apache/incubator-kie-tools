@@ -7,7 +7,7 @@
   <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme"/>
 
   <inherits name="org.uberfire.UberfireClientAll"/>
-  <inherits name="org.uberfire.client.views.PatternFly"/>
+  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
 
   <!-- Uberfire Extensions - Runtime Plugin -->
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>

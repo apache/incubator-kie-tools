@@ -551,6 +551,6 @@ a.serviceTab:active {
     border-top: none;
 }
 
-.navbar-pf ul.navbar-utility {
+.navbar-pf ul.navbar-nav.navbar-utility {
     top: -25px;
 }
