@@ -177,12 +177,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/patternfly</outputDirectory>
+              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}</directory>
+                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}/dist</directory>
                   <includes>
-                    <include>dist/**</include>
+                    <include>**</include>
                   </includes>
                 </resource>
               </resources>

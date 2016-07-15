@@ -9,7 +9,7 @@
   <inherits name="org.uberfire.UberfireBackend"/>
   <inherits name="org.uberfire.UberfireWorkbenchBackend"/>
 
-  <inherits name="org.uberfire.client.views.PatternFly"/>
+  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
 
   <inherits name="${package}.component.${capitalizedRootArtifactId}ComponentClient"/>
   <!-- Specify the paths for translatable code -->

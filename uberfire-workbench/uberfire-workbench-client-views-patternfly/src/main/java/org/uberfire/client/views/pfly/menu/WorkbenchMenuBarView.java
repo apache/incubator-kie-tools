@@ -33,15 +33,14 @@ import org.gwtbootstrap3.client.shared.event.ShownEvent;
 import org.gwtbootstrap3.client.shared.event.ShownHandler;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Collapse;
-import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.Navbar;
 import org.gwtbootstrap3.client.ui.NavbarBrand;
 import org.gwtbootstrap3.client.ui.NavbarCollapse;
 import org.gwtbootstrap3.client.ui.NavbarHeader;
-import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.NavbarType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
+import org.gwtbootstrap3.client.ui.html.Span;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.mvp.Command;
@@ -149,11 +148,16 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
         btnToggle.addStyleName( Styles.NAVBAR_TOGGLE );
         btnToggle.setDataToggle( Toggle.COLLAPSE );
         btnToggle.setDataTargetWidget( navbarCollapse );
-        final Icon icon = GWT.create( Icon.class );
-        icon.setType( IconType.BARS );
-        icon.addStyleName( "fa-inverse" );
-        btnToggle.add( icon );
+        btnToggle.add( createToggleBar() );
+        btnToggle.add( createToggleBar() );
+        btnToggle.add( createToggleBar() );
         navbarHeader.add( btnToggle );
+    }
+
+    private Span createToggleBar(){
+        final Span span = GWT.create( Span.class );
+        span.addStyleName("icon-bar");
+        return span;
     }
 
     protected void setupNavBarCollapse() {

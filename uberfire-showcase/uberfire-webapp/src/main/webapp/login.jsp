@@ -19,8 +19,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" class="login-pf">
 <head>
   <title>Login - UberFire Showcase</title>
-  <link rel="stylesheet" href="org.uberfire.UberfireShowcase/patternfly/dist/css/patternfly.min.css">
-  <link rel="stylesheet" href="org.uberfire.UberfireShowcase/patternfly/dist/css/patternfly-additions.min.css">
+  <link rel="stylesheet" href="org.uberfire.UberfireShowcase/css/patternfly.min.css">
+  <link rel="stylesheet" href="org.uberfire.UberfireShowcase/css/patternfly-additions.min.css">
 </head>
 
 <body>

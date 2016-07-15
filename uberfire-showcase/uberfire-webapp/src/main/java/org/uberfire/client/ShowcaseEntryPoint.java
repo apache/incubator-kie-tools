@@ -290,7 +290,9 @@ public class ShowcaseEntryPoint {
         return new MainBrand() {
             @Override
             public Widget asWidget() {
-                return new Image( AppResource.INSTANCE.images().ufBrandLogo() );
+                final Image image = new Image(AppResource.INSTANCE.images().ufBrandLogo());
+                image.getElement().setAttribute("height", "10");
+                return image;
             }
         };
     }

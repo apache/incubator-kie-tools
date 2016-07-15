@@ -22,7 +22,7 @@
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.UberfireBackend"/>
-  <inherits name="org.uberfire.client.views.PatternFly"/>
+  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementWorkbench"/>

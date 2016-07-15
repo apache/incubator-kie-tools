@@ -22,7 +22,7 @@
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.UberfireBackend"/>
-  <inherits name="org.uberfire.client.views.PatternFly"/>
+  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
   <inherits name="org.uberfire.UberfireDocksClient" />
 
   <!-- Wires dependencies -->
