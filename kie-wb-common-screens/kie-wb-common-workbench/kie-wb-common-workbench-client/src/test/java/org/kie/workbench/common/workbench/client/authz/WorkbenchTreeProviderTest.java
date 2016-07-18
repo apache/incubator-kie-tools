@@ -16,6 +16,7 @@
 package org.kie.workbench.common.workbench.client.authz;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.structure.security.RepositoryFeatures;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +35,8 @@ import static org.mockito.Mockito.*;
 public class WorkbenchTreeProviderTest {
 
     private static final String[] FEATURES_NAMES = {
-            CONFIGURE_REPOSITORY,
-            PROMOTE_ASSETS,
-            RELEASE_PROJECT,
+
+            RepositoryFeatures.CONFIGURE_REPOSITORY,
             EDIT_SOURCES,
             MANAGE_DASHBOARDS,
             PLANNER_AVAILABLE

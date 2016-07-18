@@ -16,13 +16,12 @@
 
 package org.kie.workbench.common.workbench.client.authz;
 
-import org.guvnor.asset.management.security.AssetsMgmtFeatures;
 import org.kie.workbench.common.screens.datamodeller.security.DataModelerFeatures;
 
 /**
  * Interface which defines general workbench permissions non tied to any specific resource.
  */
-public interface WorkbenchFeatures extends DataModelerFeatures, AssetsMgmtFeatures {
+public interface WorkbenchFeatures extends DataModelerFeatures {
 
     String MANAGE_DASHBOARDS ="dashboard.manage";
     String PLANNER_AVAILABLE ="planner.available";

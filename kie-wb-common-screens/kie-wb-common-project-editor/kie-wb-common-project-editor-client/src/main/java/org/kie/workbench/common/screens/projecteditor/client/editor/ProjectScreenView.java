@@ -62,11 +62,7 @@ public interface ProjectScreenView
 
         void triggerBuild();
 
-        void triggerBuildAndInstall();
-
-        void triggerBuildAndDeploy( String username,
-                                    String password,
-                                    String serverURL );
+        void triggerBuildAndDeploy();
 
     }
 
@@ -132,8 +128,6 @@ public interface ProjectScreenView
     void showABuildIsAlreadyRunning();
 
     ButtonGroup getBuildButtons();
-
-    void setDeployToRuntimeSetting( Boolean supports );
 
     void setGAVCheckDisabledSetting( Boolean disabled );
 

@@ -691,11 +691,6 @@ public abstract class BaseViewPresenter
 
         if ( ExtendedTypes.NEW_REPOSITORY_EVENT.name().equals( eventType ) ||
                 AssetManagementEventTypes.BRANCH_CREATED.name().equals( eventType ) ||
-                AssetManagementEventTypes.PROCESS_START.name().equals( eventType ) ||
-                AssetManagementEventTypes.PROCESS_END.name().equals( eventType ) ||
-                AssetManagementEventTypes.ASSETS_PROMOTED.name().equals( eventType ) ||
-                AssetManagementEventTypes.PROJECT_BUILT.name().equals( eventType ) ||
-                AssetManagementEventTypes.PROJECT_DEPLOYED.name().equals( eventType ) ||
                 AssetManagementEventTypes.REPOSITORY_CHANGE.name().equals( eventType ) ) {
 
             return true;

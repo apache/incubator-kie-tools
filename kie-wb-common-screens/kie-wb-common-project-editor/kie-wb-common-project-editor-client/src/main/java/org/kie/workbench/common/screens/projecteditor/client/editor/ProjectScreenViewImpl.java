@@ -25,7 +25,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
@@ -88,7 +87,6 @@ public class ProjectScreenViewImpl
     private MetadataWidget importsPageMetadata;
     private RepositoriesWidgetPresenter repositoriesWidgetPresenter;
     private DependencyGrid dependencyGrid;
-    private Boolean supportDeployToRuntime = Boolean.TRUE;
     private Boolean isGAVCheckDisabled = Boolean.FALSE;
     private Widget projectScreen;
     private SimplePanel layout;
@@ -130,9 +128,6 @@ public class ProjectScreenViewImpl
 
     @Inject
     BusyIndicatorView busyIndicatorView;
-
-    @Inject
-    DeploymentScreenPopupViewImpl deploymentScreenPopupView;
 
     public ProjectScreenViewImpl() {
     }
@@ -404,46 +399,17 @@ public class ProjectScreenViewImpl
                     } );
                 }} );
 
-                add( new AnchorListItem( ProjectEditorResources.CONSTANTS.BuildAndInstall() ) {{
+                add( new AnchorListItem( ProjectEditorResources.CONSTANTS.BuildAndDeploy() ) {{
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
-                            presenter.triggerBuildAndInstall();
+                            presenter.triggerBuildAndDeploy();
                         }
                     } );
                 }} );
-                if ( supportDeployToRuntime ) {
-                    add( new AnchorListItem( ProjectEditorResources.CONSTANTS.BuildAndDeploy() ) {{
-                        addClickHandler( new ClickHandler() {
-                            @Override
-                            public void onClick( ClickEvent event ) {
-                                deploymentScreenPopupView.configure( new Command() {
-                                    @Override
-                                    public void execute() {
-                                        String username = deploymentScreenPopupView.getUsername();
-                                        String password = deploymentScreenPopupView.getPassword();
-                                        String serverURL = deploymentScreenPopupView.getServerURL();
-                                        presenter.triggerBuildAndDeploy( username, password, serverURL );
-                                        deploymentScreenPopupView.hide();
-                                    }
-                                } );
-                                deploymentScreenPopupView.show();
-                            }
-                        } );
-                    }} );
-                }
+
             }} );
         }};
-    }
-
-    @Override
-    public void setDeployToRuntimeSetting( Boolean supports ) {
-        this.supportDeployToRuntime = supports;
-
-        if ( supports != null ) {
-            deploymentsHeader.setVisible( supports.booleanValue() );
-            deploymentDescriptorButton.setVisible( supports.booleanValue() );
-        }
     }
 
     @Override
@@ -602,4 +568,5 @@ public class ProjectScreenViewImpl
         popup.setClosable( false );
         popup.show();
     }
+
 }

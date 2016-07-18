@@ -93,6 +93,8 @@ public interface ProjectEditorConstants
 
     String BuildSuccessful();
 
+    String DeploySuccessful();
+
     String BuildFailed();
 
     String EnableKieProject();
@@ -271,11 +273,13 @@ public interface ProjectEditorConstants
 
     String BuildProcessStarted();
 
-    String UserName();
+    String ContainerId();
 
-    String Password();
+    String ServerTemplate();
 
-    String ServerURL();
+    String StartContainer();
+
+    String ContainerIdAlreadyInUse();
 
     String FieldMandatory0( final String fieldName );
 
@@ -314,5 +318,7 @@ public interface ProjectEditorConstants
     String DependencyIsMissingAGroupId();
 
     String Dependency();
+
+    String NoServersAvailableForProvisioning();
 
 }

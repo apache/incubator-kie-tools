@@ -15,6 +15,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
+import java.util.Iterator;
+import java.util.Set;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -22,13 +24,16 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.extras.select.client.ui.Option;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -48,55 +53,57 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
     private User identity;
 
     @UiField
-    FormGroup userNameTextGroup;
+    FormGroup containerIdTextGroup;
 
     @UiField
-    TextBox userNameText;
+    TextBox containerIdText;
 
     @UiField
-    HelpBlock userNameTextHelpInline;
+    HelpBlock containerIdTextHelpInline;
 
     @UiField
-    FormGroup passwordTextGroup;
+    FormLabel serverTemplateLabel;
 
     @UiField
-    Input passwordText;
+    FormGroup serverTemplateGroup;
 
     @UiField
-    HelpBlock passwordTextHelpInline;
+    Select serverTemplateDropdown;
 
     @UiField
-    FormGroup serverURLTextGroup;
+    HelpBlock serverTemplateHelpInline;
 
     @UiField
-    TextBox serverURLText;
+    CheckBox startContainerCheck;
 
     @UiField
-    HelpBlock serverURLTextHelpInline;
+    FormGroup startContainerRow;
 
     private Command callbackCommand;
+
+    private ValidateExistingContainerCallback validateExistingContainerCallback;
 
     private final Command okCommand = new Command() {
         @Override
         public void execute() {
 
-            if ( isEmpty( userNameText.getText() ) ) {
-                userNameTextGroup.setValidationState( ValidationState.ERROR );
-                userNameTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "Username" ) );
+            if ( isEmpty( containerIdText.getText() ) ) {
+                containerIdTextGroup.setValidationState( ValidationState.ERROR );
+                containerIdTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "ContainerId" ) );
 
                 return;
             }
 
-            if ( isEmpty( passwordText.getText() ) ) {
-                passwordTextGroup.setValidationState( ValidationState.ERROR );
-                passwordTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "Password" ) );
+            if ( validateExistingContainerCallback != null && validateExistingContainerCallback.containerNameExists( containerIdText.getText() ) ) {
+                containerIdTextGroup.setValidationState(ValidationState.ERROR);
+                containerIdTextHelpInline.setText(ProjectEditorResources.CONSTANTS.ContainerIdAlreadyInUse());
 
                 return;
             }
 
-            if ( isEmpty( serverURLText.getText() ) ) {
-                serverURLTextGroup.setValidationState( ValidationState.ERROR );
-                serverURLTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "ServerURL" ) );
+            if ( serverTemplateGroup.isVisible() && isEmpty(serverTemplateDropdown.getValue()) ) {
+                serverTemplateGroup.setValidationState(ValidationState.ERROR);
+                serverTemplateHelpInline.setText(ProjectEditorResources.CONSTANTS.FieldMandatory0( "Server template" ));
 
                 return;
             }
@@ -104,6 +111,7 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
             if ( callbackCommand != null ) {
                 callbackCommand.execute();
             }
+
             hide();
         }
 
@@ -132,30 +140,82 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
         setFade( true );
         setRemoveOnHide( true );
 
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( DeploymentScreenPopupViewImpl.this ) );
-        }} );
+        final ModalBody modalBody = GWT.create(ModalBody.class);
+        modalBody.add( uiBinder.createAndBindUi( DeploymentScreenPopupViewImpl.this ) );
+        add( modalBody );
         add( footer );
+
     }
 
-    public void configure( Command command ) {
+    @Override public void show() {
+        super.show();
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        serverTemplateGroup.setVisible(false);
+        containerIdText.setText(null);
+        startContainerCheck.setValue(null);
+        serverTemplateDropdown.setValue((String)null);
+        final Iterator<Widget> options = serverTemplateDropdown.iterator();
+        while(options.hasNext()){
+            options.next();
+            options.remove();
+        }
+        serverTemplateDropdown.refresh();
+        validateExistingContainerCallback = null;
+
+        containerIdTextGroup.setValidationState(ValidationState.NONE);
+        containerIdTextHelpInline.setText("");
+
+        serverTemplateGroup.setValidationState(ValidationState.NONE);
+        serverTemplateHelpInline.setText("");
+    }
+
+    public void configure(Command command ) {
         this.callbackCommand = command;
-
-        // set default values for the fields
-        userNameText.setText( identity.getIdentifier() );
-        serverURLText.setText( GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "" ) );
     }
 
-    public String getUsername() {
-        return this.userNameText.getText();
+    public void addServerTemplates( final Set<String> serverTemplateIds ) {
+        for (final String id : serverTemplateIds){
+            final Option option = GWT.create(Option.class);
+            option.setText( id );
+            option.setValue( id );
+            serverTemplateDropdown.add(option);
+        }
+        serverTemplateDropdown.refresh();
+        serverTemplateGroup.setVisible(true);
     }
 
-    public String getPassword() {
-        return this.passwordText.getText();
+    public void setContainerId(final String containerId) {
+        this.containerIdText.setText(containerId);
     }
 
-    public String getServerURL() {
-        return this.serverURLText.getText();
+    public String getContainerId() {
+        return this.containerIdText.getText();
+    }
+
+    public String getServerTemplate() {
+        return this.serverTemplateDropdown.getValue();
+    }
+
+    public void setStartContainer(final boolean startContainer){
+        startContainerCheck.setValue(startContainer);
+    }
+
+    public boolean getStartContainer() {
+        return startContainerCheck.getValue();
+    }
+
+    public void setValidateExistingContainerCallback(final ValidateExistingContainerCallback validateExistingContainerCallback) {
+        this.validateExistingContainerCallback = validateExistingContainerCallback;
+    }
+
+    interface ValidateExistingContainerCallback {
+
+        boolean containerNameExists(String containerName);
+
     }
 
 }

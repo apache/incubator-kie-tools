@@ -21,6 +21,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.guvnor.structure.security.RepositoryFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionManager;
@@ -78,19 +79,15 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
         if (parent.propertyEquals(NODE_TYPE, NODE_ROOT)) {
             List<PermissionNode> result = new ArrayList<>();
 
-            PermissionLeafNode node1 = createPermissionLeafNode(CONFIGURE_REPOSITORY, i18n.ConfigureRepositories(), i18n.ConfigureRepositoriesHelp());
-            PermissionLeafNode node2 = createPermissionLeafNode(PROMOTE_ASSETS, i18n.PromoteAssets(), i18n.PromoteAssetsHelp());
-            PermissionLeafNode node3 = createPermissionLeafNode(RELEASE_PROJECT, i18n.ReleaseProjects(), i18n.ReleaseProjectsHelp());
-            PermissionLeafNode node4 = createPermissionLeafNode(EDIT_SOURCES, i18n.DataModelerEditSources(), i18n.DataModelerEditSourcesHelp());
-            PermissionLeafNode node5 = createPermissionLeafNode(MANAGE_DASHBOARDS, i18n.ManageDashboards(), i18n.ManageDashboardsHelp());
-            PermissionLeafNode node6 = createPermissionLeafNode(PLANNER_AVAILABLE, i18n.ResourcePlanner(), i18n.ResourcePlannerHelp());
+            PermissionLeafNode node1 = createPermissionLeafNode(RepositoryFeatures.CONFIGURE_REPOSITORY, i18n.ConfigureRepositories(), i18n.ConfigureRepositoriesHelp());
+            PermissionLeafNode node2 = createPermissionLeafNode(EDIT_SOURCES, i18n.DataModelerEditSources(), i18n.DataModelerEditSourcesHelp());
+            PermissionLeafNode node3 = createPermissionLeafNode(MANAGE_DASHBOARDS, i18n.ManageDashboards(), i18n.ManageDashboardsHelp());
+            PermissionLeafNode node4 = createPermissionLeafNode(PLANNER_AVAILABLE, i18n.ResourcePlanner(), i18n.ResourcePlannerHelp());
 
             result.add(node1);
             result.add(node2);
             result.add(node3);
             result.add(node4);
-            result.add(node5);
-            result.add(node6);
 
             callback.afterLoad(result);
         }
