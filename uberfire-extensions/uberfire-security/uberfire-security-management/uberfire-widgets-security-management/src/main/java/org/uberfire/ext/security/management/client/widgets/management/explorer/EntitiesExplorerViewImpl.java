@@ -16,21 +16,29 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.explorer;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import org.gwtbootstrap3.client.ui.*;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Container;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 
 @Dependent
 public class EntitiesExplorerViewImpl extends Composite
@@ -64,10 +72,10 @@ public class EntitiesExplorerViewImpl extends Composite
     TextBox searchBox;
     
     @UiField
-    InputGroupAddon searchButton;
+    Button searchButton;
 
     @UiField
-    InputGroupAddon clearSearchButton;
+    Button clearSearchButton;
     
     @UiField
     Button createButton;
@@ -102,12 +110,8 @@ public class EntitiesExplorerViewImpl extends Composite
                 }
             }
         });
-        searchButton.addDomHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent clickEvent) {
-                doSearch(searchBox.getText());
-            }
-        }, ClickEvent.getType());
+        searchButton.addClickHandler(e -> doSearch(searchBox.getText()));
+
         clearSearchButton.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent clickEvent) {
@@ -160,7 +164,7 @@ public class EntitiesExplorerViewImpl extends Composite
         heading.setText(allEntitiesHeader);
         searchBox.setText("");
         searchBox.setPlaceholder(allEntitiesHeader);
-        clearSearchButton.setIconMuted(true);
+        clearSearchButton.setEnabled(true);
         return this;
     }
 
@@ -176,7 +180,7 @@ public class EntitiesExplorerViewImpl extends Composite
     private void doSearch(final String pattern) {
         final String pEsc = SafeHtmlUtils.htmlEscape(pattern);
         heading.setText(UsersManagementWidgetsConstants.INSTANCE.searchResultsFor() + " " + pEsc);
-        clearSearchButton.setIconMuted(false);
+        clearSearchButton.setEnabled(false);
         if (callback != null) callback.onSearch(pattern);
     }
     

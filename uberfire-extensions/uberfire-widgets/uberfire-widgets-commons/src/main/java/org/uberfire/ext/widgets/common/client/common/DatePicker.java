@@ -473,7 +473,7 @@ public class DatePicker extends Composite
 
     @Override
     public LeafValueEditor<Date> asEditor() {
-        return datePicker.asEditor();
+        return datePicker;
     }
 
     @Override

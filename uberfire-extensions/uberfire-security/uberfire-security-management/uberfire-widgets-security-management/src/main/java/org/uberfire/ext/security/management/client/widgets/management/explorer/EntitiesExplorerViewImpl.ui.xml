@@ -62,8 +62,12 @@
             <b:Column size="MD_12" >
               <b:InputGroup>
                 <b:TextBox ui:field="searchBox" placeholder="{i18n.search}..." autoComplete="false"/>
-                <b:InputGroupAddon ui:field="searchButton" icon="SEARCH" iconMuted="false" iconSpin="false" title="{i18n.search}"/>
-                <b:InputGroupAddon ui:field="clearSearchButton" icon="REMOVE" iconMuted="true" iconSpin="false" title="{i18n.clearSearch}"/>
+                <b:InputGroupButton>
+                  <b:Button ui:field="searchButton" icon="SEARCH" title="{i18n.search}" />
+                </b:InputGroupButton>
+                <b:InputGroupButton>
+                  <b:Button ui:field="clearSearchButton" icon="REMOVE" title="{i18n.clearSearch}" />
+                </b:InputGroupButton>
               </b:InputGroup>
             </b:Column>
           </b:Row>
