@@ -22,8 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -67,12 +65,7 @@ public class PackageSelectorViewImpl
     @PostConstruct
     private void init() {
 
-        packageSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                presenter.onPackageChange();
-            }
-        } );
+        packageSelector.addValueChangeHandler( e -> presenter.onPackageChange() );
 
         newPackage.addClickHandler( new ClickHandler() {
             @Override

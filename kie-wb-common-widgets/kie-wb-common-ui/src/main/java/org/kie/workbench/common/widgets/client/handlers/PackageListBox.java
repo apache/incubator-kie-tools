@@ -104,7 +104,7 @@ public class PackageListBox extends Composite {
                     select.add( option );
                     packages.put( pkg.getCaption(), pkg );
                     if ( pkg.equals( activePackage ) ) {
-                        select.setValue( option );
+                        select.setValue( pkg.getCaption() );
                     }
 
                 }

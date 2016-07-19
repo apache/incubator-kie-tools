@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -93,7 +93,7 @@ public class HeaderView extends Composite
     }
 
     @UiHandler( "updatesList" )
-    void onSelect( ChangeEvent e ) {
+    void onSelect( ValueChangeEvent<String> e ) {
         onSelectCommand.execute( updatesList.getValue() );
     }
 

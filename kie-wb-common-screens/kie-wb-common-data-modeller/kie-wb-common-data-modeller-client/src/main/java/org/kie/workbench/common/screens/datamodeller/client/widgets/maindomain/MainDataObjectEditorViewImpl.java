@@ -22,8 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -96,12 +94,7 @@ public class MainDataObjectEditorViewImpl
     @PostConstruct
     protected void init() {
 
-        superclassSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                presenter.onSuperClassChange();
-            }
-        } );
+        superclassSelector.addValueChangeHandler(e -> presenter.onSuperClassChange());
 
         packageSelectorPanel.add( packageSelector );
 

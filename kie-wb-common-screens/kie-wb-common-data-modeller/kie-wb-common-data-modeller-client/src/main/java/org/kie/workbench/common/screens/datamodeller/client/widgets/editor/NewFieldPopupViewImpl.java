@@ -23,8 +23,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -104,12 +102,7 @@ public class NewFieldPopupViewImpl
 
         setBody( uiBinder.createAndBindUi( this ) );
 
-        newPropertyTypeList.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                presenter.onTypeChange();
-            }
-        } );
+        newPropertyTypeList.addValueChangeHandler( e -> presenter.onTypeChange() );
 
         createButton.addClickHandler( new ClickHandler() {
             @Override

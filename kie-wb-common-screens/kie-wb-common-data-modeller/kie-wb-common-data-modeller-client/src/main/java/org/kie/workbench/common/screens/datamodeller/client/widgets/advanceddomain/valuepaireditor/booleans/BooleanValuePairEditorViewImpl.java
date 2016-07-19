@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -117,7 +118,7 @@ public class BooleanValuePairEditorViewImpl
     }
 
     @UiHandler( "listBox" )
-    void onValueChange( ChangeEvent event ) {
+    void onValueChange( ValueChangeEvent<String> event ) {
         presenter.onValueChange();
     }
 }

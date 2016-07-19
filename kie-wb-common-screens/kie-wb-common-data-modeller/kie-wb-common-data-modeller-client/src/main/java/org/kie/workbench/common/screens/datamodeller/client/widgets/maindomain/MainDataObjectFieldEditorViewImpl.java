@@ -79,19 +79,7 @@ public class MainDataObjectFieldEditorViewImpl
 
     @PostConstruct
     protected void init() {
-        typeSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                //This event propagation stop is a workaround to the following issue:
-                //When the selected value changes, the ChangeEvent is raised two times by the Select component.
-                //It happens the same with all the Selects around the workbench.
-                //In this particular widget, since we have some post processing when selected value changes, etc., the
-                //duplicated event is causing issues.
-                //This event.stopPropagation() seems to stop the raising of the duplicated event.
-                event.stopPropagation();
-                presenter.onTypeChange();
-            }
-        } );
+        typeSelector.addValueChangeHandler( e -> presenter.onTypeChange() );
 
         isTypeMultiple.addClickHandler( new ClickHandler() {
             @Override public void onClick( ClickEvent event ) {

@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -134,12 +132,7 @@ public class RelationshipEditionDialog
         relationType.add( UIUtil.newOption( "Many to One", RelationType.MANY_TO_ONE.name() ) );
         relationType.add( UIUtil.newOption( "Many to Many", RelationType.MANY_TO_MANY.name() ) );
 
-        relationType.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                relationTypeChanged();
-            }
-        } );
+        relationType.addValueChangeHandler( e -> relationTypeChanged() );
 
         fetchMode.add( UIUtil.newOption( "EAGER", FetchMode.EAGER.name() ) );
         fetchMode.add( UIUtil.newOption( "LAZY", FetchMode.LAZY.name() ) );

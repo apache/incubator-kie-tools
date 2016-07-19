@@ -86,33 +86,13 @@ public class DroolsDataObjectEditorViewImpl
 
     @PostConstruct
     protected void init() {
-        roleSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                presenter.onRoleChange();
-            }
-        } );
+        roleSelector.addValueChangeHandler( e -> presenter.onRoleChange() );
 
-        typeSafeSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                presenter.onTypeSafeChange();
-            }
-        } );
+        typeSafeSelector.addValueChangeHandler( e -> presenter.onTypeSafeChange() );
 
-        timestampFieldSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                presenter.onTimeStampFieldChange();
-            }
-        } );
+        timestampFieldSelector.addValueChangeHandler( e -> presenter.onTimeStampFieldChange() );
 
-        durationFieldSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                presenter.onDurationFieldChange();
-            }
-        } );
+        durationFieldSelector.addValueChangeHandler( e -> presenter.onDurationFieldChange() );
 
         propertyReactiveSelector.addClickHandler( new ClickHandler() {
             @Override
