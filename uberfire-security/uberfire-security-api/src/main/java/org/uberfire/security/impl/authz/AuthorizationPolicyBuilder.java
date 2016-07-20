@@ -24,7 +24,6 @@ import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.Permission;
-import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.authz.PermissionType;
 import org.uberfire.security.authz.PermissionTypeRegistry;
 
@@ -51,6 +50,12 @@ public class AuthorizationPolicyBuilder {
 
     public AuthorizationPolicyBuilder(PermissionTypeRegistry permissionTypeRegistry) {
         this.permissionTypeRegistry = permissionTypeRegistry;
+    }
+
+    public AuthorizationPolicyBuilder bydefault() {
+        _currentRole = null;
+        _currentGroup = null;
+        return this;
     }
 
     public AuthorizationPolicyBuilder role(String role) {
@@ -119,7 +124,7 @@ public class AuthorizationPolicyBuilder {
             policy.addPermission(_currentGroup, permission);
         }
         else {
-            throw new IllegalStateException("Invoke role() or group first");
+            policy.addPermission(permission);
         }
         return this;
     }
@@ -158,7 +163,7 @@ public class AuthorizationPolicyBuilder {
             policy.setHomePerspective(_currentGroup, homePerspective);
         }
         else {
-            throw new IllegalStateException("Invoke role() or group() first");
+            policy.setHomePerspective(homePerspective);
         }
         return this;
     }

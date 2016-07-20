@@ -23,6 +23,7 @@
 .acl-help-panel {
     vertical-align: middle;
     font-size: small;
+    margin-left: 5px;
 }
 
 .acl-permissions-panel {

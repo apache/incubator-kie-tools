@@ -29,6 +29,7 @@ import org.uberfire.security.authz.PermissionCollection;
 @Portable
 public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
 
+    DefaultAuthorizationEntry defaultEntry = new DefaultAuthorizationEntry();
     private Set<DefaultAuthorizationEntry> entrySet = new HashSet<>();
 
     public DefaultAuthorizationPolicy() {
@@ -45,7 +46,10 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
                 return entry;
             }
         }
-        return registerAuthzEntry(new DefaultAuthorizationEntry(role));
+        // If no entry is registered then register a brand new one based on the default
+        DefaultAuthorizationEntry entry = defaultEntry.cloneInstance();
+        entry.setRole(role);
+        return registerAuthzEntry(entry);
     }
 
     protected DefaultAuthorizationEntry getAuthzEntry(Group group) {
@@ -54,7 +58,10 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
                 return entry;
             }
         }
-        return registerAuthzEntry(new DefaultAuthorizationEntry(group));
+        // If no entry is registered then register a brand new one based on the default
+        DefaultAuthorizationEntry entry = defaultEntry.cloneInstance();
+        entry.setGroup(group);
+        return registerAuthzEntry(entry);
     }
 
     @Override
@@ -139,6 +146,10 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
         return entry.getPermissions();
     }
 
+    public void addPermission(Permission permission) {
+        defaultEntry.getPermissions().add(permission);
+    }
+
     public void addPermission(Role role, Permission permission) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
         entry.getPermissions().add(permission);
@@ -185,8 +196,8 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
 
     @Override
     public String getHomePerspective(User user) {
-        String lastHome = null;
-        int lastPriority = 0;
+        String lastHome = getHomePerspective();
+        int lastPriority = Integer.MIN_VALUE;
 
         if (user.getRoles() != null) {
             for (Role role : user.getRoles()) {
@@ -213,5 +224,20 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
             }
         }
         return lastHome;
+    }
+
+    @Override
+    public void setHomePerspective(String perspectiveId) {
+        defaultEntry.setHomePerspective(perspectiveId);
+    }
+
+    @Override
+    public String getHomePerspective() {
+        return defaultEntry.getHomePerspective();
+    }
+
+    @Override
+    public PermissionCollection getPermissions() {
+        return defaultEntry.getPermissions();
     }
 }

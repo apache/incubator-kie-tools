@@ -29,7 +29,5 @@ public interface PermissionSwitchToogle extends IsWidget {
 
     void setNumberOfExceptions(int n);
 
-    void toogle();
-
     void setOnChange(Command onChange);
 }

@@ -63,13 +63,4 @@ public class PermissionSwitchTest {
         assertFalse(presenter.isOn());
         verify(onChange).execute();
     }
-
-    @Test
-    public void testToogle() {
-        presenter.init("On", "Off", true, 0);
-        when(view.isOn()).thenReturn(true);
-
-        presenter.toogle();
-        verify(view).setOn(false);
-    }
 }

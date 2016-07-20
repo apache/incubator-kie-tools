@@ -51,29 +51,23 @@ public class PermissionExceptionSwitchView extends Composite
     }
 
     @Override
-    public void init(String textOn, String textOff, boolean on) {
+    public void init(String textOn, String textOff) {
         switchControl = new ToggleSwitch();
         switchControl.setAnimate(true);
         switchControl.setSize(SizeType.MINI);
         switchControl.setOnText(textOn != null ? textOn : SecurityManagementConstants.INSTANCE.switchAllow());
         switchControl.setOffText(textOff != null ? textOff : SecurityManagementConstants.INSTANCE.switchDeny());
-        switchControl.setValue(on);
         switchControl.addValueChangeHandler(event -> presenter.onChange());
         togglePanel.add(switchControl);
     }
 
     @Override
-    public void allow() {
-        badge.getStyle().setProperty("display", "table-cell");
-    }
-
-    @Override
-    public void deny() {
-        badge.getStyle().setProperty("display", "table-cell");
-    }
-    @Override
-    public void none() {
-        badge.getStyle().setProperty("display", "none");
+    public void setExceptionEnabled(boolean enabled) {
+        if (enabled) {
+            badge.getStyle().setProperty("display", "table-cell");
+        } else {
+            badge.getStyle().setProperty("display", "none");
+        }
     }
 
     @Override

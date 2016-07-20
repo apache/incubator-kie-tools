@@ -50,10 +50,9 @@ public class PermissionExceptionSwitchTest {
         presenter.init(null, null, true, true);
 
         assertTrue(presenter.isOn());
-        verify(view).init(null, null, true);
-        verify(view).allow();
-        verify(view, never()).deny();
-        verify(view, never()).none();
+        verify(view).init(null, null);
+        verify(view).setOn(true);
+        verify(view).setExceptionEnabled(true);
         assertTrue(presenter.isOn());
     }
 
@@ -66,17 +65,11 @@ public class PermissionExceptionSwitchTest {
         reset(view);
         presenter.onChange();
         assertFalse(presenter.isOn());
-        verify(view).none();
-        verify(view, never()).allow();
-        verify(view, never()).deny();
         verify(onChange).execute();
 
         reset(view);
         when(view.isOn()).thenReturn(true);
         presenter.onChange();
-        verify(view).allow();
-        verify(view, never()).deny();
-        verify(view, never()).none();
     }
 
     @Test
@@ -85,10 +78,8 @@ public class PermissionExceptionSwitchTest {
         presenter.init(null, null, true, false);
 
         assertTrue(presenter.isOn());
-        verify(view).init(null, null, true);
-        verify(view).none();
-        verify(view, never()).allow();
-        verify(view, never()).deny();
+        verify(view).init(null, null);
+        verify(view).setOn(true);
         assertTrue(presenter.isOn());
     }
 
@@ -101,9 +92,6 @@ public class PermissionExceptionSwitchTest {
         reset(view);
         presenter.onChange();
         assertFalse(presenter.isOn());
-        verify(view).deny();
-        verify(view, never()).allow();
-        verify(view, never()).none();
         verify(onChange).execute();
     }
 }

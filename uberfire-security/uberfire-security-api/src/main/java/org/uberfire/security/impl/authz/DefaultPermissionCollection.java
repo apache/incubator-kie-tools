@@ -45,6 +45,11 @@ public class DefaultPermissionCollection implements PermissionCollection {
     public PermissionCollection add(Permission... permissions) {
         for (Permission p : permissions) {
 
+            // Remove it if already exists
+            Permission existing = get(p.getName());
+            if (existing != null) {
+                remove(p);
+            }
             // Avoid redundancy
             if (!implies(p)) {
                 permissionSet.add(p);
@@ -101,40 +106,39 @@ public class DefaultPermissionCollection implements PermissionCollection {
             return this;
         }
 
-        DefaultPermissionCollection result = new DefaultPermissionCollection();
+        PermissionCollection result = priority > 0 ? other.clone() : this.clone();
+        PermissionCollection target = priority > 0 ? this : other;
 
-        for (Permission pOther : other.collection()) {
-            addToCollectionIf(result, this, pOther, priority);
-        }
-        for (Permission pThis : this.collection()) {
-            addToCollectionIf(result, other, pThis, priority*-1);
+        for (Permission p : target.collection()) {
+            addToCollectionIf(result, p, priority == 0);
         }
         return result;
     }
 
     /**
-     * Add the given permission to the result only when some of the following conditions are met:
+     * Add the given permission to the result only when some of the following two conditions are met:
      * <br/>
-     * <br/> 1. The permission is not implied by name in the source collection</li>
-     * <br/> 2. The permission is implied by name and the priority is positive</li>
-     * <br/> 3. The permission is granted, implied by name and the priority doesn't count (= 0)
+     * <br/> 1. The permission does not exit in the target collection and is not implied by name either</li>
+     * <br/> 2. The permission is granted and the parameter grantedWins = true
      *
      * @param result The collection where the permission shall be added
-     * @param source The collection used to check conditions #2 & #3
      * @param p The permission to add to the result
-     * @param priority integer indicating how to proceed in conditions #2 & #3
-     * <ul>
-     *     <li>0 = same priority (the permission is added only if GRANTED)</li>
-     *     <li>negative integer = the permission is ruled out</li>
-     *     <li>positive integer = the permission is added</li>
-     * </ul>
+     * @param grantedWins If true then granted permission are always added to the result
      */
-    private void addToCollectionIf(PermissionCollection result, PermissionCollection source, Permission p, int priority) {
+    private void addToCollectionIf(PermissionCollection result, Permission p, boolean grantedWins) {
+        Permission existing = result.get(p.getName());
 
-        if (!source.impliesName(p) ||
-            priority > 0 ||
-            (priority == 0 && ACCESS_GRANTED.equals(p.getResult()))) {
-
+        if (existing == null && !result.impliesName(p)) {
+            result.add(p);
+        }
+        else if (grantedWins && ACCESS_GRANTED.equals(p.getResult())) {
+            Iterator<Permission> it = result.collection().iterator();
+            while (it.hasNext()) {
+                Permission next = it.next();
+                if (p.impliesName(next)) {
+                    it.remove();
+                }
+            }
             result.add(p);
         }
     }

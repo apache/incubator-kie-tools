@@ -177,6 +177,17 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
      * @param on The switch status
      */
     protected void onPermissionChanged(Permission permission, boolean on) {
+        notifyPermissionChange(permission, on);
+        processPermissionDependencies(permission);
+    }
+
+    /**
+     * Invoked when a permission toogle switch changes its value.
+     *
+     * @param permission The changing permission
+     * @param on The switch status
+     */
+    protected void notifyPermissionChange(Permission permission, boolean on) {
         // Notify the parent editor
         if (parentEditor != null) {
             parentEditor.onChildPermissionChanged(this, permission, on);
@@ -185,8 +196,6 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
         for (PermissionNodeEditor child : getChildEditors()) {
             child.onParentPermissionChanged(permission, on);
         }
-        // Update permissions inter-dependencies
-        processPermissionDependencies(permission);
     }
 
     /**
@@ -219,6 +228,9 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
                     dep.setResult(AuthorizationResult.ACCESS_DENIED);
                     depSwitch.setOn(false);
                     depSwitch.setEnabled(false);
+
+                    // Notify the dependant switch change
+                    this.notifyPermissionChange(dep, false);
                 } else {
                     depSwitch.setEnabled(true);
                 }

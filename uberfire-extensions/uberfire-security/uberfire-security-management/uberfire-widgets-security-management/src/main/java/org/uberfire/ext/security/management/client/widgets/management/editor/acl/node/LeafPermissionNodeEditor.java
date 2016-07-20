@@ -120,11 +120,23 @@ public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
     }
 
     @Override
+    protected void notifyPermissionChange(Permission permission, boolean on) {
+        super.notifyPermissionChange(permission, on);
+        this.updateExceptionFlags();
+    }
+
+    @Override
     public void onParentPermissionChanged(Permission permission, boolean on) {
-        for (Permission p : permissionSwitchMap.keySet()) {
-            if (permission.impliesName(p)) {
-                PermissionSwitchToogle switchToogle = permissionSwitchMap.get(p);
-                switchToogle.toogle();
+        this.updateExceptionFlags();
+    }
+
+    private void updateExceptionFlags() {
+        PermissionNodeEditor parentEditor = getParentEditor();
+        if (parentEditor != null && !parentEditor.getPermissionNode().getPermissionList().isEmpty()) {
+            for (Permission permission : permissionSwitchMap.keySet()) {
+                PermissionSwitchToogle switchToogle = permissionSwitchMap.get(permission);
+                boolean isException = parentEditor.isAnException(permission);
+                switchToogle.setNumberOfExceptions(isException ? 1 : 0);
             }
         }
     }

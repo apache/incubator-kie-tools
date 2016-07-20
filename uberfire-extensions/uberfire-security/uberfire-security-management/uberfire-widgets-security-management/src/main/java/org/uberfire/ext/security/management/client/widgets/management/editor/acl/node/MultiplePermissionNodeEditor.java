@@ -167,10 +167,6 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
                 // Notify the change in the permission
                 super.onPermissionChanged(permission, permissionSwitch.isOn());
                 permissionChangedEvent.fire(new PermissionChangedEvent(getACLEditor(), permission, permissionSwitch.isOn()));
-
-                // Calculate the new exception count after updating the children
-                int n = getExceptionNumber(permission);
-                permissionSwitch.setNumberOfExceptions(n);
             });
             super.registerPermissionSwitch(permission, permissionSwitch);
         }
@@ -184,6 +180,16 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
 
         // Load the children in order to initialize the exception counters properly
         loadChildren();
+    }
+
+    @Override
+    protected void notifyPermissionChange(Permission permission, boolean on) {
+        super.notifyPermissionChange(permission, on);
+
+        // Update the exception count
+        PermissionSwitchToogle permissionSwitch = permissionSwitchMap.get(permission);
+        int n = getExceptionNumber(permission);
+        permissionSwitch.setNumberOfExceptions(n);
     }
 
     public void expand() {

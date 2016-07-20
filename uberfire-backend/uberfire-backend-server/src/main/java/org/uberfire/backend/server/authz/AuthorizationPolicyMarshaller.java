@@ -15,9 +15,6 @@
  */
 package org.uberfire.backend.server.authz;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -28,6 +25,8 @@ import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.impl.authz.AuthorizationPolicyBuilder;
+
+import static org.uberfire.backend.server.authz.AuthorizationPolicyMarshaller.ReadMode.*;
 
 /**
  * Class used to convert an {@link AuthorizationPolicy} instance into/from a set of key/value pairs.
@@ -69,6 +68,30 @@ import org.uberfire.security.impl.authz.AuthorizationPolicyBuilder;
  */
 public class AuthorizationPolicyMarshaller {
 
+    /**
+     * Different ways to specify what are the target entries to read when calling the
+     * {@link #read(AuthorizationPolicyBuilder, String, String, ReadMode)} method.
+     */
+    public enum ReadMode {
+
+        /**
+         * Read only those entries classified as "default"
+         */
+        DEFAULT_ONLY,
+
+        /**
+         * Read everything but the entries classified as "default"
+         */
+        DEFAULT_EXCLUDED,
+
+        /**
+         * Read everything
+         */
+        EVERYTHING
+    }
+
+
+    private static final String DEFAULT = "default";
     private static final String ROLE = "role";
     private static final String GROUP = "group";
     private static final String PERMISSION = "permission";
@@ -87,7 +110,12 @@ public class AuthorizationPolicyMarshaller {
      */
     public void read(AuthorizationPolicyBuilder builder, Map... input) {
         for (Map m : input) {
-            m.forEach((x,y) -> read(builder, x.toString(), y.toString()));
+            // Process the global/default settings first in order to make sure the rest overwrite them and not viceversa
+            m.forEach((x,y) -> read(builder, x.toString(), y.toString(), DEFAULT_ONLY));
+        }
+        for (Map m : input) {
+            // Process the rest of the settings
+            m.forEach((x,y) -> read(builder, x.toString(), y.toString(), DEFAULT_EXCLUDED));
         }
     }
 
@@ -102,26 +130,56 @@ public class AuthorizationPolicyMarshaller {
      * @param value The value to read
      */
     public void read(AuthorizationPolicyBuilder builder, String key, String value) {
-        List<String> tokens = split(key);
+        this.read(builder, key, value, EVERYTHING);
+    }
 
-        // Role or group setting
-        String type = tokens.get(0);
-        String typeId = tokens.get(1);
-        switch (type) {
-            case ROLE:
-                builder.role(typeId);
-                break;
+    /**
+     * It reads key/value pair passed as a parameter and it calls to the right
+     * {@link AuthorizationPolicyBuilder} method .
+     *
+     * <p>The valid format for an key/value pair is specified in the <a href="#entriesFormat">class description</a>.</p>
+     *
+     * @param builder The {@link AuthorizationPolicyBuilder} used to register the entry.
+     * @param key The key to read
+     * @param value The value to read
+     * @param readMode The {@link ReadMode} determines if the specified key shall be included or excluded
+     */
+    public void read(AuthorizationPolicyBuilder builder, String key, String value, ReadMode readMode) {
+        Key keyObj = parse(key);
 
-            case GROUP:
-                builder.group(typeId);
-                break;
+        if (isReadable(keyObj, readMode)) {
+            read(builder, keyObj, value);
+        }
+    }
 
-            default:
-                throw new IllegalArgumentException("Key must start either with 'role' or 'group': " + key);
+    /**
+     * Check if a key object can be read according the given read mode.
+     */
+    private boolean isReadable(Key keyObj, ReadMode readMode) {
+        if (keyObj.isDefault() && DEFAULT_EXCLUDED.equals(readMode)) {
+            return false;
+        }
+        if (!keyObj.isDefault() && DEFAULT_ONLY.equals(readMode)) {
+            return false;
+        }
+        return true;
+    }
+
+    private void read(AuthorizationPolicyBuilder builder, Key keyObj, String value) {
+
+        if (!keyObj.isDefault()) {
+            if (keyObj.isRole()) {
+                builder.role(keyObj.getRole());
+            }
+            else if (keyObj.isGroup()) {
+                builder.group(keyObj.getGroup());
+            }
+            else {
+                throw new IllegalArgumentException("Key must start either with 'role' or 'group': " + keyObj);
+            }
         }
 
-        // Attribute/value
-        String attr = tokens.get(2);
+        String attr = keyObj.getAttributeType();
         switch (attr) {
 
             case DESCRIPTION:
@@ -137,16 +195,16 @@ public class AuthorizationPolicyMarshaller {
                 break;
 
             case PERMISSION:
-                String permission = tokens.get(3);
+                String permission = keyObj.getAttributeId();
                 if (permission.length() == 0) {
-                    throw new IllegalArgumentException("Permission is incomplete: " + key);
+                    throw new IllegalArgumentException("Permission is incomplete: " + keyObj);
                 }
                 boolean granted = Boolean.parseBoolean(value);
                 builder.permission(permission, granted);
                 break;
 
             default:
-                throw new IllegalArgumentException("Unknown key: " + key);
+                throw new IllegalArgumentException("Unknown key: " + keyObj);
         }
     }
 
@@ -160,6 +218,9 @@ public class AuthorizationPolicyMarshaller {
      * @param out The {@link Properties} instance used as output
      */
     public void write(AuthorizationPolicy policy, Map out) {
+        write(policy.getHomePerspective(), out);
+        write(policy.getPermissions(), out);
+
         for (Role subject : policy.getRoles()) {
             write(subject, policy.getHomePerspective(subject), out);
             write(subject, policy.getPriority(subject), out);
@@ -169,6 +230,23 @@ public class AuthorizationPolicyMarshaller {
             write(subject, policy.getHomePerspective(subject), out);
             write(subject, policy.getPriority(subject), out);
             write(subject, policy.getPermissions(subject), out);
+        }
+    }
+
+    public void write(String homePerspectiveId, Map out) {
+        String key = DEFAULT + "." + HOME;
+        out.remove(key);
+        if (homePerspectiveId != null) {
+            out.put(key, homePerspectiveId);
+        }
+    }
+
+
+    public void write(PermissionCollection permissions, Map out) {
+        for (Permission p : permissions.collection()) {
+            boolean granted = p.getResult() != null && p.getResult().equals(AuthorizationResult.ACCESS_GRANTED);
+            String key = DEFAULT + "." + PERMISSION + "." + p.getName();
+            out.put(key, Boolean.toString(granted));
         }
     }
 
@@ -214,23 +292,120 @@ public class AuthorizationPolicyMarshaller {
         }
     }
 
-    public List<String> split(String key) {
+    public class Key {
+
+        String key = null;
+        String type = null;
+        String roleGroup = null;
+        String attributeType = null;
+        String attributeId = null;
+
+        public Key(String key) {
+            this.key = key;
+        }
+
+        public boolean isDefault() {
+            return type != null && DEFAULT.equals(type);
+        }
+
+        public boolean isRole() {
+            return type != null && ROLE.equals(type);
+        }
+
+        public boolean isGroup() {
+            return type != null && GROUP.equals(type);
+        }
+
+        public String getRole() {
+            return isRole() ? roleGroup : null;
+        }
+
+        public String getGroup() {
+            return isGroup() ? roleGroup : null;
+        }
+
+        public String getAttributeType() {
+            return attributeType;
+        }
+
+        public String getAttributeId() {
+            return attributeId;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public void setRole(String role) {
+            this.roleGroup = role;
+        }
+
+        public void setGroup(String group) {
+            this.roleGroup = group;
+        }
+
+        public void setAttributeType(String attributeType) {
+            this.attributeType = attributeType;
+        }
+
+        public void setAttributeId(String attributeId) {
+            this.attributeId = attributeId;
+        }
+
+        @Override
+        public String toString() {
+            return key;
+        }
+
+        public void validate() throws IllegalStateException {
+            if (type == null || (!DEFAULT.equals(type) && !ROLE.equals(type) && !GROUP.equals(type))) {
+                throw new IllegalArgumentException("Key must start with [default|role|group]");
+            }
+            if (isRole() && (roleGroup == null || roleGroup.length() == 0)) {
+                throw new IllegalArgumentException("Role value is empty");
+            }
+            if (isGroup() && (roleGroup == null || roleGroup.length() == 0)) {
+                throw new IllegalArgumentException("Group value is empty");
+            }
+            if (attributeType == null || attributeType.length() == 0) {
+                throw new IllegalArgumentException("Empty attribute type not allowed: " + attributeType);
+            }
+        }
+    }
+
+    public Key parse(String key) {
+        int _idx = 0;
         String _key = key.endsWith(".*") ? key.substring(0, key.length()-2) : key;
-        List<String> result = new ArrayList<>();
         String[] tokens = _key.split("\\.");
-        for (String token : tokens) {
-            if (token.length() == 0) {
-                throw new IllegalArgumentException("Empty token not allowed: " + key);
-            }
-            if (result.size() < 4) {
-                result.add(token);
-            } else {
-                result.set(3, result.get(3) + "." + token);
+        Key result = new Key(key);
+
+        // Type
+        if (_idx < tokens.length) {
+            result.setType(tokens[_idx++]);
+        }
+        // Role / Group
+        if (_idx < tokens.length) {
+            if (result.isRole()) {
+                result.setRole(tokens[_idx++]);
+            } else if (result.isGroup()) {
+                result.setGroup(tokens[_idx++]);
             }
         }
-        if (result.size() < 3) {
-            throw new IllegalArgumentException("Incomplete key: " + key);
+        // Attribute type
+        if (_idx < tokens.length) {
+            result.setAttributeType(tokens[_idx++]);
         }
+        // Attribute id.
+        if (_idx < tokens.length) {
+            StringBuilder attrIdStr = new StringBuilder();
+            for (int i = _idx; i < tokens.length; i++) {
+                if (i > _idx) attrIdStr.append(".");
+                attrIdStr.append(tokens[i]);
+            }
+            result.setAttributeId(attrIdStr.toString());
+        }
+        // Validate & return
+        result.validate();
         return result;
     }
 }

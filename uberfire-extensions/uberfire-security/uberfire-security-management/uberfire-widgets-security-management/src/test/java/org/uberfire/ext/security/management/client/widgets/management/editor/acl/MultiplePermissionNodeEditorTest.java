@@ -24,8 +24,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.LeafPermissionNodeEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.MultiplePermissionNodeEditor;
-import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.PermissionNodeEditor;
+import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.PermissionExceptionSwitch;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.PermissionSwitch;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.PermissionWidgetFactory;
 import org.uberfire.ext.security.management.client.widgets.management.events.PermissionChangedEvent;
@@ -39,7 +40,9 @@ import org.uberfire.security.client.authz.tree.LoadCallback;
 import org.uberfire.security.client.authz.tree.PermissionNode;
 import org.uberfire.security.client.authz.tree.PermissionTreeProvider;
 import org.uberfire.security.client.authz.tree.impl.PermissionGroupNode;
+import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionResourceNode;
+import org.uberfire.security.impl.authz.DotNamedPermission;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -51,10 +54,28 @@ public class MultiplePermissionNodeEditorTest {
     MultiplePermissionNodeEditor.View view;
 
     @Mock
-    PermissionSwitch.View permissionSwitchView1;
+    LeafPermissionNodeEditor.View childView1;
 
     @Mock
-    PermissionSwitch.View permissionSwitchView2;
+    LeafPermissionNodeEditor.View childView2;
+
+    @Mock
+    PermissionSwitch.View permissionSwitchReadView;
+
+    @Mock
+    PermissionSwitch.View permissionSwitchUpdateView;
+
+    @Mock
+    PermissionExceptionSwitch.View permissionSwitchReadView1;
+
+    @Mock
+    PermissionExceptionSwitch.View permissionSwitchUpdateView1;
+
+    @Mock
+    PermissionExceptionSwitch.View permissionSwitchReadView2;
+
+    @Mock
+    PermissionExceptionSwitch.View permissionSwitchUpdateView2;
 
     @Mock
     LiveSearchDropDown liveSearchDropDown;
@@ -66,6 +87,12 @@ public class MultiplePermissionNodeEditorTest {
     PermissionWidgetFactory widgetFactory;
 
     @Mock
+    PermissionWidgetFactory widgetFactory1;
+
+    @Mock
+    PermissionWidgetFactory widgetFactory2;
+
+    @Mock
     Event<PermissionChangedEvent> changedEvent;
 
     @Mock
@@ -75,68 +102,88 @@ public class MultiplePermissionNodeEditorTest {
     Event<PermissionNodeRemovedEvent> nodeRemovedEvent;
 
     @Mock
-    Permission permission1;
-
-    @Mock
-    Permission permission2;
-
-    @Mock
-    PermissionNode childNode1;
-
-    @Mock
-    PermissionNode childNode2;
-
-    @Mock
-    PermissionNodeEditor childEditor1;
-
-    @Mock
-    PermissionNodeEditor childEditor2;
-
-    @Mock
     Command onChange;
 
     PermissionGroupNode permissionGroupNode;
     PermissionResourceNode permissionResourceNode;
     MultiplePermissionNodeEditor presenter;
-    PermissionSwitch permissionSwitch1;
-    PermissionSwitch permissionSwitch2;
+    PermissionSwitch permissionSwitchRead;
+    PermissionSwitch permissionSwitchUpdate;
+    PermissionExceptionSwitch permissionSwitchRead1;
+    PermissionExceptionSwitch permissionSwitchUpdate1;
+    PermissionExceptionSwitch permissionSwitchRead2;
+    PermissionExceptionSwitch permissionSwitchUpdate2;
+    PermissionNode permissionChildNode1;
+    PermissionNode permissionChildNode2;
+    LeafPermissionNodeEditor childEditor1;
+    LeafPermissionNodeEditor childEditor2;
+    Permission permissionRead;
+    Permission permissionUpdate;
+    Permission permissionRead1;
+    Permission permissionUpdate1;
+    Permission permissionRead2;
+    Permission permissionUpdate2;
 
     @Before
     public void setUp() {
+        permissionRead = spy(new DotNamedPermission("read", true));
+        permissionRead1 = spy(new DotNamedPermission("read.p1", false));
+        permissionRead2 = spy(new DotNamedPermission("read.p2", false));
+        permissionUpdate = spy(new DotNamedPermission("update", true));
+        permissionUpdate1 = spy(new DotNamedPermission("update.p1", false));
+        permissionUpdate2 = spy(new DotNamedPermission("update.p2", false));
+
+        permissionSwitchRead = spy(new PermissionSwitch(permissionSwitchReadView));
+        permissionSwitchRead1 = spy(new PermissionExceptionSwitch(permissionSwitchReadView1));
+        permissionSwitchRead2 = spy(new PermissionExceptionSwitch(permissionSwitchReadView2));
+        permissionSwitchUpdate = spy(new PermissionSwitch(permissionSwitchUpdateView));
+        permissionSwitchUpdate1 = spy(new PermissionExceptionSwitch(permissionSwitchUpdateView1));
+        permissionSwitchUpdate2 = spy(new PermissionExceptionSwitch(permissionSwitchUpdateView2));
+
+        permissionChildNode1 = spy(new PermissionLeafNode());
+        permissionChildNode1.addPermission(permissionRead1, "read", "read");
+        permissionChildNode1.addPermission(permissionUpdate1, "update", "update");
+        permissionChildNode1.addDependencies(permissionRead1, permissionUpdate1);
+
+        permissionChildNode2 = spy(new PermissionLeafNode());
+        permissionChildNode2.addPermission(permissionRead2, "read", "read");
+        permissionChildNode2.addPermission(permissionUpdate2, "update", "update");
+        permissionChildNode2.addDependencies(permissionRead2, permissionUpdate2);
+
+        permissionGroupNode = spy(new PermissionGroupNode(permissionTreeProvider));
+        permissionGroupNode.setNodeName("group");
+        permissionGroupNode.addPermission(permissionRead, "read", "read");
+        permissionGroupNode.addPermission(permissionUpdate, "update", "update");
+        permissionGroupNode.addDependencies(permissionRead, permissionUpdate);
+
+        permissionResourceNode = spy(new PermissionResourceNode("resource", permissionTreeProvider));
+        permissionResourceNode.setNodeName("resource");
+        permissionResourceNode.addPermission(permissionRead, "read", "read");
+        permissionResourceNode.addPermission(permissionUpdate, "update", "update");
+        permissionResourceNode.addDependencies(permissionRead, permissionUpdate);
+
+        when(widgetFactory1.createExceptionSwitch()).thenReturn(permissionSwitchRead1, permissionSwitchUpdate1);
+        when(widgetFactory2.createExceptionSwitch()).thenReturn(permissionSwitchRead2, permissionSwitchUpdate2);
+
+        childEditor1 = spy(new LeafPermissionNodeEditor(childView1, widgetFactory1, changedEvent));
+        childEditor2 = spy(new LeafPermissionNodeEditor(childView2, widgetFactory2, changedEvent));
+
+        when(widgetFactory.createSwitch()).thenReturn(permissionSwitchRead, permissionSwitchUpdate);
+        when(widgetFactory.createEditor(permissionChildNode1)).thenReturn(childEditor1);
+        when(widgetFactory.createEditor(permissionChildNode2)).thenReturn(childEditor2);
+
         presenter = new MultiplePermissionNodeEditor(view, liveSearchDropDown, widgetFactory,
                 changedEvent, nodeAddedEvent, nodeRemovedEvent);
 
-        permissionSwitch1 = spy(new PermissionSwitch(permissionSwitchView1));
-        permissionSwitch2 = spy(new PermissionSwitch(permissionSwitchView2));
-
-        when(widgetFactory.createSwitch()).thenReturn(permissionSwitch1, permissionSwitch2);
-        when(widgetFactory.createEditor(childNode1)).thenReturn(childEditor1);
-        when(widgetFactory.createEditor(childNode2)).thenReturn(childEditor2);
-
-        when(permission1.getResult()).thenReturn(AuthorizationResult.ACCESS_DENIED);
-        when(permission1.getName()).thenReturn("p1");
-        when(permission2.getResult()).thenReturn(AuthorizationResult.ACCESS_GRANTED);
-        when(permission2.getName()).thenReturn("p2");
-
-        permissionGroupNode = spy(new PermissionGroupNode(permissionTreeProvider));
-        permissionGroupNode.setNodeName("r1");
-        permissionGroupNode.addPermission(permission1, "grant1", "deny1");
-        permissionGroupNode.addPermission(permission2, "grant2", "deny2");
-
-        permissionResourceNode = spy(new PermissionResourceNode("resource", permissionTreeProvider));
-        permissionResourceNode.setNodeName("r2");
-        permissionResourceNode.addPermission(permission1, "grant1", "deny1");
-        permissionResourceNode.addPermission(permission2, "grant2", "deny2");
-
         doAnswer(invocationOnMock -> {
             LoadCallback callback = (LoadCallback) invocationOnMock.getArguments()[0];
-            callback.afterLoad(Arrays.asList(childNode1, childNode2));
+            callback.afterLoad(Arrays.asList(permissionChildNode1, permissionChildNode2));
             return null;
         }).when(permissionGroupNode).expand(any(LoadCallback.class));
 
         doAnswer(invocationOnMock -> {
             LoadCallback callback = (LoadCallback) invocationOnMock.getArguments()[0];
-            callback.afterLoad(Arrays.asList(childNode1, childNode2));
+            callback.afterLoad(Arrays.asList(permissionChildNode1, permissionChildNode2));
             return null;
         }).when(permissionResourceNode).expand(any(LoadCallback.class));
     }
@@ -148,12 +195,12 @@ public class MultiplePermissionNodeEditorTest {
         assertEquals(presenter.getChildEditors().size(), 2);
         assertEquals(presenter.getPermissionNode(), permissionGroupNode);
 
-        verify(view).setNodeName("r1");
+        verify(view).setNodeName("group");
         verify(view, never()).setNodeFullName(anyString());
-        verify(view).addPermission(permissionSwitch1);
-        verify(view).addPermission(permissionSwitch2);
-        verify(permissionSwitch1).init(eq("grant1"), eq("deny1"), eq(false), eq(0));
-        verify(permissionSwitch2).init(eq("grant2"), eq("deny2"), eq(true), eq(0));
+        verify(view).addPermission(permissionSwitchRead);
+        verify(view).addPermission(permissionSwitchUpdate);
+        verify(permissionSwitchRead).init(eq("read"), eq("read"), eq(true), eq(0));
+        verify(permissionSwitchUpdate).init(eq("update"), eq("update"), eq(true), eq(0));
 
         verify(view).setClearChildrenEnabled(false);
         verify(view, never()).setAddChildEnabled(true);
@@ -183,8 +230,8 @@ public class MultiplePermissionNodeEditorTest {
         verify(view, never()).setAddChildEnabled(true);
         verify(view, never()).setChildSelector(any());
         verify(view, never()).setClearChildrenEnabled(true);
-        verify(childEditor1).edit(childNode1);
-        verify(childEditor2).edit(childNode2);
+        verify(childEditor1).edit(permissionChildNode1);
+        verify(childEditor2).edit(permissionChildNode2);
     }
 
     @Test
@@ -197,53 +244,125 @@ public class MultiplePermissionNodeEditorTest {
         verify(view).setAddChildEnabled(true);
         verify(view).setChildSelector(any());
         verify(view, atLeastOnce()).setClearChildrenEnabled(true);
-        verify(childEditor1).edit(childNode1);
-        verify(childEditor2).edit(childNode2);
+        verify(childEditor1).edit(permissionChildNode1);
+        verify(childEditor2).edit(permissionChildNode2);
     }
 
     @Test
     public void testSwitchChange() {
         presenter.edit(permissionGroupNode);
 
-        permissionSwitch1.onChange();
+        permissionSwitchRead.onChange();
 
-        verify(permission1).setResult(any());
+        verify(permissionRead).setResult(any());
         verify(changedEvent).fire(any());
     }
 
     @Test
     public void testSwitchInitDependencies() {
-        when(permissionSwitchView1.isOn()).thenReturn(false);
-        when(permissionSwitchView2.isOn()).thenReturn(true);
+        when(permissionSwitchReadView.isOn()).thenReturn(false);
+        when(permissionSwitchUpdateView.isOn()).thenReturn(true);
 
-        reset(permission2);
-        permissionGroupNode.addDependencies(permission1, permission2);
         presenter.edit(permissionGroupNode);
 
-        verify(permission2).setResult(AuthorizationResult.ACCESS_DENIED);
-        verify(permissionSwitch2).setEnabled(false);
-        verify(permissionSwitch2).setOn(false);
+        verify(permissionUpdate).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitchUpdate).setEnabled(false);
+        verify(permissionSwitchUpdate).setOn(false);
     }
 
     @Test
     public void testSwitchChangeDependencies() {
-        permissionGroupNode.addDependencies(permission1, permission2);
         presenter.edit(permissionGroupNode);
 
-        reset(permission2);
-        reset(permissionSwitch2);
-        when(permissionSwitch1.isOn()).thenReturn(false);
-        permissionSwitch1.onChange();
+        // Deny "read" permission
+        reset(permissionUpdate);
+        reset(permissionSwitchUpdate);
+        when(permissionSwitchRead.isOn()).thenReturn(false);
+        permissionSwitchRead.onChange();
 
-        verify(permission2).setResult(AuthorizationResult.ACCESS_DENIED);
-        verify(permissionSwitch2).setEnabled(false);
-        verify(permissionSwitch2).setOn(false);
+        // "update" permission switched to denied as it depends on "read"
+        verify(permissionUpdate).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitchUpdate).setEnabled(false);
+        verify(permissionSwitchUpdate).setOn(false);
 
-        reset(permissionSwitch2);
-        when(permissionSwitch1.isOn()).thenReturn(true);
-        permissionSwitch1.onChange();
+        // Grant "read" permission
+        reset(permissionSwitchUpdate);
+        when(permissionSwitchRead.isOn()).thenReturn(true);
+        permissionSwitchRead.onChange();
 
-        verify(permissionSwitch2).setEnabled(true);
-        verify(permissionSwitch2, never()).setOn(anyBoolean());
+        // "update" permission enabled but not switched on
+        verify(permissionSwitchUpdate).setEnabled(true);
+        verify(permissionSwitchUpdate, never()).setOn(anyBoolean());
+    }
+
+    @Test
+    public void testSwitchChildDependencies() {
+        presenter.edit(permissionResourceNode);
+
+        // Permissions are denied by default on children
+        permissionSwitchReadView1.setExceptionEnabled(false);
+        permissionSwitchUpdateView1.setExceptionEnabled(false);
+
+        // Deny parent's read permission
+        reset(permissionUpdate);
+        reset(permissionSwitchRead);
+        reset(permissionSwitchUpdate);
+        when(permissionSwitchRead.isOn()).thenReturn(false);
+        permissionSwitchRead.onChange();
+
+        // Children exception flag hidden as parent has been denied
+        permissionSwitchReadView1.setExceptionEnabled(false);
+        permissionSwitchUpdateView1.setExceptionEnabled(false);
+
+        // Parent's "update" permission switched to denied as it depends on "read"
+        verify(permissionUpdate).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitchUpdate).setEnabled(false);
+        verify(permissionSwitchUpdate).setOn(false);
+        verify(permissionSwitchUpdate).setNumberOfExceptions(0);
+    }
+
+    @Test
+    public void testChildrenSwitchExceptions() {
+        presenter.edit(permissionResourceNode);
+
+        // Deny child read permission
+        when(permissionSwitchReadView1.isOn()).thenReturn(true);
+        permissionSwitchRead1.onChange();
+        verify(permissionRead1).setResult(AuthorizationResult.ACCESS_GRANTED);
+        verify(permissionSwitchReadView1).setExceptionEnabled(false);
+
+        // Deny parent's update permission
+        reset(permissionUpdate);
+        reset(permissionSwitchRead);
+        reset(permissionSwitchUpdate);
+        reset(permissionSwitchUpdateView1);
+        when(permissionSwitchUpdateView.isOn()).thenReturn(false);
+        permissionSwitchRead.onChange();
+
+        // Children update exception flag hidden as parent has been denied
+        verify(permissionUpdate).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitchUpdate).setEnabled(false);
+        verify(permissionSwitchUpdate).setOn(false);
+        verify(permissionSwitchUpdateView1, atLeastOnce()).setExceptionEnabled(false);
+
+        // Deny parent's read permission
+        reset(permissionUpdate);
+        reset(permissionSwitchRead);
+        reset(permissionSwitchUpdate);
+        reset(permissionSwitchUpdateView1);
+        when(permissionSwitchReadView.isOn()).thenReturn(false);
+        permissionSwitchRead.onChange();
+
+        // Parent's "update" permission switched to denied as it depends on "read"
+        verify(permissionUpdate).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitchUpdate).setEnabled(false);
+        verify(permissionSwitchUpdate).setOn(false);
+        verify(permissionSwitchUpdate).setNumberOfExceptions(0);
+
+        // Children's "update" permission switched to denied as well
+        verify(permissionUpdate1).setResult(AuthorizationResult.ACCESS_DENIED);
+        verify(permissionSwitchUpdate).setEnabled(false);
+        verify(permissionSwitchUpdate).setOn(false);
+        verify(permissionSwitchUpdateView1, atLeastOnce()).setExceptionEnabled(false);
     }
 }

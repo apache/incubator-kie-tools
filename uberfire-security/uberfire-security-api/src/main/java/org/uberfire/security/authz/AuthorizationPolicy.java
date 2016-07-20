@@ -160,4 +160,31 @@ public interface AuthorizationPolicy {
      * @see AuthorizationPolicy#getPriority(Group)
      */
     String getHomePerspective(User user);
+
+    /**
+     * Sets the identifier of the default home perspective.
+     *
+     * <p>This is the perspective that is returned for those roles/groups with no gome perspective set.</p>
+     *
+     * @param perspectiveId An existing perspective identifier
+     */
+    void setHomePerspective(String perspectiveId);
+
+    /**
+     * Gets the identifier of the default home perspective.
+     *
+     * <p>This is the perspective that is returned for those roles/groups with no home perspective set.</p>
+     *
+     * @return An existing perspective identifier
+     */
+    String getHomePerspective();
+
+    /**
+     * Get the default permissions.
+     *
+     * <p>These are he permissions that are returned for those roles/groups with no permissions set.</p>
+     *
+     * @return The permission collection
+     */
+    PermissionCollection getPermissions();
 }

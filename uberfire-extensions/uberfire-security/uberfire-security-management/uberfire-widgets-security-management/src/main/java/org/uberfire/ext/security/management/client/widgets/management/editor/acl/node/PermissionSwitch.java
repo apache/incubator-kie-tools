@@ -89,11 +89,6 @@ public class PermissionSwitch implements PermissionSwitchToogle {
         view.setEnabled(enabled);
     }
 
-    @Override
-    public void toogle() {
-        view.setOn(!view.isOn());
-    }
-
     public void onChange() {
         onChange.execute();
     }

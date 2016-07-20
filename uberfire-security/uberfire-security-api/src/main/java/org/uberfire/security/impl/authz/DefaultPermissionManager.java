@@ -235,26 +235,73 @@ public class DefaultPermissionManager implements PermissionManager {
         return result;
     }
 
+    /**
+     * Get all the permissions assigned to any of the user's roles/groups plus the default permissions
+     * ({@link AuthorizationPolicy#getPermissions()}) and it creates a single permission collection where
+     * the permission are added by priority.
+     *
+     * @param user The target user
+     * @return An unified permission collection
+     */
     private PermissionCollection resolvePermissionsPriority(User user) {
-        PermissionCollection result = null;
-        int lastPriority = 0;
+        if (authorizationPolicy == null) {
+            return null;
+        }
+        // Get the default permissions as lowest priority
+        PermissionCollection result = authorizationPolicy.getPermissions();
+        int[] priority = new int[] {Integer.MIN_VALUE};
 
-        if (user.getRoles() != null && authorizationPolicy != null) {
+        // Overwrite the default permissions with those defined for the user's roles & groups
+        result = mergeRolePermissions(user, result, priority);
+        result = mergeGroupPermissions(user, result, priority);
+        return result;
+    }
+
+    /**
+     * Merge the target collection with the permissions assigned to the given user's roles
+     */
+    private PermissionCollection mergeRolePermissions(User user, PermissionCollection target, int[] lastPriority) {
+        PermissionCollection result = target;
+        if (user.getRoles() != null) {
             for (Role role : user.getRoles()) {
                 PermissionCollection collection = authorizationPolicy.getPermissions(role);
                 int priority = authorizationPolicy.getPriority(role);
-                result = result == null ? collection : result.merge(collection, priority-lastPriority);
-                lastPriority = priority;
-            }
-        }
-        if (user.getGroups() != null && authorizationPolicy != null) {
-            for (Group group : user.getGroups()) {
-                PermissionCollection collection = authorizationPolicy.getPermissions(group);
-                int priority = authorizationPolicy.getPriority(group);
-                result = result == null ? collection : result.merge(collection, priority-lastPriority);
-                lastPriority = priority;
+                int comparator = resolve(priority, lastPriority[0]);
+                result = result.merge(collection, comparator);
+                if (priority > lastPriority[0]) {
+                    lastPriority[0] = priority;
+                }
             }
         }
         return result;
+    }
+
+    /**
+     * Merge the target collection with the permissions assigned to the given user's groups
+     */
+    private PermissionCollection mergeGroupPermissions(User user, PermissionCollection target, int[] lastPriority) {
+        PermissionCollection result = target;
+        if (user.getGroups() != null) {
+            for (Group group : user.getGroups()) {
+                PermissionCollection collection = authorizationPolicy.getPermissions(group);
+                int priority = authorizationPolicy.getPriority(group);
+                int comparator = resolve(priority, lastPriority[0]);
+                result = result.merge(collection, comparator);
+                if (priority > lastPriority[0]) {
+                    lastPriority[0] = priority;
+                }
+            }
+        }
+        return result;
+    }
+
+    private int resolve(int p1, int p2) {
+        if (p1 == p2) {
+            return 0;
+        }
+        if (p1 > p2) {
+            return 1;
+        }
+        return -1;
     }
 }

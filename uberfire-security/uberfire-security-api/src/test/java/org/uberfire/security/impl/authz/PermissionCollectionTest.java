@@ -206,4 +206,16 @@ public class PermissionCollectionTest {
         assertEquals(result.collection().size(), 1);
         assertEquals(result.get("resource.read.id1").getResult(), AuthorizationResult.ACCESS_DENIED);
     }
+
+    @Test
+    public void testOverwriteExisting() {
+        PermissionCollection pc = new DefaultPermissionCollection();
+        pc.add(new DotNamedPermission("resource.read", true));
+        assertEquals(pc.collection().size(), 1);
+        assertEquals(pc.get("resource.read").getResult(), AuthorizationResult.ACCESS_GRANTED);
+
+        pc.add(new DotNamedPermission("resource.read", false));
+        assertEquals(pc.collection().size(), 1);
+        assertEquals(pc.get("resource.read").getResult(), AuthorizationResult.ACCESS_DENIED);
+    }
 }

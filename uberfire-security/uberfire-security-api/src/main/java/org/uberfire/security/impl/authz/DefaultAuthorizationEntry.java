@@ -89,6 +89,17 @@ public class DefaultAuthorizationEntry {
         this.permissions = permissions;
     }
 
+    public DefaultAuthorizationEntry cloneInstance() {
+        DefaultAuthorizationEntry clone = new DefaultAuthorizationEntry();
+        clone.description = description;
+        clone.role = role;
+        clone.group = group;
+        clone.priority = priority;
+        clone.homePerspective = homePerspective;
+        clone.permissions = permissions.clone();
+        return clone;
+    }
+
     public String toString() {
         StringBuilder out = new StringBuilder();
         if (role != null) {

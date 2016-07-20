@@ -32,6 +32,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.Permission;
+import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.authz.PermissionType;
 import org.uberfire.security.authz.PermissionTypeRegistry;
@@ -137,6 +138,18 @@ public class AuthorizationManagerTest {
     @Test
     public void testUnknownResource() {
         boolean result = authorizationManager.authorize(resource1, user);
+        assertEquals(result, true);
+    }
+
+    @Test
+    public void testAuthorizationPolicyUndefined() {
+        User user = createUserMock("role1");
+        permissionManager.setAuthorizationPolicy(null);
+        PermissionCollection pc = permissionManager.resolvePermissions(user, VotingStrategy.PRIORITY);
+        boolean result = authorizationManager.authorize(resource1, user);
+
+        assertNotNull(pc);
+        assertEquals(pc.collection().size(), 0);
         assertEquals(result, true);
     }
 
@@ -307,13 +320,17 @@ public class AuthorizationManagerTest {
 
     @Test
     public void testHighPriorityVoting() {
-        User user = createUserMock("role1", "role2");
+        User user = createUserMock("role1", "role2", "role3");
         permissionManager.setAuthorizationPolicy(permissionManager.newAuthorizationPolicy()
                 .role("role1").priority(10)
                 .permission("perspective.read", false)
                 .permission("perspective.read.p1", true)
                 .permission("screen.read.s1", true)
                 .role("role2")
+                .permission("perspective.read", true)
+                .permission("perspective.read.p1", false)
+                .permission("screen.read", false)
+                .role("role3").priority(5)
                 .permission("perspective.read", true)
                 .permission("perspective.read.p1", false)
                 .permission("screen.read", false)

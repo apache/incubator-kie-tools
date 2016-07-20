@@ -15,13 +15,10 @@
  */
 package org.uberfire.backend.server.authz;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -123,14 +120,30 @@ public class AuthorizationPolicyDeployer {
         AuthorizationPolicyMarshaller marshaller = new AuthorizationPolicyMarshaller();
         if (policyDir != null) {
             try {
-                Files.list(policyDir)
-                        .filter(this::isPolicyFile)
-                        .forEach(p -> loadPolicyFile(builder, marshaller, p));
-            } catch (IOException e) {
+                NonEscapedProperties properties = readPolicyProperties(policyDir);
+                marshaller.read(builder, properties);
+            }
+            catch (IOException e) {
                 logger.warn("Error loading security policy files", e);
             }
         }
         return builder.build();
+    }
+
+    /**
+     * Put all the policy files together into a single properties instance.
+     *
+     * @param policyDir The source directory where to read the policy files from.
+     * @return An {@link NonEscapedProperties} instance containing all the properties read from the policy files found
+     * @throws IOException When an IO error occurs reading any of the policy files
+     */
+    public NonEscapedProperties readPolicyProperties(Path policyDir) throws IOException {
+        NonEscapedProperties properties = new NonEscapedProperties();
+        Files.list(policyDir)
+                .filter(this::isPolicyFile)
+                .forEach(path -> loadPolicyFile(properties, path));
+
+        return properties;
     }
 
     public boolean isPolicyFile(Path p) {
@@ -138,14 +151,12 @@ public class AuthorizationPolicyDeployer {
         return fileName.equals("security-policy.properties") || fileName.startsWith("security-module-");
     }
 
-    public void loadPolicyFile(AuthorizationPolicyBuilder builder, AuthorizationPolicyMarshaller marshaller, Path path) {
+    public void loadPolicyFile(NonEscapedProperties properties, Path path) {
         try {
-            NonEscapedProperties p = new NonEscapedProperties();
-            p.load(path);
-            marshaller.read(builder, p);
+            properties.load(path);
         }
         catch (IOException e) {
-            logger.error("Security policy load error", e);
+            logger.error("Security policy file load error: " + path, e);
         }
     }
 }

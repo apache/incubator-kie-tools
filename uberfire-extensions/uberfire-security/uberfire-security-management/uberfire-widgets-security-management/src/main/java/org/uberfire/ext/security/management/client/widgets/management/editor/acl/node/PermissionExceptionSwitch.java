@@ -28,25 +28,19 @@ public class PermissionExceptionSwitch implements PermissionSwitchToogle {
 
     public interface View extends UberView<PermissionExceptionSwitch> {
 
-        void init(String textOn, String textOff, boolean on);
-
-        void allow();
-
-        void deny();
-
-        void none();
+        void init(String textOn, String textOff);
 
         boolean isOn();
 
         void setOn(boolean on);
+
+        void setExceptionEnabled(boolean enabled);
 
         void setEnabled(boolean enabled);
     }
 
     View view;
     Command onChange;
-    boolean isException;
-    boolean overwriteOn;
 
     @Inject
     public PermissionExceptionSwitch(View view) {
@@ -60,11 +54,9 @@ public class PermissionExceptionSwitch implements PermissionSwitchToogle {
     }
 
     public void init(String switchOnName, String switchOffName, boolean on, boolean isException) {
-        this.isException = isException;
-        this.overwriteOn = isException;
-
-        view.init(switchOnName, switchOffName, on);
-        updateOverwrite();
+        view.init(switchOnName, switchOffName);
+        view.setOn(on);
+        view.setExceptionEnabled(isException);
     }
 
     @Override
@@ -89,35 +81,10 @@ public class PermissionExceptionSwitch implements PermissionSwitchToogle {
 
     @Override
     public void setNumberOfExceptions(int n) {
-
-    }
-
-    @Override
-    public void toogle() {
-        if (isException) {
-            overwriteOn = !overwriteOn;
-            updateOverwrite();
-        } else {
-            view.setOn(!view.isOn());
-        }
+        view.setExceptionEnabled(n > 0);
     }
 
     public void onChange() {
         onChange.execute();
-        isException = true;
-        overwriteOn = !overwriteOn;
-        updateOverwrite();
-    }
-
-    private void updateOverwrite() {
-        if (overwriteOn) {
-            if (view.isOn()) {
-                view.allow();
-            } else {
-                view.deny();
-            }
-        } else {
-            view.none();
-        }
     }
 }

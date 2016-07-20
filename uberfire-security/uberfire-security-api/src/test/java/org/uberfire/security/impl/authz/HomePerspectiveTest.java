@@ -51,16 +51,18 @@ public class HomePerspectiveTest {
         permissionManager = new DefaultPermissionManager(new DefaultPermissionTypeRegistry());
         permissionManager.setAuthorizationPolicy(
                 authorizationPolicy = spy(permissionManager.newAuthorizationPolicy()
-                        .role("admin").home("A").priority(0)
-                        .role("user").home("B").priority(1)
+                        .bydefault().home("H")
+                        .role("admin").home("A").priority(10)
+                        .role("user").home("U").priority(0)
+                        .role("manager").home("M").priority(5)
                         .build()));
     }
 
     @Test
-    public void testHomeNotSet() {
-        User userMock = createUserMock("unknown");
+    public void testUserWithoutRoles() {
+        User userMock = createUserMock();
         String home = authorizationPolicy.getHomePerspective(userMock);
-        assertNull(home);
+        assertEquals(home, "H");
     }
 
     @Test
@@ -68,12 +70,28 @@ public class HomePerspectiveTest {
         User userMock = createUserMock("admin");
         String home = authorizationPolicy.getHomePerspective(userMock);
         assertEquals(home, "A");
+
+        userMock = createUserMock("manager");
+        home = authorizationPolicy.getHomePerspective(userMock);
+        assertEquals(home, "M");
+
+        userMock = createUserMock("user");
+        home = authorizationPolicy.getHomePerspective(userMock);
+        assertEquals(home, "U");
     }
 
     @Test
-    public void testMultipleRolesHome() {
+    public void testHighestPriorityWins() {
         User userMock = createUserMock("admin", "user");
         String home = authorizationPolicy.getHomePerspective(userMock);
-        assertEquals(home, "B");
+        assertEquals(home, "A");
+
+        userMock = createUserMock("admin", "user", "manager");
+        home = authorizationPolicy.getHomePerspective(userMock);
+        assertEquals(home, "A");
+
+        userMock = createUserMock("user", "manager");
+        home = authorizationPolicy.getHomePerspective(userMock);
+        assertEquals(home, "M");
     }
 }
