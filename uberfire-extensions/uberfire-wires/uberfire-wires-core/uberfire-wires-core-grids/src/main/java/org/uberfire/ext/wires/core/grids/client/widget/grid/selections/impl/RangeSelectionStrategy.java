@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 
-public class RowSelectionManager extends BaseCellSelectionManager {
+public class RangeSelectionStrategy extends BaseCellSelectionStrategy {
 
-    public static CellSelectionManager INSTANCE = new RowSelectionManager();
+    public static CellSelectionStrategy INSTANCE = new RangeSelectionStrategy();
 
     @Override
     public boolean handleSelection( final GridData model,
@@ -43,41 +44,27 @@ public class RowSelectionManager extends BaseCellSelectionManager {
 
         if ( isShiftKeyDown ) {
             if ( selectedCellsOrigin == null ) {
-                selectRow( model,
-                           uiRowIndex );
+                model.selectCell( uiRowIndex,
+                                  uiColumnIndex );
             } else {
-                model.selectCell( selectedCellsOrigin.getRowIndex(),
-                                  selectedCellsOrigin.getColumnIndex() );
                 final int uiOriginRowIndex = selectedCellsOrigin.getRowIndex();
-                selectRows( model,
-                            ( uiRowIndex > uiOriginRowIndex ? uiOriginRowIndex : uiRowIndex ),
-                            Math.abs( uiRowIndex - uiOriginRowIndex ) + 1 );
+                final int uiOriginColumnIndex = ColumnIndexUtilities.findUiColumnIndex( model.getColumns(),
+                                                                                        selectedCellsOrigin.getColumnIndex() );
+                model.selectCell( uiOriginRowIndex,
+                                  uiOriginColumnIndex );
+                model.selectCells( ( uiRowIndex > uiOriginRowIndex ? uiOriginRowIndex : uiRowIndex ),
+                                   ( uiColumnIndex > uiOriginColumnIndex ? uiOriginColumnIndex : uiColumnIndex ),
+                                   Math.abs( uiColumnIndex - uiOriginColumnIndex ) + 1,
+                                   Math.abs( uiRowIndex - uiOriginRowIndex ) + 1 );
             }
 
         } else {
-            selectRow( model,
-                       uiRowIndex );
+            model.selectCell( uiRowIndex,
+                              uiColumnIndex );
         }
 
         return hasSelectionChanged( model.getSelectedCells(),
                                     originalSelections );
-    }
-
-    private void selectRow( final GridData model,
-                            final int uiRowIndex ) {
-        model.selectCells( uiRowIndex,
-                           0,
-                           model.getColumnCount(),
-                           1 );
-    }
-
-    private void selectRows( final GridData model,
-                             final int uiRowIndex,
-                             final int height ) {
-        model.selectCells( uiRowIndex,
-                           0,
-                           model.getColumnCount(),
-                           height );
     }
 
 }

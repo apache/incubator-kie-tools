@@ -32,14 +32,8 @@ public class FloatingSelectionsTransformer extends DefaultSelectionsTransformer 
     }
 
     @Override
-    protected int findUiColumnIndex( int modelColumnIndex ) {
-        for ( int uiColumnIndex = 0; uiColumnIndex < columns.size(); uiColumnIndex++ ) {
-            final GridColumn<?> uiColumn = columns.get( uiColumnIndex );
-            if ( uiColumn.getIndex() == modelColumnIndex ) {
-                return uiColumnIndex;
-            }
-        }
-        throw new IllegalStateException( "Column was not found!" );
+    protected List<GridColumn<?>> getApplicableColumns() {
+        return columns;
     }
 
 }

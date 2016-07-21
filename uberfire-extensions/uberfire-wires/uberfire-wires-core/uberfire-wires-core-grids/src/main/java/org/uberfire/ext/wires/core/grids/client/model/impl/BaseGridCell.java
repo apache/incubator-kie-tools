@@ -17,8 +17,8 @@ package org.uberfire.ext.wires.core.grids.client.model.impl;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.CellRangeSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RangeSelectionStrategy;
 
 /**
  * Base implementation of a grid cell to avoid boiler-plate for more specific implementations.
@@ -28,7 +28,7 @@ public class BaseGridCell<T> implements GridCell<T> {
 
     private int collapseLevel = 0;
     private int mergedCellCount = 1;
-    private CellSelectionManager selectionManager = CellRangeSelectionManager.INSTANCE;
+    private CellSelectionStrategy selectionManager = RangeSelectionStrategy.INSTANCE;
 
     protected GridCellValue<T> value;
 
@@ -73,12 +73,12 @@ public class BaseGridCell<T> implements GridCell<T> {
     }
 
     @Override
-    public CellSelectionManager getSelectionManager() {
+    public CellSelectionStrategy getSelectionManager() {
         return selectionManager;
     }
 
     @Override
-    public void setSelectionManager( final CellSelectionManager selectionManager ) {
+    public void setSelectionManager( final CellSelectionStrategy selectionManager ) {
         this.selectionManager = selectionManager;
     }
 

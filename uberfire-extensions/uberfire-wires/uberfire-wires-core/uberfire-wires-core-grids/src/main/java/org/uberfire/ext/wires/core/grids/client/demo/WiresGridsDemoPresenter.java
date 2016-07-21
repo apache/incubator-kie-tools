@@ -27,9 +27,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -57,11 +54,21 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.StringDOMElementSingletonColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.StringPopupColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationClearCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationEditCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectBottomRightCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectTopLeftCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.StringColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.MultiColouredTheme;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.RedTheme;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -184,14 +191,18 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
     }
 
     private void setupKeyDownHandler() {
-        view.addKeyDownHandler( new KeyDownHandler() {
-            @Override
-            public void onKeyDown( final KeyDownEvent event ) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_DELETE ) {
-                    clearCells();
-                }
-            }
-        } );
+        final GridLayer layer = view.getGridLayer();
+        final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler( view.getGridLayer() );
+        handler.addOperation( new KeyboardOperationClearCell( layer ),
+                              new KeyboardOperationEditCell( layer ),
+                              new KeyboardOperationMoveLeft( layer ),
+                              new KeyboardOperationMoveRight( layer ),
+                              new KeyboardOperationMoveUp( layer ),
+                              new KeyboardOperationMoveDown( layer ),
+                              new KeyboardOperationSelectTopLeftCell( layer ),
+                              new KeyboardOperationSelectBottomRightCell( layer ) );
+
+        view.addKeyDownHandler( handler );
     }
 
     private GridWidget makeGridWidget1() {
@@ -484,17 +495,26 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
     }
 
     private void clearCells() {
-        for ( GridWidget gridWidget : view.getGridWidgets() ) {
-            if ( gridWidget.isSelected() ) {
-                for ( GridData.SelectedCell cell : gridWidget.getModel().getSelectedCells() ) {
-                    gridWidget.getModel().deleteCell( cell.getRowIndex(),
-                                                      cell.getColumnIndex() );
-                }
-            }
+        final GridWidget selectedGridWidget = getSelectedGridWidget();
+        if ( selectedGridWidget == null ) {
+            return;
+        }
+        final GridData gridModel = selectedGridWidget.getModel();
+        final List<GridData.SelectedCell> selectedCells = gridModel.getSelectedCells();
+        for ( GridData.SelectedCell cell : selectedCells ) {
+            gridModel.deleteCell( cell.getRowIndex(),
+                                  cell.getColumnIndex() );
         }
         view.refresh();
-        menus.getItems().get( 0 ).setEnabled( false );
-        menus.getItems().get( 1 ).setEnabled( false );
+    }
+
+    private GridWidget getSelectedGridWidget() {
+        for ( GridWidget gridWidget : view.getGridWidgets() ) {
+            if ( gridWidget.isSelected() ) {
+                return gridWidget;
+            }
+        }
+        return null;
     }
 
     @Override

@@ -33,10 +33,10 @@ public class BaseBounds implements Bounds {
                        final double y,
                        final double width,
                        final double height ) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        setX( x );
+        setY( y );
+        setWidth( width );
+        setHeight( height );
     }
 
     @Override
@@ -66,7 +66,7 @@ public class BaseBounds implements Bounds {
 
     @Override
     public void setWidth( double width ) {
-        PortablePreconditions.checkCondition( "Width must be positive", width > 0 );
+        PortablePreconditions.checkCondition( "Width must be positive", width >= 0 );
         this.width = width;
     }
 
@@ -77,7 +77,7 @@ public class BaseBounds implements Bounds {
 
     @Override
     public void setHeight( double height ) {
-        PortablePreconditions.checkCondition( "Height must be positive", height > 0 );
+        PortablePreconditions.checkCondition( "Height must be positive", height >= 0 );
         this.height = height;
     }
 

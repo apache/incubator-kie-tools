@@ -26,14 +26,9 @@ import com.google.gwt.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -41,7 +36,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManage
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -80,18 +74,13 @@ public class BaseGridWidgetMouseDoubleClickHandlerTest {
     @Mock
     private GridColumn<String> uiColumn;
 
-    @Mock
-    private GridRow uiRow;
-
-    @Captor
-    private ArgumentCaptor<GridBodyCellRenderContext> cellContextArgumentCaptor;
-
     private BaseGridWidgetMouseDoubleClickHandler handler;
 
     @Before
     public void setup() {
         when( gridWidget.getViewport() ).thenReturn( viewport );
         when( gridWidget.getModel() ).thenReturn( uiModel );
+        when( gridWidget.getRenderer() ).thenReturn( renderer );
         when( gridWidget.getRendererHelper() ).thenReturn( helper );
         when( gridWidget.getLayer() ).thenReturn( layer );
         when( gridWidget.getHeader() ).thenReturn( header );
@@ -193,56 +182,6 @@ public class BaseGridWidgetMouseDoubleClickHandlerTest {
                 times( 1 ) ).handleHeaderCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
         verify( handler,
                 times( 1 ) ).handleBodyCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
-    }
-
-    @Test
-    public void editColumnBodyHandler() {
-        when( gridWidget.isVisible() ).thenReturn( true );
-
-        when( event.getX() ).thenReturn( 100 );
-        when( event.getY() ).thenReturn( 200 );
-
-        when( gridWidget.getLocation() ).thenReturn( new Point2D( 100,
-                                                                  100 ) );
-        when( gridWidget.getHeight() ).thenReturn( 200.0 );
-        when( uiModel.getRowCount() ).thenReturn( 1 );
-        when( uiModel.getRow( eq( 0 ) ) ).thenReturn( uiRow );
-        when( uiRow.getHeight() ).thenReturn( 64.0 );
-
-        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation( uiColumn,
-                                                                                                          0,
-                                                                                                          0 );
-        when( helper.getColumnInformation( any( Double.class ) ) ).thenReturn( ci );
-
-        final BaseGridRendererHelper.RenderingInformation ri = new BaseGridRendererHelper.RenderingInformation( mock( Bounds.class ),
-                                                                                                                new ArrayList<GridColumn<?>>() {{
-                                                                                                                    add( uiColumn );
-                                                                                                                }},
-                                                                                                                mock( BaseGridRendererHelper.RenderingBlockInformation.class ),
-                                                                                                                mock( BaseGridRendererHelper.RenderingBlockInformation.class ),
-                                                                                                                0,
-                                                                                                                1,
-                                                                                                                new ArrayList<Double>() {{
-                                                                                                                    add( 64.0 );
-                                                                                                                }},
-                                                                                                                false,
-                                                                                                                false,
-                                                                                                                0,
-                                                                                                                2,
-                                                                                                                0 );
-        when( helper.getRenderingInformation() ).thenReturn( ri );
-
-        handler.onNodeMouseDoubleClick( event );
-
-        verify( handler,
-                times( 1 ) ).handleHeaderCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
-        verify( handler,
-                times( 1 ) ).handleBodyCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
-        verify( handler,
-                times( 1 ) ).onDoubleClick( cellContextArgumentCaptor.capture() );
-
-        final GridBodyCellRenderContext cellContext = cellContextArgumentCaptor.getValue();
-        assertNotNull( cellContext );
     }
 
 }

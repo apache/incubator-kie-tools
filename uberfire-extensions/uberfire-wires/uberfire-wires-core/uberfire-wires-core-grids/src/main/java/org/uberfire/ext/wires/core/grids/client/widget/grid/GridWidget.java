@@ -24,12 +24,14 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
 
 /**
  * The base of all GridWidgets.
  */
 public interface GridWidget extends IPrimitive<Group>,
-                                    NodeMouseClickHandler {
+                                    NodeMouseClickHandler,
+                                    CellSelectionManager {
 
     /**
      * Returns the Model backing the Widget.

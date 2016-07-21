@@ -26,6 +26,7 @@ import java.util.TreeMap;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.SelectionsTransformer;
 
 /**
@@ -55,7 +56,8 @@ public class DefaultSelectionsTransformer implements SelectionsTransformer {
         for ( GridData.SelectedCell selectedCell : orderedSelectedCells ) {
             final int scRowIndex = selectedCell.getRowIndex();
             final int scColumnIndex = selectedCell.getColumnIndex();
-            final int uiColumnIndex = findUiColumnIndex( scColumnIndex );
+            final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex( getApplicableColumns(),
+                                                                              scColumnIndex );
             if ( uiColumnIndex != currentUiColumnIndex ) {
                 storeSelectedRange( orderedSelectedRanges,
                                     currentRange,
@@ -138,14 +140,8 @@ public class DefaultSelectionsTransformer implements SelectionsTransformer {
         }
     }
 
-    protected int findUiColumnIndex( final int modelColumnIndex ) {
-        for ( int uiColumnIndex = 0; uiColumnIndex < model.getColumnCount(); uiColumnIndex++ ) {
-            final GridColumn<?> c = model.getColumns().get( uiColumnIndex );
-            if ( c.getIndex() == modelColumnIndex ) {
-                return uiColumnIndex;
-            }
-        }
-        throw new IllegalStateException( "Column was not found!" );
+    protected List<GridColumn<?>> getApplicableColumns() {
+        return model.getColumns();
     }
 
     //Sort arbitrary selections by column->row to simplify grouping

@@ -26,10 +26,12 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -171,7 +173,8 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
 
     @Override
     public HandlerRegistration addKeyDownHandler( final KeyDownHandler handler ) {
-        return gridPanel.addKeyDownHandler( handler );
+        return RootPanel.get().addDomHandler( handler,
+                                              KeyDownEvent.getType() );
     }
 
     @Override

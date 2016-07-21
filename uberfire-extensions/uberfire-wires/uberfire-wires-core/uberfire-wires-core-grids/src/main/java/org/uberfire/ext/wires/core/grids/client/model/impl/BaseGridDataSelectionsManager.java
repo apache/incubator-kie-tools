@@ -23,6 +23,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 
 /**
  * Helper class that manages "selected cell" meta-data following different mutations to {@link GridData}
@@ -42,22 +43,12 @@ public class BaseGridDataSelectionsManager {
             gridData.clearSelections();
             for ( GridData.SelectedCell cell : cloneSelectedCells ) {
                 gridData.selectCells( cell.getRowIndex(),
-                                      findUiColumnIndex( cell.getColumnIndex() ),
+                                      ColumnIndexUtilities.findUiColumnIndex( gridData.getColumns(),
+                                                                              cell.getColumnIndex() ),
                                       1,
                                       1 );
             }
         }
-    }
-
-    private int findUiColumnIndex( final int modelColumnIndex ) {
-        final List<GridColumn<?>> columns = gridData.getColumns();
-        for ( int uiColumnIndex = 0; uiColumnIndex < columns.size(); uiColumnIndex++ ) {
-            final GridColumn<?> c = columns.get( uiColumnIndex );
-            if ( c.getIndex() == modelColumnIndex ) {
-                return uiColumnIndex;
-            }
-        }
-        throw new IllegalStateException( "Column was not found!" );
     }
 
     public void onDeleteColumn( final int index ) {

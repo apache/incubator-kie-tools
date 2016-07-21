@@ -18,6 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.layer.impl;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -82,9 +83,10 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                final int width = getParent().getOffsetWidth();
-                final int height = getParent().getOffsetHeight();
-                if ( ( width != 0 ) && ( height != 0 ) ) {
+                final Element e = getElement().getParentElement();
+                final int width = e.getOffsetWidth();
+                final int height = e.getOffsetHeight();
+                if ( width > 0 && height > 0 ) {
                     domElementContainer.setPixelSize( width,
                                                       height );
                     lienzoPanel.setPixelSize( width,

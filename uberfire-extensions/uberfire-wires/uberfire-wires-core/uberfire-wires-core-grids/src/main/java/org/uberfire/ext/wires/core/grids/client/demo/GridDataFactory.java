@@ -21,7 +21,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 /**
  * Utility class to fill the example grids in this Showcase demo
@@ -48,7 +48,7 @@ public class GridDataFactory {
                                   columnIndex,
                                   new BaseGridCellValue<Integer>( rowIndex + 1 ) );
                     grid.getCell( rowIndex,
-                                  columnIndex ).setSelectionManager( RowSelectionManager.INSTANCE );
+                                  columnIndex ).setSelectionManager( RowSelectionStrategy.INSTANCE );
 
                 } else if ( Math.random() < FILL_FACTOR ) {
                     grid.setCell( rowIndex,

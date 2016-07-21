@@ -18,14 +18,11 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.types.Point2D;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.CellRangeSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
 /**
@@ -67,33 +64,9 @@ public class GridCellSelectorMouseClickHandler implements NodeMouseClickHandler 
                                                                            new Point2D( event.getX(),
                                                                                         event.getY() ) );
 
-        final GridData.SelectedCell sc = CoordinateUtilities.getCell( gridWidget,
-                                                                      ap );
-        if ( sc == null ) {
-            return;
-        }
-        final int uiRowIndex = sc.getRowIndex();
-        final int uiColumnIndex = sc.getColumnIndex();
-
-        //Lookup CellSelectionManager for cell
-        CellSelectionManager selectionManager;
-        final GridCell<?> cell = gridModel.getCell( uiRowIndex,
-                                                    uiColumnIndex );
-        if ( cell == null ) {
-            selectionManager = CellRangeSelectionManager.INSTANCE;
-        } else {
-            selectionManager = cell.getSelectionManager();
-        }
-        if ( selectionManager == null ) {
-            return;
-        }
-
-        //Handle selection
-        if ( selectionManager.handleSelection( gridModel,
-                                               uiRowIndex,
-                                               uiColumnIndex,
-                                               event.isShiftKeyDown(),
-                                               event.isControlKeyDown() ) ) {
+        if ( gridWidget.selectCell( ap,
+                                    event.isShiftKeyDown(),
+                                    event.isControlKeyDown() ) ) {
             gridWidget.getLayer().batch();
         }
     }

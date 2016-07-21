@@ -445,8 +445,10 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         final double y = ( PADDING - transform.getTranslateY() ) / transform.getScaleY();
         bounds.setX( x );
         bounds.setY( y );
-        bounds.setHeight( ( viewport.getHeight() - PADDING * 2 ) / transform.getScaleX() );
-        bounds.setWidth( ( viewport.getWidth() - PADDING * 2 ) / transform.getScaleY() );
+        bounds.setHeight( Math.max( 0,
+                                    ( viewport.getHeight() - PADDING * 2 ) / transform.getScaleX() ) );
+        bounds.setWidth( Math.max( 0,
+                                   ( viewport.getWidth() - PADDING * 2 ) / transform.getScaleY() ) );
     }
 
     @Override

@@ -20,8 +20,11 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderContext;
@@ -35,6 +38,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.Sele
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.DefaultSelectionsTransformer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.FloatingSelectionsTransformer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.BaseCellSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
@@ -60,8 +66,10 @@ public class BaseGridWidget extends Group implements GridWidget {
     protected Group floatingHeader = null;
     protected Group body = null;
     protected Group floatingBody = null;
+
     private Group selection = null;
     private boolean isSelected = false;
+    private final CellSelectionManager cellSelectionManager;
 
     public BaseGridWidget( final GridData model,
                            final GridSelectionManager selectionManager,
@@ -73,20 +81,14 @@ public class BaseGridWidget extends Group implements GridWidget {
                                                                  bodyColumns );
         this.floatingColumnsTransformer = new FloatingSelectionsTransformer( model,
                                                                              floatingColumns );
-        this.rendererHelper = new BaseGridRendererHelper( model,
-                                                          this );
+        this.rendererHelper = getBaseGridRendererHelper();
+        this.cellSelectionManager = getCellSelectionManager();
 
         //Click handlers
-        addNodeMouseClickHandler( new BaseGridWidgetMouseClickHandler( this,
-                                                                       selectionManager,
-                                                                       renderer ) );
-        addNodeMouseClickHandler( new GridCellSelectorMouseClickHandler( this,
-                                                                         selectionManager,
-                                                                         renderer ) );
-        addNodeMouseDoubleClickHandler( new BaseGridWidgetMouseDoubleClickHandler( this,
-                                                                                   selectionManager,
-                                                                                   pinnedModeManager,
-                                                                                   renderer ) );
+        addNodeMouseClickHandler( getGridMouseClickHandler( selectionManager ) );
+        addNodeMouseClickHandler( getGridMouseCellSelectorClickHandler( selectionManager ) );
+        addNodeMouseDoubleClickHandler( getGridMouseDoubleClickHandler( selectionManager,
+                                                                        pinnedModeManager ) );
 
         //NodeMouseUpEvent on GridLayer is not fired at a drag-end, so clear the state here.
         addNodeDragEndHandler( ( event ) -> {
@@ -94,7 +96,34 @@ public class BaseGridWidget extends Group implements GridWidget {
             state.reset();
             getViewport().getElement().getStyle().setCursor( state.getCursor() );
         } );
+    }
 
+    BaseGridRendererHelper getBaseGridRendererHelper() {
+        return new BaseGridRendererHelper( this );
+    }
+
+    CellSelectionManager getCellSelectionManager() {
+        return new BaseCellSelectionManager( this );
+    }
+
+    NodeMouseClickHandler getGridMouseClickHandler( final GridSelectionManager selectionManager ) {
+        return new BaseGridWidgetMouseClickHandler( this,
+                                                    selectionManager,
+                                                    renderer );
+    }
+
+    NodeMouseClickHandler getGridMouseCellSelectorClickHandler( final GridSelectionManager selectionManager ) {
+        return new GridCellSelectorMouseClickHandler( this,
+                                                      selectionManager,
+                                                      renderer );
+    }
+
+    NodeMouseDoubleClickHandler getGridMouseDoubleClickHandler( final GridSelectionManager selectionManager,
+                                                                final GridPinnedModeManager pinnedModeManager ) {
+        return new BaseGridWidgetMouseDoubleClickHandler( this,
+                                                          selectionManager,
+                                                          pinnedModeManager,
+                                                          renderer );
     }
 
     @Override
@@ -554,6 +583,45 @@ public class BaseGridWidget extends Group implements GridWidget {
                                           cellY,
                                           cellWidth,
                                           cellHeight );
+    }
+
+    @Override
+    public boolean selectCell( final Point2D ap,
+                               final boolean isShiftKeyDown,
+                               final boolean isControlKeyDown ) {
+        return cellSelectionManager.selectCell( ap,
+                                                isShiftKeyDown,
+                                                isControlKeyDown );
+    }
+
+    @Override
+    public boolean selectCell( final int uiRowIndex,
+                               final int uiColumnIndex,
+                               final boolean isShiftKeyDown,
+                               final boolean isControlKeyDown ) {
+        return cellSelectionManager.selectCell( uiRowIndex,
+                                                uiColumnIndex,
+                                                isShiftKeyDown,
+                                                isControlKeyDown );
+    }
+
+    @Override
+    public boolean adjustSelection( final SelectionExtension direction,
+                                    final boolean isShiftKeyDown ) {
+        return cellSelectionManager.adjustSelection( direction,
+                                                     isShiftKeyDown );
+    }
+
+    @Override
+    public boolean startEditingCell( final int uiRowIndex,
+                                     final int uiColumnIndex ) {
+        return cellSelectionManager.startEditingCell( uiRowIndex,
+                                                      uiColumnIndex );
+    }
+
+    @Override
+    public boolean startEditingCell( final Point2D ap ) {
+        return cellSelectionManager.startEditingCell( ap );
     }
 
 }

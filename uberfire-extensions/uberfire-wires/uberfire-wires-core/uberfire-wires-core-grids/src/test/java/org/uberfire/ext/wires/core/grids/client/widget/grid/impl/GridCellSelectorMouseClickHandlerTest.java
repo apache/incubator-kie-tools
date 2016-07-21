@@ -35,7 +35,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 
@@ -81,7 +81,7 @@ public class GridCellSelectorMouseClickHandlerTest {
     private GridCell uiCell;
 
     @Mock
-    private CellSelectionManager cellSelectionManager;
+    private CellSelectionStrategy cellSelectionStrategy;
 
     private GridCellSelectorMouseClickHandler handler;
 
@@ -106,7 +106,7 @@ public class GridCellSelectorMouseClickHandlerTest {
         when( uiModel.getRowCount() ).thenReturn( 1 );
         when( uiModel.getRow( eq( 0 ) ) ).thenReturn( uiRow );
         when( uiRow.getHeight() ).thenReturn( 64.0 );
-        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionManager );
+        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionStrategy );
 
         final GridCellSelectorMouseClickHandler wrapped = new GridCellSelectorMouseClickHandler( gridWidget,
                                                                                                  selectionManager,
@@ -140,9 +140,10 @@ public class GridCellSelectorMouseClickHandlerTest {
 
         verify( handler,
                 times( 1 ) ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
-        verify( uiModel,
-                times( 1 ) ).getCell( any( Integer.class ),
-                                      any( Integer.class ) );
+        verify( gridWidget,
+                times( 1 ) ).selectCell( any( Point2D.class ),
+                                         eq( false ),
+                                         eq( false ) );
     }
 
     @Test
@@ -203,12 +204,10 @@ public class GridCellSelectorMouseClickHandlerTest {
 
         verify( handler,
                 times( 1 ) ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
-        verify( cellSelectionManager,
-                times( 1 ) ).handleSelection( eq( uiModel ),
-                                              any( Integer.class ),
-                                              any( Integer.class ),
-                                              any( Boolean.class ),
-                                              any( Boolean.class ) );
+        verify( gridWidget,
+                times( 1 ) ).selectCell( any( Point2D.class ),
+                                         eq( false ),
+                                         eq( false ) );
     }
 
 }

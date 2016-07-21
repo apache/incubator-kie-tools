@@ -107,10 +107,10 @@ public abstract class BaseGridTest {
 
     }
 
-    static class MockMergableGridColumn<T> extends BaseGridColumn<T> {
+    public static class MockMergableGridColumn<T> extends BaseGridColumn<T> {
 
-        MockMergableGridColumn( final String title,
-                                final double width ) {
+        public MockMergableGridColumn( final String title,
+                                       final double width ) {
             super( new BaseHeaderMetaData( title ),
                    new MockMergableGridColumnRenderer<T>(),
                    width );
@@ -125,7 +125,7 @@ public abstract class BaseGridTest {
 
     }
 
-    static class MockMergableGridColumnRenderer<T> extends BaseGridColumnRenderer<T> {
+    public static class MockMergableGridColumnRenderer<T> extends BaseGridColumnRenderer<T> {
 
         @Override
         public Group renderCell( final GridCell<T> cell,

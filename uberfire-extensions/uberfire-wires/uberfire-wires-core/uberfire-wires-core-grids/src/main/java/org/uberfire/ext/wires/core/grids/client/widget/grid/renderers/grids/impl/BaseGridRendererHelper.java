@@ -34,13 +34,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
  */
 public class BaseGridRendererHelper {
 
-    private final GridData model;
     private final GridWidget view;
 
-    public BaseGridRendererHelper( final GridData model,
-                                   final GridWidget view ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
+    public BaseGridRendererHelper( final GridWidget view ) {
         this.view = PortablePreconditions.checkNotNull( "view",
                                                         view );
     }
@@ -51,6 +47,7 @@ public class BaseGridRendererHelper {
      * @return
      */
     public double getColumnOffset( final GridColumn<?> column ) {
+        final GridData model = view.getModel();
         final int columnIndex = model.getColumns().indexOf( column );
         if ( columnIndex == -1 ) {
             return 0;
@@ -65,6 +62,7 @@ public class BaseGridRendererHelper {
      */
     public double getColumnOffset( final int columnIndex ) {
         double columnOffset = 0;
+        final GridData model = view.getModel();
         final List<GridColumn<?>> columns = model.getColumns();
         for ( int i = 0; i < columnIndex; i++ ) {
             final GridColumn column = columns.get( i );
@@ -99,6 +97,7 @@ public class BaseGridRendererHelper {
      * @return
      */
     public double getRowOffset( final GridRow row ) {
+        final GridData model = view.getModel();
         final int rowIndex = model.getRows().indexOf( row );
         return getRowOffset( rowIndex );
     }
@@ -110,6 +109,7 @@ public class BaseGridRendererHelper {
      */
     public double getRowOffset( final int rowIndex ) {
         double rowOffset = 0;
+        final GridData model = view.getModel();
         for ( int i = 0; i < rowIndex; i++ ) {
             final GridRow row = model.getRow( i );
             rowOffset = rowOffset + row.getHeight();
@@ -138,6 +138,7 @@ public class BaseGridRendererHelper {
      * @return A RenderingInformation object or null if the GridWidget is not even partially visible.
      */
     public RenderingInformation getRenderingInformation() {
+        final GridData model = view.getModel();
         final Bounds bounds = getVisibleBounds();
         final List<GridColumn<?>> allColumns = new ArrayList<GridColumn<?>>();
         final List<GridColumn<?>> bodyColumns = new ArrayList<GridColumn<?>>();
@@ -318,6 +319,7 @@ public class BaseGridRendererHelper {
             return new ColumnInformation();
         }
 
+        final GridData model = view.getModel();
         final List<GridColumn<?>> columns = model.getColumns();
         final RenderingBlockInformation bodyBlockInformation = renderingInformation.getBodyBlockInformation();
         final RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();

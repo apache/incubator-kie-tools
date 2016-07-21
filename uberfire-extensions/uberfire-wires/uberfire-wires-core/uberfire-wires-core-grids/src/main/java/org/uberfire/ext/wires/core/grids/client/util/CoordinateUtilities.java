@@ -15,8 +15,6 @@
  */
 package org.uberfire.ext.wires.core.grids.client.util;
 
-import java.util.List;
-
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -56,26 +54,23 @@ public class CoordinateUtilities {
     }
 
     /**
-     * Gets a cell corresponding to the provided Canvas coordinates relative to the grid. Grid-relative coordinates can be
+     * Gets the row index corresponding to the provided Canvas y-coordinate relative to the grid. Grid-relative coordinates can be
      * obtained from {@link INodeXYEvent} using {@link CoordinateUtilities#convertDOMToGridCoordinate(GridWidget, Point2D)}
      * @param gridWidget GridWidget to check.
-     * @param cp coordinates relative to the GridWidget.
-     * @return A {@link GridData.SelectedCell} or null if the coordinates did not map to a cell.
+     * @param cy y-coordinate relative to the GridWidget.
+     * @return The row index or null if the coordinate did not map to a cell.
      */
-    public static GridData.SelectedCell getCell( final GridWidget gridWidget,
-                                                 final Point2D cp ) {
-        final double cx = cp.getX();
-        final double cy = cp.getY();
+    public static Integer getUiRowIndex( final GridWidget gridWidget,
+                                         final double cy ) {
         final Group header = gridWidget.getHeader();
         final GridData gridModel = gridWidget.getModel();
         final GridRenderer renderer = gridWidget.getRenderer();
-        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
         final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
 
-        if ( cx < 0 || cx > gridWidget.getWidth() ) {
+        if ( cy < headerMaxY || cy > gridWidget.getHeight() ) {
             return null;
         }
-        if ( cy < headerMaxY || cy > gridWidget.getHeight() ) {
+        if ( gridModel.getRowCount() == 0 ) {
             return null;
         }
 
@@ -91,8 +86,26 @@ public class CoordinateUtilities {
             return null;
         }
 
+        return uiRowIndex;
+    }
+
+    /**
+     * Gets the column index corresponding to the provided Canvas x-coordinate relative to the grid. Grid-relative coordinates can be
+     * obtained from {@link INodeXYEvent} using {@link CoordinateUtilities#convertDOMToGridCoordinate(GridWidget, Point2D)}
+     * @param gridWidget GridWidget to check.
+     * @param cx x-coordinate relative to the GridWidget.
+     * @return The column index or null if the coordinate did not map to a cell.
+     */
+    public static Integer getUiColumnIndex( final GridWidget gridWidget,
+                                            final double cx ) {
+        final GridData gridModel = gridWidget.getModel();
+        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+
+        if ( cx < 0 || cx > gridWidget.getWidth() ) {
+            return null;
+        }
+
         //Get column index
-        final List<GridColumn<?>> columns = gridModel.getColumns();
         final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation( cx );
         final GridColumn<?> column = ci.getColumn();
         final int uiColumnIndex = ci.getUiColumnIndex();
@@ -100,12 +113,11 @@ public class CoordinateUtilities {
         if ( column == null ) {
             return null;
         }
-        if ( uiColumnIndex < 0 || uiColumnIndex > columns.size() - 1 ) {
+        if ( uiColumnIndex < 0 || uiColumnIndex > gridModel.getColumnCount() - 1 ) {
             return null;
         }
 
-        return new GridData.SelectedCell( uiRowIndex,
-                                          uiColumnIndex );
+        return uiColumnIndex;
     }
 
 }

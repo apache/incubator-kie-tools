@@ -15,20 +15,12 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
-import java.util.List;
-
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
-import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -129,176 +121,8 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( gridWidget,
                                                                            new Point2D( event.getX(),
                                                                                         event.getY() ) );
-        final double cx = ap.getX();
-        final double cy = ap.getY();
 
-        final Group header = gridWidget.getHeader();
-        final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
-
-        if ( cx < 0 || cx > gridWidget.getWidth() ) {
-            return false;
-        }
-        if ( cy < headerMaxY || cy > gridWidget.getHeight() ) {
-            return false;
-        }
-        if ( gridModel.getRowCount() == 0 ) {
-            return false;
-        }
-
-        //Get row index
-        GridRow row;
-        int uiRowIndex = 0;
-        double offsetY = cy - renderer.getHeaderHeight();
-        while ( ( row = gridModel.getRow( uiRowIndex ) ).getHeight() < offsetY ) {
-            offsetY = offsetY - row.getHeight();
-            uiRowIndex++;
-        }
-        if ( uiRowIndex < 0 || uiRowIndex > gridModel.getRowCount() - 1 ) {
-            return false;
-        }
-
-        //Get column information
-        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation( cx );
-        final GridColumn<?> column = ci.getColumn();
-        if ( column == null ) {
-            return false;
-        }
-        final int uiColumnIndex = ci.getUiColumnIndex();
-        final List<GridColumn<?>> columns = gridModel.getColumns();
-        if ( uiColumnIndex < 0 || uiColumnIndex > columns.size() - 1 ) {
-            return false;
-        }
-        final double offsetX = ci.getOffsetX();
-
-        //Get rendering information
-        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
-        if ( renderingInformation == null ) {
-            return false;
-        }
-
-        final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
-        final double floatingX = floatingBlockInformation.getX();
-        final double floatingWidth = floatingBlockInformation.getWidth();
-
-        //Construct context of MouseEvent
-        final double cellX = gridWidget.getX() + offsetX;
-        final double cellY = gridWidget.getY() + renderer.getHeaderHeight() + getRowOffset( uiRowIndex,
-                                                                                            uiColumnIndex );
-        final double cellHeight = getCellHeight( uiRowIndex,
-                                                 uiColumnIndex );
-
-        final double clipMinY = gridWidget.getY() + header.getY() + renderer.getHeaderHeight();
-        final double clipMinX = gridWidget.getX() + floatingX + floatingWidth;
-
-        final GridBodyCellRenderContext context = new GridBodyCellRenderContext( cellX,
-                                                                                 cellY,
-                                                                                 column.getWidth(),
-                                                                                 cellHeight,
-                                                                                 clipMinY,
-                                                                                 clipMinX,
-                                                                                 uiRowIndex,
-                                                                                 uiColumnIndex,
-                                                                                 floatingBlockInformation.getColumns().contains( column ),
-                                                                                 gridWidget.getViewport().getTransform(),
-                                                                                 renderer );
-
-        onDoubleClick( context );
-
-        return true;
-    }
-
-    /**
-     * Get the y-coordinate of the row relative to the grid. i.e. 0 <= offset <= gridHeight.
-     * This may be different to the underlying model's {code}getRowOffset(){code} for merged cells.
-     * @param uiRowIndex The index of the row on which the MouseDoubleClickEvent occurred.
-     * @param uiColumnIndex The index of the column in which the MouseDoubleClickEvent occurred.
-     * @return
-     */
-    protected double getRowOffset( final int uiRowIndex,
-                                   final int uiColumnIndex ) {
-        final GridCell<?> cell = gridModel.getCell( uiRowIndex,
-                                                    uiColumnIndex );
-        if ( cell == null ) {
-            return rendererHelper.getRowOffset( uiRowIndex );
-        }
-        if ( cell.getMergedCellCount() == 1 ) {
-            return rendererHelper.getRowOffset( uiRowIndex );
-        } else if ( cell.getMergedCellCount() > 1 ) {
-            return rendererHelper.getRowOffset( uiRowIndex );
-        } else {
-            int _uiRowIndex = uiRowIndex;
-            GridCell<?> _cell = cell;
-            while ( _cell.getMergedCellCount() == 0 ) {
-                _uiRowIndex--;
-                _cell = gridModel.getCell( _uiRowIndex,
-                                           uiColumnIndex );
-            }
-            return rendererHelper.getRowOffset( _uiRowIndex );
-        }
-    }
-
-    /**
-     * Get the height of a cell. This may be different to the row's height for merged cells.
-     * @param uiRowIndex The index of the row on which the MouseDoubleClickEvent occurred.
-     * @param uiColumnIndex The index of the column in which the MouseDoubleClickEvent occurred.
-     * @return
-     */
-    protected double getCellHeight( final int uiRowIndex,
-                                    final int uiColumnIndex ) {
-        final GridCell<?> cell = gridModel.getCell( uiRowIndex,
-                                                    uiColumnIndex );
-        if ( cell == null ) {
-            return gridModel.getRow( uiRowIndex ).getHeight();
-        }
-        if ( cell.getMergedCellCount() == 1 ) {
-            return gridModel.getRow( uiRowIndex ).getHeight();
-        } else if ( cell.getMergedCellCount() > 1 ) {
-            double height = 0;
-            for ( int i = uiRowIndex; i < uiRowIndex + cell.getMergedCellCount(); i++ ) {
-                height = height + gridModel.getRow( i ).getHeight();
-            }
-            return height;
-        } else {
-            int _uiRowIndex = uiRowIndex;
-            GridCell<?> _cell = cell;
-            while ( _cell.getMergedCellCount() == 0 ) {
-                _uiRowIndex--;
-                _cell = gridModel.getCell( _uiRowIndex,
-                                           uiColumnIndex );
-            }
-            double height = 0;
-            for ( int i = _uiRowIndex; i < _uiRowIndex + _cell.getMergedCellCount(); i++ ) {
-                height = height + gridModel.getRow( i ).getHeight();
-            }
-            return height;
-        }
-    }
-
-    /**
-     * Signal a MouseDoubleClickEvent has occurred on a cell in the Body.
-     * Information regarding the cell, cell's dimensions etc are provided
-     * in the render context.
-     * @param context
-     */
-    @SuppressWarnings("unchecked")
-    protected void onDoubleClick( final GridBodyCellRenderContext context ) {
-        final int uiRowIndex = context.getRowIndex();
-        final int uiColumnIndex = context.getColumnIndex();
-        final GridCell<?> cell = gridModel.getCell( uiRowIndex,
-                                                    uiColumnIndex );
-        final GridColumn column = gridModel.getColumns().get( uiColumnIndex );
-        column.edit( (GridCell) cell,
-                     context,
-                     new Callback<GridCellValue<?>>() {
-
-                         @Override
-                         public void callback( final GridCellValue<?> value ) {
-                             gridModel.setCell( uiRowIndex,
-                                                uiColumnIndex,
-                                                value );
-                             gridWidget.getLayer().batch();
-                         }
-                     } );
+        return gridWidget.startEditingCell( ap );
     }
 
 }

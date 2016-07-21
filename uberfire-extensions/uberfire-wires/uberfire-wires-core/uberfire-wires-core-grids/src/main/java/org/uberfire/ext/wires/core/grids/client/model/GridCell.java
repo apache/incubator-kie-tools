@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.model;
 
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 
 /**
  * Defines a cell's value holder within a grid.
@@ -70,15 +70,15 @@ public interface GridCell<T> {
     void reset();
 
     /**
-     * Returns the CellSelectionManager to handle selections of the cell.
+     * Returns the CellSelectionStrategy to handle selections of the cell.
      * @return
      */
-    CellSelectionManager getSelectionManager();
+    CellSelectionStrategy getSelectionManager();
 
     /**
-     * Sets the CellSelectionManager to handle selections of the cell.
+     * Sets the CellSelectionStrategy to handle selections of the cell.
      * @return
      */
-    void setSelectionManager( final CellSelectionManager selectionManager );
+    void setSelectionManager( final CellSelectionStrategy selectionManager );
 
 }
