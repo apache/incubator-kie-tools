@@ -30,7 +30,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.sync
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.RowSynchronizer.*;
 
@@ -126,7 +126,7 @@ public class RowSynchronizer extends BaseSynchronizer<RowMetaData, RowMetaData, 
             //Set-up SelectionManager for Row Number column, to select entire row.
             if ( modelColumn instanceof RowNumberCol52 ) {
                 uiModel.getCell( rowIndex,
-                                 columnIndex ).setSelectionManager( RowSelectionManager.INSTANCE );
+                                 columnIndex ).setSelectionManager( RowSelectionStrategy.INSTANCE );
             }
         }
     }

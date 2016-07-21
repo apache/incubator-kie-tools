@@ -27,9 +27,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -46,6 +43,16 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationClearCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationEditCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectBottomRightCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectTopLeftCell;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -74,15 +81,23 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         this.pinnedEvent = pinnedEvent;
         this.view.init( this );
 
-        //Add support for deleting cells' content with the DELETE key
-        handlerRegistrations.add( view.addKeyDownHandler( new KeyDownHandler() {
-            @Override
-            public void onKeyDown( final KeyDownEvent event ) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_DELETE ) {
-                    getActiveDecisionTable().onDeleteSelectedCells();
-                }
-            }
-        } ) );
+        //Add support for keyboard operations
+        final GridLayer layer = view.getGridLayerView();
+        final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler( layer );
+        handler.addOperation( new KeyboardOperationClearCell( layer ) {
+                                  @Override
+                                  protected void clearCells( final GridWidget gridWidget ) {
+                                      getActiveDecisionTable().onDeleteSelectedCells();
+                                  }
+                              },
+                              new KeyboardOperationEditCell( layer ),
+                              new KeyboardOperationMoveLeft( layer ),
+                              new KeyboardOperationMoveRight( layer ),
+                              new KeyboardOperationMoveUp( layer ),
+                              new KeyboardOperationMoveDown( layer ),
+                              new KeyboardOperationSelectTopLeftCell( layer ),
+                              new KeyboardOperationSelectBottomRightCell( layer ) );
+        handlerRegistrations.add( view.addKeyDownHandler( handler ) );
 
         //Add support for context menus
         handlerRegistrations.add( view.addContextMenuHandler( contextMenuSupport.getContextMenuHandler( this ) ) );

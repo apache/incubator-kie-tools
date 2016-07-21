@@ -117,7 +117,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -1212,7 +1212,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                 //Set-up SelectionManager for Row Number column, to select entire row.
                 if ( modelColumn instanceof RowNumberCol52 ) {
                     uiModel.getCell( rowIndex,
-                                     iModelColumn ).setSelectionManager( RowSelectionManager.INSTANCE );
+                                     iModelColumn ).setSelectionManager( RowSelectionStrategy.INSTANCE );
                 }
             }
         }

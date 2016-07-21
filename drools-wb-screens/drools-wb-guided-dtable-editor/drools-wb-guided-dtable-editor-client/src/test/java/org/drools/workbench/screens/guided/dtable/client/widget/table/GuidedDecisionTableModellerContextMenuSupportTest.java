@@ -45,7 +45,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -177,25 +177,25 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
     public void onContextMenuWithCellSelectionManagerWithChangeInSelection() {
         final GridCell uiCell = mock( GridCell.class );
         final GridColumn uiColumn = new RowNumberColumn();
-        final CellSelectionManager cellSelectionManager = mock( CellSelectionManager.class );
+        final CellSelectionStrategy cellSelectionStrategy = mock( CellSelectionStrategy.class );
 
         uiModel.appendColumn( uiColumn );
 
         when( columnInformation.getColumn() ).thenReturn( uiColumn );
         when( uiModel.getCell( any( Integer.class ),
                                any( Integer.class ) ) ).thenReturn( uiCell );
-        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionManager );
-        when( cellSelectionManager.handleSelection( any( GridData.class ),
-                                                    any( Integer.class ),
-                                                    any( Integer.class ),
-                                                    any( Boolean.class ),
-                                                    any( Boolean.class ) ) ).thenReturn( true );
+        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionStrategy );
+        when( cellSelectionStrategy.handleSelection( any( GridData.class ),
+                                                     any( Integer.class ),
+                                                     any( Integer.class ),
+                                                     any( Boolean.class ),
+                                                     any( Boolean.class ) ) ).thenReturn( true );
 
         final ContextMenuHandler handler = contextMenuSupport.getContextMenuHandler( modellerPresenter );
 
         handler.onContextMenu( event );
 
-        verify( cellSelectionManager,
+        verify( cellSelectionStrategy,
                 times( 1 ) ).handleSelection( eq( uiModel ),
                                               eq( 0 ),
                                               eq( 0 ),
@@ -210,20 +210,20 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
     public void onContextMenuWithCellSelectionManagerWithoutChangeInSelection() {
         final GridCell uiCell = mock( GridCell.class );
         final GridColumn uiColumn = new RowNumberColumn();
-        final CellSelectionManager cellSelectionManager = mock( CellSelectionManager.class );
+        final CellSelectionStrategy cellSelectionStrategy = mock( CellSelectionStrategy.class );
 
         uiModel.appendColumn( uiColumn );
 
         when( columnInformation.getColumn() ).thenReturn( uiColumn );
         when( uiModel.getCell( any( Integer.class ),
                                any( Integer.class ) ) ).thenReturn( uiCell );
-        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionManager );
+        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionStrategy );
 
         final ContextMenuHandler handler = contextMenuSupport.getContextMenuHandler( modellerPresenter );
 
         handler.onContextMenu( event );
 
-        verify( cellSelectionManager,
+        verify( cellSelectionStrategy,
                 times( 1 ) ).handleSelection( eq( uiModel ),
                                               eq( 0 ),
                                               eq( 0 ),

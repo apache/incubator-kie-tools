@@ -33,8 +33,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.CellRangeSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RangeSelectionStrategy;
 
 @Dependent
 public class GuidedDecisionTableModellerContextMenuSupport {
@@ -92,13 +92,14 @@ public class GuidedDecisionTableModellerContextMenuSupport {
                 final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( gridView,
                                                                                    new Point2D( canvasX,
                                                                                                 canvasY ) );
-                final GridData.SelectedCell sc = CoordinateUtilities.getCell( gridView,
-                                                                              ap );
-                if ( sc == null ) {
-                    continue;
+                final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex( gridView,
+                                                                              ap.getY() );
+                final Integer uiColumnIndex = CoordinateUtilities.getUiColumnIndex( gridView,
+                                                                                    ap.getX() );
+                if ( uiRowIndex == null || uiColumnIndex == null ) {
+                    return;
                 }
 
-                final int uiColumnIndex = sc.getColumnIndex();
                 final GridColumn<?> column = gridModel.getColumns().get( uiColumnIndex );
                 if ( column instanceof IsRowDragHandle ) {
                     rowContextMenu.show( eventX,
@@ -108,7 +109,8 @@ public class GuidedDecisionTableModellerContextMenuSupport {
                     cellContextMenu.show( eventX,
                                           eventY );
                 }
-                selectCell( sc,
+                selectCell( uiRowIndex,
+                            uiColumnIndex,
                             gridView,
                             isShiftKeyDown,
                             isControlKeyDown );
@@ -127,33 +129,32 @@ public class GuidedDecisionTableModellerContextMenuSupport {
             return e.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
         }
 
-        private void selectCell( final GridData.SelectedCell sc,
+        private void selectCell( final int uiRowIndex,
+                                 final int uiColumnIndex,
                                  final GuidedDecisionTableView gridView,
                                  final boolean isShiftKeyDown,
                                  final boolean isControlKeyDown ) {
             //Lookup CellSelectionManager for cell
-            final int uiRowIndex = sc.getRowIndex();
-            final int uiColumnIndex = sc.getColumnIndex();
             final GridData gridModel = gridView.getModel();
 
-            CellSelectionManager selectionManager;
+            CellSelectionStrategy selectionStrategy;
             final GridCell<?> cell = gridModel.getCell( uiRowIndex,
                                                         uiColumnIndex );
             if ( cell == null ) {
-                selectionManager = CellRangeSelectionManager.INSTANCE;
+                selectionStrategy = RangeSelectionStrategy.INSTANCE;
             } else {
-                selectionManager = cell.getSelectionManager();
+                selectionStrategy = cell.getSelectionManager();
             }
-            if ( selectionManager == null ) {
+            if ( selectionStrategy == null ) {
                 return;
             }
 
             //Handle selection
-            if ( selectionManager.handleSelection( gridModel,
-                                                   uiRowIndex,
-                                                   uiColumnIndex,
-                                                   isShiftKeyDown,
-                                                   isControlKeyDown ) ) {
+            if ( selectionStrategy.handleSelection( gridModel,
+                                                    uiRowIndex,
+                                                    uiColumnIndex,
+                                                    isShiftKeyDown,
+                                                    isControlKeyDown ) ) {
                 gridView.getLayer().batch();
             }
         }
