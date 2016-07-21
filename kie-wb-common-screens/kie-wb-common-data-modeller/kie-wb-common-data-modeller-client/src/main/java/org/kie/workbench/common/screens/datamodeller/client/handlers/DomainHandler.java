@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.datamodeller.client.handlers;
 
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.DomainEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
 
 public interface DomainHandler {
@@ -26,11 +25,7 @@ public interface DomainHandler {
 
     int getPriority();
 
-    DomainEditor getDomainEditor( boolean newInstance );
-
     ResourceOptions getResourceOptions( boolean newInstance );
-
-    boolean validateCommand( DataModelCommand command );
 
     void postCommandProcessing( DataModelCommand command );
 

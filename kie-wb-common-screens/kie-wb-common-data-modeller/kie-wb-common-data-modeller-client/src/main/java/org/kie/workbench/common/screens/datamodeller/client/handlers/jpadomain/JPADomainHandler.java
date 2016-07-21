@@ -20,16 +20,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.datamodeller.client.command.AddPropertyCommand;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.command.FieldTypeChangeCommand;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.command.AdjustFieldDefaultRelationsCommand;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.command.JPACommandBuilder;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.DomainEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.JPADomainEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.options.JPANewResourceOptions;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
@@ -58,22 +55,9 @@ public class JPADomainHandler implements DomainHandler {
     }
 
     @Override
-    public DomainEditor getDomainEditor( boolean newInstance ) {
-        JPADomainEditor domainEditor = IOC.getBeanManager().lookupBean( JPADomainEditor.class ).newInstance();
-        domainEditor.setHandler( this );
-        return domainEditor;
-    }
-
-    @Override
     public ResourceOptions getResourceOptions( boolean newInstance ) {
         //currently same instance is always returned, since file handlers are all ApplicationScoped
         return newResourceOptions.get();
-    }
-
-    @Override
-    public boolean validateCommand( DataModelCommand command ) {
-        //cross domain validation not yet implemented
-        return true;
     }
 
     @Override

@@ -18,12 +18,9 @@ package org.kie.workbench.common.screens.datamodeller.client.handlers.maindomain
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.DomainEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain.MainDomainEditor;
 
 @ApplicationScoped
 public class MainDomainHandler implements DomainHandler {
@@ -42,24 +39,9 @@ public class MainDomainHandler implements DomainHandler {
     }
 
     @Override
-    public DomainEditor getDomainEditor( boolean newInstance ) {
-        //TODO, currently a new instance is always created. Likely the singleton option will be added when
-        //we add the UF tool windows.
-        MainDomainEditor domainEditor = IOC.getBeanManager().lookupBean( MainDomainEditor.class ).newInstance();
-        domainEditor.setHandler( this );
-        return domainEditor;
-    }
-
-    @Override
     public ResourceOptions getResourceOptions( boolean newInstance ) {
         //this domain has no special options at resource creation time.
         return null;
-    }
-
-    @Override
-    public boolean validateCommand( DataModelCommand command ) {
-        //cross domain validation not yet implemented
-        return true;
     }
 
     @Override
