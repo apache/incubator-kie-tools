@@ -28,9 +28,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Maps;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -93,14 +93,12 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.CopyPopup;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
-import org.uberfire.ext.editor.commons.client.file.DeletePopup;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.RenamePopup;
-import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -174,6 +172,14 @@ public class ProjectScreenPresenter
 
     private DeploymentScreenPopupViewImpl deploymentScreenPopupView;
 
+    protected CopyPopUpPresenter copyPopUpPresenter;
+
+    protected RenamePopUpPresenter renamePopUpPresenter;
+
+    protected DeletePopUpPresenter deletePopUpPresenter;
+
+    protected SavePopUpPresenter savePopUpPresenter;
+
     //Used by ErrorCallback for "Build" operation.
     private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndDeployGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
         put( GAVAlreadyExistsException.class,
@@ -215,7 +221,12 @@ public class ProjectScreenPresenter
                                    final Event<ForceUnlockEvent> forceLockReleaseEvent,
                                    final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
                                    final Caller<SpecManagementService> specManagementService,
-                                   final DeploymentScreenPopupViewImpl deploymentScreenPopupView) {
+                                   final DeploymentScreenPopupViewImpl deploymentScreenPopupView,
+                                   final CopyPopUpPresenter copyPopUpPresenter,
+                                   final RenamePopUpPresenter renamePopUpPresenter,
+                                   final DeletePopUpPresenter deletePopUpPresenter,
+                                   final SavePopUpPresenter savePopUpPresenter) {
+
         this.view = view;
         view.setPresenter( this );
         view.setGAVCheckDisabledSetting( ApplicationPreferences.getBooleanPref( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED ) );
@@ -236,6 +247,11 @@ public class ProjectScreenPresenter
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
 
         this.specManagementService = specManagementService;
+
+        this.copyPopUpPresenter = copyPopUpPresenter;
+        this.renamePopUpPresenter = renamePopUpPresenter;
+        this.deletePopUpPresenter = deletePopUpPresenter;
+        this.savePopUpPresenter = savePopUpPresenter;
 
         projectContextChangeHandle = workbenchContext.addChangeHandler( new ProjectContextChangeHandler() {
             @Override
@@ -612,7 +628,7 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                final DeletePopup popup = new DeletePopup( new ParameterizedCommand<String>() {
+                deletePopUpPresenter.show( new ParameterizedCommand<String>() {
                     @Override
                     public void execute( final String comment ) {
                         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
@@ -628,8 +644,6 @@ public class ProjectScreenPresenter
                                 new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete( project.getPomXMLPath(), comment );
                     }
                 } );
-
-                popup.show();
             }
         };
     }
@@ -638,35 +652,32 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                final CopyPopupView copyPopupView = CopyPopup.getDefaultView();
-                final CopyPopup popup = new CopyPopup( project.getRootPath(),
-                                                       projectNameValidator,
-                                                       new CommandWithFileNameAndCommitMessage() {
-                                                           @Override
-                                                           public void execute( final FileNameAndCommitMessage details ) {
-                                                               busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
-                                                               projectScreenService.call(
-                                                                       new RemoteCallback<Void>() {
+                copyPopUpPresenter.show( project.getRootPath(),
+                                         projectNameValidator,
+                                         new CommandWithFileNameAndCommitMessage() {
+                                             @Override
+                                             public void execute( final FileNameAndCommitMessage details ) {
+                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
+                                                 projectScreenService.call(
+                                                         new RemoteCallback<Void>() {
 
-                                                                           @Override
-                                                                           public void callback( final Void o ) {
-                                                                               copyPopupView.hide();
-                                                                               busyIndicatorView.hideBusyIndicator();
-                                                                               notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
-                                                                           }
-                                                                       },
-                                                                       getCopyErrorCallback( copyPopupView ) ).copy( project.getPomXMLPath(),
-                                                                                                                     details.getNewFileName(),
-                                                                                                                     details.getCommitMessage() );
-                                                           }
-                                                       },
-                                                       copyPopupView );
-                popup.show();
+                                                             @Override
+                                                             public void callback( final Void o ) {
+                                                                 copyPopUpPresenter.getView().hide();
+                                                                 busyIndicatorView.hideBusyIndicator();
+                                                                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                                                             }
+                                                         },
+                                                         getCopyErrorCallback( copyPopUpPresenter.getView() ) ).copy( project.getPomXMLPath(),
+                                                                                                                      details.getNewFileName(),
+                                                                                                                      details.getCommitMessage() );
+                                             }
+                                         } );
             }
         };
     }
 
-    protected HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopupView copyPopupView ) {
+    protected HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopUpPresenter.View copyPopupView ) {
         return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
 
             @Override
@@ -682,35 +693,32 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                final RenamePopupView renamePopupView = RenamePopup.getDefaultView();
-                final RenamePopup popup = new RenamePopup( project.getRootPath(),
-                                                           projectNameValidator,
-                                                           new CommandWithFileNameAndCommitMessage() {
+                renamePopUpPresenter.show( project.getRootPath(),
+                                           projectNameValidator,
+                                           new CommandWithFileNameAndCommitMessage() {
+                                               @Override
+                                               public void execute( final FileNameAndCommitMessage details ) {
+                                                   busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
+                                                   projectScreenService.call(
+                                                           new RemoteCallback<ProjectScreenModel>() {
                                                                @Override
-                                                               public void execute( final FileNameAndCommitMessage details ) {
-                                                                   busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
-                                                                   projectScreenService.call(
-                                                                           new RemoteCallback<ProjectScreenModel>() {
-                                                                               @Override
-                                                                               public void callback( final ProjectScreenModel model ) {
-                                                                                   renamePopupView.hide();
-                                                                                   busyIndicatorView.hideBusyIndicator();
-                                                                                   notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                                                               public void callback( final ProjectScreenModel model ) {
+                                                                   renamePopUpPresenter.getView().hide();
+                                                                   busyIndicatorView.hideBusyIndicator();
+                                                                   notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
 
-                                                                               }
-                                                                           },
-                                                                           getRenameErrorCallback(renamePopupView) ).rename(project.getPomXMLPath(),
-                                                                           details.getNewFileName(),
-                                                                           details.getCommitMessage());
                                                                }
                                                            },
-                                                           renamePopupView );
-                popup.show();
+                                                           getRenameErrorCallback( renamePopUpPresenter.getView() ) ).rename( project.getPomXMLPath(),
+                                                                                                                              details.getNewFileName(),
+                                                                                                                              details.getCommitMessage() );
+                                               }
+                                           } );
             }
         };
     }
 
-    protected HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopupView renamePopupView ) {
+    protected HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopUpPresenter.View renamePopupView ) {
         return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
 
             @Override
@@ -818,15 +826,15 @@ public class ProjectScreenPresenter
 
     private void save( final RemoteCallback<Void> callback,
                        final DeploymentMode mode ) {
-        getSaveOperationService().save( pathToPomXML,
-                                        new ParameterizedCommand<String>() {
-                                            @Override
-                                            public void execute( final String comment ) {
-                                                doSave( comment,
-                                                        callback,
-                                                        mode );
-                                            }
-                                        } );
+        savePopUpPresenter.show( pathToPomXML,
+                                 new ParameterizedCommand<String>() {
+                                     @Override
+                                     public void execute( final String comment ) {
+                                         doSave( comment,
+                                                 callback,
+                                                 mode );
+                                     }
+                                 } );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -873,11 +881,6 @@ public class ProjectScreenPresenter
                                                                                                                  comment,
                                                                                                                  mode );
         updateEditorTitle();
-    }
-
-    //Package protected for testing.. SaveOperationService is a really nasty class :(
-    SaveOperationService getSaveOperationService() {
-        return new SaveOperationService();
     }
 
     @Override

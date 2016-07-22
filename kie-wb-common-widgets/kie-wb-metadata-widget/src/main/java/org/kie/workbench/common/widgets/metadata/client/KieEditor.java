@@ -35,7 +35,10 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -61,7 +64,17 @@ public abstract class KieEditor
     @Inject
     protected ProjectContext workbenchContext;
 
-    protected SaveOperationService saveOperationService = new SaveOperationService();
+    @Inject
+    protected SavePopUpPresenter savePopUpPresenter;
+
+    @Inject
+    protected DeletePopUpPresenter deletePopUpPresenter;
+
+    @Inject
+    protected RenamePopUpPresenter renamePopUpPresenter;
+
+    @Inject
+    protected CopyPopUpPresenter copyPopUpPresenter;
 
     protected Metadata metadata;
 
@@ -304,7 +317,7 @@ public abstract class KieEditor
 
     @Override
     protected void save() {
-        saveOperationService.save( versionRecordManager.getCurrentPath(),
+        savePopUpPresenter.show( versionRecordManager.getCurrentPath(),
                                    new ParameterizedCommand<String>() {
                                        @Override
                                        public void execute( final String commitMessage ) {

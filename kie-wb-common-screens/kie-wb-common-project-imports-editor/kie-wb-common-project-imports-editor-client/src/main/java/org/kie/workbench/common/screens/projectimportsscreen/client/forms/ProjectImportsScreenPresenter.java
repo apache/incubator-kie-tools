@@ -122,7 +122,7 @@ public class ProjectImportsScreenPresenter
     }
 
     protected void save() {
-        saveOperationService.save( versionRecordManager.getCurrentPath(),
+        savePopUpPresenter.show( versionRecordManager.getCurrentPath(),
                                    new ParameterizedCommand<String>() {
                                        @Override
                                        public void execute( final String commitMessage ) {

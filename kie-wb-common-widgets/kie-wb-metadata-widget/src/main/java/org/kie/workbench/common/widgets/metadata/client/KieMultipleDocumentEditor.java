@@ -45,7 +45,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
@@ -78,6 +78,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     private Event<NotificationEvent> notificationEvent;
     private Event<ChangeTitleWidgetEvent> changeTitleEvent;
     private ProjectContext workbenchContext;
+    private SavePopUpPresenter savePopUpPresenter;
 
     protected FileMenuBuilder fileMenuBuilder;
     protected SaveAllMenuBuilder saveAllMenuBuilder;
@@ -87,7 +88,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     //Constructed
     private BaseEditorView editorView;
-    private SaveOperationService saveOperationService = new SaveOperationService();
     protected ViewDRLSourceWidget sourceWidget = GWT.create( ViewDRLSourceWidget.class );
 
     private MenuItem saveMenuItem;
@@ -142,6 +142,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     @Inject
     void setOverviewWidget( final OverviewWidgetPresenter overviewWidget ) {
         this.overviewWidget = overviewWidget;
+    }
+
+    @Inject
+    void setSavePopUpPresenter( final SavePopUpPresenter savePopUpPresenter ) {
+        this.savePopUpPresenter = savePopUpPresenter;
     }
 
     @Inject
@@ -581,7 +586,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     //Package protected to allow overriding for Unit Tests
     void doSave( final D document ) {
-        saveOperationService.save( document.getCurrentPath(),
+        savePopUpPresenter.show( document.getCurrentPath(),
                                    getSaveCommand( document ) );
     }
 

@@ -20,8 +20,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -45,6 +47,9 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilderImpl;
@@ -53,6 +58,7 @@ import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -66,6 +72,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
+@WithClassesToStub({ BasicFileMenuBuilderImpl.class })
 public class KieMultipleDocumentEditorTest {
 
     private TestMultipleDocumentEditor editor;
@@ -127,6 +134,21 @@ public class KieMultipleDocumentEditorTest {
 
     @Mock
     private User user;
+
+    @Mock
+    private DeletePopUpPresenter deletePopUpPresenter;
+
+    @Mock
+    private CopyPopUpPresenter copyPopUpPresenter;
+
+    @Mock
+    private RenamePopUpPresenter renamePopUpPresenter;
+
+    @Mock
+    private BusyIndicatorView busyIndicatorView;
+
+    @Mock
+    private EventSourceMock<NotificationEvent> notification;
 
     private Command concurrentRenameCommand;
     private Command concurrentDeleteCommand;
@@ -1054,7 +1076,12 @@ public class KieMultipleDocumentEditorTest {
     }
 
     private BasicFileMenuBuilder getBasicFileMenuBuilder() {
-        final BasicFileMenuBuilder basicFileMenuBuilder = new BasicFileMenuBuilderImpl();
+        final BasicFileMenuBuilder basicFileMenuBuilder = new BasicFileMenuBuilderImpl( deletePopUpPresenter,
+                                                                                        copyPopUpPresenter,
+                                                                                        renamePopUpPresenter,
+                                                                                        busyIndicatorView,
+                                                                                        notification,
+                                                                                        restoreVersionCommandProvider );
         setField( basicFileMenuBuilder,
                   "restoreVersionCommandProvider",
                   restoreVersionCommandProvider );

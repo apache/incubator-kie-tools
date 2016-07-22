@@ -38,7 +38,6 @@ import org.kie.workbench.common.screens.explorer.backend.server.preferences.Expl
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewWidget;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
@@ -46,7 +45,7 @@ import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
-import org.kie.workbench.common.widgets.client.popups.copy.CopyPopupWithPackageViewImpl;
+import org.kie.workbench.common.widgets.client.popups.copy.CopyPopupWithPackageView;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -58,10 +57,10 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupViewImpl;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -69,8 +68,10 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
+;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BaseViewPresenterTest {
@@ -124,24 +125,34 @@ public class BaseViewPresenterTest {
     private ActiveContextOptions activeOptions;
 
     @Mock
-    private CopyPopupWithPackageViewImpl copyPopupWithPackageView;
+    protected DeletePopUpPresenter deletePopUpPresenterMock;
 
     @Mock
-    private CopyPopupViewImpl copyPopupView;
+    protected RenamePopUpPresenter renamePopUpPresenterMock;
+
+    @Mock
+    protected CopyPopUpPresenter copyPopUpPresenterMock;
+
+    @Mock
+    protected CopyPopupWithPackageView copyPopUpView;
+
+    @Mock
+    protected RenamePopUpPresenter.View renamePopUpView;
 
     private boolean isPresenterVisible = true;
 
     @InjectMocks
     private BaseViewPresenter presenter = new BaseViewPresenter( view ) {
+        {
+            this.deletePopUpPresenter = deletePopUpPresenterMock;
+            this.renamePopUpPresenter = renamePopUpPresenterMock;
+            this.copyPopUpPresenter = copyPopUpPresenterMock;
+        }
+
         @Override
         protected boolean isViewVisible() {
 
             return isPresenterVisible;
-        }
-
-        @Override
-        protected RenamePopupView getRenameView() {
-            return mock( RenamePopupView.class );
         }
     };
 
@@ -165,21 +176,12 @@ public class BaseViewPresenterTest {
     @Test
     public void testInitCalled() throws Exception {
         presenter.init();
-        verify(view).init( presenter );
+        verify( view ).init( presenter );
     }
 
     @Test
     public void testDeleteNotification() {
-        final ArgumentCaptor<ParameterizedCommand> commandCaptor = ArgumentCaptor.forClass( ParameterizedCommand.class );
-
-        doAnswer( new Answer<Void>() {
-
-            @Override
-            public Void answer( InvocationOnMock invocation ) throws Throwable {
-                commandCaptor.getValue().execute( "message" );
-                return null;
-            }
-        } ).when( view ).deleteItem( commandCaptor.capture() );
+        deletePopUpPresenterShowMock();
 
         final FolderItem item = mock( FolderItem.class );
         presenter.deleteItem( item );
@@ -190,22 +192,10 @@ public class BaseViewPresenterTest {
 
     @Test
     public void testCopyNotification() {
-        final ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandCaptor = ArgumentCaptor.forClass( CommandWithFileNameAndCommitMessage.class );
-
-        doAnswer( new Answer<Void>() {
-
-            @Override
-            public Void answer( InvocationOnMock invocation ) throws Throwable {
-                commandCaptor.getValue().execute( new FileNameAndCommitMessage( "fileName",
-                                                                                "message" ) );
-                return null;
-            }
-        } ).when( view ).copyItem( any( Path.class ),
-                                   any( Validator.class ),
-                                   commandCaptor.capture(),
-                                   any( CopyPopupView.class ) );
-
+        copyPopUpPresenterShowMock();
+        when( copyPopUpPresenterMock.getView() ).thenReturn( copyPopUpView );
         final FolderItem item = mock( FolderItem.class );
+
         presenter.copyItem( item );
 
         verify( notification,
@@ -214,20 +204,8 @@ public class BaseViewPresenterTest {
 
     @Test
     public void testRenameNotification() {
-        final ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandCaptor = ArgumentCaptor.forClass( CommandWithFileNameAndCommitMessage.class );
-
-        doAnswer( new Answer<Void>() {
-
-            @Override
-            public Void answer( InvocationOnMock invocation ) throws Throwable {
-                commandCaptor.getValue().execute( new FileNameAndCommitMessage( "fileName",
-                                                                                "message" ) );
-                return null;
-            }
-        } ).when( view ).renameItem( any( Path.class ),
-                                     any( Validator.class ),
-                                     commandCaptor.capture(),
-                                     any( RenamePopupView.class ) );
+        renamePopUpPresenterShowMock();
+        when( renamePopUpPresenterMock.getView() ).thenReturn( renamePopUpView );
 
         final FolderItem item = mock( FolderItem.class );
         presenter.renameItem( item );
@@ -347,21 +325,49 @@ public class BaseViewPresenterTest {
     }
 
     @Test
-    public void testGetCopyViewWhenCopyingAFile() {
-        FolderItem file = new FolderItem( mock( Object.class ), "name", FolderItemType.FILE );
+    public void testGetCopyView() {
+        when( copyPopUpPresenterMock.getView() ).thenReturn( copyPopUpView );
 
-        CopyPopupView view = presenter.getCopyView( file );
+        CopyPopUpPresenter.View view = presenter.getCopyView();
 
-        assertTrue( view instanceof CopyPopupWithPackageViewImpl );
+        assertTrue( view instanceof CopyPopupWithPackageView );
     }
 
     @Test
-    public void testGetCopyViewWhenCopyingAFolder() {
-        FolderItem folder = new FolderItem( mock( Object.class ), "name", FolderItemType.FOLDER );
+    public void testGetRenameView() {
+        when( renamePopUpPresenterMock.getView() ).thenReturn( renamePopUpView );
 
-        CopyPopupView view = presenter.getCopyView( folder );
+        RenamePopUpPresenter.View view = presenter.getRenameView();
 
-        assertTrue( view instanceof CopyPopupViewImpl );
+        assertTrue( view instanceof RenamePopUpPresenter.View );
+    }
+
+    private void copyPopUpPresenterShowMock() {
+        final ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandCaptor = ArgumentCaptor.forClass( CommandWithFileNameAndCommitMessage.class );
+
+        doAnswer( invocation -> {
+            commandCaptor.getValue().execute( new FileNameAndCommitMessage( "fileName", "message" ) );
+            return null;
+        } ).when( copyPopUpPresenterMock ).show( any( Path.class ), any( Validator.class ), commandCaptor.capture() );
+    }
+
+    private void renamePopUpPresenterShowMock() {
+        final ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandCaptor = ArgumentCaptor.forClass( CommandWithFileNameAndCommitMessage.class );
+
+        doAnswer( invocation -> {
+            commandCaptor.getValue().execute( new FileNameAndCommitMessage( "fileName", "message" ) );
+            return null;
+        } ).when( renamePopUpPresenterMock ).show( any( Path.class ), any( Validator.class ), commandCaptor.capture() );
+    }
+
+    private void deletePopUpPresenterShowMock() {
+        final Class<ParameterizedCommand<String>> commandClass = (Class<ParameterizedCommand<String>>) (Class) ParameterizedCommand.class;
+        final ArgumentCaptor<ParameterizedCommand<String>> commandCaptor = ArgumentCaptor.forClass( commandClass );
+
+        doAnswer( invocation -> {
+            commandCaptor.getValue().execute( "message" );
+            return null;
+        } ).when( deletePopUpPresenterMock ).show( commandCaptor.capture() );
     }
 
 }

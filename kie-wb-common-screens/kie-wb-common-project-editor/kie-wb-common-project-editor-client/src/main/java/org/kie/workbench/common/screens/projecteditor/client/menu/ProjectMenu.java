@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.jboss.errai.common.client.api.Caller;
@@ -33,12 +34,10 @@ import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.CopyPopup;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
-import org.uberfire.ext.editor.commons.client.file.DeletePopup;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.RenamePopup;
-import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -64,6 +63,15 @@ public class ProjectMenu {
 
     @Inject
     protected Caller<CopyService> copyService;
+
+    @Inject
+    protected CopyPopUpPresenter copyPopUpPresenter;
+
+    @Inject
+    protected RenamePopUpPresenter renamePopUpPresenter;
+
+    @Inject
+    protected DeletePopUpPresenter deletePopUpPresenter;
 
     @Inject
     protected ProjectContext context;
@@ -92,32 +100,30 @@ public class ProjectMenu {
                 @Override
                 public void execute() {
                     final Path path = context.getActiveProject().getRootPath();
-                    final CopyPopupView copyPopupView = CopyPopup.getDefaultView();
-                    new CopyPopup( path,
-                                   projectNameValidator,
-                                   new CommandWithFileNameAndCommitMessage() {
-                                       @Override
-                                       public void execute( FileNameAndCommitMessage payload ) {
-                                           copyService.call( new RemoteCallback<Void>() {
+                    copyPopUpPresenter.show( path,
+                                             projectNameValidator,
+                                             new CommandWithFileNameAndCommitMessage() {
+                                                 @Override
+                                                 public void execute( FileNameAndCommitMessage payload ) {
+                                                     copyService.call( new RemoteCallback<Void>() {
 
-                                               @Override
-                                               public void callback( final Void o ) {
-                                                   copyPopupView.hide();
-                                               }
-                                           }, new ErrorCallback<Void>() {
+                                                         @Override
+                                                         public void callback( final Void o ) {
+                                                             copyPopUpPresenter.getView().hide();
+                                                         }
+                                                     }, new ErrorCallback<Void>() {
 
-                                               @Override
-                                               public boolean error( final Void o,
-                                                                     final Throwable throwable ) {
-                                                   copyPopupView.hide();
-                                                   return false;
-                                               }
-                                           } ).copy( path,
-                                                     payload.getNewFileName(),
-                                                     payload.getCommitMessage() );
-                                       }
-                                   },
-                                   copyPopupView ).show();
+                                                         @Override
+                                                         public boolean error( final Void o,
+                                                                               final Throwable throwable ) {
+                                                             copyPopUpPresenter.getView().hide();
+                                                             return false;
+                                                         }
+                                                     } ).copy( path,
+                                                               payload.getNewFileName(),
+                                                               payload.getCommitMessage() );
+                                                 }
+                                             } );
                 }
             } ).endMenu().build().getItems().get( 0 );
 
@@ -126,32 +132,30 @@ public class ProjectMenu {
                 @Override
                 public void execute() {
                     final Path path = context.getActiveProject().getRootPath();
-                    final RenamePopupView renamePopupView = RenamePopup.getDefaultView();
-                    new RenamePopup( path,
-                                     projectNameValidator,
-                                     new CommandWithFileNameAndCommitMessage() {
-                                         @Override
-                                         public void execute( FileNameAndCommitMessage payload ) {
-                                             renameService.call( new RemoteCallback<Void>() {
+                    renamePopUpPresenter.show( path,
+                                               projectNameValidator,
+                                               new CommandWithFileNameAndCommitMessage() {
+                                                   @Override
+                                                   public void execute( FileNameAndCommitMessage payload ) {
+                                                       renameService.call( new RemoteCallback<Void>() {
 
-                                                 @Override
-                                                 public void callback( final Void o ) {
-                                                     renamePopupView.hide();
-                                                 }
-                                             }, new ErrorCallback<Void>() {
+                                                           @Override
+                                                           public void callback( final Void o ) {
+                                                               renamePopUpPresenter.getView().hide();
+                                                           }
+                                                       }, new ErrorCallback<Void>() {
 
-                                                 @Override
-                                                 public boolean error( final Void o,
-                                                                       final Throwable throwable ) {
-                                                     renamePopupView.hide();
-                                                     return false;
-                                                 }
-                                             } ).rename( path,
-                                                         payload.getNewFileName(),
-                                                         payload.getCommitMessage() );
-                                         }
-                                     },
-                                     renamePopupView ).show();
+                                                           @Override
+                                                           public boolean error( final Void o,
+                                                                                 final Throwable throwable ) {
+                                                               renamePopUpPresenter.getView().hide();
+                                                               return false;
+                                                           }
+                                                       } ).rename( path,
+                                                                   payload.getNewFileName(),
+                                                                   payload.getCommitMessage() );
+                                                   }
+                                               } );
 
                 }
             } ).endMenu().build().getItems().get( 0 );
@@ -160,15 +164,14 @@ public class ProjectMenu {
             new Command() {
                 @Override
                 public void execute() {
-
-                    new DeletePopup( new ParameterizedCommand<String>() {
+                    deletePopUpPresenter.show( new ParameterizedCommand<String>() {
                         @Override
                         public void execute( String payload ) {
                             deleteService.call().delete(
                                     context.getActiveProject().getRootPath(),
                                     payload );
                         }
-                    } ).show();
+                    } );
 
                 }
             } ).endMenu().build().getItems().get( 0 );

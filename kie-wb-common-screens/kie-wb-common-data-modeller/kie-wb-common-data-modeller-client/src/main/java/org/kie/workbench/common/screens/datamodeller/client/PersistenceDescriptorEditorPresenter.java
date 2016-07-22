@@ -46,7 +46,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
@@ -233,7 +232,7 @@ public class PersistenceDescriptorEditorPresenter
     }
 
     protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
+        savePopUpPresenter.show( versionRecordManager.getCurrentPath(),
                 new ParameterizedCommand<String>() {
                     @Override
                     public void execute( final String commitMessage ) {

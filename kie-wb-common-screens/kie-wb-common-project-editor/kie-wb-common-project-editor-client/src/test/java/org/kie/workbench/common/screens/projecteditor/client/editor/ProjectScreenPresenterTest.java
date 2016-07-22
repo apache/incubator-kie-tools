@@ -75,7 +75,10 @@ import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.mvp.LockManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -112,6 +115,17 @@ public class ProjectScreenPresenterTest {
 
     @Mock
     private DeploymentScreenPopupViewImpl deploymentScreenPopupView;
+
+    protected CopyPopUpPresenter copyPopUpPresenter;
+
+    @Mock
+    protected RenamePopUpPresenter renamePopUpPresenter;
+
+    @Mock
+    protected DeletePopUpPresenter deletePopUpPresenter;
+
+    @Mock
+    protected SavePopUpPresenter savePopUpPresenter;
 
     @Spy
     private MockLockManagerInstances lockManagerInstanceProvider = new MockLockManagerInstances();
@@ -452,6 +466,8 @@ public class ProjectScreenPresenterTest {
 
     @Test
     public void testSaveNonClashingGAV() throws Exception {
+        savePopUpPresenterShowMock();
+
         verify( view,
                 times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
         verify( view,
@@ -474,6 +490,8 @@ public class ProjectScreenPresenterTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSaveClashingGAV() throws Exception {
+        savePopUpPresenterShowMock();
+
         verify( view,
                 times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
         verify( view,
@@ -487,6 +505,7 @@ public class ProjectScreenPresenterTest {
         final GAV gav = model.getPOM().getGav();
         final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
         final Command command = presenter.getSaveCommand( DeploymentMode.VALIDATED );
+
         command.execute();
 
         verify( projectScreenService,
@@ -518,6 +537,15 @@ public class ProjectScreenPresenterTest {
         //We hid the BusyPopup 1 x loading, 1 x per save attempt
         verify( view,
                 times( 3 ) ).hideBusyIndicator();
+    }
+
+    private void savePopUpPresenterShowMock() {
+        Answer fakeShow = invocation -> {
+            ParameterizedCommand<String> cmd = (ParameterizedCommand<String>) invocation.getArguments()[ 1 ];
+            cmd.execute( "" );
+            return null;
+        };
+        doAnswer( fakeShow ).when( savePopUpPresenter ).show( any( Path.class ), any( ParameterizedCommand.class ) );
     }
 
     @Test
@@ -665,7 +693,11 @@ public class ProjectScreenPresenterTest {
                                                 mock( EventSourceMock.class ),
                                                 conflictingRepositoriesPopup,
                                                 specManagementServiceCaller,
-                                                deploymentScreenPopupView) {
+                                                deploymentScreenPopupView,
+                                                copyPopUpPresenter,
+                                                renamePopUpPresenter,
+                                                deletePopUpPresenter,
+                                                savePopUpPresenter ) {
 
             @Override
             protected void setupPathToPomXML() {
@@ -683,18 +715,6 @@ public class ProjectScreenPresenterTest {
             @Override
             protected void destroyExtensions( final Collection<BuildOptionExtension> extensions ) {
                 //Do nothing. This method makes direct use of IOC and fails to be mocked
-            }
-
-            @Override
-            SaveOperationService getSaveOperationService() {
-                //Stub the real implementation that makes direct use of IOC and fails to be mocked
-                return new SaveOperationService() {
-                    @Override
-                    public void save( final Path path,
-                                      final ParameterizedCommand<String> saveCommand ) {
-                        saveCommand.execute( "" );
-                    }
-                };
             }
         };
 

@@ -23,8 +23,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -55,19 +55,16 @@ import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
-import org.kie.workbench.common.widgets.client.popups.copy.CopyPopupWithPackageViewImpl;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.CopyPopup;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupViewImpl;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.RenamePopup;
-import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -80,8 +77,7 @@ import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-public abstract class BaseViewPresenter
-        implements BranchChangeHandler {
+public abstract class BaseViewPresenter implements BranchChangeHandler {
 
     @Inject
     protected User identity;
@@ -123,17 +119,20 @@ public abstract class BaseViewPresenter
     private ProjectContext context;
 
     @Inject
-    @Named("copyPopupWithPackageView")
-    private CopyPopupWithPackageViewImpl copyPopupWithPackageView;
+    protected DeletePopUpPresenter deletePopUpPresenter;
 
     @Inject
-    @Named("copyPopupView")
-    private CopyPopupViewImpl copyPopupView;
+    protected RenamePopUpPresenter renamePopUpPresenter;
+
+    @Inject
+    protected CopyPopUpPresenter copyPopUpPresenter;
 
     private boolean isOnLoading = false;
+
     private BaseViewImpl baseView;
 
     protected Set<String> activeContentTags = new TreeSet<String>();
+
     protected String currentTag = null;
 
     public BaseViewPresenter( BaseViewImpl baseView ) {
@@ -209,7 +208,7 @@ public abstract class BaseViewPresenter
     }
 
     public void deleteItem( final FolderItem folderItem ) {
-        baseView.deleteItem( new ParameterizedCommand<String>() {
+        deletePopUpPresenter.show( new ParameterizedCommand<String>() {
             @Override
             public void execute( final String comment ) {
                 baseView.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
@@ -227,42 +226,40 @@ public abstract class BaseViewPresenter
 
     public void renameItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
-        final RenamePopupView renamePopupView = getRenameView();
-        baseView.renameItem( path,
-                             new Validator() {
-                                 @Override
-                                 public void validate( final String value,
-                                                       final ValidatorCallback callback ) {
-                                     validationService.call( new RemoteCallback<Object>() {
-                                         @Override
-                                         public void callback( Object response ) {
-                                             if ( Boolean.TRUE.equals( response ) ) {
-                                                 callback.onSuccess();
-                                             } else {
-                                                 callback.onFailure();
-                                             }
-                                         }
-                                     } ).isFileNameValid( path,
-                                                          value );
-                                 }
-                             },
-                             new CommandWithFileNameAndCommitMessage() {
-                                 @Override
-                                 public void execute( final FileNameAndCommitMessage details ) {
-                                     baseView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
-                                     explorerService.call(
-                                             getRenameSuccessCallback( renamePopupView ),
-                                             getRenameErrorCallback( renamePopupView )
-                                                         ).renameItem( folderItem,
-                                                                       details.getNewFileName(),
-                                                                       details.getCommitMessage() );
-                                 }
-                             },
-                             renamePopupView
-                           );
+        renamePopUpPresenter.show( path,
+                                   new Validator() {
+                                       @Override
+                                       public void validate( final String value,
+                                                             final ValidatorCallback callback ) {
+                                           validationService.call( new RemoteCallback<Object>() {
+                                               @Override
+                                               public void callback( Object response ) {
+                                                   if ( Boolean.TRUE.equals( response ) ) {
+                                                       callback.onSuccess();
+                                                   } else {
+                                                       callback.onFailure();
+                                                   }
+                                               }
+                                           } ).isFileNameValid( path,
+                                                                value );
+                                       }
+                                   },
+                                   new CommandWithFileNameAndCommitMessage() {
+                                       @Override
+                                       public void execute( final FileNameAndCommitMessage details ) {
+                                           baseView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
+                                           explorerService.call(
+                                                   getRenameSuccessCallback( getRenameView() ),
+                                                   getRenameErrorCallback( getRenameView() )
+                                                               ).renameItem( folderItem,
+                                                                             details.getNewFileName(),
+                                                                             details.getCommitMessage() );
+                                       }
+                                   }
+                                 );
     }
 
-    protected RemoteCallback<Void> getRenameSuccessCallback( final RenamePopupView renamePopupView ) {
+    protected RemoteCallback<Void> getRenameSuccessCallback( final RenamePopUpPresenter.View renamePopupView ) {
         return new RemoteCallback<Void>() {
             @Override
             public void callback( final Void o ) {
@@ -274,7 +271,7 @@ public abstract class BaseViewPresenter
         };
     }
 
-    protected HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopupView renamePopupView ) {
+    protected HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopUpPresenter.View renamePopupView ) {
         return new HasBusyIndicatorDefaultErrorCallback( baseView ) {
 
             @Override
@@ -286,47 +283,41 @@ public abstract class BaseViewPresenter
         };
     }
 
-    protected RenamePopupView getRenameView() {
-        return RenamePopup.getDefaultView();
-    }
-
     public void copyItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
-        final CopyPopupView copyPopupView = getCopyView( folderItem );
-        baseView.copyItem( path,
-                           new Validator() {
-                               @Override
-                               public void validate( final String value,
-                                                     final ValidatorCallback callback ) {
-                                   validationService.call( new RemoteCallback<Object>() {
-                                       @Override
-                                       public void callback( Object response ) {
-                                           if ( Boolean.TRUE.equals( response ) ) {
-                                               callback.onSuccess();
-                                           } else {
-                                               callback.onFailure();
-                                           }
-                                       }
-                                   } ).isFileNameValid( path,
-                                                        value );
-                               }
-                           },
-                           new CommandWithFileNameAndCommitMessage() {
-                               @Override
-                               public void execute( final FileNameAndCommitMessage details ) {
-                                   baseView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
-                                   explorerService.call( getCopySuccessCallback( copyPopupView ),
-                                                         getCopyErrorCallback( copyPopupView ) ).copyItem( folderItem,
-                                                                                                           details.getNewFileName(),
-                                                                                                           copyPopupView.getTargetPath(),
-                                                                                                           details.getCommitMessage() );
-                               }
-                           },
-                           copyPopupView
-                         );
+        copyPopUpPresenter.show( path,
+                                 new Validator() {
+                                     @Override
+                                     public void validate( final String value,
+                                                           final ValidatorCallback callback ) {
+                                         validationService.call( new RemoteCallback<Object>() {
+                                             @Override
+                                             public void callback( Object response ) {
+                                                 if ( Boolean.TRUE.equals( response ) ) {
+                                                     callback.onSuccess();
+                                                 } else {
+                                                     callback.onFailure();
+                                                 }
+                                             }
+                                         } ).isFileNameValid( path,
+                                                              value );
+                                     }
+                                 },
+                                 new CommandWithFileNameAndCommitMessage() {
+                                     @Override
+                                     public void execute( final FileNameAndCommitMessage details ) {
+                                         baseView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
+                                         explorerService.call( getCopySuccessCallback( getCopyView() ),
+                                                               getCopyErrorCallback( getCopyView() ) ).copyItem( folderItem,
+                                                                                                                 details.getNewFileName(),
+                                                                                                                 getCopyView().getTargetPath(),
+                                                                                                                 details.getCommitMessage() );
+                                     }
+                                 }
+                               );
     }
 
-    protected RemoteCallback<Void> getCopySuccessCallback( final CopyPopupView copyPopupView ) {
+    protected RemoteCallback<Void> getCopySuccessCallback( final CopyPopUpPresenter.View copyPopupView ) {
         return new RemoteCallback<Void>() {
             @Override
             public void callback( final Void o ) {
@@ -338,7 +329,7 @@ public abstract class BaseViewPresenter
         };
     }
 
-    protected HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopupView copyPopupView ) {
+    protected HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopUpPresenter.View copyPopupView ) {
         return new HasBusyIndicatorDefaultErrorCallback( baseView ) {
 
             @Override
@@ -348,14 +339,6 @@ public abstract class BaseViewPresenter
                 return super.error( message, throwable );
             }
         };
-    }
-
-    protected CopyPopupView getCopyView( final FolderItem folderItem ) {
-        if ( folderItem != null && FolderItemType.FILE.equals( folderItem.getType() ) ) {
-            return copyPopupWithPackageView;
-        }
-
-        return copyPopupView;
     }
 
     public void uploadArchivedFolder( final FolderItem folderItem ) {
@@ -757,4 +740,11 @@ public abstract class BaseViewPresenter
         }
     }
 
+    RenamePopUpPresenter.View getRenameView() {
+        return renamePopUpPresenter.getView();
+    }
+
+    CopyPopUpPresenter.View getCopyView() {
+        return copyPopUpPresenter.getView();
+    }
 }

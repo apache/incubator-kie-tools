@@ -15,47 +15,45 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
+import javax.inject.Inject;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.CopyPopup;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
-import org.uberfire.ext.editor.commons.client.file.DeletePopup;
-import org.uberfire.ext.editor.commons.client.file.RenamePopup;
-import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public abstract class BaseViewImpl extends Composite implements View {
 
+    @Inject
+    private DeletePopUpPresenter deletePopUpPresenter;
+
+    @Inject
+    private RenamePopUpPresenter renamePopUpPresenter;
+
+    @Inject
+    private CopyPopUpPresenter copyPopUpPresenter;
+
     @Override
     public void deleteItem( final ParameterizedCommand<String> command ) {
-        final DeletePopup popup = new DeletePopup( command );
-        popup.show();
+        deletePopUpPresenter.show( command );
     }
 
     @Override
     public void renameItem( final Path path,
                             final Validator validator,
-                            final CommandWithFileNameAndCommitMessage command,
-                            final RenamePopupView renamePopupView ) {
-        final RenamePopup popup = new RenamePopup( path,
-                                                   validator,
-                                                   command,
-                                                   renamePopupView );
-        popup.show();
+                            final CommandWithFileNameAndCommitMessage command ) {
+        renamePopUpPresenter.show( path, validator, command );
     }
 
     @Override
     public void copyItem( final Path path,
                           final Validator validator,
-                          final CommandWithFileNameAndCommitMessage command,
-                          final CopyPopupView copyPopupView ) {
-        final CopyPopup popup = new CopyPopup( path,
-                                               validator,
-                                               command,
-                                               copyPopupView );
-        popup.show();
+                          final CommandWithFileNameAndCommitMessage command ) {
+        copyPopUpPresenter.show( path, validator, command );
     }
-
 }

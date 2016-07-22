@@ -31,8 +31,6 @@ import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
-import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -60,13 +58,11 @@ public interface View extends HasBusyIndicator,
 
     void renameItem( final Path path,
                      final Validator validator,
-                     final CommandWithFileNameAndCommitMessage command,
-                     final RenamePopupView renamePopupView );
+                     final CommandWithFileNameAndCommitMessage command );
 
     void copyItem( final Path path,
                    final Validator validator,
-                   final CommandWithFileNameAndCommitMessage command,
-                   final CopyPopupView copyPopupView );
+                   final CommandWithFileNameAndCommitMessage command );
 
     void renderItems( FolderListing filteredContent );
 
