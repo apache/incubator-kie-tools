@@ -206,14 +206,14 @@ public class GuidedRuleEditorPresenter
                                                                              GuidedRuleEditorResources.CONSTANTS );
 
         if ( validator.isValid() ) {
-            saveOperationService.save( versionRecordManager.getPathToLatest(),
-                                       new ParameterizedCommand<String>() {
-                                           @Override
-                                           public void execute( final String commitMessage ) {
-                                               view.showSaving();
-                                               save( commitMessage );
-                                           }
-                                       } );
+            savePopUpPresenter.show( versionRecordManager.getPathToLatest(),
+                                     new ParameterizedCommand<String>() {
+                                         @Override
+                                         public void execute( final String commitMessage ) {
+                                             view.showSaving();
+                                             save( commitMessage );
+                                         }
+                                     } );
 
             concurrentUpdateSessionInfo = null;
         } else {
