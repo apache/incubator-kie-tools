@@ -69,7 +69,8 @@ public class ClassFieldInspector {
                                                              field.getType(),
                                                              origin,
                                                              AnnotationUtils.getFieldAnnotations( field,
-                                                                     origin.equals( ModelField.FIELD_ORIGIN.INHERITED ) ) ) );
+                                                                                                  origin.equals(
+                                                                                                          ModelField.FIELD_ORIGIN.INHERITED ) ) ) );
             } else {
                 inaccessibleFields.put( field.getName(), field );
             }
@@ -114,8 +115,10 @@ public class ClassFieldInspector {
                             if ( info.accessorAndMutator == FieldAccessorsAndMutators.MUTATOR ) {
                                 info.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
                             }
-                            info.genericType = method.getGenericReturnType();
-                            info.returnType = method.getReturnType();
+                            if ( !inaccessibleFields.containsKey( methodName ) ) {
+                                info.genericType = method.getGenericReturnType();
+                                info.returnType = method.getReturnType();
+                            }
 
                         } else if ( accessorsAndMutators == FieldAccessorsAndMutators.MUTATOR ) {
                             if ( info.accessorAndMutator == FieldAccessorsAndMutators.ACCESSOR ) {
@@ -130,13 +133,22 @@ public class ClassFieldInspector {
 
                         Field inaccessibleField = inaccessibleFields.get( methodName );
 
+                        Type genericType = method.getGenericReturnType();
+                        Class<?> type = method.getReturnType();
+
+                        if ( inaccessibleField != null ) {
+                            genericType = inaccessibleField.getGenericType();
+                            type = inaccessibleField.getType();
+                        }
+
                         this.fieldTypesFieldInfo.put( methodName,
                                                       new FieldInfo( accessorsAndMutators,
-                                                                     method.getGenericReturnType(),
-                                                                     method.getReturnType(),
+                                                                     genericType,
+                                                                     type,
                                                                      origin,
-                                                                     AnnotationUtils.getFieldAnnotations( inaccessibleField,
-                                                                             origin.equals( ModelField.FIELD_ORIGIN.INHERITED )) ) );
+                                                                     AnnotationUtils.getFieldAnnotations(
+                                                                             inaccessibleField,
+                                                                             origin.equals( ModelField.FIELD_ORIGIN.INHERITED ) ) ) );
                     }
                 }
             }

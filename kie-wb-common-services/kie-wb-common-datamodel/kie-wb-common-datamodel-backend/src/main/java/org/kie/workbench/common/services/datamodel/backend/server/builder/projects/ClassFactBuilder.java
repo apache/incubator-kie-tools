@@ -135,19 +135,26 @@ public class ClassFactBuilder extends BaseFactBuilder {
             if ( BlackLists.isReturnTypeBlackListed( returnType ) ) {
                 continue;
             }
-            if ( !discoveredFieldFactBuilders.containsKey( genericReturnType ) ) {
-                discoveredFieldFactBuilders.put( genericReturnType,
-                                                 null );
-                discoveredFieldFactBuilders.put( genericReturnType,
-                                                 new ClassFactBuilder( builder,
-                                                                       discoveredFieldFactBuilders,
-                                                                       returnType,
-                                                                       false,
-                                                                       typeSource ) );
-            }
-            if ( discoveredFieldFactBuilders.get( genericReturnType ) != null ) {
-                fieldFactBuilders.put( genericReturnType,
-                                       discoveredFieldFactBuilders.get( genericReturnType ) );
+
+            discoverFieldFactBuilder( genericReturnType, returnType, discoveredFieldFactBuilders );
+
+            // Check types on generic arguments
+            if ( f.getGenericType() instanceof ParameterizedType ) {
+                ParameterizedType parameterizedType = (ParameterizedType) f.getGenericType();
+
+                for ( Type parameterType : parameterizedType.getActualTypeArguments() ) {
+                    if ( discoveredFieldFactBuilders.containsKey( parameterType.getTypeName() ) ) {
+                        continue;
+                    }
+
+                    if ( parameterType instanceof Class ) {
+                        Class<?> parameterClazz = (Class<?>) parameterType;
+                        discoverFieldFactBuilder( parameterClazz.getName(),
+                                                  parameterClazz,
+                                                  discoveredFieldFactBuilders );
+                    }
+                }
+
             }
 
             Set<Annotation> fieldAnnotations = f.getAnnotations();
@@ -173,6 +180,27 @@ public class ClassFactBuilder extends BaseFactBuilder {
                                     methodInformation );
     }
 
+
+    protected void discoverFieldFactBuilder( final String genericTypeName,
+                                             final Class<?> genericType,
+                                             final Map<String, FactBuilder> discoveredFieldFactBuilders ) throws IOException {
+
+        if ( !discoveredFieldFactBuilders.containsKey( genericTypeName ) ) {
+            discoveredFieldFactBuilders.put( genericTypeName, null );
+            discoveredFieldFactBuilders.put( genericTypeName,
+                                             new ClassFactBuilder( builder,
+                                                                   discoveredFieldFactBuilders,
+                                                                   genericType,
+                                                                   false,
+                                                                   typeSource ) );
+
+        }
+        if ( discoveredFieldFactBuilders.get( genericTypeName ) != null ) {
+            fieldFactBuilders.put( genericTypeName,
+                                   discoveredFieldFactBuilders.get( genericTypeName ) );
+        }
+    }
+
     private void addEnumsForField( final String className,
                                    final String fieldName,
                                    final Class<?> fieldClazz ) {
@@ -189,7 +217,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                     enumValues.add( shortName + "=" + shortName );
                 }
             }
-            final String a[] = new String[ enumValues.size() ];
+            final String a[] = new String[enumValues.size()];
             enumValues.toArray( a );
             getDataModelBuilder().addEnum( className,
                                            fieldName,
