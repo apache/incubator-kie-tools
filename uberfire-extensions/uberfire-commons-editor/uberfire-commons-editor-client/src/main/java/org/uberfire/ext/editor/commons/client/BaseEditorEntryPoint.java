@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.editor.commons.client.file;
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UberView;
+package org.uberfire.ext.editor.commons.client;
 
-public interface CopyPopupView extends UberView<CopyPopupView.Presenter> {
+import javax.annotation.PostConstruct;
 
-    interface Presenter {
+import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
-        void onCancel();
+@Bundle("resources/i18n/Constants.properties")
+@EntryPoint
+public class BaseEditorEntryPoint {
 
-        void onCopy();
-
-        Path getPath();
+    @PostConstruct
+    public void init() {
     }
-
-    String getNewName();
-
-    Path getTargetPath();
-
-    String getCheckInComment();
-
-    void handleInvalidFileName();
-
-    void handleDuplicatedFileName();
-
-    void show();
-
-    void hide();
-
 }

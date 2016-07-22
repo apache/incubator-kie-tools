@@ -17,7 +17,6 @@ package org.uberfire.ext.editor.commons.client.menu;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
@@ -64,15 +63,9 @@ public interface BasicFileMenuBuilder extends HasLockSyncMenuStateHelper {
                                   final Validator validator,
                                   final Caller<? extends SupportsCopy> copyCaller );
 
-    BasicFileMenuBuilder addCopy( final Path path,
-                                  final Validator validator,
-                                  final Caller<? extends SupportsCopy> copyCaller,
-                                  final CopyPopupView copyPopupView );
-
     BasicFileMenuBuilder addCopy( final PathProvider provider,
                                   final Validator validator,
-                                  final Caller<? extends SupportsCopy> copyCaller,
-                                  final CopyPopupView copyPopupView );
+                                  final Caller<? extends SupportsCopy> copyCaller );
 
     BasicFileMenuBuilder addValidate( final Command command );
 

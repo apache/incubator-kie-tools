@@ -41,7 +41,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
@@ -99,6 +99,9 @@ public class DynamicMenuEditorPresenter
 
     @Inject
     private PluginNameValidator pluginNameValidator;
+
+    @Inject
+    private SavePopUpPresenter savePopUpPresenter;
 
     private ListDataProvider<DynamicMenuItem> dataProvider = new ListDataProvider<DynamicMenuItem>();
 
@@ -166,6 +169,7 @@ public class DynamicMenuEditorPresenter
     public RuleValidator getMenuItemLabelValidator( final DynamicMenuItem menuItem,
                                                     final DynamicMenuItem editedMenuItem ) {
         return new RuleValidator() {
+
             private String error;
 
             private NameValidator menuLabelValidator = NameValidator.createNameValidator( getView().emptyMenuLabel(), getView().invalidMenuLabel() );
@@ -257,6 +261,7 @@ public class DynamicMenuEditorPresenter
     @Override
     protected void loadContent() {
         getPluginServices().call( new RemoteCallback<DynamicMenu>() {
+
             @Override
             public void callback( final DynamicMenu response ) {
                 setOriginalHash( response.hashCode() );
@@ -276,6 +281,7 @@ public class DynamicMenuEditorPresenter
 
     protected Command onValidate() {
         return new Command() {
+
             @Override
             public void execute() {
                 final Collection<String> invalidActivities = new HashSet<String>();
@@ -300,20 +306,23 @@ public class DynamicMenuEditorPresenter
         for ( final String string : invalidActivities ) {
             result.append( string ).append( "," );
         }
-        return result.length() > 0 ? result.substring( 0,
-                                                       result.length() - 1 ) : "";
+        return result.length() > 0 ? result.substring(
+                0,
+                result.length() - 1 ) : "";
     }
 
     protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new ParameterizedCommand<String>() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 getPluginServices().call( getSaveSuccessCallback( getContent().hashCode() ) ).saveMenu( getContent(),
-                                                                                                                                         commitMessage );
-                                             }
-                                         }
-                                       );
+        savePopUpPresenter.show( versionRecordManager.getCurrentPath(),
+                                 new ParameterizedCommand<String>() {
+
+                                     @Override
+                                     public void execute( final String commitMessage ) {
+                                         getPluginServices().call( getSaveSuccessCallback( getContent().hashCode() ) ).saveMenu(
+                                                 getContent(),
+                                                 commitMessage );
+                                     }
+                                 }
+                               );
         concurrentUpdateSessionInfo = null;
     }
 

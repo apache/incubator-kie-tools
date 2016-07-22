@@ -27,8 +27,8 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.ext.editor.commons.client.file.RestorePopup;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
+import org.uberfire.ext.editor.commons.client.file.popups.RestorePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.event.VersionSelectedEvent;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
@@ -41,7 +41,7 @@ public class VersionRecordManager {
     private VersionMenuDropDownButton versionMenuDropDownButton;
     private Event<VersionSelectedEvent> versionSelectedEvent;
 
-    private RestorePopup restorePopup;
+    private RestorePopUpPresenter restorePopUpPresenter;
     private RestoreUtil restoreUtil;
     private Caller<VersionService> versionService;
 
@@ -54,11 +54,11 @@ public class VersionRecordManager {
     @Inject
     public VersionRecordManager( final VersionMenuDropDownButton versionMenuDropDownButton,
                                  final SaveButton saveButton,
-                                 final RestorePopup restorePopup,
+                                 final RestorePopUpPresenter restorePopUpPresenter,
                                  final RestoreUtil restoreUtil,
                                  final Event<VersionSelectedEvent> versionSelectedEvent,
                                  final Caller<VersionService> versionService ) {
-        this.restorePopup = restorePopup;
+        this.restorePopUpPresenter = restorePopUpPresenter;
         this.versionMenuDropDownButton = versionMenuDropDownButton;
         this.saveButton = saveButton;
         this.versionSelectedEvent = versionSelectedEvent;
@@ -217,8 +217,8 @@ public class VersionRecordManager {
     }
 
     public void restoreToCurrentVersion() {
-        restorePopup.show( getCurrentPath(),
-                           getCurrentVersionRecordUri() );
+        restorePopUpPresenter.show( getCurrentPath(),
+                                    getCurrentVersionRecordUri() );
     }
 
     private void loadVersions( final ObservablePath path ) {

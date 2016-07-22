@@ -21,7 +21,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.layout.editor.api.LayoutServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
@@ -47,6 +47,9 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     @Inject
     private Caller<LayoutServices> layoutServices;
+
+    @Inject
+    private SavePopUpPresenter savePopUpPresenter;
 
     private String pluginName;
 
@@ -106,14 +109,17 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     public void load( final PluginType pluginType,
                       final Path currentPath,
                       final ParameterizedCommand<LayoutEditorModel> loadCallBack ) {
+
         this.pluginType = pluginType;
         this.currentPath = currentPath;
         this.loadCallBack = loadCallBack;
         pluginServices.call( new RemoteCallback<LayoutEditorModel>() {
+
             @Override
             public void callback( final LayoutEditorModel model ) {
 
                 layoutServices.call( new RemoteCallback<LayoutTemplate>() {
+
                     @Override
                     public void callback( final LayoutTemplate layoutTemplate ) {
                         if ( layoutTemplate != null ) {
@@ -134,6 +140,7 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     public void save( final Path path, final RemoteCallback<Path> saveSuccessCallback ) {
 
         layoutServices.call( new RemoteCallback<String>() {
+
             @Override
             public void callback( final String model ) {
                 savePlugin( model, path, saveSuccessCallback );
@@ -143,11 +150,15 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     }
 
     private void savePlugin( final String model, final Path path, final RemoteCallback<Path> saveSuccessCallback ) {
+        savePopUpPresenter.show( path, new ParameterizedCommand<String>() {
 
-        new SaveOperationService().save( path,
-                                         commitMessage -> pluginServices.call( saveSuccessCallback )
-                                                 .saveLayout( getLayoutContent( path, model ),
-                                                              commitMessage ) );
+            @Override
+            public void execute( final String commitMessage ) {
+                pluginServices.call( saveSuccessCallback ).saveLayout(
+                        getLayoutContent( path, model ),
+                        commitMessage );
+            }
+        } );
     }
 
     private LayoutEditorModel getLayoutContent( Path currentPath, String model ) {

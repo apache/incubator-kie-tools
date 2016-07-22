@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
@@ -42,25 +42,33 @@ public class RestoreVersionCommandProvider {
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
+    @Inject
+    private SavePopUpPresenter savePopUpPresenter;
+
     public Command getCommand( final Path path ) {
         return new Command() {
+
             @Override
             public void execute() {
-                new SaveOperationService().save( path,
-                                                 new ParameterizedCommand<String>() {
-                                                     @Override
-                                                     public void execute( final String comment ) {
-                                                         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Restoring() );
-                                                         versionService.call( getRestorationSuccessCallback(),
-                                                                              new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).restore( path, comment );
-                                                     }
-                                                 } );
+                savePopUpPresenter.show( path,
+                                         new ParameterizedCommand<String>() {
+
+                                             @Override
+                                             public void execute( final String comment ) {
+                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Restoring() );
+                                                 versionService.call(
+                                                         getRestorationSuccessCallback(),
+                                                         new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) )
+                                                         .restore( path, comment );
+                                             }
+                                         } );
             }
         };
     }
 
     private RemoteCallback<Path> getRestorationSuccessCallback() {
         return new RemoteCallback<Path>() {
+
             @Override
             public void callback( final Path restored ) {
                 //TODO {porcelli} close current?

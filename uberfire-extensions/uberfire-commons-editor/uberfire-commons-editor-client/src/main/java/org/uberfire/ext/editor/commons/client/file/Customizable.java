@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,15 @@
 
 package org.uberfire.ext.editor.commons.client.file;
 
-import org.uberfire.client.mvp.UberView;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
-public interface RenamePopupView extends UberView<RenamePopupView.Presenter> {
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface Customizable {
 
-    interface Presenter {
-
-        void onCancel();
-
-        void onRename();
-    }
-
-    String getName();
-
-    String getCheckInComment();
-
-    void handleInvalidFileName();
-
-    void handleDuplicatedFileName();
-
-    void show();
-
-    void hide();
 }

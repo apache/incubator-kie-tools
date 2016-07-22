@@ -22,8 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.editor.commons.client.file.RestorePopup;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
+import org.uberfire.ext.editor.commons.client.file.popups.RestorePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.event.VersionSelectedEvent;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
@@ -35,7 +35,7 @@ public class VersionRecordManagerTest {
 
     private VersionRecordManager manager;
     private ArrayList<VersionRecord> versions = new ArrayList<VersionRecord>();
-    private RestorePopup restorePopup;
+    private RestorePopUpPresenter restorePopup;
     private RestoreUtil util;
     private VersionMenuDropDownButton dropDownButton;
     private SaveButton saveButton;
@@ -48,7 +48,7 @@ public class VersionRecordManagerTest {
     public void setUp() throws Exception {
         dropDownButton = mock( VersionMenuDropDownButton.class );
         saveButton = mock( SaveButton.class );
-        restorePopup = mock( RestorePopup.class );
+        restorePopup = mock( RestorePopUpPresenter.class );
 
         setUpUtil();
         setUpVersions();

@@ -17,25 +17,26 @@
 package org.uberfire.ext.editor.commons.client.menu;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
-import org.uberfire.ext.editor.commons.client.file.CopyPopup;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
-import org.uberfire.ext.editor.commons.client.file.DeletePopup;
-import org.uberfire.ext.editor.commons.client.file.RenamePopup;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.SaveButton;
 import org.uberfire.ext.editor.commons.client.menu.HasLockSyncMenuStateHelper.LockSyncMenuStateHelper.Operation;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.Menus;
@@ -56,24 +57,31 @@ public class BasicFileMenuBuilderTest {
     private Validator validator;
 
     @Mock
-    private DeletePopup deletePopup;
+    private RestoreVersionCommandProvider restoreVersionCommandProvider;
+
+    @Mock
+    private EventSourceMock<NotificationEvent> notification;
+
+    @Mock
+    private BusyIndicatorView busyIndicatorView;
+
+    @Mock
+    private DeletePopUpPresenter deletePopUpPresenter;
+
+    @Mock
+    private CopyPopUpPresenter copyPopUpPresenter;
+
+    @Mock
+    private RenamePopUpPresenter renamePopUpPresenter;
 
     @Mock
     private SupportsDelete deleteService;
     private CallerMock<SupportsDelete> deleteCaller;
 
     @Mock
-    private RenamePopup renamePopup;
-
-    @Mock
     private SupportsRename renameService;
+
     private CallerMock<SupportsRename> renameCaller;
-
-    @Mock
-    private CopyPopup copyPopup;
-
-    @Mock
-    private CopyPopupView copyPopupView;
 
     @Mock
     private SupportsCopy copyService;
@@ -83,35 +91,12 @@ public class BasicFileMenuBuilderTest {
 
     @Before
     public void setup() {
-        builder = new BasicFileMenuBuilderImpl() {
-
-            @Override
-            DeletePopup getDeletePopup( final Path path,
-                                        final Caller<? extends SupportsDelete> deleteCaller ) {
-                assertEquals( mockPath,
-                              path );
-                return deletePopup;
-            }
-
-            @Override
-            RenamePopup getRenamePopup( final Path path,
-                                        final Validator validator,
-                                        final Caller<? extends SupportsRename> renameCaller ) {
-                assertEquals( mockPath,
-                              path );
-                return renamePopup;
-            }
-
-            @Override
-            CopyPopup getCopyPopup( final Path path,
-                                    final Validator validator,
-                                    final Caller<? extends SupportsCopy> copyCaller,
-                                    final CopyPopupView copyPopupView ) {
-                assertEquals( mockPath,
-                              path );
-                return copyPopup;
-            }
-        };
+        builder = new BasicFileMenuBuilderImpl( deletePopUpPresenter,
+                                                copyPopUpPresenter,
+                                                renamePopUpPresenter,
+                                                busyIndicatorView,
+                                                notification,
+                                                restoreVersionCommandProvider );
         deleteCaller = new CallerMock<>( deleteService );
         renameCaller = new CallerMock<>( renameService );
         when( provider.getPath() ).thenReturn( mockPath );
@@ -119,8 +104,7 @@ public class BasicFileMenuBuilderTest {
 
     @Test
     public void testDelete() {
-        builder.addDelete( provider,
-                           deleteCaller );
+        builder.addDelete( provider, deleteCaller );
 
         final Menus menus = builder.build();
         final MenuItem mi = menus.getItems().get( 0 );
@@ -128,8 +112,7 @@ public class BasicFileMenuBuilderTest {
 
         mic.getCommand().execute();
 
-        verify( provider,
-                times( 1 ) ).getPath();
+        verify( provider, times( 1 ) ).getPath();
     }
 
     @Test
@@ -152,8 +135,7 @@ public class BasicFileMenuBuilderTest {
     public void testCopy() {
         builder.addCopy( provider,
                          validator,
-                         copyCaller,
-                         copyPopupView );
+                         copyCaller );
 
         final Menus menus = builder.build();
         final MenuItem mi = menus.getItems().get( 0 );
