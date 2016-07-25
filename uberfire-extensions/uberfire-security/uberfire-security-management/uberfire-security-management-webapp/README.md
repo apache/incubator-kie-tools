@@ -1,7 +1,7 @@
 Users and groups management services - Web Application
 ======================================================
 
-This module provides a simple UF application with the *Users and groups management perspective*. You can test the user system related services, screens and widgets here.                                
+This module provides a simple UF application with the *Security management perspective*. You can test the user system related services, screens and widgets here.                                
 
 Login into the application using the following credentials: `admin/admin`.                         
 

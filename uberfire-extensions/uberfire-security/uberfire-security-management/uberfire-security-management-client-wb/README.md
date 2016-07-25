@@ -9,16 +9,14 @@ This module provides the Uberfire perspectives and screens for the Users and Gro
 Please, in order to use this module, use and specify and of the available Users and Groups management service implementations. For more information, please take a look at the [Uberfire Security Management](../../uberfire-security/uberfire-security-management/).                           
 
 It provides the following workbench assets:               
-* The users management perspective                           
-* The groups management perspective                           
-* The users management home screen                           
-* The groups management home screen                           
-* The users explorer screen                           
-* The groups explorer screen                           
+* The security management perspective                           
+* The security home screen                           
+* The security explorer screen                           
+* The role editor screen                           
 * The user editor screen                           
 * The group editor screen                           
 
-Note that the perspectives are only available for the role "admin".             
+Note that the perspective is only available for the role "admin".             
 
 Installation notes
 ------------------
@@ -99,7 +97,7 @@ To use the perspectives, screens and widgets provided by this module, please fol
 
 5.- If deploying on JBoss Wildfly or EAP, please add or update the `jboss-deployment-structure.xml`, if necessary (read each service provider implementation docs)                       
 
-6.- You can use the Users and Groups management perspective on your webapp by adding the perspective menu item as in the following example                   
+6.- You can use the Security Management perspective on your webapp by adding the perspective menu item as in the following example                   
  
         @Inject
         private WorkbenchMenuBarPresenter menubar;
