@@ -104,11 +104,15 @@ public class BasicFileMenuBuilderTest {
 
     @Test
     public void testDelete() {
-        builder.addDelete( provider, deleteCaller );
+        builder.addDelete( provider,
+                           deleteCaller );
 
         final Menus menus = builder.build();
         final MenuItem mi = menus.getItems().get( 0 );
         final MenuItemCommand mic = (MenuItemCommand) mi;
+
+        verify( provider,
+                never() ).getPath();
 
         mic.getCommand().execute();
 
@@ -125,6 +129,9 @@ public class BasicFileMenuBuilderTest {
         final MenuItem mi = menus.getItems().get( 0 );
         final MenuItemCommand mic = (MenuItemCommand) mi;
 
+        verify( provider,
+                never() ).getPath();
+
         mic.getCommand().execute();
 
         verify( provider,
@@ -140,6 +147,9 @@ public class BasicFileMenuBuilderTest {
         final Menus menus = builder.build();
         final MenuItem mi = menus.getItems().get( 0 );
         final MenuItemCommand mic = (MenuItemCommand) mi;
+
+        verify( provider,
+                never() ).getPath();
 
         mic.getCommand().execute();
 
