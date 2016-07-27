@@ -749,15 +749,15 @@ public class ConditionPopup extends FormStylePopup {
         }
 
         if ( selectedIndex >= 0 ) {
-            selectPattern( patterns,
-                           selectedIndex );
+            selectListBoxItem( patterns,
+                               selectedIndex );
         }
 
         return patterns;
     }
 
-    void selectPattern( final ListBox listBox,
-                        final int index ) {
+    void selectListBoxItem( final ListBox listBox,
+                            final int index ) {
         listBox.setSelectedIndex( index );
     }
 
@@ -898,78 +898,83 @@ public class ConditionPopup extends FormStylePopup {
 
     protected void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.Field() );
-        final ListBox box = new ListBox();
-
-        this.oracle.getFieldCompletions( this.editingPattern.getFactType(),
-                                         FieldAccessorsAndMutators.ACCESSOR,
-                                         new Callback<ModelField[]>() {
-                                             @Override
-                                             public void callback( final ModelField[] fields ) {
-                                                 switch ( editingCol.getConstraintValueType() ) {
-                                                     case BaseSingleFieldConstraint.TYPE_LITERAL:
-                                                         //Literals can be on any field
-                                                         for ( int i = 0; i < fields.length; i++ ) {
-                                                             box.addItem( fields[ i ].getName() );
-                                                         }
-                                                         break;
-
-                                                     case BaseSingleFieldConstraint.TYPE_RET_VALUE:
-                                                         //Formulae can only consume fields that do not have enumerations
-                                                         for ( int i = 0; i < fields.length; i++ ) {
-                                                             final String fieldName = fields[ i ].getName();
-                                                             if ( !oracle.hasEnums( editingPattern.getFactType(),
-                                                                                    fieldName ) ) {
-                                                                 box.addItem( fieldName );
-                                                             }
-                                                         }
-                                                         break;
-
-                                                     case BaseSingleFieldConstraint.TYPE_PREDICATE:
-                                                         //Predicates don't need a field (this should never be reachable as the
-                                                         //field selector is disabled when the Calculation Type is Predicate)
-                                                         break;
-
-                                                 }
-                                             }
-                                         } );
+        final ListBox box = loadFields();
 
         pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                           box );
 
-        pop.add( new ModalFooterOKCancelButtons( new Command() {
-            @Override
-            public void execute() {
-                editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
-                editingCol.setFieldType( oracle.getFieldType( editingPattern.getFactType(),
-                                                              editingCol.getFactField() ) );
+        pop.add( new ModalFooterOKCancelButtons(
+                () -> {
+                    editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
+                    editingCol.setFieldType( oracle.getFieldType( editingPattern.getFactType(),
+                                                                  editingCol.getFactField() ) );
 
-                //Clear Operator when field changes
-                editingCol.setOperator( null );
-                editingCol.setValueList( null );
+                    //Clear Operator when field changes
+                    editingCol.setOperator( null );
+                    editingCol.setValueList( null );
 
-                //Setup UI
-                doFieldLabel();
-                doValueList();
-                doCalculationType();
-                makeLimitedValueWidget();
-                makeDefaultValueWidget();
-                doOperatorLabel();
-                doImageButtons();
+                    //Setup UI
+                    doFieldLabel();
+                    doValueList();
+                    doCalculationType();
+                    makeLimitedValueWidget();
+                    makeDefaultValueWidget();
+                    doOperatorLabel();
+                    doImageButtons();
 
-                pop.hide();
-                enableFooter( true );
-            }
-        }, new Command() {
-            @Override
-            public void execute() {
-                pop.hide();
-                enableFooter( true );
-            }
-        }
-        ) );
+                    pop.hide();
+                    enableFooter( true );
+                },
+                () -> {
+                    pop.hide();
+                    enableFooter( true );
+                } ) );
 
         enableFooter( false );
         pop.show();
+    }
+
+    ListBox loadFields() {
+        final ListBox box = new ListBox();
+        this.oracle.getFieldCompletions( this.editingPattern.getFactType(),
+                                         FieldAccessorsAndMutators.ACCESSOR,
+                                         ( ModelField[] fields ) -> {
+                                             switch ( editingCol.getConstraintValueType() ) {
+                                                 case BaseSingleFieldConstraint.TYPE_LITERAL:
+                                                     //Literals can be on any field
+                                                     int selectedIndex = -1;
+                                                     for ( int i = 0; i < fields.length; i++ ) {
+                                                         final String fieldName = fields[ i ].getName();
+                                                         if ( fieldName.equals( editingCol.getFactField() ) ) {
+                                                             selectedIndex = i;
+                                                         }
+                                                         box.addItem( fields[ i ].getName() );
+                                                     }
+                                                     if ( selectedIndex >= 0 ) {
+                                                         selectListBoxItem( box,
+                                                                            selectedIndex );
+                                                     }
+                                                     break;
+
+                                                 case BaseSingleFieldConstraint.TYPE_RET_VALUE:
+                                                     //Formulae can only consume fields that do not have enumerations
+                                                     for ( int i = 0; i < fields.length; i++ ) {
+                                                         final String fieldName = fields[ i ].getName();
+                                                         if ( !oracle.hasEnums( editingPattern.getFactType(),
+                                                                                fieldName ) ) {
+                                                             box.addItem( fieldName );
+                                                         }
+                                                     }
+                                                     break;
+
+                                                 case BaseSingleFieldConstraint.TYPE_PREDICATE:
+                                                     //Predicates don't need a field (this should never be reachable as the
+                                                     //field selector is disabled when the Calculation Type is Predicate)
+                                                     break;
+
+                                             }
+                                         } );
+        return box;
     }
 
     protected void showNewPatternDialog() {

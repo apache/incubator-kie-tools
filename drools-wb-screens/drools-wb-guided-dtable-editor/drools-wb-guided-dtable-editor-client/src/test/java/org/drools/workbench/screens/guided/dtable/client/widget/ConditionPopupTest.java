@@ -20,6 +20,9 @@ import java.util.HashMap;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -35,6 +38,8 @@ import org.kie.workbench.common.services.shared.preferences.ApplicationPreferenc
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -103,12 +108,64 @@ public class ConditionPopupTest {
         final ArgumentCaptor<Integer> indexArgumentCaptor = ArgumentCaptor.forClass( Integer.class );
 
         verify( popup,
-                times( 1 ) ).selectPattern( any( ListBox.class ),
-                                            indexArgumentCaptor.capture() );
+                times( 1 ) ).selectListBoxItem( any( ListBox.class ),
+                                                indexArgumentCaptor.capture() );
 
         assertEquals( 1,
                       indexArgumentCaptor.getValue().intValue() );
+    }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void fieldIsPreSelectedWhenBeingEdited() {
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        final Pattern52 pattern = new Pattern52();
+        final ConditionCol52 column = new ConditionCol52();
+
+        pattern.setFactType( "Pattern" );
+        pattern.setBoundName( "$p2" );
+        column.setFactField( "field2" );
+        column.setBinding( "$p2" );
+
+        final ModelField[] modelFields = new ModelField[]{
+                new ModelField( "field1",
+                                "java.lang.Integer",
+                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                ModelField.FIELD_ORIGIN.DECLARED,
+                                FieldAccessorsAndMutators.ACCESSOR,
+                                DataType.TYPE_NUMERIC_INTEGER ),
+                new ModelField( "field2",
+                                "java.lang.Integer",
+                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                ModelField.FIELD_ORIGIN.DECLARED,
+                                FieldAccessorsAndMutators.ACCESSOR,
+                                DataType.TYPE_NUMERIC_INTEGER )
+        };
+
+        doAnswer( ( InvocationOnMock invocation ) -> {
+            final Callback callback = (Callback) invocation.getArguments()[ 2 ];
+            callback.callback( modelFields );
+            return null;
+        } ).when( oracle ).getFieldCompletions( eq( "Pattern" ),
+                                                eq( FieldAccessorsAndMutators.ACCESSOR ),
+                                                any( Callback.class ) );
+
+        setup( model,
+               pattern,
+               column,
+               false,
+               false );
+
+        popup.loadFields();
+
+        final ArgumentCaptor<Integer> indexArgumentCaptor = ArgumentCaptor.forClass( Integer.class );
+
+        verify( popup,
+                times( 1 ) ).selectListBoxItem( any( ListBox.class ),
+                                                indexArgumentCaptor.capture() );
+
+        assertEquals( 1,
+                      indexArgumentCaptor.getValue().intValue() );
     }
 
 }
