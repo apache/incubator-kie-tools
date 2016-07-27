@@ -382,12 +382,26 @@ public class ActionSetFieldPopup extends FormStylePopup {
         }
     }
 
-    private void doFieldLabel() {
-        if ( this.editingCol.getFactField() != null ) {
-            this.fieldLabel.setText( this.editingCol.getFactField() );
+    void doFieldLabel() {
+        if ( !nil( this.editingCol.getFactField() ) ) {
+            setFieldLabelToFieldName( this.editingCol.getFactField() );
+        } else if ( !nil( this.editingCol.getBoundName() ) ) {
+            setFieldLabelPleaseSelectAField();
         } else {
-            this.fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFactPatternFirst() );
+            setFieldLabelPleaseChooseAFactPatternFirst();
         }
+    }
+
+    void setFieldLabelToFieldName( final String fieldName ) {
+        this.fieldLabel.setText( fieldName );
+    }
+
+    void setFieldLabelPleaseSelectAField() {
+        this.fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
+    }
+
+    void setFieldLabelPleaseChooseAFactPatternFirst() {
+        this.fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFactPatternFirst() );
     }
 
     private void doValueList() {
