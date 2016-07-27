@@ -18,10 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -29,21 +26,13 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
-import org.mockito.Mock;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
 import static org.junit.Assert.*;
@@ -58,27 +47,24 @@ public class DecisionTableAnalyzerFromFileTest {
     @GwtMock
     DateTimeFormat dateTimeFormat;
 
-    @Mock
-    AsyncPackageDataModelOracle oracle;
-
-    private AnalysisReport analysisReport;
+    private AnalyzerProvider analyzerProvider;
 
     @Before
     public void setUp() throws Exception {
-        Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
-        ApplicationPreferences.setUp( preferences );
+        analyzerProvider = new AnalyzerProvider();
     }
 
     @Test
     public void testFile1() throws Exception {
         String xml = loadResource( "Pricing loans.gdst" );
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
+
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertOnlyContains( analysisReport,
+        assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "MissingRangeTitle" );
     }
 
@@ -86,11 +72,11 @@ public class DecisionTableAnalyzerFromFileTest {
     public void testFile2() throws Exception {
         String xml = loadResource( "Large file.gdst" );
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertOnlyContains( analysisReport,
+        assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "SingleHitLost" );
     }
 
@@ -100,25 +86,25 @@ public class DecisionTableAnalyzerFromFileTest {
 
         GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertDoesNotContain( "ThisRowIsRedundantTo", analysisReport );
+        assertDoesNotContain( "ThisRowIsRedundantTo", analyzerProvider.getAnalysisReport() );
     }
 
     @Test
     public void testFile4() throws Exception {
 
-        when( oracle.getFieldType( "Player", "score" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
+        when( analyzerProvider.getOracle().getFieldType( "Player", "score" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
 
         String xml = loadResource( "Score Achievements.gdst" );
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertOnlyContains( analysisReport,
+        assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "MissingRangeTitle",
                             "SingleHitLost" );
     }
@@ -127,11 +113,11 @@ public class DecisionTableAnalyzerFromFileTest {
     public void testFile5() throws Exception {
         String xml = loadResource( "Base entitlement.gdst" );
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
     }
 
     @Test
@@ -143,13 +129,13 @@ public class DecisionTableAnalyzerFromFileTest {
         System.out.println( "Loading of model took.. " + ( now - baseline ) + " ms" );
         baseline = now;
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         now = System.currentTimeMillis();
         System.out.println( "Indexing took.. " + (now - baseline) + " ms" );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertOnlyContains( analysisReport,
+        assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "SingleHitLost" );
         now = System.currentTimeMillis();
         System.out.println( "Initial analysis took.. " + ( now - baseline ) + " ms" );
@@ -160,7 +146,7 @@ public class DecisionTableAnalyzerFromFileTest {
         updates.add( new Coordinate( 2,
                                      6 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
-        assertOnlyContains( analysisReport,
+        assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "SingleHitLost" );
         now = System.currentTimeMillis();
         System.out.println( "Partial analysis took.. " + ( now - baseline ) + " ms" );
@@ -171,11 +157,11 @@ public class DecisionTableAnalyzerFromFileTest {
         String xml = loadResource( "Large file.gdst" );
         final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertOnlyContains( analysisReport,
+        assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "SingleHitLost" );
         long baseline = System.currentTimeMillis();
 
@@ -187,49 +173,9 @@ public class DecisionTableAnalyzerFromFileTest {
             long now = System.currentTimeMillis();
             System.out.println( "Partial analysis took.. " + (now - baseline) + " ms" );
             baseline = now;
-            assertOnlyContains( analysisReport,
+            assertOnlyContains( analyzerProvider.getAnalysisReport(),
                                 "SingleHitLost" );
         }
-    }
-
-    private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
-                                          oracle,
-                                          table52,
-                                          mock( EventBus.class ) ) {
-            @Override
-            protected void sendReport( AnalysisReport report ) {
-                analysisReport = report;
-            }
-
-            @Override
-            protected CheckRunner getCheckRunner() {
-                return new CheckRunner() {
-                    @Override
-                    protected void doRun( final CancellableRepeatingCommand command ) {
-                        while ( command.execute() ) {
-                            //loop
-                        }
-                    }
-                };
-            }
-
-            @Override
-            protected ParameterizedCommand<Status> getOnStatusCommand() {
-                return null;
-            }
-
-            @Override
-            protected Command getOnCompletionCommand() {
-                return new Command() {
-                    @Override
-                    public void execute() {
-                        sendReport( makeAnalysisReport() );
-                    }
-                };
-            }
-
-        };
     }
 
 }

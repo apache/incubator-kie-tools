@@ -32,7 +32,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class ChecksRepeatingCommand
         implements CancellableRepeatingCommand {
 
-    private static final int BLOCK_SIZE = 10;
+    private static final int BLOCK_SIZE = 50;
 
     private boolean isCancelled       = false;
     private int     currentStartIndex = 0;
@@ -76,6 +76,7 @@ public class ChecksRepeatingCommand
             complete();
             return false;
         }
+
         return true;
     }
 

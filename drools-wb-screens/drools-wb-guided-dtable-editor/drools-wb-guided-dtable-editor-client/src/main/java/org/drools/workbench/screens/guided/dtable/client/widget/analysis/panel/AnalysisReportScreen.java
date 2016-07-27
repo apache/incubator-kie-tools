@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.Status;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -41,7 +42,7 @@ import org.uberfire.workbench.model.Position;
 @WorkbenchScreen(identifier = "org.drools.workbench.AnalysisReportScreen", preferredWidth = 360)
 public class AnalysisReportScreen {
 
-    private static final String IDENTIFIER = "org.drools.workbench.AnalysisReportScreen";
+    public static final String IDENTIFIER = "org.drools.workbench.AnalysisReportScreen";
 
     private AnalysisReportScreenView view;
     private PlaceManager placeManager;
@@ -69,6 +70,9 @@ public class AnalysisReportScreen {
     }
 
     public void showReport( final AnalysisReport report ) {
+
+        view.showStatusComplete();
+
         currentReport = report;
 
         if ( !report.getAnalysisData().isEmpty() ) {
@@ -82,7 +86,7 @@ public class AnalysisReportScreen {
         if ( dataProvider.getList().isEmpty() ) {
             view.clearIssue();
         } else {
-            view.show( dataProvider.getList().get( 0 ) );
+            view.showIssue( dataProvider.getList().get( 0 ) );
         }
     }
 
@@ -145,7 +149,12 @@ public class AnalysisReportScreen {
     }
 
     public void onSelect( final Issue issue ) {
-        view.show( issue );
+        view.showIssue( issue );
     }
 
+    public void showStatus( final Status status ) {
+        view.showStatusTitle( status.getStart(),
+                              status.getEnd(),
+                              status.getTotalCheckCount() );
+    }
 }

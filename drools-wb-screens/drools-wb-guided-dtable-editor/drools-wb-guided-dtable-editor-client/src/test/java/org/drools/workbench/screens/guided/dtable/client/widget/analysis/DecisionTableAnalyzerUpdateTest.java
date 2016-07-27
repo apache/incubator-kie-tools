@@ -18,25 +18,18 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
@@ -45,10 +38,6 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.Appen
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
-import org.mockito.Mock;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.ExtendedGuidedDecisionTableBuilder.*;
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
@@ -64,42 +53,31 @@ public class DecisionTableAnalyzerUpdateTest {
     @GwtMock
     DateTimeFormat dateTimeFormat;
 
-    @Mock
-    AsyncPackageDataModelOracle oracle;
-
-    private AnalysisReport analysisReport;
+    private AnalyzerProvider analyzerProvider;
 
     @Before
     public void setUp() throws Exception {
-        Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
-        ApplicationPreferences.setUp( preferences );
-
-        oracle = mock( AsyncPackageDataModelOracle.class );
-
-        when( oracle.getFieldType( "Person", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
-        when( oracle.getFieldType( "Person", "approved" ) ).thenReturn( DataType.TYPE_BOOLEAN );
-
+        analyzerProvider = new AnalyzerProvider();
     }
 
     @Test
     public void testRowValueChange() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        { 1, "description", 1, true },
-                        { 2, "description", 1, true } } )
-                .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final GuidedDecisionTable52 table52 = analyzerProvider.makeAnalyser()
+                                                              .withPersonAgeColumn( "==" )
+                                                              .withPersonApprovedActionSetField()
+                                                              .withData( DataBuilderProvider
+                                                                                 .row( 1, true )
+                                                                                 .row( 1, true )
+                                                                                 .end() )
+                                                              .buildTable();
+
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertContains( "RedundantRows", analysisReport, 1 );
-        assertContains( "RedundantRows", analysisReport, 2 );
+        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
 
         table52.getData().get( 1 ).get( 2 ).setNumericValue( 0 );
 
@@ -107,30 +85,29 @@ public class DecisionTableAnalyzerUpdateTest {
         updates.add( new Coordinate( 1, 2 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
-        assertColumnValuesAreEmpty( analysisReport );
+        assertColumnValuesAreEmpty( analyzerProvider.getAnalysisReport() );
     }
 
     @Test
     public void testRemoveRow() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        { 1, "description", 1, 1, true },
-                        { 2, "description", 0, 1, true },
-                        { 3, "description", 2, 2, true },
-                        { 4, "description", 1, 1, false } } )
-                .buildTable();
+        final GuidedDecisionTable52 table52 = analyzerProvider.makeAnalyser()
+                                                              .withPersonAgeColumn( "==" )
+                                                              .withPersonAgeColumn( "==" )
+                                                              .withPersonApprovedActionSetField()
+                                                              .withData( DataBuilderProvider
+                                                                                 .row( 1, 1, true )
+                                                                                 .row( 0, 1, true )
+                                                                                 .row( 2, 2, true )
+                                                                                 .row( 1, 1, false )
+                                                                                 .end() )
+                                                              .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertContains( "ConflictingRows", analysisReport, 4 );
-        assertContains( "ImpossibleMatch", analysisReport, 2 );
+        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 4 );
+        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
 
         // REMOVE 2
         table52.getData().remove( 1 );
@@ -139,8 +116,8 @@ public class DecisionTableAnalyzerUpdateTest {
         analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                 getMockColumnData( table52.getData().size() ) ) );
 
-        assertContains( "ConflictingRows", analysisReport, 3 );
-        assertDoesNotContain( "ImpossibleMatch", analysisReport, 3 );
+        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 3 );
+        assertDoesNotContain( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 3 );
 
         // BREAK LINE NUMBER 2 ( previously line number 3 )
         table52.getData().get( 1 ).get( 3 ).setNumericValue( 1 ); // Change the value of person.age ==
@@ -150,29 +127,28 @@ public class DecisionTableAnalyzerUpdateTest {
 
         analyzer.onValidate( new ValidateEvent( getUpdates( 1, 3 ) ) );
 
-        assertContains( "ImpossibleMatch", analysisReport, 2 );
+        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
 
     }
 
     @Test
     public void testRemoveRow2() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withConditionIntegerColumn( "a", "Person", "age", "<" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        { 1, "description", 1, 10, true },
-                        { 2, "description", 1, 10, true } } )
-                .buildTable();
+        final GuidedDecisionTable52 table52 = analyzerProvider.makeAnalyser()
+                                                              .withPersonAgeColumn( ">" )
+                                                              .withPersonAgeColumn( "<" )
+                                                              .withPersonApprovedActionSetField()
+                                                              .withData( DataBuilderProvider
+                                                                                 .row( 1, 10, true )
+                                                                                 .row( 1, 10, true )
+                                                                                 .end() )
+                                                              .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertContains( "RedundantRows", analysisReport, 1 );
-        assertContains( "RedundantRows", analysisReport, 2 );
+        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
 
         // REMOVE 2
         table52.getData().remove( 0 );
@@ -181,27 +157,27 @@ public class DecisionTableAnalyzerUpdateTest {
         analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                 getMockColumnData( table52.getData().size() ) ) );
 
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
     }
 
     @Test
     public void testRemoveColumn() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        { 1, "description", 1, true },
-                        { 2, "description", 2, true },
-                        { 3, "description", 3, true } } )
-                .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final GuidedDecisionTable52 table52 = analyzerProvider.makeAnalyser()
+                                                              .withPersonAgeColumn( "==" )
+                                                              .withPersonApprovedActionSetField()
+                                                              .withData( DataBuilderProvider
+                                                                                 .row( 1, true )
+                                                                                 .row( 2, true )
+                                                                                 .row( 3, true )
+                                                                                 .end() )
+                                                              .buildTable();
+
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertColumnValuesAreEmpty( analysisReport );
+        assertColumnValuesAreEmpty( analyzerProvider.getAnalysisReport() );
 
         // REMOVE COLUMN
         table52.getActionCols().remove( 0 );
@@ -211,28 +187,28 @@ public class DecisionTableAnalyzerUpdateTest {
 
         analyzer.onAfterDeletedColumn( new AfterColumnDeleted( 3, 1 ) );
 
-        assertContains( "RuleHasNoAction", analysisReport );
+        assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
 
     }
 
     @Test
     public void testAddColumn() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        { 1, "description", 1, true },
-                        { 2, "description", 2, true },
-                        { 3, "description", 3, true } } )
+        final GuidedDecisionTable52 table52 = analyzerProvider
+                .makeAnalyser()
+                .withPersonAgeColumn( "==" )
+                .withPersonApprovedActionSetField()
+                .withData( DataBuilderProvider
+                                   .row( 1, true )
+                                   .row( 2, true )
+                                   .row( 3, true )
+                                   .end() )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertColumnValuesAreEmpty( analysisReport );
+        assertColumnValuesAreEmpty( analyzerProvider.getAnalysisReport() );
 
         // ADD COLUMN
         table52.getActionCols().add( createActionSetField( "a", "approved", DataType.TYPE_BOOLEAN ) );
@@ -242,26 +218,25 @@ public class DecisionTableAnalyzerUpdateTest {
 
         analyzer.onAfterColumnInserted( new AfterColumnInserted( 4 ) );
 
-        assertContains( "MultipleValuesForOneAction", analysisReport, 3 );
+        assertContains( "MultipleValuesForOneAction", analyzerProvider.getAnalysisReport(), 3 );
 
     }
 
     @Test
     public void testInsertRow() throws Exception {
+        final GuidedDecisionTable52 table52 = analyzerProvider.makeAnalyser()
+                                                              .withPersonAgeColumn( "==" )
+                                                              .withPersonAgeColumn( "==" )
+                                                              .withPersonApprovedActionSetField()
+                                                              .withData( DataBuilderProvider
+                                                                                 .row( 1, 1, true )
+                                                                                 .row( 0, 1, true )
+                                                                                 .row( 2, 2, true )
+                                                                                 .end() )
+                                                              .buildTable();
 
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        { 1, "description", 1, 1, true },
-                        { 2, "description", 0, 1, true },
-                        { 3, "description", 2, 2, true } } )
-                .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
@@ -270,36 +245,35 @@ public class DecisionTableAnalyzerUpdateTest {
         analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                 getMockColumnData( table52.getData().size() ) ) );
 
-        assertContains( "ImpossibleMatch", analysisReport, 3 );
+        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 3 );
 
     }
 
     @Test
     public void testAppendRow() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        { 1, "description", 1, 1, true },
-                        { 2, "description", 0, 1, true },
-                        { 3, "description", 2, 2, true } } )
-                .buildTable();
+        final GuidedDecisionTable52 table52 = analyzerProvider.makeAnalyser()
+                                                              .withPersonAgeColumn( "==" )
+                                                              .withPersonAgeColumn( "==" )
+                                                              .withPersonApprovedActionSetField()
+                                                              .withData( DataBuilderProvider
+                                                                                 .row( 1, 1, true )
+                                                                                 .row( 0, 1, true )
+                                                                                 .row( 2, 2, true )
+                                                                                 .end() )
+                                                              .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertContains( "ImpossibleMatch", analysisReport, 2 );
+        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
 
         table52.getData().add( new ArrayList<DTCellValue52>() );
         analyzer.onAppendRow( new AppendRowEvent() );
         analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                 getMockColumnData( table52.getData().size() ) ) );
 
-        assertContains( "ImpossibleMatch", analysisReport, 2 );
+        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
     }
 
     private ArrayList<CellValue<? extends Comparable<?>>> getMockColumnData( int size ) {
@@ -317,48 +291,9 @@ public class DecisionTableAnalyzerUpdateTest {
         return updates;
     }
 
-    private void assertColumnValuesAreEmpty( AnalysisReport report ) {
-        assertTrue( analysisReport.toString(),
+    private void assertColumnValuesAreEmpty( final AnalysisReport report ) {
+        assertTrue( analyzerProvider.getAnalysisReport().toString(),
                     report.getAnalysisData().isEmpty() );
     }
 
-    private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
-                                          oracle,
-                                          table52,
-                                          mock( EventBus.class ) ) {
-            @Override
-            protected void sendReport( AnalysisReport report ) {
-                analysisReport = report;
-            }
-
-            @Override
-            protected CheckRunner getCheckRunner() {
-                return new CheckRunner() {
-                    @Override
-                    protected void doRun( final CancellableRepeatingCommand command ) {
-                        while ( command.execute() ) {
-                            //loop
-                        }
-                    }
-                };
-            }
-
-            @Override
-            protected ParameterizedCommand<Status> getOnStatusCommand() {
-                return null;
-            }
-
-            @Override
-            protected Command getOnCompletionCommand() {
-                return new Command() {
-                    @Override
-                    public void execute() {
-                        sendReport( makeAnalysisReport() );
-                    }
-                };
-            }
-
-        };
-    }
 }

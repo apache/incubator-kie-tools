@@ -166,8 +166,8 @@ public class RuleInspectorCache {
         return result;
     }
 
-    public void updateRuleInspectors( final List<Coordinate> coordinates ) {
-        updateManager.update( coordinates );
+    public boolean updateRuleInspectors( final List<Coordinate> coordinates ) {
+        return updateManager.update( coordinates );
     }
 
     private void add( final RuleInspector ruleInspector ) {

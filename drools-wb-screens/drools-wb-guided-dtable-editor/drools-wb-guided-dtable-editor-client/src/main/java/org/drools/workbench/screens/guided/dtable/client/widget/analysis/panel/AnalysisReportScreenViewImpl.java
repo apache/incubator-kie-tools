@@ -16,23 +16,28 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+@Dependent
+@Templated
 public class AnalysisReportScreenViewImpl
         extends Composite
         implements AnalysisReportScreenView,
@@ -40,34 +45,29 @@ public class AnalysisReportScreenViewImpl
 
     private AnalysisReportScreen presenter;
 
-    interface Binder
-            extends
-            UiBinder<Widget, AnalysisReportScreenViewImpl> {
 
+    @DataField( "progressPanel" )
+    Element progressPanel = DOM.createDiv();
+
+    @DataField( "issuesList" )
+    CellList<Issue> issuesList = new CellList<>( new AnalysisLineCell() );
+
+    @DataField( "issueDetailsView" )
+    Widget issueDetailsView;
+
+    private IssuePresenter issueDetails;
+
+    public AnalysisReportScreenViewImpl() {
     }
-
-    private static Binder uiBinder = GWT.create( Binder.class );
-
-    @UiField(provided = true)
-    CellList<Issue> issuesList;
-
-    @UiField(provided = true)
-    IssuePresenter issueDetails;
-
-    @UiField
-    ScrollPanel issuesListContainer;
 
     @Inject
-    public AnalysisReportScreenViewImpl( final IssuePresenter issueDetails ) {
-
-        makeIssuesList();
-        this.issueDetails = issueDetails;
-
-        initWidget( uiBinder.createAndBindUi( this ) );
+    public AnalysisReportScreenViewImpl( final IssuePresenter issuePresenter ) {
+        this.issueDetails = issuePresenter;
+        issueDetailsView = issuePresenter.asWidget();
     }
 
-    private void makeIssuesList() {
-        issuesList = new CellList<Issue>( new AnalysisLineCell() );
+    @PostConstruct
+    private void init() {
         issuesList.setKeyboardPagingPolicy( HasKeyboardPagingPolicy.KeyboardPagingPolicy.INCREASE_RANGE );
         issuesList.setKeyboardSelectionPolicy( HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION );
         issuesList.setSelectionModel( getSelectionModel() );
@@ -97,7 +97,7 @@ public class AnalysisReportScreenViewImpl
     }
 
     @Override
-    public void show( Issue issue ) {
+    public void showIssue( Issue issue ) {
         issueDetails.show( issue );
     }
 
@@ -107,11 +107,27 @@ public class AnalysisReportScreenViewImpl
     }
 
     @Override
+    public void showStatusComplete() {
+        progressPanel.getStyle().setColor( "WHITE" );
+        progressPanel.getStyle().setBackgroundColor( "GREEN" );
+        progressPanel.setInnerHTML( AnalysisConstants.INSTANCE.AnalysisComplete() );
+    }
+
+    @Override
+    public void showStatusTitle( final int start,
+                                 final int end,
+                                 final int totalCheckCount ) {
+
+        progressPanel.getStyle().setColor( "BLACK" );
+        progressPanel.getStyle().setBackgroundColor( "#ffc" );
+        progressPanel.setInnerHTML( AnalysisConstants.INSTANCE.AnalysingChecks0To1Of2( start,
+                                                                                       end,
+                                                                                       totalCheckCount ) );
+    }
+
+    @Override
     public void onResize() {
         setHeight( getParent().getOffsetHeight() + "px" );
         setWidth( ( getParent().getOffsetWidth() - 15 ) + "px" );
-
-//        issuesListContainer.setWidth( (getParent().getOffsetWidth() - 1) + "px" );
     }
-
 }

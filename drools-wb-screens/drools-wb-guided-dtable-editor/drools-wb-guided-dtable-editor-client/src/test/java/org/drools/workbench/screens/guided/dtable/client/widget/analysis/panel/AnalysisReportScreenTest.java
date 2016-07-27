@@ -21,7 +21,7 @@ import java.util.Set;
 
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.Status;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
@@ -34,7 +34,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.Util.getMockRuleInspector;
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.Util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -77,7 +77,7 @@ public class AnalysisReportScreenTest {
 
         verify( placeManager, times( 2 ) ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
 
-        verify( view ).show( issue1 );
+        verify( view ).showIssue( issue1 );
 
         assertEquals( 2, dataProvider.getList().size() );
         assertFalse( dataProvider.getList().contains( issue1 ) );
@@ -91,7 +91,7 @@ public class AnalysisReportScreenTest {
 
         assertEquals( 0, dataProvider.getList().size() );
 
-        verify( view, never() ).show( any( Issue.class ) );
+        verify( view, never() ).showIssue( any( Issue.class ) );
         verify( placeManager, never() ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
         verify( placeManager ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
     }
@@ -117,7 +117,7 @@ public class AnalysisReportScreenTest {
 
         screen.onSelect( issue2 );
 
-        verify( view ).show( issue2 );
+        verify( view ).showIssue( issue2 );
     }
 
     @Test
@@ -128,13 +128,21 @@ public class AnalysisReportScreenTest {
         PlaceRequest someOtherPlace = mock( PlaceRequest.class );
         screen.showReport( getAnalysis( thisPlace, issue1 ) );
 
-        verify( view ).show( issue1 );
+        verify( view ).showStatusComplete();
+        verify( view ).showIssue( issue1 );
 
         screen.onDTableClose( new ClosePlaceEvent( someOtherPlace ) );
         verify( placeManager, never() ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
 
         screen.onDTableClose( new ClosePlaceEvent( thisPlace ) );
         verify( placeManager ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
+    }
+
+    @Test
+    public void testShowStatus() throws Exception {
+        screen.showStatus( new Status( 1, 2, 3 ) );
+
+        verify( view ).showStatusTitle( 1, 2, 3 );
     }
 
     @Test
@@ -148,7 +156,7 @@ public class AnalysisReportScreenTest {
     public void testNoIssuesShowNothing() throws Exception {
         screen.showReport( getAnalysis() );
 
-        verify( view, never() ).show( any( Issue.class ) );
+        verify( view, never() ).showIssue( any( Issue.class ) );
         verify( view ).clearIssue();
     }
 

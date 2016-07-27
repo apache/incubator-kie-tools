@@ -26,7 +26,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.A
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Condition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Fields;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldsBase;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Index;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Rule;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
@@ -38,7 +37,7 @@ public class UpdateManager {
     private static final int ROW_NUMBER_COLUMN  = 0;
     private static final int DESCRIPTION_COLUMN = 1;
 
-    private       Index                 index;
+    private final Index                 index;
     private final GuidedDecisionTable52 model;
     private final UpdateHandler         updateHandler;
 
@@ -50,7 +49,7 @@ public class UpdateManager {
         this.updateHandler = updateHandler;
     }
 
-    public void update( final List<Coordinate> coordinates ) {
+    public boolean update( final List<Coordinate> coordinates ) {
 
         final List<Coordinate> updatedCoordinates = new ArrayList<>();
 
@@ -65,17 +64,17 @@ public class UpdateManager {
                 updateHandler.updateCoordinates( updatedCoordinates );
             }
         }
+
+        return !updatedCoordinates.isEmpty();
     }
 
     private class CellUpdateManager {
 
-        private final Coordinate           coordinate;
         private final Column               column;
         private final Fields.FieldSelector select;
         private final Values               values;
 
         public CellUpdateManager( final Coordinate coordinate ) {
-            this.coordinate = coordinate;
 
             column = index.columns
                     .where( Column.index().is( coordinate.getCol() ) )

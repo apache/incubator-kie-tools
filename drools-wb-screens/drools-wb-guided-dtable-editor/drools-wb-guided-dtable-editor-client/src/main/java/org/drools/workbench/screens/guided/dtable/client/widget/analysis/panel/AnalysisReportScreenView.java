@@ -19,15 +19,23 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
 
 public interface AnalysisReportScreenView
         extends IsWidget {
 
-    void setUpDataProvider( ListDataProvider<Issue> dataProvider );
+    void setUpDataProvider( final ListDataProvider<Issue> dataProvider );
 
-    void setPresenter( AnalysisReportScreen presenter );
+    void setPresenter( final AnalysisReportScreen presenter );
 
-    void show( Issue issue );
+    void showIssue( final Issue issue );
 
     void clearIssue();
+
+    void showStatusComplete();
+
+    void showStatusTitle( final int start,
+                          final int end,
+                          final int totalCheckCount );
+
 }

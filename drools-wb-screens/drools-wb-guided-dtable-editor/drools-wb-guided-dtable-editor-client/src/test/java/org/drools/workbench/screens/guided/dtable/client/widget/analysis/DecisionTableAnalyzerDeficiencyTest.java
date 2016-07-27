@@ -18,8 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
@@ -28,18 +26,12 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerDeficiencyTest {
@@ -49,23 +41,11 @@ public class DecisionTableAnalyzerDeficiencyTest {
     @GwtMock
     DateTimeFormat dateTimeFormat;
 
-    @Mock
-    AsyncPackageDataModelOracle oracle;
-    private AnalysisReport analysisReport;
+    private AnalyzerProvider analyzerProvider;
 
     @Before
     public void setUp() throws Exception {
-
-        when( oracle.getFieldType( "Person", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
-        when( oracle.getFieldType( "Person", "approved" ) ).thenReturn( DataType.TYPE_BOOLEAN );
-        when( oracle.getFieldType( "Person", "salary" ) ).thenReturn( DataType.TYPE_STRING );
-        when( oracle.getFieldType( "Person", "description" ) ).thenReturn( DataType.TYPE_STRING );
-        when( oracle.getFieldType( "Person", "name" ) ).thenReturn( DataType.TYPE_STRING );
-        when( oracle.getFieldType( "Person", "lastName" ) ).thenReturn( DataType.TYPE_STRING );
-
-        Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
-        ApplicationPreferences.setUp( preferences );
+        analyzerProvider = new AnalyzerProvider();
     }
 
     @Test
@@ -85,10 +65,10 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertDoesNotContain( "DeficientRow", analysisReport );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport() );
     }
 
     @Test
@@ -108,13 +88,13 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
-        assertContains( "DeficientRow", analysisReport, 2 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
     }
 
@@ -136,14 +116,14 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 2 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
         table52.getData().get( 1 ).get( 3 ).setStringValue( "Toni" );
 
@@ -151,10 +131,10 @@ public class DecisionTableAnalyzerDeficiencyTest {
         updates.add( new Coordinate( 1, 3 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
-        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
-        assertContains( "DeficientRow", analysisReport, 2 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
     }
 
@@ -176,14 +156,14 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
-        assertContains( "DeficientRow", analysisReport, 2 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
         table52.getData().get( 2 ).get( 3 ).setStringValue( "Toni" );
 
@@ -191,10 +171,10 @@ public class DecisionTableAnalyzerDeficiencyTest {
         updates.add( new Coordinate( 2, 3 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
-        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 2 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
     }
 
@@ -216,14 +196,14 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 2 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
         table52.getData().get( 2 ).get( 3 ).setStringValue( "" );
 
@@ -231,22 +211,11 @@ public class DecisionTableAnalyzerDeficiencyTest {
         updates.add( new Coordinate( 2, 3 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
-        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
-        assertContains( "DeficientRow", analysisReport, 2 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
-        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
+        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
-    }
-
-    private DecisionTableAnalyzer getDecisionTableAnalyzer( final GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzerMock( oracle,
-                                              table52,
-                                              new Callback<AnalysisReport>() {
-                                                  @Override
-                                                  public void callback( final AnalysisReport result ) {
-                                                      analysisReport = result;
-                                                  }
-                                              } );
     }
 
 }

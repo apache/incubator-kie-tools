@@ -33,9 +33,14 @@ public class AnalyzerProvider {
 
     private final AsyncPackageDataModelOracle oracle;
     private       AnalysisReport              analysisReport;
+    private       Status                      status;
 
     public AnalyzerProvider() {
-        this.oracle = mock( AsyncPackageDataModelOracle.class );
+        this( mock( AsyncPackageDataModelOracle.class ) );
+    }
+
+    public AnalyzerProvider( final AsyncPackageDataModelOracle oracle ) {
+        this.oracle = oracle;
 
         when( oracle.getFieldType( "Person", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
         when( oracle.getFieldType( "Person", "name" ) ).thenReturn( DataType.TYPE_STRING );
@@ -50,8 +55,16 @@ public class AnalyzerProvider {
         ApplicationPreferences.setUp( preferences );
     }
 
+    public AsyncPackageDataModelOracle getOracle() {
+        return oracle;
+    }
+
     public AnalysisReport getAnalysisReport() {
         return analysisReport;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 
     public DecisionTableAnalyzer getAnalyser( final GuidedDecisionTable52 table52 ) {
@@ -62,6 +75,12 @@ public class AnalyzerProvider {
                                                   public void callback( final AnalysisReport result ) {
                                                       analysisReport = result;
                                                   }
+                                              },
+                                              new Callback<Status>() {
+                                                  @Override
+                                                  public void callback( final Status result ) {
+                                                      status = result;
+                                                  }
                                               } );
     }
 
@@ -71,5 +90,9 @@ public class AnalyzerProvider {
 
     public DecisionTableAnalyzer makeAnalyser( final GuidedDecisionTable52 table52 ) {
         return getAnalyser( table52 );
+    }
+
+    public void clearAnalysisReport() {
+        analysisReport = null;
     }
 }

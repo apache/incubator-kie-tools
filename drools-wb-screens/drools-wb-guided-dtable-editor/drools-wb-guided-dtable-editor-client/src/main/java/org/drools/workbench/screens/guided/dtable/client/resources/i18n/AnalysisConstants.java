@@ -124,4 +124,7 @@ public interface AnalysisConstants
 
     String SingleHitP1( int row1,
                         int row2 );
+
+    String AnalysisComplete();
+
 }

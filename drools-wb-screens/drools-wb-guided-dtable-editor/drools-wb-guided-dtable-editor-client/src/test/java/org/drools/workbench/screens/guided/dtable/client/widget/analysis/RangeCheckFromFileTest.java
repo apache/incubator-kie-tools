@@ -17,28 +17,16 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.mockito.Mock;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
 import static org.mockito.Mockito.*;
@@ -52,73 +40,29 @@ public class RangeCheckFromFileTest {
     @GwtMock
     DateTimeFormat dateTimeFormat;
 
-    @Mock
-    AsyncPackageDataModelOracle oracle;
-
-    private AnalysisReport analysisReport;
+    private AnalyzerProvider analyzerProvider;
 
     @Before
     public void setUp() throws Exception {
-        Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
-        ApplicationPreferences.setUp( preferences );
+        analyzerProvider = new AnalyzerProvider();
 
 
-        when( oracle.getFieldType( "Employee", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
-        when( oracle.getFieldType( "Employee", "yearsService" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
-        when( oracle.getFieldType( "Employee", "vacationEntitlement" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
+        when( analyzerProvider.getOracle().getFieldType( "Employee", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
+        when( analyzerProvider.getOracle().getFieldType( "Employee", "yearsService" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
+        when( analyzerProvider.getOracle().getFieldType( "Employee", "vacationEntitlement" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
     }
 
     @Test
     public void testFileExtraDays() throws Exception {
         String xml = loadResource( "Extra 5 days.gdst" );
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertOnlyContains( analysisReport,
+        assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "MissingRangeTitle" );
     }
 
-    private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
-                                          oracle,
-                                          table52,
-                                          mock( EventBus.class ) ) {
-            @Override
-            protected void sendReport( AnalysisReport report ) {
-                analysisReport = report;
-            }
-
-            @Override
-            protected CheckRunner getCheckRunner() {
-                return new CheckRunner() {
-                    @Override
-                    protected void doRun( final CancellableRepeatingCommand command ) {
-                        while ( command.execute() ) {
-                            //loop
-                        }
-                    }
-                };
-            }
-
-            @Override
-            protected ParameterizedCommand<Status> getOnStatusCommand() {
-                return null;
-            }
-
-            @Override
-            protected Command getOnCompletionCommand() {
-                return new Command() {
-                    @Override
-                    public void execute() {
-                        sendReport( makeAnalysisReport() );
-                    }
-                };
-            }
-
-        };
-    }
 
 }

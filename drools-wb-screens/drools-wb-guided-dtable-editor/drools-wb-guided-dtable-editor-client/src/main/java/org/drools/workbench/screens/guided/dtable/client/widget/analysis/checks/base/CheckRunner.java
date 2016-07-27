@@ -49,7 +49,7 @@ public class CheckRunner
     private final CheckManager                checkManager;
     private       CancellableRepeatingCommand activeAnalysis;
 
-
+    
     public CheckRunner() {
         checkManager = getCheckManager(this);
     }

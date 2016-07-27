@@ -49,22 +49,11 @@ public class DecisionTableAnalyzerConflictResolverLimitedDTableTest {
     @GwtMock
     DateTimeFormat dateTimeFormat;
 
-    @Mock
-    AsyncPackageDataModelOracle oracle;
-    private AnalysisReport analysisReport;
+    private AnalyzerProvider analyzerProvider;
 
     @Before
     public void setUp() throws Exception {
-        Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
-        ApplicationPreferences.setUp( preferences );
-
-        when( oracle.getFieldType( "Person", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
-        when( oracle.getFieldType( "Person", "name" ) ).thenReturn( DataType.TYPE_STRING );
-        when( oracle.getFieldType( "Person", "lastName" ) ).thenReturn( DataType.TYPE_STRING );
-        when( oracle.getFieldType( "Account", "deposit" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
-        when( oracle.getFieldType( "Person", "approved" ) ).thenReturn( DataType.TYPE_BOOLEAN );
-
+        analyzerProvider = new AnalyzerProvider();
     }
 
     @Test
@@ -89,18 +78,13 @@ public class DecisionTableAnalyzerConflictResolverLimitedDTableTest {
                         { 2, "description", true, false, true } } )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = getAnalyser( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertContains( "ConflictingRows", analysisReport, 2 );
-        assertContains( "ConflictingRows", analysisReport, 1 );
+        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 2 );
+        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 1 );
 
     }
 
-    private DecisionTableAnalyzer getAnalyser( final GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzerMock( oracle,
-                                              table52,
-                                              result -> analysisReport = result );
-    }
 }

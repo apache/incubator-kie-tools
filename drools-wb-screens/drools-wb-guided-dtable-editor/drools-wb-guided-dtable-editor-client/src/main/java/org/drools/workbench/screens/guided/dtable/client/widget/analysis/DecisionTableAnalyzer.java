@@ -20,9 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
@@ -99,9 +97,7 @@ public class DecisionTableAnalyzer
 
             @Override
             public void execute( final Status status ) {
-                Window.setTitle( AnalysisConstants.INSTANCE.AnalysingChecks0To1Of2( status.getStart(),
-                                                                                    status.getEnd(),
-                                                                                    status.getTotalCheckCount() ) );
+                sendStatus( status );
             }
         };
     }
@@ -112,7 +108,6 @@ public class DecisionTableAnalyzer
 
             @Override
             public void execute() {
-                Window.setTitle( "" );
                 sendReport( makeAnalysisReport() );
             }
         };
@@ -146,19 +141,28 @@ public class DecisionTableAnalyzer
         return report;
     }
 
-    protected void sendReport( final AnalysisReport report ) {
-        IOC.getBeanManager().lookupBean( AnalysisReportScreen.class ).getInstance().showReport( report );
+    private void sendReport( final AnalysisReport report ) {
+        getAnalysisReportScreen().showReport( report );
+    }
+
+    private void sendStatus( final Status status ) {
+        getAnalysisReportScreen().showStatus( status );
+    }
+
+    protected AnalysisReportScreen getAnalysisReportScreen() {
+        return IOC.getBeanManager().lookupBean( AnalysisReportScreen.class ).getInstance();
     }
 
     @Override
     public void onValidate( final ValidateEvent event ) {
         if ( event.getUpdates().isEmpty() || checkRunner.isEmpty() ) {
             resetChecks();
+            analyze();
         } else {
-            cache.updateRuleInspectors( event.getUpdates() );
+            if ( cache.updateRuleInspectors( event.getUpdates() ) ) {
+                analyze();
+            }
         }
-
-        analyze();
     }
 
     @Override

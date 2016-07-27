@@ -16,33 +16,30 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-/**
- * Status information to (optionally) show to Users
- */
 public class Status {
 
-    private int startRowIndex;
-    private int endRowIndex;
-    private int totalRowCount;
+    private int startCheckIndex;
+    private int endCheckIndex;
+    private int totalCheckCount;
 
-    public Status( final int startRowIndex,
-                   final int endRowIndex,
-                   final int totalRowCount ) {
-        this.startRowIndex = startRowIndex;
-        this.endRowIndex = endRowIndex;
-        this.totalRowCount = totalRowCount;
+    public Status( final int startCheckIndex,
+                   final int endCheckIndex,
+                   final int totalCheckCount ) {
+        this.startCheckIndex = startCheckIndex;
+        this.endCheckIndex = endCheckIndex;
+        this.totalCheckCount = totalCheckCount;
     }
 
     public int getStart() {
-        return startRowIndex;
+        return startCheckIndex;
     }
 
     public int getEnd() {
-        return endRowIndex;
+        return endCheckIndex;
     }
 
     public int getTotalCheckCount() {
-        return totalRowCount;
+        return totalCheckCount;
     }
 
 }

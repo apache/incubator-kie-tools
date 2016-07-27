@@ -18,10 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -30,21 +27,12 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.mockito.Mock;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerTest {
@@ -54,30 +42,20 @@ public class DecisionTableAnalyzerTest {
     @GwtMock
     DateTimeFormat dateTimeFormat;
 
-    @Mock
-    AsyncPackageDataModelOracle oracle;
-
-    private AnalysisReport analysisReport;
+    private AnalyzerProvider analyzerProvider;
 
     @Before
     public void setUp() throws Exception {
-
-        when( oracle.getFieldType( "Person", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
-        when( oracle.getFieldType( "Person", "approved" ) ).thenReturn( DataType.TYPE_BOOLEAN );
-        when( oracle.getFieldType( "Person", "name" ) ).thenReturn( DataType.TYPE_STRING );
-
-        Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
-        ApplicationPreferences.setUp( preferences );
+        analyzerProvider = new AnalyzerProvider();
     }
 
     @Test
     public void testEmpty() throws Exception {
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( new GuidedDecisionTable52() );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( new GuidedDecisionTable52() );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
 
     }
 
@@ -90,11 +68,11 @@ public class DecisionTableAnalyzerTest {
                 .withData( new Object[][]{ { 1, "description", "" } } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
 
     }
 
@@ -107,10 +85,10 @@ public class DecisionTableAnalyzerTest {
                 .withData( new Object[][]{ { 1, "description", 0 } } )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertContains( "RuleHasNoAction", analysisReport );
+        assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
 
     }
 
@@ -129,11 +107,11 @@ public class DecisionTableAnalyzerTest {
                 } )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertContains( "RuleHasNoAction", analysisReport, 1 );
-        assertDoesNotContain( "RuleHasNoAction", analysisReport, 2 );
+        assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport(), 1 );
+        assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport(), 2 );
 
     }
 
@@ -146,10 +124,10 @@ public class DecisionTableAnalyzerTest {
                 .withData( new Object[][]{{1, "description", true}} )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport );
+        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport() );
 
     }
 
@@ -167,11 +145,11 @@ public class DecisionTableAnalyzerTest {
                 } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport, 1 );
-        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport, 2 );
+        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 1 );
+        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 2 );
 
     }
 
@@ -186,11 +164,11 @@ public class DecisionTableAnalyzerTest {
                 .withData( new Object[][]{ { 1, "description", 100, true, false } } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onFocus();
 
-        assertContains( "MultipleValuesForOneAction", analysisReport );
+        assertContains( "MultipleValuesForOneAction", analyzerProvider.getAnalysisReport() );
 
     }
 
@@ -214,25 +192,36 @@ public class DecisionTableAnalyzerTest {
                         { 2, "description", true, false, true } } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertContains( "RedundantRows", analysisReport, 1 );
-        assertContains( "RedundantRows", analysisReport, 2 );
+        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
 
+        assertNotNull( analyzerProvider.getStatus() );
+    }
+
+    @Test
+    public void testUpdateStatus() throws Exception {
+        final DecisionTableAnalyzer decisionTableAnalyzer = analyzerProvider.makeAnalyser().buildAnalyzer();
+
+        final Status parameter = new Status( 1, 2, 3 );
+        decisionTableAnalyzer.getOnStatusCommand().execute( parameter );
+
+        assertEquals( parameter, analyzerProvider.getStatus() );
     }
 
     @Test
     public void testOnFocus() throws Exception {
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( new GuidedDecisionTable52() );
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( new GuidedDecisionTable52() );
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        analysisReport = null;
+        analyzerProvider.clearAnalysisReport();
 
         analyzer.onFocus();
 
-        assertNotNull( analysisReport );
+        assertNotNull( analyzerProvider.getAnalysisReport() );
     }
 
     // GUVNOR-2546: Verification & Validation: BRL fragments are ignored
@@ -246,10 +235,10 @@ public class DecisionTableAnalyzerTest {
                 .withData( new Object[][]{{1, "description", 0, true}} )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertDoesNotContain( "RuleHasNoAction", analysisReport );
+        assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
     }
 
     // GUVNOR-2546: Verification & Validation: BRL fragments are ignored
@@ -266,51 +255,11 @@ public class DecisionTableAnalyzerTest {
                 } )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport, 1 );
-        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport, 2 );
+        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 1 );
+        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 2 );
 
-    }
-
-    private DecisionTableAnalyzer getDecisionTableAnalyzer( final GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
-                                          oracle,
-                                          table52,
-                                          mock( EventBus.class ) ) {
-            @Override
-            protected void sendReport( AnalysisReport report ) {
-                analysisReport = report;
-            }
-
-            @Override
-            protected CheckRunner getCheckRunner() {
-                return new CheckRunner() {
-                    @Override
-                    protected void doRun( final CancellableRepeatingCommand command ) {
-                        while ( command.execute() ) {
-                            //loop
-                        }
-                    }
-                };
-            }
-
-            @Override
-            protected ParameterizedCommand<Status> getOnStatusCommand() {
-                return null;
-            }
-
-            @Override
-            protected Command getOnCompletionCommand() {
-                return new Command() {
-                    @Override
-                    public void execute() {
-                        sendReport( makeAnalysisReport() );
-                    }
-                };
-            }
-
-        };
     }
 }

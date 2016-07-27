@@ -26,22 +26,21 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
-import org.gwtbootstrap3.client.ui.constants.IconType;
 
 public class AnalysisLineCell
         extends AbstractCell<Issue> {
 
     interface CellTemplate
-            extends
-            SafeHtmlTemplates {
+            extends SafeHtmlTemplates {
 
-        @Template("<span>" +
-                "<i class=\"fa {0}\" ></i>" +
-                "<span> - {1} - {2}</span>" +
-                "</span>")
-        SafeHtml text( String cssStyleName,
-                       SafeHtml lineNumbers,
-                       String message );
+        @Template("<div class=\"{0}\" style=\"margin-bottom: 1px; width:100%; height:100%; \">" +
+                "<span class=\"{1}\"></span>" +
+                "<span> - {2} - {3}</span>" +
+                "</div>")
+        SafeHtml text( final String cssStyleName,
+                       final String icon,
+                       final SafeHtml lineNumbers,
+                       final String message );
     }
 
     private static final CellTemplate TEMPLATE = GWT.create( CellTemplate.class );
@@ -50,7 +49,8 @@ public class AnalysisLineCell
     public void render( final Context context,
                         final Issue issue,
                         final SafeHtmlBuilder safeHtmlBuilder ) {
-        safeHtmlBuilder.append( TEMPLATE.text( getImage( issue.getSeverity() ),
+        safeHtmlBuilder.append( TEMPLATE.text( getStyleName( issue.getSeverity() ),
+                                               getIcon( issue.getSeverity() ),
                                                getLineNumbers( issue.getRowNumbers() ),
                                                issue.getTitle() ) );
     }
@@ -73,14 +73,25 @@ public class AnalysisLineCell
         };
     }
 
-    private String getImage( final Severity severity ) {
+    private String getStyleName( final Severity severity ) {
         switch ( severity ) {
             case ERROR:
-                return IconType.REMOVE.getCssName();
+                return "alert-danger";
             case WARNING:
-                return IconType.QUESTION.getCssName();
+                return "alert-warning";
             default:
-                return IconType.INFO.getCssName();
+                return "alert-info";
+        }
+    }
+
+    private String getIcon( final Severity severity ) {
+        switch ( severity ) {
+            case ERROR:
+                return "pficon pficon-error-circle-o btn-xs";
+            case WARNING:
+                return "pficon pficon-warning-triangle-o btn-xs";
+            default:
+                return "pficon pficon-info btn-xs";
         }
     }
 

@@ -33,6 +33,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuB
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
@@ -63,6 +64,7 @@ import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultE
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
