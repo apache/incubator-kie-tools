@@ -724,10 +724,19 @@ public class ConditionPopup extends FormStylePopup {
         }
     }
 
-    private ListBox loadPatterns() {
+    ListBox loadPatterns() {
         Set<String> vars = new HashSet<String>();
         ListBox patterns = new ListBox();
-        for ( Pattern52 p : model.getPatterns() ) {
+
+        int selectedIndex = -1;
+        final List<Pattern52> availablePatterns = model.getPatterns();
+        final String editingPatternBinding = editingPattern == null ? null : editingPattern.getBoundName();
+
+        for ( int i = 0; i < availablePatterns.size(); i++ ) {
+            final Pattern52 p = availablePatterns.get( i );
+            if ( p.getBoundName().equals( editingPatternBinding ) ) {
+                selectedIndex = i;
+            }
             if ( !vars.contains( p.getBoundName() ) ) {
                 patterns.addItem( ( p.isNegated() ? GuidedDecisionTableConstants.INSTANCE.negatedPattern() + " " : "" )
                                           + p.getFactType()
@@ -739,8 +748,17 @@ public class ConditionPopup extends FormStylePopup {
             }
         }
 
-        return patterns;
+        if ( selectedIndex >= 0 ) {
+            selectPattern( patterns,
+                           selectedIndex );
+        }
 
+        return patterns;
+    }
+
+    void selectPattern( final ListBox listBox,
+                        final int index ) {
+        listBox.setSelectedIndex( index );
     }
 
     private boolean nil( String s ) {
