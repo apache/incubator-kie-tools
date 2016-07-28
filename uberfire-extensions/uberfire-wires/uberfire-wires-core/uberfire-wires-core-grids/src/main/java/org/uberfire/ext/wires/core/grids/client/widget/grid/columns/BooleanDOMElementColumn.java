@@ -18,8 +18,13 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.columns;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.HasMultipleDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl.CheckBoxDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.multiple.impl.BooleanColumnDOMElementRenderer;
@@ -60,6 +65,13 @@ public class BooleanDOMElementColumn extends BaseGridColumn<Boolean> implements 
     @Override
     public void freeUnusedResources() {
         factory.freeUnusedResources();
+    }
+
+    @Override
+    public void edit( final GridCell<Boolean> cell,
+                      final GridBodyCellRenderContext context,
+                      final Callback<GridCellValue<Boolean>> callback ) {
+        callback.callback( new BaseGridCellValue<>( !cell.getValue().getValue() ) );
     }
 
 }
