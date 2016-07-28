@@ -209,6 +209,7 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
         } );
 
         column.add( thumbnail );
+        library.add( column );
 
         mediaRef.put( media.getPath(), column );
     }

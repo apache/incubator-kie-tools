@@ -16,15 +16,15 @@
 
 package org.uberfire.ext.plugin.client.config;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.ext.plugin.service.PluginServices;
 
-@ApplicationScoped
+@EntryPoint
 public class PluginConfigService {
 
     @Inject
