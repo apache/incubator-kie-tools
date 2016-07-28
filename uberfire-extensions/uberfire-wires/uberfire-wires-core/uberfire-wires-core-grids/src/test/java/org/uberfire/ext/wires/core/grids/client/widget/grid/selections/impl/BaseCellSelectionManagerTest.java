@@ -463,6 +463,33 @@ public class BaseCellSelectionManagerTest {
     }
 
     @Test
+    public void adjustSelectionRightDownWithShiftKey() {
+        cellSelectionManager.selectCell( 0,
+                                         0,
+                                         false,
+                                         false );
+        cellSelectionManager.adjustSelection( SelectionExtension.RIGHT,
+                                              true );
+        cellSelectionManager.adjustSelection( SelectionExtension.DOWN,
+                                              true );
+
+        final List<GridData.SelectedCell> selectedCells = gridWidgetData.getSelectedCells();
+        assertEquals( 4,
+                      selectedCells.size() );
+        assertTrue( selectedCells.contains( new GridData.SelectedCell( 0,
+                                                                       0 ) ) );
+        assertTrue( selectedCells.contains( new GridData.SelectedCell( 0,
+                                                                       1 ) ) );
+        assertTrue( selectedCells.contains( new GridData.SelectedCell( 1,
+                                                                       0 ) ) );
+        assertTrue( selectedCells.contains( new GridData.SelectedCell( 1,
+                                                                       1 ) ) );
+        assertEquals( new GridData.SelectedCell( 0,
+                                                 0 ),
+                      gridWidgetData.getSelectedCellsOrigin() );
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void startEditingCellPointCoordinateOutsideGridBounds() {
         cellSelectionManager.startEditingCell( new Point2D( -10,

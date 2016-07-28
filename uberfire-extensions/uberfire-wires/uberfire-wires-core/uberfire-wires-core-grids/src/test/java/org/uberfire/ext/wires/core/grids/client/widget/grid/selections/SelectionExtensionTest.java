@@ -28,10 +28,10 @@ public class SelectionExtensionTest {
     @Parameterized.Parameters
     public static Object[][] data() {
         return new Object[][]{
-                { SelectionExtension.LEFT, -1, 0, 9, 4, 5, 10 },
-                { SelectionExtension.RIGHT, 1, 0, 11, 6, 5, 10 },
-                { SelectionExtension.UP, 0, -1, 5, 10, 9, 4 },
-                { SelectionExtension.DOWN, 0, 1, 5, 10, 11, 6 }
+                { SelectionExtension.LEFT, -1, 0, 9, 4, 10, 5 },
+                { SelectionExtension.RIGHT, 1, 0, 11, 6, 10, 5 },
+                { SelectionExtension.UP, 0, -1, 10, 5, 9, 4 },
+                { SelectionExtension.DOWN, 0, 1, 10, 5, 11, 6 }
         };
     }
 

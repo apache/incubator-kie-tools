@@ -23,46 +23,74 @@ import java.io.Serializable;
  */
 public enum SelectionExtension {
 
-    LEFT( ( int min, int max, int origin ) -> {
-        if ( max > origin ) {
-            return max - 1;
-        } else {
-            return min - 1;
-        }
-    },
-          ( int min, int max, int origin ) -> origin,
-          -1,
-          0 ),
-    RIGHT( ( int min, int max, int origin ) -> {
-        if ( min < origin ) {
-            return min + 1;
-        } else {
-            return max + 1;
-        }
-    },
-           ( int min, int max, int origin ) -> origin,
-           1,
-           0 ),
-    UP( ( int min, int max, int origin ) -> origin,
-        ( int min, int max, int origin ) -> {
-            if ( max > origin ) {
-                return max - 1;
-            } else {
-                return min - 1;
-            }
-        },
-        0,
-        -1 ),
-    DOWN( ( int min, int max, int origin ) -> origin,
-          ( int min, int max, int origin ) -> {
-              if ( min < origin ) {
-                  return min + 1;
-              } else {
-                  return max + 1;
-              }
-          },
-          0,
-          1 );
+    LEFT(
+            ( int min, int max, int origin ) -> {
+                if ( max > origin ) {
+                    return max - 1;
+                } else {
+                    return min - 1;
+                }
+            },
+            ( int min, int max, int origin ) -> {
+                if ( max > origin ) {
+                    return max;
+                } else {
+                    return min;
+                }
+            },
+            -1,
+            0 ),
+    RIGHT(
+            ( int min, int max, int origin ) -> {
+                if ( min < origin ) {
+                    return min + 1;
+                } else {
+                    return max + 1;
+                }
+            },
+            ( int min, int max, int origin ) -> {
+                if ( max > origin ) {
+                    return max;
+                } else {
+                    return min;
+                }
+            },
+            1,
+            0 ),
+    UP(
+            ( int min, int max, int origin ) -> {
+                if ( max > origin ) {
+                    return max;
+                } else {
+                    return min;
+                }
+            },
+            ( int min, int max, int origin ) -> {
+                if ( max > origin ) {
+                    return max - 1;
+                } else {
+                    return min - 1;
+                }
+            },
+            0,
+            -1 ),
+    DOWN(
+            ( int min, int max, int origin ) -> {
+                if ( max > origin ) {
+                    return max;
+                } else {
+                    return min;
+                }
+            },
+            ( int min, int max, int origin ) -> {
+                if ( min < origin ) {
+                    return min + 1;
+                } else {
+                    return max + 1;
+                }
+            },
+            0,
+            1 );
 
     private NextIndexCalculator nextXCalculator;
     private NextIndexCalculator nextYCalculator;
