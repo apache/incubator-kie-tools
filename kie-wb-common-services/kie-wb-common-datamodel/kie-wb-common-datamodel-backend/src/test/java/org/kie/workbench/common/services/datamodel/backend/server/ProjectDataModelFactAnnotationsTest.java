@@ -21,10 +21,10 @@ import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracle
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.junit.Test;
-import org.kie.api.definition.type.Role;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.Product;
+import org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.JAXBSmurf;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.RoleSmurf;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.Smurf;
 
@@ -114,8 +114,53 @@ public class ProjectDataModelFactAnnotationsTest {
         final Annotation annotation = annotations.iterator().next();
         assertEquals( "org.kie.api.definition.type.Role",
                       annotation.getQualifiedTypeName() );
-        assertEquals( Role.Type.EVENT,
+        assertEquals( "EVENT",
                       annotation.getParameters().get( "value" ) );
+    }
+
+    @Test
+    public void annotationsWithMemberOfTypeClass() throws Exception {
+        final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+        final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
+
+        final ClassFactBuilder cb = new ClassFactBuilder( builder,
+                                                          JAXBSmurf.class,
+                                                          false,
+                                                          TypeSource.JAVA_PROJECT );
+        cb.build( oracle );
+
+        assertEquals( 1,
+                      oracle.getProjectModelFields().size() );
+        assertContains( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.JAXBSmurf",
+                        oracle.getProjectModelFields().keySet() );
+
+        final Set<Annotation> annotations = oracle.getProjectTypeAnnotations().get( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.JAXBSmurf" );
+        assertNotNull( annotations );
+        assertEquals( 1,
+                      annotations.size() );
+
+        final Annotation annotation = annotations.iterator().next();
+        assertEquals( "javax.xml.bind.annotation.XmlType",
+                      annotation.getQualifiedTypeName() );
+        assertEquals( 5,
+                      annotation.getParameters().size() );
+        assertEquals( "smurf-namespace",
+                      annotation.getParameters().get( "namespace" ) );
+        assertEquals( "smurf-xsd",
+                      annotation.getParameters().get( "name" ) );
+        assertArraysEqual( new String[]{ "name", "colour" },
+                           (String[]) annotation.getParameters().get( "propOrder" ) );
+        assertTrue( annotation.getParameters().get( "factoryClass" ).toString().contains( "org.kie.workbench.common.services.datamodel.backend.server.testclasses.annotations.JAXBSmurfFactory" ) );
+    }
+
+    private static void assertArraysEqual( final String[] expected,
+                                           final String[] actual ) {
+        assertEquals( expected.length,
+                      actual.length );
+        for ( int i = 0; i < expected.length; i++ ) {
+            assertEquals( expected[ i ],
+                          actual[ i ] );
+        }
     }
 
 }

@@ -203,7 +203,7 @@ public class PackageDataModelFactAnnotationsTest {
                                            final Annotation annotation = annotations.iterator().next();
                                            assertEquals( "org.kie.api.definition.type.Role",
                                                          annotation.getQualifiedTypeName() );
-                                           assertEquals( Role.Type.EVENT,
+                                           assertEquals( "EVENT",
                                                          annotation.getParameters().get( "value" ) );
                                        }
                                    } );

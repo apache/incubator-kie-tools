@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.jboss.errai.config.rebind.EnvUtil;
+
 /**
  * Utilities for handling Java Annotations
  */
@@ -40,6 +42,14 @@ public class AnnotationUtils {
         if ( annotation != null ) {
             try {
                 value = annotation.annotationType().getMethod( attributeName ).invoke( annotation );
+
+                final Class valueType = value.getClass();
+                final Class componentType = valueType.getComponentType();
+                final Class portableType = componentType != null ? componentType : valueType;
+                if ( !EnvUtil.isPortableType( portableType ) ) {
+                    value = value.toString();
+                }
+
             } catch ( Exception ex ) {
                 //Swallow
             }
@@ -77,7 +87,8 @@ public class AnnotationUtils {
      * @param inherited
      * @return
      */
-    public static Set<org.drools.workbench.models.datamodel.oracle.Annotation> getFieldAnnotations( Field field, boolean inherited ) {
+    public static Set<org.drools.workbench.models.datamodel.oracle.Annotation> getFieldAnnotations( Field field,
+                                                                                                    boolean inherited ) {
 
         if ( field == null ) {
             return Collections.EMPTY_SET;
@@ -86,13 +97,13 @@ public class AnnotationUtils {
         return getAnnotations( field.getDeclaredAnnotations(), inherited );
     }
 
-
-    private static Set<org.drools.workbench.models.datamodel.oracle.Annotation> getAnnotations( final java.lang.annotation.Annotation[] annotations, boolean checkInheritance ) {
+    private static Set<org.drools.workbench.models.datamodel.oracle.Annotation> getAnnotations( final java.lang.annotation.Annotation[] annotations,
+                                                                                                boolean checkInheritance ) {
         final Set<org.drools.workbench.models.datamodel.oracle.Annotation> fieldAnnotations = new LinkedHashSet<>();
         for ( java.lang.annotation.Annotation a : annotations ) {
 
             if ( checkInheritance ) {
-                if( !a.annotationType().isAnnotationPresent( Inherited.class ) ) {
+                if ( !a.annotationType().isAnnotationPresent( Inherited.class ) ) {
                     continue;
                 }
             }
