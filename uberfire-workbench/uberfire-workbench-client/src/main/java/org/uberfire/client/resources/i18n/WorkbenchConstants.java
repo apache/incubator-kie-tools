@@ -51,4 +51,8 @@ Messages {
     String lockedMessage(String lockedBy);
 
     String splashScreenNoneAvailable();
+
+    String switchToDefaultView();
+
+    String switchToCompactView();
 }

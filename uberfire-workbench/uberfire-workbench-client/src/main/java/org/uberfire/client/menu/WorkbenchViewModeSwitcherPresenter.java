@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
@@ -34,10 +35,9 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 @Dependent
 public class WorkbenchViewModeSwitcherPresenter implements IsWidget {
 
-    public static final String SWITCH_TO_DEFAULT_VIEW = "Switch to Default View";
-    public static final String SWITCH_TO_COMPACT_VIEW = "Switch to Compact View";
-
     private final WorkbenchMenuBar menubar;
+
+    private WorkbenchConstants constants = WorkbenchConstants.INSTANCE;
 
     private Command collapseCommand;
     private Command expandCommand;
@@ -60,7 +60,7 @@ public class WorkbenchViewModeSwitcherPresenter implements IsWidget {
         this.view = checkNotNull( "view", view );
         this.menubar = checkNotNull( "menubar", menubar );
         view.init( this );
-        view.setText( SWITCH_TO_COMPACT_VIEW );
+        view.setText( constants.switchToCompactView() );
         view.addClickHandler( new Command() {
             @Override
             public void execute() {
@@ -80,13 +80,13 @@ public class WorkbenchViewModeSwitcherPresenter implements IsWidget {
         menubar.addCollapseHandler( new Command() {
             @Override
             public void execute() {
-                view.setText( SWITCH_TO_DEFAULT_VIEW );
+                view.setText( constants.switchToDefaultView() );
             }
         } );
         menubar.addExpandHandler( new Command() {
             @Override
             public void execute() {
-                view.setText( SWITCH_TO_COMPACT_VIEW );
+                view.setText( constants.switchToCompactView() );
             }
         } );
     }
