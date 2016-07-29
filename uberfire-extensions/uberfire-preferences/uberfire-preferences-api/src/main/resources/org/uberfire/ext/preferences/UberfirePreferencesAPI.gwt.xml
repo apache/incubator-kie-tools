@@ -20,6 +20,7 @@
 <module>
 
   <inherits name='org.uberfire.UberfireBackend'/>
-  <source path='shared'/>
+  <inherits name='org.uberfire.UberfireAPI'/>
 
+  <source path='shared'/>
 </module>

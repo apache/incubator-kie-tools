@@ -31,4 +31,10 @@ public interface PreferenceScope {
      * @return Key of the preference scope. Represents a unique key inside a scope type.
      */
     String key();
+
+    /**
+     * Child scope, a scope inside a scope. This allows a hierarchy inside each scope.
+     * @return Child scope. This can be null, indicating the end of the hierarchy.
+     */
+    PreferenceScope childScope();
 }

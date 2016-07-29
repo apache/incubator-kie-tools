@@ -21,7 +21,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 
 /**
- * Default portable implementation for a preference scope, containing a type and a key.
+ * Default portable implementation for a preference scope, containing a type (required), a key (required)
+ * and a child scope (optional).
  */
 @Portable
 public class PreferenceScopeImpl implements PreferenceScope {
@@ -30,10 +31,14 @@ public class PreferenceScopeImpl implements PreferenceScope {
 
     private final String key;
 
-    public PreferenceScopeImpl( @MapsTo( "type" ) final String type,
-                                @MapsTo( "key" ) final String key ) {
+    private final PreferenceScope childScope;
+
+    public PreferenceScopeImpl( @MapsTo("type") final String type,
+                                @MapsTo("key") final String key,
+                                @MapsTo("childScope") final PreferenceScope childScope ) {
         this.type = type;
         this.key = key;
+        this.childScope = childScope;
     }
 
     @Override
@@ -44,6 +49,11 @@ public class PreferenceScopeImpl implements PreferenceScope {
     @Override
     public String key() {
         return key;
+    }
+
+    @Override
+    public PreferenceScope childScope() {
+        return childScope;
     }
 
     @Override
@@ -60,14 +70,21 @@ public class PreferenceScopeImpl implements PreferenceScope {
         if ( type != null ? !type.equals( that.type ) : that.type != null ) {
             return false;
         }
-        return !( key != null ? !key.equals( that.key ) : that.key != null );
+        if ( key != null ? !key.equals( that.key ) : that.key != null ) {
+            return false;
+        }
+        return !( childScope != null ? !childScope.equals( that.childScope ) : that.childScope != null );
 
     }
 
     @Override
     public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( key != null ? key.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( childScope != null ? childScope.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

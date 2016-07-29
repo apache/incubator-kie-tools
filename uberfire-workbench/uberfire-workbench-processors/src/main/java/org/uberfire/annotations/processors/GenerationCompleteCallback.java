@@ -20,7 +20,7 @@ package org.uberfire.annotations.processors;
  * generated source code is returned to the miscfeatures via this call-back rather than
  * having javac write the generated source code to a file and compiled.
  */
-interface GenerationCompleteCallback {
+public interface GenerationCompleteCallback {
 
     /**
      * The source code has been generated.

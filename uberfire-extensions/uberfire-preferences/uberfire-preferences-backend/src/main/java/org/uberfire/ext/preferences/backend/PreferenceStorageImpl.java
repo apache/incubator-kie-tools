@@ -31,10 +31,13 @@ import com.thoughtworks.xstream.XStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
-import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
+import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.ext.preferences.shared.PreferenceScopedValue;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
 import org.uberfire.ext.preferences.shared.PreferenceStorage;
+import org.uberfire.annotations.Customizable;
+import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileSystem;
@@ -62,6 +65,8 @@ public class PreferenceStorageImpl implements PreferenceStorage {
 
     private PreferenceScopeTypes scopeTypes;
 
+    private PreferenceScopeFactory scopeFactory;
+
     private FileSystem fileSystem;
 
     private final XStream xs = new XStream();
@@ -72,10 +77,12 @@ public class PreferenceStorageImpl implements PreferenceStorage {
     @Inject
     public PreferenceStorageImpl( @Named("ioStrategy") final IOService ioService,
                                   final SessionInfo sessionInfo,
-                                  @Customizable final PreferenceScopeTypes scopeTypes ) {
+                                  @Customizable final PreferenceScopeTypes scopeTypes,
+                                  final PreferenceScopeFactory scopeFactory ) {
         this.ioService = ioService;
         this.sessionInfo = sessionInfo;
         this.scopeTypes = scopeTypes;
+        this.scopeFactory = scopeFactory;
     }
 
     @PostConstruct
@@ -105,9 +112,9 @@ public class PreferenceStorageImpl implements PreferenceStorage {
     }
 
     @Override
-    public boolean exists( final PreferenceScopeResolutionStrategy preferenceScopeResolutionStrategy,
+    public boolean exists( final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                            final String key ) {
-        for ( PreferenceScope preferenceScope : preferenceScopeResolutionStrategy.order() ) {
+        for ( PreferenceScope preferenceScope : scopeResolutionStrategyInfo.order() ) {
             boolean exists = exists( preferenceScope, key );
             if ( exists ) {
                 return true;
@@ -135,9 +142,9 @@ public class PreferenceStorageImpl implements PreferenceStorage {
     }
 
     @Override
-    public <T> T read( final PreferenceScopeResolutionStrategy preferenceScopeResolutionStrategy,
+    public <T> T read( final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                        final String key ) {
-        for ( PreferenceScope preferenceScope : preferenceScopeResolutionStrategy.order() ) {
+        for ( PreferenceScope preferenceScope : scopeResolutionStrategyInfo.order() ) {
             T result = read( preferenceScope, key );
             if ( result != null ) {
                 return result;
@@ -148,12 +155,12 @@ public class PreferenceStorageImpl implements PreferenceStorage {
     }
 
     @Override
-    public <T> PreferenceScopedValue<T> readWithScope( final PreferenceScopeResolutionStrategy preferenceScopeResolutionStrategy,
+    public <T> PreferenceScopedValue<T> readWithScope( final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                                                        final String key ) {
-        for ( PreferenceScope scope : preferenceScopeResolutionStrategy.order() ) {
+        for ( PreferenceScope scope : scopeResolutionStrategyInfo.order() ) {
             T result = read( scope, key );
             if ( result != null ) {
-                return new PreferenceScopedValue<>( result, scope.type(), scope.key() );
+                return new PreferenceScopedValue<>( result, scopeFactory.cloneScope( scope ) );
             }
         }
 
@@ -224,12 +231,21 @@ public class PreferenceStorageImpl implements PreferenceStorage {
     }
 
     String buildScopePath( final PreferenceScope scope ) {
-        scopeTypes.validate( scope );
-        return "/config/" + scope.type() + "/" + scope.key();
+        if ( scope == null ) {
+            throw new InvalidPreferenceScopeException( "The scope must not be null when building a scope path." );
+        }
+
+        String path = "/config/";
+
+        for ( PreferenceScope currentScope = scope; currentScope != null; currentScope = currentScope.childScope() ) {
+            path += currentScope.type() + "/" + currentScope.key() + "/";
+        }
+
+        return path;
     }
 
     String buildScopedPreferencePath( final PreferenceScope scope,
                                       final String key ) {
-        return buildScopePath( scope ) + "/" + key + FILE_FORMAT;
+        return buildScopePath( scope ) + key + FILE_FORMAT;
     }
 }

@@ -16,21 +16,29 @@
 
 package org.uberfire.ext.preferences.shared.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Definition of default scope types that can be used.
  */
 public enum DefaultScopes {
 
     /**
-     * Define a global scope type, responsible to store preferences for all users.
+     * Scope type responsible to store preferences for all users.
      */
-    GLOBAL( "global" ),
+    ALL_USERS( "all-users" ),
 
     /**
-     * Define a user scope type, responsible to store preferences for users, individually.
+     * Scope type responsible to store preferences for the entire application.
+     */
+    ENTIRE_APPLICATION( "entire-application" ),
+
+    /**
+     * Scope type responsible to store preferences separately for each component, represented by
+     * a WorkbenchPreferences part.
+     */
+    COMPONENT( "component" ),
+
+    /**
+     * Scope type responsible to store preferences separately for each username.
      */
     USER( "user" );
 
@@ -42,19 +50,5 @@ public enum DefaultScopes {
 
     public String type() {
         return type;
-    }
-
-    /**
-     * Returns all default scope types.
-     * @return Scope types.
-     */
-    public static List<String> allTypes() {
-        List<String> types = new ArrayList<>();
-
-        for ( DefaultScopes scopeType : values() ) {
-            types.add( scopeType.type() );
-        }
-
-        return types;
     }
 }

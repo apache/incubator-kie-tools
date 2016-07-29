@@ -27,11 +27,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
-import org.uberfire.ext.preferences.shared.PreferenceScopeBuilder;
+import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.ext.preferences.shared.PreferenceScopedValue;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeImpl;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
+import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
+import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeTypes;
 import org.uberfire.ext.preferences.shared.impl.DefaultScopes;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeFactoryImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.FileSystemTestingUtils;
@@ -45,7 +50,21 @@ import static org.mockito.Mockito.*;
 
 public class PreferenceStoreImplTest {
 
-    private static final String USER = "myuser";
+    private static final String allUsersScopeType = DefaultScopes.ALL_USERS.type();
+    private static final String entireApplicationScopeType = DefaultScopes.ENTIRE_APPLICATION.type();
+    private static final String userScopeType = DefaultScopes.USER.type();
+
+    private static final String allUsersScopeKey = allUsersScopeType;
+    private static final String entireApplicationScopeKey = entireApplicationScopeType;
+    private static final String userScopeKey = "my-user";
+
+    private static final PreferenceScopeImpl allUsersScope = new PreferenceScopeImpl( allUsersScopeType, allUsersScopeKey, null );
+    private static final PreferenceScopeImpl entireApplicationScope = new PreferenceScopeImpl( entireApplicationScopeType, entireApplicationScopeKey, null );
+    private static final PreferenceScopeImpl userScope = new PreferenceScopeImpl( userScopeType, userScopeKey, null );
+
+    private PreferenceScope userEntireApplicationScope, allUsersEntireApplication;
+
+    private static final String USER = userScopeKey;
 
     private static final String KEY = "my.preference.key";
     private static final String VALUE = "value";
@@ -64,17 +83,15 @@ public class PreferenceStoreImplTest {
 
     private PreferenceScopeTypes scopeTypes;
 
-    private PreferenceScopeBuilder scopeBuilder;
+    private PreferenceScopeFactory scopeFactory;
 
     private PreferenceStorageImpl storage;
 
     private PreferenceScopeResolutionStrategy preferenceScopeResolutionStrategy;
 
+    private PreferenceScopeResolutionStrategyInfo preferenceScopeResolutionStrategyInfo;
+
     private PreferenceStoreImpl preferenceStore;
-
-    private PreferenceScope globalScope;
-
-    private PreferenceScope userScope;
 
     @Before
     public void setup() throws IOException {
@@ -87,19 +104,21 @@ public class PreferenceStoreImplTest {
         final IOService ioService = mockIoService( fileSystem );
 
         scopeTypes = new DefaultPreferenceScopeTypes( sessionInfo );
-        scopeBuilder = new PreferenceScopeBuilderImpl( scopeTypes );
-        preferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopeBuilder );
+        scopeFactory = new PreferenceScopeFactoryImpl( scopeTypes );
+        preferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopeFactory, null );
+        preferenceScopeResolutionStrategyInfo = preferenceScopeResolutionStrategy.getInfo();
         storage = spy( new PreferenceStorageImpl( ioService,
                                                   sessionInfo,
-                                                  scopeTypes ) );
+                                                  scopeTypes,
+                                                  scopeFactory ) );
         storage.init();
 
         preferenceStore = spy( new PreferenceStoreImpl( storage,
-                                                        preferenceScopeResolutionStrategy,
-                                                        scopeBuilder ) );
+                                                        scopeFactory,
+                                                        preferenceScopeResolutionStrategy ) );
 
-        globalScope = scopeBuilder.build( DefaultScopes.GLOBAL.type() );
-        userScope = scopeBuilder.build( DefaultScopes.USER.type() );
+        userEntireApplicationScope = scopeFactory.createScope( userScope, entireApplicationScope );
+        allUsersEntireApplication = scopeFactory.createScope( allUsersScope, entireApplicationScope );
     }
 
     @After
@@ -109,26 +128,18 @@ public class PreferenceStoreImplTest {
 
     @Test
     public void putInScopeTest() {
-        preferenceStore.put( globalScope, KEY, VALUE );
-        preferenceStore.put( globalScope, KEY, VALUE );
+        preferenceStore.put( allUsersEntireApplication, KEY, VALUE );
+        preferenceStore.put( allUsersEntireApplication, KEY, VALUE );
 
-        verify( storage, times( 2 ) ).write( globalScope, KEY, VALUE );
+        verify( storage, times( 2 ) ).write( allUsersEntireApplication, KEY, VALUE );
     }
 
     @Test
     public void putInDefaultScopeOfAScopeResolutionStrategyTest() {
-        preferenceStore.put( preferenceScopeResolutionStrategy, KEY, VALUE );
-        preferenceStore.put( preferenceScopeResolutionStrategy, KEY, VALUE );
+        preferenceStore.put( preferenceScopeResolutionStrategyInfo, KEY, VALUE );
+        preferenceStore.put( preferenceScopeResolutionStrategyInfo, KEY, VALUE );
 
-        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), KEY, VALUE );
-    }
-
-    @Test
-    public void putInScopeTypeTest() {
-        preferenceStore.put( DefaultScopes.GLOBAL.type(), KEY, VALUE );
-        preferenceStore.put( DefaultScopes.GLOBAL.type(), KEY, VALUE );
-
-        verify( storage, times( 2 ) ).write( globalScope, KEY, VALUE );
+        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), KEY, VALUE );
     }
 
     @Test
@@ -136,7 +147,7 @@ public class PreferenceStoreImplTest {
         preferenceStore.put( KEY, VALUE );
         preferenceStore.put( KEY, VALUE );
 
-        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), KEY, VALUE );
+        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), KEY, VALUE );
     }
 
     @Test
@@ -145,11 +156,11 @@ public class PreferenceStoreImplTest {
         preferences.put( FIRST_KEY, FIRST_VALUE );
         preferences.put( SECOND_KEY, SECOND_VALUE );
 
-        preferenceStore.put( globalScope, preferences );
-        preferenceStore.put( globalScope, preferences );
+        preferenceStore.put( allUsersEntireApplication, preferences );
+        preferenceStore.put( allUsersEntireApplication, preferences );
 
-        verify( storage, times( 2 ) ).write( globalScope, FIRST_KEY, FIRST_VALUE );
-        verify( storage, times( 2 ) ).write( globalScope, SECOND_KEY, SECOND_VALUE );
+        verify( storage, times( 2 ) ).write( allUsersEntireApplication, FIRST_KEY, FIRST_VALUE );
+        verify( storage, times( 2 ) ).write( allUsersEntireApplication, SECOND_KEY, SECOND_VALUE );
     }
 
     @Test
@@ -158,24 +169,11 @@ public class PreferenceStoreImplTest {
         preferences.put( FIRST_KEY, FIRST_VALUE );
         preferences.put( SECOND_KEY, SECOND_VALUE );
 
-        preferenceStore.put( preferenceScopeResolutionStrategy, preferences );
-        preferenceStore.put( preferenceScopeResolutionStrategy, preferences );
+        preferenceStore.put( preferenceScopeResolutionStrategyInfo, preferences );
+        preferenceStore.put( preferenceScopeResolutionStrategyInfo, preferences );
 
-        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), FIRST_KEY, FIRST_VALUE );
-        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), SECOND_KEY, SECOND_VALUE );
-    }
-
-    @Test
-    public void putMapInScopeTypeTest() {
-        final Map<String, String> preferences = new HashMap<>();
-        preferences.put( FIRST_KEY, FIRST_VALUE );
-        preferences.put( SECOND_KEY, SECOND_VALUE );
-
-        preferenceStore.put( DefaultScopes.GLOBAL.type(), preferences );
-        preferenceStore.put( DefaultScopes.GLOBAL.type(), preferences );
-
-        verify( storage, times( 2 ) ).write( globalScope, FIRST_KEY, FIRST_VALUE );
-        verify( storage, times( 2 ) ).write( globalScope, SECOND_KEY, SECOND_VALUE );
+        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), FIRST_KEY, FIRST_VALUE );
+        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), SECOND_KEY, SECOND_VALUE );
     }
 
     @Test
@@ -187,32 +185,24 @@ public class PreferenceStoreImplTest {
         preferenceStore.put( preferences );
         preferenceStore.put( preferences );
 
-        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), FIRST_KEY, FIRST_VALUE );
-        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), SECOND_KEY, SECOND_VALUE );
+        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), FIRST_KEY, FIRST_VALUE );
+        verify( storage, times( 2 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), SECOND_KEY, SECOND_VALUE );
     }
 
     @Test
     public void putIfAbsentInScopeTest() {
-        preferenceStore.putIfAbsent( globalScope, KEY, VALUE );
-        preferenceStore.putIfAbsent( globalScope, KEY, VALUE );
+        preferenceStore.putIfAbsent( allUsersEntireApplication, KEY, VALUE );
+        preferenceStore.putIfAbsent( allUsersEntireApplication, KEY, VALUE );
 
-        verify( storage, times( 1 ) ).write( globalScope, KEY, VALUE );
+        verify( storage, times( 1 ) ).write( allUsersEntireApplication, KEY, VALUE );
     }
 
     @Test
     public void putIfAbsentInDefaultScopeOfAScopeResolutionStrategyTest() {
-        preferenceStore.putIfAbsent( preferenceScopeResolutionStrategy, KEY, VALUE );
-        preferenceStore.putIfAbsent( preferenceScopeResolutionStrategy, KEY, VALUE );
+        preferenceStore.putIfAbsent( preferenceScopeResolutionStrategyInfo, KEY, VALUE );
+        preferenceStore.putIfAbsent( preferenceScopeResolutionStrategyInfo, KEY, VALUE );
 
-        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), KEY, VALUE );
-    }
-
-    @Test
-    public void putIfAbsentInScopeTypeTest() {
-        preferenceStore.putIfAbsent( DefaultScopes.GLOBAL.type(), KEY, VALUE );
-        preferenceStore.putIfAbsent( DefaultScopes.GLOBAL.type(), KEY, VALUE );
-
-        verify( storage, times( 1 ) ).write( globalScope, KEY, VALUE );
+        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), KEY, VALUE );
     }
 
     @Test
@@ -220,7 +210,7 @@ public class PreferenceStoreImplTest {
         preferenceStore.putIfAbsent( KEY, VALUE );
         preferenceStore.putIfAbsent( KEY, VALUE );
 
-        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), KEY, VALUE );
+        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), KEY, VALUE );
     }
 
     @Test
@@ -229,11 +219,11 @@ public class PreferenceStoreImplTest {
         preferences.put( FIRST_KEY, FIRST_VALUE );
         preferences.put( SECOND_KEY, SECOND_VALUE );
 
-        preferenceStore.putIfAbsent( globalScope, preferences );
-        preferenceStore.putIfAbsent( globalScope, preferences );
+        preferenceStore.putIfAbsent( allUsersEntireApplication, preferences );
+        preferenceStore.putIfAbsent( allUsersEntireApplication, preferences );
 
-        verify( storage, times( 1 ) ).write( globalScope, FIRST_KEY, FIRST_VALUE );
-        verify( storage, times( 1 ) ).write( globalScope, SECOND_KEY, SECOND_VALUE );
+        verify( storage, times( 1 ) ).write( allUsersEntireApplication, FIRST_KEY, FIRST_VALUE );
+        verify( storage, times( 1 ) ).write( allUsersEntireApplication, SECOND_KEY, SECOND_VALUE );
     }
 
     @Test
@@ -242,24 +232,11 @@ public class PreferenceStoreImplTest {
         preferences.put( FIRST_KEY, FIRST_VALUE );
         preferences.put( SECOND_KEY, SECOND_VALUE );
 
-        preferenceStore.putIfAbsent( preferenceScopeResolutionStrategy, preferences );
-        preferenceStore.putIfAbsent( preferenceScopeResolutionStrategy, preferences );
+        preferenceStore.putIfAbsent( preferenceScopeResolutionStrategyInfo, preferences );
+        preferenceStore.putIfAbsent( preferenceScopeResolutionStrategyInfo, preferences );
 
-        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), FIRST_KEY, FIRST_VALUE );
-        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), SECOND_KEY, SECOND_VALUE );
-    }
-
-    @Test
-    public void putIfAbsentMapInScopeTypeTest() {
-        final Map<String, String> preferences = new HashMap<>();
-        preferences.put( FIRST_KEY, FIRST_VALUE );
-        preferences.put( SECOND_KEY, SECOND_VALUE );
-
-        preferenceStore.putIfAbsent( DefaultScopes.GLOBAL.type(), preferences );
-        preferenceStore.putIfAbsent( DefaultScopes.GLOBAL.type(), preferences );
-
-        verify( storage, times( 1 ) ).write( scopeBuilder.build( DefaultScopes.GLOBAL.type() ), FIRST_KEY, FIRST_VALUE );
-        verify( storage, times( 1 ) ).write( scopeBuilder.build( DefaultScopes.GLOBAL.type() ), SECOND_KEY, SECOND_VALUE );
+        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), FIRST_KEY, FIRST_VALUE );
+        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), SECOND_KEY, SECOND_VALUE );
     }
 
     @Test
@@ -271,128 +248,88 @@ public class PreferenceStoreImplTest {
         preferenceStore.putIfAbsent( preferences );
         preferenceStore.putIfAbsent( preferences );
 
-        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), FIRST_KEY, FIRST_VALUE );
-        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategy.defaultScope(), SECOND_KEY, SECOND_VALUE );
+        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), FIRST_KEY, FIRST_VALUE );
+        verify( storage, times( 1 ) ).write( preferenceScopeResolutionStrategyInfo.defaultScope(), SECOND_KEY, SECOND_VALUE );
     }
 
     @Test
     public void getStringValueFromScopeWithoutDefaultValueTest() {
         mockStorageRead( VALUE );
 
-        final String value = preferenceStore.get( globalScope, KEY );
+        final String value = preferenceStore.get( allUsersEntireApplication, KEY );
 
         assertEquals( VALUE, value );
 
-        verify( storage ).read( globalScope, KEY );
+        verify( storage ).read( allUsersEntireApplication, KEY );
     }
 
     @Test
     public void getNullValueFromScopeWithoutDefaultValueTest() {
-        final String value = preferenceStore.get( globalScope, KEY );
+        final String value = preferenceStore.get( allUsersEntireApplication, KEY );
 
         assertNull( value );
 
-        verify( storage ).read( globalScope, KEY );
+        verify( storage ).read( allUsersEntireApplication, KEY );
     }
 
     @Test
     public void getStringValueFromScopeWithDefaultValueTest() {
         mockStorageRead( VALUE );
 
-        final String value = preferenceStore.get( globalScope, KEY, DEFAULT_VALUE );
+        final String value = preferenceStore.get( allUsersEntireApplication, KEY, DEFAULT_VALUE );
 
         assertEquals( VALUE, value );
 
-        verify( storage ).read( globalScope, KEY );
+        verify( storage ).read( allUsersEntireApplication, KEY );
     }
 
     @Test
     public void getNullValueFromScopeWithDefaultValueTest() {
-        final String value = preferenceStore.get( globalScope, KEY, DEFAULT_VALUE );
+        final String value = preferenceStore.get( allUsersEntireApplication, KEY, DEFAULT_VALUE );
 
         assertEquals( DEFAULT_VALUE, value );
 
-        verify( storage ).read( globalScope, KEY );
+        verify( storage ).read( allUsersEntireApplication, KEY );
     }
 
     @Test
     public void getStringValueFromScopeResolutionStrategyWithoutDefaultValueTest() {
         mockStorageRead( VALUE );
 
-        final String value = preferenceStore.get( preferenceScopeResolutionStrategy, KEY );
+        final String value = preferenceStore.get( preferenceScopeResolutionStrategyInfo, KEY );
 
         assertEquals( VALUE, value );
 
-        verify( storage ).read( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).read( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
     public void getNullValueFromScopeResolutionStrategyWithoutDefaultValueTest() {
-        final String value = preferenceStore.get( preferenceScopeResolutionStrategy, KEY );
+        final String value = preferenceStore.get( preferenceScopeResolutionStrategyInfo, KEY );
 
         assertNull( value );
 
-        verify( storage ).read( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).read( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
     public void getStringValueFromScopeResolutionStrategyWithDefaultValueTest() {
         mockStorageRead( VALUE );
 
-        final String value = preferenceStore.get( preferenceScopeResolutionStrategy, KEY, DEFAULT_VALUE );
+        final String value = preferenceStore.get( preferenceScopeResolutionStrategyInfo, KEY, DEFAULT_VALUE );
 
         assertEquals( VALUE, value );
 
-        verify( storage ).read( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).read( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
     public void getNullValueFromScopeResolutionStrategyWithDefaultValueTest() {
-        final String value = preferenceStore.get( preferenceScopeResolutionStrategy, KEY, DEFAULT_VALUE );
+        final String value = preferenceStore.get( preferenceScopeResolutionStrategyInfo, KEY, DEFAULT_VALUE );
 
         assertEquals( DEFAULT_VALUE, value );
 
-        verify( storage ).read( preferenceScopeResolutionStrategy, KEY );
-    }
-
-    @Test
-    public void getStringValueFromScopeTypeWithoutDefaultValueTest() {
-        mockStorageRead( VALUE );
-
-        final String value = preferenceStore.get( DefaultScopes.GLOBAL.type(), KEY );
-
-        assertEquals( VALUE, value );
-
-        verify( storage ).read( globalScope, KEY );
-    }
-
-    @Test
-    public void getNullValueFromScopeTypeWithoutDefaultValueTest() {
-        final String value = preferenceStore.get( DefaultScopes.GLOBAL.type(), KEY );
-
-        assertNull( value );
-
-        verify( storage ).read( globalScope, KEY );
-    }
-
-    @Test
-    public void getStringValueFromScopeTypeWithDefaultValueTest() {
-        mockStorageRead( VALUE );
-
-        final String value = preferenceStore.get( DefaultScopes.GLOBAL.type(), KEY, DEFAULT_VALUE );
-
-        assertEquals( VALUE, value );
-
-        verify( storage ).read( globalScope, KEY );
-    }
-
-    @Test
-    public void getNullValueFromScopeTypeWithDefaultValueTest() {
-        final String value = preferenceStore.get( DefaultScopes.GLOBAL.type(), KEY, DEFAULT_VALUE );
-
-        assertEquals( DEFAULT_VALUE, value );
-
-        verify( storage ).read( globalScope, KEY );
+        verify( storage ).read( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
@@ -410,60 +347,60 @@ public class PreferenceStoreImplTest {
 
         assertNull( value );
 
-        verify( storage ).read( globalScope, KEY );
+        verify( storage ).read( allUsersEntireApplication, KEY );
     }
 
     @Test
     public void getScopedStringValueFromScopeResolutionStrategyWithoutDefaultValueTest() {
         mockStorageRead( VALUE );
 
-        final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( preferenceScopeResolutionStrategy,
+        final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( preferenceScopeResolutionStrategyInfo,
                                                                                      KEY );
-        final PreferenceScope scope = preferenceScopeResolutionStrategy.order().get( 0 );
+        final PreferenceScope scope = preferenceScopeResolutionStrategyInfo.order().get( 0 );
 
         assertEquals( VALUE, scopedValue.getValue() );
         assertEquals( scope.key(), scopedValue.getScope().key() );
         assertEquals( scope.type(), scopedValue.getScope().type() );
 
-        verify( storage ).readWithScope( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
     public void getScopedNullValueFromScopeResolutionStrategyWithoutDefaultValueTest() {
-        final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( preferenceScopeResolutionStrategy,
+        final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( preferenceScopeResolutionStrategyInfo,
                                                                                      KEY );
 
         assertNull( scopedValue );
 
-        verify( storage ).readWithScope( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
     public void getScopedStringValueFromScopeResolutionStrategyWithDefaultValueTest() {
         mockStorageRead( VALUE );
 
-        final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( preferenceScopeResolutionStrategy,
+        final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( preferenceScopeResolutionStrategyInfo,
                                                                                      KEY,
                                                                                      DEFAULT_VALUE );
-        final PreferenceScope scope = preferenceScopeResolutionStrategy.order().get( 0 );
+        final PreferenceScope scope = preferenceScopeResolutionStrategyInfo.order().get( 0 );
 
         assertEquals( VALUE, scopedValue.getValue() );
         assertEquals( scope.key(), scopedValue.getScope().key() );
         assertEquals( scope.type(), scopedValue.getScope().type() );
 
-        verify( storage ).readWithScope( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
     public void getScopedNullValueFromScopeResolutionStrategyWithDefaultValueTest() {
-        final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( preferenceScopeResolutionStrategy,
+        final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( preferenceScopeResolutionStrategyInfo,
                                                                                      KEY,
                                                                                      DEFAULT_VALUE );
 
         assertEquals( DEFAULT_VALUE, scopedValue.getValue() );
         assertNull( scopedValue.getScope() );
 
-        verify( storage ).readWithScope( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
@@ -471,13 +408,13 @@ public class PreferenceStoreImplTest {
         mockStorageRead( VALUE );
 
         final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( KEY );
-        final PreferenceScope scope = preferenceScopeResolutionStrategy.order().get( 0 );
+        final PreferenceScope scope = preferenceScopeResolutionStrategyInfo.order().get( 0 );
 
         assertEquals( VALUE, scopedValue.getValue() );
         assertEquals( scope.key(), scopedValue.getScope().key() );
         assertEquals( scope.type(), scopedValue.getScope().type() );
 
-        verify( storage ).readWithScope( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
@@ -486,7 +423,7 @@ public class PreferenceStoreImplTest {
 
         assertNull( scopedValue );
 
-        verify( storage ).readWithScope( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
@@ -494,13 +431,13 @@ public class PreferenceStoreImplTest {
         mockStorageRead( VALUE );
 
         final PreferenceScopedValue<String> scopedValue = preferenceStore.getScoped( KEY, DEFAULT_VALUE );
-        final PreferenceScope scope = preferenceScopeResolutionStrategy.order().get( 0 );
+        final PreferenceScope scope = preferenceScopeResolutionStrategyInfo.order().get( 0 );
 
         assertEquals( VALUE, scopedValue.getValue() );
         assertEquals( scope.key(), scopedValue.getScope().key() );
         assertEquals( scope.type(), scopedValue.getScope().type() );
 
-        verify( storage ).readWithScope( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
@@ -510,7 +447,7 @@ public class PreferenceStoreImplTest {
         assertEquals( DEFAULT_VALUE, scopedValue.getValue() );
         assertNull( scopedValue.getScope() );
 
-        verify( storage ).readWithScope( preferenceScopeResolutionStrategy, KEY );
+        verify( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, KEY );
     }
 
     @Test
@@ -520,10 +457,10 @@ public class PreferenceStoreImplTest {
         preferences.put( SECOND_KEY, SECOND_VALUE );
 
         for ( Map.Entry<String, String> preference : preferences.entrySet() ) {
-            doReturn( preference.getValue() ).when( storage ).read( globalScope, preference.getKey() );
+            doReturn( preference.getValue() ).when( storage ).read( allUsersEntireApplication, preference.getKey() );
         }
 
-        final Map<String, Object> returnedPreferences = preferenceStore.search( globalScope, preferences.keySet() );
+        final Map<String, Object> returnedPreferences = preferenceStore.search( allUsersEntireApplication, preferences.keySet() );
 
         assertEquals( preferences.size(), returnedPreferences.size() );
 
@@ -534,7 +471,7 @@ public class PreferenceStoreImplTest {
             assertTrue( returnedPreferences.containsKey( key ) );
             assertEquals( value, returnedPreferences.get( key ) );
 
-            verify( storage ).read( globalScope, key );
+            verify( storage ).read( allUsersEntireApplication, key );
         }
     }
 
@@ -545,10 +482,10 @@ public class PreferenceStoreImplTest {
         preferences.put( SECOND_KEY, SECOND_VALUE );
 
         for ( Map.Entry<String, String> preference : preferences.entrySet() ) {
-            doReturn( preference.getValue() ).when( storage ).read( preferenceScopeResolutionStrategy, preference.getKey() );
+            doReturn( preference.getValue() ).when( storage ).read( preferenceScopeResolutionStrategyInfo, preference.getKey() );
         }
 
-        final Map<String, Object> returnedPreferences = preferenceStore.search( preferenceScopeResolutionStrategy, preferences.keySet() );
+        final Map<String, Object> returnedPreferences = preferenceStore.search( preferenceScopeResolutionStrategyInfo, preferences.keySet() );
 
         assertEquals( preferences.size(), returnedPreferences.size() );
 
@@ -559,32 +496,7 @@ public class PreferenceStoreImplTest {
             assertTrue( returnedPreferences.containsKey( key ) );
             assertEquals( value, returnedPreferences.get( key ) );
 
-            verify( storage ).read( preferenceScopeResolutionStrategy, key );
-        }
-    }
-
-    @Test
-    public void searchOnScopeTypeTest() {
-        final Map<String, String> preferences = new HashMap<>();
-        preferences.put( FIRST_KEY, FIRST_VALUE );
-        preferences.put( SECOND_KEY, SECOND_VALUE );
-
-        for ( Map.Entry<String, String> preference : preferences.entrySet() ) {
-            doReturn( preference.getValue() ).when( storage ).read( globalScope, preference.getKey() );
-        }
-
-        final Map<String, Object> returnedPreferences = preferenceStore.search( DefaultScopes.GLOBAL.type(), preferences.keySet() );
-
-        assertEquals( preferences.size(), returnedPreferences.size() );
-
-        for ( Map.Entry<String, String> preference : preferences.entrySet() ) {
-            final String key = preference.getKey();
-            final String value = preference.getValue();
-
-            assertTrue( returnedPreferences.containsKey( key ) );
-            assertEquals( value, returnedPreferences.get( key ) );
-
-            verify( storage ).read( globalScope, key );
+            verify( storage ).read( preferenceScopeResolutionStrategyInfo, key );
         }
     }
 
@@ -595,7 +507,7 @@ public class PreferenceStoreImplTest {
         preferences.put( SECOND_KEY, SECOND_VALUE );
 
         for ( Map.Entry<String, String> preference : preferences.entrySet() ) {
-            doReturn( preference.getValue() ).when( storage ).read( preferenceScopeResolutionStrategy, preference.getKey() );
+            doReturn( preference.getValue() ).when( storage ).read( preferenceScopeResolutionStrategyInfo, preference.getKey() );
         }
 
         final Map<String, Object> returnedPreferences = preferenceStore.search( preferences.keySet() );
@@ -609,7 +521,7 @@ public class PreferenceStoreImplTest {
             assertTrue( returnedPreferences.containsKey( key ) );
             assertEquals( value, returnedPreferences.get( key ) );
 
-            verify( storage ).read( preferenceScopeResolutionStrategy, key );
+            verify( storage ).read( preferenceScopeResolutionStrategyInfo, key );
         }
     }
 
@@ -620,10 +532,10 @@ public class PreferenceStoreImplTest {
         preferences.put( SECOND_KEY, SECOND_VALUE );
 
         for ( Map.Entry<String, String> preference : preferences.entrySet() ) {
-            doReturn( preference.getValue() ).when( storage ).read( preferenceScopeResolutionStrategy.order().get( 0 ), preference.getKey() );
+            doReturn( preference.getValue() ).when( storage ).read( preferenceScopeResolutionStrategyInfo.order().get( 0 ), preference.getKey() );
         }
 
-        final Map<String, PreferenceScopedValue<Object>> returnedPreferences = preferenceStore.searchScoped( preferenceScopeResolutionStrategy, preferences.keySet() );
+        final Map<String, PreferenceScopedValue<Object>> returnedPreferences = preferenceStore.searchScoped( preferenceScopeResolutionStrategyInfo, preferences.keySet() );
 
         assertEquals( preferences.size(), returnedPreferences.size() );
 
@@ -633,10 +545,10 @@ public class PreferenceStoreImplTest {
 
             assertTrue( returnedPreferences.containsKey( key ) );
             assertEquals( value, returnedPreferences.get( key ).getValue() );
-            assertEquals( preferenceScopeResolutionStrategy.order().get( 0 ).type(), returnedPreferences.get( key ).getScope().type() );
-            assertEquals( preferenceScopeResolutionStrategy.order().get( 0 ).key(), returnedPreferences.get( key ).getScope().key() );
+            assertEquals( preferenceScopeResolutionStrategyInfo.order().get( 0 ).type(), returnedPreferences.get( key ).getScope().type() );
+            assertEquals( preferenceScopeResolutionStrategyInfo.order().get( 0 ).key(), returnedPreferences.get( key ).getScope().key() );
 
-            verify( storage ).read( preferenceScopeResolutionStrategy.order().get( 0 ), key );
+            verify( storage ).read( preferenceScopeResolutionStrategyInfo.order().get( 0 ), key );
         }
     }
 
@@ -647,7 +559,7 @@ public class PreferenceStoreImplTest {
         preferences.put( SECOND_KEY, SECOND_VALUE );
 
         for ( Map.Entry<String, String> preference : preferences.entrySet() ) {
-            doReturn( preference.getValue() ).when( storage ).read( preferenceScopeResolutionStrategy.order().get( 0 ), preference.getKey() );
+            doReturn( preference.getValue() ).when( storage ).read( preferenceScopeResolutionStrategyInfo.order().get( 0 ), preference.getKey() );
         }
 
         final Map<String, PreferenceScopedValue<Object>> returnedPreferences = preferenceStore.searchScoped( preferences.keySet() );
@@ -660,16 +572,16 @@ public class PreferenceStoreImplTest {
 
             assertTrue( returnedPreferences.containsKey( key ) );
             assertEquals( value, returnedPreferences.get( key ).getValue() );
-            assertEquals( preferenceScopeResolutionStrategy.order().get( 0 ).type(), returnedPreferences.get( key ).getScope().type() );
-            assertEquals( preferenceScopeResolutionStrategy.order().get( 0 ).key(), returnedPreferences.get( key ).getScope().key() );
+            assertEquals( preferenceScopeResolutionStrategyInfo.order().get( 0 ).type(), returnedPreferences.get( key ).getScope().type() );
+            assertEquals( preferenceScopeResolutionStrategyInfo.order().get( 0 ).key(), returnedPreferences.get( key ).getScope().key() );
 
-            verify( storage ).read( preferenceScopeResolutionStrategy.order().get( 0 ), key );
+            verify( storage ).read( preferenceScopeResolutionStrategyInfo.order().get( 0 ), key );
         }
     }
 
     @Test
     public void allPreferencesByScopeTest() {
-        final PreferenceScope userScope = scopeBuilder.build( DefaultScopes.USER.type() );
+        final PreferenceScope userScope = userEntireApplicationScope;
         doReturn( FIRST_VALUE ).when( storage ).read( userScope, FIRST_KEY );
         doReturn( SECOND_VALUE ).when( storage ).read( userScope, SECOND_KEY );
 
@@ -692,17 +604,17 @@ public class PreferenceStoreImplTest {
 
     @Test
     public void allPreferencesByScopeResolutionStrategyTest() {
-        doReturn( FIRST_VALUE ).when( storage ).read( preferenceScopeResolutionStrategy, FIRST_KEY );
-        doReturn( SECOND_VALUE ).when( storage ).read( preferenceScopeResolutionStrategy, SECOND_KEY );
-        doReturn( THIRD_VALUE ).when( storage ).read( preferenceScopeResolutionStrategy, THIRD_KEY );
+        doReturn( FIRST_VALUE ).when( storage ).read( preferenceScopeResolutionStrategyInfo, FIRST_KEY );
+        doReturn( SECOND_VALUE ).when( storage ).read( preferenceScopeResolutionStrategyInfo, SECOND_KEY );
+        doReturn( THIRD_VALUE ).when( storage ).read( preferenceScopeResolutionStrategyInfo, THIRD_KEY );
 
         List<String> preferenceKeys = new ArrayList<>( 3 );
         preferenceKeys.add( FIRST_KEY );
         preferenceKeys.add( SECOND_KEY );
         preferenceKeys.add( THIRD_KEY );
-        doReturn( preferenceKeys ).when( storage ).allKeys( preferenceScopeResolutionStrategy.order() );
+        doReturn( preferenceKeys ).when( storage ).allKeys( preferenceScopeResolutionStrategyInfo.order() );
 
-        Map<String, Object> valueByKey = preferenceStore.all( preferenceScopeResolutionStrategy );
+        Map<String, Object> valueByKey = preferenceStore.all( preferenceScopeResolutionStrategyInfo );
 
         assertNotNull( valueByKey );
         assertEquals( 3, valueByKey.size() );
@@ -717,39 +629,16 @@ public class PreferenceStoreImplTest {
     }
 
     @Test
-    public void allPreferencesByScopeTypeTest() {
-        final PreferenceScope userScope = scopeBuilder.build( DefaultScopes.USER.type() );
-        doReturn( FIRST_VALUE ).when( storage ).read( userScope, FIRST_KEY );
-        doReturn( SECOND_VALUE ).when( storage ).read( userScope, SECOND_KEY );
-
-        List<String> keys = new ArrayList<>( 2 );
-        keys.add( FIRST_KEY );
-        keys.add( SECOND_KEY );
-        doReturn( keys ).when( storage ).allKeys( userScope );
-
-        final Map<String, Object> valueByKey = preferenceStore.all( DefaultScopes.USER.type() );
-
-        assertNotNull( valueByKey );
-        assertEquals( 2, valueByKey.size() );
-
-        assertTrue( valueByKey.containsKey( FIRST_KEY ) );
-        assertTrue( valueByKey.containsKey( SECOND_KEY ) );
-
-        assertEquals( FIRST_VALUE, valueByKey.get( FIRST_KEY ) );
-        assertEquals( SECOND_VALUE, valueByKey.get( SECOND_KEY ) );
-    }
-
-    @Test
     public void allPreferencesTest() {
-        doReturn( FIRST_VALUE ).when( storage ).read( preferenceScopeResolutionStrategy, FIRST_KEY );
-        doReturn( SECOND_VALUE ).when( storage ).read( preferenceScopeResolutionStrategy, SECOND_KEY );
-        doReturn( THIRD_VALUE ).when( storage ).read( preferenceScopeResolutionStrategy, THIRD_KEY );
+        doReturn( FIRST_VALUE ).when( storage ).read( preferenceScopeResolutionStrategyInfo, FIRST_KEY );
+        doReturn( SECOND_VALUE ).when( storage ).read( preferenceScopeResolutionStrategyInfo, SECOND_KEY );
+        doReturn( THIRD_VALUE ).when( storage ).read( preferenceScopeResolutionStrategyInfo, THIRD_KEY );
 
         List<String> preferenceKeys = new ArrayList<>( 3 );
         preferenceKeys.add( FIRST_KEY );
         preferenceKeys.add( SECOND_KEY );
         preferenceKeys.add( THIRD_KEY );
-        doReturn( preferenceKeys ).when( storage ).allKeys( preferenceScopeResolutionStrategy.order() );
+        doReturn( preferenceKeys ).when( storage ).allKeys( preferenceScopeResolutionStrategyInfo.order() );
 
         Map<String, Object> valueByKey = preferenceStore.all();
 
@@ -767,17 +656,17 @@ public class PreferenceStoreImplTest {
 
     @Test
     public void allScopedPreferencesByScopeResolutionStrategyTest() {
-        doReturn( new PreferenceScopedValue<>( FIRST_VALUE, globalScope.type(), globalScope.key() ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategy, FIRST_KEY );
-        doReturn( new PreferenceScopedValue<>( SECOND_VALUE, globalScope.type(), globalScope.key() ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategy, SECOND_KEY );
-        doReturn( new PreferenceScopedValue<>( THIRD_VALUE, userScope.type(), userScope.key() ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategy, THIRD_KEY );
+        doReturn( new PreferenceScopedValue<>( FIRST_VALUE, allUsersEntireApplication ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, FIRST_KEY );
+        doReturn( new PreferenceScopedValue<>( SECOND_VALUE, allUsersEntireApplication ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, SECOND_KEY );
+        doReturn( new PreferenceScopedValue<>( THIRD_VALUE, userEntireApplicationScope ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, THIRD_KEY );
 
         List<String> preferenceKeys = new ArrayList<>( 3 );
         preferenceKeys.add( FIRST_KEY );
         preferenceKeys.add( SECOND_KEY );
         preferenceKeys.add( THIRD_KEY );
-        doReturn( preferenceKeys ).when( storage ).allKeys( preferenceScopeResolutionStrategy.order() );
+        doReturn( preferenceKeys ).when( storage ).allKeys( preferenceScopeResolutionStrategyInfo.order() );
 
-        Map<String, PreferenceScopedValue<Object>> valueByKey = preferenceStore.allScoped( preferenceScopeResolutionStrategy );
+        Map<String, PreferenceScopedValue<Object>> valueByKey = preferenceStore.allScoped( preferenceScopeResolutionStrategyInfo );
 
         assertNotNull( valueByKey );
         assertEquals( 3, valueByKey.size() );
@@ -787,29 +676,26 @@ public class PreferenceStoreImplTest {
         assertTrue( valueByKey.containsKey( THIRD_KEY ) );
 
         assertEquals( FIRST_VALUE, valueByKey.get( FIRST_KEY ).getValue() );
-        assertEquals( globalScope.type(), valueByKey.get( FIRST_KEY ).getScope().type() );
-        assertEquals( globalScope.key(), valueByKey.get( FIRST_KEY ).getScope().key() );
+        assertEquals( allUsersEntireApplication, valueByKey.get( FIRST_KEY ).getScope() );
 
         assertEquals( SECOND_VALUE, valueByKey.get( SECOND_KEY ).getValue() );
-        assertEquals( globalScope.type(), valueByKey.get( SECOND_KEY ).getScope().type() );
-        assertEquals( globalScope.key(), valueByKey.get( SECOND_KEY ).getScope().key() );
+        assertEquals( allUsersEntireApplication, valueByKey.get( SECOND_KEY ).getScope() );
 
         assertEquals( THIRD_VALUE, valueByKey.get( THIRD_KEY ).getValue() );
-        assertEquals( userScope.type(), valueByKey.get( THIRD_KEY ).getScope().type() );
-        assertEquals( userScope.key(), valueByKey.get( THIRD_KEY ).getScope().key() );
+        assertEquals( userEntireApplicationScope, valueByKey.get( THIRD_KEY ).getScope() );
     }
 
     @Test
     public void allScopedPreferencesByDefaultScopeResolutionStrategyTest() {
-        doReturn( new PreferenceScopedValue<>( FIRST_VALUE, globalScope.type(), globalScope.key() ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategy, FIRST_KEY );
-        doReturn( new PreferenceScopedValue<>( SECOND_VALUE, globalScope.type(), globalScope.key() ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategy, SECOND_KEY );
-        doReturn( new PreferenceScopedValue<>( THIRD_VALUE, userScope.type(), userScope.key() ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategy, THIRD_KEY );
+        doReturn( new PreferenceScopedValue<>( FIRST_VALUE, allUsersEntireApplication ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, FIRST_KEY );
+        doReturn( new PreferenceScopedValue<>( SECOND_VALUE, allUsersEntireApplication ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, SECOND_KEY );
+        doReturn( new PreferenceScopedValue<>( THIRD_VALUE, userEntireApplicationScope ) ).when( storage ).readWithScope( preferenceScopeResolutionStrategyInfo, THIRD_KEY );
 
         List<String> preferenceKeys = new ArrayList<>( 3 );
         preferenceKeys.add( FIRST_KEY );
         preferenceKeys.add( SECOND_KEY );
         preferenceKeys.add( THIRD_KEY );
-        doReturn( preferenceKeys ).when( storage ).allKeys( preferenceScopeResolutionStrategy.order() );
+        doReturn( preferenceKeys ).when( storage ).allKeys( preferenceScopeResolutionStrategyInfo.order() );
 
         Map<String, PreferenceScopedValue<Object>> valueByKey = preferenceStore.allScoped();
 
@@ -821,51 +707,33 @@ public class PreferenceStoreImplTest {
         assertTrue( valueByKey.containsKey( THIRD_KEY ) );
 
         assertEquals( FIRST_VALUE, valueByKey.get( FIRST_KEY ).getValue() );
-        assertEquals( globalScope.type(), valueByKey.get( FIRST_KEY ).getScope().type() );
-        assertEquals( globalScope.key(), valueByKey.get( FIRST_KEY ).getScope().key() );
+        assertEquals( allUsersEntireApplication, valueByKey.get( FIRST_KEY ).getScope() );
 
         assertEquals( SECOND_VALUE, valueByKey.get( SECOND_KEY ).getValue() );
-        assertEquals( globalScope.type(), valueByKey.get( SECOND_KEY ).getScope().type() );
-        assertEquals( globalScope.key(), valueByKey.get( SECOND_KEY ).getScope().key() );
+        assertEquals( allUsersEntireApplication, valueByKey.get( SECOND_KEY ).getScope() );
 
         assertEquals( THIRD_VALUE, valueByKey.get( THIRD_KEY ).getValue() );
-        assertEquals( userScope.type(), valueByKey.get( THIRD_KEY ).getScope().type() );
-        assertEquals( userScope.key(), valueByKey.get( THIRD_KEY ).getScope().key() );
+        assertEquals( userEntireApplicationScope, valueByKey.get( THIRD_KEY ).getScope() );
     }
 
     @Test
     public void removeByScopeTest() {
-        preferenceStore.remove( globalScope, KEY );
+        preferenceStore.remove( allUsersEntireApplication, KEY );
 
-        verify( storage ).delete( globalScope, KEY );
-    }
-
-    @Test
-    public void removeByScopeTypeTest() {
-        preferenceStore.remove( DefaultScopes.GLOBAL.type(), KEY );
-
-        verify( storage ).delete( globalScope, KEY );
+        verify( storage ).delete( allUsersEntireApplication, KEY );
     }
 
     @Test
     public void removeByScopesTest() {
-        preferenceStore.remove( preferenceScopeResolutionStrategy.order(), KEY );
+        preferenceStore.remove( preferenceScopeResolutionStrategyInfo.order(), KEY );
 
-        verify( storage ).delete( preferenceScopeResolutionStrategy.order().get( 0 ), KEY );
-        verify( storage ).delete( preferenceScopeResolutionStrategy.order().get( 1 ), KEY );
-    }
-
-    @Test
-    public void removeByScopeTypesTest() {
-        preferenceStore.removeScopeTypes( DefaultScopes.allTypes(), KEY );
-
-        verify( storage ).delete( preferenceScopeResolutionStrategy.order().get( 0 ), KEY );
-        verify( storage ).delete( preferenceScopeResolutionStrategy.order().get( 1 ), KEY );
+        verify( storage ).delete( preferenceScopeResolutionStrategyInfo.order().get( 0 ), KEY );
+        verify( storage ).delete( preferenceScopeResolutionStrategyInfo.order().get( 1 ), KEY );
     }
 
     private void mockStorageRead( final String value ) {
         doReturn( value ).when( storage ).read( any( PreferenceScope.class ), anyString() );
-        doReturn( value ).when( storage ).read( any( PreferenceScopeResolutionStrategy.class ), anyString() );
+        doReturn( value ).when( storage ).read( any( PreferenceScopeResolutionStrategyInfo.class ), anyString() );
     }
 
     private FileSystem mockFileSystem() {

@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.preferences.shared;
 
-import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 
 /**
@@ -24,15 +23,6 @@ import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScope
  * If no backend implementation for this class exists, a default one will be provided.
  */
 public interface PreferenceScopeTypes {
-
-    /**
-     * Checks if a scope is valid.
-     * @param scope Scope to check.
-     * @throws InvalidPreferenceScopeException if the type passed is invalid, or if the scope's key
-     * is null and a key is required for that type, or if the key is not null and the scope's type
-     * does not require one.
-     */
-    void validate( final PreferenceScope scope ) throws InvalidPreferenceScopeException;
 
     /**
      * Checks if a scope type requires a custom key.

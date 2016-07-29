@@ -16,39 +16,84 @@
 
 package org.uberfire.ext.preferences.backend;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.ext.preferences.backend.annotations.ComponentKey;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
-import org.uberfire.ext.preferences.shared.PreferenceScopeBuilder;
+import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
-import org.uberfire.ext.preferences.shared.PreferenceScopedValue;
+import org.uberfire.ext.preferences.shared.PreferenceScopeResolver;
 import org.uberfire.ext.preferences.shared.PreferenceStorage;
 import org.uberfire.ext.preferences.shared.PreferenceStore;
+import org.uberfire.annotations.Customizable;
+import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
 
 @Service
 public class PreferenceStoreImpl implements PreferenceStore {
 
     protected PreferenceStorage storage;
 
-    protected PreferenceScopeResolutionStrategy defaultResolutionStrategy;
+    protected PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy;
 
-    protected PreferenceScopeBuilder scopeBuilder;
+    protected PreferenceScopeFactory scopeFactory;
 
     protected PreferenceStoreImpl() {
     }
 
+
+    PreferenceStoreImpl( final PreferenceStorage storage,
+                         final PreferenceScopeFactory scopeFactory,
+                         final PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy ) {
+        this.storage = storage;
+        this.scopeFactory = scopeFactory;
+        this.defaultScopeResolutionStrategy = defaultScopeResolutionStrategy;
+    }
+
     @Inject
     public PreferenceStoreImpl( final PreferenceStorage storage,
-                                @Customizable final PreferenceScopeResolutionStrategy defaultResolutionStrategy,
-                                final PreferenceScopeBuilder scopeBuilder ) {
+                                final PreferenceScopeFactory scopeFactory,
+                                @Customizable final PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy,
+                                final Instance<PreferenceScopeResolutionStrategy> preferenceScopeResolutionStrategy,
+                                final InjectionPoint ip ) {
         this.storage = storage;
-        this.defaultResolutionStrategy = defaultResolutionStrategy;
-        this.scopeBuilder = scopeBuilder;
+        this.scopeFactory = scopeFactory;
+
+        if ( preferenceScopeResolutionStrategy.isUnsatisfied() ) {
+            if ( ip != null ) {
+                String componentKey = null;
+                Annotation annotation = ip.getAnnotated().getAnnotation( ComponentKey.class );
+                if ( annotation != null ) {
+                    componentKey = ( (ComponentKey) annotation ).value();
+                }
+
+                this.defaultScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopeFactory,
+                                                                                                    componentKey );
+            } else {
+                this.defaultScopeResolutionStrategy = defaultScopeResolutionStrategy;
+            }
+        } else {
+            this.defaultScopeResolutionStrategy = preferenceScopeResolutionStrategy.get();
+        }
+    }
+
+    @Override
+    public PreferenceScopeResolutionStrategyInfo getDefaultScopeResolutionStrategyInfo() {
+        return defaultScopeResolutionStrategy.getInfo();
+    }
+
+    @Override
+    public PreferenceScopeResolver getDefaultScopeResolver() {
+        return defaultScopeResolutionStrategy.getScopeResolver();
     }
 
     @Override
@@ -59,23 +104,16 @@ public class PreferenceStoreImpl implements PreferenceStore {
     }
 
     @Override
-    public <T> void put( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public <T> void put( final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                          final String key,
                          final T value ) {
-        put( scopeResolutionStrategy.defaultScope(), key, value );
-    }
-
-    @Override
-    public <T> void put( final String scopeType,
-                         final String key,
-                         final T value ) {
-        put( scopeBuilder.build( scopeType ), key, value );
+        put( scopeResolutionStrategyInfo.defaultScope(), key, value );
     }
 
     @Override
     public <T> void put( final String key,
                          final T value ) {
-        put( defaultResolutionStrategy, key, value );
+        put( defaultScopeResolutionStrategy.getInfo(), key, value );
     }
 
     @Override
@@ -85,20 +123,14 @@ public class PreferenceStoreImpl implements PreferenceStore {
     }
 
     @Override
-    public <T> void put( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public <T> void put( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                          final Map<String, T> valueByKey ) {
-        put( scopeResolutionStrategy.defaultScope(), valueByKey );
-    }
-
-    @Override
-    public <T> void put( final String scopeType,
-                         final Map<String, T> valueByKey ) {
-        put( scopeBuilder.build( scopeType ), valueByKey );
+        put( scopeResolutionStrategyInfo.defaultScope(), valueByKey );
     }
 
     @Override
     public <T> void put( final Map<String, T> valueByKey ) {
-        put( defaultResolutionStrategy, valueByKey );
+        put( defaultScopeResolutionStrategy.getInfo(), valueByKey );
     }
 
     @Override
@@ -111,23 +143,16 @@ public class PreferenceStoreImpl implements PreferenceStore {
     }
 
     @Override
-    public <T> void putIfAbsent( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public <T> void putIfAbsent( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                                  final String key,
                                  final T value ) {
-        putIfAbsent( scopeResolutionStrategy.defaultScope(), key, value );
-    }
-
-    @Override
-    public <T> void putIfAbsent( final String scopeType,
-                                 final String key,
-                                 final T value ) {
-        putIfAbsent( scopeBuilder.build( scopeType ), key, value );
+        putIfAbsent( scopeResolutionStrategyInfo.defaultScope(), key, value );
     }
 
     @Override
     public <T> void putIfAbsent( final String key,
                                  final T value ) {
-        putIfAbsent( defaultResolutionStrategy, key, value );
+        putIfAbsent( defaultScopeResolutionStrategy.getInfo(), key, value );
     }
 
     @Override
@@ -137,20 +162,14 @@ public class PreferenceStoreImpl implements PreferenceStore {
     }
 
     @Override
-    public <T> void putIfAbsent( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public <T> void putIfAbsent( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                                  final Map<String, T> valueByKey ) {
-        putIfAbsent( scopeResolutionStrategy.defaultScope(), valueByKey );
-    }
-
-    @Override
-    public <T> void putIfAbsent( final String scopeType,
-                                 final Map<String, T> valueByKey ) {
-        putIfAbsent( scopeBuilder.build( scopeType ), valueByKey );
+        putIfAbsent( scopeResolutionStrategyInfo.defaultScope(), valueByKey );
     }
 
     @Override
     public <T> void putIfAbsent( final Map<String, T> valueByKey ) {
-        putIfAbsent( defaultResolutionStrategy, valueByKey );
+        putIfAbsent( defaultScopeResolutionStrategy.getInfo(), valueByKey );
     }
 
     @Override
@@ -168,61 +187,54 @@ public class PreferenceStoreImpl implements PreferenceStore {
     }
 
     @Override
-    public <T> T get( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public <T> T get( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                       final String key ) {
-        return storage.read( scopeResolutionStrategy, key );
+        return storage.read( scopeResolutionStrategyInfo, key );
     }
 
     @Override
-    public <T> T get( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public <T> T get( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                       final String key,
                       final T defaultValue ) {
-        T value = get( scopeResolutionStrategy, key );
+        T value = get( scopeResolutionStrategyInfo, key );
         return value != null ? value : defaultValue;
     }
 
     @Override
-    public <T> T get( final String scopeType,
-                      final String key ) {
-        return get( scopeBuilder.build( scopeType ), key );
-    }
-
-    @Override
-    public <T> T get( final String scopeType,
-                      final String key,
-                      final T defaultValue ) {
-        return get( scopeBuilder.build( scopeType ), key, defaultValue );
-    }
-
-    @Override
     public <T> T get( final String key ) {
-        return get( defaultResolutionStrategy, key );
+        return get( defaultScopeResolutionStrategy.getInfo(), key );
+    }
+
+    @Override
+    public <T> T get( final String key,
+                      final T defaultValue ) {
+        return get( defaultScopeResolutionStrategy.getInfo(), key, defaultValue );
     }
 
 
     @Override
-    public <T> PreferenceScopedValue<T> getScoped( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public <T> PreferenceScopedValue<T> getScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                                                    final String key ) {
-        return storage.readWithScope( scopeResolutionStrategy, key );
+        return storage.readWithScope( scopeResolutionStrategyInfo, key );
     }
 
     @Override
-    public <T> PreferenceScopedValue<T> getScoped( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public <T> PreferenceScopedValue<T> getScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                                                    final String key,
                                                    final T defaultValue ) {
-        PreferenceScopedValue<T> value = getScoped( scopeResolutionStrategy, key );
-        return value != null ? value : new PreferenceScopedValue<>( defaultValue, null, null );
+        PreferenceScopedValue<T> value = getScoped( scopeResolutionStrategyInfo, key );
+        return value != null ? value : new PreferenceScopedValue<>( defaultValue, null );
     }
 
     @Override
     public <T> PreferenceScopedValue<T> getScoped( final String key ) {
-        return getScoped( defaultResolutionStrategy, key );
+        return getScoped( defaultScopeResolutionStrategy.getInfo(), key );
     }
 
     @Override
     public <T> PreferenceScopedValue<T> getScoped( final String key,
                                                    final T defaultValue ) {
-        return getScoped( defaultResolutionStrategy, key, defaultValue );
+        return getScoped( defaultScopeResolutionStrategy.getInfo(), key, defaultValue );
     }
 
     @Override
@@ -239,45 +251,39 @@ public class PreferenceStoreImpl implements PreferenceStore {
     }
 
     @Override
-    public Map<String, Object> search( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public Map<String, Object> search( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                                        final Collection<String> keys ) {
         if ( keys == null ) {
-            return all( scopeResolutionStrategy );
+            return all( scopeResolutionStrategyInfo );
         }
 
         Map<String, Object> map = new HashMap<>();
-        keys.forEach( key -> map.put( key, storage.read( scopeResolutionStrategy, key ) ) );
+        keys.forEach( key -> map.put( key, storage.read( scopeResolutionStrategyInfo, key ) ) );
 
         return map;
     }
 
     @Override
-    public Map<String, Object> search( final String scopeType,
-                                       final Collection<String> keys ) {
-        return search( scopeBuilder.build( scopeType ), keys );
-    }
-
-    @Override
     public Map<String, Object> search( final Collection<String> keys ) {
-        return search( defaultResolutionStrategy, keys );
+        return search( defaultScopeResolutionStrategy.getInfo(), keys );
     }
 
     @Override
-    public Map<String, PreferenceScopedValue<Object>> searchScoped( final PreferenceScopeResolutionStrategy scopeResolutionStrategy,
+    public Map<String, PreferenceScopedValue<Object>> searchScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
                                                                     final Collection<String> keys ) {
         if ( keys == null ) {
-            return allScoped( scopeResolutionStrategy );
+            return allScoped( scopeResolutionStrategyInfo );
         }
 
         Map<String, PreferenceScopedValue<Object>> map = new HashMap<>();
-        keys.forEach( key -> map.put( key, storage.readWithScope( scopeResolutionStrategy, key ) ) );
+        keys.forEach( key -> map.put( key, storage.readWithScope( scopeResolutionStrategyInfo, key ) ) );
 
         return map;
     }
 
     @Override
     public Map<String, PreferenceScopedValue<Object>> searchScoped( final Collection<String> keys ) {
-        return searchScoped( defaultResolutionStrategy, keys );
+        return searchScoped( defaultScopeResolutionStrategy.getInfo(), keys );
     }
 
     @Override
@@ -286,28 +292,23 @@ public class PreferenceStoreImpl implements PreferenceStore {
     }
 
     @Override
-    public Map<String, Object> all( final PreferenceScopeResolutionStrategy scopeResolutionStrategy ) {
-        return search( storage.allKeys( scopeResolutionStrategy.order() ) );
-    }
-
-    @Override
-    public Map<String, Object> all( final String scopeType ) {
-        return all( scopeBuilder.build( scopeType ) );
+    public Map<String, Object> all( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
+        return search( storage.allKeys( scopeResolutionStrategyInfo.order() ) );
     }
 
     @Override
     public Map<String, Object> all() {
-        return all( defaultResolutionStrategy );
+        return all( defaultScopeResolutionStrategy.getInfo() );
     }
 
     @Override
-    public Map<String, PreferenceScopedValue<Object>> allScoped( final PreferenceScopeResolutionStrategy scopeResolutionStrategy ) {
-        return searchScoped( storage.allKeys( scopeResolutionStrategy.order() ) );
+    public Map<String, PreferenceScopedValue<Object>> allScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
+        return searchScoped( scopeResolutionStrategyInfo, storage.allKeys( scopeResolutionStrategyInfo.order() ) );
     }
 
     @Override
     public Map<String, PreferenceScopedValue<Object>> allScoped() {
-        return allScoped( defaultResolutionStrategy );
+        return allScoped( defaultScopeResolutionStrategy.getInfo() );
     }
 
     @Override
@@ -317,20 +318,8 @@ public class PreferenceStoreImpl implements PreferenceStore {
     }
 
     @Override
-    public void remove( final String scopeType,
-                        final String key ) {
-        remove( scopeBuilder.build( scopeType ), key );
-    }
-
-    @Override
     public void remove( final List<PreferenceScope> scopes,
                         final String key ) {
         scopes.forEach( scope -> remove( scope, key ) );
-    }
-
-    @Override
-    public void removeScopeTypes( final List<String> scopeTypes,
-                                  final String key ) {
-        scopeTypes.forEach( scopeType -> remove( scopeType, key ) );
     }
 }

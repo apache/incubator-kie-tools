@@ -16,9 +16,7 @@
 
 package org.uberfire.ext.preferences.shared;
 
-import java.util.List;
-
-import org.uberfire.commons.lifecycle.Disposable;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
  * Defines the hierarchy used to resolve a preference value.
@@ -27,14 +25,15 @@ import org.uberfire.commons.lifecycle.Disposable;
 public interface PreferenceScopeResolutionStrategy {
 
     /**
-     * Defines the order of scopes that will be used when a preference value is searched.
-     * @return Scope order.
+     * Defines the order of scopes that will be used when a preference value is searched, as well
+     * the scope where a preference will be persisted if none is provided.
+     * @return Resolution strategy information.
      */
-    List<PreferenceScope> order();
+    PreferenceScopeResolutionStrategyInfo getInfo();
 
     /**
-     * Defines the default scope that will be used to persist a preference, when none is passed.
-     * @return Default scope.
+     * Returns a scope resolver for this scope resolution strategy.
+     * @return Resolution strategy information.
      */
-    PreferenceScope defaultScope();
+    PreferenceScopeResolver getScopeResolver();
 }
