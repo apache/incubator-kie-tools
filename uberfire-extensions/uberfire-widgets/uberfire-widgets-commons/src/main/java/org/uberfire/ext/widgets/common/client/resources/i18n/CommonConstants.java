@@ -158,4 +158,9 @@ public interface CommonConstants
     String PerspectiveSearchHint();
 
     String PerspectiveNotFound();
+
+    String by();
+
+    String on();
+
 }

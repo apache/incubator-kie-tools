@@ -72,9 +72,9 @@
           <gwt:InlineLabel ui:field="number"  addStyleNames='{style.version}'/>
         </div>
         <div ui:field="authorContainer" class='{style.author}' style="float:right">
-          <gwt:InlineLabel text="by"/>
+          <gwt:InlineLabel text='{i18n.by}'/>
           <gwt:InlineLabel ui:field="author"/>
-          <gwt:InlineLabel text="on"/>
+          <gwt:InlineLabel text='{i18n.on}'/>
           <gwt:InlineLabel ui:field="date"/>
         </div>
       </div>
