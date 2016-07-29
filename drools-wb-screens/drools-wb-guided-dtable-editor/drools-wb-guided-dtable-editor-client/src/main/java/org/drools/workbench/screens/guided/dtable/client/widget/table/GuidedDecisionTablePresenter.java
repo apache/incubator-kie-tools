@@ -72,6 +72,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.D
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
 import org.drools.workbench.screens.guided.dtable.client.widget.auditlog.AuditLog;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
@@ -80,6 +81,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanager.GuidedDecisionTableLockManager;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
@@ -1338,7 +1340,15 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             final int rowIndex = sc.getRowIndex();
             final int columnIndex = findUiColumnIndex( sc.getColumnIndex() );
             final BaseColumn column = model.getExpandedColumns().get( columnIndex );
-            if ( !( column instanceof RowNumberCol52 ) ) {
+            final GridColumn<?> uiColumn = uiModel.getColumns().get( columnIndex );
+            if ( column instanceof RowNumberCol52 ) {
+                continue;
+            }
+            if ( uiColumn instanceof BooleanUiColumn ) {
+                uiModel.setCell( rowIndex,
+                                 columnIndex,
+                                 new GuidedDecisionTableUiCell<>( false ) );
+            } else {
                 uiModel.deleteCell( rowIndex,
                                     columnIndex );
             }

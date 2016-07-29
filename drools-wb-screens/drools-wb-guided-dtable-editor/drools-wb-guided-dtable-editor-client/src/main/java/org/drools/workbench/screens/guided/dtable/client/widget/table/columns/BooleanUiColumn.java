@@ -18,7 +18,12 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 import java.util.List;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.CheckBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl.CheckBoxDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.multiple.impl.BooleanColumnDOMElementRenderer;
@@ -38,6 +43,13 @@ public class BooleanUiColumn extends BaseMultipleDOMElementUiColumn<Boolean, Che
                isVisible,
                access,
                factory );
+    }
+
+    @Override
+    public void edit( final GridCell<Boolean> cell,
+                      final GridBodyCellRenderContext context,
+                      final Callback<GridCellValue<Boolean>> callback ) {
+        callback.callback( new GuidedDecisionTableUiCell<>( !cell.getValue().getValue() ) );
     }
 
 }

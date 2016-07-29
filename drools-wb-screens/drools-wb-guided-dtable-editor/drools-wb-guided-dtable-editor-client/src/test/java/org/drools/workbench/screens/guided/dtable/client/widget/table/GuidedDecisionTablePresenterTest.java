@@ -47,6 +47,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
@@ -60,6 +61,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -1302,7 +1304,90 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onDeleteSelectedCells() {
+    public void onDeleteSelectedCellsWithSelection() {
+        final GridData uiModel = dtPresenter.getUiModel();
+        uiModel.selectCell( 0,
+                            1 );
+
+        final ArgumentCaptor<Integer> columnIndexCaptor = ArgumentCaptor.forClass( Integer.class );
+        final ArgumentCaptor<GridData.Range> rowRangeCaptor = ArgumentCaptor.forClass( GridData.Range.class );
+
+        dtPresenter.onDeleteSelectedCells();
+
+        verify( synchronizer,
+                times( 1 ) ).deleteCell( rowRangeCaptor.capture(),
+                                         columnIndexCaptor.capture() );
+
+        final Integer columnIndex = columnIndexCaptor.getValue();
+        final GridData.Range rowRange = rowRangeCaptor.getValue();
+        assertEquals( 0,
+                      rowRange.getMinRowIndex() );
+        assertEquals( 0,
+                      rowRange.getMaxRowIndex() );
+        assertEquals( 1,
+                      columnIndex.intValue() );
+    }
+
+    @Test
+    public void onDeleteSelectedCellsWithSelectionWithBooleanColumn() {
+        final AttributeCol52 column = new AttributeCol52() {{
+            setAttribute( RuleAttributeWidget.ENABLED_ATTR );
+        }};
+        dtPresenter.appendColumn( column );
+
+        final GridData uiModel = dtPresenter.getUiModel();
+        uiModel.selectCell( 0,
+                            2 );
+
+        dtPresenter.onDeleteSelectedCells();
+
+        verify( synchronizer,
+                never() ).deleteCell( any( GridData.Range.class ),
+                                      any( Integer.class ) );
+    }
+
+    @Test
+    public void onDeleteSelectedCellsWithSelectionsWithBooleanColumn() {
+        final AttributeCol52 column = new AttributeCol52() {{
+            setAttribute( RuleAttributeWidget.ENABLED_ATTR );
+        }};
+        dtPresenter.appendColumn( column );
+
+        final GridData uiModel = dtPresenter.getUiModel();
+        uiModel.selectCell( 0,
+                            1 );
+        uiModel.selectCell( 0,
+                            2 );
+
+        final ArgumentCaptor<Integer> columnIndexCaptor = ArgumentCaptor.forClass( Integer.class );
+        final ArgumentCaptor<GridData.Range> rowRangeCaptor = ArgumentCaptor.forClass( GridData.Range.class );
+        final ArgumentCaptor<GuidedDecisionTableUiCell> cellValueCaptor = ArgumentCaptor.forClass( GuidedDecisionTableUiCell.class );
+
+        dtPresenter.onDeleteSelectedCells();
+
+        verify( synchronizer,
+                times( 1 ) ).deleteCell( rowRangeCaptor.capture(),
+                                         columnIndexCaptor.capture() );
+        verify( synchronizer,
+                never() ).deleteCell( any( GridData.Range.class ),
+                                      eq( 2 ) );
+        final GridCell<?> booleanCell = uiModel.getCell( 0,
+                                                         2 );
+        assertNotNull( booleanCell );
+        assertFalse( (Boolean) booleanCell.getValue().getValue() );
+
+        final Integer columnIndex = columnIndexCaptor.getValue();
+        final GridData.Range rowRange = rowRangeCaptor.getValue();
+        assertEquals( 0,
+                      rowRange.getMinRowIndex() );
+        assertEquals( 0,
+                      rowRange.getMaxRowIndex() );
+        assertEquals( 1,
+                      columnIndex.intValue() );
+    }
+
+    @Test
+    public void onDeleteSelectedCellsWithoutSelections() {
         dtPresenter.onDeleteSelectedCells();
 
         verify( synchronizer,
