@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.utils.ProjectResourcePaths;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ModalFooter;
@@ -86,6 +87,8 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
 
     BaseModal modal;
 
+    Button copyButton;
+
     @Override
     public void init( CopyPopUpPresenter presenter ) {
         this.presenter = presenter;
@@ -132,6 +135,7 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
                 return selectedPackage.getPackageTestSrcPath();
             }
         }
+
         return null;
     }
 
@@ -156,8 +160,24 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
     private ModalFooter footer() {
         GenericModalFooter footer = new GenericModalFooter();
         footer.addButton( translate( Constants.CopyPopUpView_Cancel ), cancelCommand(), ButtonType.DEFAULT );
-        footer.addButton( translate( Constants.CopyPopUpView_MakeACopy ), copyCommand(), ButtonType.PRIMARY );
+        footer.add( copyButton() );
         return footer;
+    }
+
+    Button copyButton() {
+        if ( copyButton == null ) {
+            copyButton = button( translate( Constants.CopyPopUpView_MakeACopy ), copyCommand(), ButtonType.PRIMARY );
+        }
+
+        return copyButton;
+    }
+
+    Button button( final String text,
+                   final Command command,
+                   final ButtonType type ) {
+        Button button = new Button( text, event -> command.execute() );
+        button.setType( type );
+        return button;
     }
 
     private String translate( final String key,
@@ -166,12 +186,7 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
     }
 
     private Command copyCommand() {
-        return new Command() {
-            @Override
-            public void execute() {
-                presenter.copy( newNameTextBox.getValue() );
-            }
-        };
+        return () -> presenter.copy( newNameTextBox.getValue() );
     }
 
     private void newNameTextBoxSetup() {
@@ -188,19 +203,15 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
     }
 
     private Command cancelCommand() {
-        return new Command() {
-            @Override
-            public void execute() {
-                presenter.cancel();
-            }
-        };
+        return () -> presenter.cancel();
     }
 
-    private void packageListBoxSetup() {
+    void packageListBoxSetup() {
         final String path = presenter.getPath().toURI();
 
         if ( thereIsAnActiveProject() && isAProjectResource( path ) ) {
-            packageListBox.setContext( context, true );
+            copyButton().setEnabled( false );
+            packageListBox.setContext( context, true, () -> copyButton.setEnabled( true ) );
         }
     }
 
@@ -212,14 +223,14 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
         return presenter.getToggleCommentPresenter();
     }
 
-    private boolean isAProjectResource( final String path ) {
+    boolean isAProjectResource( final String path ) {
         return path.contains( ProjectResourcePaths.MAIN_RESOURCES_PATH )
                 || path.contains( ProjectResourcePaths.MAIN_SRC_PATH )
                 || path.contains( ProjectResourcePaths.TEST_RESOURCES_PATH )
                 || path.contains( ProjectResourcePaths.TEST_SRC_PATH );
     }
 
-    private boolean thereIsAnActiveProject() {
+    boolean thereIsAnActiveProject() {
         return context.getActiveProject() != null;
     }
 }

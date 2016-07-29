@@ -17,7 +17,6 @@ package org.kie.workbench.common.widgets.client.handlers;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +36,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.mvp.Command;
 
 /**
  * A ListBox that shows a list of Packages from which the user can select
@@ -48,12 +48,13 @@ public class PackageListBox extends Composite {
 
     private Select select;
 
-    @Inject
     protected Caller<KieProjectService> projectService;
 
     private Map<String, Package> packages;
 
-    public PackageListBox() {
+    @Inject
+    public PackageListBox( final Caller<KieProjectService> projectService ) {
+        this.projectService = projectService;
         initWidget( panel );
         getElement().getStyle().setMarginBottom( 15, Style.Unit.PX );
         packages = new HashMap<String, Package>();
@@ -61,15 +62,21 @@ public class PackageListBox extends Composite {
 
     public void setContext( final ProjectContext context,
                             final boolean includeDefaultPackage ) {
+        setContext( context, includeDefaultPackage, null );
+    }
+
+    public void setContext( final ProjectContext context,
+                            final boolean includeDefaultPackage,
+                            final Command packagesLoadedCommand ) {
         noPackage();
         packages.clear();
 
-        //Disable and set default content if Project is not selected
+        // Disable and set default content if Project is not selected
         if ( context.getActiveProject() == null ) {
             return;
         }
 
-        //Otherwise show list of packages
+        // Otherwise show list of packages
         final Package activePackage = context.getActivePackage();
         projectService.call( new RemoteCallback<Set<Package>>() {
             @Override
@@ -78,64 +85,77 @@ public class PackageListBox extends Composite {
                 final List<Package> sortedPackages = new ArrayList<Package>();
                 sortedPackages.addAll( pkgs );
                 Collections.sort( sortedPackages,
-                        new Comparator<Package>() {
-                            @Override
-                            public int compare( final Package p1,
-                                                final Package p2 ) {
-                                return p1.getCaption().compareTo( p2.getCaption() );
-                            }
-                        } );
+                                  ( p1, p2 ) -> p1.getCaption().compareTo( p2.getCaption() ) );
 
-                //Remove default package, if not required (after sorting it is guaranteed to be at index 0)
+                // Remove default package, if not required (after sorting it is guaranteed to be at index 0)
                 if ( !includeDefaultPackage ) {
                     sortedPackages.remove( 0 );
                 }
 
-                //Disable and set default content if no Packages available
+                // Disable and set default content if no Packages available
                 if ( sortedPackages.size() == 0 ) {
                     return;
                 }
 
-                clearSelect();
-                //Add to ListBox
-                for ( Package pkg : sortedPackages ) {
-                    final Option option = new Option();
-                    option.setText( pkg.getCaption() );
-                    select.add( option );
-                    packages.put( pkg.getCaption(), pkg );
-                    if ( pkg.equals( activePackage ) ) {
-                        select.setValue( pkg.getCaption() );
-                    }
+                addPackagesToSelect( sortedPackages, activePackage );
 
+                if ( packagesLoadedCommand != null ) {
+                    packagesLoadedCommand.execute();
                 }
-
-                select.refresh();
             }
         } ).resolvePackages( context.getActiveProject() );
     }
 
+    private void addPackagesToSelect( final List<Package> sortedPackages,
+                                      final Package activePackage ) {
+        clearSelect();
+
+        for ( Package pkg : sortedPackages ) {
+            addPackage( pkg, activePackage );
+        }
+
+        refreshSelect();
+    }
+
     public Package getSelectedPackage() {
-        if ( packages.size() == 0 || select == null ) return null;
+        if ( packages.size() == 0 || select == null ) {
+            return null;
+        }
         return packages.get( select.getValue() );
     }
 
-    private void noPackage() {
+    void addPackage( final Package pkg,
+                     final Package activePackage ) {
+        final Option option = new Option();
+        option.setText( pkg.getCaption() );
+        select.add( option );
+        packages.put( pkg.getCaption(), pkg );
+        if ( pkg.equals( activePackage ) ) {
+            select.setValue( pkg.getCaption() );
+        }
+    }
+
+    void noPackage() {
         clearSelect();
         final Option option = new Option();
         option.setText( CommonConstants.INSTANCE.ItemUndefinedPath() );
 
         select.add( option );
         select.setEnabled( false );
-        select.refresh();
+        refreshSelect();
     }
 
-    private void clearSelect() {
+    void clearSelect() {
         if ( select != null ) {
             select.removeFromParent();
             removeSelect( select.getElement() );
         }
         select = new Select();
         panel.setWidget( select );
+    }
+
+    void refreshSelect() {
+        select.refresh();
     }
 
     private native void removeSelect( final Element e ) /*-{
