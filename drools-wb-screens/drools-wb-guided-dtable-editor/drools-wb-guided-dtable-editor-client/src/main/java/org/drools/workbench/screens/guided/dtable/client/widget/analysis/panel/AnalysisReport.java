@@ -32,6 +32,12 @@ public class AnalysisReport {
         this.place = place;
     }
 
+    public AnalysisReport( final PlaceRequest place,
+                           final Set<Issue> issues ) {
+        this( place );
+        setIssues( issues );
+    }
+
     public void setIssues( final Set<Issue> issues ) {
         this.issues.addAll( issues );
     }

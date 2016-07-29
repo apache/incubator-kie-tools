@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.Set;
+public interface AnalyzerController {
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+    void initialiseAnalysis();
 
-public interface CheckAssert {
-
-    void assertChecks( RuleInspector ruleInspector,
-                       Set<Check> checks );
+    void terminateAnalysis();
 
 }

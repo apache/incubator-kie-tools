@@ -32,12 +32,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnInserted;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.ExtendedGuidedDecisionTableBuilder.*;
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
@@ -74,7 +70,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
@@ -83,9 +79,9 @@ public class DecisionTableAnalyzerUpdateTest {
 
         ArrayList<Coordinate> updates = new ArrayList<>();
         updates.add( new Coordinate( 1, 2 ) );
-        analyzer.onValidate( new ValidateEvent( updates ) );
+        analyzer.analyze( updates );
 
-        assertColumnValuesAreEmpty( analyzerProvider.getAnalysisReport() );
+        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
     }
 
     @Test
@@ -104,7 +100,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 4 );
         assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
@@ -112,9 +108,9 @@ public class DecisionTableAnalyzerUpdateTest {
         // REMOVE 2
         table52.getData().remove( 1 );
 
-        analyzer.onDeleteRow( new DeleteRowEvent( 1 ) );
-        analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
-                                                                getMockColumnData( table52.getData().size() ) ) );
+        final DeleteRowEvent event = new DeleteRowEvent( 1 );
+        analyzer.deleteRow( event.getIndex() );
+        analyzer.updateColumns( table52.getData().size() );
 
         assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 3 );
         assertDoesNotContain( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 3 );
@@ -122,10 +118,9 @@ public class DecisionTableAnalyzerUpdateTest {
         // BREAK LINE NUMBER 2 ( previously line number 3 )
         table52.getData().get( 1 ).get( 3 ).setNumericValue( 1 ); // Change the value of person.age ==
 
-        analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
-                                                                getMockColumnData( table52.getData().size() ) ) );
+        analyzer.updateColumns( table52.getData().size() );
 
-        analyzer.onValidate( new ValidateEvent( getUpdates( 1, 3 ) ) );
+        analyzer.analyze( getUpdates( 1, 3 ) );
 
         assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
 
@@ -145,7 +140,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
@@ -153,11 +148,11 @@ public class DecisionTableAnalyzerUpdateTest {
         // REMOVE 2
         table52.getData().remove( 0 );
 
-        analyzer.onDeleteRow( new DeleteRowEvent( 0 ) );
-        analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
-                                                                getMockColumnData( table52.getData().size() ) ) );
+        final DeleteRowEvent event = new DeleteRowEvent( 0 );
+        analyzer.deleteRow( event.getIndex() );
+        analyzer.updateColumns( table52.getData().size() );
 
-        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
+        assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
     }
 
     @Test
@@ -175,9 +170,9 @@ public class DecisionTableAnalyzerUpdateTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
-        assertColumnValuesAreEmpty( analyzerProvider.getAnalysisReport() );
+        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
 
         // REMOVE COLUMN
         table52.getActionCols().remove( 0 );
@@ -185,7 +180,7 @@ public class DecisionTableAnalyzerUpdateTest {
         table52.getData().get( 1 ).remove( 3 );
         table52.getData().get( 2 ).remove( 3 );
 
-        analyzer.onAfterDeletedColumn( new AfterColumnDeleted( 3, 1 ) );
+        analyzer.deleteColumns( 3, 1 );
 
         assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
 
@@ -206,9 +201,9 @@ public class DecisionTableAnalyzerUpdateTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
-        assertColumnValuesAreEmpty( analyzerProvider.getAnalysisReport() );
+        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
 
         // ADD COLUMN
         table52.getActionCols().add( createActionSetField( "a", "approved", DataType.TYPE_BOOLEAN ) );
@@ -216,7 +211,7 @@ public class DecisionTableAnalyzerUpdateTest {
         table52.getData().get( 1 ).add( new DTCellValue52( true ) );
         table52.getData().get( 2 ).add( new DTCellValue52( false ) );
 
-        analyzer.onAfterColumnInserted( new AfterColumnInserted( 4 ) );
+        analyzer.insertColumn( 4 );
 
         assertContains( "MultipleValuesForOneAction", analyzerProvider.getAnalysisReport(), 3 );
 
@@ -238,12 +233,12 @@ public class DecisionTableAnalyzerUpdateTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         table52.getData().add( 0, new ArrayList<DTCellValue52>() );
-        analyzer.onInsertRow( new InsertRowEvent( 0 ) );
-        analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
-                                                                getMockColumnData( table52.getData().size() ) ) );
+        final InsertRowEvent event = new InsertRowEvent( 0 );
+        analyzer.insertRow( event.getIndex() );
+        analyzer.updateColumns( table52.getData().size() );
 
         assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 3 );
 
@@ -264,14 +259,13 @@ public class DecisionTableAnalyzerUpdateTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
 
-        table52.getData().add( new ArrayList<DTCellValue52>() );
-        analyzer.onAppendRow( new AppendRowEvent() );
-        analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
-                                                                getMockColumnData( table52.getData().size() ) ) );
+        table52.getData().add( new ArrayList<>() );
+        analyzer.appendRow();
+        analyzer.updateColumns( table52.getData().size() );
 
         assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
     }
@@ -289,11 +283,6 @@ public class DecisionTableAnalyzerUpdateTest {
         ArrayList<Coordinate> updates = new ArrayList<>();
         updates.add( new Coordinate( x, y ) );
         return updates;
-    }
-
-    private void assertColumnValuesAreEmpty( final AnalysisReport report ) {
-        assertTrue( analyzerProvider.getAnalysisReport().toString(),
-                    report.getAnalysisData().isEmpty() );
     }
 
 }

@@ -15,12 +15,14 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.UpdateHandler;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Action;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ActionBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
@@ -31,6 +33,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.R
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.UUIDMatcher;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class UpdateManager {
 
@@ -39,33 +42,39 @@ public class UpdateManager {
 
     private final Index                 index;
     private final GuidedDecisionTable52 model;
-    private final UpdateHandler         updateHandler;
+    private final CheckRunner           checkRunner;
+    private       RuleInspectorCache    cache;
 
     public UpdateManager( final Index index,
                           final GuidedDecisionTable52 model,
-                          final UpdateHandler updateHandler ) {
-        this.index = index;
-        this.model = model;
-        this.updateHandler = updateHandler;
+                          final RuleInspectorCache cache,
+                          final CheckRunner checkRunner ) {
+        this.index = PortablePreconditions.checkNotNull( "index", index );
+        this.model = PortablePreconditions.checkNotNull( "model", model );
+        this.cache = PortablePreconditions.checkNotNull( "cache", cache );
+        this.checkRunner = PortablePreconditions.checkNotNull( "updateHandler", checkRunner );
     }
 
     public boolean update( final List<Coordinate> coordinates ) {
 
-        final List<Coordinate> updatedCoordinates = new ArrayList<>();
+        final Set<Check> checks = new HashSet<>();
 
         for ( final Coordinate coordinate : coordinates ) {
             if ( coordinate.getCol() != ROW_NUMBER_COLUMN
                     && coordinate.getCol() != DESCRIPTION_COLUMN ) {
 
                 if ( new CellUpdateManager( coordinate ).update() ) {
-                    updatedCoordinates.add( coordinate );
+                    checks.addAll( cache.getRuleInspector( coordinate.getRow() ).getChecks() );
                 }
 
-                updateHandler.updateCoordinates( updatedCoordinates );
             }
         }
 
-        return !updatedCoordinates.isEmpty();
+        if ( !checks.isEmpty() ) {
+            checkRunner.addChecks( checks );
+        }
+
+        return !checks.isEmpty();
     }
 
     private class CellUpdateManager {

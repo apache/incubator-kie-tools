@@ -36,6 +36,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
@@ -104,11 +105,14 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
     @Mock
     private EventSourceMock<RefreshActionsPanelEvent> refreshActionsPanelEvent;
 
+    @Mock
+    private DecisionTableAnalyzerProvider decisionTableAnalyzerProvider;
+
     private GridWidgetColumnFactory gridWidgetColumnFactory = new GridWidgetColumnFactoryImpl();
     private GuidedDecisionTablePresenter dtPresenter;
     private GuidedDecisionTableEditorContent dtContent;
-    private GuidedDecisionTable52 model = spy( new GuidedDecisionTable52() );
 
+    private GuidedDecisionTable52 model = spy( new GuidedDecisionTable52() );
     private List<BaseColumnFieldDiff> diffs;
 
     @Before
@@ -150,7 +154,8 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
                                                         beanManager,
                                                         lockManager,
                                                         null,
-                                                        null ) {
+                                                        null,
+                                                        decisionTableAnalyzerProvider ) {
             @Override
             void initialiseLockManager() {
                 //Do nothing for tests

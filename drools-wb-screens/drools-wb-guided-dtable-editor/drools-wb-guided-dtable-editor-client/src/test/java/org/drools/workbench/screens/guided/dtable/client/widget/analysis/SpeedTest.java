@@ -88,7 +88,7 @@ public class SpeedTest {
         System.out.println( "Indexing.. " + (now - baseline) + " ms" );
         baseline = now;
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         now = System.currentTimeMillis();
         System.out.println( "Validated.. " + (now - baseline) + " ms" );
@@ -98,7 +98,7 @@ public class SpeedTest {
 
         ArrayList<Coordinate> updates = new ArrayList<>();
         updates.add( new Coordinate( 1, 2 ) );
-        analyzer.onValidate( new ValidateEvent( updates ) );
+        analyzer.analyze( updates );
 
         now = System.currentTimeMillis();
         System.out.println( "Update.. " + (now - baseline) + " ms" );
@@ -140,7 +140,7 @@ public class SpeedTest {
         System.out.println( "Indexing.. " + (now - baseline) + " ms" );
         baseline = now;
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         now = System.currentTimeMillis();
         System.out.println( "Validated.. " + (now - baseline) + " ms" );
@@ -150,7 +150,7 @@ public class SpeedTest {
 
         ArrayList<Coordinate> updates = new ArrayList<>();
         updates.add( new Coordinate( 1, 2 ) );
-        analyzer.onValidate( new ValidateEvent( updates ) );
+        analyzer.analyze( updates );
 
         now = System.currentTimeMillis();
         System.out.println( "Update.. " + (now - baseline) + " ms" );

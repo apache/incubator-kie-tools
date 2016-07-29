@@ -29,10 +29,8 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Analysis
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
 import static org.junit.Assert.*;
@@ -62,7 +60,7 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "MissingRangeTitle" );
@@ -74,7 +72,7 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "SingleHitLost" );
@@ -88,7 +86,7 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertDoesNotContain( "ThisRowIsRedundantTo", analyzerProvider.getAnalysisReport() );
     }
@@ -102,7 +100,7 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "MissingRangeTitle",
@@ -115,7 +113,7 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
     }
@@ -134,7 +132,7 @@ public class DecisionTableAnalyzerFromFileTest {
         now = System.currentTimeMillis();
         System.out.println( "Indexing took.. " + (now - baseline) + " ms" );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "SingleHitLost" );
         now = System.currentTimeMillis();
@@ -145,7 +143,7 @@ public class DecisionTableAnalyzerFromFileTest {
         ArrayList<Coordinate> updates = new ArrayList<>();
         updates.add( new Coordinate( 2,
                                      6 ) );
-        analyzer.onValidate( new ValidateEvent( updates ) );
+        analyzer.analyze( updates );
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "SingleHitLost" );
         now = System.currentTimeMillis();
@@ -159,17 +157,17 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "SingleHitLost" );
         long baseline = System.currentTimeMillis();
 
         for ( int iterations = 0; iterations < 10; iterations++ ) {
-            analyzer.onDeleteRow( new DeleteRowEvent( 100 ) );
+            final DeleteRowEvent event = new DeleteRowEvent( 100 );
+            analyzer.deleteRow( event.getIndex() );
             table52.getData().remove( 100 );
-            analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
-                                                                    new ArrayList<CellValue<? extends Comparable<?>>>() ) );
+            analyzer.updateColumns( 0 );
             long now = System.currentTimeMillis();
             System.out.println( "Partial analysis took.. " + (now - baseline) + " ms" );
             baseline = now;

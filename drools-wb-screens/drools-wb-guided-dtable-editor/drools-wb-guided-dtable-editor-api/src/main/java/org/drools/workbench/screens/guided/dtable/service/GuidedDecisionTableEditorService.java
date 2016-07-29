@@ -44,6 +44,8 @@ public interface GuidedDecisionTableEditorService
         SupportsCopy,
         SupportsRename {
 
+    public static String DTABLE_VERIFICATION_ENABLED = "org.kie.verification.disable-dtable-realtime-verification";
+
     GuidedDecisionTableEditorContent loadContent( final Path path );
 
     PackageDataModelOracleBaselinePayload loadDataModel( final Path path );

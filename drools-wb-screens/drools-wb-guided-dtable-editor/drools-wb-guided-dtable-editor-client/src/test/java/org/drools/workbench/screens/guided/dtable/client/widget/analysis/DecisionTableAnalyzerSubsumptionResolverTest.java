@@ -83,7 +83,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertDoesNotContain( "ThisRowIsRedundantTo(1)", analyzerProvider.getAnalysisReport() );
         assertDoesNotContain( "ThisRowIsRedundantTo(2)", analyzerProvider.getAnalysisReport() );
@@ -114,7 +114,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList()) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertDoesNotContain( "ThisRowIsRedundantTo(1)", analyzerProvider.getAnalysisReport() );
         assertDoesNotContain( "ThisRowIsRedundantTo(2)", analyzerProvider.getAnalysisReport() );
@@ -144,7 +144,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
@@ -168,7 +168,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
@@ -192,7 +192,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
@@ -211,7 +211,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "RedundantConditions", analyzerProvider.getAnalysisReport() );
 
@@ -233,7 +233,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertDoesNotContain( "ThisRowIsRedundantTo(1)", analyzerProvider.getAnalysisReport() );
         assertDoesNotContain( "ThisRowIsRedundantTo(2)", analyzerProvider.getAnalysisReport() );
@@ -258,7 +258,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "ValueForFactFieldIsSetTwice(a, salary)", analyzerProvider.getAnalysisReport() );
 
@@ -282,7 +282,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "ValueForFactFieldIsSetTwice(b, salary)", analyzerProvider.getAnalysisReport() );
 

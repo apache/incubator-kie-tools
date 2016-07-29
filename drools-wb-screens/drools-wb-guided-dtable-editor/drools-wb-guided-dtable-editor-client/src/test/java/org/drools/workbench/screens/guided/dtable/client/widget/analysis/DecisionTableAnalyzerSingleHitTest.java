@@ -55,7 +55,7 @@ public class DecisionTableAnalyzerSingleHitTest {
                                                                .buildAnalyzer();
 
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "SingleHitLost", analyzerProvider.getAnalysisReport() );
     }
 

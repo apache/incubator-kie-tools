@@ -67,7 +67,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport() );
     }
 
@@ -90,7 +90,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
@@ -118,7 +118,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
@@ -129,7 +129,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         ArrayList<Coordinate> updates = new ArrayList<>();
         updates.add( new Coordinate( 1, 3 ) );
-        analyzer.onValidate( new ValidateEvent( updates ) );
+        analyzer.analyze( updates );
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
@@ -158,7 +158,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
@@ -169,7 +169,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         ArrayList<Coordinate> updates = new ArrayList<>();
         updates.add( new Coordinate( 2, 3 ) );
-        analyzer.onValidate( new ValidateEvent( updates ) );
+        analyzer.analyze( updates );
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
@@ -198,7 +198,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
@@ -209,7 +209,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         ArrayList<Coordinate> updates = new ArrayList<>();
         updates.add( new Coordinate( 2, 3 ) );
-        analyzer.onValidate( new ValidateEvent( updates ) );
+        analyzer.analyze( updates );
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );

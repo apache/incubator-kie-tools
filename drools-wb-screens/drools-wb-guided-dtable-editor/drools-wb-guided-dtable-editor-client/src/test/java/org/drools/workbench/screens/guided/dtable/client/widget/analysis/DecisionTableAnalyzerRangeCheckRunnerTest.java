@@ -55,7 +55,7 @@ public class DecisionTableAnalyzerRangeCheckRunnerTest {
                                                                                   .end() )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
     }
 
@@ -70,7 +70,7 @@ public class DecisionTableAnalyzerRangeCheckRunnerTest {
                                                                                   .end() )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
     }
 
@@ -86,7 +86,7 @@ public class DecisionTableAnalyzerRangeCheckRunnerTest {
                                                                         )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
     }
 
@@ -102,7 +102,7 @@ public class DecisionTableAnalyzerRangeCheckRunnerTest {
                                                                                   .end() )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
     }
 
@@ -118,7 +118,7 @@ public class DecisionTableAnalyzerRangeCheckRunnerTest {
                                                                                   .end() )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
     }
 
@@ -134,7 +134,7 @@ public class DecisionTableAnalyzerRangeCheckRunnerTest {
                                                                                   .end() )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
     }
 
@@ -150,7 +150,7 @@ public class DecisionTableAnalyzerRangeCheckRunnerTest {
                                                                                   .end() )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
     }
 }

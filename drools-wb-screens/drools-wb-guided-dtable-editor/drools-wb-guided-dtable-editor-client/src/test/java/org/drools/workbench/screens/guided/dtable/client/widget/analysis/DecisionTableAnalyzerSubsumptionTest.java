@@ -63,7 +63,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport() );
     }
 
@@ -83,7 +83,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport() );
     }
 
@@ -104,7 +104,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
     }
 
@@ -124,7 +124,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
     }
 
@@ -144,7 +144,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport() );
     }
 
@@ -164,7 +164,7 @@ public class DecisionTableAnalyzerSubsumptionTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport() );
     }
 

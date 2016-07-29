@@ -25,7 +25,7 @@ import java.util.Map;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.UpdateHandler;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Action;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.CellBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
@@ -34,13 +34,11 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.C
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Fields;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Index;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.IndexBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Rule;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.RuleBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.UUIDMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class RuleInspectorCache {
 
@@ -49,21 +47,16 @@ public class RuleInspectorCache {
     private final Index           index;
 
     private final ColumnUtilities utils;
-    private final UpdateManager   updateManager;
     private final GuidedDecisionTable52 model;
 
+    private CheckManager checkManager = new CheckManager();
 
-    public RuleInspectorCache( final AsyncPackageDataModelOracle oracle,
+    public RuleInspectorCache( final ColumnUtilities utils,
                                final GuidedDecisionTable52 model,
-                               final UpdateHandler updateHandler ) {
-        this.model = model;
-        utils = new ColumnUtilities( model,
-                                     oracle );
-        index = new IndexBuilder( model,
-                                  utils ).build();
-        updateManager = new UpdateManager( index,
-                                           model,
-                                           updateHandler );
+                               final Index index ) {
+        this.model = PortablePreconditions.checkNotNull( "model", model );
+        this.utils = PortablePreconditions.checkNotNull( "utils", utils );
+        this.index = PortablePreconditions.checkNotNull( "index", index );
 
         reset();
     }
@@ -78,9 +71,7 @@ public class RuleInspectorCache {
         for ( final List<DTCellValue52> row : model.getData() ) {
             final BaseColumn baseColumn = model.getExpandedColumns().get( columnIndex );
 
-            final Rule rule = index.rules
-                    .where( HasIndex.index().is( rowIndex ) )
-                    .select().first();
+            final Rule rule = getRule( rowIndex );
 
             new CellBuilder( index,
                              model,
@@ -148,7 +139,7 @@ public class RuleInspectorCache {
 
         for ( final Rule rule : index.rules.where( Rule.uuid().any() ).select().all() ) {
             add( new RuleInspector( rule,
-                                    this ) );
+                                    checkManager, this ) );
         }
     }
 
@@ -166,10 +157,6 @@ public class RuleInspectorCache {
         return result;
     }
 
-    public boolean updateRuleInspectors( final List<Coordinate> coordinates ) {
-        return updateManager.update( coordinates );
-    }
-
     private void add( final RuleInspector ruleInspector ) {
         ruleInspectors.put( ruleInspector.getRule(),
                             ruleInspector );
@@ -177,13 +164,17 @@ public class RuleInspectorCache {
 
     public RuleInspector removeRow( final int rowNumber ) {
 
-        final Rule rule = index.rules.where( HasIndex.index().is( rowNumber ) ).select().first();
+        final Rule rule = getRule( rowNumber );
 
         final RuleInspector remove = ruleInspectors.remove( rule );
 
         index.rules.remove( rule );
 
         return remove;
+    }
+
+    private Rule getRule( final int rowNumber ) {
+        return index.rules.where( HasIndex.index().is( rowNumber ) ).select().first();
     }
 
     public RuleInspector addRow( final int index ) {
@@ -195,11 +186,20 @@ public class RuleInspectorCache {
         this.index.rules.add( rule );
 
         final RuleInspector ruleInspector = new RuleInspector( rule,
+                                                               checkManager,
                                                                this );
 
         add( ruleInspector );
 
         return ruleInspector;
+    }
+
+    public RuleInspector getRuleInspector( final int row ) {
+        return ruleInspectors.get( getRule( row ) );
+    }
+
+    public Collection<RuleInspector> allRuleInspectors() {
+        return ruleInspectors.values();
     }
 
     public interface Filter {

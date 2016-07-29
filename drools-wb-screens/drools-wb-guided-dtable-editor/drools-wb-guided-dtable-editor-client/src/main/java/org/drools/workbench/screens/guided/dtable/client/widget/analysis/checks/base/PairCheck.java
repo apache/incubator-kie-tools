@@ -28,7 +28,6 @@ public class PairCheck
 
     protected final RuleInspector ruleInspector;
     protected final RuleInspector other;
-    private final   int           hashCode;
     private         Issue         issue;
 
     public RuleInspector getRuleInspector() {
@@ -39,7 +38,6 @@ public class PairCheck
                       final RuleInspector other ) {
         this.ruleInspector = PortablePreconditions.checkNotNull( "ruleInspector", ruleInspector );
         this.other = PortablePreconditions.checkNotNull( "other", other );
-        hashCode = getHashCode();
     }
 
     public RuleInspector getOther() {
@@ -78,31 +76,5 @@ public class PairCheck
     @Override
     public Issue getIssue() {
         return issue;
-    }
-
-    @Override
-    public int hashCode() {
-        return hashCode;
-    }
-
-    @Override
-    public boolean equals( Object other ) {
-        if ( !(other instanceof PairCheck) ) {
-            return false;
-        } else {
-            if ( getClass().equals( other.getClass() ) ) {
-                return ruleInspector.getUuidKey().equals( (( PairCheck ) other).ruleInspector.getUuidKey() )
-                        && this.other.getUuidKey().equals( (( PairCheck ) other).other.getUuidKey() );
-            } else {
-                return false;
-            }
-        }
-    }
-
-    private int getHashCode() {
-        int result = ruleInspector.getUuidKey().hashCode();
-        result = 31 * result + getClass().getCanonicalName().hashCode();
-        result = 31 * result + other.getUuidKey().hashCode();
-        return ~~result;
     }
 }

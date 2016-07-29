@@ -16,12 +16,12 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.List;
+import java.util.Set;
 
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
 
 public interface UpdateHandler {
 
-    void updateCoordinates( final List<Coordinate> coordinates );
+    void addChecks( final Set<Check> checks );
 
 }

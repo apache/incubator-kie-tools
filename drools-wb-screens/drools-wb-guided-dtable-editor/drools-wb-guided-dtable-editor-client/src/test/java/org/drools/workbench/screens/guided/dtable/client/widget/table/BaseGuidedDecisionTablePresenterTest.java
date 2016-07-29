@@ -29,6 +29,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.DefaultClipboard;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
@@ -238,6 +239,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     @Mock
     protected DefaultGridLayer gridLayer;
 
+    @Mock
+    private DecisionTableAnalyzerProvider decisionTableAnalyzerProvider;
+
     protected GuidedDecisionTablePresenter dtPresenter;
     protected GuidedDecisionTableEditorContent dtContent;
 
@@ -281,7 +285,8 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                                                                                        beanManager,
                                                                                        lockManager,
                                                                                        linkManager,
-                                                                                       clipboard ) {
+                                                                                       clipboard,
+                                                                                       decisionTableAnalyzerProvider  ) {
             @Override
             void initialiseLockManager() {
                 //Do nothing for tests

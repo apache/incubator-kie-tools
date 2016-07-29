@@ -18,35 +18,24 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalyzerProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DataBuilderProvider;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.UpdateHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class RuleInspectorCacheTest {
 
     private RuleInspectorCache    cache;
     private GuidedDecisionTable52 table52;
-
-    @Mock
-    private UpdateHandler updateHandler;
 
     @GwtMock
     DateTimeFormat dateTimeFormat;
@@ -72,9 +61,7 @@ public class RuleInspectorCacheTest {
                                                      .end() )
                                   .buildTable();
 
-        cache = new RuleInspectorCache( mock( AsyncPackageDataModelOracle.class ),
-                                        table52,
-                                        updateHandler );
+        cache = analyzerProvider.getCache( table52 );
     }
 
     @Test
@@ -128,29 +115,6 @@ public class RuleInspectorCacheTest {
         for ( RuleInspector ruleInspector : all ) {
             assertFalse( ruleInspector.atLeastOneActionHasAValue() );
         }
-    }
-
-    @Test
-    public void testUpdate() throws Exception {
-        assertEquals( 7, cache.all().size() );
-
-        ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
-        coordinates.add( new Coordinate( 3, 3 ) );
-
-        List<List<DTCellValue52>> data = table52.getData();
-        data.get( 3 ).get( 3 ).setNumericValue( 0 );
-
-        cache.updateRuleInspectors( coordinates );
-
-        ArgumentCaptor<List> coordinatesCaptor = ArgumentCaptor.forClass( List.class );
-        verify( updateHandler ).updateCoordinates( coordinatesCaptor.capture() );
-        final List<Coordinate> updatedCoordinates = coordinatesCaptor.getValue();
-        assertEquals( 1, updatedCoordinates.size() );
-        assertEquals( 3, updatedCoordinates.get( 0 ).getRow() );
-
-        assertEquals( 7, cache.all().size() );
-        assertContainsRowNumbers( cache.all(),
-                                  0, 1, 2, 3, 4, 5, 6 );
     }
 
 }

@@ -17,11 +17,14 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.BRLActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.BRLConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsConflicting;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsDeficient;
@@ -53,6 +56,7 @@ public class RuleInspector
 
     private final Rule rule;
 
+    private final CheckManager       checkManager;
     private final RuleInspectorCache cache;
 
     private final UUIDKey uuidKey = new UUIDKey( this );
@@ -64,8 +68,10 @@ public class RuleInspector
     private final InspectorList<ConditionsInspectorMultiMap> conditionsInspectors    = new InspectorList<>(true);
 
     public RuleInspector( final Rule rule,
+                          final CheckManager checkManager,
                           final RuleInspectorCache cache ) {
         this.rule = PortablePreconditions.checkNotNull( "rule", rule );
+        this.checkManager = PortablePreconditions.checkNotNull( "checkManager", checkManager );
         this.cache = PortablePreconditions.checkNotNull( "cache", cache );
 
         makePatternsInspectors();
@@ -73,6 +79,9 @@ public class RuleInspector
         makeBRLConditionInspectors();
         makeActionsInspectors();
         makeConditionsInspectors();
+
+        makeChecks();
+
     }
 
     private void makeConditionsInspectors() {
@@ -270,5 +279,21 @@ public class RuleInspector
         return new Key[]{
                 uuidKey
         };
+    }
+
+    public Set<Check> getChecks() {
+        return checkManager.getChecks( this );
+    }
+
+    private void makeChecks() {
+        checkManager.makeChecks( this );
+    }
+
+    public Set<Check> clearChecks() {
+        return checkManager.remove( this );
+    }
+
+    public CheckManager getCheckManager() {
+        return checkManager;
     }
 }

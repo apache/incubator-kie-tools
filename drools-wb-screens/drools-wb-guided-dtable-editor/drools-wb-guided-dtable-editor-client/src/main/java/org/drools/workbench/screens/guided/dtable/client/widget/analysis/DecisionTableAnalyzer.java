@@ -17,225 +17,166 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.UpdateManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnInserted;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
 
-public class DecisionTableAnalyzer
-        implements ValidateEvent.Handler,
-                   DeleteRowEvent.Handler,
-                   AfterColumnDeleted.Handler,
-                   UpdateColumnDataEvent.Handler,
-                   AppendRowEvent.Handler,
-                   InsertRowEvent.Handler,
-                   AfterColumnInserted.Handler {
+public class DecisionTableAnalyzer {
 
-    private final CheckRunner                  checkRunner  = getCheckRunner();
+    private final UpdateManager updateManager;
+    private final CheckRunner   checkRunner;
+
+    private final AnalysisReporter      reporter;
+    private final RuleInspectorCache    cache;
+    private final GuidedDecisionTable52 model;
+    private final EventManager                 eventManager = new EventManager();
     private final ParameterizedCommand<Status> onStatus     = getOnStatusCommand();
     private final Command                      onCompletion = getOnCompletionCommand();
 
-    private final PlaceRequest          place;
-    private final RuleInspectorCache    cache;
-    private final GuidedDecisionTable52 model;
-    private final EventManager eventManager = new EventManager();
-
-    public DecisionTableAnalyzer( final PlaceRequest place,
-                                  final AsyncPackageDataModelOracle oracle,
+    public DecisionTableAnalyzer( final AnalysisReporter reporter,
                                   final GuidedDecisionTable52 model,
-                                  final EventBus eventBus ) {
-        this.place = PortablePreconditions.checkNotNull( "place", place );
+                                  final RuleInspectorCache cache,
+                                  final UpdateManager updateManager,
+                                  final CheckRunner checkRunner ) {
+        this.reporter = PortablePreconditions.checkNotNull( "reporter", reporter );
         this.model = PortablePreconditions.checkNotNull( "model", model );
-
-        cache = new RuleInspectorCache( oracle,
-                                        model,
-                                        checkRunner );
-
-        eventBus.addHandler( ValidateEvent.TYPE,
-                             this );
-        eventBus.addHandler( DeleteRowEvent.TYPE,
-                             this );
-        eventBus.addHandler( AfterColumnDeleted.TYPE,
-                             this );
-        eventBus.addHandler( UpdateColumnDataEvent.TYPE,
-                             this );
-        eventBus.addHandler( AppendRowEvent.TYPE,
-                             this );
-        eventBus.addHandler( InsertRowEvent.TYPE,
-                             this );
-        eventBus.addHandler( AfterColumnInserted.TYPE,
-                             this );
+        this.cache = PortablePreconditions.checkNotNull( "cache", cache );
+        this.updateManager = PortablePreconditions.checkNotNull( "updateManager", updateManager );
+        this.checkRunner = PortablePreconditions.checkNotNull( "checkRunner", checkRunner );
     }
 
-    //Override for tests where we do not want to perform checks using a Scheduled RepeatingCommand
-    protected CheckRunner getCheckRunner() {
-        return new CheckRunner();
+    public void resetChecks() {
+        for ( final RuleInspector ruleInspector : cache.all() ) {
+            checkRunner.addChecks( ruleInspector.getChecks() );
+        }
     }
 
-    //Override for tests where we do not want to provide feedback
     protected ParameterizedCommand<Status> getOnStatusCommand() {
         return new ParameterizedCommand<Status>() {
 
             @Override
             public void execute( final Status status ) {
-                sendStatus( status );
+                reporter.sendStatus( status );
             }
         };
     }
 
-    //Override for tests where we do not want to provide feedback
     protected Command getOnCompletionCommand() {
         return new Command() {
 
             @Override
             public void execute() {
-                sendReport( makeAnalysisReport() );
+                reporter.sendReport( getIssues() );
             }
         };
     }
 
-    private void resetChecks() {
-        for ( final RuleInspector ruleInspector : cache.all() ) {
-            checkRunner.add( ruleInspector );
-        }
-    }
-
-    private void analyze() {
+    public void analyze() {
         this.checkRunner.run( onStatus,
                               onCompletion );
     }
 
-    protected AnalysisReport makeAnalysisReport() {
-        final AnalysisReport report = new AnalysisReport( place );
-        final Set<Issue> unorderedIssues = new HashSet<Issue>();
+    protected Set<Issue> getIssues() {
+        final Set<Issue> unorderedIssues = new HashSet<>();
 
-        for ( final RuleInspector ruleInspector : cache.all() ) {
-            for ( final Check check : checkRunner.get( ruleInspector ) ) {
+        for ( final RuleInspector ruleInspector : cache.allRuleInspectors() ) {
+            for ( final Check check : ruleInspector.getChecks() ) {
                 if ( check.hasIssues() ) {
                     unorderedIssues.add( check.getIssue() );
                 }
             }
         }
 
-        report.setIssues( unorderedIssues );
-
-        return report;
+        return unorderedIssues;
     }
 
-    private void sendReport( final AnalysisReport report ) {
-        getAnalysisReportScreen().showReport( report );
-    }
-
-    private void sendStatus( final Status status ) {
-        getAnalysisReportScreen().showStatus( status );
-    }
-
-    protected AnalysisReportScreen getAnalysisReportScreen() {
-        return IOC.getBeanManager().lookupBean( AnalysisReportScreen.class ).getInstance();
-    }
-
-    @Override
-    public void onValidate( final ValidateEvent event ) {
-        if ( event.getUpdates().isEmpty() || checkRunner.isEmpty() ) {
+    public void analyze( final List<Coordinate> updates ) {
+        if ( updates.isEmpty() ) {
             resetChecks();
             analyze();
         } else {
-            if ( cache.updateRuleInspectors( event.getUpdates() ) ) {
+            if ( updateManager.update( updates ) ) {
                 analyze();
             }
         }
     }
 
-    @Override
-    public void onAfterDeletedColumn( final AfterColumnDeleted event ) {
-        cache.deleteColumns( event.getFirstColumnIndex(),
-                             event.getNumberOfColumns() );
+    public void deleteColumns( final int firstColumnIndex,
+                               final int numberOfColumns ) {
+        cache.deleteColumns( firstColumnIndex,
+                             numberOfColumns );
         resetChecks();
         analyze();
     }
 
-    @Override
-    public void onAfterColumnInserted( final AfterColumnInserted event ) {
-        cache.newColumn( event.getIndex() );
+    public void insertColumn( final int index ) {
+        cache.newColumn( index );
         resetChecks();
         analyze();
     }
 
-    @Override
-    public void onUpdateColumnData( final UpdateColumnDataEvent event ) {
-        if ( hasTheRowCountIncreased( event ) ) {
+    public void updateColumns( final int amountOfRows ) {
+        if ( hasTheRowCountIncreased( amountOfRows ) ) {
             addRow( eventManager.getNewIndex() );
             analyze();
 
-        } else if ( hasTheRowCountDecreased( event ) ) {
-            final RuleInspector removed = cache.removeRow( eventManager.rowDeleted );
-            checkRunner.remove( removed );
+        } else if ( hasTheRowCountDecreased( amountOfRows ) ) {
+            checkRunner.remove( cache.removeRow( eventManager.rowDeleted ) );
             analyze();
         }
 
         eventManager.clear();
     }
 
-    private boolean hasTheRowCountDecreased( final UpdateColumnDataEvent event ) {
-        return cache.all().size() > event.getColumnData().size();
+    private boolean hasTheRowCountDecreased( final int size ) {
+        return cache.all().size() > size;
     }
 
-    private boolean hasTheRowCountIncreased( final UpdateColumnDataEvent event ) {
-        return cache.all().size() < event.getColumnData().size();
+    private boolean hasTheRowCountIncreased( final int size ) {
+        return cache.all().size() < size;
     }
 
     private void addRow( final int index ) {
         final RuleInspector ruleInspector = cache.addRow( index );
-        checkRunner.add( ruleInspector );
+        checkRunner.addChecks( ruleInspector.getChecks() );
     }
 
-    @Override
-    public void onDeleteRow( final DeleteRowEvent event ) {
-        checkRunner.cancelExistingAnalysis();
-        eventManager.rowDeleted = event.getIndex();
+    public void deleteRow( final int index ) {
+        stop();
+        eventManager.rowDeleted = index;
     }
 
-    @Override
-    public void onAppendRow( final AppendRowEvent event ) {
-        checkRunner.cancelExistingAnalysis();
+    public void appendRow() {
+        stop();
         eventManager.rowAppended = true;
     }
 
-    @Override
-    public void onInsertRow( final InsertRowEvent event ) {
-        checkRunner.cancelExistingAnalysis();
-        eventManager.rowInserted = event.getIndex();
+    public void insertRow( final int index ) {
+        stop();
+        eventManager.rowInserted = index;
     }
 
-    public void onFocus() {
+    public void start() {
         if ( checkRunner.isEmpty() ) {
             resetChecks();
             analyze();
         } else {
-            sendReport( makeAnalysisReport() );
+            reporter.sendReport( getIssues() );
         }
     }
 
-    public void onClose() {
+    public void stop() {
         checkRunner.cancelExistingAnalysis();
     }
 

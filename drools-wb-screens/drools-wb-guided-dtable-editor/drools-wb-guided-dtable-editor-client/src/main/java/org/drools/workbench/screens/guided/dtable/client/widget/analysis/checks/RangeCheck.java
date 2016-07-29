@@ -27,6 +27,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.c
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ComparableConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.NumericIntegerConditionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.OneToManyCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.SubsumptionResolver;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
@@ -132,6 +133,7 @@ public class RangeCheck
         public RuleInspectorClone( final Rule rule,
                                    final RuleInspectorCache cache ) {
             super( rule,
+                   new CheckManager(),
                    cache );
             makeConditionsInspectors();
         }

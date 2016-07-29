@@ -16,27 +16,21 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.ExtendedGuidedDecisionTableBuilder;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.UpdateHandler;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.IndexBuilder;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalyzerProvider;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DataBuilderProvider;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
+import org.mockito.Spy;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.anySet;
 import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
@@ -45,36 +39,26 @@ public class UpdateManagerTest {
     private UpdateManager         updateManager;
     private GuidedDecisionTable52 table52;
 
-    @Mock
-    private UpdateHandler updateHandler;
+    @Spy
+    private CheckRunner checkRunner;
 
-    @Mock
-    private AsyncPackageDataModelOracle oracle;
-
-    @Captor
-    private ArgumentCaptor<List<Coordinate>> coordinateArgumentCaptor;
+    private AnalyzerProvider analyzerProvider;
 
     @Before
     public void setUp() throws Exception {
-        when( oracle.getFieldType( "Person", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
-        when( oracle.getFieldType( "Person", "approved" ) ).thenReturn( DataType.TYPE_BOOLEAN );
+        analyzerProvider = new AnalyzerProvider();
 
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        {1, "description", 1, true},
-                        {2, "description", null, null}} )
-                .buildTable();
+        table52 = analyzerProvider.makeAnalyser()
+                                  .withPersonAgeColumn( "==" )
+                                  .withPersonApprovedActionSetField()
+                                  .withData( DataBuilderProvider
+                                                     .row( 1, true )
+                                                     .row( null, null )
+                                                     .end() )
+                                  .buildTable();
 
-
-        updateManager = new UpdateManager( new IndexBuilder( table52,
-                                                             new ColumnUtilities( table52,
-                                                                                  oracle ) ).build(),
-                                           table52,
-                                           updateHandler );
+        updateManager = analyzerProvider.getUpdateManager( checkRunner,
+                                                           table52 );
     }
 
     @Test
@@ -84,7 +68,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler, never() ).updateCoordinates( any( List.class ) );
+        verify( checkRunner, never() ).addChecks( any( Set.class ) );
     }
 
 
@@ -95,8 +79,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        assertTrue( coordinateArgumentCaptor.getValue().isEmpty() );
+        verify( checkRunner, never() ).addChecks( anySet() );
     }
 
     @Test
@@ -106,8 +89,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        assertTrue( coordinateArgumentCaptor.getValue().isEmpty() );
+        verify( checkRunner, never() ).addChecks( anySet() );
     }
 
     @Test
@@ -119,10 +101,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        List<Coordinate> list = coordinateArgumentCaptor.getValue();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( coordinate ) );
+        verify( checkRunner ).addChecks( anySet() );
     }
 
     @Test
@@ -134,10 +113,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        final List<Coordinate> list = coordinateArgumentCaptor.getValue();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( coordinate ) );
+        verify( checkRunner ).addChecks( anySet() );
     }
 
     @Test
@@ -149,10 +125,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        List<Coordinate> list = coordinateArgumentCaptor.getValue();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( coordinate ) );
+        verify( checkRunner ).addChecks( anySet() );
     }
 
     @Test
@@ -164,10 +137,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        List<Coordinate> list = coordinateArgumentCaptor.getValue();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( coordinate ) );
+        verify( checkRunner ).addChecks( anySet() );
     }
 
     @Test
@@ -179,10 +149,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        List<Coordinate> list = coordinateArgumentCaptor.getValue();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( coordinate ) );
+        verify( checkRunner ).addChecks( anySet() );
     }
 
     @Test
@@ -194,10 +161,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        List<Coordinate> list = coordinateArgumentCaptor.getValue();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( coordinate ) );
+        verify( checkRunner ).addChecks( anySet() );
     }
 
     @Test
@@ -209,8 +173,7 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        assertTrue( coordinateArgumentCaptor.getValue().isEmpty() );
+        verify( checkRunner, never() ).addChecks( anySet() );
     }
 
     @Test
@@ -222,7 +185,6 @@ public class UpdateManagerTest {
 
         updateManager.update( coordinates );
 
-        verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        assertTrue( coordinateArgumentCaptor.getValue().isEmpty() );
+        verify( checkRunner, never() ).addChecks( anySet() );
     }
 }

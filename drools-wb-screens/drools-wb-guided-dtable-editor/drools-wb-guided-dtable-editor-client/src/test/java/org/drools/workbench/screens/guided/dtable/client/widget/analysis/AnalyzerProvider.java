@@ -21,19 +21,23 @@ import java.util.Map;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.UpdateManager;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.client.callbacks.Callback;
+import org.uberfire.mvp.PlaceRequest;
 
 import static org.mockito.Mockito.*;
 
 public class AnalyzerProvider {
 
-
     private final AsyncPackageDataModelOracle oracle;
     private       AnalysisReport              analysisReport;
     private       Status                      status;
+    private       RuleInspectorCache          cache;
 
     public AnalyzerProvider() {
         this( mock( AsyncPackageDataModelOracle.class ) );
@@ -50,7 +54,7 @@ public class AnalyzerProvider {
         when( oracle.getFieldType( "Person", "approved" ) ).thenReturn( DataType.TYPE_BOOLEAN );
         when( oracle.getFieldType( "Person", "salary" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
 
-        Map<String, String> preferences = new HashMap<String, String>();
+        final Map<String, String> preferences = new HashMap<String, String>();
         preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
         ApplicationPreferences.setUp( preferences );
     }
@@ -68,20 +72,75 @@ public class AnalyzerProvider {
     }
 
     public DecisionTableAnalyzer getAnalyser( final GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzerMock( oracle,
-                                              table52,
-                                              new Callback<AnalysisReport>() {
-                                                  @Override
-                                                  public void callback( final AnalysisReport result ) {
-                                                      analysisReport = result;
-                                                  }
-                                              },
-                                              new Callback<Status>() {
-                                                  @Override
-                                                  public void callback( final Status result ) {
-                                                      status = result;
-                                                  }
-                                              } );
+
+        final DecisionTableAnalyzerBuilder builder = getDecisionTableAnalyzerBuilder()
+                .withPlaceRequest( mock( PlaceRequest.class ) )
+                .withReportScreen( mock( AnalysisReportScreen.class ) )
+                .withOracle( oracle )
+                .withModel( table52 );
+
+
+        return builder.build();
+    }
+
+    public RuleInspectorCache getCache( final GuidedDecisionTable52 table52 ) {
+        return getDecisionTableAnalyzerBuilder()
+                .withModel( table52 )
+                .withOracle( oracle )
+                .getCacheBuilder()
+                .buildCache();
+    }
+
+    public UpdateManager getUpdateManager( final CheckRunner checkRunner,
+                                           final GuidedDecisionTable52 table52 ) {
+        return getDecisionTableAnalyzerBuilder()
+                .withModel( table52 )
+                .withOracle( oracle )
+                .getUpdateManagerBuilder( checkRunner )
+                .buildUpdateManager();
+    }
+
+    private DecisionTableAnalyzerBuilder getDecisionTableAnalyzerBuilder() {
+        return new DecisionTableAnalyzerBuilder() {
+            @Override
+            protected InnerBuilder getInnerBuilder() {
+                return new InnerBuilder( getCheckRunner() ) {
+                    @Override
+                    protected AnalysisReporter getAnalysisReporter() {
+                        return AnalyzerProvider.this.getAnalysisReporter( placeRequest,
+                                                                          analysisReportScreen );
+                    }
+                };
+            }
+
+        };
+    }
+
+    private AnalysisReporter getAnalysisReporter( final PlaceRequest placeRequest,
+                                                  final AnalysisReportScreen analysisReportScreen ) {
+        return new AnalysisReporter( placeRequest,
+                                     analysisReportScreen ) {
+            @Override
+            public void sendReport( final AnalysisReport report ) {
+                analysisReport = report;
+            }
+
+            @Override
+            public void sendStatus( final Status _status ) {
+                status = _status;
+            }
+        };
+    }
+
+    private CheckRunner getCheckRunner() {
+        return new CheckRunner() {
+            @Override
+            protected void doRun( final CancellableRepeatingCommand command ) {
+                while ( command.execute() ) {
+                    //loop
+                }
+            }
+        };
     }
 
     public AnalyzerBuilder makeAnalyser() {

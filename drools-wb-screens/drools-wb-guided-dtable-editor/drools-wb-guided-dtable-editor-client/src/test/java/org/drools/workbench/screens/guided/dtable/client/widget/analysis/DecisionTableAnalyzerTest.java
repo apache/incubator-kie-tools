@@ -53,7 +53,7 @@ public class DecisionTableAnalyzerTest {
     public void testEmpty() throws Exception {
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( new GuidedDecisionTable52() );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
 
@@ -70,7 +70,7 @@ public class DecisionTableAnalyzerTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
 
@@ -87,7 +87,7 @@ public class DecisionTableAnalyzerTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
 
     }
@@ -109,7 +109,7 @@ public class DecisionTableAnalyzerTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport(), 2 );
 
@@ -126,7 +126,7 @@ public class DecisionTableAnalyzerTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport() );
 
     }
@@ -147,7 +147,7 @@ public class DecisionTableAnalyzerTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 2 );
 
@@ -166,7 +166,7 @@ public class DecisionTableAnalyzerTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onFocus();
+        analyzer.start();
 
         assertContains( "MultipleValuesForOneAction", analyzerProvider.getAnalysisReport() );
 
@@ -194,7 +194,7 @@ public class DecisionTableAnalyzerTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
@@ -215,11 +215,11 @@ public class DecisionTableAnalyzerTest {
     @Test
     public void testOnFocus() throws Exception {
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( new GuidedDecisionTable52() );
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         analyzerProvider.clearAnalysisReport();
 
-        analyzer.onFocus();
+        analyzer.start();
 
         assertNotNull( analyzerProvider.getAnalysisReport() );
     }
@@ -237,7 +237,7 @@ public class DecisionTableAnalyzerTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
     }
 
@@ -257,7 +257,7 @@ public class DecisionTableAnalyzerTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 2 );
 

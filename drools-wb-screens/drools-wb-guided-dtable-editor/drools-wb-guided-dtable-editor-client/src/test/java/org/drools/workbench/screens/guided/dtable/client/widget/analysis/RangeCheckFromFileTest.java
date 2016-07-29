@@ -58,7 +58,7 @@ public class RangeCheckFromFileTest {
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
                             "MissingRangeTitle" );

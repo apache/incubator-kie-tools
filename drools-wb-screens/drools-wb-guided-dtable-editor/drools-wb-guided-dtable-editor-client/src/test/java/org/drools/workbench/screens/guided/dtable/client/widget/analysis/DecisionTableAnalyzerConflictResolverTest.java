@@ -23,10 +23,6 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalyzerProvider;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DataBuilderProvider;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.ValidateEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +57,7 @@ public class DecisionTableAnalyzerConflictResolverTest {
                                                                                   .end() )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "ConflictingRows", analyzerProvider.getAnalysisReport() );
     }
 
@@ -82,7 +78,7 @@ public class DecisionTableAnalyzerConflictResolverTest {
 
         final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
 
     }
@@ -98,7 +94,7 @@ public class DecisionTableAnalyzerConflictResolverTest {
                                                                .buildAnalyzer();
 
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport() );
     }
 
@@ -112,7 +108,7 @@ public class DecisionTableAnalyzerConflictResolverTest {
                                                                                   .end() )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "ImpossibleMatch", analyzerProvider.getAnalysisReport() );
     }
 
@@ -127,7 +123,7 @@ public class DecisionTableAnalyzerConflictResolverTest {
                                                                                   .end() )
                                                                .buildAnalyzer();
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertDoesNotContain( "ConflictingRows", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "ConflictingRows", analyzerProvider.getAnalysisReport(), 2 );
@@ -152,7 +148,7 @@ public class DecisionTableAnalyzerConflictResolverTest {
                                                                .buildAnalyzer();
 
 
-        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        analyzer.analyze( Collections.emptyList() );
 
         assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 2 );
         assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 3 );
