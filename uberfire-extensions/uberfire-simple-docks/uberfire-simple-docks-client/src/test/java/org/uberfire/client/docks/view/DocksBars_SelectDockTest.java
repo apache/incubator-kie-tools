@@ -34,7 +34,7 @@ import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
@@ -57,6 +57,7 @@ public class DocksBars_SelectDockTest {
 
     @Test
     public void testSelectDockParametersArePreserved() throws Exception {
+        docksBars.rootContainer = mock( DockLayoutPanel.class );
 
         final DefaultPlaceRequest myPlace = new DefaultPlaceRequest( "myPlace" );
 
