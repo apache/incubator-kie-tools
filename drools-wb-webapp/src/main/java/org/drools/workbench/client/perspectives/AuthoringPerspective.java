@@ -21,7 +21,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.inbox.client.InboxPresenter;
 import org.kie.workbench.common.screens.examples.client.wizard.ExamplesWizard;
@@ -31,6 +30,7 @@ import org.kie.workbench.common.services.shared.preferences.ApplicationPreferenc
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcesMenu;
 import org.kie.workbench.common.widgets.client.menu.RepositoryMenu;
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
