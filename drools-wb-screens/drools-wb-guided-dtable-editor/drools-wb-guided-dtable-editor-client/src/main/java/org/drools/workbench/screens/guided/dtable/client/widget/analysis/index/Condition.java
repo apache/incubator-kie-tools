@@ -62,6 +62,8 @@ public abstract class Condition<T extends Comparable>
     }
 
     private void resetValues() {
+        values.clear();
+
         for ( final Object o : valueKey.getValues() ) {
             values.add( (( Value ) o).getComparable() );
         }
