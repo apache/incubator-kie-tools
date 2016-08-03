@@ -128,6 +128,8 @@ public class DocksBars {
                     rootContainer.setWidgetSize( docksBar.getExpandedBar(), docksBar.getExpandedBarSize() );
                     docksBar.getExpandedBar().setupDockContentSize();
                     resizeCommand.execute();
+                    dockInteractionEvent.fire( new UberfireDocksInteractionEvent( docksBar.getPosition(),
+                                                                                  UberfireDocksInteractionEvent.InteractionType.RESIZED ) );
                 }
             }
         };

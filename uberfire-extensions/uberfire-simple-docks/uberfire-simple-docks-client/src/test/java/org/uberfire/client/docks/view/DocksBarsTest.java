@@ -268,6 +268,8 @@ public class DocksBarsTest {
         dockResizeCommand.execute( simulatedSize );
         verify( dockBar ).setExpandedSize( simulatedSize );
         verify( resizeCommand ).execute();
+        verify( dockInteractionEvent, times( 1 ) ).fire( new UberfireDocksInteractionEvent( UberfireDockPosition.SOUTH,
+                                                                                            UberfireDocksInteractionEvent.InteractionType.RESIZED ) );
     }
 
     private DocksBar createDocksBarMock() {

@@ -38,13 +38,18 @@ public class CommonModalBuilder {
         return this;
     }
 
+    public CommonModalBuilder addBody( HTMLElement element ) {
+        modal.add( buildPanel( element, new ModalBody() ) );
+        return this;
+    }
+
     public CommonModalBuilder addFooter( ModalFooter footer ) {
         modal.add( footer );
         return this;
     }
 
-    public CommonModalBuilder addBody( HTMLElement element ) {
-        modal.add( buildPanel( element, new ModalBody() ) );
+    public CommonModalBuilder addFooter( HTMLElement element ) {
+        modal.add( buildPanel( element, new ModalFooter() ) );
         return this;
     }
 

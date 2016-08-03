@@ -27,6 +27,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -50,6 +51,7 @@ import static org.uberfire.workbench.model.ActivityResourceType.*;
 import static com.google.gwt.core.client.ScriptInjector.*;
 
 @EntryPoint
+@Bundle( "resources/i18n/Constants.properties" )
 public class RuntimePluginsEntryPoint {
 
     @Inject

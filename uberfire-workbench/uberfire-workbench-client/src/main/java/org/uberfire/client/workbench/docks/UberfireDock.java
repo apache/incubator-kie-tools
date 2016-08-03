@@ -145,10 +145,15 @@ public class UberfireDock {
     public int hashCode() {
         int result = placeRequest != null ? placeRequest.hashCode() : 0;
         result = 31 * result + (iconType != null ? iconType.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (uberfireDockPosition != null ? uberfireDockPosition.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (associatedPerspective != null ? associatedPerspective.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (size != null ? size.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

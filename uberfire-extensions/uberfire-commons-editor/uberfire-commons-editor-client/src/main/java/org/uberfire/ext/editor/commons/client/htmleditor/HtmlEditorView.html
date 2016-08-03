@@ -1,0 +1,140 @@
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="editable" data-field="container">
+    <div data-field="html-editor-toolbar" class="toolbar">
+        <div class="block">
+            <a data-wysihtml-command="bold" data-field="bold-action" href="javascript:;" unselectable="on"><i class="fa fa-bold" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="italic" data-field="italic-action" href="javascript:;" unselectable="on"><i class="fa fa-italic" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="underline" data-field="underline-action" href="javascript:;" unselectable="on"><i class="fa fa-underline" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="block">
+            <a data-wysihtml-command="createLink" data-field="create-link-action" href="javascript:;" unselectable="on"><i class="fa fa-link" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="removeLink" data-field="remove-link-action" href="javascript:;" unselectable="on"><i class="fa fa-chain-broken" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="block">
+            <a data-wysihtml-command="insertImage" data-field="insert-image-action" href="javascript:;" unselectable="on"><i class="fa fa-picture-o" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="createTable" data-field="insert-table-action" href="javascript:;" unselectable="on" class=""><i class="fa fa-table" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="block">
+            <a data-wysihtml-command="formatBlock" data-field="big-title-action" data-wysihtml-command-value="h1" href="javascript:;" unselectable="on"><b>h1</b></a>
+            <a data-wysihtml-command="formatBlock" data-field="medium-title-action" data-wysihtml-command-value="h2" href="javascript:;" unselectable="on"><b>h2</b></a>
+            <a data-wysihtml-command="formatBlock" data-field="small-title-action" data-wysihtml-command-value="h3" href="javascript:;" unselectable="on"><b>h3</b></a>
+        </div>
+
+        <div class="block">
+            <a data-wysihtml-command="formatBlock" data-field="paragraph-action" data-wysihtml-command-value="p" href="javascript:;" unselectable="on"><i class="fa fa-paragraph" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="formatBlock" data-field="pre-action" data-wysihtml-command-value="pre" href="javascript:;" unselectable="on"><i class="fa fa-file-code-o" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="formatBlock" data-field="plain-text-action" data-wysihtml-command-blank-value="true" href="javascript:;" unselectable="on" class="wysihtml-command-active"><i class="fa fa-bars" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="insertBlockQuote" data-field="quote-action" href="javascript:;" unselectable="on"><i class="fa fa-quote-left" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="formatCode" data-field="code-action" data-wysihtml-command-value="language-html" href="javascript:;" unselectable="on"><i class="fa fa-code" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="block">
+            <a data-wysihtml-command="fontSizeStyle" data-field="font-size-action" href="javascript:;" unselectable="on"><i class="fa fa-text-height" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="foreColorStyle" data-field="font-color-action" href="javascript:;" unselectable="on"><i class="fa fa-font" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="bgColorStyle" data-field="background-color-action" href="javascript:;" unselectable="on"><i class="fa fa-pencil-square" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="block">
+            <a data-wysihtml-command="insertUnorderedList" data-field="unordered-list-action" href="javascript:;" unselectable="on"><i class="fa fa-list-ul" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="insertOrderedList" data-field="ordered-list-action" href="javascript:;" unselectable="on"><i class="fa fa-list-ol" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="outdentList" data-field="outdent-list-action" href="javascript:;" unselectable="on"><i class="fa fa-outdent" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="indentList" data-field="indent-list-action" href="javascript:;" unselectable="on"><i class="fa fa-indent" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="block">
+            <a data-wysihtml-command="alignLeftStyle" data-field="align-left-action" href="javascript:;" unselectable="on"><i class="fa fa-align-left" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="alignRightStyle" data-field="align-right-action" href="javascript:;" unselectable="on"><i class="fa fa-align-right" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="alignCenterStyle" data-field="align-center-action" href="javascript:;" unselectable="on"><i class="fa fa-align-center" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="block">
+            <a data-wysihtml-command="undo" data-field="undo-action" href="javascript:;" unselectable="on"><i class="fa fa-undo" aria-hidden="true"></i></a>
+            <a data-wysihtml-command="redo" data-field="redo-action" href="javascript:;" unselectable="on"><i class="fa fa-repeat" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="block">
+            <a data-wysihtml-action="change_view" data-field="switch-to-html-action" href="javascript:;" unselectable="on" class="" data-i18n-key="SwitchView"></a>
+        </div>
+
+        <div class="table-actions" data-wysihtml-hiddentools="table" style="display: none;">
+            <span data-i18n-key="TableOptions"></span>
+            <a data-wysihtml-command="mergeTableCells" href="javascript:;" unselectable="on" data-i18n-key="TableMergeCells"></a>
+            <a data-wysihtml-command="addTableCells" data-wysihtml-command-value="above" href="javascript:;" unselectable="on" data-i18n-key="TableAddRowBefore"></a>
+            <a data-wysihtml-command="addTableCells" data-wysihtml-command-value="below" href="javascript:;" unselectable="on" data-i18n-key="TableAddRowAfter"></a>
+            <a data-wysihtml-command="addTableCells" data-wysihtml-command-value="before" href="javascript:;" unselectable="on" data-i18n-key="TableAddColumnBefore"></a>
+            <a data-wysihtml-command="addTableCells" data-wysihtml-command-value="after" href="javascript:;" unselectable="on" data-i18n-key="TableAddColumnAfter"></a>
+            <a data-wysihtml-command="deleteTableCells" data-wysihtml-command-value="row" href="javascript:;" unselectable="on" data-i18n-key="TableRemoveRow"></a>
+            <a data-wysihtml-command="deleteTableCells" data-wysihtml-command-value="column" href="javascript:;" unselectable="on" data-i18n-key="TableRemoveColumn"></a>
+        </div>
+
+        <div data-wysihtml-dialog="fontSizeStyle" style="display: none;">
+            <span data-i18n-key="FontSizeDialog"></span>
+            <input type="text" data-wysihtml-dialog-field="size" style="width: 60px;" value="">
+            <a data-wysihtml-dialog-action="save" data-i18n-key="Ok"></a>&nbsp;
+            <a data-wysihtml-dialog-action="cancel" data-i18n-key="Cancel"></a>
+        </div>
+
+        <div data-wysihtml-dialog="bgColorStyle" style="display: none;">
+            <span data-i18n-key="BackgroundColorDialog"></span>
+            <input type="text" data-wysihtml-dialog-field="color" value="rgba(0,0,0,1)">
+            <a data-wysihtml-dialog-action="save" data-i18n-key="Ok"></a>&nbsp;
+            <a data-wysihtml-dialog-action="cancel" data-i18n-key="Cancel"></a>
+        </div>
+
+        <div data-wysihtml-dialog="foreColorStyle" style="display: none;">
+            <span data-i18n-key="FontColorDialog"></span>
+            <input type="text" data-wysihtml-dialog-field="color" value="rgba(0,0,0,1)">
+            <a data-wysihtml-dialog-action="save" data-i18n-key="Ok"></a>&nbsp;
+            <a data-wysihtml-dialog-action="cancel" data-i18n-key="Cancel"></a>
+        </div>
+
+        <div data-wysihtml-dialog="createLink" style="display: none;">
+            <span data-i18n-key="LinkDialog"></span>
+            <input data-wysihtml-dialog-field="href" value="http://">
+            <a data-wysihtml-dialog-action="save" data-i18n-key="Ok"></a>&nbsp;
+            <a data-wysihtml-dialog-action="cancel" data-i18n-key="Cancel"></a>
+        </div>
+
+        <div data-wysihtml-dialog="insertImage" style="display: none;">
+            <span data-i18n-key="ImageDialog"></span>
+            <input data-wysihtml-dialog-field="src" value="http://">
+            <span data-i18n-key="ImageAlignment"></span>
+            <select data-wysihtml-dialog-field="className">
+                <option value="" data-i18n-key="ImageAlignmentDefault"></option>
+                <option value="wysiwyg-float-left" data-i18n-key="ImageAlignmentLeft"></option>
+                <option value="wysiwyg-float-right" data-i18n-key="ImageAlignmentRight"></option>
+            </select>
+            <a data-wysihtml-dialog-action="save" data-i18n-key="Ok"></a>&nbsp;
+            <a data-wysihtml-dialog-action="cancel" data-i18n-key="Cancel"></a>
+        </div>
+        <div data-wysihtml-dialog="createTable" style="display: none;">
+            <span data-i18n-key="TableRows"></span>
+            <input type="text" data-wysihtml-dialog-field="rows">
+            <span data-i18n-key="TableColumns"></span>
+            <input type="text" data-wysihtml-dialog-field="cols">
+            <a data-wysihtml-dialog-action="save" data-i18n-key="Ok"></a>&nbsp;
+            <a data-wysihtml-dialog-action="cancel" data-i18n-key="Cancel"></a>
+        </div>
+    </div><!-- toolbar -->
+
+    <div data-field="html-editor" class="wysihtml-sandbox wysihtml-editor" contenteditable="true">
+    </div>
+</div>

@@ -76,7 +76,169 @@ public class Constants {
 
     @TranslationKey(defaultValue = "")
     public static final String RenamePopUpView_FileAlreadyExists = "RenamePopUpView.FileAlreadyExists";
-    
+
     @TranslationKey(defaultValue = "")
     public static final String ToggleCommentView_EnterComment = "ToggleCommentView.EnterComment";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_CantSaveReadOnly = "HtmlEditorView.CantSaveReadOnly";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Loading = "HtmlEditorView.Loading";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Saving = "HtmlEditorView.Saving";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_DiscardUnsavedData = "HtmlEditorView.DiscardUnsavedData";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Ok = "HtmlEditorView.Ok";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Cancel = "HtmlEditorView.Cancel";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Bold = "HtmlEditorView.Bold";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Italic = "HtmlEditorView.Italic";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Underline = "HtmlEditorView.Underline";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_CreateLink = "HtmlEditorView.CreateLink";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_RemoveLink = "HtmlEditorView.RemoveLink";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_InsertImage = "HtmlEditorView.InsertImage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_InsertTable = "HtmlEditorView.InsertTable";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_BigTitle = "HtmlEditorView.BigTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_MediumTitle = "HtmlEditorView.MediumTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_SmallTitle = "HtmlEditorView.SmallTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Paragraph = "HtmlEditorView.Paragraph";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Pre = "HtmlEditorView.Pre";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_PlainText = "HtmlEditorView.PlainText";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Quote = "HtmlEditorView.Quote";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Code = "HtmlEditorView.Code";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_FontSize = "HtmlEditorView.FontSize";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_FontColor = "HtmlEditorView.FontColor";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_BackgroundColor = "HtmlEditorView.BackgroundColor";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_UnorderedList = "HtmlEditorView.UnorderedList";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_OrderedList = "HtmlEditorView.OrderedList";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_OutdentList = "HtmlEditorView.OutdentList";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_IndentList = "HtmlEditorView.IndentList";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_AlignLeft = "HtmlEditorView.AlignLeft";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_AlignRight = "HtmlEditorView.AlignRight";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_AlignCenter = "HtmlEditorView.AlignCenter";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Undo = "HtmlEditorView.Undo";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_Redo = "HtmlEditorView.Redo";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_SwitchToHtmlView = "HtmlEditorView.SwitchToHtmlView";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_SwitchView = "HtmlEditorView.SwitchView";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableOptions = "HtmlEditorView.TableOptions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableMergeCells = "HtmlEditorView.TableMergeCells";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableAddRowBefore = "HtmlEditorView.TableAddRowBefore";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableAddRowAfter = "HtmlEditorView.TableAddRowAfter";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableAddColumnBefore = "HtmlEditorView.TableAddColumnBefore";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableAddColumnAfter = "HtmlEditorView.TableAddColumnAfter";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableRemoveRow = "HtmlEditorView.TableRemoveRow";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableRemoveColumn = "HtmlEditorView.TableRemoveColumn";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_FontSizeDialog = "HtmlEditorView.FontSizeDialog";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_BackgroundColorDialog = "HtmlEditorView.BackgroundColorDialog";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_FontColorDialog = "HtmlEditorView.FontColorDialog";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_LinkDialog = "HtmlEditorView.LinkDialog";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_ImageDialog = "HtmlEditorView.ImageDialog";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_ImageAlignment = "HtmlEditorView.ImageAlignment";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_ImageAlignmentDefault = "HtmlEditorView.ImageAlignmentDefault";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_ImageAlignmentLeft = "HtmlEditorView.ImageAlignmentLeft";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_ImageAlignmentRight = "HtmlEditorView.ImageAlignmentRight";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableRows = "HtmlEditorView.TableRows";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HtmlEditorView_TableColumns = "HtmlEditorView.TableColumns";
 }

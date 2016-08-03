@@ -1,0 +1,312 @@
+.wysiwyg-font-size-smaller {
+    font-size: smaller;
+}
+
+.wysiwyg-font-size-larger {
+    font-size: larger;
+}
+
+.wysiwyg-font-size-xx-large {
+    font-size: xx-large;
+}
+
+.wysiwyg-font-size-x-large {
+    font-size: x-large;
+}
+
+.wysiwyg-font-size-large {
+    font-size: large;
+}
+
+.wysiwyg-font-size-medium {
+    font-size: medium;
+}
+
+.wysiwyg-font-size-small {
+    font-size: small;
+}
+
+.wysiwyg-font-size-x-small {
+    font-size: x-small;
+}
+
+.wysiwyg-font-size-xx-small {
+    font-size: xx-small;
+}
+
+.wysiwyg-color-black {
+    color: black;
+}
+
+.wysiwyg-color-silver {
+    color: silver;
+}
+
+.wysiwyg-color-gray {
+    color: gray;
+}
+
+.wysiwyg-color-white {
+    color: white;
+}
+
+.wysiwyg-color-maroon {
+    color: maroon;
+}
+
+.wysiwyg-color-red {
+    color: red;
+}
+
+.wysiwyg-color-purple {
+    color: purple;
+}
+
+.wysiwyg-color-fuchsia {
+    color: fuchsia;
+}
+
+.wysiwyg-color-green {
+    color: green;
+}
+
+.wysiwyg-color-lime {
+    color: lime;
+}
+
+.wysiwyg-color-olive {
+    color: olive;
+}
+
+.wysiwyg-color-yellow {
+    color: yellow;
+}
+
+.wysiwyg-color-navy {
+    color: navy;
+}
+
+.wysiwyg-color-blue {
+    color: blue;
+}
+
+.wysiwyg-color-teal {
+    color: teal;
+}
+
+.wysiwyg-color-aqua {
+    color: aqua;
+}
+
+.wysiwyg-text-align-right {
+    text-align: right;
+}
+
+.wysiwyg-text-align-center {
+    text-align: center;
+}
+
+.wysiwyg-text-align-left {
+    text-align: left;
+}
+
+.wysiwyg-float-left {
+    float: left;
+    margin: 0 8px 8px 0;
+}
+
+.wysiwyg-float-right {
+    float: right;
+    margin: 0 0 8px 8px;
+}
+
+.wysiwyg-clear-right {
+    clear: right;
+}
+
+.wysiwyg-clear-left {
+    clear: left;
+}
+
+.editable h2 {
+    margin-bottom: 0;
+}
+
+.editable small {
+    display: block;
+    margin-top: 40px;
+    font-size: 9px;
+}
+
+.editable small,
+.editable small a {
+    color: #666;
+}
+
+.editable a {
+    color: #000;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.editable .toolbar,
+.editable textarea {
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0 7px;
+}
+
+.editable textarea {
+    border: 2px solid;
+    font-family: monospace;
+}
+
+.editable textarea:focus {
+    color: black;
+    border: 2px solid black;
+}
+
+.editable .wysihtml-command-active {
+    font-weight: bold;
+}
+
+.editable [data-wysihtml-dialog],
+.editable [data-wysihtml-hiddentools] {
+    margin: 5px 0 0;
+    padding: 5px;
+    border: 1px solid #666;
+}
+
+.editable a[data-wysihtml-command-value="red"] {
+    color: red;
+}
+
+.editable a[data-wysihtml-command-value="green"] {
+    color: green;
+}
+
+.editable a[data-wysihtml-command-value="blue"] {
+    color: blue;
+}
+
+.editable .wysihtml-editor,
+.editable .wysihtml-editor table td,
+.editable .wysihtml-editor table th {
+    outline: 1px dotted #abc;
+    padding: 5px;
+}
+
+.editable code {
+    background: #ddd;
+    padding: 10px;
+    white-space: pre;
+    display: block;
+    margin: 1em 0;
+}
+
+.editable .toolbar {
+    display: block;
+    border-radius: 3px;
+    border: 1px solid #fff;
+    margin-bottom: 9px;
+    line-height: 1em;
+}
+
+.editable .toolbar a {
+    display: inline-block;
+    height: 1.5em;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1.5em;
+    text-decoration: none;
+    background: #e1e1e1;
+    border: 1px solid #ddd;
+    padding: 0 0.2em;
+    margin: 1px 0;
+}
+
+.editable .toolbar a[data-wysihtml-command] {
+    width: 26px;
+}
+
+.editable .toolbar a[data-wysihtml-command],
+.editable .toolbar a[data-wysihtml-action]{
+    text-align: center;
+    height: 26px;
+    font-size: 16px;
+}
+
+.editable .toolbar .table-actions a[data-wysihtml-command] {
+    width: auto;
+    font-size: 12px;
+    padding: 2px 7px;
+}
+
+.editable .toolbar a[data-wysihtml-command]:hover,
+.editable .toolbar a[data-wysihtml-action]:hover{
+    background: #c1c1c1;
+}
+
+.editable .toolbar a.wysihtml-command-active {
+    background: #222;
+    color: white;
+}
+.editable .toolbar .block {
+    padding: 1px 1px;
+    display: inline-block;
+    background: #eee;
+    border-radius: 3px;
+    margin: 0px 1px 1px 0;
+}
+
+.editable .wysihtml-editor table td.wysiwyg-tmp-selected-cell,
+.editable .wysihtml-editor table th.wysiwyg-tmp-selected-cell {
+    outline: 2px solid green;
+}
+
+.editable .editor-container-tag {
+    padding: 5px 10px;
+    position: absolute;
+    color: white;
+    background: rgba(0,0,0,0.8);
+    width: 100px;
+    margin-left: -50px;
+    -webkit-transition: 0.1s left, 0.1s top;
+}
+
+.editable .wrap {
+    max-width: 700px;
+    margin: 40px;
+}
+
+.editable .editable .wysihtml-uneditable-container {
+    outline: 1px dotted gray;
+    position: relative;
+}
+
+.editable .editable .wysihtml-uneditable-container-right {
+    float: right;
+    width: 50%;
+    margin-left: 2em;
+    margin-bottom: 1em;
+}
+
+.editable .editable .wysihtml-uneditable-container-left {
+    float: left;
+    width: 50%;
+    margin-right: 2em;
+    margin-bottom: 1em;
+}
+
+.editable .wysihtml-editor {
+    margin: 0 7px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.editable {
+    height: 100%;
+}

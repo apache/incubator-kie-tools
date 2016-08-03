@@ -117,4 +117,6 @@ public interface CommonConstants
 
     String PackageColon();
 
+    String HtmlEditor();
+
 }

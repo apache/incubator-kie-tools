@@ -232,6 +232,7 @@ public class DefaultPlaceRequest implements PlaceRequest {
     public int hashCode() {
         int result = identifier.hashCode();
         result = 31 * result + parameters.hashCode();
+        result = ~~result;
         return result;
     }
 
