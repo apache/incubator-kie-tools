@@ -1,22 +1,24 @@
 package org.uberfire.ext.layout.editor.client.components.rows;
 
-import com.google.gwt.event.dom.client.DropEvent;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.infra.DndDataJSONConverter;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 @Dependent
 public class EmptyDropRow {
 
-    public interface View extends UberView<EmptyDropRow> {
 
+    private String id;
+
+    public interface View extends UberElement<EmptyDropRow> {
+
+        void setupText( String titleText, String subTitleText );
     }
 
     private final View view;
@@ -38,21 +40,22 @@ public class EmptyDropRow {
         view.init( this );
     }
 
-    public void init( ParameterizedCommand<RowDrop> dropCommand ) {
+    public void init( ParameterizedCommand<RowDrop> dropCommand, String titleText, String subTitleText ) {
         this.dropCommand = dropCommand;
+        view.setupText( titleText, subTitleText );
     }
 
-    public void drop( DropEvent dropEvent ) {
-        LayoutDragComponent component = extractComponent( dropEvent );
+    public void drop( String dropData ) {
+        LayoutDragComponent component = extractComponent( dropData );
         if ( thereIsAComponent( component ) ) {
-            dropCommand.execute( new RowDrop( layoutDragComponentHelper.getLayoutComponent( component ), hashCode(),
+            dropCommand.execute( new RowDrop( layoutDragComponentHelper.getLayoutComponent( component ), id,
                                               RowDrop.Orientation.AFTER ) );
         }
     }
 
-    private LayoutDragComponent extractComponent( DropEvent dropEvent ) {
+    private LayoutDragComponent extractComponent( String dropData ) {
         return converter
-                .readJSONDragComponent( dropEvent.getData( LayoutDragComponent.FORMAT ) );
+                .readJSONDragComponent( dropData );
     }
 
 
@@ -60,9 +63,15 @@ public class EmptyDropRow {
         return component != null;
     }
 
-
-    public UberView<EmptyDropRow> getView() {
+    public UberElement<EmptyDropRow> getView() {
         return view;
     }
 
+    public void setId( String id ) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
 }

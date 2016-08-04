@@ -20,8 +20,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Modal;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.InputSize;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.client.mvp.ActivityBeansInfo;
@@ -64,12 +62,8 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
     }
 
     @Override
-    public IsWidget getDragWidget() {
-        TextBox textBox = GWT.create( TextBox.class );
-        textBox.setPlaceholder( CommonConstants.INSTANCE.ScreenComponent() );
-        textBox.setReadOnly( true );
-        textBox.setSize( InputSize.DEFAULT );
-        return textBox;
+    public String getDragComponentTitle() {
+        return CommonConstants.INSTANCE.ScreenComponent();
     }
 
     @Override

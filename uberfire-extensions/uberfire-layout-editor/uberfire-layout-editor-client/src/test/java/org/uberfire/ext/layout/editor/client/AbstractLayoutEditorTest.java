@@ -15,6 +15,7 @@ import org.uberfire.ext.layout.editor.client.components.rows.EmptyDropRow;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.infra.DnDManager;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
+import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -59,14 +60,19 @@ public abstract class AbstractLayoutEditorTest {
 
     public Container createContainer() {
         return new Container( view, rowInstance, emptyDropRowInstance, mock( Event.class ) ) {
+            private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
+
             @Override
             protected EmptyDropRow createInstanceEmptyDropRow() {
+                emptyDropRow.setId( idGenerator.createRowID( "container" ) );
                 return emptyDropRow;
             }
 
             @Override
             protected Row createInstanceRow() {
-                return rowProducer();
+                Row row = rowProducer();
+                row.setId( idGenerator.createRowID( "container" ) );
+                return row;
             }
 
             @Override
@@ -76,20 +82,29 @@ public abstract class AbstractLayoutEditorTest {
     }
 
     private Row rowProducer() {
-        return new Row( mock( Row.View.class ), null, null, dnDManager, helper, mock( Event.class ), mock( Event.class ) ) {
+        return new Row( mock( Row.View.class ), null, null, dnDManager, helper, mock( Event.class ),
+                        mock( Event.class ) ) {
+            private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
+
             @Override
             protected ComponentColumn createComponentColumnInstance() {
-                return new ComponentColumn( mock( ComponentColumn.View.class ), dnDManager, helper ) {
+
+                ComponentColumn componentColumn = new ComponentColumn( mock( ComponentColumn.View.class ), dnDManager,
+                                                                       helper, mock( Event.class ) ) {
                     @Override
                     protected boolean hasConfiguration() {
                         return false;
                     }
                 };
+                componentColumn.setId( idGenerator.createColumnID( getId() ) );
+                return componentColumn;
             }
 
             @Override
             protected ColumnWithComponents createColumnWithComponentsInstance() {
-                return new ColumnWithComponents( mock( ColumnWithComponents.View.class ), null, dnDManager, helper ) {
+                ColumnWithComponents columnWithComponents = new ColumnWithComponents(
+                        mock( ColumnWithComponents.View.class ), null, dnDManager, helper,
+                        mock( Event.class ) ) {
                     @Override
                     protected Row createInstanceRow() {
                         return rowProducer();
@@ -99,6 +114,8 @@ public abstract class AbstractLayoutEditorTest {
                     protected void destroy( Object o ) {
                     }
                 };
+                columnWithComponents.setId( idGenerator.createColumnID( getId() ) );
+                return columnWithComponents;
 
             }
 
@@ -148,7 +165,7 @@ public abstract class AbstractLayoutEditorTest {
 
     protected LayoutTemplate loadLayout( String singleRowComponentLayout ) throws Exception {
         LayoutTemplate layoutTemplate = getLayoutFromFileTemplate( singleRowComponentLayout );
-        container.load( layoutTemplate );
+        container.load( layoutTemplate, "title", "subtitle" );
         return layoutTemplate;
     }
 

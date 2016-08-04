@@ -44,7 +44,8 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
         for ( LayoutRow layoutRow : rows ) {
             Row row = new Row();
             for ( LayoutColumn layoutColumn : layoutRow.getLayoutColumns() ) {
-                Column column = new Column( ColumnSizeBuilder.buildColumnSize( new Integer( layoutColumn.getSpan() ) ) );
+                Column column = new Column(
+                        ColumnSizeBuilder.buildColumnSize( new Integer( layoutColumn.getSpan() ) ) );
                 if ( columnHasNestedRows( layoutColumn ) ) {
                     generateRows( layoutColumn.getRows(), column );
                 } else {

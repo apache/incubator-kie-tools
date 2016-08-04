@@ -1,7 +1,6 @@
 package org.uberfire.ext.layout.editor.client.components.rows;
 
-import com.google.gwt.event.dom.client.DropEvent;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
@@ -28,13 +27,17 @@ public class Row {
 
     public static final int COLUMN_DEFAULT_SIZE = 12;
 
-    public interface View extends UberView<Row> {
+    public interface View extends UberElement<Row> {
 
-        void addColumn( UberView<ComponentColumn> view );
+        void addColumn( UberElement<ComponentColumn> view );
 
         void clear();
 
     }
+
+    private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
+
+    private String id;
 
     private View view;
 
@@ -85,6 +88,7 @@ public class Row {
         this.dropOnRowCommand = dropOnRowCommand;
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
+        this.parentColumnWithComponents = null;
     }
 
     public void init( ParameterizedCommand<RowDrop> dropOnRowCommand,
@@ -104,40 +108,38 @@ public class Row {
         this.removeRowCommand = removeCommand;
         this.removeComponentCommand = removeComponentCommand;
         extractColumns( layoutRow );
+        setupColumnResizeActions();
     }
 
     private void extractColumns( LayoutRow layoutRow ) {
-        int currentColumnIndex = 0;
         for ( LayoutColumn layoutColumn : layoutRow.getLayoutColumns() ) {
             if ( isColumnWithComponents( layoutColumn ) ) {
-                extractColumnWithComponents( currentColumnIndex, layoutColumn );
+                extractColumnWithComponents( layoutColumn );
 
             } else {
-                extractComponentColumn( currentColumnIndex, layoutColumn );
+                extractComponentColumn( layoutColumn );
             }
-            currentColumnIndex = currentColumnIndex + 1;
         }
     }
 
 
-    private void extractComponentColumn( int currentColumnIndex, LayoutColumn layoutColumn ) {
-        ComponentColumn newComponentColumn = getComponentColumn(
-                currentColumnIndex, layoutColumn );
+    private void extractComponentColumn( LayoutColumn layoutColumn ) {
+        ComponentColumn newComponentColumn = getComponentColumn( layoutColumn );
         this.columns.add( newComponentColumn );
     }
 
-    private void extractColumnWithComponents( int currentColumnIndex, LayoutColumn layoutColumn ) {
+    private void extractColumnWithComponents( LayoutColumn layoutColumn ) {
         for ( LayoutRow row : layoutColumn.getRows() ) {
             Integer size = new Integer( layoutColumn.getSpan() );
             final ColumnWithComponents columnWithComponents = createColumnWithComponentsInstance();
 
             columnWithComponents
-                    .init( hashCode(), getColumnPosition( currentColumnIndex ), size,
+                    .init( id, size,
                            dropCommand(), removeComponentCommand,
                            removeColumnCommand() );
 
             for ( LayoutColumn column : row.getLayoutColumns() ) {
-                ComponentColumn newComponentColumn = getComponentColumn( 0, column );
+                ComponentColumn newComponentColumn = getComponentColumn( column );
                 newComponentColumn.setInnerColumn();
                 columnWithComponents.withComponents( newComponentColumn );
             }
@@ -156,7 +158,7 @@ public class Row {
     }
 
     public void dragStart() {
-        dndManager.beginRowMove( hashCode() );
+        dndManager.beginRowMove( id );
     }
 
     public boolean canDrag() {
@@ -172,10 +174,9 @@ public class Row {
         return layoutColumn.hasRows();
     }
 
-    private ComponentColumn getComponentColumn( int currentColumnIndex, LayoutColumn column ) {
+    private ComponentColumn getComponentColumn( LayoutColumn column ) {
         LayoutComponent layoutComponent = column.getLayoutComponents().get( 0 );
         return createNewComponentColumn( layoutComponent,
-                                         currentColumnIndex,
                                          new Integer(
                                                  column.getSpan() ),
                                          false );
@@ -183,7 +184,7 @@ public class Row {
 
     public void addColumns( ComponentColumn... _columns ) {
         for ( ComponentColumn column : _columns ) {
-            column.setParentHashCode( hashCode() );
+            column.setParentId( id );
             column.setDropCommand( dropCommand() );
             columns.add( column );
         }
@@ -193,14 +194,16 @@ public class Row {
         final ComponentColumn column = createComponentColumnInstance();
 
 
-        column.init( hashCode(), Column.Position.FIRST_COLUMN, COLUMN_DEFAULT_SIZE,
+        column.init( id, COLUMN_DEFAULT_SIZE,
                      layoutComponent,
                      dropCommand(), removeColumnCommand(), newComponent );
         columns.add( column );
+        setupColumnResizeActions();
     }
 
     protected ComponentColumn createComponentColumnInstance() {
         final ComponentColumn column = columnInstance.get();
+        column.setId( idGenerator.createColumnID( id ) );
         return column;
     }
 
@@ -235,13 +238,12 @@ public class Row {
 
     public void removeColumn( Column targetColumn ) {
         removeChildColumn( targetColumn );
-
         if ( rowIsEmpty() ) {
             removeRowCommand.execute( this );
         }
     }
 
-    private void removeChildColumn( Column targetColumn ) {
+    public void removeChildColumn( Column targetColumn ) {
         if ( isAChildColumn( targetColumn ) ) {
             removeChildComponentColumn( targetColumn );
         } else {
@@ -268,7 +270,7 @@ public class Row {
     }
 
 
-    private boolean rowIsEmpty() {
+    public boolean rowIsEmpty() {
         return columns.isEmpty();
     }
 
@@ -291,7 +293,7 @@ public class Row {
     private void updateSizeOfSibilinColumn( Column columnToRemove ) {
         final int removeIndex = getColumnIndex( columnToRemove );
         if ( isFirstColumn( removeIndex ) ) {
-            if ( hasRightSibling() ) {
+            if ( firstColumnHasRightSibling() ) {
                 final Column sibling = columns.get( 1 );
                 sibling.setSize( sibling.getSize() + columnToRemove.getSize() );
             }
@@ -301,7 +303,7 @@ public class Row {
         }
     }
 
-    private boolean hasRightSibling() {
+    private boolean firstColumnHasRightSibling() {
         return columns.size() >= 2;
     }
 
@@ -320,22 +322,23 @@ public class Row {
 
     protected ColumnWithComponents createColumnWithComponentsInstance() {
         final ColumnWithComponents column = columnWithComponentsInstance.get();
+        column.setId( idGenerator.createColumnID( id ) );
         return column;
     }
 
-    public void drop( DropEvent dropEvent, RowDrop.Orientation orientation ) {
+    public void drop( String dropData, RowDrop.Orientation orientation ) {
         if ( dndManager.isOnRowMove() ) {
-            dndManager.endRowMove( hashCode(), orientation );
+            dndManager.endRowMove( id, orientation );
         } else if ( dndManager.isOnComponentMove() ) {
             dndManager.endComponentMove();
             dropOnRowCommand
-                    .execute( new RowDrop( dndManager.getLayoutComponentMove(), hashCode(), orientation )
-                                      .fromMove( dndManager.getRowHashCode(),
+                    .execute( new RowDrop( dndManager.getLayoutComponentMove(), id, orientation )
+                                      .fromMove( dndManager.getRowId(),
                                                  dndManager.getDraggedColumn() ) );
         } else {
             dropOnRowCommand
                     .execute(
-                            new RowDrop( layoutDragComponentHelper.getLayoutComponentFromDrop( dropEvent ), hashCode(),
+                            new RowDrop( layoutDragComponentHelper.getLayoutComponentFromDrop( dropData ), id,
                                          orientation ) );
         }
     }
@@ -434,7 +437,7 @@ public class Row {
         final ComponentColumn newColumn = createComponentColumnInstance();
 
 
-        newColumn.init( currentColumn.getParentHashCode(), getColumnPosition( 0 ), COLUMN_DEFAULT_SIZE,
+        newColumn.init( currentColumn.getParentId(), COLUMN_DEFAULT_SIZE,
                         drop.getComponent(),
                         dropCommand(), removeColumnCommand(), drop.newComponent() );
         newColumn.setInnerColumn();
@@ -447,7 +450,7 @@ public class Row {
             Integer size = currentColumn.getSize();
             final ColumnWithComponents columnWithComponents = createColumnWithComponentsInstance();
             columnWithComponents
-                    .init( hashCode(), getColumnPosition( columnIndex ), size, dropCommand(), removeComponentCommand,
+                    .init( id, size, dropCommand(), removeComponentCommand,
                            removeColumnCommand() );
 
             final ComponentColumn newColumn = createComponentColumn(
@@ -475,21 +478,20 @@ public class Row {
     private ComponentColumn updateCurrentColumn( ComponentColumn currentColumn ) {
         currentColumn.setSize( 12 );
         currentColumn.recalculateSize();
-        currentColumn.setColumnPosition( getColumnPosition( 0 ) );
         currentColumn.setInnerColumn();
         return currentColumn;
     }
 
     private ComponentColumn createComponentColumn( LayoutComponent layoutComponent,
                                                    boolean newComponent ) {
-        return createNewComponentColumn( layoutComponent, 0, 12, newComponent );
+        return createNewComponentColumn( layoutComponent, 12, newComponent );
     }
 
-    private ComponentColumn createNewComponentColumn( LayoutComponent layoutComponent,
-                                                      int columnIndex, Integer columnSize, boolean newComponent ) {
+    private ComponentColumn createNewComponentColumn( LayoutComponent layoutComponent, Integer columnSize,
+                                                      boolean newComponent ) {
         final ComponentColumn newColumn = createComponentColumnInstance();
 
-        newColumn.init( hashCode(), getColumnPosition( columnIndex ), columnSize,
+        newColumn.init( id, columnSize,
                         layoutComponent, dropCommand()
                 , removeColumnCommand(), newComponent );
         return newColumn;
@@ -517,30 +519,22 @@ public class Row {
                                  Column currentColumn ) {
 
         if ( drop.isALeftDrop() ) {
-            final ComponentColumn newColumn = createNewComponentColumn( drop.getComponent(), columnIndex,
+            final ComponentColumn newColumn = createNewComponentColumn( drop.getComponent(),
                                                                         currentColumn.getSize() / 2,
                                                                         drop.newComponent() );
-            currentColumn = updateCurrentColumn( currentColumn, ( columnIndex + 1 ) );
+            setupColumnSize( currentColumn );
 
             columns.add( newColumn );
             columns.add( currentColumn );
-
         } else {
             final ComponentColumn newColumn = createNewComponentColumn( drop.getComponent(),
-                                                                        columnIndex + 1,
                                                                         currentColumn.getSize() / 2,
                                                                         drop.newComponent() );
-            currentColumn = updateCurrentColumn( currentColumn, columnIndex );
+            setupColumnSize( currentColumn );
 
             columns.add( currentColumn );
             columns.add( newColumn );
         }
-    }
-
-    private Column updateCurrentColumn( Column currentColumn, int columnIndex ) {
-        currentColumn.setColumnPosition( getColumnPosition( columnIndex + 1 ) );
-        setupColumnSize( currentColumn );
-        return currentColumn;
     }
 
     private Integer setupColumnSize( Column column ) {
@@ -556,19 +550,9 @@ public class Row {
 
 
     private boolean dropIsOn( ColumnDrop drop, Column column ) {
-        return drop.getEndHash() == column.hashCode();
+        return drop.getEndId() == column.getId();
     }
 
-
-    private Column.Position getColumnPosition( int i ) {
-        Column.Position Position;
-        if ( i == 0 ) {
-            Position = Column.Position.FIRST_COLUMN;
-        } else {
-            Position = Column.Position.MIDDLE;
-        }
-        return Position;
-    }
 
     public void resizeColumns( @Observes ColumnResizeEvent resize ) {
         if ( resizeEventIsinThisRow( resize ) ) {
@@ -576,13 +560,16 @@ public class Row {
             Column resizedColumn = getColumn( resize );
 
             if ( resizedColumn != null ) {
-                Column affectedColumn = lookUpForLeftNeighbor( resizedColumn );
+                Column affectedColumn = null;
                 if ( resize.isLeft() ) {
+                    affectedColumn = lookUpForLeftNeighbor( resizedColumn );
+                } else {
+                    affectedColumn = lookUpForRightNeighbor( resizedColumn );
+
+                }
+                if ( affectedColumn != null ) {
                     resizedColumn.incrementSize();
                     affectedColumn.reduzeSize();
-                } else {
-                    affectedColumn.incrementSize();
-                    resizedColumn.reduzeSize();
                 }
             }
             updateView();
@@ -594,14 +581,19 @@ public class Row {
                 .get( getColumnIndex( resizedColumn ) - 1 );
     }
 
+    private Column lookUpForRightNeighbor( Column resizedColumn ) {
+        return columns
+                .get( getColumnIndex( resizedColumn ) + 1 );
+    }
+
     private boolean resizeEventIsinThisRow( @Observes ColumnResizeEvent resize ) {
-        return resize.getRowHashCode() == hashCode();
+        return resize.getRowID() == id;
     }
 
 
     private Column getColumn( ColumnResizeEvent resize ) {
         for ( Column column : columns ) {
-            if ( resize.getColumnHashCode() == column.hashCode() ) {
+            if ( resize.getColumnID() == column.getId() ) {
                 return column;
             }
         }
@@ -610,12 +602,50 @@ public class Row {
 
     public void updateView() {
         view.clear();
+        setupColumnResizeActions();
         for ( Column column : columns ) {
             view.addColumn( column.getView() );
         }
     }
 
-    public UberView<Row> getView() {
+    private void setupColumnResizeActions() {
+        for ( int i = 0; i < columns.size(); i++ ) {
+            Column column = columns.get( i );
+            setupColumnResizeActions( columns, column, i );
+        }
+    }
+
+    private void setupColumnResizeActions( List<Column> columns, Column currentColumn, int index ) {
+        if ( firstColumn( index ) ) {
+            boolean canResizeRight = canResizeRight( index, columns );
+            currentColumn.setupResize( false, canResizeRight );
+        } else {
+            currentColumn.setupResize( canResizeLeft( index, columns ), canResizeRight( index, columns ) );
+        }
+    }
+
+    private boolean canResizeLeft( int index, List<Column> columns ) {
+        Column rightSibling = columns.get( index - 1 );
+        return rightSibling.getSize() > 1;
+    }
+
+    private boolean canResizeRight( int index, List<Column> columns ) {
+        if ( hasRightSibling( index, columns ) ) {
+            Column rightSibling = columns.get( index + 1 );
+            return rightSibling.getSize() > 1;
+        }
+        return false;
+    }
+
+    private boolean hasRightSibling( int index, List<Column> columns ) {
+        return columns.size() > ( index + 1 );
+    }
+
+    private boolean firstColumn( int index ) {
+        return index == 0;
+    }
+
+    public UberElement<Row> getView() {
         updateView();
         return view;
     }
@@ -630,5 +660,19 @@ public class Row {
 
     protected void destroy( Object o ) {
         BeanHelper.destroy( o );
+    }
+
+    public void calculateSizeChilds() {
+        for ( Column column : columns ) {
+            column.calculateSize();
+        }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId( String id ) {
+        this.id = id;
     }
 }

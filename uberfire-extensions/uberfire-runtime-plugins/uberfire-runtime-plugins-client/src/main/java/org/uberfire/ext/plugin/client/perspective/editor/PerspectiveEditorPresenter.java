@@ -16,31 +16,15 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor;
 
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
-import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
@@ -51,8 +35,9 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
-import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
@@ -73,11 +58,18 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 
 @Dependent
-@WorkbenchEditor(identifier = "Perspective Editor", supportedTypes = { PerspectiveLayoutPluginResourceType.class }, priority = Integer.MAX_VALUE)
+@WorkbenchEditor( identifier = "Perspective Editor", supportedTypes = {PerspectiveLayoutPluginResourceType.class}, priority = Integer.MAX_VALUE )
 public class PerspectiveEditorPresenter extends BaseEditor {
 
     private final View perspectiveEditorView;
@@ -128,10 +120,10 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
         // Show the available menu options according to the permissions set
         List<MenuItems> menuItems = new ArrayList<>();
-        addMenuItem(menuItems, SAVE, pluginController.canUpdate(plugin));
-        addMenuItem(menuItems, COPY, pluginController.canCreatePerspectives());
-        addMenuItem(menuItems, RENAME, pluginController.canUpdate(plugin));
-        addMenuItem(menuItems, DELETE, pluginController.canDelete(plugin));
+        addMenuItem( menuItems, SAVE, pluginController.canUpdate( plugin ) );
+        addMenuItem( menuItems, COPY, pluginController.canCreatePerspectives() );
+        addMenuItem( menuItems, RENAME, pluginController.canUpdate( plugin ) );
+        addMenuItem( menuItems, DELETE, pluginController.canDelete( plugin ) );
 
         // Init the editor
         init( path,
@@ -142,19 +134,41 @@ public class PerspectiveEditorPresenter extends BaseEditor {
               menuItems );
 
 
-        this.layoutEditorPlugin.init( name, lookupPerspectiveDragComponents() );
+        this.layoutEditorPlugin.init( name, lookupPerspectiveDragComponents(),
+                                      org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptyTitleText(),
+                                      org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptySubTitleText() );
         this.perspectiveEditorView.setupLayoutEditor( layoutEditorPlugin.asWidget() );
     }
 
-    protected void addMenuItem(List<MenuItems> menuItems, MenuItems item, boolean add) {
-        if (add) {
-            menuItems.add(item);
+    protected void addMenuItem( List<MenuItems> menuItems, MenuItems item, boolean add ) {
+        if ( add ) {
+            menuItems.add( item );
         }
     }
 
-    protected List<LayoutDragComponent> lookupPerspectiveDragComponents() {
-        List<LayoutDragComponent> result = new ArrayList<LayoutDragComponent>();
-        Collection<SyncBeanDef<PerspectiveEditorDragComponent>> beanDefs = IOC.getBeanManager().lookupBeans( PerspectiveEditorDragComponent.class );
+    protected LayoutDragComponentGroup lookupPerspectiveDragComponents() {
+        List<LayoutDragComponent> perspectiveDragComponents = scanPerspectiveDragComponents();
+
+        LayoutDragComponentGroup group = convertToDragComponentGroup( perspectiveDragComponents );
+
+        return group;
+    }
+
+    private LayoutDragComponentGroup convertToDragComponentGroup(
+            List<LayoutDragComponent> perspectiveDragComponents ) {
+        LayoutDragComponentGroup group = new LayoutDragComponentGroup( "Uberfire Widgets" );
+        int id = 0;
+        for ( LayoutDragComponent layoutDragComponent : perspectiveDragComponents ) {
+            group.addLayoutDragComponent( String.valueOf( id ), layoutDragComponent );
+            id++;
+        }
+        return group;
+    }
+
+    private List<LayoutDragComponent> scanPerspectiveDragComponents() {
+        List<LayoutDragComponent> result = new ArrayList<>();
+        Collection<SyncBeanDef<PerspectiveEditorDragComponent>> beanDefs = IOC
+                .getBeanManager().lookupBeans( PerspectiveEditorDragComponent.class );
         for ( SyncBeanDef<PerspectiveEditorDragComponent> beanDef : beanDefs ) {
             PerspectiveEditorDragComponent dragComponent = beanDef.getInstance();
             result.add( dragComponent );
@@ -202,19 +216,20 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
     @WorkbenchPartView
     public UberView<PerspectiveEditorPresenter> getWidget() {
-        return (UberView<PerspectiveEditorPresenter>) super.baseView;
+        return ( UberView<PerspectiveEditorPresenter> ) super.baseView;
     }
 
     @Override
     protected void loadContent() {
         baseView.hideBusyIndicator();
-        layoutEditorPlugin.load( PluginType.PERSPECTIVE_LAYOUT, versionRecordManager.getCurrentPath(), new ParameterizedCommand<LayoutEditorModel>() {
-            @Override
-            public void execute( LayoutEditorModel layoutEditorModel ) {
-                setOriginalHash( getCurrentModelHash() );
-                plugin = layoutEditorModel;
-            }
-        } );
+        layoutEditorPlugin.load( PluginType.PERSPECTIVE_LAYOUT, versionRecordManager.getCurrentPath(),
+                                 new ParameterizedCommand<LayoutEditorModel>() {
+                                     @Override
+                                     public void execute( LayoutEditorModel layoutEditorModel ) {
+                                         setOriginalHash( getCurrentModelHash() );
+                                         plugin = layoutEditorModel;
+                                     }
+                                 } );
     }
 
     @Override
@@ -229,7 +244,8 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         return new RemoteCallback<Path>() {
             @Override
             public void callback( final Path path ) {
-                RemoteCallback<Path> saveSuccessCallback = PerspectiveEditorPresenter.super.getSaveSuccessCallback( getCurrentModelHash() );
+                RemoteCallback<Path> saveSuccessCallback = PerspectiveEditorPresenter.super
+                        .getSaveSuccessCallback( getCurrentModelHash() );
                 saveSuccessCallback.callback( path );
                 perspectiveEditorGenerator.generate( layoutEditorPlugin.getLayout() );
             }

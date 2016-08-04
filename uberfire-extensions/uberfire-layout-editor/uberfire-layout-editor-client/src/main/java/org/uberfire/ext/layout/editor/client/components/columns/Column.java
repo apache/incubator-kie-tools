@@ -1,14 +1,13 @@
 package org.uberfire.ext.layout.editor.client.components.columns;
 
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 public interface Column<T> {
-    void setColumnPosition( Position columnPosition );
 
-    UberView<T> getView();
+    UberElement<T> getView();
 
-    int getParentHashCode();
+    String getParentId();
 
     Integer getSize();
 
@@ -16,13 +15,15 @@ public interface Column<T> {
 
     void reduzeSize();
 
+    void setupResize( boolean canResizeLeft, boolean canResizeRight );
+
     void setSize( Integer size );
 
     LayoutComponent getLayoutComponent();
 
     boolean hasInnerRows();
 
-    enum Position {
-        FIRST_COLUMN, MIDDLE;
-    }
+    void calculateSize();
+
+    String getId();
 }

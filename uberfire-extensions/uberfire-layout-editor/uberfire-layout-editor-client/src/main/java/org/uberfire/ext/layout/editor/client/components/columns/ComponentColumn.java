@@ -1,9 +1,9 @@
 package org.uberfire.ext.layout.editor.client.components.columns;
 
-import com.google.gwt.event.dom.client.DropEvent;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
+import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
 import org.uberfire.ext.layout.editor.client.infra.DnDManager;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 import org.uberfire.mvp.Command;
@@ -11,14 +11,13 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @Dependent
 public class ComponentColumn implements Column {
 
-    public interface View extends UberView<ComponentColumn> {
-
-        void setCursor();
+    public interface View extends UberElement<ComponentColumn> {
 
         void setSize( String size );
 
@@ -33,12 +32,16 @@ public class ComponentColumn implements Column {
         boolean hasModalConfiguration();
 
         void setup( LayoutComponent layoutComponent );
+
+        void setupResize();
+
+        void setupWidget();
     }
 
+    private String id;
+    private String parentId;
     private DnDManager dndManager;
     private final View view;
-    private int parentHashCode;
-    private Position columnPosition;
     private Integer size;
     private ParameterizedCommand<ColumnDrop> dropCommand;
     private boolean innerColumn = false;
@@ -46,12 +49,17 @@ public class ComponentColumn implements Column {
     private boolean componentReady;
     private ParameterizedCommand<Column> removeCommand;
     private LayoutDragComponentHelper layoutDragComponentHelper;
+    private Event<ColumnResizeEvent> columnResizeEvent;
+    private boolean canResizeLeft;
+    private boolean canResizeRight;
 
     @Inject
-    public ComponentColumn( final View view, DnDManager dndManager, LayoutDragComponentHelper layoutDragComponentHelper ) {
+    public ComponentColumn( final View view, DnDManager dndManager, LayoutDragComponentHelper layoutDragComponentHelper,
+                            Event<ColumnResizeEvent> columnResizeEvent ) {
         this.view = view;
         this.dndManager = dndManager;
         this.layoutDragComponentHelper = layoutDragComponentHelper;
+        this.columnResizeEvent = columnResizeEvent;
     }
 
     @PostConstruct
@@ -59,32 +67,35 @@ public class ComponentColumn implements Column {
         view.init( this );
     }
 
-    public void init( int parentHashCode, Position columnPosition, Integer size, LayoutComponent layoutComponent,
+    public void init( String parentId, Integer size, LayoutComponent layoutComponent,
+                      ParameterizedCommand<ColumnDrop> dropCommand,
+                      ParameterizedCommand<Column> removeCommand,
+                      boolean newComponent, boolean innerColumn ) {
+        this.innerColumn = true;
+        init( parentId, size, layoutComponent, dropCommand, removeCommand, newComponent );
+    }
+
+    public void init( String parentId, Integer size, LayoutComponent layoutComponent,
                       ParameterizedCommand<ColumnDrop> dropCommand,
                       ParameterizedCommand<Column> removeCommand,
                       boolean newComponent ) {
         this.layoutComponent = layoutComponent;
-        view.setup(layoutComponent);
-        this.parentHashCode = parentHashCode;
-        this.columnPosition = columnPosition;
+        view.setup( layoutComponent );
+        this.parentId = parentId;
         this.size = size;
         this.dropCommand = dropCommand;
         this.removeCommand = removeCommand;
         view.setSize( size.toString() );
-        view.setCursor();
         if ( newComponent && hasConfiguration() ) {
             configComponent( newComponent );
         } else {
             componentReady = true;
         }
+        view.setupWidget();
     }
 
     protected boolean hasConfiguration() {
         return view.hasModalConfiguration();
-    }
-
-    public void setParentHashCode( int parentHashCode ) {
-        this.parentHashCode = parentHashCode;
     }
 
     public void setDropCommand(
@@ -130,7 +141,7 @@ public class ComponentColumn implements Column {
     }
 
     public void dragStartComponent() {
-        dndManager.dragComponent( layoutComponent, parentHashCode, this );
+        dndManager.dragComponent( layoutComponent, parentId, this );
     }
 
     public void dragEndComponent() {
@@ -145,6 +156,11 @@ public class ComponentColumn implements Column {
     @Override
     public boolean hasInnerRows() {
         return false;
+    }
+
+    @Override
+    public void calculateSize() {
+        view.calculateSize();
     }
 
     @Override
@@ -165,29 +181,31 @@ public class ComponentColumn implements Column {
         view.setSize( size.toString() );
     }
 
-    public void onResize( int xPosition ) {
-        if ( canResize() ) {
-            dndManager.beginColumnResize( hashCode(), xPosition );
-        }
+    @Override
+    public void setupResize( boolean canResizeLeft, boolean canResizeRight ) {
+        this.canResizeLeft = canResizeLeft;
+        this.canResizeRight = canResizeRight;
+        view.setupResize();
     }
 
-
-    boolean canResize() {
-        return columnPosition == Position.MIDDLE;
+    public boolean canResizeLeft() {
+        return canResizeLeft;
     }
 
-    public void endColumnResize( int xPosition ) {
-        dndManager.endColumnResize( parentHashCode, xPosition );
+    public void resizeLeft() {
+        columnResizeEvent.fire( new ColumnResizeEvent( id, parentId ).left() );
     }
 
+    public boolean canResizeRight() {
+        return canResizeRight;
+    }
+
+    public void resizeRight() {
+        columnResizeEvent.fire( new ColumnResizeEvent( id, parentId ).right() );
+    }
 
     public void recalculateSize() {
         view.calculateSize();
-    }
-
-    @Override
-    public int getParentHashCode() {
-        return parentHashCode;
     }
 
     @Override
@@ -195,30 +213,33 @@ public class ComponentColumn implements Column {
         return size;
     }
 
-    public void onDrop( ColumnDrop.Orientation orientation, DropEvent dropEvent ) {
+    public void onDrop( ColumnDrop.Orientation orientation, String dndData ) {
         if ( dndManager.isOnComponentMove() ) {
             moveDrop( orientation );
         } else {
-            newComponentDrop( orientation, dropEvent );
+            newComponentDrop( orientation, dndData );
         }
     }
 
-    private void newComponentDrop( ColumnDrop.Orientation orientation, DropEvent dropEvent ) {
+    private void newComponentDrop( ColumnDrop.Orientation orientation, String dndData ) {
         dropCommand.execute(
-                new ColumnDrop( layoutDragComponentHelper.getLayoutComponentFromDrop( dropEvent ), hashCode(), orientation ) );
+                new ColumnDrop( layoutDragComponentHelper.getLayoutComponentFromDrop( dndData ), id,
+                                orientation ) );
     }
 
     private void moveDrop( ColumnDrop.Orientation orientation ) {
         dndManager.endComponentMove();
-        dropCommand.execute( new ColumnDrop( dndManager.getLayoutComponentMove(), hashCode(), orientation )
-                                     .fromMove(
-                                             dndManager.getDraggedColumn() ) );
+        if ( !dropInTheSameColumn() ) {
+            dropCommand.execute( new ColumnDrop( dndManager.getLayoutComponentMove(), id, orientation )
+                                         .fromMove(
+                                                 dndManager.getDraggedColumn() ) );
+        }
     }
 
-
-    public void setColumnPosition( Position columnPosition ) {
-        this.columnPosition = columnPosition;
+    private boolean dropInTheSameColumn() {
+        return dndManager.getDraggedColumn() == this;
     }
+
 
     protected boolean isInnerColumn() {
         return innerColumn;
@@ -232,17 +253,39 @@ public class ComponentColumn implements Column {
         if ( componentReady ) {
             view.clearContent();
             view.setContent();
-            view.setCursor();
             view.calculateSize();
         }
     }
 
-    public UberView<ComponentColumn> getView() {
+    public UberElement<ComponentColumn> getView() {
         updateView();
         return view;
+    }
+
+    public void setParentId( String parentId ) {
+        this.parentId = parentId;
+    }
+
+    @Override
+    public String getParentId() {
+        return parentId;
     }
 
     public LayoutDragComponentHelper getLayoutDragComponentHelper() {
         return layoutDragComponentHelper;
     }
+
+    public boolean enableSideDnD() {
+        return !isInnerColumn();
+    }
+
+    public void setId( String id ) {
+        this.id = id;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
 }

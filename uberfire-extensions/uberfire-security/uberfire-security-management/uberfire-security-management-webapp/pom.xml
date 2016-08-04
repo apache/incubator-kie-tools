@@ -130,6 +130,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Uberfire Docks -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-simple-docks-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -416,6 +423,7 @@
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-service-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
 
             <!-- Security Management -->
             <compileSourcesArtifact>org.uberfire:uberfire-security-management-api</compileSourcesArtifact>

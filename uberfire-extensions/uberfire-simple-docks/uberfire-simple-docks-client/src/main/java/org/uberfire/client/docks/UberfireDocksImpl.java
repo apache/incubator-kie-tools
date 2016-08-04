@@ -91,10 +91,10 @@ public class UberfireDocksImpl implements UberfireDocks {
     public void perspectiveChangeEvent( @Observes PerspectiveChange perspectiveChange ) {
         this.currentSelectedPerspective = perspectiveChange.getIdentifier();
         updateDocks();
-        fireEvent();
+        fireDockReadyEvent();
     }
 
-    protected void fireEvent() {
+    protected void fireDockReadyEvent() {
         dockReadyEvent.fire( new UberfireDockReadyEvent( currentSelectedPerspective ) );
     }
 

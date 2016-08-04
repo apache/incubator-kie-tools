@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.layout.editor.client.components.drag;
+package org.uberfire.ext.layout.editor.client.infra;
 
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.mvp.Command;

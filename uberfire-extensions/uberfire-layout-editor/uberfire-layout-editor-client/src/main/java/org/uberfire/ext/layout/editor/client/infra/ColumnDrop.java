@@ -5,16 +5,16 @@ import org.uberfire.ext.layout.editor.client.components.columns.Column;
 
 public class ColumnDrop {
 
-    private final int endHash;
+    private final String endId;
     private final Orientation orientation;
     private LayoutComponent component;
     private Type type;
     private Column oldColumn;
 
-    public ColumnDrop( LayoutComponent component, int endHash,
+    public ColumnDrop( LayoutComponent component, String endId,
                        Orientation orientation ) {
         this.component = component;
-        this.endHash = endHash;
+        this.endId = endId;
         this.orientation = orientation;
         this.type = Type.NEW;
     }
@@ -27,8 +27,8 @@ public class ColumnDrop {
         return orientation;
     }
 
-    public int getEndHash() {
-        return endHash;
+    public String getEndId() {
+        return endId;
     }
 
     public LayoutComponent getComponent() {

@@ -16,11 +16,14 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.api.*;
+import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
+import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.mvp.Command;
 
 import javax.enterprise.context.Dependent;
@@ -52,7 +55,7 @@ public class DragHelperComponentColumn {
         this.layoutComponent = layoutComponent;
     }
 
-    public IsWidget getPreviewWidget( FlowPanel context ) {
+    public IsWidget getPreviewWidget( Widget context ) {
         return getLayoutDragComponent().getPreviewWidget( new RenderingContext( layoutComponent, context ) );
     }
 

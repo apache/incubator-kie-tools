@@ -16,7 +16,7 @@
 package org.uberfire.ext.layout.editor.client.api;
 
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.components.drag.ConfigurationContext;
+import org.uberfire.ext.layout.editor.client.infra.ConfigurationContext;
 import org.uberfire.mvp.Command;
 
 /**

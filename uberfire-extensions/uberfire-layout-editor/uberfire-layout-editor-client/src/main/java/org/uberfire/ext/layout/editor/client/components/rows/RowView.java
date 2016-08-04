@@ -1,145 +1,156 @@
 package org.uberfire.ext.layout.editor.client.components.rows;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
+import static org.uberfire.ext.layout.editor.client.infra.CSSClassNameHelper.*;
+import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
+
 @Dependent
 @Templated
-public class RowView extends Composite
-        implements UberView<Row>,
-        Row.View {
-
-    static final String ROW_DROP_PREVIEW = "rowDropPreview";
+public class RowView
+        implements UberElement<Row>,
+        Row.View, IsElement {
 
     private Row presenter;
 
-
+    @Inject
     @DataField
-    Element upper = DOM.createDiv();
-
-    @DataField
-    Element bottom = DOM.createDiv();
-
-    @DataField
-    Element row = DOM.createDiv();
+    Div upper;
 
     @Inject
     @DataField
-    FlowPanel content;
+    Div bottom;
+
+    @Inject
+    @DataField
+    Div row;
+
+    @Inject
+    @DataField
+    Div content;
+
+    @Inject
+    @DataField( "mainrow" )
+    Div mainRow;
 
     @Override
     public void init( Row presenter ) {
         this.presenter = presenter;
-        row.getStyle().setCursor( Style.Cursor.MOVE );
+        setupEvents();
+    }
+
+    private void setupEvents() {
+        setupUpperEvents();
+        setupBottomEvents();
+    }
+
+    private void setupBottomEvents() {
+        bottom.setOndragover( e -> {
+            if ( presenter.isDropEnable() ) {
+                e.preventDefault();
+                addClassName( bottom, "rowDropPreview" );
+            }
+        } );
+        bottom.setOnmouseout( e -> {
+            if ( presenter.isDropEnable() ) {
+                e.preventDefault();
+                removeClassName( bottom, "rowDropPreview" );
+            }
+        } );
+        bottom.setOndrop( e -> {
+            if ( presenter.isDropEnable() ) {
+                e.preventDefault();
+                removeClassName( bottom, "rowDropPreview" );
+                presenter.drop( extractDndData( e ), RowDrop.Orientation.AFTER );
+            }
+        } );
+        bottom.setOndragleave( e -> {
+            if ( presenter.isDropEnable() ) {
+                e.preventDefault();
+                removeClassName( bottom, "rowDropPreview" );
+            }
+        } );
+    }
+
+    private void setupUpperEvents() {
+        if ( presenter.isDropEnable() ) {
+            upper.setAttribute( "draggable", "true" );
+        }
+        upper.setOndragstart( event -> {
+            if ( presenter.isDropEnable() ) {
+                presenter.dragStart();
+                addClassName( row, "rowDndPreview" );
+                removeClassName( upper, "rowMovePreview" );
+                removeClassName( bottom, "rowMovePreview" );
+            }
+        } );
+        upper.setOndragend( event -> {
+            if ( presenter.isDropEnable() ) {
+                if ( hasClassName( row, "rowDndPreview" ) ) {
+                    removeClassName( row, "rowDndPreview" );
+                }
+                presenter.dragEndMove();
+            }
+        } );
+        upper.setOndragover( e -> {
+            if ( presenter.isDropEnable() ) {
+                e.preventDefault();
+                addClassName( upper, "rowDropPreview" );
+            }
+        } );
+        upper.setOnmouseout( e -> {
+            if ( presenter.isDropEnable() ) {
+                removeClassName( upper, "rowMovePreview" );
+                removeClassName( row, "rowMovePreview" );
+                removeClassName( bottom, "rowMovePreview" );
+
+                e.preventDefault();
+                removeClassName( upper, "rowDropPreview" );
+            }
+        } );
+        upper.setOnmouseover( e -> {
+            if ( presenter.isDropEnable() ) {
+                e.preventDefault();
+                addClassName( upper, "rowMovePreview" );
+                addClassName( row, "rowMovePreview" );
+                addClassName( bottom, "rowMovePreview" );
+            }
+        } );
+        upper.setOndragleave( e -> {
+            if ( presenter.isDropEnable() ) {
+                e.preventDefault();
+                removeClassName( upper, "rowDropPreview" );
+            }
+        } );
+        upper.setOndrop( e -> {
+            if ( presenter.isDropEnable() ) {
+                e.preventDefault();
+                removeClassName( upper, "rowDropPreview" );
+                presenter.drop( extractDndData( e ), RowDrop.Orientation.BEFORE );
+            }
+        } );
     }
 
     @Override
-    public void addColumn( UberView<ComponentColumn> view ) {
-        content.add( view );
+    public void addColumn( UberElement<ComponentColumn> view ) {
+        content.appendChild( view.getElement() );
     }
 
     @Override
     public void clear() {
-        content.clear();
-    }
-
-    @EventHandler( "upper" )
-    public void dragOverUpper( DragOverEvent e ) {
-        if ( presenter.isDropEnable() ) {
-            e.preventDefault();
-            upper.addClassName( ROW_DROP_PREVIEW );
-        }
-    }
-
-    @EventHandler( "upper" )
-    public void dragLeaveUpper( DragLeaveEvent e ) {
-        if ( presenter.isDropEnable() ) {
-            e.preventDefault();
-            upper.removeClassName( "rowDropPreview" );
-        }
-
-    }
-
-    @EventHandler( "upper" )
-    public void dropUpperEvent( DropEvent e ) {
-        if ( presenter.isDropEnable() ) {
-            e.preventDefault();
-            upper.removeClassName( "rowDropPreview" );
-            presenter.drop( e, RowDrop.Orientation.BEFORE );
-        }
-    }
-
-    @EventHandler( "bottom" )
-    public void mouseOutUpper( MouseOutEvent e ) {
-        if ( presenter.isDropEnable() ) {
-            e.preventDefault();
-            bottom.removeClassName( "rowDropPreview" );
-        }
-    }
-
-    @EventHandler( "bottom" )
-    public void dragOverBottom( DragOverEvent e ) {
-        if ( presenter.isDropEnable() ) {
-            e.preventDefault();
-            bottom.addClassName( "rowDropPreview" );
-        }
-
-    }
-
-    @EventHandler( "bottom" )
-    public void dropBottomEvent( DropEvent e ) {
-        if ( presenter.isDropEnable() ) {
-            e.preventDefault();
-            bottom.removeClassName( "rowDropPreview" );
-            presenter.drop( e, RowDrop.Orientation.AFTER );
-        }
+        removeAllChildren( content );
     }
 
 
-    @EventHandler( "bottom" )
-    public void dragLeaveBottom( DragLeaveEvent e ) {
-        if ( presenter.isDropEnable() ) {
-            e.preventDefault();
-            bottom.removeClassName( "rowDropPreview" );
-        }
-    }
-
-    @EventHandler( "bottom" )
-    public void mouseOutBottom( MouseOutEvent e ) {
-        if ( presenter.isDropEnable() ) {
-            e.preventDefault();
-            bottom.removeClassName( "rowDropPreview" );
-        }
-    }
-
-    @EventHandler( "row" )
-    public void dragStartRow( DragStartEvent e ) {
-        if ( presenter.canDrag() ) {
-            presenter.dragStart();
-            row.addClassName( "rowDndPreview" );
-        }
-    }
-
-    @EventHandler( "row" )
-    public void dragEndRow( DragEndEvent e ) {
-        if ( row.hasClassName( "rowDndPreview" ) ) {
-            row.removeClassName( "rowDndPreview" );
-        }
-        presenter.dragEndMove();
-    }
 }
 
 

@@ -13,65 +13,24 @@ import javax.inject.Inject;
 public class DnDManager {
 
     @Inject
-    Event<ColumnResizeEvent> columnResizeEvent;
-
-    @Inject
     Event<RowDnDEvent> rowDnDEvent;
 
-
-    private boolean isOnColumnResize;
-    private int columnHashCode;
-    private int beginColumnX;
-
     private boolean isOnRowMove;
-    private int rowHashBegin;
+    private String rowIdBegin;
 
     private boolean isOnComponentMove;
     private LayoutComponent layoutComponentMove;
-    private int rowHashCode;
+    private String rowId;
     private Column draggedColumn;
 
-    public void beginColumnResize( int columnHashCode, int beginX ) {
-        this.columnHashCode = columnHashCode;
-        this.isOnColumnResize = true;
-        this.beginColumnX = beginX;
+    public void beginRowMove( String rowIdBegin ) {
+        this.rowIdBegin = rowIdBegin;
+        this.isOnRowMove = true;
     }
 
-    public void endColumnResize( int rowHashCodeEnd, int endX ) {
-        if ( isOnColumnResize ) {
-            handleColumnResize( endX, rowHashCodeEnd );
-            this.isOnColumnResize = false;
-        }
-    }
-
-    public void resetColumnResize() {
-        if ( isOnColumnResize ) {
-            this.isOnColumnResize = false;
-        }
-    }
-
-    private boolean left( int endX ) {
-        return endX < beginColumnX;
-    }
-
-    private void handleColumnResize( int endX, int rowHashCodeEnd ) {
-        if ( left( endX ) ) {
-            columnResizeEvent.fire( new ColumnResizeEvent( columnHashCode, rowHashCodeEnd ).left() );
-        } else {
-            columnResizeEvent.fire( new ColumnResizeEvent( columnHashCode, rowHashCodeEnd ).right() );
-        }
-    }
-
-    public void beginRowMove( int rowHashBegin ) {
-        if ( !isOnColumnResize ) {
-            this.rowHashBegin = rowHashBegin;
-            this.isOnRowMove = true;
-        }
-    }
-
-    public void endRowMove( int rowHashCodeEnd, RowDrop.Orientation orientation ) {
+    public void endRowMove( String rowIdEnd, RowDrop.Orientation orientation ) {
         if ( isOnRowMove ) {
-            rowDnDEvent.fire( new RowDnDEvent( rowHashBegin, rowHashCodeEnd, orientation ) );
+            rowDnDEvent.fire( new RowDnDEvent( rowIdBegin, rowIdEnd, orientation ) );
             isOnRowMove = false;
         }
     }
@@ -103,11 +62,15 @@ public class DnDManager {
         return !isOnComponentMove();
     }
 
-    public void dragComponent( LayoutComponent layoutComponentMove, int rowHashCode, Column draggedColumn ) {
+    public void dragComponent( LayoutComponent layoutComponentMove, String rowId, Column draggedColumn ) {
         this.layoutComponentMove = layoutComponentMove;
-        this.rowHashCode = rowHashCode;
+        this.rowId = rowId;
         this.draggedColumn = draggedColumn;
         this.isOnComponentMove = true;
+    }
+
+    public String getRowId() {
+        return rowId;
     }
 
     public void dragEndComponent() {
@@ -118,7 +81,4 @@ public class DnDManager {
         return layoutComponentMove;
     }
 
-    public int getRowHashCode() {
-        return rowHashCode;
-    }
 }

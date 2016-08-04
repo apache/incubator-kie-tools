@@ -6,13 +6,11 @@
 
 .left{
     float: left;
-    width: 5%;
     z-index: 1;
 }
 
 .right{
     float: right;
-    width: 5%;
     z-index: 1;
 }
 .colUp{
@@ -40,7 +38,6 @@
     width: 50% !important;
 }
 .colWithComponents{
-    padding-top: 23px;
     padding-left: 0px;
     padding-right: 0px;
 }

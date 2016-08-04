@@ -1,28 +1,33 @@
-.rowDropPreview{
-    /* row drop gradient*/
-    background: #eeeeee; /* Old browsers */
-    background: -moz-linear-gradient(top,  #eeeeee 0%, #cccccc 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top,  #eeeeee 0%,#cccccc 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom,  #eeeeee 0%,#cccccc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
-
-
-    height: 20px;
+.rowDropPreview {
+    background-color: rgba(204, 204, 204, 0.5);
+    height: 20px !important;
 }
-.rowCss{
+
+.rowCss {
     padding-left: 0px !important;
     padding-right: 0px !important;
     padding-top: 1px !important;
     padding-bottom: 1px !important;
 }
-.rowDndPreview{
+
+.rowCssMove {
+
+}
+
+.rowDndPreview {
     opacity: 0.1;
 }
 
-.upper{
-    /*background-color: #39a5dc;*/
+.upper {
+    height: 10px;
 }
-.bottom{
-    /*background-color: red;*/
 
+.bottom {
+    height: 5px;
+
+}
+
+.rowMovePreview {
+    background-color: rgba(204, 204, 204, 0.5);
+    cursor: move;
 }

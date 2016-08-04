@@ -2,14 +2,14 @@ package org.uberfire.ext.layout.editor.client.components.rows;
 
 public class RowDnDEvent {
 
-    private final int rowHashEndBegin;
-    private final int rowHashCodeEnd;
+    private final String rowIdBegin;
+    private final String rowIdEnd;
     private final RowDrop.Orientation orientation;
 
 
-    public RowDnDEvent( int rowHashBegin, int rowHashCodeEnd, RowDrop.Orientation orientation ){
-        this.rowHashEndBegin = rowHashBegin;
-        this.rowHashCodeEnd = rowHashCodeEnd;
+    public RowDnDEvent( String rowIdBegin, String rowIdEnd, RowDrop.Orientation orientation ) {
+        this.rowIdBegin = rowIdBegin;
+        this.rowIdEnd = rowIdEnd;
         this.orientation = orientation;
     }
 
@@ -17,12 +17,11 @@ public class RowDnDEvent {
         return orientation;
     }
 
-    public int getRowHashCodeBegin() {
-        return rowHashEndBegin;
+    public String getRowIdBegin() {
+        return rowIdBegin;
     }
 
-
-    public int getRowHashCodeEnd() {
-        return rowHashCodeEnd;
+    public String getRowIdEnd() {
+        return rowIdEnd;
     }
 }

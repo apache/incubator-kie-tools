@@ -2,27 +2,30 @@ package org.uberfire.ext.layout.editor.client.components.container;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import org.gwtbootstrap3.client.ui.html.Span;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.layout.editor.client.infra.ContainerResizeEvent;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.components.rows.EmptyDropRow;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
+import org.uberfire.ext.layout.editor.client.infra.ContainerResizeEvent;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
+import static org.uberfire.ext.layout.editor.client.infra.CSSClassNameHelper.*;
+
 @Dependent
 @Templated
-public class ContainerView extends Composite
-        implements UberView<Container>,
-        Container.View {
+public class ContainerView
+        implements UberElement<Container>,
+        Container.View, IsElement {
 
     private Container presenter;
 
@@ -31,7 +34,7 @@ public class ContainerView extends Composite
 
     @Inject
     @DataField
-    FlowPanel layout;
+    Div layout;
 
     @Inject
     @DataField
@@ -55,39 +58,45 @@ public class ContainerView extends Composite
 
     @EventHandler( "mobile" )
     public void mobileSize( ClickEvent e ) {
-        layout.getElement().removeClassName( "simulate-sm" );
-        layout.getElement().addClassName( "simulate-xs" );
-        resizeEvent.fire( new ContainerResizeEvent(  ) );
+        removeClassName( layout, "simulate-sm" );
+        addClassName( layout, "simulate-xs" );
+        resizeEvent.fire( new ContainerResizeEvent() );
     }
 
     @EventHandler( "tablet" )
     public void tabletSize( ClickEvent e ) {
-        layout.getElement().addClassName( "simulate-sm" );
-        layout.getElement().removeClassName( "simulate-xs" );
-        resizeEvent.fire( new ContainerResizeEvent(  ) );
+        addClassName( layout, "simulate-sm" );
+        removeClassName( layout, "simulate-xs" );
+        resizeEvent.fire( new ContainerResizeEvent() );
     }
 
     @EventHandler( "desktop" )
     public void desktopSize( ClickEvent e ) {
-        layout.getElement().removeClassName( "simulate-xs" );
-        layout.getElement().removeClassName( "simulate-sm" );
-        resizeEvent.fire( new ContainerResizeEvent(  ) );
+        removeClassName( layout, "simulate-xs" );
+        removeClassName( layout, "simulate-sm" );
+        resizeEvent.fire( new ContainerResizeEvent() );
     }
 
 
     @Override
-    public void addRow( UberView<Row> view ) {
-        layout.add( view.asWidget() );
+    public void addRow( UberElement<Row> view ) {
+        if ( !hasClassName( layout, "container-canvas" ) ) {
+            addClassName( layout, "container-canvas" );
+        }
+        removeClassName( layout, "container-empty" );
+        layout.appendChild( view.getElement() );
     }
 
     @Override
     public void clear() {
-        layout.clear();
+        removeAllChildren( layout );
     }
 
     @Override
-    public void addEmptyRow( UberView<EmptyDropRow> emptyDropRow ) {
-        layout.add( emptyDropRow.asWidget() );
+    public void addEmptyRow( UberElement<EmptyDropRow> emptyDropRow ) {
+        removeClassName( layout, "container-canvas" );
+        addClassName( layout, "container-empty" );
+        layout.appendChild( emptyDropRow.getElement() );
     }
 
 }

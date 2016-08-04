@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class LayoutDragComponentGroup {
+
     private String name;
+
     private Map<String, LayoutDragComponent> components = new HashMap<String, LayoutDragComponent>(  );
 
     public LayoutDragComponentGroup( String name ) {
@@ -39,8 +41,11 @@ public class LayoutDragComponentGroup {
         return components.keySet();
     }
 
-    public LayoutDragComponent getLayoutDragComponent( String id ) {
+    public LayoutDragComponent  getLayoutDragComponent( String id ) {
         return components.get( id );
     }
 
+    public Map<String, LayoutDragComponent> getComponents() {
+        return components;
+    }
 }

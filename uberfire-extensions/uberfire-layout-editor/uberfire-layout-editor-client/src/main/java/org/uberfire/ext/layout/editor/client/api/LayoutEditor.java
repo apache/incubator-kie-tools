@@ -15,32 +15,31 @@
  */
 package org.uberfire.ext.layout.editor.client.api;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 public interface LayoutEditor {
 
-    void init(String layoutName, List<LayoutDragComponent> layoutDragComponents);
+    void init( String layoutName, LayoutDragComponentGroup layoutDragComponentGroup, String emptyTitleText,
+               String emptySubTitleText );
 
     Widget asWidget();
 
-    void loadLayout(LayoutTemplate layoutTemplate);
+    void loadLayout( LayoutTemplate layoutTemplate );
 
-    void loadDefaultLayout(String layoutName);
+    void loadDefaultLayout( String layoutName );
 
     LayoutTemplate getLayout();
 
-    void addLayoutProperty(String key, String value);
+    void addLayoutProperty( String key, String value );
 
-    String getLayoutProperty(String key);
+    String getLayoutProperty( String key );
 
     void addDraggableComponentGroup( LayoutDragComponentGroup group );
 
     void addDraggableComponentToGroup( String groupId, String componentId, LayoutDragComponent component );
 
-    void removeDraggableComponentGroup ( String groupId );
+    void removeDraggableComponentGroup( String groupId );
 
-    void removeDraggableGroupComponent (String groupId, String componentId);
+    void removeDraggableGroupComponent( String groupId, String componentId );
 }

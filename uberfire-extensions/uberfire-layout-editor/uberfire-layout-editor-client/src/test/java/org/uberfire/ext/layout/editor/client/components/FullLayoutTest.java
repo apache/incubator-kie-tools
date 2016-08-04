@@ -19,7 +19,7 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
     @Test
     public void testFullLayout() throws Exception {
 
-        container.setLayoutName( "A" );
+        container.loadEmptyLayout( "A", "title", "subtitle" );
         container.addProperty( TagsConverterUtil.LAYOUT_PROPERTY, "a|" );
 
         createFirstRow();
@@ -33,7 +33,7 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
         Row firstRow = getRowByIndex( 0 );
         container.createRowDropCommand().execute( new RowDrop( new LayoutComponent(
                 "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent" ),
-                                                               firstRow.hashCode(),
+                                                               firstRow.getId(),
                                                                RowDrop.Orientation.AFTER ) );
         Column column = getColumnByIndex( getRowByIndex( 1 ), FIRST_COLUMN );
         column.getLayoutComponent().addProperty( "Place Name", "DoraScreen" );
@@ -51,7 +51,7 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
 
         row.dropCommand().execute( new ColumnDrop( new LayoutComponent(
                 "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent" ),
-                                                   secondColumn.hashCode(),
+                                                   secondColumn.getId(),
                                                    ColumnDrop.Orientation.DOWN ) );
 
         ColumnWithComponents columnWithComponents = ( ColumnWithComponents ) getColumnByIndex( row, SECOND_COLUMN );
@@ -63,8 +63,8 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
     private void resizeColumnsFor_8_4() {
         Row row = getRowByIndex( FIRST_ROW );
 
-        row.resizeColumns( new ColumnResizeEvent( getColumnByIndex( row, 1 ).hashCode(), row.hashCode() ).right() );
-        row.resizeColumns( new ColumnResizeEvent( getColumnByIndex( row, 1 ).hashCode(), row.hashCode() ).right() );
+        row.resizeColumns( new ColumnResizeEvent( getColumnByIndex( row, 0 ).getId(), row.getId() ).right() );
+        row.resizeColumns( new ColumnResizeEvent( getColumnByIndex( row, 0 ).getId(), row.getId() ).right() );
     }
 
     private void createFirstRowSecondColumn( Column firstRowFirstColumn ) {
@@ -73,7 +73,7 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
 
         row.dropCommand().execute( new ColumnDrop(
                 new LayoutComponent( "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTML" ),
-                firstRowFirstColumn.hashCode(),
+                firstRowFirstColumn.getId(),
                 ColumnDrop.Orientation.RIGHT ) );
         Column htmlColumn = getColumnByIndex( row, SECOND_COLUMN );
         htmlColumn.getLayoutComponent().addProperty( "HTML_CODE", "c" );
@@ -87,7 +87,7 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
         container.createEmptyDropCommand()
                 .execute( new RowDrop( new LayoutComponent(
                         "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent" ),
-                                       emptyDropRow.hashCode(),
+                                       emptyDropRow.getId(),
                                        RowDrop.Orientation.BEFORE ) );
 
         Column appHomePresenter = getColumnByIndex( getRowByIndex( FIRST_COLUMN ), FIRST_COLUMN );

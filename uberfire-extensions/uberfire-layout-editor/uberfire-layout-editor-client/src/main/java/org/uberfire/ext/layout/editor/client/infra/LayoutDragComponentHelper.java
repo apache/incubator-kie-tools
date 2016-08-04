@@ -68,8 +68,8 @@ public class LayoutDragComponentHelper {
         return Factory.maybeUnwrapProxy( instance ).getClass().getName();
     }
 
-    public LayoutComponent getLayoutComponentFromDrop( DropEvent dropEvent ) {
-        LayoutDragComponent component = extractComponent( dropEvent );
+    public LayoutComponent getLayoutComponentFromDrop( String dropData ) {
+        LayoutDragComponent component = extractComponent( dropData );
         LayoutComponent layoutComponent = getLayoutComponent( component );
         return layoutComponent;
     }
@@ -89,9 +89,9 @@ public class LayoutDragComponentHelper {
         return layoutComponent;
     }
 
-    private LayoutDragComponent extractComponent( DropEvent dropEvent ) {
+    private LayoutDragComponent extractComponent( String dropData ) {
         return converter
-                .readJSONDragComponent( dropEvent.getData( LayoutDragComponent.FORMAT ) );
+                .readJSONDragComponent( dropData );
     }
 
 

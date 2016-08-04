@@ -50,4 +50,5 @@ public interface CommonConstants
     String NewRow();
 
     String Column();
+
 }

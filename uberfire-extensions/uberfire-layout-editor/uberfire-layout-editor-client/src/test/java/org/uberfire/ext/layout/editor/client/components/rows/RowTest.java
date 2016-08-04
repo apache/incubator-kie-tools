@@ -25,7 +25,7 @@ public class RowTest extends AbstractLayoutEditorTest {
 
         assertEquals( 2, row.getColumns().size() );
 
-        row.dropCommand().execute( new ColumnDrop( new LayoutComponent( "dragType" ), dropColumn.hashCode(),
+        row.dropCommand().execute( new ColumnDrop( new LayoutComponent( "dragType" ), dropColumn.getId(),
                                                    ColumnDrop.Orientation.LEFT ) );
 
         Column newColumn = getColumnByIndex( row, FIRST_COLUMN );
@@ -45,7 +45,7 @@ public class RowTest extends AbstractLayoutEditorTest {
 
         assertEquals( 2, row.getColumns().size() );
 
-        row.dropCommand().execute( new ColumnDrop( new LayoutComponent( "dragType" ), dropColumn.hashCode(),
+        row.dropCommand().execute( new ColumnDrop( new LayoutComponent( "dragType" ), dropColumn.getId(),
                                                    ColumnDrop.Orientation.RIGHT ) );
 
         Column newColumn = getColumnByIndex( row, SECOND_COLUMN );
@@ -67,7 +67,7 @@ public class RowTest extends AbstractLayoutEditorTest {
 
         assertEquals( 2, row.getColumns().size() );
 
-        row.dropCommand().execute( new ColumnDrop( new LayoutComponent( "dragType" ), dropColumn.hashCode(),
+        row.dropCommand().execute( new ColumnDrop( new LayoutComponent( "dragType" ), dropColumn.getId(),
                                                    ColumnDrop.Orientation.DOWN ) );
 
         assertEquals( 2, row.getColumns().size() );
@@ -94,7 +94,7 @@ public class RowTest extends AbstractLayoutEditorTest {
 
         assertEquals( 2, row.getColumns().size() );
 
-        row.dropCommand().execute( new ColumnDrop( new LayoutComponent( "dragType" ), dropColumn.hashCode(),
+        row.dropCommand().execute( new ColumnDrop( new LayoutComponent( "dragType" ), dropColumn.getId(),
                                                    ColumnDrop.Orientation.UP ) );
 
         assertEquals( 2, row.getColumns().size() );
@@ -121,17 +121,17 @@ public class RowTest extends AbstractLayoutEditorTest {
         Integer originalFirstSize = first.getSize();
         Integer originalSecondSize = second.getSize();
 
-        row.resizeColumns( new ColumnResizeEvent( second.hashCode(), row.hashCode() ).left() );
+        row.resizeColumns( new ColumnResizeEvent( second.getId(), row.getId() ).left() );
 
         assertEquals( originalFirstSize - 1 , first.getSize());
         assertEquals( originalSecondSize + 1 , second.getSize());
 
-        row.resizeColumns( new ColumnResizeEvent( second.hashCode(), row.hashCode() ).left() );
+        row.resizeColumns( new ColumnResizeEvent( second.getId(), row.getId() ).left() );
 
         assertEquals( originalFirstSize - 2 , first.getSize());
         assertEquals( originalSecondSize + 2 , second.getSize());
 
-        row.resizeColumns( new ColumnResizeEvent( second.hashCode(), row.hashCode() ).right() );
+        row.resizeColumns( new ColumnResizeEvent( first.getId(), row.getId() ).right() );
 
         assertEquals( originalFirstSize - 1 , first.getSize());
         assertEquals( originalSecondSize + 1 , second.getSize());

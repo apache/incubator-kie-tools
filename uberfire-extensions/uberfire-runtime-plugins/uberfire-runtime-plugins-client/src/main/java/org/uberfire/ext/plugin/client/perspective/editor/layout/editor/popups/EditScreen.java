@@ -249,7 +249,7 @@ public class EditScreen
             }
         }
 
-        // Ensure the screen category is always expanded after setLayoutName
+        // Ensure the screen category is always expanded after loadEmptyLayout
         propertyEditor.setLastOpenAccordionGroupTitle( category.getName() );
         return category;
     }

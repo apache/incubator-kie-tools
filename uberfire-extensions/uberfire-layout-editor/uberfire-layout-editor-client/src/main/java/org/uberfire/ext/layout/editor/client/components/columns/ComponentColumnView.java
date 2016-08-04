@@ -1,83 +1,86 @@
 package org.uberfire.ext.layout.editor.client.components.columns;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.ui.Button;
+import org.jboss.errai.common.client.dom.*;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.ContainerResizeEvent;
+import org.uberfire.ext.layout.editor.client.infra.DragComponentEndEvent;
 import org.uberfire.ext.layout.editor.client.infra.DragHelperComponentColumn;
+import org.uberfire.ext.layout.editor.client.widgets.KebabWidget;
 import org.uberfire.mvp.Command;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
+import static org.uberfire.ext.layout.editor.client.infra.CSSClassNameHelper.*;
+import static org.uberfire.ext.layout.editor.client.infra.DomUtil.*;
+import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
+
 @Dependent
 @Templated
-public class ComponentColumnView extends Composite
-        implements UberView<ComponentColumn>,
-        ComponentColumn.View {
+public class ComponentColumnView
+        implements UberElement<ComponentColumn>,
+        ComponentColumn.View, IsElement {
 
     public static final String COL_CSS_CLASS = "col-md-";
 
     private ComponentColumn presenter;
 
+    @Inject
     @DataField
-    private Element col = DOM.createDiv();
+    private Div col;
 
     @Inject
     @DataField
-    private FlowPanel colUp;
-
-    @DataField
-    private Element row = DOM.createDiv();
-
-    @DataField
-    private Element topPanel = DOM.createDiv();
+    private Div colUp;
 
     @Inject
     @DataField
-    private FlowPanel colDown;
+    private Div row;
 
     @Inject
     @DataField
-    private FlowPanel left;
+    private Div colDown;
 
     @Inject
     @DataField
-    private FlowPanel right;
+    private Div left;
+
+    @Inject
+    @DataField( "resize-left" )
+    private Button resizeLeft;
 
     @Inject
     @DataField
-    private FlowPanel content;
+    private Div right;
 
+    @Inject
+    @DataField( "resize-right" )
+    private Button resizeRight;
 
     @Inject
     @DataField
-    private Button move;
+    private Div content;
 
     @Inject
-    @DataField
-    private Button remove;
+    private KebabWidget kebabWidget;
 
     @Inject
-    @DataField
-    private Button edit;
+    private Document document;
+
 
     String cssSize = "";
 
-    private final int originalLeftRightWidth = 5;
+    private final int originalLeftRightWidth = 15;
 
     private ColumnDrop.Orientation contentDropOrientation;
 
@@ -89,80 +92,320 @@ public class ComponentColumnView extends Composite
         this.presenter = presenter;
     }
 
+    @Override
+    public void setupWidget() {
+        setupEvents();
+        setupKebabWidget();
+        setupResize();
+        setupOnResize();
+    }
+
+    private void setupOnResize() {
+        document.getBody().setOnresize( event -> calculateSize() );
+    }
+
+    @Override
+    public void setupResize() {
+        resizeLeft.getStyle().setProperty( "display", "none" );
+        resizeRight.getStyle().setProperty( "display", "none" );
+    }
+
+    public void dockSelectEvent( @Observes UberfireDocksInteractionEvent event ) {
+        calculateSize();
+    }
+
+    private void setupKebabWidget() {
+        kebabWidget.init( () -> presenter.remove(),
+                          () -> presenter.edit() );
+    }
+
+    private void setupEvents() {
+        setupLeftEvents();
+        setupRightEvents();
+        setupColUpEvents();
+        setupColDownEvents();
+        setupContentEvents();
+        setupColEvents();
+        setupRowEvents();
+        setupResizeEvents();
+    }
+
+    private void setupRowEvents() {
+        row.setOnmouseout( event -> {
+            removeClassName( colUp, "componentDropInColumnPreview" );
+            removeClassName( colDown, "componentDropInColumnPreview" );
+        } );
+    }
+
+    private void setupResizeEvents() {
+        resizeLeft.setOnclick( event -> presenter.resizeLeft() );
+        resizeRight.setOnclick( event -> presenter.resizeRight() );
+    }
+
+    private void setupColEvents() {
+        col.setOnmouseup( e -> {
+            e.preventDefault();
+            if ( hasClassName( col, "rowDndPreview" ) ) {
+                removeClassName( col, "rowDndPreview" );
+            }
+        } );
+        col.setOnmouseover( e -> {
+            e.preventDefault();
+        } );
+        col.setOnmouseout( event -> {
+            removeClassName( colUp, "componentDropInColumnPreview" );
+            removeClassName( colDown, "componentDropInColumnPreview" );
+        } );
+    }
+
+    private void setupColUpEvents() {
+
+        colUp.setOndragleave( event -> {
+            removeClassName( colUp, "componentDropInColumnPreview" );
+        } );
+        colUp.setOndragexit( event -> {
+            removeClassName( colUp, "componentDropInColumnPreview" );
+        } );
+
+        colUp.setOndragover( event -> {
+            event.preventDefault();
+            if ( presenter.shouldPreviewDrop() ) {
+                contentDropOrientation = ColumnDrop.Orientation.UP;
+                addClassName( colUp, "componentDropInColumnPreview" );
+            }
+        } );
+        colUp.setOndrop( e -> {
+            if ( contentDropOrientation != null ) {
+                presenter.onDrop( contentDropOrientation, extractDndData( e ) );
+            }
+            removeClassName( colUp, "componentDropInColumnPreview" );
+            removeClassName( colDown, "componentDropInColumnPreview" );
+        } );
+        colUp.setOnmouseout( event -> {
+            removeClassName( colUp, "componentDropInColumnPreview" );
+        } );
+    }
+
+
+    private void setupColDownEvents() {
+        colDown.setOndrop( e -> {
+            if ( contentDropOrientation != null ) {
+                presenter.onDrop( contentDropOrientation, extractDndData( e ) );
+            }
+            removeClassName( colUp, "componentDropInColumnPreview" );
+            removeClassName( colDown, "componentDropInColumnPreview" );
+        } );
+    }
+
+    private void setupRightEvents() {
+        right.setOndragenter( e -> {
+            e.preventDefault();
+            if ( presenter.shouldPreviewDrop() && presenter.enableSideDnD() ) {
+                addClassName( right, "columnDropPreview dropPreview" );
+                addClassName( content, "centerPreview" );
+                removeClassName( colUp, "componentDropInColumnPreview" );
+            }
+        } );
+        right.setOndragleave( e -> {
+            e.preventDefault();
+            removeClassName( right, "columnDropPreview" );
+            removeClassName( right, "dropPreview" );
+            removeClassName( content, "centerPreview" );
+        } );
+        right.setOndragover( event -> event.preventDefault() );
+        right.setOndrop( e -> {
+            e.preventDefault();
+            if ( presenter.enableSideDnD() && presenter.shouldPreviewDrop() ) {
+                removeClassName( right, "columnDropPreview" );
+                removeClassName( right, "dropPreview" );
+                removeClassName( content, "centerPreview" );
+                presenter.onDrop( ColumnDrop.Orientation.RIGHT, extractDndData( e ) );
+            }
+        } );
+        right.setOnmouseover( e -> {
+            e.preventDefault();
+            if ( presenter.canResizeRight() ) {
+                resizeRight.getStyle().setProperty( "display", "block" );
+            }
+        } );
+        right.setOnmouseout( e -> {
+            e.preventDefault();
+            if ( presenter.canResizeRight() ) {
+                resizeRight.getStyle().setProperty( "display", "none" );
+            }
+        } );
+    }
+
+    private void setupContentEvents() {
+        content.setOndragover( e -> {
+            e.preventDefault();
+            if ( presenter.shouldPreviewDrop() ) {
+                if ( dragOverUp( content, e ) ) {
+                    addClassName( colUp, "componentDropInColumnPreview" );
+                    removeClassName( colDown, "componentDropInColumnPreview" );
+                    contentDropOrientation = ColumnDrop.Orientation.UP;
+
+                } else {
+                    addClassName( colDown, "componentDropInColumnPreview" );
+                    removeClassName( colUp, "componentDropInColumnPreview" );
+                    contentDropOrientation = ColumnDrop.Orientation.DOWN;
+                }
+            }
+        } );
+        content.setOndragleave( e -> {
+            e.preventDefault();
+            //ederign
+            removeClassName( colDown, "componentDropInColumnPreview" );
+            contentDropOrientation = null;
+        } );
+        content.setOndrop( e -> {
+            if ( contentDropOrientation != null ) {
+                presenter.onDrop( contentDropOrientation, extractDndData( e ) );
+            }
+            removeClassName( colUp, "componentDropInColumnPreview" );
+            removeClassName( colDown, "componentDropInColumnPreview" );
+        } );
+        content.setOnmouseout( e -> {
+            removeClassName( content, "componentMovePreview" );
+        } );
+        content.setOnmouseover( e -> {
+            e.preventDefault();
+            addClassName( content, "componentMovePreview" );
+        } );
+
+        content.setOndragend( e -> {
+            e.stopPropagation();
+            removeClassName( row, "rowDndPreview" );
+            presenter.dragEndComponent();
+        } );
+        content.setOndragstart( e -> {
+            e.stopPropagation();
+            addClassName( row, "rowDndPreview" );
+            presenter.dragStartComponent();
+        } );
+    }
+
+
+    private void setupLeftEvents() {
+        left.setOndragleave( e -> {
+            e.preventDefault();
+            removeClassName( left, "columnDropPreview" );
+            removeClassName( left, "dropPreview" );
+            removeClassName( content, "centerPreview" );
+        } );
+        left.setOndrop( e -> {
+            e.preventDefault();
+            if ( presenter.enableSideDnD() && presenter.shouldPreviewDrop() ) {
+                removeClassName( left, "columnDropPreview" );
+                removeClassName( left, "dropPreview" );
+                removeClassName( content, "centerPreview" );
+                presenter.onDrop( ColumnDrop.Orientation.LEFT, extractDndData( e ) );
+            }
+        } );
+
+        left.setOndragover( event -> {
+            if ( presenter.enableSideDnD() && presenter.shouldPreviewDrop() ) {
+                event.preventDefault();
+            }
+        } );
+        left.setOndragexit( event -> {
+            event.preventDefault();
+            removeClassName( left, "columnDropPreview" );
+            removeClassName( left, "dropPreview" );
+            removeClassName( content, "centerPreview" );
+        } );
+        left.setOndragenter( e -> {
+            e.preventDefault();
+            if ( presenter.enableSideDnD() && presenter.shouldPreviewDrop() ) {
+                addClassName( left, "columnDropPreview dropPreview" );
+                addClassName( content, "centerPreview" );
+                removeClassName( colUp, "componentDropInColumnPreview" );
+            }
+        } );
+        left.setOnmouseover( e -> {
+            e.preventDefault();
+            if ( presenter.canResizeLeft() ) {
+                resizeLeft.getStyle().setProperty( "display", "block" );
+            }
+        } );
+        left.setOnmouseout( e -> {
+            e.preventDefault();
+            if ( presenter.canResizeLeft() ) {
+                resizeLeft.getStyle().setProperty( "display", "none" );
+            }
+        } );
+    }
+
     public void resizeEventObserver( @Observes ContainerResizeEvent event ) {
         calculateSize();
     }
 
     @Override
     public void calculateSize() {
-
         Scheduler.get().scheduleDeferred( () -> {
             controlPadding();
             calculateLeftRightWidth();
             calculateContentWidth();
-            col.addClassName( "container" );
-
+            addClassName( col, "container" );
         } );
     }
 
     private void controlPadding() {
         if ( !presenter.isInnerColumn() ) {
-            col.addClassName( "no-padding" );
+            addClassName( col, "no-padding" );
         } else {
-            if ( col.hasClassName( "no-padding" ) ) {
-                col.removeClassName( "no-padding" );
+            if ( hasClassName( col, "no-padding" ) ) {
+                removeClassName( col, "no-padding" );
             }
         }
     }
 
     private void calculateLeftRightWidth() {
         if ( originalLeftRightWidth >= 0 ) {
-            left.setWidth( originalLeftRightWidth + "px" );
-            right.setWidth( originalLeftRightWidth + "px" );
+            left.getStyle().setProperty( "width", originalLeftRightWidth + "px" );
+            right.getStyle().setProperty( "width", originalLeftRightWidth + "px" );
         }
     }
+
 
     private void calculateContentWidth() {
         int smallSpace = 2;
-        final int colWidth = col.getOffsetWidth();
+        final int colWidth = Integer.parseInt( extractOffSetWidth( col ) );
         final int contentWidth = colWidth - ( originalLeftRightWidth * 2 ) - smallSpace;
         if ( contentWidth >= 0 ) {
-            content.setWidth( contentWidth + "px" );
-            colDown.setWidth( contentWidth + "px" );
-            colUp.setWidth( contentWidth + "px" );
-        }
-    }
-
-    @Override
-    public void setCursor() {
-        content.getElement().getStyle().setCursor( Style.Cursor.DEFAULT );
-        if ( presenter.canResize() ) {
-            left.getElement().getStyle().setCursor( Style.Cursor.COL_RESIZE );
+            content.getStyle().setProperty( "width", contentWidth + "px" );
+            colDown.getStyle().setProperty( "width", "100%" );
+            colUp.getStyle().setProperty( "width", "100%" );
         }
     }
 
     @Override
     public void setSize( String size ) {
         if ( !col.getClassName().isEmpty() ) {
-            col.removeClassName( cssSize );
+            removeClassName( col, cssSize );
         }
         cssSize = COL_CSS_CLASS + size;
-        col.addClassName( cssSize );
+        addClassName( col, cssSize );
     }
 
 
     @Override
     public void clearContent() {
-        content.clear();
+        removeAllChildren( content );
     }
 
     @Override
     public void setContent() {
         Scheduler.get().scheduleDeferred( () -> {
-            content.clear();
-            content.add( getPreviewWidget() );
+            removeAllChildren( content );
+            HTMLElement previewWidget = getPreviewWidget();
+            previewWidget.getStyle().setProperty( "cursor", "default" );
+            previewWidget.setClassName( "le-widget" );
+            content.appendChild( kebabWidget.getElement() );
+            content.appendChild( previewWidget );
         } );
     }
+
 
     @Override
     public void showConfigComponentModal( Command configurationFinish, Command configurationCanceled ) {
@@ -180,200 +423,27 @@ public class ComponentColumnView extends Composite
     }
 
 
-    private IsWidget getPreviewWidget() {
-        return helper.getPreviewWidget( content );
-    }
-
-    @EventHandler( "left" )
-    public void onResize( MouseDownEvent e ) {
-        e.preventDefault();
-        presenter.onResize( e.getClientX() );
+    private HTMLElement getPreviewWidget() {
+        HTMLElement cast = ( HTMLElement ) helper.getPreviewWidget( ElementWrapperWidget.getWidget( content ) )
+                .asWidget().getElement().cast();
+        return cast;
     }
 
 
-    @EventHandler( "colUp" )
-    public void dragLeftcolUp( DragLeaveEvent e ) {
-        if ( hasColPreview( colUp.getElement() ) ) {
-            colUp.getElement().removeClassName( "componentDropInColumnPreview" );
-        }
-    }
-
-    private boolean hasColPreview( com.google.gwt.user.client.Element element ) {
-        return element.hasClassName( "componentDropInColumnPreview" );
+    private boolean hasColPreview( HTMLElement element ) {
+        return hasClassName( element, "componentDropInColumnPreview" );
     }
 
 
-    @EventHandler( "content" )
-    public void dragOverCenter( DragOverEvent e ) {
-        e.preventDefault();
-        if ( presenter.shouldPreviewDrop() ) {
-            final int absoluteTop = content.getElement().getAbsoluteTop();
-            final int absoluteBottom = content.getElement().getAbsoluteBottom();
-            final int dragOverY = e.getNativeEvent().getClientY();
+    private boolean dragOverUp( Div div, Event e ) {
+        final int absoluteTop = extractAbsoluteTop( div );
+        final int absoluteBottom = extractAbsoluteBottom( div );
+        int dragOverY = Integer.parseInt( extractClientY( e ) );
 
-            if ( dragOverUp( absoluteTop, absoluteBottom, dragOverY ) ) {
-                colUp.getElement().addClassName( "componentDropInColumnPreview" );
-                colDown.getElement().removeClassName( "componentDropInColumnPreview" );
-                contentDropOrientation = ColumnDrop.Orientation.UP;
-
-            } else {
-                colDown.getElement().addClassName( "componentDropInColumnPreview" );
-                colUp.getElement().removeClassName( "componentDropInColumnPreview" );
-                contentDropOrientation = ColumnDrop.Orientation.DOWN;
-            }
-        }
-    }
-
-    private boolean dragOverUp( int absoluteTop, int absoluteBottom, int dragOverY ) {
         return ( dragOverY - absoluteTop ) < ( absoluteBottom - dragOverY );
     }
 
-    @EventHandler( "content" )
-    public void dragLeaveCenter( DragLeaveEvent e ) {
-        e.preventDefault();
-        colDown.getElement().removeClassName( "componentDropInColumnPreview" );
-        contentDropOrientation = null;
-    }
-
-    @EventHandler( "colUp" )
-    public void dragOverColUp( DragOverEvent e ) {
-        if ( presenter.shouldPreviewDrop() ) {
-            contentDropOrientation = ColumnDrop.Orientation.UP;
-            colUp.getElement().addClassName( "componentDropInColumnPreview" );
-        }
-    }
-
-    @EventHandler( "colUp" )
-    public void dragLeaveColUp( DragLeaveEvent e ) {
-        colUp.getElement().removeClassName( "componentDropInColumnPreview" );
-    }
-
-    @EventHandler( "colUp" )
-    public void dropUp( DropEvent drop ) {
-        if ( contentDropOrientation != null ) {
-            presenter.onDrop( contentDropOrientation, drop );
-        }
-        colUp.getElement().removeClassName( "componentDropInColumnPreview" );
-        colDown.getElement().removeClassName( "componentDropInColumnPreview" );
-    }
-
-    @EventHandler( "colDown" )
-    public void dropDown( DropEvent drop ) {
-        if ( contentDropOrientation != null ) {
-            presenter.onDrop( contentDropOrientation, drop );
-        }
-        colUp.getElement().removeClassName( "componentDropInColumnPreview" );
-        colDown.getElement().removeClassName( "componentDropInColumnPreview" );
-    }
-
-    @EventHandler( "left" )
-    public void dragEnterLeft( DragEnterEvent e ) {
-        e.preventDefault();
-        if ( presenter.shouldPreviewDrop() ) {
-            left.getElement().addClassName( "columnDropPreview dropPreview" );
-            content.getElement().addClassName( "centerPreview" );
-        }
-
-    }
-
-    @EventHandler( "content" )
-    public void dropInsideColumn( DropEvent drop ) {
-        if ( contentDropOrientation != null ) {
-            presenter.onDrop( contentDropOrientation, drop );
-        }
-        colUp.getElement().removeClassName( "componentDropInColumnPreview" );
-        colDown.getElement().removeClassName( "componentDropInColumnPreview" );
-    }
-
-
-    @EventHandler( "left" )
-    public void dragLeaveLeft( DragLeaveEvent e ) {
-        e.preventDefault();
-        left.getElement().removeClassName( "columnDropPreview dropPreview" );
-        content.getElement().removeClassName( "centerPreview" );
-    }
-
-
-    @EventHandler( "left" )
-    public void dragLeaveLeft( DragOverEvent e ) {
-        e.preventDefault();
-    }
-
-    @EventHandler( "left" )
-    public void dropColumnLeft( DropEvent drop ) {
-        drop.preventDefault();
-        left.getElement().removeClassName( "columnDropPreview dropPreview" );
-        content.getElement().removeClassName( "centerPreview" );
-        presenter.onDrop( ColumnDrop.Orientation.LEFT, drop );
-    }
-
-    @EventHandler( "right" )
-    public void dragEnterRight( DragEnterEvent e ) {
-        e.preventDefault();
-        if ( presenter.shouldPreviewDrop() ) {
-            right.getElement().addClassName( "columnDropPreview dropPreview" );
-            content.getElement().addClassName( "centerPreview" );
-        }
-    }
-
-    @EventHandler( "right" )
-    public void dragLeaveRight( DragLeaveEvent e ) {
-        e.preventDefault();
-        right.getElement().removeClassName( "columnDropPreview dropPreview" );
-        content.getElement().removeClassName( "centerPreview" );
-    }
-
-    @EventHandler( "right" )
-    public void dragOver( DragOverEvent e ) {
-        e.preventDefault();
-    }
-
-
-    @EventHandler( "right" )
-    public void dropColumnRIGHT( DropEvent drop ) {
-        drop.preventDefault();
-        right.getElement().removeClassName( "columnDropPreview dropPreview" );
-        content.getElement().removeClassName( "centerPreview" );
-        presenter.onDrop( ColumnDrop.Orientation.RIGHT, drop );
-    }
-
-    @EventHandler( "move" )
-    public void dragStartComponent( DragStartEvent e ) {
-        e.stopPropagation();
-        row.addClassName( "rowDndPreview" );
-        presenter.dragStartComponent();
-    }
-
-    @EventHandler( "move" )
-    public void dragEndComponent( DragEndEvent e ) {
-        e.stopPropagation();
-        row.removeClassName( "rowDndPreview" );
-        presenter.dragEndComponent();
-    }
-
-    @EventHandler( "remove" )
-    public void removeClick( ClickEvent e ) {
-        presenter.remove();
-    }
-
-    @EventHandler( "edit" )
-    public void editClick( ClickEvent e ) {
-        presenter.edit();
-    }
-
-    @EventHandler( "col" )
-    public void endColumnResize( MouseUpEvent e ) {
-
-        e.preventDefault();
-
-        presenter.endColumnResize( e.getClientX() );
-        if ( col.hasClassName( "rowDndPreview" ) ) {
-            col.removeClassName( "rowDndPreview" );
-        }
-    }
-
-    @EventHandler( "col" )
-    public void colMouseOver( MouseMoveEvent e ) {
-        e.preventDefault();
+    public void cleanUp( @Observes DragComponentEndEvent dragComponentEndEvent ) {
+        removeClassName( colUp, "componentDropInColumnPreview" );
     }
 }

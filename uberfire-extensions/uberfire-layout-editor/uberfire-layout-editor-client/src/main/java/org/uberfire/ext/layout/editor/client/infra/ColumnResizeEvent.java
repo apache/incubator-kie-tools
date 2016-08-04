@@ -3,22 +3,22 @@ package org.uberfire.ext.layout.editor.client.infra;
 
 public class ColumnResizeEvent {
 
-    private int columnHashCode;
-    private int rowHashCode;
+    private String columnID;
+    private String rowID;
     private Direction direction = Direction.LEFT;
 
-    public ColumnResizeEvent( int columnHashCode , int rowHashCode) {
+    public ColumnResizeEvent( String columnID, String rowID ) {
 
-        this.columnHashCode = columnHashCode;
-        this.rowHashCode = rowHashCode;
+        this.columnID = columnID;
+        this.rowID = rowID;
     }
 
-    public int getRowHashCode() {
-        return rowHashCode;
+    public String getRowID() {
+        return rowID;
     }
 
-    public int getColumnHashCode() {
-        return columnHashCode;
+    public String getColumnID() {
+        return columnID;
     }
 
     public ColumnResizeEvent left() {
@@ -31,7 +31,7 @@ public class ColumnResizeEvent {
         return this;
     }
 
-    public boolean isLeft(){
+    public boolean isLeft() {
         return direction == Direction.LEFT;
     }
 

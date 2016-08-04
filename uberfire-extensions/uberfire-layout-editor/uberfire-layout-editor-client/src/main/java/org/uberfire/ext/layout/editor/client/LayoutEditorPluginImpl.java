@@ -19,8 +19,9 @@ package org.uberfire.ext.layout.editor.client;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.layout.editor.api.LayoutServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -34,7 +35,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import java.util.List;
 
 @Dependent
 public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
@@ -52,6 +52,8 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     private SavePopUpPresenter savePopUpPresenter;
 
     private String pluginName;
+    private String emptyTitleText;
+    private String emptySubTitleText;
 
     private PluginType pluginType;
 
@@ -59,29 +61,30 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     private ParameterizedCommand<LayoutEditorModel> loadCallBack;
 
-    private List<LayoutDragComponent> layoutDragComponents;
-
     @Override
-    public void init( String layoutName, List<LayoutDragComponent> layoutDragComponents ) {
+    public void init( String layoutName, LayoutDragComponentGroup layoutDragComponentGroup,
+                      String emptyTitleText, String emptySubTitleText ) {
         this.pluginName = layoutName;
-        this.layoutDragComponents = layoutDragComponents;
-        layoutEditorPresenter.setupDndPallete( layoutDragComponents );
+        this.emptyTitleText = emptyTitleText;
+        this.emptySubTitleText = emptySubTitleText;
+        layoutEditorPresenter.addDraggableComponentGroup( layoutDragComponentGroup );
     }
 
     @Override
     public Widget asWidget() {
-        final UberView<LayoutEditorPresenter> view = layoutEditorPresenter.getView();
-        return view.asWidget();
+        final UberElement<LayoutEditorPresenter> view = layoutEditorPresenter.getView();
+        return ElementWrapperWidget.getWidget( view.getElement() );
     }
 
     @Override
     public void loadLayout( LayoutTemplate layoutTemplate ) {
-        layoutEditorPresenter.loadLayout( layoutTemplate );
+        layoutEditorPresenter.loadLayout( layoutTemplate, emptyTitleText, emptySubTitleText );
     }
 
     @Override
     public void loadDefaultLayout( String layoutName ) {
-        layoutEditorPresenter.loadEmptyLayout( layoutName );
+        layoutEditorPresenter.loadEmptyLayout( layoutName, emptyTitleText, emptySubTitleText );
+
     }
 
     @Override
@@ -123,10 +126,12 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
                     @Override
                     public void callback( final LayoutTemplate layoutTemplate ) {
                         if ( layoutTemplate != null ) {
-                            layoutEditorPresenter.loadLayout( layoutTemplate );
+                            layoutEditorPresenter.loadLayout( layoutTemplate, emptyTitleText, emptySubTitleText );
                             loadCallBack.execute( getLayoutContent( currentPath, model.getLayoutEditorModel() ) );
                         } else {
-                            layoutEditorPresenter.loadEmptyLayout( pluginName );
+                            layoutEditorPresenter
+                                    .loadEmptyLayout( pluginName, emptyTitleText, emptySubTitleText );
+                            ;
                         }
 
                     }

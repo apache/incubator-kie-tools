@@ -16,6 +16,7 @@
 package org.uberfire.ext.layout.editor.client.api;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.ext.layout.editor.client.infra.DndDataJSONConverter;
 
 /**
  * This interface defines the main contract between the Layout Editor's module and components implementations.
@@ -24,10 +25,7 @@ public interface LayoutDragComponent {
 
     public static final String FORMAT = "text";
 
-    /**
-     * Widget shown in the layout editor's component palette.
-     */
-    IsWidget getDragWidget();
+    String getDragComponentTitle();
 
     /**
      * Widget shown during the layout edition.
@@ -47,4 +45,6 @@ public interface LayoutDragComponent {
      * @param ctx The context for the component being rendered
      */
     IsWidget getShowWidget(RenderingContext ctx);
+
+    static DndDataJSONConverter converter = new DndDataJSONConverter();
 }

@@ -16,10 +16,10 @@
 
 package org.uberfire.ext.layout.editor.client;
 
-import javax.annotation.PostConstruct;
-
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
+
+import javax.annotation.PostConstruct;
 
 @EntryPoint
 public class LayoutEditorEntryPoint {

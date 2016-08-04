@@ -1,6 +1,6 @@
 package org.uberfire.ext.layout.editor.client.components.container;
 
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -13,6 +13,7 @@ import org.uberfire.ext.layout.editor.client.components.rows.RowDrop;
 import org.uberfire.ext.layout.editor.client.infra.BeanHelper;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.LayoutTemplateAdapter;
+import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import javax.annotation.PostConstruct;
@@ -30,22 +31,28 @@ import java.util.Map;
 @Dependent
 public class Container {
 
-    public interface View extends UberView<Container> {
+    private LayoutTemplate layoutTemplate;
 
-        void addRow( UberView<Row> view );
+    public interface View extends UberElement<Container> {
+
+        void addRow( UberElement<Row> view );
 
         void clear();
 
-        void addEmptyRow( UberView<EmptyDropRow> emptyDropRow );
+        void addEmptyRow( UberElement<EmptyDropRow> emptyDropRow );
 
     }
 
+    private String id;
+    private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
     private final Instance<Row> rowInstance;
     private final Instance<EmptyDropRow> emptyDropRowInstance;
     private final View view;
     private List<Row> rows = new ArrayList<>();
     private EmptyDropRow emptyDropRow;
     private String layoutName;
+    private String emptyTitleText;
+    private String emptySubTitleText;
     private Map<String, String> properties = new HashMap<>();
     private Event<ComponentDropEvent> componentDropEvent;
 
@@ -56,6 +63,7 @@ public class Container {
         this.emptyDropRowInstance = emptyDropRowInstance;
         this.view = view;
         this.componentDropEvent = componentDropEvent;
+        this.id = idGenerator.createContainerID();
     }
 
     @PostConstruct
@@ -79,16 +87,25 @@ public class Container {
             destroy( row );
         }
         rows = new ArrayList<>();
+    }
+
+    private void createEmptyDropRow() {
         emptyDropRow = createEmptyRow();
         view.addEmptyRow( emptyDropRow.getView() );
     }
 
 
-    public void setLayoutName( String layoutName ) {
+    public void loadEmptyLayout( String layoutName, String emptyTitleText, String emptySubTitleText ) {
         this.layoutName = layoutName;
+        this.emptyTitleText = emptyTitleText;
+        this.emptySubTitleText = emptySubTitleText;
+        createEmptyDropRow();
     }
 
-    public void load( LayoutTemplate layoutTemplate ) {
+    public void load( LayoutTemplate layoutTemplate, String emptyTitleText, String emptySubTitleText ) {
+        this.layoutTemplate = layoutTemplate;
+        this.emptyTitleText = emptyTitleText;
+        this.emptySubTitleText = emptySubTitleText;
         if ( !layoutTemplate.isEmpty() ) {
             this.layoutName = layoutTemplate.getName();
             this.properties = layoutTemplate.getLayoutProperties();
@@ -96,17 +113,21 @@ public class Container {
                 rows.add( load( layoutRow ) );
             }
             updateView();
+        } else {
+            createEmptyDropRow();
         }
     }
 
     private EmptyDropRow createEmptyRow() {
         emptyDropRow = createInstanceEmptyDropRow();
-        emptyDropRow.init( createEmptyDropCommand() );
+        emptyDropRow.init( createEmptyDropCommand(), emptyTitleText, emptySubTitleText );
         return emptyDropRow;
     }
 
     protected EmptyDropRow createInstanceEmptyDropRow() {
-        return emptyDropRowInstance.get();
+        EmptyDropRow emptyDropRow = emptyDropRowInstance.get();
+        emptyDropRow.setId( idGenerator.createRowID( id ) );
+        return emptyDropRow;
     }
 
     public ParameterizedCommand<RowDrop> createEmptyDropCommand() {
@@ -136,6 +157,7 @@ public class Container {
             destroy( row );
             if ( layoutIsEmpty() ) {
                 init();
+                createEmptyDropRow();
             } else {
                 updateView();
             }
@@ -150,7 +172,7 @@ public class Container {
         return rows.isEmpty();
     }
 
-   public ParameterizedCommand<RowDrop> createRowDropCommand() {
+    public ParameterizedCommand<RowDrop> createRowDropCommand() {
         return ( dropRow ) -> {
             List<Row> updatedRows = new ArrayList<>();
             for ( Row row : rows ) {
@@ -180,16 +202,20 @@ public class Container {
 
     private void removeOldComponent( Column column ) {
         for ( Row row : rows ) {
-            row.removeColumn( column );
+            row.removeChildColumn( column );
         }
     }
 
     private void addNewRow( Row row, RowDrop dropRow, List<Row> newRows ) {
         if ( newRowIsBeforeThisRow( dropRow ) ) {
             newRows.add( createRow( dropRow ) );
-            newRows.add( row );
+            if ( !row.rowIsEmpty() ) {
+                newRows.add( row );
+            }
         } else {
-            newRows.add( row );
+            if ( !row.rowIsEmpty() ) {
+                newRows.add( row );
+            }
             newRows.add( createRow( dropRow ) );
         }
     }
@@ -199,7 +225,7 @@ public class Container {
     }
 
     private boolean dropIsInthisRow( Row row, RowDrop dropRow ) {
-        return dropRow.getRowHashCode() == row.hashCode();
+        return dropRow.getRowId() == row.getId();
     }
 
     private void clearView() {
@@ -213,7 +239,7 @@ public class Container {
 
         if ( beginRow != null ) {
             for ( Row row : rows ) {
-                if ( row.hashCode() == rowDndEvent.getRowHashCodeEnd() ) {
+                if ( row.getId() == rowDndEvent.getRowIdEnd() ) {
                     if ( rowDndEvent.getOrientation() == RowDrop.Orientation.AFTER ) {
                         newRows.add( row );
                         newRows.add( beginRow );
@@ -222,7 +248,7 @@ public class Container {
                         newRows.add( row );
                     }
                 } else {
-                    if ( row.hashCode() != beginRow.hashCode() ) {
+                    if ( row.getId() != beginRow.getId() ) {
                         newRows.add( row );
                     }
                 }
@@ -237,7 +263,7 @@ public class Container {
         Row beginRow = null;
 
         for ( Row row : rows ) {
-            if ( row.hashCode() == rowDndEvent.getRowHashCodeBegin() ) {
+            if ( row.getId() == rowDndEvent.getRowIdBegin() ) {
                 beginRow = row;
             }
         }
@@ -256,7 +282,9 @@ public class Container {
     }
 
     protected Row createInstanceRow() {
-        return rowInstance.get();
+        Row row = rowInstance.get();
+        row.setId( idGenerator.createRowID( id ) );
+        return row;
     }
 
     public void addProperty( String key, String value ) {
@@ -291,7 +319,7 @@ public class Container {
         }
     }
 
-    public UberView<Container> getView() {
+    public UberElement<Container> getView() {
         updateView();
         return view;
     }
@@ -303,4 +331,5 @@ public class Container {
     protected void destroy( Object o ) {
         BeanHelper.destroy( o );
     }
+
 }

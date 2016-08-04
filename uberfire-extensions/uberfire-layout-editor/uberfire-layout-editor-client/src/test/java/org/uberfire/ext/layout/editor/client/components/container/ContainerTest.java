@@ -22,6 +22,7 @@ public class ContainerTest extends AbstractLayoutEditorTest {
 
     @Test
     public void assertEmptyContainerHasEmptyDropRow() {
+        container.loadEmptyLayout("layout", "", "");
         assertTrue( container.getRows().isEmpty() );
         assertNotNull( container.getEmptyDropRow() );
         verify( view ).addEmptyRow( emptyDropRow.getView() );
@@ -29,12 +30,13 @@ public class ContainerTest extends AbstractLayoutEditorTest {
 
     @Test
     public void createFirstRow() {
+        container.loadEmptyLayout( "layout", "", "" );
         assertEquals( 0, getRowsSizeFromContainer() );
         assertNotNull( container.getEmptyDropRow() );
         verify( view ).addEmptyRow( emptyDropRow.getView() );
 
         container.createEmptyDropCommand()
-                .execute( new RowDrop( new LayoutComponent( "dragType" ), emptyDropRow.hashCode(),
+                .execute( new RowDrop( new LayoutComponent( "dragType" ), emptyDropRow.getId(),
                                        RowDrop.Orientation.BEFORE ) );
         assertEquals( 1, getRowsSizeFromContainer() );
     }
@@ -59,7 +61,7 @@ public class ContainerTest extends AbstractLayoutEditorTest {
 
         Row dropRow = getRowByIndex( FIRST_ROW );
 
-        RowDrop dropNewComponentOnFirstRow = new RowDrop( new LayoutComponent( "dragType" ), dropRow.hashCode(),
+        RowDrop dropNewComponentOnFirstRow = new RowDrop( new LayoutComponent( "dragType" ), dropRow.getId(),
                                                           RowDrop.Orientation.BEFORE );
         dropNewComponentOnFirstRow.newComponent();
 
@@ -80,9 +82,9 @@ public class ContainerTest extends AbstractLayoutEditorTest {
 
         Row dropRow = getRowByIndex( FIRST_ROW );
 
-        RowDrop moveComponentAndDropInFirstRow = new RowDrop( new LayoutComponent( "dragType" ), dropRow.hashCode(),
+        RowDrop moveComponentAndDropInFirstRow = new RowDrop( new LayoutComponent( "dragType" ), dropRow.getId(),
                                                               RowDrop.Orientation.BEFORE );
-        moveComponentAndDropInFirstRow.fromMove( dropRow.hashCode(), getColumns( dropRow ).get( 0 ) );
+        moveComponentAndDropInFirstRow.fromMove( dropRow.getId(), getColumns( dropRow ).get( 0 ) );
 
         container.createRowDropCommand().execute( moveComponentAndDropInFirstRow );
 
@@ -98,7 +100,7 @@ public class ContainerTest extends AbstractLayoutEditorTest {
         Row row1 = getRowByIndex( FIRST_ROW );
         Row row2 = getRowByIndex( SECOND_ROW );
 
-        container.swapRows( new RowDnDEvent( row1.hashCode(), row2.hashCode(), RowDrop.Orientation.AFTER ) );
+        container.swapRows( new RowDnDEvent( row1.getId(), row2.getId(), RowDrop.Orientation.AFTER ) );
 
         assertEquals( row2, getRowByIndex( FIRST_ROW ) );
         assertEquals( row1, getRowByIndex( SECOND_ROW ) );
@@ -112,7 +114,7 @@ public class ContainerTest extends AbstractLayoutEditorTest {
         Row dropRow = getRowByIndex( 0 );
 
         ParameterizedCommand<RowDrop> rowDropCommand = container.createRowDropCommand();
-        RowDrop drop = new RowDrop( new LayoutComponent( "dragType" ), dropRow.hashCode(),
+        RowDrop drop = new RowDrop( new LayoutComponent( "dragType" ), dropRow.getId(),
                                     RowDrop.Orientation.AFTER );
         drop.newComponent();
         rowDropCommand.execute( drop );

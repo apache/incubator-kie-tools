@@ -71,7 +71,7 @@ public class UberfireDocksImplTest {
     public void setup() {
         uberfireDocks = new UberfireDocksImpl(docksBars){
             @Override
-            protected void fireEvent() {
+            protected void fireDockReadyEvent() {
             }
         };
         resizeCommand = new Command() {

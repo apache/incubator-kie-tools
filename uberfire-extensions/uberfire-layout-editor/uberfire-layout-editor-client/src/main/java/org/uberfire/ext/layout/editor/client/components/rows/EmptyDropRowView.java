@@ -1,53 +1,87 @@
 package org.uberfire.ext.layout.editor.client.components.rows;
 
-import com.google.gwt.event.dom.client.DragLeaveEvent;
-import com.google.gwt.event.dom.client.DragOverEvent;
-import com.google.gwt.event.dom.client.DropEvent;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.inject.Inject;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Heading;
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Named;
+
+import static org.uberfire.ext.layout.editor.client.infra.CSSClassNameHelper.*;
+import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
 
 @Dependent
 @Templated
-public class EmptyDropRowView extends Composite
-        implements UberView<EmptyDropRow>,
-        EmptyDropRow.View {
+public class EmptyDropRowView
+        implements UberElement<EmptyDropRow>,
+        EmptyDropRow.View, IsElement {
 
     private EmptyDropRow presenter;
 
-
+    @Inject
     @DataField
-    private Element row = DOM.createDiv();
+    private Div row;
+
+    @Inject
+    @DataField( "inner-row" )
+    private Div innerRow;
+
+    @Inject
+    @Named( "h1" )
+    @DataField
+    private Heading title;
+
+    @Inject
+    @DataField
+    private Span subtitle;
+
 
     @Override
     public void init( EmptyDropRow presenter ) {
         this.presenter = presenter;
+        row.setOndragover( event -> {
+            event.preventDefault();
+            addSelectEmptyBorder();
+        } );
+        row.setOndragenter( event -> {
+            addSelectEmptyBorder();
+        } );
+        row.setOndragleave( event -> {
+            removeSelectedBorder();
+        } );
+
+        row.setOndrop( e -> {
+            e.preventDefault();
+            presenter.drop( extractDndData( e ) );
+        } );
     }
 
-    @EventHandler( "row" )
-    public void dragOverRow( DragOverEvent e ) {
-        e.preventDefault();
-        row.addClassName( "rowDropPreview" );
+    @Override
+    public void setupText( String titleText, String subTitleText ) {
+        title.setTextContent( titleText );
+        subtitle.setTextContent( subTitleText );
+
     }
 
-    @EventHandler( "row" )
-    public void dragLeaveUpper( DragLeaveEvent e ) {
-        e.preventDefault();
-        row.removeClassName( "rowDropPreview" );
+    private void removeSelectedBorder() {
+        if ( hasClassName( row, "le-empty-preview-drop" ) ) {
+            removeClassName( row, "le-empty-preview-drop" );
+            removeClassName( innerRow, "le-empty-inner-preview-drop" );
+        }
     }
 
-    @EventHandler( "row" )
-    public void dropRow( DropEvent e ) {
-        e.preventDefault();
-        row.removeClassName( "rowDropPreview" );
-        presenter.drop( e );
+    private void addSelectEmptyBorder() {
+        if ( !hasClassName( row, "le-empty-preview-drop" ) ) {
+            addClassName( row, "le-empty-preview-drop" );
+            addClassName( innerRow, "le-empty-inner-preview-drop" );
+        }
     }
+
 
 }
 

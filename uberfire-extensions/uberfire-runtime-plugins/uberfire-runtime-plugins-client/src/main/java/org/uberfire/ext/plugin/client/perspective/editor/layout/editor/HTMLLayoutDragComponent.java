@@ -16,17 +16,9 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
-import java.util.Map;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Modal;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.InputSize;
-import org.uberfire.ext.editor.commons.client.htmleditor.HtmlEditorPresenter;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
@@ -34,9 +26,13 @@ import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDr
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditHTMLPresenter;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.util.Map;
+
 @Dependent
 public class HTMLLayoutDragComponent implements PerspectiveEditorDragComponent,
-                                                HasModalConfiguration {
+        HasModalConfiguration {
 
     public static final String HTML_CODE_PARAMETER = "HTML_CODE";
 
@@ -44,12 +40,8 @@ public class HTMLLayoutDragComponent implements PerspectiveEditorDragComponent,
     private EditHTMLPresenter htmlEditor;
 
     @Override
-    public IsWidget getDragWidget() {
-        TextBox textBox = GWT.create( TextBox.class );
-        textBox.setPlaceholder( CommonConstants.INSTANCE.HTMLComponent() );
-        textBox.setReadOnly( true );
-        textBox.setSize( InputSize.DEFAULT );
-        return textBox;
+    public String getDragComponentTitle() {
+        return CommonConstants.INSTANCE.HTMLComponent();
     }
 
     @Override

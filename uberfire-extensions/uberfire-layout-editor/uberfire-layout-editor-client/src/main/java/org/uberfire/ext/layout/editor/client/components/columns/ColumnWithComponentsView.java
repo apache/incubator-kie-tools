@@ -1,92 +1,209 @@
 package org.uberfire.ext.layout.editor.client.components.columns;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
+import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.ContainerResizeEvent;
-import org.uberfire.ext.layout.editor.client.components.rows.Row;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
+import static org.uberfire.ext.layout.editor.client.infra.CSSClassNameHelper.*;
+import static org.uberfire.ext.layout.editor.client.infra.DomUtil.extractOffSetWidth;
+import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
+
 @Dependent
 @Templated
-public class ColumnWithComponentsView extends Composite
-        implements UberView<ColumnWithComponents>,
-        ColumnWithComponents.View {
+public class ColumnWithComponentsView
+        implements UberElement<ColumnWithComponents>,
+        ColumnWithComponents.View, IsElement {
 
     private static final String COL_CSS_CLASS = "col-md-";
 
     private ColumnWithComponents presenter;
 
-    private final int originalLeftRightWidth = 5;
-
-    @DataField
-    Element colWithComponents = DOM.createDiv();
-
-    @DataField
-    Element row = DOM.createDiv();
+    private final int originalLeftRightWidth = 15;
 
     @Inject
     @DataField
-    private FlowPanel content;
+    Div colWithComponents;
 
     @Inject
     @DataField
-    private FlowPanel left;
+    Div row;
 
     @Inject
     @DataField
-    private FlowPanel right;
+    private Div content;
+
+    @Inject
+    @DataField
+    private Div left;
+
+    @Inject
+    @DataField( "resize-left" )
+    private Button resizeLeft;
+
+    @Inject
+    @DataField
+    private Div right;
+
+    @Inject
+    @DataField( "resize-right" )
+    private Button resizeRight;
+
+    @Inject
+    private Document document;
 
     String cssSize = "";
 
     @Override
     public void init( ColumnWithComponents presenter ) {
         this.presenter = presenter;
+        setupEvents();
     }
 
+    private void setupEvents() {
+        setupLeftEvents();
+        setupRightEvents();
+        setupOnResize();
+        setupResize();
+        setupResizeEvents();
+    }
+
+    private void setupResizeEvents() {
+        resizeLeft.setOnclick( event -> presenter.resizeLeft() );
+        resizeRight.setOnclick( event -> presenter.resizeRight() );
+    }
+
+    @Override
+    public void setupResize() {
+        resizeLeft.getStyle().setProperty( "display", "none" );
+        resizeRight.getStyle().setProperty( "display", "none" );
+    }
+
+    private void setupOnResize() {
+        document.getBody().setOnresize( event -> calculateSize() );
+    }
+
+    public void dockSelectEvent( @Observes UberfireDocksInteractionEvent event ) {
+        calculateSize();
+    }
+
+    private void setupRightEvents() {
+        right.setOndragenter( e -> {
+            e.preventDefault();
+            if ( presenter.shouldPreviewDrop() ) {
+                addClassName( right, "columnDropPreview" );
+                addClassName( right, "dropPreview" );
+                addClassName( content, "centerPreview" );
+            }
+        } );
+        right.setOndragleave( e -> {
+            e.preventDefault();
+            if ( presenter.shouldPreviewDrop() ) {
+                removeClassName( right, "columnDropPreview" );
+                removeClassName( right, "dropPreview" );
+                removeClassName( content, "centerPreview" );
+            }
+        } );
+        right.setOndrop( e -> {
+            e.preventDefault();
+            if ( presenter.shouldPreviewDrop() ) {
+                removeClassName( right, "columnDropPreview" );
+                removeClassName( right, "dropPreview" );
+                removeClassName( content, "centerPreview" );
+                presenter.onDrop( ColumnDrop.Orientation.RIGHT, extractDndData( e ) );
+            }
+        } );
+        right.setOndragover( e -> {
+            e.preventDefault();
+        } );
+        right.setOnmouseover( e -> {
+            e.preventDefault();
+            if ( presenter.canResizeRight() ) {
+                resizeRight.getStyle().setProperty( "display", "block" );
+            }
+        } );
+        right.setOnmouseout( e -> {
+            if ( presenter.canResizeRight() ) {
+                resizeRight.getStyle().setProperty( "display", "none" );
+            }
+        } );
+    }
+
+    private void setupLeftEvents() {
+        left.setOndragenter( e -> {
+            e.preventDefault();
+            if ( presenter.shouldPreviewDrop() ) {
+                addClassName( left, "columnDropPreview" );
+                addClassName( left, "dropPreview" );
+                addClassName( content, "centerPreview" );
+            }
+        } );
+        left.setOndragover( e -> e.preventDefault() );
+        left.setOndragleave( e -> {
+            e.preventDefault();
+            if ( presenter.shouldPreviewDrop() ) {
+                removeClassName( left, "columnDropPreview" );
+                removeClassName( left, "dropPreview" );
+                removeClassName( content, "centerPreview" );
+            }
+        } );
+        left.setOndrop( e -> {
+            e.preventDefault();
+            if ( presenter.shouldPreviewDrop() ) {
+                removeClassName( left, "columnDropPreview" );
+                removeClassName( left, "dropPreview" );
+                removeClassName( content, "centerPreview" );
+                presenter.onDrop( ColumnDrop.Orientation.LEFT, extractDndData( e ) );
+            }
+        } );
+        left.setOnmouseover( e -> {
+            e.preventDefault();
+            if ( presenter.canResizeLeft() ) {
+                resizeLeft.getStyle().setProperty( "display", "block" );
+            }
+        } );
+        left.setOnmouseout( e -> {
+            if ( presenter.canResizeLeft() ) {
+                resizeLeft.getStyle().setProperty( "display", "none" );
+            }
+        } );
+    }
 
     @Override
     public void setSize( String size ) {
         if ( hasCssSizeClass() ) {
-            colWithComponents.removeClassName( cssSize );
+            removeClassName( colWithComponents, cssSize );
         }
-        cssSize = COL_CSS_CLASS + size + " container";
-        colWithComponents.addClassName( cssSize );
+        cssSize = COL_CSS_CLASS + size;
+        addClassName( colWithComponents, cssSize );
+        addClassName( colWithComponents, "container" );
     }
 
     private boolean hasCssSizeClass() {
-        return !cssSize.isEmpty() && colWithComponents.hasClassName( cssSize );
+        return !cssSize.isEmpty() && hasClassName( colWithComponents, cssSize );
     }
 
     @Override
-    public void addRow( UberView<Row> view ) {
-        content.add( view );
-    }
-
-    @Override
-    public void setCursor() {
-        content.getElement().getStyle().setCursor( Style.Cursor.DEFAULT );
-        if ( presenter.canResize() ) {
-            left.getElement().getStyle().setCursor( Style.Cursor.COL_RESIZE );
-        }
+    public void addRow( UberElement<Row> view ) {
+        content.appendChild( view.getElement() );
     }
 
     @Override
     public void clear() {
-        content.clear();
+        removeAllChildren( content );
     }
 
     public void resizeEventObserver( @Observes ContainerResizeEvent event ) {
@@ -98,84 +215,17 @@ public class ColumnWithComponentsView extends Composite
 
         Scheduler.get().scheduleDeferred( () -> {
 
-            final int colWidth = row.getOffsetWidth();
+            final int colWidth = Integer.parseInt( extractOffSetWidth( row ) );
 
             int padding = 2;
             final int contentWidth = colWidth - ( originalLeftRightWidth * 2 ) - padding;
 
-            left.setWidth( originalLeftRightWidth + "px" );
-            right.setWidth( originalLeftRightWidth + "px" );
+            left.getStyle().setProperty( "width", originalLeftRightWidth + "px" );
+            right.getStyle().setProperty( "width", originalLeftRightWidth + "px" );
 
-            content.setWidth( contentWidth + "px" );
-
+            content.getStyle().setProperty( "width", contentWidth + "px" );
+            presenter.calculateSizeChilds();
         } );
-    }
-
-    @EventHandler( "left" )
-    public void dragEnterLeft( DragEnterEvent e ) {
-        e.preventDefault();
-        left.getElement().addClassName( "columnDropPreview dropPreview" );
-        content.getElement().addClassName( "centerPreview" );
-    }
-
-    @EventHandler( "left" )
-    public void dragOverLeft( DragOverEvent e ) {
-        e.preventDefault();
-    }
-
-
-    @EventHandler( "left" )
-    public void dragLeaveLeft( DragLeaveEvent e ) {
-        e.preventDefault();
-        left.getElement().removeClassName( "columnDropPreview dropPreview" );
-        content.getElement().removeClassName( "centerPreview" );
-    }
-
-    @EventHandler( "left" )
-    public void dropColumnLeft( DropEvent drop ) {
-        drop.preventDefault();
-        left.getElement().removeClassName( "columnDropPreview dropPreview" );
-        content.getElement().removeClassName( "centerPreview" );
-        presenter.onDrop( ColumnDrop.Orientation.LEFT, drop );
-    }
-
-    @EventHandler( "right" )
-    public void dragEnterRight( DragEnterEvent e ) {
-        e.preventDefault();
-        right.getElement().addClassName( "columnDropPreview dropPreview" );
-        content.getElement().addClassName( "centerPreview" );
-    }
-
-    @EventHandler( "right" )
-    public void dragLeaveRight( DragLeaveEvent e ) {
-        e.preventDefault();
-        right.getElement().removeClassName( "columnDropPreview dropPreview" );
-        content.getElement().removeClassName( "centerPreview" );
-    }
-
-    @EventHandler( "right" )
-    public void dropColumnRIGHT( DropEvent drop ) {
-        drop.preventDefault();
-        right.getElement().removeClassName( "columnDropPreview dropPreview" );
-        content.getElement().removeClassName( "centerPreview" );
-        presenter.onDrop( ColumnDrop.Orientation.RIGHT, drop );
-    }
-
-    @EventHandler( "right" )
-    public void dragOverRight( DragOverEvent e ) {
-        e.preventDefault();
-    }
-
-    @EventHandler( "left" )
-    public void colMouseDown( MouseDownEvent e ) {
-        e.preventDefault();
-        presenter.onMouseDown( e.getClientX() );
-    }
-
-    @EventHandler( "colWithComponents" )
-    public void colMouseUp( MouseUpEvent e ) {
-        e.preventDefault();
-        presenter.onMouseUp( e.getClientX() );
     }
 
 }

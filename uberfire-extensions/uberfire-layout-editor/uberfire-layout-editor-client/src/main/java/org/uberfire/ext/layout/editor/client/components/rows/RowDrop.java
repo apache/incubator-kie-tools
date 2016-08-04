@@ -6,21 +6,21 @@ import org.uberfire.ext.layout.editor.client.components.columns.Column;
 public class RowDrop {
 
     private final LayoutComponent component;
-    private final int rowHashCode;
-    private int originRowOldColumnHashCode;
+    private final String rowId;
+    private String originRowOldColumnId;
     private final Orientation orientation;
     private Type type;
     private Column oldColumn;
 
-    public RowDrop( LayoutComponent component, int rowHashCode, Orientation orientation ) {
+    public RowDrop( LayoutComponent component, String rowId, Orientation orientation ) {
         this.component = component;
-        this.rowHashCode = rowHashCode;
+        this.rowId = rowId;
         this.orientation = orientation;
         this.type = Type.NEW;
     }
 
-    public int getRowHashCode() {
-        return rowHashCode;
+    public String getRowId() {
+        return rowId;
     }
 
     public Orientation getOrientation() {
@@ -33,10 +33,6 @@ public class RowDrop {
 
     public Column getOldColumn() {
         return oldColumn;
-    }
-
-    public int getOriginRowOldColumnHashCode() {
-        return originRowOldColumnHashCode;
     }
 
     public Type getType() {
@@ -55,10 +51,10 @@ public class RowDrop {
         NEW, FROM_MOVE
     }
 
-    public RowDrop fromMove( int originRowOldColumnHashCode, Column oldColumn ) {
+    public RowDrop fromMove( String originRowOldColumnId, Column oldColumn ) {
         this.oldColumn = oldColumn;
         this.type = Type.FROM_MOVE;
-        this.originRowOldColumnHashCode = originRowOldColumnHashCode;
+        this.originRowOldColumnId = originRowOldColumnId;
         return this;
     }
 }
