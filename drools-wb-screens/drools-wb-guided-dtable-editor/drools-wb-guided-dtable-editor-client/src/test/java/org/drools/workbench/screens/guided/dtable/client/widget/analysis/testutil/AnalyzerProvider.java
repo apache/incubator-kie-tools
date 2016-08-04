@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalysisReporter;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.CancellableRepeatingCommand;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerBuilder;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.Status;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.UpdateManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
@@ -37,7 +42,6 @@ public class AnalyzerProvider {
     private final AsyncPackageDataModelOracle oracle;
     private       AnalysisReport              analysisReport;
     private       Status                      status;
-    private       RuleInspectorCache          cache;
 
     public AnalyzerProvider() {
         this( mock( AsyncPackageDataModelOracle.class ) );

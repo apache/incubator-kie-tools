@@ -20,7 +20,7 @@ import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalyzerProvider;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.AnalyzerProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DataBuilderProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.junit.Before;

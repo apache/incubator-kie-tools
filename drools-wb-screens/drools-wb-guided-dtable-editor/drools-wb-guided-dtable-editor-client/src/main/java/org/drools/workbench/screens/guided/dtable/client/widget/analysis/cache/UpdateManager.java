@@ -25,13 +25,13 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Action;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ActionBuilder;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Actions;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Condition;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Fields;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Conditions;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Index;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Rule;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.UUIDMatcher;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -79,9 +79,10 @@ public class UpdateManager {
 
     private class CellUpdateManager {
 
-        private final Column               column;
-        private final Fields.FieldSelector select;
-        private final Values               values;
+        private final Column     column;
+        private final Actions    actions;
+        private final Conditions conditions;
+        private final Values     values;
 
         public CellUpdateManager( final Coordinate coordinate ) {
 
@@ -89,13 +90,11 @@ public class UpdateManager {
                     .where( Column.index().is( coordinate.getCol() ) )
                     .select().first();
 
-            select = index.rules
+            final Rule rule = index.rules
                     .where( Rule.index().is( coordinate.getRow() ) )
-                    .select().patterns()
-                    .where( UUIDMatcher.uuid().any() )
-                    .select().fields()
-                    .where( UUIDMatcher.uuid().any() )
-                    .select();
+                    .select().first();
+            actions = rule.getActions();
+            conditions = rule.getConditions();
 
             values = getValue( model.getData().get( coordinate.getRow() ).get( coordinate.getCol() ) );
         }
@@ -113,9 +112,8 @@ public class UpdateManager {
         }
 
         private boolean updateAction() {
-            final Action action = select.actions()
-                                        .where( Action.columnUUID().is( column.getUuidKey() ) )
-                                        .select().first();
+            final Action action = actions.where( Action.columnUUID().is( column.getUuidKey() ) )
+                                         .select().first();
 
             if ( action != null ) {
                 return updateAction( action );
@@ -137,9 +135,8 @@ public class UpdateManager {
 
         private boolean updateCondition() {
 
-            final Condition condition = select.conditions()
-                                              .where( Condition.columnUUID().is( column.getUuidKey() ) )
-                                              .select().first();
+            final Condition condition = conditions.where( Condition.columnUUID().is( column.getUuidKey() ) )
+                                                  .select().first();
 
             if ( condition != null ) {
                 return updateCondition( condition );

@@ -17,29 +17,34 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.TestUtil.*;
+import static org.junit.Assert.*;
 
 @RunWith( GwtMockitoTestRunner.class )
-public class DecisionTableAnalyzerSingleHitTest
+public class DecisionTableAnalyzerAddRowScenarioTest
         extends AnalyzerUpdateTestBase {
 
     @Test
-    public void testSingleHit() throws Exception {
-        analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonAgeColumn( ">" )
-                                   .withPersonApprovedActionSetField()
-                                   .withData( DataBuilderProvider
-                                                                                  .row( 0, null )
-                                                                                  .row( 50, false )
-                                                                                  .end() )
-                                   .buildAnalyzer();
+    public void emptyLineThatIsAddedShouldBeIgnored() throws Exception {
+        table52 = analyzerProvider.makeAnalyser()
+                                  .withPersonAgeColumn( ">" )
+                                  .withPersonApprovedActionSetField()
+                                  .withData( DataBuilderProvider
+                                                     .row( 0, true )
+                                                     .end() )
+                                  .buildTable();
 
         fireUpAnalyzer();
 
+        appendRow( 2 );
+
+        final AnalysisReport analysisReport = analyzerProvider.getAnalysisReport();
         assertContains( "SingleHitLost", analyzerProvider.getAnalysisReport() );
+        assertEquals( 1, analysisReport.getAnalysisData().size() );
     }
 
 }

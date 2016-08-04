@@ -24,6 +24,7 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.AnalyzerProvider;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,7 +33,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.TestUtil.*;
 
 @RunWith( GwtMockitoTestRunner.class )
 @Ignore( "Just for profiling" )

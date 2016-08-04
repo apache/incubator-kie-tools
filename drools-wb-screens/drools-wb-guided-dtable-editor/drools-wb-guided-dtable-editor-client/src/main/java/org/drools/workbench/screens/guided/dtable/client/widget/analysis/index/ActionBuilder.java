@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
@@ -60,6 +61,8 @@ public class ActionBuilder {
 
         if ( actionCol instanceof BRLActionColumn ) {
             addBRLAction( ( BRLActionColumn ) actionCol );
+        } else if ( actionCol instanceof ActionRetractFactCol52 ) {
+            addRetractAction( ( ActionRetractFactCol52 ) actionCol );
         } else {
             final int columnIndex = model.getExpandedColumns().indexOf( actionCol );
             if ( rowHasIndex( columnIndex,
@@ -68,6 +71,13 @@ public class ActionBuilder {
                            row.get( columnIndex ) );
             }
         }
+    }
+
+    private void addRetractAction( final ActionRetractFactCol52 actionCol ) {
+        final int columnIndex = model.getExpandedColumns().indexOf( actionCol );
+
+        rule.getActions().add( new RetractAction( getColumn( actionCol ),
+                                                  getValues( row.get( columnIndex ) ) ) );
     }
 
     private void addBRLAction( final BRLActionColumn brlActionColumn ) {

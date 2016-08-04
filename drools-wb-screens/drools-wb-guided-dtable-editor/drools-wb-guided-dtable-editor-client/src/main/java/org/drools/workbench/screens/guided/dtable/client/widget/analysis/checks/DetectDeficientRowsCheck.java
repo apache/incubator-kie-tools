@@ -34,7 +34,7 @@ public class DetectDeficientRowsCheck
                new RuleInspectorCache.Filter() {
                    @Override
                    public boolean accept( final RuleInspector other ) {
-                       return !ruleInspector.getRule().getUuidKey().equals( other.getRule().getUuidKey() );
+                       return !ruleInspector.getRule().getUuidKey().equals( other.getRule().getUuidKey() ) && !other.isEmpty();
                    }
                } );
     }
@@ -43,7 +43,7 @@ public class DetectDeficientRowsCheck
     public void check() {
         hasIssues = false;
 
-        if ( isEmptyRow() ) {
+        if ( ruleInspector.isEmpty() ) {
             return;
         }
 
@@ -52,10 +52,6 @@ public class DetectDeficientRowsCheck
                 hasIssues = isDeficient();
             }
         }
-    }
-
-    private boolean isEmptyRow() {
-        return !ruleInspector.atLeastOneConditionHasAValue() && !ruleInspector.atLeastOneActionHasAValue();
     }
 
     private boolean isDeficient() {

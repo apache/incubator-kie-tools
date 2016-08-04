@@ -17,42 +17,25 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.junit.Before;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.ExtendedGuidedDecisionTableBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.TestUtil.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DecisionTableAnalyzerDeficiencyTest {
-
-    @GwtMock
-    AnalysisConstants analysisConstants;
-    @GwtMock
-    DateTimeFormat dateTimeFormat;
-
-    private AnalyzerProvider analyzerProvider;
-
-    @Before
-    public void setUp() throws Exception {
-        analyzerProvider = new AnalyzerProvider();
-    }
+public class DecisionTableAnalyzerDeficiencyTest
+        extends AnalyzerUpdateTestBase {
 
     @Test
     public void testRuleIsNotDeficient() throws Exception {
-        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                          new ArrayList<Import>(),
+                                                          "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withStringColumn( "a", "Person", "name", "==" )
                 .withStringColumn( "a", "Person", "lastName", "==" )
@@ -65,17 +48,16 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        fireUpAnalyzer();
 
-        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport() );
     }
 
     @Test
     public void testRuleIsDeficient001() throws Exception {
-        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                      new ArrayList<Import>(),
-                                                                                      "mytable" )
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                          new ArrayList<Import>(),
+                                                          "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withStringColumn( "a", "Person", "name", "==" )
                 .withStringColumn( "a", "Person", "lastName", "==" )
@@ -88,9 +70,8 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        fireUpAnalyzer();
 
-        analyzer.analyze( Collections.emptyList() );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
@@ -100,9 +81,9 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
     @Test
     public void testRuleIsDeficient002() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                          new ArrayList<Import>(),
+                                                          "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withStringColumn( "a", "Person", "name", "==" )
                 .withStringColumn( "a", "Person", "lastName", "==" )
@@ -116,20 +97,14 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
-
-        analyzer.analyze( Collections.emptyList() );
+        fireUpAnalyzer();
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
-        table52.getData().get( 1 ).get( 3 ).setStringValue( "Toni" );
-
-        ArrayList<Coordinate> updates = new ArrayList<>();
-        updates.add( new Coordinate( 1, 3 ) );
-        analyzer.analyze( updates );
+        setValue( 1, 3, "Toni" );
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
@@ -140,9 +115,9 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
     @Test
     public void testRuleIsDeficient003() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                          new ArrayList<Import>(),
+                                                          "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withStringColumn( "a", "Person", "name", "==" )
                 .withStringColumn( "a", "Person", "lastName", "==" )
@@ -156,20 +131,14 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
-
-        analyzer.analyze( Collections.emptyList() );
+        fireUpAnalyzer();
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
-        table52.getData().get( 2 ).get( 3 ).setStringValue( "Toni" );
-
-        ArrayList<Coordinate> updates = new ArrayList<>();
-        updates.add( new Coordinate( 2, 3 ) );
-        analyzer.analyze( updates );
+        setValue( 2, 3, "Toni" );
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
@@ -180,9 +149,9 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
     @Test
     public void testRuleIsDeficient004() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                          new ArrayList<Import>(),
+                                                          "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withStringColumn( "a", "Person", "name", "==" )
                 .withStringColumn( "a", "Person", "lastName", "==" )
@@ -196,20 +165,14 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .buildTable();
 
-        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
-
-        analyzer.analyze( Collections.emptyList() );
+        fireUpAnalyzer();
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
 
-        table52.getData().get( 2 ).get( 3 ).setStringValue( "" );
-
-        ArrayList<Coordinate> updates = new ArrayList<>();
-        updates.add( new Coordinate( 2, 3 ) );
-        analyzer.analyze( updates );
+        setValue( 2, 3, "" );
 
         assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );

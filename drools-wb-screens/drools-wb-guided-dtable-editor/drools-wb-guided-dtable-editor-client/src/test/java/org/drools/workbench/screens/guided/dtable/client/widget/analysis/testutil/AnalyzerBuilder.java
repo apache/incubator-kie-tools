@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil;
 
 import java.util.ArrayList;
 
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
 
 public class AnalyzerBuilder
         extends ExtendedGuidedDecisionTableBuilder {

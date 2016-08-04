@@ -17,44 +17,27 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.junit.Before;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.LimitedGuidedDecisionTableBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.TestUtil.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DecisionTableAnalyzerConflictResolverLimitedDTableTest {
-
-    @GwtMock
-    AnalysisConstants analysisConstants;
-
-    @GwtMock
-    DateTimeFormat dateTimeFormat;
-
-    private AnalyzerProvider analyzerProvider;
-
-    @Before
-    public void setUp() throws Exception {
-        analyzerProvider = new AnalyzerProvider();
-    }
+public class DecisionTableAnalyzerConflictResolverLimitedDTableTest
+        extends AnalyzerUpdateTestBase {
 
     @Test
     public void testConflict() throws Exception {
 
-        final GuidedDecisionTable52 table52 = new LimitedGuidedDecisionTableBuilder( "org.test",
-                                                                                     new ArrayList<Import>(),
-                                                                                     "mytable" )
+        table52 = new LimitedGuidedDecisionTableBuilder( "org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable" )
                 .withIntegerColumn( "a", "Person", "age", "==", 0 )
                 .withAction( "a", "approved", DataType.TYPE_BOOLEAN, new DTCellValue52() {
                     {
@@ -71,9 +54,7 @@ public class DecisionTableAnalyzerConflictResolverLimitedDTableTest {
                         { 2, "description", true, false, true } } )
                 .buildTable();
 
-        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
-
-        analyzer.analyze( Collections.emptyList() );
+        fireUpAnalyzer();
 
         assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 2 );
         assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 1 );

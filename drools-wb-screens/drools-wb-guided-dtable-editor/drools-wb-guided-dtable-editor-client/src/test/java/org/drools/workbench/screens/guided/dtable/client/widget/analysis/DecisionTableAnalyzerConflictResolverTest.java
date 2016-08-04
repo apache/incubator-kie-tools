@@ -16,114 +16,97 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.Collections;
-
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.TestUtil.*;
 import static org.junit.Assert.*;
 
 @RunWith( GwtMockitoTestRunner.class )
-public class DecisionTableAnalyzerConflictResolverTest {
-
-    @GwtMock
-    AnalysisConstants analysisConstants;
-
-    @GwtMock
-    DateTimeFormat dateTimeFormat;
-
-    private AnalyzerProvider analyzerProvider;
-
-    @Before
-    public void setUp() throws Exception {
-        analyzerProvider = new AnalyzerProvider();
-    }
+public class DecisionTableAnalyzerConflictResolverTest
+        extends AnalyzerUpdateTestBase {
 
     @Test
     public void testNoIssue() throws Exception {
-        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser()
-                                                               .withPersonAgeColumn( ">" )
-                                                               .withAccountDepositColumn( "<" )
-                                                               .withApplicationApprovedSetField()
-                                                               .withData( DataBuilderProvider
-                                                                                  .row( 100, 0.0, true )
-                                                                                  .end() )
-                                                               .buildAnalyzer();
+        analyzer = analyzerProvider.makeAnalyser()
+                                   .withPersonAgeColumn( ">" )
+                                   .withAccountDepositColumn( "<" )
+                                   .withApplicationApprovedSetField()
+                                   .withData( DataBuilderProvider
+                                                      .row( 100, 0.0, true )
+                                                      .end() )
+                                   .buildAnalyzer();
 
-        analyzer.analyze( Collections.emptyList() );
+        fireUpAnalyzer();
+
         assertDoesNotContain( "ConflictingRows", analyzerProvider.getAnalysisReport() );
     }
 
     @Test
     public void testNoIssueWithNulls() throws Exception {
-        final GuidedDecisionTable52 table52 = analyzerProvider.makeAnalyser()
-                                                              .withPersonAgeColumn( ">" )
-                                                              .withPersonAgeColumn( "<" )
-                                                              .withData( DataBuilderProvider
-                                                                                 .row( null, null )
-                                                                                 .end() )
-                                                              .buildTable();
+        table52 = analyzerProvider.makeAnalyser()
+                                  .withPersonAgeColumn( ">" )
+                                  .withPersonAgeColumn( "<" )
+                                  .withData( DataBuilderProvider
+                                                     .row( null, null )
+                                                     .end() )
+                                  .buildTable();
 
 
         // After a save has been done, the server side sometimes sets the String field value to "" for numbers, even when the data type is a number
         table52.getData().get( 0 ).get( 2 ).setStringValue( "" );
         table52.getData().get( 0 ).get( 3 ).setStringValue( "" );
 
-        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        fireUpAnalyzer();
 
-        analyzer.analyze( Collections.emptyList() );
         assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
 
     }
 
     @Test
     public void testImpossibleMatch001() throws Exception {
-        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser()
-                                                               .withPersonAgeColumn( ">" )
-                                                               .withPersonAgeColumn( "<" )
-                                                               .withData( DataBuilderProvider
-                                                                                  .row( 100, 0 )
-                                                                                  .end() )
-                                                               .buildAnalyzer();
+        analyzer = analyzerProvider.makeAnalyser()
+                                   .withPersonAgeColumn( ">" )
+                                   .withPersonAgeColumn( "<" )
+                                   .withData( DataBuilderProvider
+                                                      .row( 100, 0 )
+                                                      .end() )
+                                   .buildAnalyzer();
 
 
-        analyzer.analyze( Collections.emptyList() );
+        fireUpAnalyzer();
+
         assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport() );
     }
 
     @Test
     public void testImpossibleMatch002() throws Exception {
-        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser()
-                                                               .withEnumColumn( "a", "Person", "name", "==", "Toni,Eder" )
-                                                               .withPersonNameColumn( "==" )
-                                                               .withData( DataBuilderProvider
-                                                                                  .row( "Toni", "" )
-                                                                                  .end() )
-                                                               .buildAnalyzer();
+        analyzer = analyzerProvider.makeAnalyser()
+                                   .withEnumColumn( "a", "Person", "name", "==", "Toni,Eder" )
+                                   .withPersonNameColumn( "==" )
+                                   .withData( DataBuilderProvider
+                                                      .row( "Toni", "" )
+                                                      .end() )
+                                   .buildAnalyzer();
 
-        analyzer.analyze( Collections.emptyList() );
+        fireUpAnalyzer();
+
         assertDoesNotContain( "ImpossibleMatch", analyzerProvider.getAnalysisReport() );
     }
 
     @Test
     public void testConflictIgnoreEmptyRows() throws Exception {
-        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser()
-                                                               .withPersonAgeColumn( "==" )
-                                                               .withPersonApprovedActionSetField()
-                                                               .withData( DataBuilderProvider
-                                                                                  .row( null, "" )
-                                                                                  .row( null, "true" )
-                                                                                  .end() )
-                                                               .buildAnalyzer();
+        analyzer = analyzerProvider.makeAnalyser()
+                                   .withPersonAgeColumn( "==" )
+                                   .withPersonApprovedActionSetField()
+                                   .withData( DataBuilderProvider
+                                                      .row( null, "" )
+                                                      .row( null, "true" )
+                                                      .end() )
+                                   .buildAnalyzer();
 
-        analyzer.analyze( Collections.emptyList() );
+        fireUpAnalyzer();
 
         assertDoesNotContain( "ConflictingRows", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "ConflictingRows", analyzerProvider.getAnalysisReport(), 2 );
@@ -132,23 +115,22 @@ public class DecisionTableAnalyzerConflictResolverTest {
 
     @Test
     public void testConflictWithASubsumingRow() throws Exception {
-        final DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser()
-                                                               .withPersonAgeColumn( "==" )
-                                                               .withPersonNameColumn( "==" )
-                                                               .withPersonLastNameColumn( "==" )
-                                                               .withPersonSalarySetFieldAction()
-                                                               .withPersonDescriptionSetActionField()
-                                                               .withData( DataBuilderProvider
-                                                                                  .row( null, null, null, 100, "ok" )
-                                                                                  .row( null, "Toni", null, 200, "ok" )
-                                                                                  .row( 12, "Toni", "Rikkola", 300, "ok" )
-                                                                                  .row( null, null, null, null, null )
-                                                                                  .end()
-                                                                        )
-                                                               .buildAnalyzer();
+        analyzer = analyzerProvider.makeAnalyser()
+                                   .withPersonAgeColumn( "==" )
+                                   .withPersonNameColumn( "==" )
+                                   .withPersonLastNameColumn( "==" )
+                                   .withPersonSalarySetFieldAction()
+                                   .withPersonDescriptionSetActionField()
+                                   .withData( DataBuilderProvider
+                                                      .row( null, null, null, 100, "ok" )
+                                                      .row( null, "Toni", null, 200, "ok" )
+                                                      .row( 12, "Toni", "Rikkola", 300, "ok" )
+                                                      .row( null, null, null, null, null )
+                                                      .end()
+                                            )
+                                   .buildAnalyzer();
 
-
-        analyzer.analyze( Collections.emptyList() );
+        fireUpAnalyzer();
 
         assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 2 );
         assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 3 );

@@ -24,11 +24,12 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.AnalyzerProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.TestUtil.*;
 import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )

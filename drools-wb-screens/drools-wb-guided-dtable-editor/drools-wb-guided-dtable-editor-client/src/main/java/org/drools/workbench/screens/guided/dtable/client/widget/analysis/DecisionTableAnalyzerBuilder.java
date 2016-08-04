@@ -68,20 +68,20 @@ public class DecisionTableAnalyzerBuilder {
         return new InnerBuilder( new CheckRunner() );
     }
 
-    protected CacheBuilder getCacheBuilder() {
+    public CacheBuilder getCacheBuilder() {
         return new CacheBuilder();
     }
 
-    protected UpdateManagerBuilder getUpdateManagerBuilder( final CheckRunner checkRunner ) {
+    public UpdateManagerBuilder getUpdateManagerBuilder( final CheckRunner checkRunner ) {
         return new UpdateManagerBuilder( checkRunner );
     }
 
-    class CacheBuilder {
+    public class CacheBuilder {
         private RuleInspectorCache cache;
         private ColumnUtilities    columnUtilities;
         private Index              index;
 
-        protected RuleInspectorCache buildCache() {
+        public RuleInspectorCache buildCache() {
             if ( cache == null ) {
                 cache = new RuleInspectorCache( getUtils(),
                                                 model,
@@ -107,7 +107,7 @@ public class DecisionTableAnalyzerBuilder {
         }
     }
 
-    class UpdateManagerBuilder
+    public class UpdateManagerBuilder
             extends CacheBuilder {
 
         protected final CheckRunner   checkRunner;
@@ -118,7 +118,7 @@ public class DecisionTableAnalyzerBuilder {
             this.checkRunner = checkRunner;
         }
 
-        protected UpdateManager buildUpdateManager() {
+        public UpdateManager buildUpdateManager() {
             if ( updateManager == null ) {
                 updateManager = new UpdateManager( getIndex(),
                                                    model,
@@ -129,7 +129,7 @@ public class DecisionTableAnalyzerBuilder {
         }
     }
 
-    class InnerBuilder
+    public class InnerBuilder
             extends UpdateManagerBuilder {
 
         private AnalysisReporter analysisReporter;

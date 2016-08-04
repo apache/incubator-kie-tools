@@ -205,6 +205,7 @@ public class RuleInspector
 
     @Override
     public boolean isDeficient( final RuleInspector other ) {
+
         if ( other.atLeastOneActionHasAValue() && !getActionsInspectors().conflicts( other.getActionsInspectors() ) ) {
             return false;
         }
@@ -240,6 +241,10 @@ public class RuleInspector
 
             return true;
         }
+    }
+
+    public boolean isEmpty() {
+        return !atLeastOneConditionHasAValue() && !atLeastOneActionHasAValue();
     }
 
     public boolean atLeastOneActionHasAValue() {
