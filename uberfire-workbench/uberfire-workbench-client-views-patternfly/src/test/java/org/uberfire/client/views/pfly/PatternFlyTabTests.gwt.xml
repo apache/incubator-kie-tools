@@ -20,8 +20,17 @@
 <module>
 
   <inherits name="org.uberfire.client.views.PatternFly"/>
+  <inherits name="org.uberfire.java.nio.UberfireNIO2Model"/>
 
   <source path='tab'/>
   <source path='mock'/>
   <source path='listbar'/>
+  <public path='js'/>
+  
+  <script src='jquery-1.12.0.js'></script>
+  <script src='bootstrap-3.3.6.min.js'></script>
+  
+  <add-linker name='xs'/>
+  
+  <collapse-all-properties/>
 </module>

@@ -31,14 +31,6 @@
   <description>UberFire Workbench Client Views: PatternFly</description>
 
   <dependencies>
-    <!-- forcing this to come first because it contains customized/old versions of many popular
-         libraries that GWT's jUnit test system needs -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
@@ -80,6 +72,13 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons</artifactId>
+      <classifier>sources</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
       <classifier>sources</classifier>
       <scope>test</scope>
     </dependency>

@@ -51,14 +51,16 @@
   <properties>
     <uberfire.version>${project.version}</uberfire.version>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
-    <version.com.google.gwt>2.8.0-beta1</version.com.google.gwt>
+    <version.com.google.gwt>2.8.0-rc1</version.com.google.gwt>
     <version.com.ahome-it.lienzo-core>2.0.270-RELEASE</version.com.ahome-it.lienzo-core>
     <version.com.ahome-it.lienzo-tests>1.0.0-RC1</version.com.ahome-it.lienzo-tests>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <!-- 19.0.0.jbossorg-2 was created from upstream Guava version 20.0-SNAPSHOT as Errai 4.0/GWT 2.8 needs it. Once the version 20.0 is released, we should upgrade to that. -->
     <version.com.google.guava>19.0.0.jbossorg-2</version.com.google.guava>
+    <!-- TODO Remove this when gson version is updated in ip-bom -->
+    <version.com.google.code.gson>2.6.2</version.com.google.code.gson>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
-    <!-- Version 1.1.0.Final which is coming from ip-bom is not compatible with GWT 2.8.0.Beta1 -->
+    <!-- Version 1.1.0.Final which is coming from ip-bom is not compatible with GWT 2.8.0 -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
     <version.org.jboss.errai>4.0.0-SNAPSHOT</version.org.jboss.errai>
     <version.org.jboss.keycloak>1.9.0.Final</version.org.jboss.keycloak>
@@ -187,18 +189,7 @@
                       <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
                       <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
                     </ignoreClasses>
-                    <dependencies>
-                      <!-- gwt-dev bundles dozens of different 3rd party dependencies, but can not be usually excluded
-                           as e.g. GWT Mockito tests are using the com.google.gwt classes inside. Ignoring it for the
-                           duplicate classes check seems to be the only way. -->
-                      <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-dev</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
+                    <dependencies>                      
                       <!-- gwt-user bundles javax.servlet classes which usually conflicts with the servlet dependencies
                            in -webapp modules. -->
                       <dependency>
@@ -677,6 +668,12 @@
         <groupId>com.ahome-it</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${version.com.ahome-it.lienzo-tests}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+          </exclusion> 
+        </exclusions>
       </dependency>
 
       <!-- Errai -->
@@ -753,6 +750,16 @@
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${version.com.google.gwt}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+          </exclusion>          
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -811,6 +818,18 @@
         <artifactId>wildfly-domain-management</artifactId>
         <version>${version.org.wildfly.core}</version>
       </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt.gwtmockito</groupId>
+        <artifactId>gwtmockito</artifactId>
+        <version>${version.com.google.gwt.gwtmockito}</version>      
+        <exclusions>          
+          <exclusion>
+            <groupId>org.mortbay.jasper</groupId>
+            <artifactId>apache-el</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>      
 
     </dependencies>
   </dependencyManagement>

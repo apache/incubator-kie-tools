@@ -606,15 +606,7 @@
         <property>
           <name>full</name>
         </property>
-      </activation>
-
-      <dependencies>
-        <!-- Add back ANT when building full profile as it's needed by AS7 and Tomcat -->
-        <dependency>
-          <groupId>org.apache.ant</groupId>
-          <artifactId>ant</artifactId>
-        </dependency>
-      </dependencies>
+      </activation>      
 
       <build>
         <plugins>

@@ -38,7 +38,7 @@ public class TabPanelWithDropdownsTest extends AbstractErraiCDITest {
         super.gwtSetUp();
         tabPanel = new TabPanelWithDropdowns();
         tabPanel.init();
-        
+
         new GwtBootstrap3EntryPoint().onModuleLoad();
     }
 
