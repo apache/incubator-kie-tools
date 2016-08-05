@@ -118,7 +118,6 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-envers</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
