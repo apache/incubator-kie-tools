@@ -36,7 +36,6 @@
   <inherits name="org.kie.workbench.common.screens.datamodeller.KieWorkbenchDatamodellerAPI"/>
   <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorClient"/>
 
-
   <source path="client"/>
 
 </module>

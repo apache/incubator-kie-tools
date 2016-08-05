@@ -30,6 +30,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.ShowEvent;
 import org.gwtbootstrap3.client.shared.event.ShowHandler;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
@@ -66,6 +67,9 @@ public class PersistenceDescriptorEditorViewImpl
 
     @UiField
     TextBox datasourceTextBox;
+
+    @UiField
+    Button datasourceSelectButton;
 
     @UiField
     HelpBlock datasourceHelpInline;
@@ -108,6 +112,7 @@ public class PersistenceDescriptorEditorViewImpl
 
     @PostConstruct
     void init() {
+        datasourceSelectButton.setVisible( false );
         propertiesGridPanel.add( persistenceUnitProperties );
         persistenceUnitClassesPanel.add( persistenceUnitClasses );
         collapsePropertiesPanel.addShowHandler( new ShowHandler() {
@@ -206,6 +211,11 @@ public class PersistenceDescriptorEditorViewImpl
     }
 
     @Override
+    public void showDataSourceSelector( boolean show ) {
+        datasourceSelectButton.setVisible( show );
+    }
+
+    @Override
     public Widget getSourceEditor() {
         return xmlViewer;
     }
@@ -272,4 +282,10 @@ public class PersistenceDescriptorEditorViewImpl
     void onTransactionTypeJTARadioButtonChanged( ClickEvent event ) {
         presenter.onResourceLocalTransactionsChange();
     }
+
+    @UiHandler( "datasourceSelectButton" )
+    void onSelectDataSource( ClickEvent event ) {
+        presenter.onSelectDataSource();
+    }
+
 }

@@ -26,6 +26,8 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRow;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRowImpl;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.datasourceselector.DataSourceInfo;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.datasourceselector.DataSourceSelector;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PropertyRow;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.type.PersistenceDescriptorType;
@@ -37,8 +39,10 @@ import org.kie.workbench.common.screens.datamodeller.model.persistence.Transacti
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorService;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
+import org.uberfire.annotations.Customizable;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -51,6 +55,7 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
@@ -67,6 +72,8 @@ public class PersistenceDescriptorEditorPresenter
 
     private PersistenceDescriptorType type;
 
+    private DataSourceSelector dataSourceSelector;
+
     private Caller<PersistenceDescriptorEditorService> editorService;
 
     private Caller<PersistenceDescriptorService> descriptorService;
@@ -80,6 +87,7 @@ public class PersistenceDescriptorEditorPresenter
     @Inject
     public PersistenceDescriptorEditorPresenter( final PersistenceDescriptorEditorView baseView,
                                                  final PersistenceDescriptorType type,
+                                                 @Customizable final DataSourceSelector dataSourceSelector,
                                                  final Caller<PersistenceDescriptorEditorService> editorService,
                                                  final Caller<PersistenceDescriptorService> descriptorService,
                                                  final Caller<DataModelerService> dataModelerService ) {
@@ -87,9 +95,11 @@ public class PersistenceDescriptorEditorPresenter
         this.view = baseView;
         baseView.setPresenter( this );
         this.type = type;
+        this.dataSourceSelector = dataSourceSelector;
         this.editorService = editorService;
         this.descriptorService = descriptorService;
         this.dataModelerService = dataModelerService;
+        view.showDataSourceSelector( dataSourceIntegrationEnabled() );
     }
 
     @OnStartup
@@ -279,6 +289,31 @@ public class PersistenceDescriptorEditorPresenter
     public void onJTADataSourceChange() {
         ensurePersistenceUnit();
         getContent().getDescriptorModel().getPersistenceUnit().setJtaDataSource( view.getJTADataSource() );
+    }
+
+    @Override
+    public void onSelectDataSource() {
+        dataSourceSelector.setGlobalSelection();
+        dataSourceSelector.show( new ParameterizedCommand<DataSourceInfo>() {
+            @Override
+            public void execute( DataSourceInfo dataSourceInfo ) {
+                ensurePersistenceUnit();
+                if ( dataSourceInfo.isDeployed() ) {
+                    getContent().getDescriptorModel().getPersistenceUnit().setJtaDataSource(
+                            dataSourceInfo.getJndi() );
+                    view.setJTADataSource( dataSourceInfo.getJndi() );
+                }
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
+                //do nothing
+            }
+        } );
+    }
+
+    private boolean dataSourceIntegrationEnabled() {
+        return ApplicationPreferences.getBooleanPref( "persistence-descriptor-editor-options.integrate-datasources" );
     }
 
     @Override

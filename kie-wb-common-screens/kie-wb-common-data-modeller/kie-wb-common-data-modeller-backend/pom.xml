@@ -194,6 +194,12 @@
       <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-envers</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Weld Modules. For tests only -->
     <dependency>
       <groupId>org.jboss.weld</groupId>

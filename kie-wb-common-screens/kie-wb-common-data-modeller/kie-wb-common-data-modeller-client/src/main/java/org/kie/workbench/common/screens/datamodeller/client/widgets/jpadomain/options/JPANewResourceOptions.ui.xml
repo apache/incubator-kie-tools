@@ -21,7 +21,9 @@
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
         >
 
-    <ui:style>
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
+  <ui:style>
 
         .help-icon {
             margin-left: 5px;
@@ -31,9 +33,24 @@
 
     </ui:style>
 
-    <gwt:FlowPanel>
-        <b:InlineCheckBox text="Persistable" ui:field="persistable" />
-        <p:HelpIcon helpTitle="Persistable" helpContent="A persistable data object will include all the necessary configuration to be stored in a DB." addStyleNames="{style.help-icon}" />
-    </gwt:FlowPanel>
+  <gwt:FlowPanel>
+    <b:Row>
+      <b:Column size="MD_12">
+        <b:Row>
+          <b:Column size="MD_12">
+            <b:InlineCheckBox text="{i18n.persistence_domain_new_resource_option_persistable}" ui:field="persistable"/>
+            <p:HelpIcon helpTitle="{i18n.persistence_domain_new_resource_option_persistable_help_heading}" helpContent="{i18n.persistence_domain_new_resource_option_persistable_help}" addStyleNames="{style.help-icon}"/>
+          </b:Column>
+        </b:Row>
+
+        <b:Row>
+          <b:Column size="MD_12">
+            <b:InlineCheckBox text="{i18n.persistence_domain_new_resource_option_audited}" ui:field="audited"/>
+            <p:HelpIcon helpTitle="{i18n.persistence_domain_new_resource_option_audited_help_heading}" ui:field="auditedHelpIcon" helpContent="{i18n.persistence_domain_new_resource_option_audited_help}" addStyleNames="{style.help-icon}"/>
+          </b:Column>
+        </b:Row>
+      </b:Column>
+    </b:Row>
+  </gwt:FlowPanel>
 
 </ui:UiBinder>

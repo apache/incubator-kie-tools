@@ -44,6 +44,7 @@ import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCall
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
@@ -115,7 +116,6 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
         Map<String, Object> params = new HashMap<String, Object>( );
         for ( ResourceOptions options : resourceOptions ) {
             params.putAll( options.getOptions() );
-            options.restoreOptionsDefaults();
         }
 
         dataModelerService.call( getSuccessCallback( presenter ),
@@ -147,4 +147,11 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
         } ).isJavaFileNameValid( javaFileName + ".java" );
     }
 
+    @Override
+    public Command getCommand( NewResourcePresenter newResourcePresenter ) {
+        for ( ResourceOptions options : resourceOptions ) {
+            options.restoreOptionsDefaults();
+        }
+        return super.getCommand( newResourcePresenter );
+    }
 }

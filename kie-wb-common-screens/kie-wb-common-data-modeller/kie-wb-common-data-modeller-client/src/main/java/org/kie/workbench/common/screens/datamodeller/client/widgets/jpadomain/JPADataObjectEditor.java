@@ -29,7 +29,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.command.ValuePair;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.JPADomainHandler;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.SequenceGeneratorValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
@@ -42,10 +44,10 @@ import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
-import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.properties.editor.client.fields.BooleanField;
 import org.uberfire.ext.properties.editor.client.fields.TextField;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -56,6 +58,8 @@ public class JPADataObjectEditor
     private static Map<String, DataModelerPropertyEditorFieldInfo> propertyEditorFields = new HashMap<String, DataModelerPropertyEditorFieldInfo>();
 
     private JPADataObjectEditorView view;
+
+    private JPADomainHandler handler;
 
     private static final String EOL = "</BR>";
 
@@ -71,6 +75,9 @@ public class JPADataObjectEditor
         super( handlerRegistry, dataModelerEvent, commandBuilder );
         this.view = view;
         view.init( this );
+        List<String> domainQuery = new ArrayList<String>( );
+        domainQuery.add( getDomainName() );
+        handler = (JPADomainHandler) handlerRegistry.getDomainHandlers( domainQuery ).get( 0 );
     }
 
     @PostConstruct
@@ -103,6 +110,7 @@ public class JPADataObjectEditor
         if ( dataObject != null ) {
             updateEntityField( dataObject.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION ) );
             updateTableNameField( dataObject.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_TABLE_ANNOTATION ) );
+            updateAuditedField( dataObject.getAnnotation( JPADomainAnnotations.HIBERNATE_ENVERS_AUDITED ) );
             setReadonly( getContext() == null || getContext().isReadonly() );
         }
         loadPropertyEditor();
@@ -167,6 +175,25 @@ public class JPADataObjectEditor
         }
     }
 
+    @Override
+    public void onAuditedFieldChange( String newValue ) {
+        if ( getDataObject() != null ) {
+
+            Boolean doAdd = Boolean.parseBoolean( newValue );
+            DataModelCommand command;
+            if ( doAdd ) {
+                List<ValuePair> defaultValues = new ArrayList<>( );
+                defaultValues.add( new ValuePair( "targetAuditMode", "NOT_AUDITED" ) );
+                command = commandBuilder.buildDataObjectAddAnnotationCommand( getContext(),
+                        getName(), getDataObject(), JPADomainAnnotations.HIBERNATE_ENVERS_AUDITED, defaultValues );
+            } else {
+                command = commandBuilder.buildDataObjectRemoveAnnotationCommand( getContext(),
+                        getName(), getDataObject(), JPADomainAnnotations.HIBERNATE_ENVERS_AUDITED );
+            }
+            command.execute();
+        }
+    }
+
     //convenient method for facilitating testing
     protected void doEntityFieldChange( boolean isPersistable, boolean generateIdenfitier ) {
 
@@ -195,6 +222,15 @@ public class JPADataObjectEditor
         }
     }
 
+    private void updateAuditedField( Annotation annotation ) {
+        clearAuditedField();
+        if ( annotation != null ) {
+            if ( propertyEditorFields.containsKey( JPADataObjectEditorView.AUDITED_FIELD ) ) {
+                updatePropertyEditorField( JPADataObjectEditorView.AUDITED_FIELD, annotation, "true" );
+            }
+        }
+    }
+
     protected void loadPropertyEditor() {
         view.loadPropertyEditorCategories( getPropertyEditorCategories() );
     }
@@ -208,7 +244,9 @@ public class JPADataObjectEditor
 
         category.withField( createEntityField() );
         category.withField( createTableNameField() );
-
+        if ( handler.isDataObjectAuditEnabled() ) {
+            category.withField( createAuditedField() );
+        }
         return categories;
     }
 
@@ -228,6 +266,15 @@ public class JPADataObjectEditor
                 TextField.class,
                 Constants.INSTANCE.persistence_domain_objectEditor_table_field_help_heading(),
                 Constants.INSTANCE.persistence_domain_objectEditor_table_field_help() );
+    }
+
+    private DataModelerPropertyEditorFieldInfo createAuditedField() {
+        return createField( Constants.INSTANCE.persistence_domain_objectEditor_audited_field_label(),
+                JPADataObjectEditorView.AUDITED_FIELD,
+                "false",
+                BooleanField.class,
+                Constants.INSTANCE.persistence_domain_objectEditor_audited_field_help_heading(),
+                Constants.INSTANCE.persistence_domain_objectEditor_audited_field_help() );
     }
 
     private DataModelerPropertyEditorFieldInfo createField( String label, String key, String currentStringValue, Class<?> customFieldClass ) {
@@ -251,6 +298,7 @@ public class JPADataObjectEditor
     public void clear() {
         clearEntityField();
         clearTableNameField();
+        clearAuditedField();
     }
 
     private void clearEntityField() {
@@ -259,6 +307,12 @@ public class JPADataObjectEditor
 
     private void clearTableNameField() {
         updatePropertyEditorField( JPADataObjectEditorView.TABLE_NAME_FIELD, null, "" );
+    }
+
+    private void clearAuditedField() {
+        if ( propertyEditorFields.containsKey( JPADataObjectEditorView.AUDITED_FIELD ) ) {
+            updatePropertyEditorField( JPADataObjectEditorView.AUDITED_FIELD, null, "false" );
+        }
     }
 
     private void updatePropertyEditorField( String fieldId, Annotation currentValue, String currentStringValue ) {

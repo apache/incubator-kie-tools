@@ -16,13 +16,17 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelChangeNotifier;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.JPADomainHandler;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
@@ -41,6 +45,9 @@ public class DomainEditorBaseTest {
 
     @Mock
     protected DomainHandlerRegistry handlerRegistry;
+
+    @Mock
+    protected JPADomainHandler jpaDomainHandler;
 
     protected Event<DataModelerEvent> dataModelerEvent = mock( EventSourceMock.class );
 
@@ -64,6 +71,15 @@ public class DomainEditorBaseTest {
 
     @Before
     public void initTest() {
+
+        List<DomainHandler> domainHandlers = new ArrayList<>( );
+        domainHandlers.add( jpaDomainHandler );
+        when( jpaDomainHandler.getName() ).thenReturn( "JPA" );
+        when( jpaDomainHandler.isDataObjectAuditEnabled() ).thenReturn( false );
+
+        when( handlerRegistry.getDomainHandlers() ).thenReturn( domainHandlers );
+        when( handlerRegistry.getDomainHandlers( anyList() ) ).thenReturn( domainHandlers );
+        when( handlerRegistry.getDomainHandlers( anyString() ) ).thenReturn( domainHandlers );
 
         changeNotifier = new DataModelChangeNotifier( dataModelerEvent );
         commandBuilder = new DataModelCommandBuilder( changeNotifier );

@@ -64,6 +64,7 @@
                             </b:FormLabel>
                             <b:Column size="MD_9">
                                 <b:TextBox b:id="datasource" ui:field="datasourceTextBox" addStyleNames="col-md-5"/>
+                                <b:Button ui:field="datasourceSelectButton" text="{i18n.persistence_descriptor_editor_select_data_source_button}" type="PRIMARY" />
                                 <b:HelpBlock ui:field="datasourceHelpInline"/>
                             </b:Column>
                         </b:FormGroup>

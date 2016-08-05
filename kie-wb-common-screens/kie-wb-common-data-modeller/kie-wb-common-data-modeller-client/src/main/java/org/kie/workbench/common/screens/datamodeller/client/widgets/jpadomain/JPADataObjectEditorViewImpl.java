@@ -89,6 +89,8 @@ public class JPADataObjectEditorViewImpl
                 presenter.onEntityFieldChange( event.getNewValue() );
             } else if ( TABLE_NAME_FIELD.equals( fieldInfo.getKey() ) ) {
                 presenter.onTableNameChange( event.getNewValue() );
+            } else if ( AUDITED_FIELD.equals( fieldInfo.getKey() ) ) {
+                presenter.onAuditedFieldChange( event.getNewValue() );
             }
         }
     }

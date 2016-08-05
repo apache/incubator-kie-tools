@@ -30,6 +30,7 @@
     <module>kie-wb-common-contributors</module>
     <module>kie-wb-common-examples-screen</module>
     <module>kie-wb-common-workbench</module>
+    <module>kie-wb-common-datasource-mgmt</module>
   </modules>
 
 </project>

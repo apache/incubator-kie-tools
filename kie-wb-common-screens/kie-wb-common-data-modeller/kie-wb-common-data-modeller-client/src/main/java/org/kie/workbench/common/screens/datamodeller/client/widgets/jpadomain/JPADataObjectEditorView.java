@@ -31,11 +31,15 @@ public interface JPADataObjectEditorView
         void onEntityFieldChange( String newValue );
 
         void onTableNameChange( String newValue );
+
+        void onAuditedFieldChange( String newValue );
     }
 
     String ENTITY_FIELD = "ENTITY_FIELD";
 
     String TABLE_NAME_FIELD = "TABLE_NAME_FIELD";
+
+    String AUDITED_FIELD = "AUDITED_FIELD";
 
     void loadPropertyEditorCategories( List<PropertyEditorCategory> categories );
 

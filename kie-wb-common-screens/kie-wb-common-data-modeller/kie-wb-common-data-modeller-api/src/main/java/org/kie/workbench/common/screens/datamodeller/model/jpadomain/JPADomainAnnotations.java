@@ -40,6 +40,8 @@ public class JPADomainAnnotations {
 
     public static final String JAVAX_PERSISTENCE_ELEMENT_COLLECTION = "javax.persistence.ElementCollection";
 
+    public static final String HIBERNATE_ENVERS_AUDITED = "org.hibernate.envers.Audited";
+
     public static final String VALUE_PARAM = "value";
 
 }

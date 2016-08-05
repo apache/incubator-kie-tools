@@ -31,9 +31,12 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.op
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 @ApplicationScoped
 public class JPADomainHandler implements DomainHandler {
+
+    public static final String ENABLE_DATA_OBJECT_AUDIT = "enable-data-object-audit";
 
     @Inject
     private Instance<JPANewResourceOptions> newResourceOptions;
@@ -80,6 +83,14 @@ public class JPADomainHandler implements DomainHandler {
                     ( (AddPropertyCommand) command ).getProperty() );
             postCommand.execute();
         }
+    }
+
+    public boolean isOptionEnabled( String option ) {
+        return ApplicationPreferences.getBooleanPref( "data-modeler-options." + option );
+    }
+
+    public boolean isDataObjectAuditEnabled() {
+        return isOptionEnabled( JPADomainHandler.ENABLE_DATA_OBJECT_AUDIT );
     }
 
     private boolean isPersistable( DataObject dataObject ) {

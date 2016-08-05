@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRow;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRowImpl;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.datasourceselector.DataSourceSelector;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PersistenceUnitPropertyGrid;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ProjectClassList;
 import org.kie.workbench.common.screens.datamodeller.client.type.PersistenceDescriptorType;
@@ -80,6 +81,9 @@ public class PersistenceDescriptorEditorPresenterTest {
     PersistenceUnitPropertyGrid propertyGrid;
 
     @GwtMock
+    DataSourceSelector dataSourceSelector;
+
+    @GwtMock
     ProjectClassList projectClassList;
 
     @GwtMock
@@ -94,6 +98,7 @@ public class PersistenceDescriptorEditorPresenterTest {
     public void setup() {
         presenter = new PersistenceDescriptorEditorPresenter( view,
                                                               persistenceDescriptorType,
+                                                              dataSourceSelector,
                                                               new PersistenceDescriptorEditorServiceCallerMock(),
                                                               null,
                                                               new DataModelerServiceCallerMock()

@@ -18,7 +18,6 @@ package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -31,6 +30,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.Description;
 import org.kie.api.definition.type.Duration;
@@ -78,10 +78,11 @@ public class CommonAnnotations {
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( ManyToOne.class ) );
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( ManyToMany.class ) );
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( ElementCollection.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Audited.class ) );
 
     }
 
-    public static List<AnnotationDefinition> getCommonAnnotations () {
+    public static List<AnnotationDefinition> getCommonAnnotations() {
         return commonAnnotations;
     }
 

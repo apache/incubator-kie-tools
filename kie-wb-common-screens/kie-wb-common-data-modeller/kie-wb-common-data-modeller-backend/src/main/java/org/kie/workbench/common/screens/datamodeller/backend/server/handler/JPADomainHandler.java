@@ -26,6 +26,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
@@ -77,6 +79,14 @@ public class JPADomainHandler implements DomainHandler {
                 sequenceGenerator.setValue( "name", generatorName );
                 sequenceGenerator.setValue( "sequenceName", sequenceName );
                 id.addAnnotation( sequenceGenerator );
+
+                boolean isAuditable = portableParams.containsKey( "audited" ) ?
+                        Boolean.valueOf( portableParams.get( "audited" ).toString() ) : false;
+                if ( isAuditable ) {
+                    Annotation audited = new AnnotationImpl( modelDriver.getConfiguredAnnotation( Audited.class.getName() ) );
+                    audited.setValue( "targetAuditMode", RelationTargetAuditMode.NOT_AUDITED.name() );
+                    dataObject.addAnnotation( audited );
+                }
             }
         }
     }
@@ -87,12 +97,10 @@ public class JPADomainHandler implements DomainHandler {
     }
 
     private String createDefaultGeneratorName( String objectName ) {
-       //TODO review this name generation
         return objectName.toUpperCase() +  "_ID_GENERATOR";
     }
 
     private String createDefaultSequenceName( String objectName ) {
-        //TODO review this name generation
         return objectName.toUpperCase() + "_ID_SEQ";
     }
 }

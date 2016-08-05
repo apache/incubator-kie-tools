@@ -22,17 +22,17 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.JPADomainHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
+import org.uberfire.client.views.pfly.widgets.HelpIcon;
 
 @Dependent
 public class JPANewResourceOptions
@@ -50,20 +50,26 @@ public class JPANewResourceOptions
     @UiField
     CheckBox persistable;
 
-    //@UiField
-    TextBox tableName = new TextBox();
+    @UiField
+    CheckBox audited;
 
-    //@UiField
-    InlineLabel tableNameLabel;
-
-    //@UiField
-    HelpBlock tableNameHelpInline;
+    @UiField
+    HelpIcon auditedHelpIcon;
 
     @Inject
     private JPADomainHandler handler;
 
     public JPANewResourceOptions() {
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        setAuditOptionsVisible( false );
+        persistable.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                onPersistableChanged();
+            }
+        } );
+
     }
 
     public boolean isPersitable() {
@@ -74,25 +80,28 @@ public class JPANewResourceOptions
         this.persistable.setValue( persistable );
     }
 
-    public String getTableName() {
-        return tableName.getValue();
+    public boolean getAudited() {
+        return audited.getValue();
     }
 
-    public void setTableName( String tableName ) {
-        this.tableName.setText( tableName );
+    public void setAudited( boolean audited ) {
+        this.audited.setValue( audited );
     }
 
     @Override
     public void restoreOptionsDefaults() {
         setPersistable( false );
-        setTableName( null );
+        setAudited( false );
+        setAuditOptionsVisible( false );
     }
 
     @Override
     public Map<String, Object> getOptions() {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put( "persistable", isPersitable() );
-        options.put( "tableName", getTableName() );
+        if ( isPersitable() && handler.isDataObjectAuditEnabled() ) {
+            options.put( "audited", getAudited() );
+        }
         return options;
     }
 
@@ -104,5 +113,20 @@ public class JPANewResourceOptions
     @Override
     public Widget getWidget() {
         return super.asWidget();
+    }
+
+    private void onPersistableChanged() {
+        if ( isPersitable() && handler.isDataObjectAuditEnabled() ) {
+            setAuditOptionsVisible( true );
+        } else {
+            setAudited( false );
+            setAuditOptionsVisible( false );
+        }
+    }
+
+    private void setAuditOptionsVisible( boolean visible ) {
+        audited.setVisible( visible );
+        auditedHelpIcon.setVisible( visible );
+
     }
 }

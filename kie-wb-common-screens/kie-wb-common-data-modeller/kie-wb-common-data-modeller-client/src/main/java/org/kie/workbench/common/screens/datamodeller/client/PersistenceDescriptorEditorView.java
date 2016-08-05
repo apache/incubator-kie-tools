@@ -54,6 +54,8 @@ public interface PersistenceDescriptorEditorView
 
     void setPresenter( Presenter presenter );
 
+    void showDataSourceSelector( boolean show );
+
     void clear();
 
     void redraw();
@@ -77,5 +79,7 @@ public interface PersistenceDescriptorEditorView
         void onJTATransactionsChange();
 
         void onResourceLocalTransactionsChange();
+
+        void onSelectDataSource();
     }
 }

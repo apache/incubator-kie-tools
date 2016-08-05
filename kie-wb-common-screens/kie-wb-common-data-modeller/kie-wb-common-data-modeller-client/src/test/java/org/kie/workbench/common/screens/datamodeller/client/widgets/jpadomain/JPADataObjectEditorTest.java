@@ -20,6 +20,8 @@ import javax.persistence.Table;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
@@ -150,5 +152,27 @@ public class JPADataObjectEditorTest
             assertNull( dataObject.getProperty( "id" ) );
         }
     }
-}
 
+    @Test
+    public void auditChangeTest() {
+
+        //enable audit option.
+        when( jpaDomainHandler.isDataObjectAuditEnabled() ).thenReturn( true );
+
+        JPADataObjectEditor objectEditor = createObjectEditor();
+
+        //load the editor
+        objectEditor.onContextChange( context );
+
+        //by construction the currently loaded data object org.test.TestObject1 is not audited.
+        DataObject dataObject = context.getDataObject();
+
+        //emulate user interaction setting TestObject1 as persistable
+        objectEditor.onAuditedFieldChange( "true" );
+
+        //the object should now be annotated as Audited.
+        assertNotNull( dataObject.getAnnotation( Audited.class.getName() ) );
+        assertEquals( RelationTargetAuditMode.NOT_AUDITED.name(),
+                AnnotationValueHandler.getStringValue( dataObject, Audited.class.getName(), "targetAuditMode" ) );
+    }
+}
