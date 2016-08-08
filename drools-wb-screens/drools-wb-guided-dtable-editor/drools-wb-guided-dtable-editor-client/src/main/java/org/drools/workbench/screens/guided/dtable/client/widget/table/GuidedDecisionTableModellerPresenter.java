@@ -38,6 +38,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOver;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOverHandler;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -64,6 +66,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     private final ManagedInstance<GuidedDecisionTableView.Presenter> dtPresenterProvider;
     private final Event<RadarMenuBuilder.UpdateRadarEvent> updateRadarEvent;
     private final Event<DecisionTablePinnedEvent> pinnedEvent;
+    private final ColumnHeaderPopOver columnHeaderPopOver;
 
     private GuidedDecisionTableView.Presenter activeDecisionTable = null;
     private Set<GuidedDecisionTableView.Presenter> availableDecisionTables = new HashSet<GuidedDecisionTableView.Presenter>();
@@ -74,12 +77,20 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                                  final ManagedInstance<GuidedDecisionTableView.Presenter> dtPresenterProvider,
                                                  final GuidedDecisionTableModellerContextMenuSupport contextMenuSupport,
                                                  final Event<RadarMenuBuilder.UpdateRadarEvent> updateRadarEvent,
-                                                 final Event<DecisionTablePinnedEvent> pinnedEvent ) {
+                                                 final Event<DecisionTablePinnedEvent> pinnedEvent,
+                                                 final ColumnHeaderPopOver columnHeaderPopOver ) {
         this.view = view;
         this.dtPresenterProvider = dtPresenterProvider;
         this.updateRadarEvent = updateRadarEvent;
         this.pinnedEvent = pinnedEvent;
+        this.columnHeaderPopOver = columnHeaderPopOver;
+
         this.view.init( this );
+
+        //Add support for Column PopOver
+        handlerRegistrations.add( view.getGridLayerView().addNodeMouseMoveHandler( new ColumnHeaderPopOverHandler( this,
+                                                                                                                   columnHeaderPopOver ) ) );
+        handlerRegistrations.add( view.getGridLayerView().addNodeMouseOutHandler( ( e ) -> columnHeaderPopOver.hide() ) );
 
         //Add support for keyboard operations
         final GridLayer layer = view.getGridLayerView();
@@ -264,6 +275,11 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     }
 
     @Override
+    public void setZoom( final int zoom ) {
+        view.setZoom( zoom );
+    }
+
+    @Override
     public void onInsertColumn() {
         final GuidedDecisionTableView.Presenter dtPresenter = getActiveDecisionTable();
         if ( dtPresenter == null ) {
@@ -273,24 +289,22 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     }
 
     @Override
-    public void setZoom( final int zoom ) {
-        view.setZoom( zoom );
-    }
-
-    @Override
     public void enterPinnedMode( final GridWidget gridWidget,
                                  final Command onStartCommand ) {
+        columnHeaderPopOver.hide();
         view.getGridLayerView().enterPinnedMode( gridWidget,
                                                  onStartCommand );
     }
 
     @Override
     public void exitPinnedMode( final Command onCompleteCommand ) {
+        columnHeaderPopOver.hide();
         view.getGridLayerView().exitPinnedMode( onCompleteCommand );
     }
 
     @Override
     public void updatePinnedContext( final GridWidget gridWidget ) throws IllegalStateException {
+        columnHeaderPopOver.hide();
         view.getGridLayerView().updatePinnedContext( gridWidget );
     }
 

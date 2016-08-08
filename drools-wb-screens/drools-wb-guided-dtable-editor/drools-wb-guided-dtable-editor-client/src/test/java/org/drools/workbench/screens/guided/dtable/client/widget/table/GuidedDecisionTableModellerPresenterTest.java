@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
+import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
+import com.ait.lienzo.client.core.event.NodeMouseOutHandler;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
@@ -44,6 +46,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOver;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -105,10 +108,15 @@ public class GuidedDecisionTableModellerPresenterTest {
     @Mock
     private GuidedDecisionTableModellerContextMenuSupport contextMenuSupport;
 
+    @Mock
+    private ColumnHeaderPopOver columnHeaderPopOver;
+
     private GuidedDecisionTableModellerPresenter presenter;
 
     @Before
     public void setup() {
+        when( gridLayer.addNodeMouseMoveHandler( any( NodeMouseMoveHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
+        when( gridLayer.addNodeMouseOutHandler( any( NodeMouseOutHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
         when( view.addKeyDownHandler( any( KeyDownHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
         when( view.addContextMenuHandler( any( ContextMenuHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
         when( view.addMouseDownHandler( any( MouseDownHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
@@ -119,7 +127,8 @@ public class GuidedDecisionTableModellerPresenterTest {
                                                                                                        dtablePresenterProvider,
                                                                                                        contextMenuSupport,
                                                                                                        updateRadarEvent,
-                                                                                                       pinnedEvent );
+                                                                                                       pinnedEvent,
+                                                                                                       columnHeaderPopOver );
         presenter = spy( wrapped );
 
         when( dtablePresenterProvider.get() ).thenReturn( dtablePresenter );
@@ -395,6 +404,8 @@ public class GuidedDecisionTableModellerPresenterTest {
         verify( gridLayer,
                 times( 1 ) ).enterPinnedMode( eq( dtPresenter.getView() ),
                                               eq( command ) );
+        verify( columnHeaderPopOver,
+                times( 1 ) ).hide();
     }
 
     @Test
@@ -404,6 +415,8 @@ public class GuidedDecisionTableModellerPresenterTest {
 
         verify( gridLayer,
                 times( 1 ) ).exitPinnedMode( eq( command ) );
+        verify( columnHeaderPopOver,
+                times( 1 ) ).hide();
     }
 
     @Test
@@ -414,6 +427,8 @@ public class GuidedDecisionTableModellerPresenterTest {
 
         verify( gridLayer,
                 times( 1 ) ).updatePinnedContext( eq( dtPresenter.getView() ) );
+        verify( columnHeaderPopOver,
+                times( 1 ) ).hide();
     }
 
     @Test

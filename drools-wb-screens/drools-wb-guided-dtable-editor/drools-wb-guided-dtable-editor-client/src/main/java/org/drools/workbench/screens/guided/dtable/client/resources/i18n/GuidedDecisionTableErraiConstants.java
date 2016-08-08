@@ -23,4 +23,7 @@ public class GuidedDecisionTableErraiConstants {
     @TranslationKey(defaultValue = "")
     public static final String RowContextMenuViewImpl_Title = "RowContextMenuViewImpl.title";
 
+    @TranslationKey(defaultValue = "")
+    public static final String PopOverViewImpl_Title = "PopOverViewImpl.title";
+
 }
