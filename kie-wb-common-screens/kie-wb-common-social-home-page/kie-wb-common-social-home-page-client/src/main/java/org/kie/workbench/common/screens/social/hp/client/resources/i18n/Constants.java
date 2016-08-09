@@ -41,6 +41,8 @@ public interface Constants
 
     String UserProfile();
 
+    String UserInfo();
+
     String UserRecentActivities();
 
     String SearchUsers();
