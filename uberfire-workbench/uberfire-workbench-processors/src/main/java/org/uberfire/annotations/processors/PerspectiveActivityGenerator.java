@@ -62,6 +62,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         String identifier = ClientAPIModule.getWbPerspectiveScreenIdentifierValueOnClass( classElement );
         boolean isDefault = ClientAPIModule.getWbPerspectiveScreenIsDefaultValueOnClass( classElement );
         boolean isTransient = ClientAPIModule.getWbPerspectiveScreenIsTransientValueOnClass( classElement );
+        boolean isDynamic = ClientAPIModule.getWbPerspectiveScreenIsDynamicValueOnClass( classElement );
 
         final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
 
@@ -161,6 +162,8 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                   getMenuBarMethodName );
         root.put( "getToolBarMethodName",
                   getToolBarMethodName );
+        root.put( "isDynamic",
+                  isDynamic );
 
         //Generate code
         final StringWriter sw = new StringWriter();

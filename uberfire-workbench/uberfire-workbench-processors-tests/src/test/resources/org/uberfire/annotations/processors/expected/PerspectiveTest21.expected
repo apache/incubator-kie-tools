@@ -61,4 +61,5 @@ public class PerspectiveTest21Activity extends AbstractWorkbenchPerspectiveActiv
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
         return realPresenter.getPerspective();
     }
+
 }

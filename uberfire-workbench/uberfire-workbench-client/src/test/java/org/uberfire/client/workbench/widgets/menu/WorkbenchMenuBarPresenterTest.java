@@ -16,6 +16,20 @@
 
 package org.uberfire.client.workbench.widgets.menu;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,12 +49,10 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkbenchMenuBarPresenterTest {
@@ -103,6 +115,7 @@ public class WorkbenchMenuBarPresenterTest {
         final PerspectiveChange perspectiveChange = new PerspectiveChange( placeRequest, null, null, perspectiveId );
 
         when( perspectiveActivity.getPlace() ).thenReturn( placeRequest );
+        when (perspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() )).thenReturn( true );
         when( authzManager.authorize( any( Resource.class ), eq( identity ) ) ).thenReturn( true );
 
         presenter.addMenus( menus );
@@ -148,8 +161,10 @@ public class WorkbenchMenuBarPresenterTest {
 
         when( activity.getIdentifier() ).thenReturn( perspectiveId );
         when( activity.getMenus() ).thenReturn( contextMenus );
+        when (activity.isType( ActivityResourceType.PERSPECTIVE.name() )).thenReturn( true );
         when( authzManager.authorize( contextMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
         when( activityManager.getActivity( placeRequest ) ).thenReturn( activity );
+        
 
         presenter.onPerspectiveChange( new PerspectiveChange(placeRequest, null, contextMenus, perspectiveId) );
 
@@ -168,6 +183,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         when( activity.getIdentifier() ).thenReturn( perspectiveId );
         when( activity.getMenus() ).thenReturn( contextMenus );
+        when (activity.isType( ActivityResourceType.PERSPECTIVE.name() )).thenReturn( true );
         when( authzManager.authorize( contextMenus.getItems().get( 0 ), identity ) ).thenReturn( false );
         when( activityManager.getActivity( placeRequest ) ).thenReturn( activity );
 
@@ -239,6 +255,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         when( activity.getIdentifier() ).thenReturn( perspectiveId );
         when( activity.getMenus() ).thenReturn( contextMenus );
+        when (activity.isType( ActivityResourceType.PERSPECTIVE.name() )).thenReturn( true );
         when( authzManager.authorize( contextMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
         when( activityManager.getActivity( placeRequest ) ).thenReturn( activity );
 

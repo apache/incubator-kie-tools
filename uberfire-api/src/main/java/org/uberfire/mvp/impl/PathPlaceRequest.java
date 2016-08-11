@@ -65,6 +65,7 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
         this.parameters.putAll( parameters );
     }
 
+    @Override
     public ObservablePath getPath() {
         return path;
     }

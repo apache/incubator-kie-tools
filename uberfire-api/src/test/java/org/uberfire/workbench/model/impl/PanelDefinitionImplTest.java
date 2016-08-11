@@ -66,15 +66,15 @@ public class PanelDefinitionImplTest {
     }
 
     @Test
-    public void widthShouldNotRevertToNullOnceSet() throws Exception {
-        assertNull( panelDefinition.getWidth() );
+    public void widthShouldNotRevertOnceSet() throws Exception {
+        assertNull(panelDefinition.getWidth() );
         panelDefinition.setWidth( 1234 );
-        panelDefinition.setWidth( null );
+        panelDefinition.setWidth( null);
         assertEquals( (Integer) 1234, panelDefinition.getWidth() );
     }
 
     @Test
-    public void heightShouldNotRevertToNullOnceSet() throws Exception {
+    public void heightShouldNotRevertOnceSet() throws Exception {
         assertNull( panelDefinition.getHeight() );
         panelDefinition.setHeight( 1234 );
         panelDefinition.setHeight( null );

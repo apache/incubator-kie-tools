@@ -32,6 +32,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -46,6 +47,7 @@ import org.uberfire.commons.data.Pair;
  *
  */
 @EntryPoint
+@EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
 public class ActivityBeansCache {
 
     @Inject
@@ -80,14 +82,14 @@ public class ActivityBeansCache {
 
             final String id = activityBean.getName();
 
-            validateUniqueness( activityBean, id );
+            validateUniqueness( id );
 
             activitiesById.put( id, activityBean );
 
             if ( isSplashScreen( activityBean.getQualifiers() ) ) {
                 splashActivities.add( (SplashScreenActivity) activityBean.getInstance() );
             } else {
-                final Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo = generateActivityMetaInfo( activityBean );
+                final Pair<Integer, List<String>> metaInfo = generateActivityMetaInfo( activityBean );
                 if ( metaInfo != null ) {
                     getResourceActivities().add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
                 }
@@ -148,16 +150,15 @@ public class ActivityBeansCache {
     public void addNewScreenActivity( final SyncBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
-        validateUniqueness( activityBean, id );
+        validateUniqueness( id );
 
         activitiesById.put( id, activityBean );
         newWorkbenchScreenEventEvent.fire( new NewWorkbenchScreenEvent( id ) );
     }
 
-    private void validateUniqueness( final SyncBeanDef<Activity> activityBean,
-                            final String id ) {
+    private void validateUniqueness( final String id ) {
         if ( activitiesById.keySet().contains( id ) ) {
-            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() + " with id " + activityBean.getName() );
+            throw new RuntimeException( "Conflict detected: Activity already exists with id " + id );
         }
     }
 
@@ -165,7 +166,7 @@ public class ActivityBeansCache {
     public void addNewPerspectiveActivity( final SyncBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
-        validateUniqueness( activityBean, id );
+        validateUniqueness( id );
 
         activitiesById.put( id, activityBean );
         newPerspectiveEventEvent.fire( new NewPerspectiveEvent( id ) );
@@ -176,17 +177,17 @@ public class ActivityBeansCache {
                                       Class<? extends ClientResourceType> resourceTypeClass ) {
         final String id = activityBean.getName();
 
-        validateUniqueness( activityBean, id );
+        validateUniqueness( id );
 
-        final List<Class<? extends ClientResourceType>> resourceTypes = new ArrayList<Class<? extends ClientResourceType>>();
-        resourceTypes.add( resourceTypeClass );
+        final List<String> resourceTypes = new ArrayList<String>();
+        resourceTypes.add( resourceTypeClass.getName() );
         resourceActivities.add( new ActivityAndMetaInfo( activityBean, 0, resourceTypes ) );
     }
 
     public void addNewSplashScreenActivity( final SyncBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
-        validateUniqueness( activityBean, id );
+        validateUniqueness( id );
 
         activitiesById.put( id, activityBean );
         splashActivities.add( (SplashScreenActivity) activityBean.getInstance() );
@@ -232,7 +233,7 @@ public class ActivityBeansCache {
         throw new EditorResourceTypeNotFound();
     }
 
-    Pair<Integer, List<Class<? extends ClientResourceType>>> generateActivityMetaInfo( SyncBeanDef<Activity> activityBean ) {
+    Pair<Integer, List<String>> generateActivityMetaInfo( SyncBeanDef<Activity> activityBean ) {
         return ActivityMetaInfo.generate( activityBean );
     }
 
@@ -246,15 +247,22 @@ public class ActivityBeansCache {
         private final int priority;
         private final ClientResourceType[] resourceTypes;
 
+        @SuppressWarnings("rawtypes")
         ActivityAndMetaInfo( final SyncBeanDef<Activity> activityBean,
                              final int priority,
-                             final List<Class<? extends ClientResourceType>> resourceTypes ) {
+                             final List<String> resourceTypes ) {
             this.activityBean = activityBean;
             this.priority = priority;
             this.resourceTypes = new ClientResourceType[ resourceTypes.size() ];
 
             for ( int i = 0; i < resourceTypes.size(); i++ ) {
-                this.resourceTypes[ i ] = iocManager.lookupBean( resourceTypes.get( i ) ).getInstance();
+                final String resourceTypeFqcn = resourceTypes.get( i );
+                final Collection<SyncBeanDef> resourceTypeBeans = iocManager.lookupBeans( resourceTypeFqcn );
+                if (resourceTypeBeans.isEmpty()) {
+                    throw new RuntimeException("ClientResourceType " + resourceTypeFqcn + " not found");
+                }
+                
+                this.resourceTypes[ i ] = (ClientResourceType) resourceTypeBeans.iterator().next().getInstance();
             }
         }
 

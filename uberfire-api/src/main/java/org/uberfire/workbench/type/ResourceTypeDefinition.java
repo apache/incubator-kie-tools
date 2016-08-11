@@ -18,9 +18,12 @@ package org.uberfire.workbench.type;
 
 import org.uberfire.backend.vfs.Path;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Definition of a Resource Type
  */
+@JsType
 public interface ResourceTypeDefinition {
 
     /**

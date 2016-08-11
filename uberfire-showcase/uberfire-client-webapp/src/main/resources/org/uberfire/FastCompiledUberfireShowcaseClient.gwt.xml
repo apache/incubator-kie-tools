@@ -24,4 +24,7 @@
   <set-property name="user.agent" value="safari"/>
   <set-property name="locale" value="default"/>
 
+  <set-property name="jre.checks.type" value="DISABLED" />
+  <set-property name="jre.checkedMode" value="DISABLED" />
+
 </module>

@@ -15,8 +15,7 @@
  */
 package org.uberfire.client.editor;
 
-import java.util.Collection;
-import java.util.Collections;
+import javax.enterprise.inject.Alternative;
 
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
@@ -27,8 +26,6 @@ import org.uberfire.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
-
-import javax.enterprise.inject.Alternative;
 
 @Alternative
 public class JSEditorActivity extends AbstractWorkbenchEditorActivity {

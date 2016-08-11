@@ -24,7 +24,11 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
+
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 
 /**
  * WorkbenchActivity and its subinterfaces define the interface between UberFire framework behaviour and
@@ -45,6 +49,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  * {@link PerspectiveActivity}, {@link AbstractWorkbenchPerspectiveActivity}, and {@link WorkbenchPerspective}; and so
  * on.
  */
+@JsType
 public interface WorkbenchActivity extends ContextSensitiveActivity {
 
     /**
@@ -109,9 +114,21 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
 
     String getTitle();
 
+    @JsIgnore
     IsWidget getTitleDecoration();
+    
+    default Element getTitleDecorationElement() {
+        IsWidget titleDecoration = getTitleDecoration();
+        return (titleDecoration == null) ? null : titleDecoration.asWidget().getElement(); 
+    }
 
+    @JsIgnore
     IsWidget getWidget();
+    
+    default Element getWidgetElement() {
+        IsWidget widget = getWidget();
+        return (widget == null) ? null : widget.asWidget().getElement();
+    }
 
     Menus getMenus();
 
@@ -124,18 +141,23 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
      * first displaying it. Has no effect when the activity is added to a pre-existing panel, including the case where
      * the activity is added to a panel as part of a default perspective layout.
      *
-     * @return the height, in pixels, that should be allocated for a new panel created to house this activity. Null
+     * @return the height, in pixels, that should be allocated for a new panel created to house this activity. -1 (default)
      *         means no particular height is preferred, and the framework can choose a default height.
      */
-    Integer preferredHeight();
+    default int preferredHeight() {
+        return -1;
+    }
 
     /**
      * Returns the amount of space that should be allocated to this activity if a new Workbench Panel is created when
      * first displaying it. Has no effect when the activity is added to a pre-existing panel, including the case where
      * the activity is added to a panel as part of a default perspective layout.
      *
-     * @return the width, in pixels, that should be allocated for a new panel created to house this activity. Null
+     * @return the width, in pixels, that should be allocated for a new panel created to house this activity. -1 (default)
      *         means no particular width is preferred, and the framework can choose a default width.
      */
-    Integer preferredWidth();
+    default int preferredWidth() {
+        return -1;
+    }
+    
 }

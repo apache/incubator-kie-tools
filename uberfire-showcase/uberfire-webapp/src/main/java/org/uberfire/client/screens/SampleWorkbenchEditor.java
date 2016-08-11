@@ -27,11 +27,10 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
-import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 
 @Dependent
-@WorkbenchEditor( identifier = "SampleWorkbenchEditor", supportedTypes = AnyResourceType.class )
+@WorkbenchEditor( identifier = "SampleWorkbenchEditor", supportedTypes = TextResourceType.class )
 public class SampleWorkbenchEditor {
 
     @Inject

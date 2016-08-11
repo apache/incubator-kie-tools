@@ -41,6 +41,8 @@ public interface ObservablePath extends Path,
     void onConcurrentCopy( final ParameterizedCommand<OnConcurrentCopyEvent> command );
 
     ObservablePath wrap( final Path path );
+    
+    Path getOriginal();
 
     public interface OnConcurrentUpdateEvent extends SessionInfo {
 

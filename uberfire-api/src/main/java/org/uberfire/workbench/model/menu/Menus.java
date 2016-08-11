@@ -18,9 +18,12 @@ package org.uberfire.workbench.model.menu;
 import java.util.List;
 import java.util.Map;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Menus that includes permission
  */
+@JsType
 public interface Menus {
 
     /**

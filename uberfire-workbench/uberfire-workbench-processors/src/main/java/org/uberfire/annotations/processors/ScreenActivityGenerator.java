@@ -56,6 +56,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
         final String annotationName = ClientAPIModule.getWorkbenchScreenClass();
+        final boolean isDynamic = ClientAPIModule.getWbScreenIsDynamicValueOnClass( classElement );
 
         String identifier = null;
         Integer preferredHeight = null;
@@ -254,6 +255,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   getMenuBarMethodName );
         root.put( "getToolBarMethodName",
                   getToolBarMethodName );
+        root.put( "isDynamic",
+                  isDynamic );
 
         //Generate code
         final StringWriter sw = new StringWriter();

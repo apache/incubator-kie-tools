@@ -16,12 +16,15 @@
 
 package org.uberfire.workbench.model.menu;
 
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
 
 /**
  * Visitor interface for implementing arbitrary operations over menus. For example, a visitor could filter a menu tree
  * for items that the current user has permission to see; it could build widgets in a particular view module; it could
  * simply dump the menu structure to a string.
  */
+@JsType
 public interface MenuVisitor {
 
     /**
@@ -54,6 +57,7 @@ public interface MenuVisitor {
      *         descendants. In particular, there will be no corresponding {@link #visitLeave(MenuGroup)} call for this
      *         node.
      */
+    @JsMethod(name="visitEnterGroup")
     boolean visitEnter( MenuGroup menuGroup );
 
     /**
@@ -63,6 +67,7 @@ public interface MenuVisitor {
      *
      * @param menuGroup the menu group to leave.
      */
+    @JsMethod(name="visitLeaveGroup")
     void visitLeave( MenuGroup menuGroup );
 
     /**
@@ -77,6 +82,7 @@ public interface MenuVisitor {
      *
      * @param menuItemCommand the command menu item to visit.
      */
+    @JsMethod(name="visitCommand")
     void visit( MenuItemCommand menuItemCommand );
 
     /**
@@ -84,6 +90,7 @@ public interface MenuVisitor {
      *
      * @param menuItemPerspective the command menu item to visit.
      */
+    @JsMethod(name="visitPerspective")
     void visit( MenuItemPerspective menuItemPerspective );
 
     /**
@@ -91,5 +98,6 @@ public interface MenuVisitor {
      *
      * @param menuCustom the custom (application provides the widget) menu item to visit.
      */
+    @JsMethod(name="visitCustom")
     void visit( MenuCustom<?> menuCustom );
 }

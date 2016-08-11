@@ -213,8 +213,13 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     @Override
     public void onResize( final int width,
                           final int height ) {
-        getDefinition().setWidth( width == 0 ? null : width );
-        getDefinition().setHeight( height == 0 ? null : height );
+        if ( width != 0 ) {
+            getDefinition().setWidth( width );
+        }
+
+        if ( height != 0 ) {
+            getDefinition().setHeight( height );
+        }
     }
 
     @Override

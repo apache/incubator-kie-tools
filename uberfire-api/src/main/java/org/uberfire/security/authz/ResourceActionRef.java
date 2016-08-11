@@ -21,28 +21,36 @@ import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.ResourceType;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 /**
  * A instance holding a resource reference plus an action
  */
+@JsType
 public class ResourceActionRef {
 
     private Resource resource = null;
     private ResourceAction action = null;
 
+    @JsIgnore
     public ResourceActionRef(Resource resource) {
         this(resource,ResourceAction.READ);
     }
 
+    @JsIgnore
     public ResourceActionRef(Resource resource, ResourceAction action) {
         this.resource = resource;
         this.action = action;
     }
 
+    @JsIgnore
     public ResourceActionRef(ResourceType type, ResourceAction action) {
         this.resource = new ResourceRef(null, type);
         this.action = action;
     }
 
+    @JsIgnore
     public ResourceActionRef(ResourceType type, Resource resource, ResourceAction action) {
         this.resource = resource != null ? resource : new ResourceRef(null, type);
         this.action = action;

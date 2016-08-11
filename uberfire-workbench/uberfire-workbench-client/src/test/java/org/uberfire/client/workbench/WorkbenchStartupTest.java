@@ -16,8 +16,12 @@
 
 package org.uberfire.client.workbench;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -36,20 +40,21 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.slf4j.Logger;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
-
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.PermissionManager;
+
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class WorkbenchStartupTest {
@@ -74,6 +79,7 @@ public class WorkbenchStartupTest {
     @Mock SyncBeanDef<PerspectiveActivity> perspectiveBean2;
     @Mock PerspectiveActivity perspectiveActivity1;
     @Mock PerspectiveActivity perspectiveActivity2;
+    @Mock Logger logger;
 
     @Before
     public void setup() {

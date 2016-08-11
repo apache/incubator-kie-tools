@@ -17,6 +17,8 @@ package org.uberfire.workbench.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Tells a PanelManager implementation where to place a part within a panel. Each PanelManager has its own layout
  * system, and implements its own unique set of Position objects (for example, the North-South-East-West panel manager
@@ -24,5 +26,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * <p>
  * All implementations of this interface must be marked as {@link Portable}.
  */
+@JsType
 public interface Position {
 }

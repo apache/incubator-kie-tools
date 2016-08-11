@@ -19,9 +19,12 @@ import java.util.List;
 
 import org.uberfire.security.authz.RuntimeFeatureResource;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Meta-data for a Workbench Tool Bar including permissions
  */
+@JsType
 public interface ToolBar
         extends RuntimeFeatureResource {
 

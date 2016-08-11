@@ -15,18 +15,15 @@
  */
 package org.uberfire.client.splash;
 
-import java.util.List;
-
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
+
 import org.uberfire.client.mvp.SplashScreenActivity;
-import org.uberfire.client.screen.JSNativeScreen;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.SplashScreenFilter;

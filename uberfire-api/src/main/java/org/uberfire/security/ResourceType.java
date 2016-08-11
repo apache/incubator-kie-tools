@@ -16,9 +16,12 @@
 
 package org.uberfire.security;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Type interface for {@link Resource} instances
  */
+@JsType
 public interface ResourceType {
 
     /**

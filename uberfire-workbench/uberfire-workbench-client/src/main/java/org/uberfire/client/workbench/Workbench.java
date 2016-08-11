@@ -30,10 +30,12 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.slf4j.Logger;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -44,6 +46,9 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.authz.AuthorizationPolicy;
+import org.uberfire.security.authz.PermissionManager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -54,9 +59,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.authz.AuthorizationPolicy;
-import org.uberfire.security.authz.PermissionManager;
 
 /**
  * Responsible for bootstrapping the client-side Workbench user interface by coordinating calls to the PanelManager and
@@ -101,6 +103,7 @@ import org.uberfire.security.authz.PermissionManager;
  * </pre>
  */
 @EntryPoint
+@EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
 public class Workbench {
 
     /**
@@ -143,6 +146,9 @@ public class Workbench {
 
     @Inject
     private ClientMessageBus bus;
+    
+    @Inject
+    private Logger logger;
 
     private SessionInfo sessionInfo = null;
 
@@ -220,8 +226,7 @@ public class Workbench {
     }
 
     private void bootstrap() {
-
-        System.out.println("Workbench starting...");
+        logger.info( "Starting workbench..." );
         ( (SessionInfoImpl) currentSession() ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
 
         layout.setMarginWidgets( isStandaloneMode, headersToKeep );
@@ -236,7 +241,7 @@ public class Workbench {
                 appReady.fire( new ApplicationReadyEvent() );
                 placeManager.goTo( new DefaultPlaceRequest( homePerspective.getIdentifier() ) );
             } else {
-                Window.alert("No home perspective available!");
+                logger.error( "No home perspective available!" );
             }
         } else {
             handleStandaloneMode( Window.Location.getParameterMap() );

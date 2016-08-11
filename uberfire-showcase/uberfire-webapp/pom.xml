@@ -37,6 +37,7 @@
   </properties>
 
   <dependencies>
+                
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-all</artifactId>
@@ -248,17 +249,17 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
-          <extraJvmArgs>-Xmx2G -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+          <extraJvmArgs>-Xmx2G -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.ioc.jsinterop.support=true</extraJvmArgs>
           <strict>true</strict>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
           <module>org.uberfire.FastCompiledUberfireShowcase</module>
           <disableCastChecking>true</disableCastChecking>
-          <runTarget>showcase.html</runTarget>
+          <runTarget>index.html</runTarget>
           <hostedWebapp>src/main/webapp</hostedWebapp>
-          <module>org.uberfire.FastCompiledUberfireShowcase</module>
-          <draftCompile>true</draftCompile>
+          <module>org.uberfire.FastCompiledUberfireShowcase</module>   
+          <generateJsInteropExports>true</generateJsInteropExports>
           <compileSourcesArtifacts>
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>

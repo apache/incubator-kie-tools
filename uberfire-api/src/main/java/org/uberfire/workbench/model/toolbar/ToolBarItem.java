@@ -17,13 +17,15 @@ package org.uberfire.workbench.model.toolbar;
 
 import org.uberfire.mvp.Command;
 import org.uberfire.security.authz.RuntimeFeatureResource;
-import org.uberfire.security.authz.RuntimeResource;
+
+import jsinterop.annotations.JsType;
 
 /**
  * Meta-data for a Workbench Tool Bar Item including permissions. The default is
  * that all users have permission to access a Tool BarItem Item and that it is
  * enabled.
  */
+@JsType
 public interface ToolBarItem
         extends RuntimeFeatureResource {
 

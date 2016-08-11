@@ -17,9 +17,12 @@ package org.uberfire.workbench.model.menu;
 
 import org.uberfire.mvp.Command;
 
+import jsinterop.annotations.JsType;
+
 /**
  * A menu item that invokes a particular {@link Command} when it is clicked.
  */
+@JsType
 public interface MenuItemCommand
         extends MenuItem {
 

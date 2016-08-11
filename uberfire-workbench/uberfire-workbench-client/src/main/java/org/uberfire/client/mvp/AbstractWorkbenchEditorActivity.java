@@ -15,19 +15,18 @@
  */
 package org.uberfire.client.mvp;
 
+import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.FRAMEWORK_PESSIMISTIC;
+
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy;
-import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.client.mvp.LockTarget.TitleProvider;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.security.ResourceType;
-
-import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.*;
 
 /**
  * Implementation of behaviour common to all workbench editor activities. Concrete implementations are typically not
@@ -45,26 +44,34 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         super( placeManager );
     }
 
-    @Override
-    public ResourceType getResourceType() {
-        return ActivityResourceType.EDITOR;
-    }
-
     /**
      * Overrides the default implementation by redirecting calls that are {@link PathPlaceRequest} instances to
      * {@link #onStartup(ObservablePath, PlaceRequest)}. Non-path place requests are handed up to the super impl.
      */
     @Override
     public final void onStartup( final PlaceRequest place ) {
-        if ( place instanceof PathPlaceRequest ) {
-            onStartup( ( (PathPlaceRequest) place ).getPath(),
-                       place );
-        } else {
-            // XXX should throw an exception here instead? can an editor be launched without a path?
+        final Path path = place.getPath();
+        if ( path != null ) {
+            if ( path instanceof ObservablePath ) {
+                onStartup( (ObservablePath) path,
+                           place );
+            } else if ( this.isDynamic() ) {
+                onStartup( path,
+                           place );
+            }
+        }
+        else {
             super.onStartup( place );
         }
     }
+    
+    void onStartup( final Path path,
+                    final PlaceRequest place ) {
 
+        onStartup( new PathPlaceRequest( path ).getPath(),
+                   place );
+    }
+    
     @Override
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {

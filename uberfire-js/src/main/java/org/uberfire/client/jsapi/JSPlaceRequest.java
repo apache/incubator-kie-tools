@@ -61,8 +61,8 @@ public class JSPlaceRequest extends JavaScriptObject {
         JSPlaceRequest jspr = newInstance();
         jspr.setIdentifier( pr.getIdentifier() );
         JSONObject rawParams = new JSONObject();
-        for ( Map.Entry<String, String> param : pr.getParameters().entrySet() ) {
-            rawParams.put( param.getKey(), new JSONString( param.getValue() ) );
+        for ( String name : pr.getParameterNames() ) {
+            rawParams.put( name, new JSONString( pr.getParameters().get( name )) );
         }
         jspr.setParams( rawParams.getJavaScriptObject() );
         return jspr;

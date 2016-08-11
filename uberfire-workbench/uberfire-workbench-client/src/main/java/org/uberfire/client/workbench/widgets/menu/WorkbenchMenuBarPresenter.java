@@ -19,13 +19,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
@@ -40,6 +39,7 @@ import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -50,6 +50,9 @@ import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Presenter for WorkbenchMenuBar that mediates changes to the Workbench MenuBar
@@ -333,7 +336,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
     protected void onPerspectiveChange( @Observes final PerspectiveChange perspectiveChange ) {
         final Activity activity = activityManager.getActivity(perspectiveChange.getPlaceRequest());
-        if( activity instanceof PerspectiveActivity ){
+        if( activity!= null && activity.isType( ActivityResourceType.PERSPECTIVE.name() ) ) {
             addPerspectiveMenus( (PerspectiveActivity) activity);
         }
         view.selectMenuItem( perspectiveChange.getPlaceRequest().getIdentifier() );

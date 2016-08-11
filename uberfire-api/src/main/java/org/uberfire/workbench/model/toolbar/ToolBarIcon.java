@@ -16,9 +16,12 @@
 
 package org.uberfire.workbench.model.toolbar;
 
+import jsinterop.annotations.JsType;
+
 /**
  *
  */
+@JsType
 public interface ToolBarIcon {
 
 }

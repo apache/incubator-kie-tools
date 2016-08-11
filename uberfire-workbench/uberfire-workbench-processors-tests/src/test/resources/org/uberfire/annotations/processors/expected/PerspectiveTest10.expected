@@ -62,5 +62,5 @@ public class PerspectiveTest10Activity extends AbstractWorkbenchPerspectiveActiv
     @Override
     public ToolBar getToolBar() {
         return realPresenter.getToolBar();
-    }
+    }    
 }

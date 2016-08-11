@@ -17,9 +17,12 @@ package org.uberfire.workbench.model;
 
 import org.uberfire.mvp.PlaceRequest;
 
+import jsinterop.annotations.JsType;
+
 /**
  * A Part in the Workbench. Parts are added to Panels.
  */
+@JsType
 public interface ContextDefinition {
 
     /**

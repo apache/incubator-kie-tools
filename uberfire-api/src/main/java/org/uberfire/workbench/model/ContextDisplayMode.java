@@ -18,6 +18,9 @@ package org.uberfire.workbench.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import jsinterop.annotations.JsType;
+
+@JsType
 @Portable
 public enum ContextDisplayMode {
     SHOW,

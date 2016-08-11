@@ -16,9 +16,10 @@
 
 package org.uberfire.client.mvp;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.Collection;
 
-import com.google.gwt.user.client.ui.HasWidgets;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -32,35 +33,51 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
+import com.google.gwt.user.client.ui.HasWidgets;
+
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
+
 /**
  * A Workbench-centric abstraction over the browser's history mechanism. Allows the application to initiate navigation
  * to any displayable thing: a {@link WorkbenchPerspective}, a {@link WorkbenchScreen}, a {@link WorkbenchPopup}, a
  * {@link WorkbenchEditor}, a {@link WorkbenchPart} within a screen or editor, or the editor associated with a VFS file
  * located at a particular {@link Path}.
  */
+@JsType
 public interface PlaceManager {
-
+    
+    @JsMethod(name="goToId")
     void goTo( final String identifier );
 
+    @JsMethod(name="goToPlace")
     void goTo( final PlaceRequest place );
 
+    @JsMethod(name="goToPath")
     void goTo( final Path path );
 
+    @JsMethod(name="goToPathAndPlace")
     void goTo( final Path path,
                final PlaceRequest place );
 
+    @JsMethod(name="goToPartWithPanel")
     void goTo( final PartDefinition part,
                final PanelDefinition panel );
 
+    @JsMethod(name="goToIdWithPanel")
     void goTo( final String identifier,
                final PanelDefinition panel );
 
+    @JsMethod(name="goToPlaceWithPanel")
     void goTo( final PlaceRequest place,
                final PanelDefinition panel );
 
+    @JsMethod(name="goToPathWithPanel")
     void goTo( final Path path,
                final PanelDefinition panel );
 
+    @JsMethod(name="goToPathAndPlaceWithPanel")
     void goTo( final Path path,
                final PlaceRequest place,
                final PanelDefinition panel );
@@ -84,6 +101,7 @@ public interface PlaceManager {
      *            be accomplished through direct use of CSS, or through the
      *            {@link Layouts#setToFillParent(com.google.gwt.user.client.ui.Widget)} call.
      */
+    @JsIgnore
     void goTo( final PlaceRequest place,
                final HasWidgets addTo );
 
@@ -99,19 +117,36 @@ public interface PlaceManager {
      */
     Activity getActivity( final PlaceRequest place );
 
+    @JsMethod(name="getStatusById")
     PlaceStatus getStatus( final String id );
 
+    @JsMethod(name="getStatusByPlaceRequest")
     PlaceStatus getStatus( final PlaceRequest place );
 
+    default void executeOnOpenCallback( final PlaceRequest place ) {
+        checkNotNull( "place",
+                      place );
+
+        final Command callback = getOpenCallback( place );
+        if ( callback != null ) {
+            callback.execute();
+        }
+    }
+
+    public Command getOpenCallback( PlaceRequest place );
+
+    @JsMethod(name = "closePlaceById")
     void closePlace( final String id );
 
-    void closePlace( final PlaceRequest place );
-
+    void closePlace( final PlaceRequest placeToClose );
+    
     void tryClosePlace( final PlaceRequest placeToClose,
                         final Command onAfterClose );
 
+    @JsMethod(name="forceCloseById")
     void forceClosePlace( final String id );
 
+    @JsMethod(name="forceCloseByPlaceRequest")
     void forceClosePlace( final PlaceRequest place );
 
     void closeAllPlaces();
@@ -121,8 +156,7 @@ public interface PlaceManager {
 
     void unregisterOnOpenCallback( final PlaceRequest place );
 
-    void executeOnOpenCallback( final PlaceRequest place );
-
+    @JsIgnore
     Collection<SplashScreenActivity> getActiveSplashScreens();
 
     /**
@@ -133,6 +167,7 @@ public interface PlaceManager {
      * @return an unmodifiable collection of PlaceRequests for the <i>currently open</i> WorkbenchEditorActivities that
      * can handle the ResourceTypeDefinition. Returns an empty collection if no match was found.
      */
+    @JsIgnore
     Collection<PathPlaceRequest> getActivitiesForResourceType(final ResourceTypeDefinition type);
 
 }

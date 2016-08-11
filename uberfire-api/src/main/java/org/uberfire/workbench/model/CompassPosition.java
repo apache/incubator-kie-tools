@@ -17,10 +17,13 @@ package org.uberfire.workbench.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Positions to which a WorkbenchPanel can be added to the Workbench
  */
 @Portable
+@JsType
 public enum CompassPosition implements Position {
 
     NONE, //Don't add anywhere

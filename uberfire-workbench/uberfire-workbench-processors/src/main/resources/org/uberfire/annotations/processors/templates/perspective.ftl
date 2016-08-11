@@ -61,11 +61,19 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.jboss.errai.ioc.client.api.ActivatedBy;
 
 </#if>
+<#if isDynamic>
+import jsinterop.annotations.JsType;
+import org.jboss.errai.ioc.client.api.Shared;
+
+</#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
 @Named("${identifier}")
 <#if beanActivatorClass??>
 @ActivatedBy(${beanActivatorClass}.class)
+</#if>
+<#if isDynamic>
+@JsType
 </#if>
 /*
  * WARNING! This class is generated. Do not modify.
@@ -77,7 +85,7 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTem
 
     @Inject
     //Constructor injection for testing
-    public ${className}(final PlaceManager placeManager) {
+    public ${className}(<#if isDynamic>@Shared </#if>final PlaceManager placeManager) {
         super( placeManager );
     }
 
@@ -85,82 +93,81 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTem
     public String getIdentifier() {
         return "${identifier}";
     }
-<#if isDefault>
 
+<#if isDefault>
     @Override
     public boolean isDefault() {
         return true;
     }
+
 </#if>
 <#if !isTransient>
-
     @Override
     public boolean isTransient() {
         return false;
     }
+
 </#if>
 <#if onStartup1ParameterMethodName??>
-
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup1ParameterMethodName}( place );
     }
-<#elseif onStartup0ParameterMethodName??>
 
+<#elseif onStartup0ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup0ParameterMethodName}();
     }
+
 </#if>
 <#if onCloseMethodName??>
-
     @Override
     public void onClose() {
         super.onClose();
         realPresenter.${onCloseMethodName}();
     }
+
 </#if>
 <#if onShutdownMethodName??>
-
     @Override
     public void onShutdown() {
         super.onShutdown();
         realPresenter.${onShutdownMethodName}();
     }
+
 </#if>
 <#if onOpenMethodName??>
-
     @Override
     public void onOpen() {
         super.onOpen();
         realPresenter.${onOpenMethodName}();
     }
+
 </#if>
 <#if getPerspectiveMethodName??>
-
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
         return realPresenter.${getPerspectiveMethodName}();
     }
+
 </#if>
 <#if getMenuBarMethodName??>
-
     @Override
     public Menus getMenus() {
         return realPresenter.${getMenuBarMethodName}();
     }
+
 </#if>
 <#if getToolBarMethodName??>
-
     @Override
     public ToolBar getToolBar() {
         return realPresenter.${getToolBarMethodName}();
-    }
+    }    
 </#if>
 <#if isTemplate>
-
     @Override
     public IsWidget getRootWidget() {
         return realPresenter;
@@ -223,6 +230,12 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTem
         p.getRoot().appendChild( new NamedPosition( "${wbPanel.fieldName}" ), panelDefinition${wbPanel_index} );
         </#list>
         return p;
+    }
+</#if>
+<#if isDynamic>
+    @Override
+    public boolean isDynamic() {
+    	return true;
     }
 </#if>
 }

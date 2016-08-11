@@ -31,7 +31,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 
 import org.uberfire.annotations.processors.exceptions.GenerationException;
@@ -55,13 +54,11 @@ public class EditorActivityGenerator extends AbstractGenerator {
         final Messager messager = processingEnvironment.getMessager();
         messager.printMessage( Kind.NOTE, "Starting code generation for [" + className + "]" );
 
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
 
         final String annotationName = ClientAPIModule.getWorkbenchEditorClass();
-
+        final boolean isDynamic = ClientAPIModule.getWbEditorIsDynamicValueOnClass( classElement );
         final String owningPlace = GeneratorUtils.getOwningPerspectivePlaceRequest( classElement, processingEnvironment );
 
         Integer priority = 0;
@@ -274,6 +271,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   getMenuBarMethodName );
         root.put( "getToolBarMethodName",
                   getToolBarMethodName );
+        root.put( "isDynamic",
+                  isDynamic );
 
         //Generate code
         final StringWriter sw = new StringWriter();

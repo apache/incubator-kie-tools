@@ -16,6 +16,10 @@
 
 package org.uberfire.workbench.model.menu.impl;
 
+import static java.util.Collections.unmodifiableList;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,8 +47,7 @@ import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import jsinterop.annotations.JsType;
 
 /**
  *
@@ -57,6 +60,7 @@ public final class MenuBuilderImpl
                    MenuFactory.SubMenusBuilder,
                    MenuFactory.TerminalMenu,
                    MenuFactory.TerminalCustomMenu {
+
 
     public enum MenuType {
         TOP_LEVEL, CONTRIBUTED, REGULAR, GROUP, CUSTOM
@@ -99,91 +103,8 @@ public final class MenuBuilderImpl
                         menuItems.add( current.build() );
                     }
                 }
-                return new MenuGroup() {
-                    private final List<EnabledStateChangeListener> enabledStateChangeListeners = new ArrayList<EnabledStateChangeListener>();
-                    private boolean isEnabled = true;
 
-                    @Override
-                    public List<MenuItem> getItems() {
-                        return menuItems;
-                    }
-
-                    @Override
-                    public String getIdentifier() {
-                        if ( contributionPoint != null ) {
-                            return getClass().getName() + "#" + contributionPoint + "#" + caption;
-
-                        }
-                        return getClass().getName() + "#" + caption;
-                    }
-
-                    @Override
-                    public List<ResourceActionRef> getResourceActions() {
-                        return resourceActionRefs;
-                    }
-
-                    @Override
-                    public List<String> getPermissions() {
-                        return permissionNames;
-                    }
-
-                    @Override
-                    public List<Resource> getDependencies() {
-                        return menuItems;
-                    }
-
-                    @Override
-                    public String getContributionPoint() {
-                        return contributionPoint;
-                    }
-
-                    @Override
-                    public String getCaption() {
-                        return caption;
-                    }
-
-                    @Override
-                    public MenuPosition getPosition() {
-                        return position;
-                    }
-
-                    @Override
-                    public int getOrder() {
-                        return order;
-                    }
-
-                    @Override
-                    public boolean isEnabled() {
-                        return isEnabled;
-                    }
-
-                    @Override
-                    public void setEnabled( final boolean enabled ) {
-                        this.isEnabled = enabled;
-                        notifyListeners( enabled );
-                    }
-
-                    @Override
-                    public void addEnabledStateChangeListener( final EnabledStateChangeListener listener ) {
-                        enabledStateChangeListeners.add( listener );
-                    }
-
-                    @Override
-                    public void accept( MenuVisitor visitor ) {
-                        if ( visitor.visitEnter( this ) ) {
-                            for ( MenuItem child : getItems() ) {
-                                child.accept( visitor );
-                            }
-                            visitor.visitLeave( this );
-                        }
-                    }
-
-                    private void notifyListeners( final boolean enabled ) {
-                        for ( final EnabledStateChangeListener listener : enabledStateChangeListeners ) {
-                            listener.enabledStateChanged( enabled );
-                        }
-                    }
-                };
+                return new DefaultMenuGroup(menuItems, resourceActionRefs, permissionNames, contributionPoint, caption, position, order);
             } else if ( command != null ) {
                 return new MenuItemCommand() {
 
@@ -654,37 +575,8 @@ public final class MenuBuilderImpl
 
     @Override
     public Menus build() {
-
         context.clear();
 
-        return new Menus() {
-            @Override
-            public List<MenuItem> getItems() {
-                return unmodifiableList( menuItems );
-            }
-
-            @Override
-            public void accept( MenuVisitor visitor ) {
-                if ( visitor.visitEnter( this ) ) {
-                    for ( MenuItem item : menuItems ) {
-                        item.accept( visitor );
-                    }
-                    visitor.visitLeave( this );
-                }
-            }
-
-            @Override
-            public Map<Object, MenuItem> getItemsMap() {
-                return new HashMap<Object, MenuItem>() {{
-                    for ( final MenuItem menuItem : menuItems ) {
-                        put( menuItem, menuItem );
-                    }
-                }};
-            }
-
-            public int getOrder() {
-                return order;
-            }
-        };
+        return new DefaultMenus(menuItems, order);
     }
 }

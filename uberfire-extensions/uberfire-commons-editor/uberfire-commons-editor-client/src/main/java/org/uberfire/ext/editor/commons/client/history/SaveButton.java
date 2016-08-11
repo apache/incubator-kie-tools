@@ -16,12 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
-import java.util.Collection;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
@@ -30,6 +24,11 @@ import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.MenuVisitor;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Widget;
 
 public class SaveButton
         implements MenuCustom<Widget> {

@@ -16,13 +16,12 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
-import java.util.Collection;
-
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.MenuVisitor;
+
+import com.google.gwt.user.client.ui.Widget;
 
 public class VersionMenuItem
         implements MenuCustom<Widget> {
@@ -82,4 +81,5 @@ public class VersionMenuItem
     public String getIdentifier() {
         return null;
     }
+    
 }

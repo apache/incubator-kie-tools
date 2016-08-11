@@ -38,7 +38,7 @@ public class AdaptiveWorkbenchPanelPresenter extends AbstractDockingWorkbenchPan
 
     @Override
     public String getDefaultChildType() {
-        if ( getDefinition().isRoot() && getDefinition().getParts().size() > 0 ) {
+        if ( getDefinition().isRoot() && !getDefinition().getParts().isEmpty() ) {
             return MultiListWorkbenchPanelPresenter.class.getName();
         } else if ( getPanels().size() > 0 ) {
             return MultiListWorkbenchPanelPresenter.class.getName();

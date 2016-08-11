@@ -18,10 +18,13 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Provides functionality to lock a file or directory, associated with a widget
  * (i.e a workbench screen or editor).
  */
+@JsType
 public interface LockManager {
 
     /**

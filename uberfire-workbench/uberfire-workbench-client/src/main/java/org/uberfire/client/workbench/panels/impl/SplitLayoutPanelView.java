@@ -35,6 +35,8 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static org.uberfire.plugin.PluginUtil.*;
+
 import java.util.Collection;
 
 /**
@@ -81,7 +83,7 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
         } else if ( CompassPosition.CENTER.equals( position ) ) {
             if ( activePanel != null ) {
                 // close active parts of current panel
-                for ( PartDefinition part : activePanel.getK1().getParts() ) {
+                for ( PartDefinition part : ensureIterable( activePanel.getK1().getParts() ) ) {
                     placeManager.closePlace( part.getPlace() );
                 }
             }

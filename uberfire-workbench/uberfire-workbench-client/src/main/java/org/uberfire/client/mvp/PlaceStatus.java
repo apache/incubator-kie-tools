@@ -16,6 +16,9 @@
 
 package org.uberfire.client.mvp;
 
+import jsinterop.annotations.JsType;
+
+@JsType
 public enum PlaceStatus {
     OPEN, CLOSE
 }

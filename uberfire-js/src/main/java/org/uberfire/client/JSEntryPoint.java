@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.plugin.RuntimePluginsServiceProxy;
 import org.uberfire.client.workbench.Workbench;
@@ -32,6 +33,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import com.google.gwt.core.client.ScriptInjector;
 
 @EntryPoint
+@EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
 public class JSEntryPoint {
 
     @Inject

@@ -31,6 +31,7 @@ import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.plugin.PluginUtil.*;
 
 /**
  * Wraps a menu visitor, filtering out menu items that a given user is not allowed to access. The wrapped visitor only
@@ -120,13 +121,13 @@ public class AuthFilterMenuVisitor implements MenuVisitor {
     public boolean authorize( MenuItem item ) {
         List<ResourceActionRef> actions = item.getResourceActions();
         if (actions != null && !actions.isEmpty()) {
-            for (ResourceActionRef ref : actions) {
+            for (ResourceActionRef ref : ensureIterable ( actions ) ) {
                 if (!authzManager.authorize( ref.getResource(), ref.getAction(), user ) ) {
                     return false;
                 }
             }
         }
-        List<String> permissions = item.getPermissions();
+        List<String> permissions = ensureIterable ( item.getPermissions() );
         if (permissions != null && !permissions.isEmpty()) {
             for (String p : permissions) {
                 if (!authzManager.authorize( p , user ) ) {
@@ -141,7 +142,7 @@ public class AuthFilterMenuVisitor implements MenuVisitor {
         // For menu groups ensure at least one child item can be accessed
         if (item instanceof MenuGroup) {
             MenuGroup group = (MenuGroup) item;
-            for (MenuItem child : group.getItems()) {
+            for (MenuItem child : ensureIterable ( group.getItems() ) ) {
                 if (authorize(child)) {
                     return itemResult;
                 } else {

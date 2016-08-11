@@ -15,11 +15,14 @@
  */
 package org.uberfire.mvp;
 
+import jsinterop.annotations.JsType;
+
 /**
  * A command representing a future activity. This was deliberately created in
  * addition to the existing GWT Command to allow better re-use of menu
  * structures when a WorkbenchPart is embedded within Eclipse.
  */
+@JsType
 public interface Command {
 
     public void execute();

@@ -20,6 +20,9 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
+import jsinterop.annotations.JsType;
+
+@JsType
 public interface PerspectiveActivity extends ContextSensitiveActivity {
 
     /**
@@ -32,6 +35,11 @@ public interface PerspectiveActivity extends ContextSensitiveActivity {
      * @see WorkbenchServicesProxy#loadPerspective(String, org.uberfire.mvp.ParameterizedCommand)
      */
     PerspectiveDefinition getDefaultPerspectiveLayout();
+    
+    @Override
+    default String getName() {
+        return getDefaultPerspectiveLayout().getName();
+    }
 
     /**
      * Returns true if this perspective should be displayed automatically when the application starts. Each application

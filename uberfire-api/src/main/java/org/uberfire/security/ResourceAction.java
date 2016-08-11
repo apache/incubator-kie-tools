@@ -16,6 +16,8 @@
 
 package org.uberfire.security;
 
+import jsinterop.annotations.JsType;
+
 /**
  * An action represents something that someone can do over a resource.
  * Can vary from a complex UI feature to a low-level action.
@@ -23,6 +25,7 @@ package org.uberfire.security;
  * <p>This interface is intended to be extended by the different {@link Resource} types. It is up to every
  * resource type implementation to define the list of available actions.</p>
  */
+@JsType
 public interface ResourceAction {
 
     /**

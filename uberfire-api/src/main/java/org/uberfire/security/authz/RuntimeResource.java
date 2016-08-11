@@ -18,6 +18,9 @@ package org.uberfire.security.authz;
 
 import org.uberfire.security.Resource;
 
+import jsinterop.annotations.JsType;
+
+@JsType
 public interface RuntimeResource extends Resource {
 
 }

@@ -16,6 +16,9 @@
 
 package org.uberfire.client.workbench;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.plugin.PluginUtil.*;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -49,12 +52,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Standard implementation of {@link PanelManager}.
@@ -268,7 +267,7 @@ public class PanelManagerImpl implements PanelManager {
         if ( toRemove.isRoot() ) {
             throw new IllegalArgumentException( "The root panel cannot be removed. To replace it, call setRoot()" );
         }
-        if ( !toRemove.getParts().isEmpty() ) {
+        if ( !toRemove.getParts().isEmpty()) {
             throw new IllegalStateException( "Panel still contains parts: " + toRemove.getParts() );
         }
 
@@ -333,7 +332,7 @@ public class PanelManagerImpl implements PanelManager {
     @Override
     public void onPanelFocus( final PanelDefinition panel ) {
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
-            e.getValue().setFocus( e.getKey().equals( panel ) );
+            e.getValue().setFocus( e.getKey().asString().equals( panel.asString() ) );
         }
     }
 
@@ -349,8 +348,8 @@ public class PanelManagerImpl implements PanelManager {
         // TODO (hbraun): PanelDefinition is not distinct (missing hashcode)
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             WorkbenchPanelPresenter panelPresenter = e.getValue();
-            for (PartDefinition part : panelPresenter.getDefinition().getParts()) {
-                if (part.getPlace().equals(place)) {
+            for (PartDefinition part : ensureIterable ( panelPresenter.getDefinition().getParts() ) ) {
+                if (part.getPlace().asString().equals(place.asString())) {
                     panelPresenter.selectPart(part);
                     onPanelFocus(e.getKey());
                 }
@@ -383,7 +382,7 @@ public class PanelManagerImpl implements PanelManager {
      */
     protected PartDefinition getPartForPlace( final PlaceRequest place ) {
         for ( PartDefinition part : mapPartDefinitionToPresenter.keySet() ) {
-            if ( part.getPlace().equals( place ) ) {
+            if ( part.getPlace().asString().equals( place.asString() ) ) {
                 return part;
             }
         }
@@ -398,7 +397,7 @@ public class PanelManagerImpl implements PanelManager {
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
             final PanelDefinition panel = e.getKey();
             final WorkbenchPanelPresenter presenter = e.getValue();
-            for ( PartDefinition part : panel.getParts() ) {
+            for ( PartDefinition part : ensureIterable ( panel.getParts() ) ) {
                 if ( place.equals( part.getPlace() ) ) {
                     mapPartDefinitionToPresenter.get( part ).setTitle( title );
                     presenter.changeTitle( part, title, titleDecoration );
@@ -443,9 +442,12 @@ public class PanelManagerImpl implements PanelManager {
         }
 
         PanelDefinition newPanel;
-        if ( position == CompassPosition.ROOT ) {
+        // Position instance could come from a different script so we convert
+        // it to the local type here first in order for == to work.
+        CompassPosition cp = CompassPosition.valueOf( "" + position );
+        if ( cp == CompassPosition.ROOT ) {
             newPanel = rootPanelDef;
-        } else if ( position == CompassPosition.SELF ) {
+        } else if ( cp == CompassPosition.SELF ) {
             newPanel = targetPanelPresenter.getDefinition();
         } else {
             String defaultChildType = targetPanelPresenter.getDefaultChildType();
@@ -463,7 +465,7 @@ public class PanelManagerImpl implements PanelManager {
                                                childPanelPresenter );
 
             targetPanelPresenter.addPanel( childPanelPresenter,
-                                           position );
+                                           cp );
             newPanel = childPanel;
         }
 
@@ -513,8 +515,7 @@ public class PanelManagerImpl implements PanelManager {
                     @Override
                     public void execute() {
                         try {
-                            List<PartDefinition> parts = new ArrayList<PartDefinition>( panelPresenter.getDefinition().getParts() );
-                            for ( PartDefinition part : parts ) {
+                            for ( PartDefinition part : ensureIterable( panelPresenter.getDefinition().getParts() ) ) {
                                 placeManager.get().closePlace( part.getPlace() );
                             }
 

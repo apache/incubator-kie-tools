@@ -78,8 +78,8 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -96,8 +96,8 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -115,8 +115,8 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertCompilationMessage( diagnostics, Kind.WARNING, Diagnostic.NOPOS, Diagnostic.NOPOS, "The WorkbenchPopup both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -133,8 +133,8 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -151,8 +151,8 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -169,8 +169,8 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -213,8 +213,8 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -231,8 +231,8 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -249,7 +249,7 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                result.getActualCode() );
     }
 }

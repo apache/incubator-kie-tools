@@ -52,11 +52,6 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
         this.splash = splash;
     }
 
-    @Override
-    public ResourceType getResourceType() {
-        return ActivityResourceType.SPLASH;
-    }
-
     @PostConstruct
     private void initialize() {
         this.splashFilter = getFilter();

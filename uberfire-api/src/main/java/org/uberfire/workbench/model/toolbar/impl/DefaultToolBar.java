@@ -15,16 +15,14 @@
  */
 package org.uberfire.workbench.model.toolbar.impl;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.uberfire.security.Resource;
-import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 import org.uberfire.workbench.model.toolbar.ToolBarItem;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * Default implementation of ToolBar
@@ -60,4 +58,5 @@ public class DefaultToolBar
     public List<ToolBarItem> getItems() {
         return this.items;
     }
+    
 }

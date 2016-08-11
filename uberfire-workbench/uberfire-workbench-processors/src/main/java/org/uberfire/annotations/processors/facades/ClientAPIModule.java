@@ -37,6 +37,7 @@ public class ClientAPIModule {
     public static final String SIZE = "size";
     public static final String OWNING_PERSPECTIVE = "owningPerspective";
     public static final String IS_DEFAULT = "isDefault";
+    public static final String IS_DYNAMIC = "isDynamic";
     public static final String IS_TRANSIENT = "isTransient";
     public static final String IS_TEMPLATE = "isTemplate";
     public static final String IS_ENABLED = "isEnabled";
@@ -63,6 +64,7 @@ public class ClientAPIModule {
     public static final String splashBodyHeight = "org.uberfire.client.annotations.SplashBodyHeight";
     public static final String intercept = "org.uberfire.client.annotations.Intercept";
     public static final String workbenchPanel = "org.uberfire.client.annotations.WorkbenchPanel";
+    public static final String jsType = "jsinterop.annotations.JsType";
 
     public static String getWorkbenchScreenClass() {
         return workbenchScreen;
@@ -190,6 +192,21 @@ public class ClientAPIModule {
         String bool = ( getAnnotationStringParam( classElement, workbenchPerspective, IS_DEFAULT ) );
         return Boolean.valueOf( bool );
     }
+    
+    public static Boolean getWbPerspectiveScreenIsDynamicValueOnClass( TypeElement classElement ) {
+        String bool = ( getAnnotationStringParam( classElement, workbenchPerspective, IS_DYNAMIC ) );
+        return Boolean.valueOf( bool );
+    }
+    
+    public static Boolean getWbScreenIsDynamicValueOnClass( TypeElement classElement ) {
+        String bool = ( getAnnotationStringParam( classElement, workbenchScreen, IS_DYNAMIC ) );
+        return Boolean.valueOf( bool );
+    }
+    
+    public static Boolean getWbEditorIsDynamicValueOnClass( TypeElement classElement ) {
+        String bool = ( getAnnotationStringParam( classElement, workbenchEditor, IS_DYNAMIC ) );
+        return Boolean.valueOf( bool );
+    }
 
     public static Boolean getWbPerspectiveScreenIsTransientValueOnClass( TypeElement classElement ) {
         String bool = ( getAnnotationStringParam( classElement, workbenchPerspective, IS_TRANSIENT ) );
@@ -237,4 +254,5 @@ public class ClientAPIModule {
                                        Element element ) {
         return GeneratorUtils.getAnnotation( elementUtils, element, workbenchPanel ) != null;
     }
+    
 }

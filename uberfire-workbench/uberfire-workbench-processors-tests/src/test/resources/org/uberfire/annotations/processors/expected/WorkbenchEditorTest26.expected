@@ -58,7 +58,7 @@ public class WorkbenchEditorTest26Activity extends AbstractWorkbenchEditorActivi
     }
 
     @Override
-    public Integer preferredHeight() {
+    public int preferredHeight() {
        return 200;
     }
 

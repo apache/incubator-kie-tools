@@ -16,9 +16,12 @@
 
 package org.uberfire.workbench.model.menu;
 
+import jsinterop.annotations.JsType;
+
 /**
  * A source of EnabledStateChange actions.
  */
+@JsType
 public interface HasEnabledStateChangeListeners {
 
     /**

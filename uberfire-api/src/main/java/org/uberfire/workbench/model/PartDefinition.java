@@ -17,6 +17,8 @@ package org.uberfire.workbench.model;
 
 import org.uberfire.mvp.PlaceRequest;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Describes the assignment of a {@link PlaceRequest} to a tab/card/item in a {@link PanelDefinition}. Given this
  * information, you can find out (or dictate) which panel within the current perspective will contain the GUI element
@@ -24,6 +26,7 @@ import org.uberfire.mvp.PlaceRequest;
  * itself, presumably because PartDefinition objects can be sent to the server. The UI (Widget) information is contained
  * with UIPart. The mapping of PartDefinitions to UIParts is maintained by a PanelManager.
  */
+@JsType
 public interface PartDefinition {
 
     PlaceRequest getPlace();
@@ -39,4 +42,11 @@ public interface PartDefinition {
     ContextDisplayMode getContextDisplayMode();
 
     void setContextDisplayMode( final ContextDisplayMode contextDisplayMode );
+    
+    /**
+     * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.
+     */
+    default String asString() {
+        return this.toString();
+    }
 }

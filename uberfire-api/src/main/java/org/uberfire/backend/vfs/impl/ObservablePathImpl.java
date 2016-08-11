@@ -80,7 +80,7 @@ public class ObservablePathImpl implements ObservablePath,
     // Key for Activity and Place Management). However re-hydration stores the PartDefinition in a HashSet using the incorrect hashCode. By not
     // storing the "original" in the serialized form we can guarantee hashCodes in de-serialized PerspectiveDefinitions remain immutable.
     // See https://bugzilla.redhat.com/show_bug.cgi?id=1200472 for the re-producer.
-    private Path getOriginal() {
+    public Path getOriginal() {
         if ( this.original == null ) {
             wrap( this.path );
         }

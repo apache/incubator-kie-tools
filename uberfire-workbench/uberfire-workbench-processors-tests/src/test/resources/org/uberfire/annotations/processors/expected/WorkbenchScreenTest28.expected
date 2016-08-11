@@ -50,12 +50,12 @@ public class WorkbenchScreenTest28Activity extends AbstractWorkbenchScreenActivi
     }
 
     @Override
-    public Integer preferredHeight() {
+    public int preferredHeight() {
        return 300;
     }
 
     @Override
-    public Integer preferredWidth() {
+    public int preferredWidth() {
        return 200;
     }
 

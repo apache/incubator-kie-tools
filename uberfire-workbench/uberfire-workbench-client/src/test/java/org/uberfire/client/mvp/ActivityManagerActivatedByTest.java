@@ -100,7 +100,7 @@ public class ActivityManagerActivatedByTest {
         // We set this up assuming ActivityBeansCache is well-behaved, and hides the existence of inactive beans.
         // (of course this assumption is verified in a separate test)
         ActivityAndMetaInfo activatedActivityAndMetaInfo =
-                activityBeansCache.new ActivityAndMetaInfo( activatedActivityBean, 0, Collections.<Class<? extends ClientResourceType>>emptyList() );
+                activityBeansCache.new ActivityAndMetaInfo( activatedActivityBean, 0, Collections.<String>emptyList() );
         when( activityBeansCache.getResourceActivities() ).thenReturn( singletonList( activatedActivityAndMetaInfo ) );
         when( activityBeansCache.getActivity( "activated activity" ) ).thenReturn( activatedActivityBean );
     }

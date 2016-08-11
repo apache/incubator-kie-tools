@@ -63,4 +63,5 @@ public class PerspectiveTest8Activity extends AbstractWorkbenchPerspectiveActivi
     public Menus getMenus() {
         return realPresenter.getMenus();
     }
+
 }

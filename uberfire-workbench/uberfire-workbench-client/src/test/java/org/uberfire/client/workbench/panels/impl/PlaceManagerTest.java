@@ -42,6 +42,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
@@ -135,8 +136,11 @@ public class PlaceManagerTest {
 
         // every test starts in Kansas, with no side effect interactions recorded
         when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
-
         setupPanelManagerMock();
+
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( kansasActivity.isDynamic( ) ).thenReturn( false );
+        
         placeManager.goTo( kansas, (PanelDefinition) null );
         resetInjectedMocks();
         reset( kansasActivity );
@@ -213,8 +217,10 @@ public class PlaceManagerTest {
     public void testGoToNewPlaceById() throws Exception {
         PlaceRequest oz = new DefaultPlaceRequest( "oz" );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
-        when( ozActivity.preferredWidth() ).thenReturn( null );
-        when( ozActivity.preferredHeight() ).thenReturn( null );
+        when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( ozActivity.isDynamic( ) ).thenReturn( false );
+        when( ozActivity.preferredWidth() ).thenReturn( -1 );
+        when( ozActivity.preferredHeight() ).thenReturn( -1 );
         when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
 
         placeManager.goTo( oz, (PanelDefinition) null );
@@ -224,7 +230,7 @@ public class PlaceManagerTest {
 
     @Test
     public void testGoToPlaceWeAreAlreadyAt() throws Exception {
-
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
         placeManager.goTo( kansas, (PanelDefinition) null );
 
         // note "refEq" tests equality field by field using reflection. don't read it as "reference equals!" :)
@@ -254,7 +260,8 @@ public class PlaceManagerTest {
 
         PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest( mock( ObservablePath.class ) );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
-
+        
+        when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
         when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
 
         placeManager.goTo( yellowBrickRoad, (PanelDefinition) null );
@@ -285,6 +292,7 @@ public class PlaceManagerTest {
     @Test
     public void testNormalCloseExistingScreenActivity() throws Exception {
         when( kansasActivity.onMayClose() ).thenReturn( true );
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         placeManager.closePlace( kansas );
 
@@ -304,6 +312,7 @@ public class PlaceManagerTest {
     @Test
     public void testCanceledCloseExistingScreenActivity() throws Exception {
         when( kansasActivity.onMayClose() ).thenReturn( false );
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         placeManager.closePlace( kansas );
 
@@ -322,6 +331,8 @@ public class PlaceManagerTest {
 
     @Test
     public void testForceCloseExistingScreenActivity() throws Exception {
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        
         placeManager.forceClosePlace( kansas );
 
         verify( workbenchPartBeforeCloseEvent ).fire( refEq( new BeforeClosePlaceEvent( kansas, true, true ) ) );
@@ -350,7 +361,7 @@ public class PlaceManagerTest {
         when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
         when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
         when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
-
+        when( ozPerspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
         placeManager.goTo( ozPerspectivePlace );
 
         // verify perspective changed to oz
@@ -372,7 +383,9 @@ public class PlaceManagerTest {
         when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
         when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
         when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
-
+        when( ozPerspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        
         // we'll pretend we started in kansas
         PerspectiveActivity kansasPerspectiveActivity = mock( PerspectiveActivity.class );
         when( perspectiveManager.getCurrentPerspective() ).thenReturn( kansasPerspectiveActivity );
@@ -426,12 +439,14 @@ public class PlaceManagerTest {
         when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
         when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
         when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
-
+        when( ozPerspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
+        
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
         when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
         when( emeraldCityActivity.getOwningPlace() ).thenReturn( ozPerspectivePlace );
-
+        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        
         placeManager.goTo( emeraldCityPlace, (PanelDefinition) null );
 
         // verify perspective changed to oz
@@ -458,7 +473,9 @@ public class PlaceManagerTest {
 
         final SplashScreenActivity splashScreenActivity = mock( SplashScreenActivity.class );
         when( activityManager.getSplashScreenInterceptor( perspectivePlace ) ).thenReturn( splashScreenActivity );
-
+        when( perspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
+        when( splashScreenActivity.isType( ActivityResourceType.SPLASH.name() ) ).thenReturn( true );
+        
         placeManager.goTo( perspectivePlace );
 
         // splash screen should be open and registered as an active splash screen
@@ -483,17 +500,21 @@ public class PlaceManagerTest {
         final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
         final PerspectiveDefinition perspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         when( perspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( perspectiveDef );
+        when( perspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
         when( activityManager.getActivities( perspectivePlace ) ).thenReturn( singleton( (Activity) perspectiveActivity ) );
 
         // first splash screen: linked to the perspective itself
         final SplashScreenActivity splashScreenActivity1 = mock( SplashScreenActivity.class );
         when( activityManager.getSplashScreenInterceptor( perspectivePlace ) ).thenReturn( splashScreenActivity1 );
+        when( splashScreenActivity1.isType( ActivityResourceType.SPLASH.name() ) ).thenReturn( true );
 
         // second splash screen: linked to a screen that we will display in the perspective
         final SplashScreenActivity splashScreenActivity2 = mock( SplashScreenActivity.class );
         when( activityManager.getSplashScreenInterceptor( kansas ) ).thenReturn( splashScreenActivity2 );
         when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
-
+        when( splashScreenActivity2.isType( ActivityResourceType.SPLASH.name() ) ).thenReturn( true );
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        
         placeManager.goTo( perspectivePlace );
         placeManager.goTo( kansas );
 
@@ -505,6 +526,7 @@ public class PlaceManagerTest {
         final PerspectiveActivity otherPerspectiveActivity = mock( PerspectiveActivity.class );
         final PerspectiveDefinition otherPerspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         when( otherPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( otherPerspectiveDef );
+        when( otherPerspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
         when( activityManager.getActivities( otherPerspectivePlace ) ).thenReturn( singleton( (Activity) otherPerspectiveActivity ) );
 
         placeManager.goTo( otherPerspectivePlace );
@@ -523,9 +545,11 @@ public class PlaceManagerTest {
         PlaceRequest oz = new DefaultPlaceRequest( "oz" );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
         when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
+        when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         final SplashScreenActivity lollipopGuildActivity = mock( SplashScreenActivity.class );
         when( activityManager.getSplashScreenInterceptor( oz ) ).thenReturn( lollipopGuildActivity );
+        when( lollipopGuildActivity.isType( ActivityResourceType.SPLASH.name() ) ).thenReturn( true );
 
         placeManager.goTo( oz, (PanelDefinition) null );
 
@@ -544,8 +568,10 @@ public class PlaceManagerTest {
         when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
 
         final SplashScreenActivity lollipopGuildActivity = mock( SplashScreenActivity.class );
+        when( lollipopGuildActivity.isType( ActivityResourceType.SPLASH.name() ) ).thenReturn( true );
         when( activityManager.getSplashScreenInterceptor( oz ) ).thenReturn( lollipopGuildActivity );
-
+        when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        
         placeManager.goTo( oz, (PanelDefinition) null );
         placeManager.closePlace( oz );
 
@@ -601,7 +627,8 @@ public class PlaceManagerTest {
         final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
 
         when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
-
+        when( popupActivity.isType( ActivityResourceType.POPUP.name() ) ).thenReturn( true );
+        
         placeManager.goTo( popupPlace );
 
         verify( popupActivity, never() ).onStartup( any( PlaceRequest.class ) );
@@ -620,7 +647,8 @@ public class PlaceManagerTest {
         final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
 
         when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
-
+        when( popupActivity.isType( ActivityResourceType.POPUP.name() ) ).thenReturn( true );
+        
         placeManager.goTo( popupPlace );
         placeManager.goTo( popupPlace );
 
@@ -636,7 +664,7 @@ public class PlaceManagerTest {
         final PlaceRequest popupPlace = new DefaultPlaceRequest( "Somewhere" );
         final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
         when( popupActivity.onMayClose() ).thenReturn( true );
-
+        when( popupActivity.isType( ActivityResourceType.POPUP.name() ) ).thenReturn( true );
         when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
 
         placeManager.goTo( popupPlace );
@@ -654,7 +682,7 @@ public class PlaceManagerTest {
         final PlaceRequest popupPlace = new DefaultPlaceRequest( "Somewhere" );
         final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
         when( popupActivity.onMayClose() ).thenReturn( false );
-
+        when( popupActivity.isType( ActivityResourceType.POPUP.name() ) ).thenReturn( true );
         when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
 
         placeManager.goTo( popupPlace );
@@ -673,8 +701,9 @@ public class PlaceManagerTest {
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
         when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
-        when( emeraldCityActivity.preferredHeight() ).thenReturn( null );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
         when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
+        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         HasWidgets customContainer = mock( HasWidgets.class );
 
@@ -696,6 +725,7 @@ public class PlaceManagerTest {
     public void testLaunchExistingActivityInCustomPanel() throws Exception {
         HasWidgets customContainer = mock( HasWidgets.class );
 
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
         placeManager.goTo( kansas, customContainer );
 
         verify( panelManager, never() ).addCustomPanel( customContainer, StaticWorkbenchPanelPresenter.class.getName() );
@@ -713,7 +743,8 @@ public class PlaceManagerTest {
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
         when( emeraldCityActivity.onMayClose() ).thenReturn( true );
         when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
-        when( emeraldCityActivity.preferredHeight() ).thenReturn( null );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
+        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() )).thenReturn( true );
         when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
 
         HasWidgets customContainer = mock( HasWidgets.class );
@@ -735,7 +766,8 @@ public class PlaceManagerTest {
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
         when( emeraldCityActivity.onMayClose() ).thenReturn( true );
         when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
-        when( emeraldCityActivity.preferredHeight() ).thenReturn( null );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
+        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
         when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
 
         HasWidgets customContainer = mock( HasWidgets.class );
@@ -754,6 +786,7 @@ public class PlaceManagerTest {
         final WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
 
         when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
+        when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         placeManager.goTo( yellowBrickRoad );
 
@@ -777,6 +810,7 @@ public class PlaceManagerTest {
         final WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
 
         when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
+        when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         placeManager.goTo( yellowBrickRoad );
 

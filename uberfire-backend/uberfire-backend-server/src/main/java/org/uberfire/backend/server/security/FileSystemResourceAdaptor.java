@@ -16,12 +16,9 @@
 
 package org.uberfire.backend.server.security;
 
-import java.util.List;
-
 import org.uberfire.backend.authz.FileSystemResourceType;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceType;
 import org.uberfire.security.authz.RuntimeContentResource;
 
@@ -54,5 +51,6 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
     @Override
     public ResourceType getResourceType() {
         return RESOURCE_TYPE;
-    }
+    }    
+    
 }

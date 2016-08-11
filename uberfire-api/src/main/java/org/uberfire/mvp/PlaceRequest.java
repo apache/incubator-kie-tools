@@ -19,7 +19,10 @@ package org.uberfire.mvp;
 import java.util.Map;
 import java.util.Set;
 
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+
+import jsinterop.annotations.JsType;
 
 /**
  * A request to navigate to a particular UberFire Workbench Place (a WorkbenchPerspective, a WorkbenchScreen, or a
@@ -28,6 +31,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
  * Place requests can be serialized to and created from a valid URL fragment identifier (the string that goes after the
  * {@code #} in the browser's location bar).
  */
+@JsType
 public interface PlaceRequest {
 
     public static final PlaceRequest NOWHERE = new DefaultPlaceRequest( "NOWHERE" );
@@ -55,5 +59,20 @@ public interface PlaceRequest {
      * Indicates whether or not the Workbench framework should add a browser history item when navigating to this place.
      */
     boolean isUpdateLocationBarAllowed();
-
+    
+    /**
+     * Returns the path associated with this {@link PlaceRequest}.
+     */
+    default Path getPath() {
+        // TODO go over all UF public API and start using Optional
+        return null;
+    }
+    
+    /**
+     * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.
+     */
+    default String asString() {
+        return this.toString();
+    }
+    
 }

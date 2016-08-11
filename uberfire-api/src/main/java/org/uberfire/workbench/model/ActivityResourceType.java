@@ -17,10 +17,13 @@ package org.uberfire.workbench.model;
 
 import org.uberfire.security.ResourceType;
 
+import jsinterop.annotations.JsType;
+
 /**
  * An extension of the {@link ResourceType} interface holding an enumeration with the
  * different activity types subject to authorization management control.
  */
+@JsType
 public enum ActivityResourceType implements ResourceType {
 
     PERSPECTIVE,

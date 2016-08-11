@@ -15,12 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.List;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Resource;
 
 /**
  * Implementation of behaviour common to all activity types.
@@ -100,4 +97,5 @@ public abstract class AbstractActivity implements Activity {
     public String toString() {
         return getClass().getName() + ( place == null ? " (not started)" : " for " + place );
     }
+    
 }

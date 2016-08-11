@@ -79,4 +79,5 @@ public class WorkbenchSplashScreenTest7Activity extends AbstractSplashScreenActi
     public String getIdentifier() {
         return "test7";
     }
+
 }

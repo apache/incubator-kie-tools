@@ -17,6 +17,8 @@ package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
 public interface SplashScreenActivity extends Activity {
@@ -38,5 +40,10 @@ public interface SplashScreenActivity extends Activity {
     Boolean intercept( final PlaceRequest intercepted );
 
     boolean isEnabled();
-
+    
+    @Override
+    default ResourceType getResourceType() {
+        return ActivityResourceType.SPLASH;
+    }
+    
 }

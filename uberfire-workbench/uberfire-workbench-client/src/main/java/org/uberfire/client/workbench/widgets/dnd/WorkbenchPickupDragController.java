@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.workbench.widgets.dnd;
 
+import static org.uberfire.plugin.PluginUtil.toInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -60,10 +61,10 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final IsWidget titleDecoration = sourceView.getPresenter().getTitleDecoration();
         final String contextId = sourceView.getPresenter().getContextId();
         final IsWidget widget = sourceView.getPresenter().getPartView().getWrappedWidget();
-        final Integer height = sourcePanel.getHeight();
-        final Integer width = sourcePanel.getWidth();
-        final Integer minHeight = sourcePanel.getMinHeight();
-        final Integer minWidth = sourcePanel.getMinWidth();
+        final Integer height = toInteger ( sourcePanel.getHeightAsInt() );
+        final Integer width = toInteger ( sourcePanel.getWidthAsInt() );
+        final Integer minHeight = toInteger ( sourcePanel.getMinHeightAsInt() );
+        final Integer minWidth = toInteger ( sourcePanel.getMinWidthAsInt() );
         final WorkbenchDragContext context = new WorkbenchDragContext( place,
                                                                        sourcePart,
                                                                        sourcePanel,

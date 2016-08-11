@@ -15,9 +15,6 @@
  */
 package org.uberfire.client.workbench;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,4 +45,5 @@ public class StandaloneEditorPerspective extends AbstractWorkbenchPerspectiveAct
     public String getIdentifier() {
         return "StandaloneEditorPerspective";
     }
+    
 }

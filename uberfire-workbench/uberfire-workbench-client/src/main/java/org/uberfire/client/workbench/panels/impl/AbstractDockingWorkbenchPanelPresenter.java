@@ -129,12 +129,15 @@ extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPrese
         for ( Map.Entry<Position, WorkbenchPanelPresenter> e : getPanels().entrySet() ) {
             if ( e.getValue() == child ) {
                 int size;
-                if ( e.getKey() == CompassPosition.NORTH || e.getKey() == CompassPosition.SOUTH ) {
+                // Position instance could come from a different script so we convert
+                // it to the local type here first in order for == to work.
+                CompassPosition cp = CompassPosition.valueOf( "" + e.getKey() );
+                if ( cp == CompassPosition.NORTH || cp == CompassPosition.SOUTH ) {
                     if ( pixelHeight == null ) {
                         return false;
                     }
                     size = pixelHeight + nestedPanelHeights( child );
-                } else if ( e.getKey() == CompassPosition.EAST || e.getKey() == CompassPosition.WEST ) {
+                } else if ( cp == CompassPosition.EAST || cp == CompassPosition.WEST ) {
                     if ( pixelWidth == null ) {
                         return false;
                     }

@@ -16,15 +16,11 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -103,11 +99,6 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     }
 
     @Override
-    public ResourceType getResourceType() {
-        return ActivityResourceType.PERSPECTIVE;
-    }
-
-    @Override
     public boolean isDefault() {
         return false;
     }
@@ -126,4 +117,10 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     public ToolBar getToolBar() {
         return null;
     }
+
+    @Override
+    public ActivityResourceType getResourceType() {
+        return ActivityResourceType.PERSPECTIVE;
+    }
+    
 }

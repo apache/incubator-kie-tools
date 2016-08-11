@@ -64,87 +64,87 @@ public class ${className} extends AbstractPopupActivity {
     public ${className}( final PlaceManager placeManager, final PopupView view ) {
         super( placeManager, view );
     }
-    <#if hasUberView>
 
+    <#if hasUberView>
     @PostConstruct
     public void init() {
         ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
+
     </#if>
     <#if onStartup1ParameterMethodName??>
-
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup1ParameterMethodName}( place );
     }
-    <#elseif onStartup0ParameterMethodName??>
 
+    <#elseif onStartup0ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup0ParameterMethodName}();
     }
+
     </#if>
     <#if onMayCloseMethodName??>
-
     @Override
     public boolean onMayClose() {
         return realPresenter.${onMayCloseMethodName}();
     }
+
     </#if>
     <#if onCloseMethodName??>
-
     @Override
     public void onClose() {
         super.onClose();
         realPresenter.${onCloseMethodName}();
     }
+
     </#if>
     <#if onShutdownMethodName??>
-
     @Override
     public void onShutdown() {
         super.onShutdown();
         realPresenter.${onShutdownMethodName}();
     }
+
     </#if>
     <#if onOpenMethodName??>
-
     @Override
     public void onOpen() {
         super.onOpen();
         realPresenter.${onOpenMethodName}();
     }
+
     </#if>
     <#if getTitleWidgetMethodName??>
-
     @Override
     public IsWidget getTitleDecoration() {
         return realPresenter.${getTitleWidgetMethodName}();
     }
+
     </#if>
     <#if getTitleMethodName??>
-
     @Override
     public String getTitle() {
         return realPresenter.${getTitleMethodName}();
     }
+
     </#if>
     <#if getWidgetMethodName??>
-
     @Override
     public IsWidget getWidget() {
         return realPresenter.${getWidgetMethodName}();
     }
-    <#elseif isWidget>
 
+    <#elseif isWidget>
     @Override
     public IsWidget getWidget() {
         return realPresenter;
     }
-    </#if>
 
+    </#if>
     @Override
     public String getIdentifier() {
         return "${identifier}";

@@ -57,6 +57,7 @@ import java.util.*;
 
 import static com.google.gwt.dom.client.Style.Display.BLOCK;
 import static com.google.gwt.dom.client.Style.Display.NONE;
+import static org.uberfire.plugin.PluginUtil.*;
 
 /**
  * Implementation of ListBarWidget based on PatternFly components.
@@ -289,7 +290,7 @@ public class ListBarWidgetImpl
     @Override
     public boolean remove( final PartDefinition part ) {
         titleDropDown.removePart( part );
-        if ( currentPart.getK1().equals( part ) ) {
+        if ( currentPart.getK1().asString().equals( part.asString() ) ) {
             if ( parts.size() > 0 ) {
                 presenter.selectPart( parts.iterator().next() );
             } else {
@@ -422,7 +423,7 @@ public class ListBarWidgetImpl
     private Widget makeMenuGroup(final MenuGroup groups, final boolean isRoot ) {
         if ( isRoot ) {
             final List<Widget> widgetList = new ArrayList<>();
-            for ( final MenuItem _item : groups.getItems() ) {
+            for ( final MenuItem _item : ensureIterable ( groups.getItems() ) ) {
                 final Widget widget = makeItem( _item, false );
                 if ( widget != null ) {
                     widgetList.add( widget );

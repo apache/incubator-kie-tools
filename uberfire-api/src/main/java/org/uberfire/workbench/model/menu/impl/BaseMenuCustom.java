@@ -16,12 +16,6 @@
 
 package org.uberfire.workbench.model.menu.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.uberfire.security.Resource;
-import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuPosition;

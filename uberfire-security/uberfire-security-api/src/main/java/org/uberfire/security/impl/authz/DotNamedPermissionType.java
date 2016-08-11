@@ -78,7 +78,7 @@ public class DotNamedPermissionType implements PermissionType {
 
     protected String buildPermissionName(ResourceType type, String action, String resourceId) {
         String name = "";
-        if (type != null && !type.equals(ResourceType.UNKNOWN)) {
+        if (type != null && !type.getName().equalsIgnoreCase( ResourceType.UNKNOWN.getName() ) ) {
             name += type.getName();
         }
         if (action != null && action.trim().length() > 0) {

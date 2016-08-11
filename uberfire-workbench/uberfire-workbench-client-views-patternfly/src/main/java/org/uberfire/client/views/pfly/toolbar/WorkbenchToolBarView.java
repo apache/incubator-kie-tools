@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.views.pfly.toolbar;
 
+import static org.uberfire.plugin.PluginUtil.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -108,7 +110,7 @@ public class WorkbenchToolBarView extends Composite
             bgroup.getElement().getStyle().setPaddingLeft( 19, Style.Unit.PX );
         }
 
-        for ( final ToolBarItem item : _toolBar.getItems() ) {
+        for ( final ToolBarItem item : ensureIterable ( _toolBar.getItems() ) ) {
             Button button = new Button();
             button.setIcon( IconType.valueOf( ( (ToolBarTypeIcon) item.getIcon() ).getType().toString() ) );
             button.setEnabled( item.isEnabled() );

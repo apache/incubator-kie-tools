@@ -33,6 +33,7 @@ import org.uberfire.security.authz.ResourceCheck;
 import org.uberfire.security.authz.VotingStrategy;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.plugin.PluginUtil.*;
 
 @ApplicationScoped
 public class DefaultAuthorizationManager implements AuthorizationManager {
@@ -76,7 +77,7 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
         if (deps != null && !deps.isEmpty()) {
 
             // One dep is accessible
-            for (Resource dep : deps) {
+            for (Resource dep : ensureIterable ( deps ) ) {
                 boolean itemAccess = authorize(dep, action, user);
                 if (itemAccess) {
                     return true;

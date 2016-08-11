@@ -21,13 +21,15 @@ import java.util.List;
 import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.security.authz.RuntimeFeatureResource;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 /**
  * Meta-data for a Workbench MenuItem including permissions. The default is that
  * all users have permission to access a MenuItem and that it is enabled.
  */
-public interface MenuItem
-        extends RuntimeFeatureResource,
-                HasEnabledStateChangeListeners {
+@JsType
+public interface MenuItem extends RuntimeFeatureResource, HasEnabledStateChangeListeners {
 
     boolean isEnabled();
 
@@ -42,9 +44,13 @@ public interface MenuItem
     int getOrder();
 
     /**
-     * Get the list of {@link ResourceActionRef} actions this menu item is restricted to.
+     * Get the list of {@link ResourceActionRef} actions this menu item is
+     * restricted to.
      *
-     * <p>The menu item will be available provided all the given actions are authorized within the current context.</p>
+     * <p>
+     * The menu item will be available provided all the given actions are
+     * authorized within the current context.
+     * </p>
      */
     default List<ResourceActionRef> getResourceActions() {
         return Collections.emptyList();
@@ -53,14 +59,18 @@ public interface MenuItem
     /**
      * Get the list of permission names this menu item is restricted to.
      *
-     * <p>The menu item will be available provided all the given permissions are authorized within the current context.</p>
+     * <p>
+     * The menu item will be available provided all the given permissions are
+     * authorized within the current context.
+     * </p>
      */
     default List<String> getPermissions() {
         return Collections.emptyList();
     }
 
     /**
-     * Causes the given {@link MenuVisitor} to visit this menu item and its children.
+     * Causes the given {@link MenuVisitor} to visit this menu item and its
+     * children.
      */
     void accept( MenuVisitor visitor );
 }

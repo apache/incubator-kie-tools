@@ -16,6 +16,7 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
+import static org.uberfire.plugin.PluginUtil.toInteger;
 import static org.uberfire.client.util.Layouts.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -320,10 +321,10 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
         switch ( position ) {
             case NORTH:
             case SOUTH:
-                return definition.getMinHeight();
+                return toInteger( definition.getMinHeightAsInt() );
             case EAST:
             case WEST:
-                return definition.getMinWidth();
+                return toInteger( definition.getMinWidthAsInt() );
             default: throw new IllegalArgumentException( "Position " + position + " has no horizontal or vertial aspect." );
         }
     }

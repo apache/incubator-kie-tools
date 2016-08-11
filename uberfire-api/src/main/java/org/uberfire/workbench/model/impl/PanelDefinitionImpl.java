@@ -15,8 +15,8 @@
  */
 package org.uberfire.workbench.model.impl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.workbench.model.ContextDisplayMode.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.debug.Debug;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.ContextDefinition;
@@ -35,10 +34,14 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 /**
  * Default implementation of PanelDefinition
  */
 @Portable
+@JsType
 public class PanelDefinitionImpl implements PanelDefinition {
 
     private Integer height = null;
@@ -60,10 +63,12 @@ public class PanelDefinitionImpl implements PanelDefinition {
     private ContextDisplayMode contextDisplayMode = SHOW;
     private PanelDefinition parent = null;
 
+    @JsIgnore
     public PanelDefinitionImpl() {
         this( "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter" );
     }
 
+    @JsIgnore
     public PanelDefinitionImpl( final String type ) {
         this.panelType = type;
     }
@@ -116,11 +121,13 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
+    @JsIgnore
     public Set<PartDefinition> getParts() {
         return parts;
     }
 
     @Override
+    @JsIgnore
     public List<PanelDefinition> getChildren() {
         return Collections.unmodifiableList( new ArrayList<PanelDefinition>( children ) );
     }
@@ -237,11 +244,13 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
+    @JsIgnore
     public Integer getHeight() {
         return height;
     }
 
     @Override
+    @JsIgnore
     public void setHeight( Integer height ) {
         if ( height != null ) {
             this.height = height;
@@ -249,11 +258,13 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
+    @JsIgnore
     public Integer getWidth() {
         return width;
     }
 
     @Override
+    @JsIgnore
     public void setWidth( Integer width ) {
         if ( width != null ) {
             this.width = width;
@@ -261,21 +272,25 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
+    @JsIgnore
     public final Integer getMinHeight() {
         return minHeight;
     }
 
     @Override
+    @JsIgnore
     public final void setMinHeight( Integer minHeight ) {
         this.minHeight = minHeight;
     }
 
     @Override
+    @JsIgnore
     public final Integer getMinWidth() {
         return minWidth;
     }
 
     @Override
+    @JsIgnore
     public final void setMinWidth( Integer minWidth ) {
         this.minWidth = minWidth;
     }

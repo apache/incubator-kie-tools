@@ -17,6 +17,8 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
  * An Editor is an activity that is associated with a VFS path. It is expected that the editor will provide the end user
@@ -30,5 +32,10 @@ public interface WorkbenchEditorActivity extends WorkbenchActivity {
     public void onSave();
 
     public boolean isDirty();
+    
+    @Override
+    default ResourceType getResourceType() {
+        return ActivityResourceType.EDITOR;
+    }
 
 }

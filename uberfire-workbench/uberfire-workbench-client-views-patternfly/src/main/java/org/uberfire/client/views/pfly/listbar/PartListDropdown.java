@@ -115,7 +115,7 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         final Widget title = partTitles.get( part );
         this.setText( title );
         for ( final Map.Entry<PartDefinition, ListItem> entry : partOptions.entrySet() ) {
-            if ( entry.getKey().equals( part ) ) {
+            if ( entry.getKey().asString().equals( part.asString() ) ) {
                 entry.getValue().addStyleName( "uf-part-list-dropdown-selected" );
             } else {
                 entry.getValue().removeStyleName( "uf-part-list-dropdown-selected" );

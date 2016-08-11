@@ -62,8 +62,9 @@ public @interface WorkbenchPerspective {
     String identifier();
 
     /**
-     * Indicates that this perspective should be opened by default when the workbench first starts. Exactly one
-     * perspective in the whole application should be marked as default.
+     * Indicates that this perspective should be opened by default when the
+     * workbench first starts. Exactly one perspective in the whole application
+     * should be marked as default.
      */
     boolean isDefault() default false;
 
@@ -78,4 +79,12 @@ public @interface WorkbenchPerspective {
 	 * returned by the {@code @Perspective} method.
 	 */
     boolean isTransient() default true;
+    
+    /**
+     * Indicates that this perspective can be discovered and loaded at runtime.
+     * This is useful when building plugins or extensions where the perspective
+     * is part of an external script loaded at runtime, as opposed to being
+     * statically compiled into the main application.
+     */
+    boolean isDynamic() default false;
 }

@@ -16,22 +16,21 @@
 
 package org.uberfire.client.screen;
 
-import java.util.List;
 import javax.enterprise.inject.Alternative;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Alternative
 public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
@@ -171,12 +170,13 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     }
 
     @Override
-    public Integer preferredHeight() {
-        return null;
+    public int preferredHeight() {
+        return -1;
     }
 
     @Override
-    public Integer preferredWidth() {
-        return null;
+    public int preferredWidth() {
+        return -1;
     }
+    
 }

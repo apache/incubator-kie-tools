@@ -99,7 +99,7 @@ public class CompassDropController implements DropController {
         //Source's tab within itself. If the Source Panel has only one Tab there is no
         //net effect. If we're trying to drop as a new tab there is no net effect.
         if ( sourcePanel.equals( dropPanel ) ) {
-            if ( sourcePanel.getParts().size() == 1 ) {
+            if ( sourcePanel.getParts() != null && sourcePanel.getParts().size() == 1 ) {
                 return;
             }
             if ( p == CompassPosition.SELF ) {

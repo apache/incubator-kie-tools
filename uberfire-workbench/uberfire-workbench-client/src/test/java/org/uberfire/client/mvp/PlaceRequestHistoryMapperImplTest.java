@@ -44,7 +44,6 @@ import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -121,6 +120,6 @@ public class PlaceRequestHistoryMapperImplTest {
     public void identifierAndParametersShouldBeUrlDecoded() throws Exception {
         PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest( "place%20id?par%26am%201=value%201" );
         assertEquals( "place id", placeRequest.getIdentifier() );
-        assertEquals( ImmutableMap.of( "par&am 1", "value 1" ), placeRequest.getParameters() );
+        assertEquals( placeRequest.getParameters().get( "par&am 1" ), "value 1" );
     }
 }

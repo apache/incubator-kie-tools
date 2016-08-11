@@ -163,7 +163,7 @@ public class ActivityBeansCacheActivatedByTest {
     @SuppressWarnings("unchecked")
     private <T> SyncBeanDef mockRegularBean(Class<T> type, T instance) {
         SyncBeanDef<T> beanDef = mock( SyncBeanDef.class );
-        when( iocManager.lookupBean( type ) ).thenReturn( beanDef );
+        when( iocManager.lookupBeans( type.getName() ) ).thenReturn( Collections.singleton( beanDef ) );
         when( beanDef.getInstance() ).thenReturn( instance );
         when( beanDef.getBeanClass() ).thenReturn( (Class) type );
         when( beanDef.isActivated() ).thenReturn( instance != null );

@@ -66,6 +66,12 @@ import org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy;
 import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.*;
 
 </#if>
+<#if isDynamic>
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+import org.jboss.errai.ioc.client.api.Shared;
+
+</#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
 @Named("${identifier}")
@@ -75,6 +81,9 @@ ${associatedResources}
 @Priority(${priority})
 <#if beanActivatorClass??>
 @ActivatedBy(${beanActivatorClass}.class)
+</#if>
+<#if isDynamic>
+@JsType
 </#if>
 /*
  * WARNING! This class is generated. Do not modify.
@@ -86,144 +95,142 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
 
     @Inject
     //Constructor injection for testing
-    public ${className}(final PlaceManager placeManager) {
+    public ${className}(<#if isDynamic>@Shared </#if>final PlaceManager placeManager) {
         super( placeManager );
     }
-    <#if hasUberView>
 
+    <#if hasUberView>
     @PostConstruct
     public void init() {
         ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
+
     </#if>
     <#if preferredHeight??>
-
     @Override
-    public Integer preferredHeight() {
+    public int preferredHeight() {
        return ${preferredHeight};
     }
+
     </#if>
     <#if preferredWidth??>
-
     @Override
-    public Integer preferredWidth() {
+    public int preferredWidth() {
        return ${preferredWidth};
     }
+
     </#if>
     <#if onStartup2ParameterMethodName??>
-
-    @Override
+    <#if isDynamic>@JsIgnore </#if>@Override
     public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
         super.onStartup( path, place );
         realPresenter.${onStartup2ParameterMethodName}( path, place );
     }
-    <#elseif onStartup1ParameterMethodName??>
 
-    @Override
+    <#elseif onStartup1ParameterMethodName??>
+    <#if isDynamic>@JsIgnore </#if>@Override
     public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
         super.onStartup( path, place );
         realPresenter.${onStartup1ParameterMethodName}( path );
     }
+
     </#if>
     <#if onMayCloseMethodName??>
-
     @Override
     public boolean onMayClose() {
         return realPresenter.${onMayCloseMethodName}();
     }
+
     </#if>
     <#if onCloseMethodName??>
-
     @Override
     public void onClose() {
         super.onClose();
         realPresenter.${onCloseMethodName}();
     }
+
     </#if>
     <#if onShutdownMethodName??>
-
     @Override
     public void onShutdown() {
         super.onShutdown();
         realPresenter.${onShutdownMethodName}();
     }
+
     </#if>
     <#if onOpenMethodName??>
-
     @Override
     public void onOpen() {
         super.onOpen();
         realPresenter.${onOpenMethodName}();
     }
+
     </#if>
     <#if onLostFocusMethodName??>
-
     @Override
     public void onLostFocus() {
         super.onLostFocus();
         realPresenter.${onLostFocusMethodName}();
     }
+
     </#if>
     <#if onFocusMethodName??>
-
     @Override
     public void onFocus() {
         super.onFocus();
         realPresenter.${onFocusMethodName}();
     }
+
     </#if>
     <#if owningPlace??>
-
     @Override
     public PlaceRequest getOwningPlace() {
         return new DefaultPlaceRequest("${owningPlace}");
     }
+
     </#if>
     <#if getTitleWidgetMethodName??>
-
-    @Override
+    <#if isDynamic>@JsIgnore </#if>@Override
     public IsWidget getTitleDecoration() {
         return realPresenter.${getTitleWidgetMethodName}();
     }
+
     </#if>
     <#if getTitleMethodName??>
-
     @Override
     public String getTitle() {
         return realPresenter.${getTitleMethodName}();
     }
+
     </#if>
     <#if getWidgetMethodName??>
-
-    @Override
+    <#if isDynamic>@JsIgnore </#if>@Override
     public IsWidget getWidget() {
         return realPresenter.${getWidgetMethodName}();
     }
-    <#elseif isWidget>
 
-    @Override
+    <#elseif isWidget>
+    <#if isDynamic>@JsIgnore </#if>@Override
     public IsWidget getWidget() {
         return realPresenter;
     }
+
     </#if>
     <#if getDefaultPositionMethodName??>
-
     @Override
     public Position getDefaultPosition() {
         return realPresenter.${getDefaultPositionMethodName}();
     }
     </#if>
     <#if isDirtyMethodName??>
-
     @Override
     public boolean isDirty() {
         return realPresenter.${isDirtyMethodName}();
     }
     </#if>
     <#if onSaveMethodName??>
-
     @Override
     public void onSave() {
         super.onSave();
@@ -231,36 +238,43 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     }
     </#if>
     <#if getMenuBarMethodName??>
-
     @Override
     public Menus getMenus() {
         return realPresenter.${getMenuBarMethodName}();
     }
+
     </#if>
     <#if getToolBarMethodName??>
-
     @Override
     public ToolBar getToolBar() {
         return realPresenter.${getToolBarMethodName}();
     }
+
     </#if>
     <#if getContextIdMethodName??>
-
     @Override
     public String contextId() {
         return realPresenter.${getContextIdMethodName}();
     }
+
     </#if>
     <#if lockingStrategy??>
-
     @Override
     public LockingStrategy getLockingStrategy() {
         return ${lockingStrategy};
     }
-    </#if>
 
+    </#if>
     @Override
     public String getIdentifier() {
         return "${identifier}";
     }
+    <#if isDynamic>
+
+    @Override
+    public boolean isDynamic() {
+    	return true;
+    }
+
+    </#if>
 }

@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.plugin.RuntimePluginsService;
+import org.uberfire.backend.plugin.RuntimePluginService;
 import org.uberfire.client.plugin.RuntimePluginsServiceProxy;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -32,7 +32,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class RuntimePluginsServiceProxyBackendImpl implements RuntimePluginsServiceProxy {
 
     @Inject
-    private Caller<RuntimePluginsService> runtimePluginsService;
+    private Caller<RuntimePluginService> runtimePluginsService;
 
     @Override
     public void getTemplateContent( final String contentUrl,

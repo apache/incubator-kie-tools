@@ -26,6 +26,7 @@ import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.uberfire.client.mvp.Activity;
@@ -52,6 +53,7 @@ import static com.google.gwt.core.client.ScriptInjector.*;
 
 @EntryPoint
 @Bundle( "resources/i18n/Constants.properties" )
+@EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
 public class RuntimePluginsEntryPoint {
 
     @Inject

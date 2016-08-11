@@ -15,19 +15,18 @@
  */
 package org.uberfire.client.workbench.widgets.notfound;
 
-import java.util.Collection;
-import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 @ApplicationScoped
 @Named("uf.workbench.activity.notfound")

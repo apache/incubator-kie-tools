@@ -16,7 +16,6 @@
 
 package org.uberfire.client.workbench;
 
-import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.HasWidgets;

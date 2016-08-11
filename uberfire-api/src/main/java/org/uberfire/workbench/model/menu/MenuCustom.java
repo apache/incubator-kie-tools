@@ -16,11 +16,14 @@
 
 package org.uberfire.workbench.model.menu;
 
+import jsinterop.annotations.JsType;
+
 /**
  * A menu item that provides its own widget.
  *
  * @param <T> The type of widget the custom menu item provides.
  */
+@JsType
 public interface MenuCustom<T>
         extends MenuItem {
 

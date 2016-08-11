@@ -15,6 +15,8 @@
  */
 package org.uberfire.workbench.model;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Meta-data defining a Perspective. A Perspective is a set of Panels and Parts arranged within the Workbench. The
  * Workbench has exactly one active Perspective at a time. The Perspective contains multiple Panels. Each Panel contains
@@ -24,6 +26,7 @@ package org.uberfire.workbench.model;
  * <p>
  * Implementations of this interface must be marked with Errai's {@code @Portable} annotation.
  */
+@JsType
 public interface PerspectiveDefinition {
 
     /**

@@ -16,6 +16,9 @@
 
 package org.uberfire.backend.vfs;
 
+import jsinterop.annotations.JsType;
+
+@JsType
 public interface Path extends Comparable<Path> {
 
     String getFileName();

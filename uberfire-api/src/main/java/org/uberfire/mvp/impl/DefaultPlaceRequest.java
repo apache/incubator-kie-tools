@@ -155,7 +155,7 @@ public class DefaultPlaceRequest implements PlaceRequest {
         StringBuilder fullIdentifier = new StringBuilder();
         fullIdentifier.append( this.getIdentifier() );
 
-        if ( this.getParameterNames().size() > 0 ) {
+        if ( !this.getParameterNames().isEmpty() ) {
             fullIdentifier.append( "?" );
         }
         for ( String name : this.getParameterNames() ) {

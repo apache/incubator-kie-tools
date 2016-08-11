@@ -16,18 +16,26 @@
 
 package org.uberfire.client.workbench.type;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
+
+import com.google.gwt.user.client.ui.IsWidget;
+
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 
 /**
  *
  */
+@JsType
 public interface ClientResourceType extends ResourceTypeDefinition {
 
     /**
      * An icon representing the resource type
      * @return the icon
      */
-    public IsWidget getIcon();
+    @JsIgnore
+    default IsWidget getIcon() {
+        return null;
+    }
 
 }

@@ -16,17 +16,23 @@
 
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import com.google.gwt.user.client.ui.IsWidget;
+
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 
 /**
  * Holds information about the target of a lock.
  */
+@JsType
 public class LockTarget {
 
+    @JsType
     public interface TitleProvider {
 
         String getTitle();
@@ -39,6 +45,7 @@ public class LockTarget {
     private final TitleProvider titleProvider;
     private final Runnable reloadRunnable;
 
+    @JsIgnore
     public LockTarget( Path path,
                        IsWidget isWidget,
                        PlaceRequest place,
@@ -62,6 +69,7 @@ public class LockTarget {
         return path;
     }
 
+    @JsIgnore
     public IsWidget getWidget() {
         return isWidget;
     }
@@ -74,6 +82,7 @@ public class LockTarget {
         return titleProvider.getTitle();
     }
 
+    @JsIgnore
     public Runnable getReloadRunnable() {
         return reloadRunnable;
     }

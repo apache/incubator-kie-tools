@@ -106,5 +106,13 @@ public @interface WorkbenchEditor {
         EDITOR_PROVIDED, // No locks are acquired, editor implementations need their own conflict resolution logic (if desired).
         FRAMEWORK_PESSIMISTIC // Locks are acquired allowing edits by only one user at a time
     }
+    
+    /**
+     * Indicates that this screen can be discovered and loaded at runtime.
+     * This is useful when building plugins or extensions where the screen
+     * is part of an external script loaded at runtime, as opposed to being
+     * statically compiled into the main application.
+     */
+    boolean isDynamic() default false;
 
 }

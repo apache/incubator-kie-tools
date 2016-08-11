@@ -21,12 +21,17 @@ import java.util.Set;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
+
 /**
  * Describes a physical region within a Workbench Perspective. Panels have a set physical size that they occupy, which
  * is divided up between any panel decorations (a tab bar or dropdown list is common), one or more Parts (generally
  * Editors or Screens), one of which can be visible at a time, and also child Panel Definitions, all of which are
  * visible simultaneously.
  */
+@JsType
 public interface PanelDefinition {
 
     /**
@@ -76,6 +81,7 @@ public interface PanelDefinition {
      *            WorkbenchActivity bean (either a screen or an editor).
      * @return the PartDefinition object that was created and added to this panel definition.
      */
+    @JsMethod(name = "addPartById")
     public PartDefinition addPart( final String partSpec );
 
     /**
@@ -118,6 +124,7 @@ public interface PanelDefinition {
      * @param position The Position to add the child
      * @param panel The child Panel
      */
+    @JsMethod(name="appendChildAtPosition")
     public void appendChild( final Position position,
                              final PanelDefinition panel );
 
@@ -180,52 +187,118 @@ public interface PanelDefinition {
      * Get the height of the Panel in pixels
      * @return The height, or null if not set
      */
+    @JsIgnore
     public Integer getHeight();
 
+    /**
+     * Get the height of this panel in pixels as a primitive int to make this method exportable to JS.
+     * 
+     * @return The height, or -1 if not set.
+     */
+    default int getHeightAsInt() {
+        final Integer height = getHeight();
+        return (height != null ) ? height : -1;
+    }
+    
     /**
      * Set the height of this panel in pixels.
      * 
      * @param height The height to set. If null, the existing height value is retained.
      */
+    @JsIgnore
     public void setHeight( Integer height );
 
+    /**
+     * Set the height of this panel in pixels using a primitive int to make this method exportable to JS.
+     * 
+     * @param width The width to set.
+     */
+    default void setHeight( int height ) {
+        setHeight( Integer.valueOf( height ) );
+    }
+    
     /**
      * Get the width of this panel in pixels.
      * 
      * @return The width, or null if not set.
      */
+    @JsIgnore
     public Integer getWidth();
+    
+    /**
+     * Get the width of this panel in pixels as a primitive int to make this method exportable to JS.
+     * 
+     * @return The width, or -1 if not set.
+     */
+    default int getWidthAsInt() {
+        final Integer width = getWidth();
+        return (width != null ) ? width : -1;
+    }
 
     /**
      * Set the width of this panel in pixels.
      * 
      * @param width The width to set. If null, the existing width value is retained.
      */
+    @JsIgnore
     public void setWidth( Integer width );
+    
+    /**
+     * Set the width of this panel in pixels using a primitive int to make this method exportable to JS.
+     * 
+     * @param width The width to set.
+     */
+    default void setWidth( int width ) {
+        setWidth( Integer.valueOf( width ) );
+    }
 
     /**
      * Get the minimum height of this panel in pixels.
      * 
      * @return The minimum height, or null if not set.
      */
+    @JsIgnore
     public Integer getMinHeight();
+    
+    /**
+     * Get the minimum width of this panel in pixels as a primitive int to make this method exportable to JS.
+     * 
+     * @return The height, or -1 if not set.
+     */
+    default int getMinHeightAsInt() {
+        final Integer height = getMinHeight();
+        return (height != null ) ? height : -1;
+    }
 
     /**
      * Set the minimum height of the Panel in pixels
      * @param minHeight The minimum height, or null if not set
      */
+    @JsIgnore
     public void setMinHeight( Integer minHeight );
 
     /**
      * Get the minimum width of the Panel in pixels
      * @return The minimum width, or null if not set
      */
+    @JsIgnore
     public Integer getMinWidth();
+    
+    /**
+     * Get the minimum width of this panel in pixels as a primitive int to make this method exportable to JS.
+     * 
+     * @return The width, or -1 if not set.
+     */
+    default int getMinWidthAsInt() {
+        final Integer width = getMinWidth();
+        return (width != null ) ? width : -1;
+    }
 
     /**
      * Set the minimum width of the Panel in pixels
      * @param minWidth The width, or null if not set
      */
+    @JsIgnore
     public void setMinWidth( Integer minWidth );
 
     /**
@@ -261,5 +334,12 @@ public interface PanelDefinition {
     ContextDisplayMode getContextDisplayMode();
 
     void setContextDisplayMode( final ContextDisplayMode contextDisplayMode );
+    
+    /**
+     * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.
+     */
+    default String asString() {
+        return this.toString();
+    }
 
 }

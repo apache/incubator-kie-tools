@@ -165,4 +165,9 @@ public class MockPlaceManager implements PlaceManager {
         throw new UnsupportedOperationException( "Not implemented." );
     }
 
+    @Override
+    public Command getOpenCallback( PlaceRequest place ) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
 }

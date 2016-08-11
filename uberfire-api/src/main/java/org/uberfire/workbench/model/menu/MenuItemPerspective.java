@@ -18,9 +18,12 @@ package org.uberfire.workbench.model.menu;
 
 import org.uberfire.mvp.PlaceRequest;
 
+import jsinterop.annotations.JsType;
+
 /**
  * A menu item that invokes a particular {@link org.uberfire.workbench.model.PerspectiveDefinition} when it is clicked.
  */
+@JsType
 public interface MenuItemPerspective extends MenuItem {
 
     PlaceRequest getPlaceRequest();

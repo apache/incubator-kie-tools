@@ -58,7 +58,7 @@ public class WorkbenchEditorTest24Activity extends AbstractWorkbenchEditorActivi
     }
 
     @Override
-    public Integer preferredWidth() {
+    public int preferredWidth() {
        return 200;
     }
 

@@ -395,6 +395,25 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertFailedCompilation( diagnostics );
         assertCompilationMessage( diagnostics, Kind.ERROR, 19, 8, "This WorkbenchPerspective has both a @Perspective method and a @WorkbenchPanel field. Only one or the other is allowed." );
     }
+    
+    @Test
+    public void testDynamicPerspective() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest24";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest24.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
+    }
+
 
     private void printDiagnostics( List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
         for ( Diagnostic<? extends JavaFileObject> diagnostic: diagnostics ){

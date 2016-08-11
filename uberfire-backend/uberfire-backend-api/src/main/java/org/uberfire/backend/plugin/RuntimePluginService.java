@@ -21,7 +21,7 @@ import java.util.Collection;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
-public interface RuntimePluginsService {
+public interface RuntimePluginService {
 
     Collection<String> listFramworksContent();
 

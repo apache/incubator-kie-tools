@@ -16,9 +16,12 @@
 
 package org.uberfire.workbench.model.menu;
 
+import jsinterop.annotations.JsType;
+
 /**
  * Defines the menu position on the navbar.
  */
+@JsType
 public enum MenuPosition {
     LEFT, RIGHT
 }

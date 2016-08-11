@@ -18,9 +18,12 @@ package org.uberfire.workbench.model.menu;
 
 import java.util.List;
 
+import jsinterop.annotations.JsType;
+
 /**
  * A menu item that has child items nested under it.
  */
+@JsType
 public interface MenuGroup
         extends MenuItem {
 

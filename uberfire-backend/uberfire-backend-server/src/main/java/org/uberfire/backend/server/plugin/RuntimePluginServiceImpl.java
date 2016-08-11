@@ -16,30 +16,73 @@
 
 package org.uberfire.backend.server.plugin;
 
+import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.bus.server.api.RpcContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.plugin.RuntimePluginsService;
+import org.uberfire.backend.plugin.RuntimePluginService;
+import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 
+/**
+ * Provides an Errai RPC endpoint to serve JavaScript runtime plugins (authored
+ * in plain JS) to the client where the corresponding scripts get injected into
+ * the DOM. These plugins contain logic to programmatically register themselves
+ * with UberFire. It also initializes the {@link GwtRuntimePluginManager} which
+ * is responsible for loading plugins authored in GWT/Errai/UberFire. These
+ * plugin scripts are injected in the host page by Errai once they are
+ * registered with Errai's script registry. They do not need any programmatic
+ * registration logic on the client as all contained managed beans (i.e.
+ * perspectives, editors, screens) are automatically discovered and activated by
+ * Errai IOC.
+ */
 @Service
 @ApplicationScoped
-public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
+@Startup(StartupType.BOOTSTRAP)
+public class RuntimePluginServiceImpl implements RuntimePluginService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RuntimePluginsServiceServerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuntimePluginServiceImpl.class);
+    
+    private static RuntimePluginServiceImpl instance;
 
+    @Inject
+    private GwtRuntimePluginManager gwtRuntimePluginManager;
+    
+    @PostConstruct
+    private void startUp() {
+        instance = this;
+    }
+    
+    public static RuntimePluginServiceImpl getInstance() {
+        if ( instance == null ) {
+            throw new IllegalStateException( RuntimePluginService.class.getName() + " was not initialized on startup" );
+        }
+        return instance;
+    }
+    
+    public void init( final ServletContext servletContext ) {
+        final String contextRootDir = getRealPath( servletContext, File.separator );
+        final String pluginDir = getRealPath( servletContext, "plugins" );
+        if ( contextRootDir != null && pluginDir != null ) {
+            gwtRuntimePluginManager.init( contextRootDir, pluginDir );
+        }
+    }
+    
     @Override
     public Collection<String> listFramworksContent() {
         return directoryContent( "frameworks", "*.js" );
@@ -95,8 +138,11 @@ public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
     }
 
     private String getRealPath( final String path ) {
-        ServletContext servletContext = RpcContext.getHttpSession().getServletContext();
-        String realPath = servletContext.getRealPath( path );
+        return getRealPath(RpcContext.getServletRequest().getServletContext(), path);
+    }
+    
+    private String getRealPath( final ServletContext servletContext, final String path ) {
+        final String realPath = servletContext.getRealPath( path );
         if (realPath == null) {
             return null;
         }

@@ -64,11 +64,20 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ActivatedBy;
 
 </#if>
+<#if isDynamic>
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+import org.jboss.errai.ioc.client.api.Shared;
+
+</#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
 @Named("${identifier}")
 <#if beanActivatorClass??>
 @ActivatedBy(${beanActivatorClass}.class)
+</#if>
+<#if isDynamic>
+@JsType
 </#if>
 /*
  * WARNING! This class is generated. Do not modify.
@@ -80,7 +89,7 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
 
     @Inject
     //Constructor injection for testing
-    public ${className}(final PlaceManager placeManager) {
+    public ${className}(<#if isDynamic>@Shared </#if>final PlaceManager placeManager) {
         super( placeManager );
     }
     <#if hasUberView>
@@ -100,14 +109,14 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     <#if preferredHeight??>
 
     @Override
-    public Integer preferredHeight() {
+    public int preferredHeight() {
        return ${preferredHeight};
     }
     </#if>
     <#if preferredWidth??>
 
     @Override
-    public Integer preferredWidth() {
+    public int preferredWidth() {
        return ${preferredWidth};
     }
     </#if>
@@ -182,7 +191,7 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     </#if>
     <#if getTitleWidgetMethodName??>
 
-    @Override
+    <#if isDynamic>@JsIgnore </#if>@Override
     public IsWidget getTitleDecoration() {
         <#if isTitleWidgetMethodReturnTypeElement>
         return ElementWrapperWidget.getWidget( realPresenter.${getTitleWidgetMethodName}().getElement() );
@@ -197,10 +206,10 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     public String getTitle() {
         return realPresenter.${getTitleMethodName}();
     }
+
     </#if>
     <#if getWidgetMethodName??>
-
-    @Override
+    <#if isDynamic>@JsIgnore </#if>@Override
     public IsWidget getWidget() {
         <#if isWidgetMethodReturnTypeElement>
         return ElementWrapperWidget.getWidget( realPresenter.${getWidgetMethodName}().getElement() );
@@ -208,12 +217,13 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
         return realPresenter.${getWidgetMethodName}();
         </#if>
     }
-    <#elseif isWidget>
 
-    @Override
+    <#elseif isWidget>
+    <#if isDynamic>@JsIgnore </#if>@Override
     public IsWidget getWidget() {
         return realPresenter;
     }
+
     </#if>
     <#if getDefaultPositionMethodName??>
 
@@ -223,18 +233,18 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     }
     </#if>
     <#if getMenuBarMethodName??>
-
     @Override
     public Menus getMenus() {
         return realPresenter.${getMenuBarMethodName}();
     }
+
     </#if>
     <#if getToolBarMethodName??>
-
     @Override
     public ToolBar getToolBar() {
         return realPresenter.${getToolBarMethodName}();
     }
+
     </#if>
     <#if getContextIdMethodName??>
 
@@ -243,9 +253,15 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
         return realPresenter.${getContextIdMethodName}();
     }
     </#if>
-
     @Override
     public String getIdentifier() {
         return "${identifier}";
     }
+    <#if isDynamic>
+
+    @Override
+    public boolean isDynamic() {
+    	return true;
+    }
+    </#if>
 }

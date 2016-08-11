@@ -16,21 +16,19 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.NamedPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
-import java.util.Collection;
-import java.util.Collections;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
 
 public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity {
 
@@ -143,12 +141,8 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
     }
 
     @Override
-    public Integer preferredHeight() {
-        return null;
+    public ActivityResourceType getResourceType() {
+        return ActivityResourceType.SCREEN;
     }
-
-    @Override
-    public Integer preferredWidth() {
-        return null;
-    }
+        
 }

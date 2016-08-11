@@ -32,6 +32,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -39,10 +40,13 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.ExternalPathPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 @ApplicationScoped
+@EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
 public class ActivityManagerImpl implements ActivityManager {
 
     @Inject
@@ -264,7 +268,12 @@ public class ActivityManagerImpl implements ActivityManager {
         try {
             if ( !startedActivities.containsKey( activity ) ) {
                 startedActivities.put( activity, place );
-                activity.onStartup( place );
+                if (activity.isDynamic() && place instanceof PathPlaceRequest ) {
+                    activity.onStartup( ExternalPathPlaceRequest.create( (PathPlaceRequest) place ) );
+                }
+                else {
+                    activity.onStartup( place );
+                }
             }
             return activity;
         } catch ( Exception ex ) {

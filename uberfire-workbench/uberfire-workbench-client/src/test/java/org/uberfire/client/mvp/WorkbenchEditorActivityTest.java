@@ -14,24 +14,37 @@
  * limitations under the License.
  */
 
+
 package org.uberfire.client.mvp;
 
-import java.util.Collection;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.EDITOR_PROVIDED;
+import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.FRAMEWORK_PESSIMISTIC;
+
 import javax.enterprise.inject.Instance;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.ExternalPathPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.*;
+import com.google.gwt.user.client.ui.IsWidget;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkbenchEditorActivityTest {
@@ -44,9 +57,15 @@ public class WorkbenchEditorActivityTest {
 
     @Mock
     private PathPlaceRequest place;
-
+    
     @Mock
     private ObservablePath path;
+
+    @Mock
+    private ExternalPathPlaceRequest extPlace;
+    
+    @Mock
+    private Path plainPath;
 
     @Mock
     private IsWidget isWidget;
@@ -92,6 +111,11 @@ public class WorkbenchEditorActivityTest {
             return strategy;
         }
 
+        @Override
+        public boolean isDynamic() {
+            return true;
+        }
+        
     }
 
     @Test
@@ -146,6 +170,24 @@ public class WorkbenchEditorActivityTest {
 
         verify( lockManagerProvider, times( 1 ) ).destroy( eq( lockManager ) );
         verify( lockManager, times( 1 ) ).releaseLock();
+    }
+    
+    @Test
+    public void editorCreatesObservablePathForExternalPlaceRequest() {
+        EditorTestActivity activity = Mockito.spy( new EditorTestActivity( lockManagerProvider,
+                                                                           placeManager,
+                                                                           EDITOR_PROVIDED ) );
+        
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+              return null;
+            }
+        }).when(activity).onStartup( any(Path.class), any(PlaceRequest.class) );
+        
+        when( extPlace.getPath() ).thenReturn( plainPath );
+        activity.onStartup( extPlace );
+
+        verify( activity).onStartup( any(Path.class), any(PlaceRequest.class) );
     }
 
 }

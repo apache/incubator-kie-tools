@@ -16,16 +16,22 @@
 
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.jboss.errai.ioc.client.container.DynamicAnnotation;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.junit.Test;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
@@ -40,15 +46,14 @@ public class ActivityMetaInfoTest {
         IOCBeanDef<?> beanDefinition = mock( IOCBeanDef.class );
         when( beanDefinition.getQualifiers() ).thenReturn( Collections.<Annotation>emptySet() );
 
-        Pair<Integer, List<Class<? extends ClientResourceType>>> nullGenerated = ActivityMetaInfo.generate( beanDefinition );
+        Pair<Integer, List<String>> nullGenerated = ActivityMetaInfo.generate( beanDefinition );
 
         assertNull( nullGenerated );
-
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void generateActivityMetaInfo() {
-
         IOCBeanDef<?> beanDefinition = mock( IOCBeanDef.class );
         Priority priority = mock( Priority.class );
         Integer priorityValue = 1;
@@ -60,7 +65,7 @@ public class ActivityMetaInfoTest {
         final List<Class<? extends ClientResourceType>> typesList = new ArrayList<Class<? extends ClientResourceType>>();
         typesList.add(ClientResourceType.class);
 
-        Class<? extends ClientResourceType>[] array = toArray( typesList );
+        Class<? extends ClientResourceType>[] array = typesList.toArray( new Class[typesList.size()] );
         when(associatedResources.value()).thenReturn( array );
 
         qualifiers.add( associatedResources );
@@ -68,18 +73,37 @@ public class ActivityMetaInfoTest {
 
         when( beanDefinition.getQualifiers() ).thenReturn( qualifiers );
 
-        Pair<Integer, List<Class<? extends ClientResourceType>>> generated = ActivityMetaInfo.generate( beanDefinition );
+        Pair<Integer, List<String>> generated = ActivityMetaInfo.generate( beanDefinition );
 
         assertEquals( priorityValue, generated.getK1() );
-        assertTrue(generated.getK2().contains(ClientResourceType.class  ));
+        assertTrue( generated.getK2().contains( ClientResourceType.class.getName() ) );
+    }
+    
+    @Test
+    public void generateActivityMetaInfoForDynamicActivity() {
+        final String otherResourceType = "org.uberfire.OtherResourceType";
+        IOCBeanDef<?> beanDefinition = mock( IOCBeanDef.class );
+        
+        DynamicAnnotation priority = mock( DynamicAnnotation.class );
+        when(priority.getName()).thenReturn( Priority.class.getName() );
+        when(priority.getMember("value")).thenReturn( "1" );
+
+        Set<Annotation> qualifiers = new HashSet<Annotation>();
+        DynamicAnnotation associatedResources = mock( DynamicAnnotation.class );
+        when(associatedResources.getName()).thenReturn( AssociatedResources.class.getName() );
+        when(associatedResources.getMember("value")).thenReturn( "[" + ClientResourceType.class.getName() + ","  + otherResourceType + "]" );        
+
+        qualifiers.add( associatedResources );
+        qualifiers.add( priority );
+
+        when( beanDefinition.isDynamic() ).thenReturn( true );
+        when( beanDefinition.getQualifiers() ).thenReturn( qualifiers );
+
+        Pair<Integer, List<String>> generated = ActivityMetaInfo.generate( beanDefinition );
+
+        assertEquals( Integer.valueOf( 1 ), generated.getK1() );
+        assertTrue( generated.getK2().contains( ClientResourceType.class.getName() ) );
+        assertTrue( generated.getK2().contains( "org.uberfire.OtherResourceType" ) );
     }
 
-    private static <T> T[] toArray(List<T> list) {
-        T[] toR = (T[]) java.lang.reflect.Array.newInstance(list.get(0)
-                                                                    .getClass(), list.size());
-        for (int i = 0; i < list.size(); i++) {
-            toR[i] = list.get(i);
-        }
-        return toR;
-    }
 }
