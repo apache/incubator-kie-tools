@@ -16,34 +16,30 @@
 
 package org.uberfire.ext.editor.commons.client.file;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.uberfire.commons.services.cdi.Startup;
-import org.uberfire.commons.services.cdi.StartupType;
+import org.uberfire.annotations.FallbackImplementation;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpView;
 
-@Startup(value = StartupType.BOOTSTRAP, priority = -1)
-@ApplicationScoped
+@Dependent
 public class CopyPopUpViewProducer {
 
     @Inject
-    private Instance<CopyPopUpPresenter.View> copyPopUpViewInstance;
+    private ManagedInstance<CopyPopUpPresenter.View> copyPopUpViewInstance;
 
     @Inject
-    @DefaultView
-    private ManagedInstance<CopyPopUpView> defaultCopyPopUpViewProvider;
+    @FallbackImplementation
+    private ManagedInstance<CopyPopUpView> fallbackCopyPopUpViewInstance;
 
     @Produces
     @Customizable
     public CopyPopUpPresenter.View copyPopUpViewProducer() {
         if ( this.copyPopUpViewInstance.isUnsatisfied() ) {
-            return defaultCopyPopUpViewProvider.get();
+            return fallbackCopyPopUpViewInstance.get();
         }
 
         return this.copyPopUpViewInstance.get();

@@ -17,7 +17,6 @@
 package org.uberfire.ext.editor.commons.client.file.popups;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.ModalFooter;
@@ -29,8 +28,8 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.annotations.FallbackImplementation;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.editor.commons.client.file.DefaultView;
 import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.ext.editor.commons.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -39,7 +38,7 @@ import org.uberfire.mvp.Command;
 
 @Dependent
 @Templated
-@DefaultView
+@FallbackImplementation
 public class CopyPopUpView implements CopyPopUpPresenter.View,
                                       IsElement {
 
