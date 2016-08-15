@@ -16,28 +16,16 @@
 
 package org.uberfire.client.docks;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.uberfire.client.docks.view.DocksBar;
+import org.uberfire.client.docks.view.DocksBars;
+import org.uberfire.client.workbench.docks.*;
+import org.uberfire.client.workbench.events.PerspectiveChange;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import org.uberfire.client.docks.view.DocksBar;
-import org.uberfire.client.docks.view.DocksBars;
-import org.uberfire.client.workbench.docks.UberfireDock;
-import org.uberfire.client.workbench.docks.UberfireDockPosition;
-import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
-import org.uberfire.client.workbench.docks.UberfireDocks;
-import org.uberfire.client.workbench.events.PerspectiveChange;
-import org.uberfire.mvp.Command;
-
-import com.google.gwt.user.client.ui.DockLayoutPanel;
+import java.util.*;
 
 @ApplicationScoped
 public class UberfireDocksImpl implements UberfireDocks {
@@ -60,10 +48,8 @@ public class UberfireDocksImpl implements UberfireDocks {
         this.docksBars = docksBars;
     }
 
-    @Override
-    public void setup( DockLayoutPanel rootContainer, Command resizeCommand ) {
-        docksBars.setup( rootContainer, resizeCommand );
-        updateDocks();
+    protected void setup( @Observes UberfireDockContainerReadyEvent event ) {
+        docksBars.setup();
     }
 
     @Override

@@ -31,6 +31,7 @@ import org.uberfire.client.docks.view.bars.DocksExpandedBar;
 import org.uberfire.client.docks.view.menu.MenuBuilder;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.docks.UberfireDock;
+import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
@@ -40,8 +41,8 @@ import static org.mockito.Mockito.*;
 @RunWith( GwtMockitoTestRunner.class )
 public class DocksBars_SelectDockTest {
 
-    @GwtMock
-    private DockLayoutPanel dockLayoutPanel;
+    @Mock
+    private UberfireDocksContainer uberfireDocksContainer;
 
     @Mock
     private PlaceManager placeManager;
@@ -57,7 +58,6 @@ public class DocksBars_SelectDockTest {
 
     @Test
     public void testSelectDockParametersArePreserved() throws Exception {
-        docksBars.rootContainer = mock( DockLayoutPanel.class );
 
         final DefaultPlaceRequest myPlace = new DefaultPlaceRequest( "myPlace" );
 

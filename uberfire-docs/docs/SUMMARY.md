@@ -86,6 +86,7 @@
    * [Dashbuilder](uberfireExtensions/dashbuilder.md)
    * [Simple Docks](uberfireExtensions/docks.md)
    * [Preferences](uberfireExtensions/preferences.md)
+   * [Breadcrumbs](uberfireExtensions/breadcrumbs.md)
 * [Integration](integration/integration.md)
    * [From Angular](integration/fromAngular.md)
    * [To Angular](integration/toAngular.md)

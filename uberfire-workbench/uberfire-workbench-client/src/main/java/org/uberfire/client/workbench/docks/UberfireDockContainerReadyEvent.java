@@ -16,27 +16,8 @@
 
 package org.uberfire.client.workbench.docks;
 
-import java.util.Map;
+import org.uberfire.workbench.events.UberFireEvent;
 
-import org.uberfire.mvp.Command;
-
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-
-/**
- * Uberfire Dock Support
- */
-public interface UberfireDocks {
-
-    void configure(Map<String,String> configurations);
-
-    void add(UberfireDock... docks);
-
-    void remove(UberfireDock... docks);
-
-    void expand(UberfireDock dock);
-
-    void disable(UberfireDockPosition position, String perspectiveName);
-
-    void enable(UberfireDockPosition position, String perspectiveName);
+public class UberfireDockContainerReadyEvent implements UberFireEvent {
 
 }

@@ -16,44 +16,28 @@
 
 package org.uberfire.client.workbench;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.HeaderPanel;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.util.Layouts;
-import org.uberfire.client.workbench.docks.UberfireDocks;
+import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
-import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
-import static java.util.Collections.*;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.*;
+
+import static java.util.Collections.sort;
 
 /**
  * The default layout implementation.
@@ -79,7 +63,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         private int clientHeight;
         private int clientWidth;
 
-        public OriginalStyleInfo(final Widget w) {
+        public OriginalStyleInfo( final Widget w ) {
             absoluteLeft = w.getAbsoluteLeft();
             absoluteTop = w.getAbsoluteTop();
             clientHeight = w.getElement().getClientHeight();
@@ -99,14 +83,14 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
          *
          * @param w the widget to restore styles on.
          */
-        public void restore(final Widget w) {
+        public void restore( final Widget w ) {
             final Style style = w.getElement().getStyle();
-            style.setProperty("position", position);
-            style.setProperty("top", top);
-            style.setProperty("left", left);
-            style.setProperty("width", width);
-            style.setProperty("height", height);
-            style.setProperty("zIndex", zIndex);
+            style.setProperty( "position", position );
+            style.setProperty( "top", top );
+            style.setProperty( "left", left );
+            style.setProperty( "width", width );
+            style.setProperty( "height", height );
+            style.setProperty( "zIndex", zIndex );
         }
 
         public int getAbsoluteTop() {
@@ -143,7 +127,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     /**
      * Dock Layout panel: in center root perspective and also (if available) with east west south docks
      */
-    private final DockLayoutPanel rootContainer = new DockLayoutPanel(Unit.PX);
+    private final DockLayoutPanel rootContainer = new DockLayoutPanel( Unit.PX );
 
     /**
      * The panel within which the current perspective's root view resides. This panel lasts the lifetime of the app; it's
@@ -171,6 +155,12 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     private WorkbenchDragAndDropManager dndManager;
 
     /**
+     * An abstraction for DockLayoutPanel used by Uberfire Docks.
+     */
+    @Inject
+    private UberfireDocksContainer uberfireDocksContainer;
+
+    /**
      * We read the drag boundary panel out of this, and sandwich it between the root panel and the perspective container panel.
      */
     @Inject
@@ -178,11 +168,11 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
     @PostConstruct
     private void init() {
-        perspectiveRootContainer.ensureDebugId("perspectiveRootContainer");
-        headerPanel.ensureDebugId("workbenchHeaderPanel");
-        footerPanel.ensureDebugId("workbenchFooterPanel");
-        dragController.getBoundaryPanel().ensureDebugId("workbenchDragBoundary");
-        root.addStyleName("uf-workbench-layout");
+        perspectiveRootContainer.ensureDebugId( "perspectiveRootContainer" );
+        headerPanel.ensureDebugId( "workbenchHeaderPanel" );
+        footerPanel.ensureDebugId( "workbenchFooterPanel" );
+        dragController.getBoundaryPanel().ensureDebugId( "workbenchDragBoundary" );
+        root.addStyleName( "uf-workbench-layout" );
     }
 
     @Override
@@ -195,25 +185,25 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         return perspectiveRootContainer;
     }
 
-    private void setHeaderContents(List<Header> headers) {
+    private void setHeaderContents( List<Header> headers ) {
         headerPanel.clear();
-        root.remove(headerPanel);
-        if (!headers.isEmpty()) {
-            for (Header h : headers) {
-                headerPanel.add(h);
+        root.remove( headerPanel );
+        if ( !headers.isEmpty() ) {
+            for ( Header h : headers ) {
+                headerPanel.add( h );
             }
-            root.setHeaderWidget(headerPanel);
+            root.setHeaderWidget( headerPanel );
         }
     }
 
-    private void setFooterContents(List<Footer> footers) {
+    private void setFooterContents( List<Footer> footers ) {
         footerPanel.clear();
-        root.remove(footerPanel);
-        if (!footers.isEmpty()) {
-            for (Footer f : footers) {
-                footerPanel.add(f);
+        root.remove( footerPanel );
+        if ( !footers.isEmpty() ) {
+            for ( Footer f : footers ) {
+                footerPanel.add( f );
             }
-            root.setFooterWidget(footerPanel);
+            root.setFooterWidget( footerPanel );
         }
     }
 
@@ -222,53 +212,32 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         dndManager.unregisterDropControllers();
 
         AbsolutePanel dragBoundary = dragController.getBoundaryPanel();
-        dragBoundary.add(perspectiveRootContainer);
+        dragBoundary.add( perspectiveRootContainer );
 
-        setupDocks();
-        rootContainer.add(dragBoundary);
+        setupDocksContainer();
+        rootContainer.add( dragBoundary );
 
-        Layouts.setToFillParent(perspectiveRootContainer);
-        Layouts.setToFillParent(dragBoundary);
-        Layouts.setToFillParent(rootContainer);
+        Layouts.setToFillParent( perspectiveRootContainer );
+        Layouts.setToFillParent( dragBoundary );
+        Layouts.setToFillParent( rootContainer );
 
-        root.setContentWidget(rootContainer);
+        root.setContentWidget( rootContainer );
 
     }
 
-    private void setupDocks() {
-        try {
-            SyncBeanDef<UberfireDocks> uberfireDocksIOCBeanDef = iocManager.lookupBean(UberfireDocks.class);
-            UberfireDocks instance = uberfireDocksIOCBeanDef.getInstance();
-            final Command resizeCommand = new Command() {
-
-                @Override
-                public void execute() {
-                    Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-                        @Override
-                        public void execute() {
-                            onResize();
-                        }
-                    } );
-                }
-            };
-            if (instance != null) {
-                instance.setup(rootContainer, resizeCommand);
-            }
-        } catch (Exception e) {
-
-        }
+    private void setupDocksContainer() {
+        uberfireDocksContainer.setup( rootContainer, () -> Scheduler.get().scheduleDeferred( () -> onResize() ) );
     }
 
     @Override
     public void onResize() {
-        resizeTo(Window.getClientWidth(), Window.getClientHeight());
+        resizeTo( Window.getClientWidth(), Window.getClientHeight() );
     }
 
     @Override
-    public void resizeTo(int width,
-                         int height) {
-        root.setPixelSize(width, height);
+    public void resizeTo( int width,
+                          int height ) {
+        root.setPixelSize( width, height );
 
         // The dragBoundary can't be a LayoutPanel, so it doesn't support ProvidesResize/RequiresResize.
         // We start the cascade of onResize() calls at its immediate child.
@@ -279,19 +248,19 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
             public void run() {
                 updateMaximizedPanelSizes();
             }
-        }.schedule(5);
+        }.schedule( 5 );
     }
 
     private void updateMaximizedPanelSizes() {
-        for (Widget w : maximizedWidgetOriginalStyles.keySet()) {
+        for ( Widget w : maximizedWidgetOriginalStyles.keySet() ) {
             Style style = w.getElement().getStyle();
-            style.setTop(perspectiveRootContainer.getAbsoluteTop(), Unit.PX);
-            style.setLeft(perspectiveRootContainer.getAbsoluteLeft(), Unit.PX);
-            style.setWidth(perspectiveRootContainer.getOffsetWidth(), Unit.PX);
-            style.setHeight(perspectiveRootContainer.getOffsetHeight(), Unit.PX);
+            style.setTop( perspectiveRootContainer.getAbsoluteTop(), Unit.PX );
+            style.setLeft( perspectiveRootContainer.getAbsoluteLeft(), Unit.PX );
+            style.setWidth( perspectiveRootContainer.getOffsetWidth(), Unit.PX );
+            style.setHeight( perspectiveRootContainer.getOffsetHeight(), Unit.PX );
 
-            if (w instanceof RequiresResize) {
-                ((RequiresResize) w).onResize();
+            if ( w instanceof RequiresResize ) {
+                ( ( RequiresResize ) w ).onResize();
             }
         }
     }
@@ -299,23 +268,23 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     private final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles = new HashMap<Widget, OriginalStyleInfo>();
 
     @Override
-    public void maximize(final Widget w) {
-        if (maximizedWidgetOriginalStyles.get(w) != null) {
+    public void maximize( final Widget w ) {
+        if ( maximizedWidgetOriginalStyles.get( w ) != null ) {
             return;
         }
 
         // this allows application-specified background colour, animation, borders, etc.
-        w.addStyleName(UF_MAXIMIZED_PANEL);
+        w.addStyleName( UF_MAXIMIZED_PANEL );
 
-        new ExpandAnimation(w, maximizedWidgetOriginalStyles, perspectiveRootContainer).run();
+        new ExpandAnimation( w, maximizedWidgetOriginalStyles, perspectiveRootContainer ).run();
     }
 
     @Override
-    public void unmaximize(Widget w) {
+    public void unmaximize( Widget w ) {
 
-        w.removeStyleName(UF_MAXIMIZED_PANEL);
+        w.removeStyleName( UF_MAXIMIZED_PANEL );
 
-        new CollapseAnimation(w, maximizedWidgetOriginalStyles).run();
+        new CollapseAnimation( w, maximizedWidgetOriginalStyles ).run();
     }
 
     protected static abstract class AbstractResizeAnimation extends Animation {
@@ -324,22 +293,23 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         protected final Widget w;
         protected final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles;
 
-        public AbstractResizeAnimation(final Widget w, final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles) {
+        public AbstractResizeAnimation( final Widget w,
+                                        final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles ) {
             this.w = w;
             this.maximizedWidgetOriginalStyles = maximizedWidgetOriginalStyles;
             style = w.getElement().getStyle();
         }
 
         @Override
-        protected void onUpdate(double progress) {
-            final double width = newTarget(w.getElement().getClientWidth(), getTargetWidth(), progress);
-            style.setWidth(width, Unit.PX);
-            final double height = newTarget(w.getElement().getClientHeight(), getTargetHeight(), progress);
-            style.setHeight(height, Unit.PX);
-            final double top = newTarget(w.getAbsoluteTop(), getTargetTop(), progress);
-            style.setTop(top, Unit.PX);
-            final double left = newTarget(w.getAbsoluteLeft(), getTargetLeft(), progress);
-            style.setLeft(left, Unit.PX);
+        protected void onUpdate( double progress ) {
+            final double width = newTarget( w.getElement().getClientWidth(), getTargetWidth(), progress );
+            style.setWidth( width, Unit.PX );
+            final double height = newTarget( w.getElement().getClientHeight(), getTargetHeight(), progress );
+            style.setHeight( height, Unit.PX );
+            final double top = newTarget( w.getAbsoluteTop(), getTargetTop(), progress );
+            style.setTop( top, Unit.PX );
+            final double left = newTarget( w.getAbsoluteLeft(), getTargetLeft(), progress );
+            style.setLeft( left, Unit.PX );
         }
 
         public abstract int getTargetWidth();
@@ -351,16 +321,16 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         public abstract int getTargetLeft();
 
         public void run() {
-            super.run(1000);
+            super.run( 1000 );
         }
 
-        private double newTarget(int current, int target, double progress) {
-            return Math.round(current + ((target - current) * progress));
+        private double newTarget( int current, int target, double progress ) {
+            return Math.round( current + ( ( target - current ) * progress ) );
         }
 
         public void onResize() {
-            if (w instanceof RequiresResize) {
-                ((RequiresResize) w).onResize();
+            if ( w instanceof RequiresResize ) {
+                ( ( RequiresResize ) w ).onResize();
             }
         }
     }
@@ -372,20 +342,20 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         public ExpandAnimation(
                 final Widget w,
                 final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles,
-                final SimpleLayoutPanel perspectiveRootContainer) {
-            super(w, maximizedWidgetOriginalStyles);
+                final SimpleLayoutPanel perspectiveRootContainer ) {
+            super( w, maximizedWidgetOriginalStyles );
             this.perspectiveRootContainer = perspectiveRootContainer;
         }
 
         @Override
         protected void onStart() {
-            maximizedWidgetOriginalStyles.put(w, new OriginalStyleInfo(w));
-            style.setZIndex(MAXIMIZED_PANEL_Z_INDEX);
-            style.setHeight(w.getElement().getClientHeight(), Unit.PX);
-            style.setWidth(w.getElement().getClientWidth(), Unit.PX);
-            style.setTop(w.getAbsoluteTop(), Unit.PX);
-            style.setLeft(w.getAbsoluteLeft(), Unit.PX);
-            style.setPosition(Position.FIXED);
+            maximizedWidgetOriginalStyles.put( w, new OriginalStyleInfo( w ) );
+            style.setZIndex( MAXIMIZED_PANEL_Z_INDEX );
+            style.setHeight( w.getElement().getClientHeight(), Unit.PX );
+            style.setWidth( w.getElement().getClientWidth(), Unit.PX );
+            style.setTop( w.getAbsoluteTop(), Unit.PX );
+            style.setLeft( w.getAbsoluteLeft(), Unit.PX );
+            style.setPosition( Position.FIXED );
         }
 
         @Override
@@ -419,9 +389,9 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
         private final OriginalStyleInfo originalStyleInfo;
 
-        public CollapseAnimation(final Widget w, final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles) {
-            super(w, maximizedWidgetOriginalStyles);
-            originalStyleInfo = maximizedWidgetOriginalStyles.remove(w);
+        public CollapseAnimation( final Widget w, final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles ) {
+            super( w, maximizedWidgetOriginalStyles );
+            originalStyleInfo = maximizedWidgetOriginalStyles.remove( w );
         }
 
         @Override
@@ -446,26 +416,26 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
         @Override
         protected void onComplete() {
-            originalStyleInfo.restore(w);
+            originalStyleInfo.restore( w );
             onResize();
         }
 
     }
 
     @Override
-    public void setMarginWidgets(boolean isStandaloneMode,
-                                 Set<String> headersToKeep) {
-        setHeaderContents(discoverMarginWidgets(isStandaloneMode, headersToKeep, Header.class));
-        setFooterContents(discoverMarginWidgets(isStandaloneMode, headersToKeep, Footer.class));
+    public void setMarginWidgets( boolean isStandaloneMode,
+                                  Set<String> headersToKeep ) {
+        setHeaderContents( discoverMarginWidgets( isStandaloneMode, headersToKeep, Header.class ) );
+        setFooterContents( discoverMarginWidgets( isStandaloneMode, headersToKeep, Footer.class ) );
     }
 
-    private <T extends OrderableIsWidget> List<T> discoverMarginWidgets(boolean isStandaloneMode,
-                                                                        Set<String> headersToKeep,
-                                                                        Class<T> marginType) {
-        final Collection<SyncBeanDef<T>> headerBeans = iocManager.lookupBeans(marginType);
+    private <T extends OrderableIsWidget> List<T> discoverMarginWidgets( boolean isStandaloneMode,
+                                                                         Set<String> headersToKeep,
+                                                                         Class<T> marginType ) {
+        final Collection<SyncBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
         final List<T> instances = new ArrayList<T>();
-        for (final SyncBeanDef<T> headerBean : headerBeans) {
-            if (!headerBean.isActivated()) {
+        for ( final SyncBeanDef<T> headerBean : headerBeans ) {
+            if ( !headerBean.isActivated() ) {
                 continue;
             }
 
@@ -473,23 +443,23 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
             // for regular mode (not standalone) we add every header and footer widget;
             // for standalone mode, we only add the ones requested in the URL
-            if ((!isStandaloneMode) || headersToKeep.contains(instance.getId())) {
-                instances.add(instance);
+            if ( ( !isStandaloneMode ) || headersToKeep.contains( instance.getId() ) ) {
+                instances.add( instance );
             }
         }
-        sort(instances, new Comparator<OrderableIsWidget>() {
+        sort( instances, new Comparator<OrderableIsWidget>() {
             @Override
-            public int compare(final OrderableIsWidget o1,
-                               final OrderableIsWidget o2) {
-                if (o1.getOrder() < o2.getOrder()) {
+            public int compare( final OrderableIsWidget o1,
+                                final OrderableIsWidget o2 ) {
+                if ( o1.getOrder() < o2.getOrder() ) {
                     return 1;
-                } else if (o1.getOrder() > o2.getOrder()) {
+                } else if ( o1.getOrder() > o2.getOrder() ) {
                     return -1;
                 } else {
                     return 0;
                 }
             }
-        });
+        } );
 
         return instances;
     }

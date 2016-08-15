@@ -16,7 +16,6 @@
 
 package org.uberfire.client.docks.view;
 
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -29,9 +28,9 @@ import org.uberfire.client.docks.view.menu.MenuBuilder;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.toolbar.IconType;
@@ -39,7 +38,7 @@ import org.uberfire.workbench.model.toolbar.IconType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -48,7 +47,7 @@ import static org.mockito.Mockito.*;
 public class DocksBarsTest {
 
     @Mock
-    private DockLayoutPanel dockLayoutPanel;
+    private UberfireDocksContainer uberfireDocksContainer;
 
     @Mock
     private PlaceManager placeManager;
@@ -56,12 +55,11 @@ public class DocksBarsTest {
     @Mock
     private MenuBuilder menuBuilder;
 
+
     @Mock
     private EventSourceMock<UberfireDocksInteractionEvent> dockInteractionEvent;
 
     private DocksBars docksBars;
-
-    private Command resizeCommand;
 
     private final String SOME_PERSPECTIVE = "SomePerspective";
 
@@ -72,24 +70,26 @@ public class DocksBarsTest {
 
     @Before
     public void setup() {
-        docksBars = new DocksBars( placeManager, menuBuilder, dockInteractionEvent );
-        resizeCommand = mock( Command.class );
+        docksBars = new DocksBars( placeManager, menuBuilder, dockInteractionEvent, uberfireDocksContainer );
     }
 
     @Test
     public void setupDocks() {
-        docksBars.setup( dockLayoutPanel, resizeCommand );
+        docksBars.setup();
 
         assertEquals( 3, docksBars.getDocksBars().size() );
-        verify( dockLayoutPanel, times( 3 ) ).addEast( any( Widget.class ), any( Double.class ) );
-        verify( dockLayoutPanel, times( 3 ) ).addWest( any( Widget.class ), any( Double.class ) );
-        verify( dockLayoutPanel, times( 3 ) ).addSouth( any( Widget.class ), any( Double.class ) );
+        verify( uberfireDocksContainer, times( 3 ) )
+                .add( eq( UberfireDockPosition.EAST ), any( Widget.class ), any( Double.class ) );
+        verify( uberfireDocksContainer, times( 3 ) )
+                .add( eq( UberfireDockPosition.WEST ), any( Widget.class ), any( Double.class ) );
+        verify( uberfireDocksContainer, times( 3 ) )
+                .add( eq( UberfireDockPosition.SOUTH ), any( Widget.class ), any( Double.class ) );
 
     }
 
     @Test
     public void addDock() {
-        docksBars.setup( dockLayoutPanel, resizeCommand );
+        docksBars.setup();
 
         DocksBar dockBar = docksBars.getDockBar( dock0 );
         DocksBar targetDockSpy = spy( dockBar );
@@ -106,7 +106,7 @@ public class DocksBarsTest {
 
     @Test
     public void getDockBar() {
-        docksBars.setup( dockLayoutPanel, resizeCommand );
+        docksBars.setup();
         DocksBar targetDockBar = docksBars.getDockBar( dock0 );
         assertEquals( dock0.getDockPosition(), targetDockBar.getPosition() );
     }
@@ -114,7 +114,7 @@ public class DocksBarsTest {
     @Test
     public void clearAndCollapseAllDocks() {
 
-        docksBars.setup( dockLayoutPanel, resizeCommand );
+        docksBars.setup();
         DocksBars docksBarsSpy = spy( docksBars );
         List<DocksBar> dockBars = new ArrayList<DocksBar>();
         DocksBar dock1 = createDocksBarMock();
@@ -128,13 +128,13 @@ public class DocksBarsTest {
         verify( dock1 ).clearAll();
         verify( dock2 ).clearAll();
         //2 for each dock(collapsed/expanded/resize)
-        verify( dockLayoutPanel, times( 6 ) ).setWidgetHidden( any( Widget.class ), eq( true ) );
+        verify( uberfireDocksContainer, times( 6 ) ).hide( any( Widget.class ) );
     }
 
     @Test
     public void clearAndCollapse() {
 
-        docksBars.setup( dockLayoutPanel, resizeCommand );
+        docksBars.setup();
         DocksBars docksBarsSpy = spy( docksBars );
         DocksBar dock1 = createDocksBarMock();
         when( docksBarsSpy.getDockBar( UberfireDockPosition.EAST ) ).thenReturn( dock1 );
@@ -143,31 +143,24 @@ public class DocksBarsTest {
 
         verify( dock1 ).clearAll();
         verify( docksBarsSpy ).resizeDeferred();
-        verify( dockLayoutPanel, times( 3 ) ).setWidgetHidden( any( Widget.class ), eq( true ) );
+        verify( uberfireDocksContainer, times( 3 ) ).hide( any( Widget.class ) );
     }
 
     @Test
     public void expand() {
-        docksBars.setup( dockLayoutPanel, resizeCommand );
+        docksBars.setup();
         docksBars.addDock( dock0 );
 
         docksBars.expand( docksBars.getDockBar( dock0 ) );
 
-        verify( dockLayoutPanel, times( 1 ) ).setWidgetHidden( any( Widget.class ), eq( false ) );
-    }
-
-    @Test
-    public void isReady() {
-        assertFalse( docksBars.isReady() );
-        docksBars.setup( dockLayoutPanel, resizeCommand );
-        assertTrue( docksBars.isReady() );
+        verify( uberfireDocksContainer, times( 1 ) ).show( any( Widget.class ) );
     }
 
     @Test
     public void dockSelectCommand() {
         DocksBars docksBarsSpy = spy( docksBars );
 
-        docksBarsSpy.setup( dockLayoutPanel, resizeCommand );
+        docksBarsSpy.setup();
         docksBarsSpy.addDock( dock0 );
 
         Mockito.doNothing().when( docksBarsSpy ).selectDock( dock0, docksBars.getDockBar( dock0 ) );
@@ -178,7 +171,7 @@ public class DocksBarsTest {
         dockSelectCommand.execute( dock0.getIdentifier() );
 
         verify( docksBarsSpy ).selectDock( dock0, docksBars.getDockBar( dock0 ) );
-        verify( resizeCommand ).execute();
+        verify( uberfireDocksContainer ).resize();
         verify( dockInteractionEvent, times( 1 ) ).fire( new UberfireDocksInteractionEvent( dock0,
                                                                                             UberfireDocksInteractionEvent.InteractionType.SELECTED ) );
     }
@@ -187,7 +180,7 @@ public class DocksBarsTest {
     public void dockSelectCommandSingleMode() {
         DocksBars docksBarsSpy = spy( docksBars );
 
-        docksBarsSpy.setup( dockLayoutPanel, resizeCommand );
+        docksBarsSpy.setup();
         docksBarsSpy.addDock( dock0 );
 
         DocksBar dockBar = spy( docksBars.getDockBar( dock0 ) );
@@ -200,9 +193,9 @@ public class DocksBarsTest {
         dockSelectCommand.execute( dock0.getIdentifier() );
 
         verify( docksBarsSpy ).selectDock( dock0, dockBar );
-        verify( resizeCommand ).execute();
+        verify( uberfireDocksContainer ).resize();
         verify( docksBarsSpy ).collapse( dockBar.getCollapsedBar() );
-        verify( dockLayoutPanel, times( 1 ) ).setWidgetHidden( any( Widget.class ), eq( true ) );
+        verify( uberfireDocksContainer, times( 1 ) ).hide( any( Widget.class ) );
         verify( dockInteractionEvent, times( 1 ) ).fire( new UberfireDocksInteractionEvent( dock0,
                                                                                             UberfireDocksInteractionEvent.InteractionType.SELECTED ) );
 
@@ -212,7 +205,7 @@ public class DocksBarsTest {
     public void dockDeSelectCommand() {
         DocksBars spy = spy( docksBars );
 
-        spy.setup( dockLayoutPanel, resizeCommand );
+        spy.setup();
         spy.addDock( dock0 );
 
         Mockito.doNothing().when( spy ).deselectDock( docksBars.getDockBar( dock0 ) );
@@ -223,7 +216,7 @@ public class DocksBarsTest {
         dockSelectCommand.execute( dock0.getIdentifier() );
 
         verify( spy ).deselectDock( docksBars.getDockBar( dock0 ) );
-        verify( resizeCommand ).execute();
+        verify( uberfireDocksContainer ).resize();
         verify( dockInteractionEvent, times( 1 ) ).fire( new UberfireDocksInteractionEvent( dock0,
                                                                                             UberfireDocksInteractionEvent.InteractionType.DESELECTED ) );
     }
@@ -232,7 +225,7 @@ public class DocksBarsTest {
     public void dockDeSelectCommandSingleMode() {
         DocksBars docksBarsSpy = spy( docksBars );
 
-        docksBarsSpy.setup( dockLayoutPanel, resizeCommand );
+        docksBarsSpy.setup();
         docksBarsSpy.addDock( dock0 );
 
         DocksBar dockBar = spy( docksBars.getDockBar( dock0 ) );
@@ -246,7 +239,7 @@ public class DocksBarsTest {
         dockSelectCommand.execute( dock0.getIdentifier() );
 
         verify( docksBarsSpy ).deselectDock( dockBar );
-        verify( resizeCommand ).execute();
+        verify( uberfireDocksContainer ).resize();
         verify( docksBarsSpy ).expand( dockBar.getCollapsedBar() );
         verify( dockInteractionEvent, times( 1 ) ).fire( new UberfireDocksInteractionEvent( dock0,
                                                                                             UberfireDocksInteractionEvent.InteractionType.DESELECTED ) );
@@ -257,7 +250,7 @@ public class DocksBarsTest {
         final double simulatedSize = 0d;
         final DocksBars docksBarsSpy = spy( docksBars );
 
-        docksBarsSpy.setup( dockLayoutPanel, resizeCommand );
+        docksBarsSpy.setup();
         docksBarsSpy.addDock( dock0 );
 
         Mockito.doReturn( true ).when( docksBarsSpy ).sizeIsValid( any( Double.class ), any( DocksBar.class ) );
@@ -267,7 +260,7 @@ public class DocksBarsTest {
 
         dockResizeCommand.execute( simulatedSize );
         verify( dockBar ).setExpandedSize( simulatedSize );
-        verify( resizeCommand ).execute();
+        verify( uberfireDocksContainer ).resize();
         verify( dockInteractionEvent, times( 1 ) ).fire( new UberfireDocksInteractionEvent( UberfireDockPosition.SOUTH,
                                                                                             UberfireDocksInteractionEvent.InteractionType.RESIZED ) );
     }
