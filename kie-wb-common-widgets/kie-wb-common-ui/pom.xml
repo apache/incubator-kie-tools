@@ -272,6 +272,17 @@
         </includes>
       </resource>
     </resources>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <errai.cdi.veto.pattern>(^|.*\.)client\.local(\..*)</errai.cdi.veto.pattern>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
 </project>
