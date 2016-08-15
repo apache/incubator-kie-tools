@@ -101,6 +101,7 @@ import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.dotfiles.DotFileOption;
 import org.uberfire.java.nio.base.options.CherryPickCopyOption;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.base.options.SquashOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.channels.AsynchronousFileChannel;
@@ -144,6 +145,7 @@ import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 import org.uberfire.java.nio.fs.jgit.util.MoveCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
+import org.uberfire.java.nio.fs.jgit.util.commands.Squash;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.SecuredFileSystemProvider;
@@ -558,7 +560,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                                               put( "fs_id", fs.id() );
                                                               put( "fs_uri", fs.toString() );
                                                           }}
-                                                        );
+                                );
 
                                 clusterService.unlock();
                             }
@@ -791,7 +793,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final JGitFileSystem fileSystem = fileSystems.get( extractRepoName( uri ) );
 
         if ( fileSystem == null ) {
-            throw new FileSystemNotFoundException("No filesystem for uri (" + uri + ") found.");
+            throw new FileSystemNotFoundException( "No filesystem for uri (" + uri + ") found." );
         }
 
         return JGitPathImpl.create( fileSystem, extractPath( uri ), extractHost( uri ), false );
@@ -1727,7 +1729,6 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 final JGitBasicAttributeView newView = new JGitBasicAttributeView( path );
                 path.addAttrView( newView );
                 return newView;
-
             } else if ( name.equals( "version" ) ) {
                 final JGitVersionAttributeView newView = new JGitVersionAttributeView( path );
                 path.addAttrView( newView );
@@ -1793,24 +1794,35 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         checkNotNull( "path", path );
         checkNotEmpty( "attributes", attribute );
 
+        if ( attribute.equals( SquashOption.SQUASH_ATTR ) && value instanceof SquashOption ) {
+            this.lockAndSquash( path, (SquashOption) value );
+            return;
+        }
+
         if ( attribute.equals( FileSystemState.FILE_SYSTEM_STATE_ATTR ) ) {
             JGitFileSystem fileSystem = (JGitFileSystem) path.getFileSystem();
+            try {
+                fileSystem.lock();
 
-            if ( value instanceof CommentedOption ) {
-                fileSystem.setBatchCommitInfo( "Batch mode", (CommentedOption) value );
-                return;
+                if ( value instanceof CommentedOption ) {
+                    fileSystem.setBatchCommitInfo( "Batch mode", (CommentedOption) value );
+                    fileSystem.unlock();
+                    return;
+                }
+
+                final boolean isOriginalStateBatch = fileSystem.isOnBatch();
+
+                fileSystem.setState( value.toString() );
+                FileSystemState.valueOf( value.toString() );
+
+                if ( isOriginalStateBatch && !fileSystem.isOnBatch() ) {
+                    fileSystem.setBatchCommitInfo( null );
+                    notifyAllDiffs();
+                }
+                fileSystem.setHadCommitOnBatchState( false );
+            } finally {
+                fileSystem.unlock();
             }
-
-            final boolean isOriginalStateBatch = fileSystem.isOnBatch();
-
-            fileSystem.setState( value.toString() );
-            FileSystemState.valueOf( value.toString() );
-
-            if ( isOriginalStateBatch && !fileSystem.isOnBatch() ) {
-                fileSystem.setBatchCommitInfo( null );
-                notifyAllDiffs();
-            }
-            fileSystem.setHadCommitOnBatchState( false );
             return;
         }
 
@@ -1824,6 +1836,31 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         }
 
         view.setAttribute( s[ 1 ], value );
+    }
+
+    private void lockAndSquash( final Path path,
+                                final SquashOption value ) {
+        JGitFileSystem fileSystem = (JGitFileSystem) path.getFileSystem();
+        try {
+            fileSystem.lock();
+            final JGitPathImpl gSource = toPathImpl( path );
+            final Git git = gSource.getFileSystem().gitRepo();
+            String branch = getBranchName( gSource );
+            String commitMessage = checkNotEmpty( "commitMessage", value.getMessage() );
+            String startCommit = checkNotEmpty( "startCommit", value.getRecord().id() );
+
+            new Squash( git, branch, startCommit, commitMessage ).execute();
+        } finally {
+            fileSystem.unlock();
+        }
+    }
+
+    private String getBranchName( final JGitPathImpl gSource ) {
+        try {
+            return gSource.getFileSystem().gitRepo().getRepository().getBranch();
+        } catch ( java.io.IOException e ) {
+            throw new IOException( "Impossible to get Branch Name", e );
+        }
     }
 
     private void checkURI( final String paramName,

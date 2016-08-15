@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,13 +32,19 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.NotImplementedException;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.base.options.SquashOption;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -57,6 +64,7 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
 import static org.fest.assertions.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -1356,6 +1364,73 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
     }
 
     @Test
+    public void checkProperSquash() throws IOException, GitAPIException {
+
+        final URI newRepo = URI.create( "git://squash-repo" );
+        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem( newRepo, EMPTY_ENV );
+
+        final Path generalPath = provider.getPath( URI.create( "git://master@squash-repo/" ) );
+        final Path path = provider.getPath( URI.create( "git://master@squash-repo/myfile1.txt" ) );
+        final Path path2 = provider.getPath( URI.create( "git://master@squash-repo/myfile2.txt" ) );
+        final Path path3 = provider.getPath( URI.create( "git://master@squash-repo/myfile3.txt" ) );
+
+        final OutputStream aStream = provider.newOutputStream( path );
+        aStream.write( "my cool content".getBytes() );
+        aStream.close();
+        final RevCommit commit = fs.gitRepo().log().setMaxCount( 1 ).call().iterator().next();
+
+        final OutputStream bStream = provider.newOutputStream( path2 );
+        bStream.write( "my cool content".getBytes() );
+        bStream.close();
+        final OutputStream cStream = provider.newOutputStream( path3 );
+        cStream.write( "my cool content".getBytes() );
+        cStream.close();
+
+        final VersionRecord record = makeVersionRecord( "aparedes", "aparedes@redhat.com", "squashing!", new Date(), commit.getName() );
+        final SquashOption squashOption = new SquashOption( record );
+
+        provider.setAttribute( generalPath, SquashOption.SQUASH_ATTR, squashOption );
+
+        int commitsCount = 0;
+        for ( RevCommit com : fs.gitRepo().log().all().call() ) {
+            commitsCount++;
+            System.out.println( com.getName() + " - " + com.getFullMessage() );
+        }
+        assertThat( commitsCount ).isEqualTo( 2 );
+    }
+
+    @Test(expected = GitException.class)
+    public void testSquashFailBecauseCommitIsFromAnotherBranch() throws IOException, GitAPIException {
+
+        final URI newRepo = URI.create( "git://squash-repo" );
+        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem( newRepo, EMPTY_ENV );
+
+        final Path generalPath = provider.getPath( URI.create( "git://master@squash-repo/" ) );
+        final Path path = provider.getPath( URI.create( "git://develop@squash-repo/myfile1.txt" ) );
+        final Path path2 = provider.getPath( URI.create( "git://master@squash-repo/myfile2.txt" ) );
+        final Path path3 = provider.getPath( URI.create( "git://master@squash-repo/myfile3.txt" ) );
+
+        final OutputStream aStream = provider.newOutputStream( path );
+        aStream.write( "my cool content".getBytes() );
+        aStream.close();
+
+        final List<RevCommit> commits = getCommitsFromBranch( fs.gitRepo(), "develop" );
+
+        final OutputStream bStream = provider.newOutputStream( path2 );
+        bStream.write( "my cool content".getBytes() );
+        bStream.close();
+        final OutputStream cStream = provider.newOutputStream( path3 );
+        cStream.write( "my cool content".getBytes() );
+        cStream.close();
+
+        final VersionRecord record = makeVersionRecord( "aparedes", "aparedes@redhat.com", "squashing!", new Date(), commits.get( 0 ).getName() );
+        final SquashOption squashOption = new SquashOption( record );
+
+        provider.setAttribute( generalPath, SquashOption.SQUASH_ATTR, squashOption );
+    }
+
+
+    @Test
     public void checkBatchError() throws Exception {
         final URI newRepo = URI.create( "git://outstream-test-repo" );
 
@@ -1393,5 +1468,53 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
     private static interface MyAttrs extends BasicFileAttributes {
 
+    }
+
+    private VersionRecord makeVersionRecord( final String author,
+                                             final String email,
+                                             final String comment,
+                                             final Date date,
+                                             final String commit ) {
+        return new VersionRecord() {
+            @Override
+            public String id() {
+                return commit;
+            }
+
+            @Override
+            public String author() {
+                return author;
+            }
+
+            @Override
+            public String email() {
+                return email;
+            }
+
+            @Override
+            public String comment() {
+                return comment;
+            }
+
+            @Override
+            public Date date() {
+                return date;
+            }
+
+            @Override
+            public String uri() {
+                return null;
+            }
+        };
+    }
+
+    private List<RevCommit> getCommitsFromBranch( final Git origin,
+                                                  String branch ) throws GitAPIException, MissingObjectException, IncorrectObjectTypeException {
+        List<RevCommit> commits = new ArrayList<>();
+        final ObjectId id = resolveObjectId( origin, branch );
+        for ( RevCommit commit : origin.log().add( id ).call() ) {
+            commits.add( commit );
+        }
+        return commits;
     }
 }

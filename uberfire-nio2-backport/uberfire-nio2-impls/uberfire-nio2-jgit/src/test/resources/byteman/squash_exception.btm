@@ -1,0 +1,10 @@
+#
+# This scripts throws an Exception after invoking LOCK method.
+#
+#
+RULE force exception
+CLASS org.uberfire.java.nio.fs.jgit.util.commands.Squash
+METHOD execute
+IF TRUE
+DO throw RuntimeException("check lock after")
+ENDRULE

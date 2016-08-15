@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import java.util.Map;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.util.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,9 +42,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.file.Path;
 
 public abstract class AbstractTestInfra {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractTestInfra.class);
+
+    private static final Logger logger = LoggerFactory.getLogger( AbstractTestInfra.class );
 
     protected static final Map<String, Object> EMPTY_ENV = Collections.emptyMap();
 
@@ -62,8 +66,8 @@ public abstract class AbstractTestInfra {
     public Map<String, String> getGitPreferences() {
         Map<String, String> gitPrefs = new HashMap<String, String>();
         // disable the daemons by default as they not needed in most of the cases
-        gitPrefs.put("org.uberfire.nio.git.daemon.enabled", "false");
-        gitPrefs.put("org.uberfire.nio.git.ssh.enabled", "false");
+        gitPrefs.put( "org.uberfire.nio.git.daemon.enabled", "false" );
+        gitPrefs.put( "org.uberfire.nio.git.ssh.enabled", "false" );
         return gitPrefs;
     }
 
@@ -145,13 +149,13 @@ public abstract class AbstractTestInfra {
         int port = 0;
         try {
             ServerSocket server =
-                    new ServerSocket(0);
+                    new ServerSocket( 0 );
             port = server.getLocalPort();
             server.close();
-        } catch (IOException e) {
-            Assert.fail("Can't find free port!");
+        } catch ( IOException e ) {
+            Assert.fail( "Can't find free port!" );
         }
-        logger.debug("Found free port " + port);
+        logger.debug( "Found free port " + port );
         return port;
     }
 

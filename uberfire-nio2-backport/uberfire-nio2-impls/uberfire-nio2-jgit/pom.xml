@@ -85,5 +85,75 @@
       <scope>test</scope>
     </dependency>
 
+
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman-submit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman-install</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman-bmunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jboss.byteman</groupId>
+        <artifactId>byteman-rulecheck-maven-plugin</artifactId>
+        <version>${version.org.jboss.byteman}</version>
+        <executions>
+          <execution>
+            <id>rulecheck-test</id>
+            <goals>
+              <goal>rulecheck</goal>
+            </goals>
+            <phase>test-compile</phase>
+            <configuration>
+              <includes>
+                <include>**/*.btm</include>
+              </includes>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>org/uberfire/java/nio/fs/jgit/JGitFileSystemProviderBytemanTest</include>
+          </includes>
+          <useSystemClassLoader>true</useSystemClassLoader>
+          <useManifestOnlyJar>true</useManifestOnlyJar>
+          <forkMode>once</forkMode>
+          <!--<parallel>false</parallel>-->
+          <!-- ensure we don't inherit a byteman jar from any env settings -->
+          <environmentVariables>
+            <BYTEMAN_HOME></BYTEMAN_HOME>
+          </environmentVariables>
+          <systemProperties>
+            <property>
+              <name>org.jboss.byteman.home</name>
+              <value></value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

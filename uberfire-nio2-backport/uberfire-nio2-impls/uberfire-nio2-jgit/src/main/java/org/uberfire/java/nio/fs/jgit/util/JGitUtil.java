@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.CreateBranchCommand;
@@ -84,8 +89,12 @@ import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 
 import static java.util.Collections.*;
 import static org.apache.commons.io.FileUtils.*;
+
 import static org.eclipse.jgit.lib.Constants.*;
 import static org.eclipse.jgit.lib.FileMode.*;
+
+import org.uberfire.java.nio.fs.jgit.util.commands.Squash;
+
 import static org.eclipse.jgit.treewalk.filter.PathFilterGroup.*;
 import static org.eclipse.jgit.util.FS.*;
 import static org.uberfire.commons.data.Pair.*;
@@ -479,7 +488,7 @@ public final class JGitUtil {
         try {
             ObjectReader reader = repo.newObjectReader();
             CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
-            if (oldRef != null) {
+            if ( oldRef != null ) {
                 oldTreeIter.reset( reader, oldRef );
             }
             CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
@@ -551,7 +560,6 @@ public final class JGitUtil {
         try {
             final ObjectInserter odi = git.getRepository().newObjectInserter();
             try {
-                // Create the in-memory index of the new/updated issue.
                 final ObjectId headId = git.getRepository().resolve( branchName + "^{commit}" );
 
                 final ObjectId originId;
@@ -577,13 +585,11 @@ public final class JGitUtil {
                 if ( index != null ) {
                     final ObjectId indexTreeId = index.writeTree( odi );
 
-                    // Create a commit object
                     final CommitBuilder commit = new CommitBuilder();
                     commit.setAuthor( author );
                     commit.setCommitter( author );
                     commit.setEncoding( Constants.CHARACTER_ENCODING );
                     commit.setMessage( commitInfo.getMessage() );
-                    //headId can be null if the repository has no commit yet
                     if ( headId != null ) {
                         if ( amend ) {
                             final List<ObjectId> parents = new LinkedList<ObjectId>();
@@ -599,7 +605,6 @@ public final class JGitUtil {
                     }
                     commit.setTreeId( indexTreeId );
 
-                    // Insert the commit into the repository
                     final ObjectId commitId = odi.insert( commit );
                     odi.flush();
 
@@ -660,9 +665,26 @@ public final class JGitUtil {
         return new PersonIdent( git.getRepository() );
     }
 
-    /**
-     * Creates an in-memory index of the issue change.
-     */
+    public static DirCache createTemporaryIndexForContent( final Git git,
+                                                           final Map<String, ObjectId> content ) {
+
+        final DirCache inCoreIndex = DirCache.newInCore();
+        final ObjectInserter inserter = git.getRepository().newObjectInserter();
+        final DirCacheEditor editor = inCoreIndex.editor();
+
+        try {
+            for ( final String path : content.keySet() ) {
+                addToTemporaryInCoreIndex( editor, path, content.get( path ), REGULAR_FILE );
+            }
+            editor.finish();
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        } finally {
+            inserter.close();
+        }
+        return inCoreIndex;
+    }
+
     private static DirCache createTemporaryIndex( final Git git,
                                                   final ObjectId headId,
                                                   final DefaultCommitContent commitContent ) {
@@ -670,84 +692,47 @@ public final class JGitUtil {
         final Map<String, File> content = commitContent.getContent();
 
         final Map<String, Pair<File, ObjectId>> paths = new HashMap<String, Pair<File, ObjectId>>( content.size() );
+
         final Set<String> path2delete = new HashSet<String>();
 
         final DirCache inCoreIndex = DirCache.newInCore();
-        final ObjectInserter inserter = git.getRepository().newObjectInserter();
         final DirCacheEditor editor = inCoreIndex.editor();
+        final ObjectInserter inserter = git.getRepository().newObjectInserter();
 
         try {
             for ( final Map.Entry<String, File> pathAndContent : content.entrySet() ) {
                 final String gPath = fixPath( pathAndContent.getKey() );
                 if ( pathAndContent.getValue() == null ) {
-                    final TreeWalk treeWalk = new TreeWalk( git.getRepository() );
-                    treeWalk.addTree( new RevWalk( git.getRepository() ).parseTree( headId ) );
-                    treeWalk.setRecursive( true );
-                    treeWalk.setFilter( PathFilter.create( gPath ) );
-
-                    while ( treeWalk.next() ) {
-                        path2delete.add( treeWalk.getPathString() );
-                    }
-                    treeWalk.close();
+                    path2delete.addAll( searchPathsToDelete( git, headId, gPath ) );
                 } else {
-                    try {
-                        final InputStream inputStream = new FileInputStream( pathAndContent.getValue() );
-                        try {
-                            final ObjectId objectId = inserter.insert( Constants.OBJ_BLOB, pathAndContent.getValue().length(), inputStream );
-                            paths.put( gPath, Pair.newPair( pathAndContent.getValue(), objectId ) );
-                        } finally {
-                            inputStream.close();
-                        }
-                    } catch ( final Exception ex ) {
-                        throw new RuntimeException( ex );
-                    }
+                    paths.putAll( storePathsIntoHashMap( inserter, pathAndContent, gPath ) );
                 }
             }
 
-            if ( headId != null ) {
-                final TreeWalk treeWalk = new TreeWalk( git.getRepository() );
-                final int hIdx = treeWalk.addTree( new RevWalk( git.getRepository() ).parseTree( headId ) );
-                treeWalk.setRecursive( true );
-
-                while ( treeWalk.next() ) {
-                    final String walkPath = treeWalk.getPathString();
-                    final CanonicalTreeParser hTree = treeWalk.getTree( hIdx, CanonicalTreeParser.class );
-
-                    if ( paths.containsKey( walkPath ) && paths.get( walkPath ).getK2().equals( hTree.getEntryObjectId() ) ) {
-                        paths.remove( walkPath );
-                    }
-
-                    if ( paths.get( walkPath ) == null && !path2delete.contains( walkPath ) ) {
-                        final DirCacheEntry dcEntry = new DirCacheEntry( walkPath );
-                        final ObjectId _objectId = hTree.getEntryObjectId();
-                        final FileMode _fileMode = hTree.getEntryFileMode();
-
-                        // add to temporary in-core index
-                        editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
-                            @Override
-                            public void apply( final DirCacheEntry ent ) {
-                                ent.setObjectId( _objectId );
-                                ent.setFileMode( _fileMode );
-                            }
-                        } );
-                    }
+            iterateOverTreeWalk( git, headId, ( walkPath, hTree ) -> {
+                if ( paths.containsKey( walkPath ) && paths.get( walkPath ).getK2().equals( hTree.getEntryObjectId() ) ) {
+                    paths.remove( walkPath );
                 }
-                treeWalk.close();
-            }
 
-            for ( final Map.Entry<String, Pair<File, ObjectId>> pathAndContent : paths.entrySet() ) {
-                if ( pathAndContent.getValue().getK1() != null ) {
-                    editor.add( new DirCacheEditor.PathEdit( new DirCacheEntry( pathAndContent.getKey() ) ) {
+                if ( paths.get( walkPath ) == null && !path2delete.contains( walkPath ) ) {
+                    addToTemporaryInCoreIndex( editor, walkPath, hTree );
+                }
+            } );
+
+            paths.forEach( ( key, value ) -> {
+                if ( value.getK1() != null ) {
+                    editor.add( new DirCacheEditor.PathEdit( new DirCacheEntry( key ) ) {
                         @Override
                         public void apply( final DirCacheEntry ent ) {
-                            ent.setLength( pathAndContent.getValue().getK1().length() );
-                            ent.setLastModified( pathAndContent.getValue().getK1().lastModified() );
+                            ent.setLength( value.getK1().length() );
+                            ent.setLastModified( value.getK1().lastModified() );
                             ent.setFileMode( REGULAR_FILE );
-                            ent.setObjectId( pathAndContent.getValue().getK2() );
+                            ent.setObjectId( value.getK2() );
                         }
                     } );
                 }
-            }
+
+            } );
 
             editor.finish();
         } catch ( Exception e ) {
@@ -764,15 +749,9 @@ public final class JGitUtil {
         return inCoreIndex;
     }
 
-    private static DirCache createTemporaryIndex( final Git git,
-                                                  final ObjectId headId,
-                                                  final MoveCommitContent commitContent ) {
-        final Map<String, String> content = commitContent.getContent();
-
-        final DirCache inCoreIndex = DirCache.newInCore();
-        final DirCacheEditor editor = inCoreIndex.editor();
-        final List<String> pathsAdded = new ArrayList<String>();
-
+    private static void iterateOverTreeWalk( Git git,
+                                             ObjectId headId,
+                                             BiConsumer<String, CanonicalTreeParser> consumer ) {
         try {
             if ( headId != null ) {
                 final TreeWalk treeWalk = new TreeWalk( git.getRepository() );
@@ -781,28 +760,76 @@ public final class JGitUtil {
 
                 while ( treeWalk.next() ) {
                     final String walkPath = treeWalk.getPathString();
-                    final String toPath = content.get( walkPath );
-                    final DirCacheEntry dcEntry = new DirCacheEntry( (toPath == null) ? walkPath : toPath );
-                    if ( pathsAdded.contains( dcEntry.getPathString() )) 
-                        continue;
-
                     final CanonicalTreeParser hTree = treeWalk.getTree( hIdx, CanonicalTreeParser.class );
-                    final ObjectId _objectId = hTree.getEntryObjectId();
-                    final FileMode _fileMode = hTree.getEntryFileMode();
-                    
-                    // add to temporary in-core index
-                    editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
-                        @Override
-                        public void apply( final DirCacheEntry ent ) {
-                            ent.setObjectId( _objectId );
-                            ent.setFileMode( _fileMode );
-                        }
-                    } );
-                    pathsAdded.add( dcEntry.getPathString() );
+
+                    consumer.accept( walkPath, hTree );
                 }
                 treeWalk.close();
             }
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
+    }
 
+    private static Map<String, Pair<File, ObjectId>> storePathsIntoHashMap(
+            final ObjectInserter inserter,
+            final Map.Entry<String, File> pathAndContent,
+            final String gPath ) {
+
+        final Map<String, Pair<File, ObjectId>> paths = new HashMap<>();
+
+        try {
+            final InputStream inputStream = new FileInputStream( pathAndContent.getValue() );
+            try {
+                final ObjectId objectId = inserter.insert( Constants.OBJ_BLOB, pathAndContent.getValue().length(), inputStream );
+                paths.put( gPath, Pair.newPair( pathAndContent.getValue(), objectId ) );
+                return paths;
+            } finally {
+                inputStream.close();
+            }
+        } catch ( final Exception ex ) {
+            throw new RuntimeException( ex );
+        }
+    }
+
+    private static Set<String> searchPathsToDelete( final Git git,
+                                                    final ObjectId headId,
+                                                    final String gPath ) throws java.io.IOException {
+
+        final Set<String> path2delete = new HashSet<>();
+
+        final TreeWalk treeWalk = new TreeWalk( git.getRepository() );
+        treeWalk.addTree( new RevWalk( git.getRepository() ).parseTree( headId ) );
+        treeWalk.setRecursive( true );
+        treeWalk.setFilter( PathFilter.create( gPath ) );
+
+        while ( treeWalk.next() ) {
+            path2delete.add( treeWalk.getPathString() );
+        }
+        treeWalk.close();
+
+        return path2delete;
+    }
+
+    private static DirCache createTemporaryIndex( final Git git,
+                                                  final ObjectId headId,
+                                                  final MoveCommitContent commitContent ) {
+
+        final Map<String, String> content = commitContent.getContent();
+
+        final DirCache inCoreIndex = DirCache.newInCore();
+        final DirCacheEditor editor = inCoreIndex.editor();
+        final List<String> pathsAdded = new ArrayList<String>();
+
+        try {
+            iterateOverTreeWalk( git, headId, ( walkPath, hTree ) -> {
+                final String toPath = content.get( walkPath );
+                final DirCacheEntry dcEntry = new DirCacheEntry( ( toPath == null ) ? walkPath : toPath );
+                if ( !pathsAdded.contains( dcEntry.getPathString() ) ) {
+                    addToTemporaryInCoreIndex( editor, dcEntry, hTree );
+                    pathsAdded.add( dcEntry.getPathString() );
+                }
+            } );
             editor.finish();
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
@@ -820,46 +847,13 @@ public final class JGitUtil {
         final DirCacheEditor editor = inCoreIndex.editor();
 
         try {
-            if ( headId != null ) {
-                final TreeWalk treeWalk = new TreeWalk( git.getRepository() );
-                final int hIdx = treeWalk.addTree( new RevWalk( git.getRepository() ).parseTree( headId ) );
-                treeWalk.setRecursive( true );
-
-                while ( treeWalk.next() ) {
-                    final String walkPath = treeWalk.getPathString();
-                    final CanonicalTreeParser hTree = treeWalk.getTree( hIdx, CanonicalTreeParser.class );
-
-                    final String toPath = content.get( walkPath );
-
-                    final DirCacheEntry dcEntry = new DirCacheEntry( walkPath );
-                    final ObjectId _objectId = hTree.getEntryObjectId();
-                    final FileMode _fileMode = hTree.getEntryFileMode();
-
-                    // add to temporary in-core index
-                    editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
-                        @Override
-                        public void apply( final DirCacheEntry ent ) {
-                            ent.setObjectId( _objectId );
-                            ent.setFileMode( _fileMode );
-                        }
-                    } );
-
-                    if ( toPath != null ) {
-                        final DirCacheEntry newdcEntry = new DirCacheEntry( toPath );
-                        final ObjectId newObjectId = hTree.getEntryObjectId();
-                        final FileMode newFileMode = hTree.getEntryFileMode();
-
-                        editor.add( new DirCacheEditor.PathEdit( newdcEntry ) {
-                            @Override
-                            public void apply( final DirCacheEntry ent ) {
-                                ent.setFileMode( newFileMode );
-                                ent.setObjectId( newObjectId );
-                            }
-                        } );
-                    }
+            iterateOverTreeWalk( git, headId, ( walkPath, hTree ) -> {
+                final String toPath = content.get( walkPath );
+                addToTemporaryInCoreIndex( editor, walkPath, hTree );
+                if ( toPath != null ) {
+                    addToTemporaryInCoreIndex( editor, toPath, hTree );
                 }
-                treeWalk.close();
-            }
+            } );
 
             editor.finish();
         } catch ( final Exception e ) {
@@ -876,30 +870,10 @@ public final class JGitUtil {
         final DirCacheEditor editor = inCoreIndex.editor();
 
         try {
-            if ( headId != null ) {
-                final TreeWalk treeWalk = new TreeWalk( git.getRepository() );
-                final int hIdx = treeWalk.addTree( new RevWalk( git.getRepository() ).parseTree( headId ) );
-                treeWalk.setRecursive( true );
+            iterateOverTreeWalk( git, headId, ( walkPath, hTree ) -> {
+                addToTemporaryInCoreIndex( editor, walkPath, hTree );
 
-                while ( treeWalk.next() ) {
-                    final String walkPath = treeWalk.getPathString();
-                    final CanonicalTreeParser hTree = treeWalk.getTree( hIdx, CanonicalTreeParser.class );
-
-                    final DirCacheEntry dcEntry = new DirCacheEntry( walkPath );
-                    final ObjectId _objectId = hTree.getEntryObjectId();
-                    final FileMode _fileMode = hTree.getEntryFileMode();
-
-                    // add to temporary in-core index
-                    editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
-                        @Override
-                        public void apply( final DirCacheEntry ent ) {
-                            ent.setObjectId( _objectId );
-                            ent.setFileMode( _fileMode );
-                        }
-                    } );
-                }
-                treeWalk.close();
-            }
+            } );
 
             editor.finish();
         } catch ( final Exception e ) {
@@ -907,6 +881,43 @@ public final class JGitUtil {
         }
 
         return inCoreIndex;
+    }
+
+    private static void addToTemporaryInCoreIndex( final DirCacheEditor editor,
+                                                   final String path,
+                                                   CanonicalTreeParser hTree ) {
+
+        addToTemporaryInCoreIndex( editor, path, hTree.getEntryObjectId(), hTree.getEntryFileMode() );
+    }
+
+    private static void addToTemporaryInCoreIndex( final DirCacheEditor editor,
+                                                   final DirCacheEntry dcEntry,
+                                                   CanonicalTreeParser hTree ) {
+
+        addToTemporaryInCoreIndex( editor, dcEntry, hTree.getEntryObjectId(), hTree.getEntryFileMode() );
+    }
+
+    private static void addToTemporaryInCoreIndex( final DirCacheEditor editor,
+                                                   final String path,
+                                                   ObjectId objectId,
+                                                   FileMode fileMode ) {
+        DirCacheEntry dcEntry = new DirCacheEntry( path );
+        addToTemporaryInCoreIndex( editor, dcEntry, objectId, fileMode );
+    }
+
+    private static void addToTemporaryInCoreIndex( final DirCacheEditor editor,
+                                                   final DirCacheEntry dcEntry,
+                                                   ObjectId objectId,
+                                                   FileMode fileMode ) {
+        // add to temporary in-core index
+        editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
+            @Override
+            public void apply( final DirCacheEntry ent ) {
+                ent.setObjectId( objectId );
+                ent.setFileMode( fileMode );
+            }
+        } );
+
     }
 
     public static ObjectId resolveObjectId( final Git git,
