@@ -16,126 +16,53 @@
 
 package org.kie.workbench.common.services.backend.validation.asset;
 
-import java.text.MessageFormat;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import org.guvnor.common.services.shared.message.Level;
+import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.Message;
+import org.uberfire.backend.vfs.Path;
 
 public class Validator {
 
-    //TODO internationalize error messages?.
-    private final static String ERROR_CLASS_NOT_FOUND = "Definition of class \"{0}\" was not found. Consequentially validation cannot be performed.\n" +
-            "Please check the necessary external dependencies for this project are configured correctly.";
+    private final ProjectService projectService;
 
-    private final ValidatorFileSystemProvider validatorFileSystemProvider;
+    private final BuildService buildService;
 
-    protected final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
-
-    private final KieBuilder kieBuilder;
-
-    public Validator( final ValidatorFileSystemProvider validatorFileSystemProvider ) {
-        this.validatorFileSystemProvider = validatorFileSystemProvider;
-        this.kieBuilder = makeKieBuilder();
+    public Validator( final ProjectService projectService,
+                      final BuildService buildService ) {
+        this.projectService = projectService;
+        this.buildService = buildService;
     }
 
-    protected KieBuilder makeKieBuilder() {
-        return KieServices.Factory.get().newKieBuilder( validatorFileSystemProvider.getFileSystem() );
+    public List<ValidationMessage> validate( final Path path,
+                                             final InputStream inputStream ) {
+
+        return new ValidatorBuildService( projectService, buildService )
+                .validate( path, inputStream )
+                .stream()
+                .filter( fromValidatedPath( path ) )
+                .collect( Collectors.toList() );
     }
 
-    public List<ValidationMessage> validate() {
-        validatorFileSystemProvider.write();
+    protected Predicate<ValidationMessage> fromValidatedPath( final Path path ) {
+        return message -> {
+            final String destinationPathURI = removeFileExtension( path.toURI() );
+            final String messageURI = message.getPath() != null ? removeFileExtension( message.getPath().toURI() ) : "";
 
-        runValidation();
-
-        return validationMessages;
+            return messageURI.isEmpty() || destinationPathURI.endsWith( messageURI );
+        };
     }
 
-    public KieBuilder getKieBuilder() {
-        return kieBuilder;
-    }
-
-    private void runValidation() {
-
-        try {
-
-            final String destinationBasePath = getBasePath( validatorFileSystemProvider.getDestinationPath() );
-
-            for ( final Message message : getBuildMessages() ) {
-                addMessage( destinationBasePath,
-                            message );
-            }
-
-        } catch ( NoClassDefFoundError e ) {
-            validationMessages.add( makeErrorMessage( MessageFormat.format( ERROR_CLASS_NOT_FOUND,
-                                                                            e.getLocalizedMessage() ) ) );
-        } catch ( Throwable e ) {
-            validationMessages.add( makeErrorMessage( e.getLocalizedMessage() ) );
-        }
-    }
-
-    protected void addMessage( final String destinationBasePath,
-                               final Message message ) {
-        final String messageBasePath = getMessagePath( message );
-
-        if ( messageBasePath == null ||
-                "".equals( messageBasePath ) ||
-                destinationBasePath.endsWith( messageBasePath ) ) {
-            validationMessages.add( convertMessage( message ) );
-        }
-    }
-
-    private List<Message> getBuildMessages() {
-        return kieBuilder.buildAll().getResults().getMessages();
-    }
-
-    private String getMessagePath( final Message message ) {
-        return message.getPath() != null ? getBasePath( message.getPath() ) : null;
-    }
-
-    /*
-     * Strip the file extension as it cannot be relied upon when filtering KieBuilder messages.
-     * For example we write MyGuidedTemplate.template to KieFileSystem but KieBuilder returns
-     * Messages containing MyGuidedTemplate.drl
-     */
-    private String getBasePath( final String path ) {
-        if ( path != null && path.contains( "." ) ) {
-            return path.substring( 0,
-                                   path.lastIndexOf( "." ) );
-        }
-        return path;
-    }
-
-    private ValidationMessage makeErrorMessage( final String msg ) {
-        final ValidationMessage validationMessage = new ValidationMessage();
-        validationMessage.setLevel( Level.ERROR );
-        validationMessage.setText( msg );
-        return validationMessage;
-    }
-
-    protected ValidationMessage convertMessage( final Message message ) {
-        final ValidationMessage msg = new ValidationMessage();
-        switch ( message.getLevel() ) {
-            case ERROR:
-                msg.setLevel( Level.ERROR );
-                break;
-            case WARNING:
-                msg.setLevel( Level.WARNING );
-                break;
-            case INFO:
-                msg.setLevel( Level.INFO );
-                break;
+    private String removeFileExtension( final String pathURI ) {
+        if ( pathURI != null && pathURI.contains( "." ) ) {
+            return pathURI.substring( 0, pathURI.lastIndexOf( "." ) );
         }
 
-        msg.setId( message.getId() );
-        msg.setLine( message.getLine() );
-        msg.setColumn( message.getColumn() );
-        msg.setText( message.getText() );
-
-        return msg;
+        return pathURI;
     }
 }

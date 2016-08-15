@@ -16,23 +16,27 @@
 
 package org.kie.workbench.common.services.backend.validation.asset;
 
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.TestFileSystem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.java.nio.file.Path;
+import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
 
+@RunWith( MockitoJUnitRunner.class )
 public class DefaultGenericKieValidatorTest {
 
-    private TestFileSystem             testFileSystem;
+    private TestFileSystem testFileSystem;
     private DefaultGenericKieValidator validator;
 
     @Before
@@ -49,38 +53,17 @@ public class DefaultGenericKieValidatorTest {
 
     @Test
     public void testWorks() throws Exception {
+        final Path path = resourcePath( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
+        final InputStream inputStream = this.getClass().getResourceAsStream( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
 
-        final URL urlToValidate = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
-        final Path pathToValidate = testFileSystem.fileSystemProvider.getPath( urlToValidate.toURI() );
+        final List<ValidationMessage> errors = validator.validate( path,
+                                                                   inputStream );
 
-        final List<ValidationMessage> validationMessages = validator.validate( Paths.convert( pathToValidate ),
-                                                                               this.getClass().getResourceAsStream( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" ),
-                                                                               new JavaFileFilter() );
-
-        assertTrue( validationMessages.isEmpty() );
+        assertTrue( errors.isEmpty() );
     }
 
-    @Test
-    public void testNoFilterForJavaFiles() throws Exception {
-
-        final URL urlToValidate = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
-        final Path pathToValidate = testFileSystem.fileSystemProvider.getPath( urlToValidate.toURI() );
-
-        final List<ValidationMessage> validationMessages = validator.validate( Paths.convert( pathToValidate ),
-                                                                               this.getClass().getResourceAsStream( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" ) );
-
-        assertFalse( validationMessages.isEmpty() );
-    }
-
-    @Test
-    public void testNoProject() throws Exception {
-
-        final URL urlToValidate = this.getClass().getResource( "/META-INF/beans.xml" );
-        final Path pathToValidate = testFileSystem.fileSystemProvider.getPath( urlToValidate.toURI() );
-
-        final List<ValidationMessage> validationMessages = validator.validate( Paths.convert( pathToValidate ),
-                                                                               this.getClass().getResourceAsStream( "/META-INF/beans.xml" ) );
-
-        assertTrue( validationMessages.isEmpty() );
+    private Path resourcePath( final String resourceName ) throws URISyntaxException {
+        final URL url = this.getClass().getResource( resourceName );
+        return Paths.convert( testFileSystem.fileSystemProvider.getPath( url.toURI() ) );
     }
 }

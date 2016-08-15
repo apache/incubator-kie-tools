@@ -16,25 +16,21 @@
 package org.kie.workbench.common.services.backend.validation.asset;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.guvnor.common.services.backend.validation.GenericValidator;
+import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
 
 /**
  * Validator capable of validating generic Kie assets (i.e those that are handled by KieBuilder)
  */
-public class DefaultGenericKieValidator
-        implements GenericValidator {
+public class DefaultGenericKieValidator implements GenericValidator {
 
-    private IOService ioService;
+    private BuildService buildService;
 
     private KieProjectService projectService;
 
@@ -42,24 +38,20 @@ public class DefaultGenericKieValidator
     }
 
     @Inject
-    public DefaultGenericKieValidator( final @Named( "ioStrategy" ) IOService ioService,
-                                       final KieProjectService projectService ) {
-        this.ioService = ioService;
+    public DefaultGenericKieValidator( final KieProjectService projectService,
+                                       final BuildService buildService ) {
         this.projectService = projectService;
+        this.buildService = buildService;
     }
 
+    @Override
     public List<ValidationMessage> validate( final Path resourcePath,
-                                             final InputStream resource,
-                                             final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters ) {
-        try {
-            return new Validator( new ValidatorFileSystemProvider( resourcePath,
-                                                                   resource,
-                                                                   projectService.resolveProject( resourcePath ),
-                                                                   ioService,
-                                                                   new GenericFilter( resourcePath,
-                                                                                      supportingFileFilters ) ) ).validate();
-        } catch ( NoProjectException e ) {
-            return new ArrayList<ValidationMessage>();
-        }
+                                             final InputStream inputStream ) {
+
+        return validator().validate( resourcePath, inputStream );
+    }
+
+    private Validator validator() {
+        return new Validator( projectService, buildService );
     }
 }

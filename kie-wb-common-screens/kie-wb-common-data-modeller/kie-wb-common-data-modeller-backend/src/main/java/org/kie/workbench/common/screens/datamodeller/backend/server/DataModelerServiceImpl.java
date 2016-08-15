@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -38,10 +37,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Entity;
 
+import com.google.common.base.Charsets;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -117,8 +116,6 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.paging.PageResponse;
-
-import com.google.common.base.Charsets;
 
 @Service
 @ApplicationScoped
@@ -203,7 +200,8 @@ public class DataModelerServiceImpl
     }
 
     @Override
-    public EditorModelContent loadContent( final Path path, boolean includeTypesInfo ) {
+    public EditorModelContent loadContent( final Path path,
+                                           boolean includeTypesInfo ) {
         EditorModelContent editorModelContent = super.loadContent( path );
         if ( includeTypesInfo ) {
             editorModelContent.setPropertyTypes( getBasePropertyTypes() );
@@ -956,9 +954,7 @@ public class DataModelerServiceImpl
                 validationSource = source;
             }
 
-            return genericValidator.validate( path,
-                                              new ByteArrayInputStream( validationSource != null ? validationSource.getBytes( Charsets.UTF_8 ) : "".getBytes() ),
-                                              new JavaFileFilter() );
+            return genericValidator.validate( path, new ByteArrayInputStream( validationSource != null ? validationSource.getBytes( Charsets.UTF_8 ) : "".getBytes() ) );
 
         } catch ( Exception e ) {
             logger.error( "An error was produced during validation", e );

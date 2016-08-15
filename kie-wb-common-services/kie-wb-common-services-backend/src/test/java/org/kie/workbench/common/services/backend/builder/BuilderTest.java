@@ -16,15 +16,6 @@
 
 package org.kie.workbench.common.services.backend.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,6 +28,7 @@ import java.util.function.Predicate;
 import org.drools.core.rule.TypeMetaInfo;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
@@ -62,6 +54,10 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
 public class BuilderTest
         extends BuilderTestBase {
@@ -76,6 +72,7 @@ public class BuilderTest
     private ProjectImportsService importsService;
     private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
     private LRUPomModelCache pomModelCache;
+    private BuildService buildService;
 
     @Before
     public void setUp() throws Exception {
@@ -90,6 +87,7 @@ public class BuilderTest
         importsService = getReference( ProjectImportsService.class );
         dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
         pomModelCache = getReference( LRUPomModelCache.class );
+        buildService = getReference( BuildService.class );
     }
 
     @After
@@ -323,8 +321,7 @@ public class BuilderTest
         assertNotNull( builder.getKieContainer() );
 
         //Validate Rule excluding Global definition
-        final DefaultGenericKieValidator validator = new DefaultGenericKieValidator( ioService,
-                                                                                     projectService );
+        final DefaultGenericKieValidator validator = new DefaultGenericKieValidator( projectService, buildService );
         final URL urlToValidate = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
         final org.uberfire.java.nio.file.Path pathToValidate = p.getPath( urlToValidate.toURI() );
         final List<ValidationMessage> validationMessages = validator.validate( Paths.convert( pathToValidate ),
@@ -349,5 +346,4 @@ public class BuilderTest
                                                                                     ioService ),
                                                     mock( PackageNameWhiteListSaver.class ) );
     }
-
 }
