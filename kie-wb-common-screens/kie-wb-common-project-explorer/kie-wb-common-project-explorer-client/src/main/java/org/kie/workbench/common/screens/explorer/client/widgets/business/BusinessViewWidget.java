@@ -278,7 +278,7 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
                                       final FolderItem folderItem ) {
         String _fileName = folderItem.getFileName();
         if ( !( resourceType instanceof AnyResourceType ) ) {
-            _fileName = Utils.getBaseFileName( _fileName );
+            _fileName = Utils.getBaseFileName( _fileName, resourceType.getSuffix() );
         }
         _fileName = _fileName.replaceAll( " ", "\u00a0" );
         final String fileName = _fileName;

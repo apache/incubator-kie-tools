@@ -308,10 +308,10 @@ public class Utils {
      * @param fileName
      * @return
      */
-    public static String getBaseFileName( final String fileName ) {
-        final int dotIndex = fileName.lastIndexOf( "." );
-        return ( dotIndex > 0 ? fileName.substring( 0,
-                                                    dotIndex ) : fileName );
+    public static String getBaseFileName( final String fileName, final String suffix ) {
+        final int suffixIndex = fileName.lastIndexOf( "." + suffix );
+        return ( suffixIndex > 0 ? fileName.substring( 0,
+                                                    suffixIndex ) : fileName );
     }
 
 }
