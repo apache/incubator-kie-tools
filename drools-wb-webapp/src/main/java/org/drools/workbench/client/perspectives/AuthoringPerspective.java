@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.workbench.client.resources.i18n.AppConstants;
-import org.guvnor.inbox.client.InboxPresenter;
 import org.kie.workbench.common.screens.examples.client.wizard.ExamplesWizard;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.projecteditor.client.menu.ProjectMenu;
@@ -162,31 +161,6 @@ public class AuthoringPerspective {
                     @Override
                     public void execute() {
                         placeManager.goTo( "org.kie.guvnor.explorer" );
-                    }
-                } ).endMenu().build().getItems().get( 0 ) );
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.IncomingChanges() ).respondsWith(
-                new Command() {
-                    @Override
-                    public void execute() {
-                        placeManager.goTo( "Inbox" );
-                    }
-                } ).endMenu().build().getItems().get( 0 ) );
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.RecentlyEdited() ).respondsWith(
-                new Command() {
-                    @Override
-                    public void execute() {
-                        PlaceRequest p = new DefaultPlaceRequest( "Inbox" );
-                        p.addParameter( "inboxname", InboxPresenter.RECENT_EDITED_ID );
-                        placeManager.goTo( p );
-                    }
-                } ).endMenu().build().getItems().get( 0 ) );
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.RecentlyOpened() ).respondsWith(
-                new Command() {
-                    @Override
-                    public void execute() {
-                        PlaceRequest p = new DefaultPlaceRequest( "Inbox" );
-                        p.addParameter( "inboxname", InboxPresenter.RECENT_VIEWED_ID );
-                        placeManager.goTo( p );
                     }
                 } ).endMenu().build().getItems().get( 0 ) );
         return menuItems;
