@@ -41,14 +41,12 @@ import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversion
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.service.AuthenticationService;
-import org.kie.workbench.common.services.backend.file.DRLFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.slf4j.Logger;
@@ -74,10 +72,6 @@ public class DecisionTableXLSServiceImpl
                    ExtendedDecisionTableXLSService {
 
     private static final Logger log = LoggerFactory.getLogger( DecisionTableXLSServiceImpl.class );
-
-    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
-
-    private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
 
     private IOService ioService;
     private CopyService copyService;
@@ -360,10 +354,7 @@ public class DecisionTableXLSServiceImpl
         try {
             inputStream = ioService.newInputStream( Paths.convert( path ),
                                                     StandardOpenOption.READ );
-            return genericValidator.validate( path,
-                                              inputStream,
-                                              FILTER_DRL,
-                                              FILTER_JAVA );
+            return genericValidator.validate( path, inputStream );
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         } finally {

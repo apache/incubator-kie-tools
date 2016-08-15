@@ -32,20 +32,16 @@ import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.CopyService;
@@ -61,8 +57,6 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 public class GlobalsEditorServiceImpl
         extends KieService<GlobalsEditorContent>
         implements GlobalsEditorService {
-
-    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
 
     @Inject
     @Named( "ioStrategy" )
@@ -263,8 +257,7 @@ public class GlobalsEditorServiceImpl
             return genericValidator.validate( path,
                                               new ByteArrayInputStream(
                                                       GlobalsPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
-                                              ),
-                                              FILTER_JAVA );
+                                              ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

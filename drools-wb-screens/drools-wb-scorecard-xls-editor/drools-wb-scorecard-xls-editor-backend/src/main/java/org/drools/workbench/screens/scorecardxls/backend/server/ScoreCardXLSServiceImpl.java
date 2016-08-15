@@ -30,7 +30,6 @@ import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSContent;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -61,8 +60,6 @@ public class ScoreCardXLSServiceImpl
                    ExtendedScoreCardXLSService {
 
     private static final Logger log = LoggerFactory.getLogger( ScoreCardXLSServiceImpl.class );
-
-    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
 
     private IOService ioService;
     private CopyService copyService;
@@ -251,9 +248,7 @@ public class ScoreCardXLSServiceImpl
         try {
             inputStream = ioService.newInputStream( Paths.convert( path ),
                                                                    StandardOpenOption.READ );
-            return genericValidator.validate( path,
-                                              inputStream,
-                                              FILTER_JAVA );
+            return genericValidator.validate( path, inputStream );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

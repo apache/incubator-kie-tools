@@ -35,7 +35,6 @@ import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDe
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
@@ -43,12 +42,6 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.backend.file.DRLFileFilter;
-import org.kie.workbench.common.services.backend.file.DSLFileFilter;
-import org.kie.workbench.common.services.backend.file.DSLRFileFilter;
-import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
-import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
-import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -68,15 +61,6 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 public class GuidedRuleEditorServiceImpl
         extends KieService<GuidedEditorContent>
         implements GuidedRuleEditorService {
-
-    //Filters to include *all* applicable resources
-    private static final JavaFileFilter    FILTER_JAVA   = new JavaFileFilter();
-    private static final DRLFileFilter     FILTER_DRL    = new DRLFileFilter();
-    private static final DSLRFileFilter    FILTER_DSLR   = new DSLRFileFilter();
-    private static final DSLFileFilter     FILTER_DSL    = new DSLFileFilter();
-    private static final RDRLFileFilter    FILTER_RDRL   = new RDRLFileFilter();
-    private static final RDSLRFileFilter   FILTER_RDSLR  = new RDSLRFileFilter();
-    private static final GlobalsFileFilter FILTER_GLOBAL = new GlobalsFileFilter();
 
     @Inject
     @Named( "ioStrategy" )
@@ -312,15 +296,7 @@ public class GuidedRuleEditorServiceImpl
         try {
             final String source = toSourceUnexpanded( path,
                                                       content );
-            return genericValidator.validate( path,
-                                              new ByteArrayInputStream( source.getBytes( Charsets.UTF_8 ) ),
-                                              FILTER_JAVA,
-                                              FILTER_DRL,
-                                              FILTER_DSLR,
-                                              FILTER_DSL,
-                                              FILTER_RDRL,
-                                              FILTER_RDSLR,
-                                              FILTER_GLOBAL );
+            return genericValidator.validate( path, new ByteArrayInputStream( source.getBytes( Charsets.UTF_8 ) ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
