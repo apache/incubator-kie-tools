@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
+    "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
+<module>
+
+  <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
+
+  <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient"/>
+
+  <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsAPI"/>
+
+  <inherits name="org.kie.workbench.common.forms.processing.FormProcessingEngine"/>
+
+  <inherits name="org.kie.workbench.common.forms.common.CommonFormWidgets"/>
+
+  <inherits name="org.kie.workbench.common.forms.crud.FormsCRUDWidget"/>
+
+  <source path="client"/>
+</module>

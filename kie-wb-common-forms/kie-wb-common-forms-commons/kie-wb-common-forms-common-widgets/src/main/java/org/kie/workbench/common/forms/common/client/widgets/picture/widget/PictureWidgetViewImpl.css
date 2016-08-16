@@ -1,0 +1,14 @@
+.pictureContainer {
+    display:inline-block;
+}
+
+.videoElement {
+    display: block;
+}
+
+.actionButton {
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top: 5px;
+}
