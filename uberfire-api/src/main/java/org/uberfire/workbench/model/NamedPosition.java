@@ -55,7 +55,8 @@ public class NamedPosition implements Position {
      * 
      * @return a non-null string. For the special {@link #ROOT} position constant, this is the empty string.
      */
-    public String getFieldName() {
+    @Override
+    public String getName() {
         return fieldName;
     }
 
@@ -83,5 +84,4 @@ public class NamedPosition implements Position {
             return false;
         return true;
     }
-
 }

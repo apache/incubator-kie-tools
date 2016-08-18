@@ -442,12 +442,11 @@ public class PanelManagerImpl implements PanelManager {
         }
 
         PanelDefinition newPanel;
-        // Position instance could come from a different script so we convert
-        // it to the local type here first in order for == to work.
-        CompassPosition cp = CompassPosition.valueOf( "" + position );
-        if ( cp == CompassPosition.ROOT ) {
+
+        // Position instance could come from a different script so we compare using position.getName
+        if ( CompassPosition.ROOT.getName().equals( position.getName() ) ) {
             newPanel = rootPanelDef;
-        } else if ( cp == CompassPosition.SELF ) {
+        } else if ( CompassPosition.SELF.getName().equals( position.getName() ) ) {
             newPanel = targetPanelPresenter.getDefinition();
         } else {
             String defaultChildType = targetPanelPresenter.getDefaultChildType();
@@ -465,7 +464,7 @@ public class PanelManagerImpl implements PanelManager {
                                                childPanelPresenter );
 
             targetPanelPresenter.addPanel( childPanelPresenter,
-                                           cp );
+                                           position );
             newPanel = childPanel;
         }
 

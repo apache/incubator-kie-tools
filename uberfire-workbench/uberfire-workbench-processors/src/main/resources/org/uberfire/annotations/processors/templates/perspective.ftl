@@ -175,7 +175,7 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTem
 
     @Override
     public HasWidgets resolvePosition( NamedPosition position ) {
-        final String fieldName = position.getFieldName();
+        final String fieldName = position.getName();
         <#if defaultPanel??>
         if ( fieldName.equals( "${defaultPanel.fieldName}" ) ) {
             return realPresenter.${defaultPanel.fieldName};

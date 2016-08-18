@@ -79,7 +79,7 @@ public class PerspectiveTest19Activity extends AbstractWorkbenchPerspectiveActiv
 
     @Override
     public HasWidgets resolvePosition( NamedPosition position ) {
-        final String fieldName = position.getFieldName();
+        final String fieldName = position.getName();
         if ( fieldName.equals( "oneParameter" ) ) {
             return realPresenter.oneParameter;
         }

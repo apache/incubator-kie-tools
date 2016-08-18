@@ -15,9 +15,8 @@
  */
 package org.uberfire.workbench.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Tells a PanelManager implementation where to place a part within a panel. Each PanelManager has its own layout
@@ -28,4 +27,6 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 public interface Position {
+
+    String getName();
 }

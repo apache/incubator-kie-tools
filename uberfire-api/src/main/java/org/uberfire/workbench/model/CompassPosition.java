@@ -15,9 +15,8 @@
  */
 package org.uberfire.workbench.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Positions to which a WorkbenchPanel can be added to the Workbench
@@ -33,5 +32,10 @@ public enum CompassPosition implements Position {
     WEST, //West internal edge of a Parent panel
     SELF, //Add to the Parent panel
     ROOT, //Add to the Workbench root
-    CENTER // Add to the panel center
+    CENTER; // Add to the panel center
+
+    @Override
+    public String getName() {
+        return name();
+    }
 }
