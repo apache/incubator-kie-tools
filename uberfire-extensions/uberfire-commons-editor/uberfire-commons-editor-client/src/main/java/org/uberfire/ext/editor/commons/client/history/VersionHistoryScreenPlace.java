@@ -33,4 +33,10 @@ public class VersionHistoryScreenPlace
         addParameter(FILENAME, filename);
         addParameter(VERSION, version);
     }
+
+    @Override
+    public String toString() {
+        return "VersionHistoryScreenPlace [identifier=" + identifier + ", parameters=" + parameters + "]";
+    }
+    
 }

@@ -42,4 +42,9 @@ public class ExternalPathPlaceRequest extends DefaultPlaceRequest {
         return  new ExternalPathPlaceRequest(request.getPath().getOriginal());
     }
 
+    @Override
+    public String toString() {
+        return "ExternalPathPlaceRequest [path=" + path + "]";
+    }
+
 }

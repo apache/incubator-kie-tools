@@ -341,8 +341,7 @@ public class PanelManagerImpl implements PanelManager {
         placeManager.get().closePlace( part.getPlace() );
     }
 
-    @SuppressWarnings("unused")
-    private void onSelectPlaceEvent( @Observes SelectPlaceEvent event ) {
+    void onSelectPlaceEvent( @Observes SelectPlaceEvent event ) {
         final PlaceRequest place = event.getPlace();
 
         // TODO (hbraun): PanelDefinition is not distinct (missing hashcode)

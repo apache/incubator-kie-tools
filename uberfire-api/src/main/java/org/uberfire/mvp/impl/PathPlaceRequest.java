@@ -123,7 +123,12 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + getPath().hashCode();
+        result = 31 * result + ((getPath() != null) ? getPath().hashCode() : 0);
         return result;
+    }
+    
+    @Override
+    public String toString() {
+        return "PathPlaceRequest[\"" + identifier + "\" " + parameters + "\" " + path + "]";
     }
 }

@@ -16,14 +16,26 @@
 
 package org.uberfire.client.workbench;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.lang.annotation.Annotation;
 
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.ioc.client.container.IOC;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +43,9 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.events.PanelFocusEvent;
@@ -42,11 +57,13 @@ import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -290,6 +307,27 @@ public class PanelManagerTest {
         } catch ( IllegalArgumentException e ) {
             assertTrue( e.getMessage().contains( "root" ) );
         }
+    }
+    
+    @Test
+    public void onSelectPlaceEventFocusesCorrectPresenter() throws Exception {
+        PanelDefinition p1 = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        PartDefinition pd1 = new PartDefinitionImpl(new DefaultPlaceRequest());
+        p1.addPart( pd1 );
+        testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, p1 );
+        panelManager.addWorkbenchPanel( panelManager.getRoot(), p1, CompassPosition.WEST );
+        
+        PanelDefinition p2 = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        PartDefinition pd2 = new PartDefinitionImpl(new PathPlaceRequest());
+        p2.addPart( pd2 );
+        testPerspectiveDef.getRoot().appendChild( CompassPosition.EAST, p2 );
+        panelManager.addWorkbenchPanel( panelManager.getRoot(), p2, CompassPosition.EAST );
+
+        SelectPlaceEvent event = new SelectPlaceEvent(new PathPlaceRequest());
+        panelManager.onSelectPlaceEvent( event );
+
+        final WorkbenchPanelPresenter partPresenter = panelManager.mapPanelDefinitionToPresenter.get( p2 );
+        verify(partPresenter, times(2)).setFocus( true );
     }
 
     // After UF-117:

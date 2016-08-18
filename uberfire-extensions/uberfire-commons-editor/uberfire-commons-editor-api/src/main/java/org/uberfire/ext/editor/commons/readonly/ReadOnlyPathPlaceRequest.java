@@ -53,4 +53,11 @@ public class ReadOnlyPathPlaceRequest
         super( path, id, parameters );
         addParameter( "readOnly", "yes" );
     }
+
+    @Override
+    public String toString() {
+        return "ReadOnlyPathPlaceRequest [identifier=" + identifier + 
+                ", parameters=" + parameters + ", path=" + getPath() + "]";
+    }
+
 }

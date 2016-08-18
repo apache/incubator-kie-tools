@@ -54,4 +54,9 @@ public class ForcedPlaceRequest
                updateLocationBar );
     }
 
+    @Override
+    public String toString() {
+        return "ForcedPlaceRequest [identifier=" + identifier + ", parameters=" + parameters + "]";
+    }
+
 }
