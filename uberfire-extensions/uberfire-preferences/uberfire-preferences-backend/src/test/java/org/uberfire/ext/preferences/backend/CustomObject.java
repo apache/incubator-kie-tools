@@ -16,7 +16,13 @@
 
 package org.uberfire.ext.preferences.backend;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+@Portable
 public class CustomObject {
+
+    public CustomObject() {
+    }
 
     public CustomObject( final Long id,
                          final String text ) {

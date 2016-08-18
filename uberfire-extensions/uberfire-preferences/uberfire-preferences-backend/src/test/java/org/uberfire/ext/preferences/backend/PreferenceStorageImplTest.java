@@ -20,9 +20,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 
+import org.jboss.errai.marshalling.server.MappingContextSingleton;
+import org.jboss.errai.marshalling.server.ServerMappingContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.backend.server.io.object.ObjectStorage;
+import org.uberfire.backend.server.io.object.ObjectStorageImpl;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
 import org.uberfire.ext.preferences.shared.impl.PreferenceScopeImpl;
@@ -70,11 +74,14 @@ public class PreferenceStorageImplTest {
 
     @Before
     public void setup() throws IOException {
+        MappingContextSingleton.get();
         fileSystemTestingUtils.setup();
 
         final SessionInfo sessionInfo = mockSessionInfo();
         final FileSystem fileSystem = mockFileSystem();
         final IOService ioService = mockIoService( fileSystem );
+
+        ObjectStorage objectStorage = new ObjectStorageImpl( ioService );
 
         scopeTypes = new DefaultPreferenceScopeTypes( sessionInfo );
         scopeFactory = new PreferenceScopeFactoryImpl( scopeTypes );
@@ -83,7 +90,8 @@ public class PreferenceStorageImplTest {
         preferenceStorageServiceBackendImpl = new PreferenceStorageImpl( ioService,
                                                                          sessionInfo,
                                                                          scopeTypes,
-                                                                         scopeFactory );
+                                                                         scopeFactory,
+                                                                         objectStorage );
         preferenceStorageServiceBackendImpl.init();
 
         userEntireApplicationScope = scopeFactory.createScope( userScope, entireApplicationScope );
@@ -281,7 +289,7 @@ public class PreferenceStorageImplTest {
                                                    "my.preference.key",
                                                    "value" );
         final String value = preferenceStorageServiceBackendImpl.read( userEntireApplicationScope,
-                                                                      "my.preference.key" );
+                                                                       "my.preference.key" );
 
         assertEquals( "value", value );
     }

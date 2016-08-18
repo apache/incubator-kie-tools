@@ -16,10 +16,8 @@
 
 package org.uberfire.ext.preferences.backend;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -27,21 +25,21 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.thoughtworks.xstream.XStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.annotations.Customizable;
+import org.uberfire.backend.server.io.object.ObjectStorage;
+import org.uberfire.backend.server.io.object.ObjectStorageImpl;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
+import org.uberfire.ext.preferences.shared.PreferenceStorage;
 import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
-import org.uberfire.ext.preferences.shared.PreferenceStorage;
-import org.uberfire.annotations.Customizable;
 import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
@@ -67,9 +65,7 @@ public class PreferenceStorageImpl implements PreferenceStorage {
 
     private PreferenceScopeFactory scopeFactory;
 
-    private FileSystem fileSystem;
-
-    private final XStream xs = new XStream();
+    private ObjectStorage objectStorage;
 
     protected PreferenceStorageImpl() {
     }
@@ -78,37 +74,25 @@ public class PreferenceStorageImpl implements PreferenceStorage {
     public PreferenceStorageImpl( @Named("ioStrategy") final IOService ioService,
                                   final SessionInfo sessionInfo,
                                   @Customizable final PreferenceScopeTypes scopeTypes,
-                                  final PreferenceScopeFactory scopeFactory ) {
+                                  final PreferenceScopeFactory scopeFactory,
+                                  final ObjectStorage objectStorage ) {
         this.ioService = ioService;
         this.sessionInfo = sessionInfo;
         this.scopeTypes = scopeTypes;
         this.scopeFactory = scopeFactory;
+        this.objectStorage = objectStorage;
     }
 
     @PostConstruct
     public void init() {
         final String rootPath = "default://preferences";
-        try {
-            fileSystem = ioService.newFileSystem( URI.create( rootPath ),
-                                                  new HashMap<String, Object>() {{
-                                                      put( "init", Boolean.TRUE );
-                                                      put( "internal", Boolean.TRUE );
-                                                  }} );
-        } catch ( FileSystemAlreadyExistsException e ) {
-            fileSystem = ioService.getFileSystem( URI.create( rootPath ) );
-        }
+        objectStorage.init( rootPath );
     }
 
     @Override
     public boolean exists( final PreferenceScope preferenceScope,
                            final String key ) {
-        Path path = fileSystem.getPath( buildScopedPreferencePath( preferenceScope, key ) );
-
-        try {
-            return ioService.exists( path );
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        }
+        return objectStorage.exists( buildScopedPreferencePath( preferenceScope, key ) );
     }
 
     @Override
@@ -127,18 +111,8 @@ public class PreferenceStorageImpl implements PreferenceStorage {
     @Override
     public <T> T read( final PreferenceScope preferenceScope,
                        final String key ) {
-        Path path = fileSystem.getPath( buildScopedPreferencePath( preferenceScope, key ) );
-
-        try {
-            if ( ioService.exists( path ) ) {
-                String content = ioService.readAllString( path );
-                return (T) xs.fromXML( content );
-            }
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        }
-
-        return null;
+        final String path = buildScopedPreferencePath( preferenceScope, key );
+        return objectStorage.read( path );
     }
 
     @Override
@@ -171,28 +145,19 @@ public class PreferenceStorageImpl implements PreferenceStorage {
     public void write( final PreferenceScope preferenceScope,
                        final String key,
                        final Object value ) {
-        try {
-            ioService.startBatch( fileSystem );
-            Path path = fileSystem.getPath( buildScopedPreferencePath( preferenceScope, key ) );
-            ioService.write( path, xs.toXML( value ) );
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        } finally {
-            ioService.endBatch();
-        }
-
+        objectStorage.write( buildScopedPreferencePath( preferenceScope, key ), value );
     }
 
     @Override
     public void delete( final PreferenceScope preferenceScope,
                         final String key ) {
-        ioService.deleteIfExists( fileSystem.getPath( buildScopedPreferencePath( preferenceScope, key ) ) );
+        objectStorage.delete( buildScopedPreferencePath( preferenceScope, key ) );
     }
 
     @Override
     public Collection<String> allKeys( final PreferenceScope scope ) {
         Collection<String> keys = new ArrayList<>();
-        Path path = fileSystem.getPath( buildScopePath( scope ) );
+        Path path = this.objectStorage.getPath( buildScopePath( scope ) );
 
         if ( ioService.exists( path ) ) {
             walkFileTree( checkNotNull( "path", path ),

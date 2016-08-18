@@ -23,9 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.errai.marshalling.server.MappingContextSingleton;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.backend.server.io.object.ObjectStorage;
+import org.uberfire.backend.server.io.object.ObjectStorageImpl;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
@@ -95,6 +98,7 @@ public class PreferenceStoreImplTest {
 
     @Before
     public void setup() throws IOException {
+        MappingContextSingleton.get();
         fileSystemTestingUtils.setup();
 
         callback = (ParameterizedCommand<String>) mock( ParameterizedCommand.class );
@@ -103,6 +107,8 @@ public class PreferenceStoreImplTest {
         final FileSystem fileSystem = mockFileSystem();
         final IOService ioService = mockIoService( fileSystem );
 
+        ObjectStorage objectStorage = new ObjectStorageImpl( ioService );
+
         scopeTypes = new DefaultPreferenceScopeTypes( sessionInfo );
         scopeFactory = new PreferenceScopeFactoryImpl( scopeTypes );
         preferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopeFactory, null );
@@ -110,7 +116,8 @@ public class PreferenceStoreImplTest {
         storage = spy( new PreferenceStorageImpl( ioService,
                                                   sessionInfo,
                                                   scopeTypes,
-                                                  scopeFactory ) );
+                                                  scopeFactory,
+                                                  objectStorage ) );
         storage.init();
 
         preferenceStore = spy( new PreferenceStoreImpl( storage,
