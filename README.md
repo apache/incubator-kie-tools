@@ -1,3 +1,5 @@
+[![Build Status](http://ci.kiegroup.org/buildStatus/icon?job=uberfire)](http://ci.kiegroup.org/job/uberfire)
+
 UberFire
 ========
 
