@@ -15,9 +15,9 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasIndex;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.HasIndex;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.IndexKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;

@@ -16,9 +16,11 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.junit.Before;
@@ -28,13 +30,13 @@ import static org.junit.Assert.*;
 
 public class SelectExactMatcherTest {
 
-    private Select<Item>          select;
-    private MultiMap<Value, Item> map;
-    private Item                  thirteen;
+    private Select<Item>                      select;
+    private MultiMap<Value, Item, List<Item>> map;
+    private Item                              thirteen;
 
     @Before
     public void setUp() throws Exception {
-        map = new MultiMap<>();
+        map = MultiMapFactory.make();
         thirteen = new Item( 13 );
 
         map.put( new Value( 0 ),

@@ -16,8 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.InspectorList;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.InspectorList;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.junit.Before;

@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 import java.util.ArrayList;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.uberfire.commons.validation.PortablePreconditions;

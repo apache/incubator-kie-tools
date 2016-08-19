@@ -16,11 +16,13 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyTreeMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyTreeMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
@@ -34,8 +36,8 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
 
     private Select<Item> select;
 
-    private MultiMap<Value, Item> makeMap() {
-        final MultiMap<Value, Item> map = new MultiMap<>();
+    private MultiMap<Value, Item, List<Item>> makeMap() {
+        final MultiMap<Value, Item, List<Item>> map = MultiMapFactory.make( false );
 
         map.put( new Value( 0 ),
                  new Item( 0 ) );

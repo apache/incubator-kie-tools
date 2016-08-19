@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyChangeListener;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyChangeListener;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
 
 public class UpdatableKey<T>
         extends Key {

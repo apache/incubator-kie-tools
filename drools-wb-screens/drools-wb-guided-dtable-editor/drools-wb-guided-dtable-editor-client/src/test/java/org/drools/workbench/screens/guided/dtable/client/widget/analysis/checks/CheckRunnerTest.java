@@ -22,7 +22,7 @@ import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.CancellableRepeatingCommand;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckManager;

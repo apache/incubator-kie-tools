@@ -18,10 +18,10 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ConditionsInspectorMultiMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.PatternInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ComparableConditionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.ConditionsInspectorMultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.PatternInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.ComparableConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;

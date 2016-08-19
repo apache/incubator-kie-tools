@@ -16,15 +16,16 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Utils.*;
 
 public class PatternBuilder {
 
-    private Index     index;
-    private Rule      rule;
-    private Pattern52 pattern52;
+    private final Index index;
+    private final Rule      rule;
+    private final Pattern52 pattern52;
 
     public PatternBuilder( final Index index,
                            final Rule rule,
@@ -38,6 +39,7 @@ public class PatternBuilder {
         final Pattern pattern = new Pattern( pattern52.getBoundName(),
                                              resolveObjectType( index,
                                                                 pattern52.getFactType() ) );
+
         rule.getPatterns().add( pattern );
 
         return pattern;

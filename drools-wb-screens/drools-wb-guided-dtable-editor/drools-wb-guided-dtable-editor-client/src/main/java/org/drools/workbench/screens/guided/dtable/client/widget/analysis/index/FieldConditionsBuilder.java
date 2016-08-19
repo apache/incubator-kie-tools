@@ -20,7 +20,7 @@ import java.util.List;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasIndex;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.HasIndex;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.uberfire.commons.validation.PortablePreconditions;
 

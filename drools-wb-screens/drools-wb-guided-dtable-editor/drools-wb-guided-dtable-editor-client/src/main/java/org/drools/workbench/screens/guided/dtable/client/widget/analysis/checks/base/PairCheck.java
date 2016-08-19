@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
 
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectConflictingRowsCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectRedundantRowsCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.SingleHitCheck;

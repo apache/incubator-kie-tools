@@ -18,10 +18,10 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.PatternInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RedundancyResult;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.ActionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.PatternInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.RedundancyResult;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;

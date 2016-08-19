@@ -23,6 +23,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.AnalyzerProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DataBuilderProvider;
 import org.junit.Before;

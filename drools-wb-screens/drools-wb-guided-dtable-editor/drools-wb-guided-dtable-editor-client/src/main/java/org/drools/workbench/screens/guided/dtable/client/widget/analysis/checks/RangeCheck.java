@@ -18,15 +18,15 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks
 import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ConditionsInspectorMultiMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.InspectorList;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.LeafInspectorList;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.ConditionsInspectorMultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.InspectorList;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.LeafInspectorList;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.BooleanConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ComparableConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.NumericIntegerConditionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.BooleanConditionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.ComparableConditionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.ConditionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.NumericIntegerConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.OneToManyCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.SubsumptionResolver;
@@ -41,6 +41,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporti
 public class RangeCheck
         extends OneToManyCheck {
 
+    private InspectorList<RuleInspector> otherRows;
+
     public RangeCheck( final RuleInspector ruleInspector ) {
         super( ruleInspector,
                new RuleInspectorCache.Filter() {
@@ -54,18 +56,23 @@ public class RangeCheck
     @Override
     public void check() {
 
-        // For some reason these clones always turn out to be evil.
-        final RuleInspectorClone evilClone = makeClone();
+        otherRows = getOtherRows();
 
-        if ( evilClone.containsInvertedItems && !isSubsumedByOtherRows( evilClone ) ) {
-            hasIssues = true;
-        } else {
+        if ( otherRows.size() == 0 ) {
             hasIssues = false;
+        } else {
+            // For some reason these clones always turn out to be evil.
+            final RuleInspectorClone evilClone = makeClone();
+
+            if ( evilClone.containsInvertedItems && !isSubsumedByOtherRows( evilClone ) ) {
+                hasIssues = true;
+            } else {
+                hasIssues = false;
+            }
         }
     }
 
     private boolean isSubsumedByOtherRows( final RuleInspectorClone evilClone ) {
-        final InspectorList<RuleInspector> otherRows = getOtherRows();
         if ( otherRows.isEmpty() ) {
             // Currently not reporting this issue if there is only one row.
             return true;

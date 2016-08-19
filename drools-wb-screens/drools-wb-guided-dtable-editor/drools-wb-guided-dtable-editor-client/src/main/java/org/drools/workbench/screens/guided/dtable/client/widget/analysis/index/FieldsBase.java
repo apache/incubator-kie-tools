@@ -17,7 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 import java.util.Collection;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyTreeMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyTreeMap;
 
 public class FieldsBase<T extends FieldBase> {
 

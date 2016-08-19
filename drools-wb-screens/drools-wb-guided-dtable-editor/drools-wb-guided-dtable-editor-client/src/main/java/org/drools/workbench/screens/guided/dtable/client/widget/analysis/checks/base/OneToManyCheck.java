@@ -16,8 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.InspectorList;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.InspectorList;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 
 public abstract class OneToManyCheck

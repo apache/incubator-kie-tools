@@ -15,33 +15,34 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import java.util.List;
+
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 
 public class ExactMatcherSearch<T> {
 
-    private ExactMatcher       matcher;
-    private MultiMap<Value, T> map;
+    private ExactMatcher                matcher;
+    private MultiMap<Value, T, List<T>> map;
 
     public ExactMatcherSearch( final ExactMatcher matcher,
-                               final MultiMap<Value, T> map ) {
+                               final MultiMap<Value, T, List<T>> map ) {
         this.matcher = matcher;
         this.map = map;
     }
 
-    public MultiMap<Value, T> search() {
+    public MultiMap<Value, T, List<T>> search() {
 
         if ( matcher.isNegate() ) {
 
             if ( map.containsKey( matcher.getValue() ) ) {
 
-                final MultiMap<Value, T> result = map.subMap( map.firstKey(), true,
-                                                              matcher.getValue(), false );
-                result.merge( map.subMap( matcher.getValue(), false,
-                                          map.lastKey(), true ) );
+                return MultiMap.merge( map.subMap( map.firstKey(), true,
+                                                   matcher.getValue(), false ),
+                                       map.subMap( matcher.getValue(), false,
+                                                   map.lastKey(), true ) );
 
-                return result;
             } else {
                 return map;
             }

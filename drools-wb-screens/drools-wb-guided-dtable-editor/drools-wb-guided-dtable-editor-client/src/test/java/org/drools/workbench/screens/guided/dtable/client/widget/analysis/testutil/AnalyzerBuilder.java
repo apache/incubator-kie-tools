@@ -132,4 +132,27 @@ public class AnalyzerBuilder
     public AnalyzerBuilder withPersonApprovedColumn( final String operator ) {
         return withConditionBooleanColumn( "a", "Person", "approved", operator );
     }
+
+    public Conditions conditionColumn() {
+        return new Conditions();
+    }
+
+    public class Conditions {
+        public PersonFactType person( final String variableName ) {
+            return new PersonFactType( variableName );
+        }
+    }
+
+    public class PersonFactType {
+
+        private final String variableName;
+
+        public PersonFactType( final String variableName ) {
+            this.variableName = variableName;
+        }
+
+        public AbstractDecisionTableBuilder age( final String operator ) {
+            return withConditionIntegerColumn( variableName, "Person", "age", operator );
+        }
+    }
 }

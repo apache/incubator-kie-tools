@@ -17,7 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 import java.util.Collection;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.IndexedKeyTreeMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.IndexedKeyTreeMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.Listen;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.Select;

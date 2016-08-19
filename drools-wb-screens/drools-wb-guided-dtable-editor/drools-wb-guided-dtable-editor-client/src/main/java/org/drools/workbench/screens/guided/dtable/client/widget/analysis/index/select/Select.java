@@ -20,7 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.FromMatcher;
@@ -31,10 +32,10 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class Select<T> {
 
-    private final MultiMap<Value, T> map;
-    private final Matcher            matcher;
+    private final MultiMap<Value, T, List<T>> map;
+    private final Matcher                     matcher;
 
-    public Select( final MultiMap<Value, T> map,
+    public Select( final MultiMap<Value, T, List<T>> map,
                    final Matcher matcher ) {
         checkNotNull( "matcher",
                       matcher );
@@ -53,7 +54,7 @@ public class Select<T> {
     }
 
     protected Entry<T> firstEntry() {
-        final MultiMap<Value, T> subMap = asMap();
+        final MultiMap<Value, T, List<T>> subMap = asMap();
         if ( subMap == null ) {
             return null;
         } else {
@@ -79,7 +80,7 @@ public class Select<T> {
     }
 
     protected Entry<T> lastEntry() {
-        final MultiMap<Value, T> subMap = asMap();
+        final MultiMap<Value, T, List<T>> subMap = asMap();
         if ( subMap == null ) {
             return null;
         } else {
@@ -95,7 +96,7 @@ public class Select<T> {
         }
     }
 
-    private List<T> getT( final MultiMap<Value, T> subMap,
+    private List<T> getT( final MultiMap<Value, T, List<T>> subMap,
                           final Value key ) {
         if ( subMap == null || subMap.isEmpty() ) {
             return null;
@@ -105,7 +106,7 @@ public class Select<T> {
     }
 
     public Collection<T> all() {
-        final MultiMap<Value, T> subMap = asMap();
+        final MultiMap<Value, T, List<T>> subMap = asMap();
         if ( subMap == null ) {
             return new ArrayList<>();
         } else {
@@ -113,7 +114,7 @@ public class Select<T> {
         }
     }
 
-    public MultiMap<Value, T> asMap() {
+    public MultiMap<Value, T, List<T>> asMap() {
         if ( map == null ) {
             return null;
         } else if ( map.isEmpty() ) {
@@ -149,14 +150,15 @@ public class Select<T> {
                                               this.map ).search();
 
         } else {
-            final MultiMap<Value, T> result = new MultiMap<>();
-            result.merge( map );
+            final MultiMap<Value, T, List<T>> result = MultiMapFactory.<Value, T>make();
+            MultiMap.merge( result,
+                            map );
             return result;
         }
     }
 
     public boolean exists() {
-        final MultiMap<Value, T> subMap = asMap();
+        final MultiMap<Value, T, List<T>> subMap = asMap();
         if ( subMap == null ) {
             return false;
         } else if ( subMap.isEmpty() ) {

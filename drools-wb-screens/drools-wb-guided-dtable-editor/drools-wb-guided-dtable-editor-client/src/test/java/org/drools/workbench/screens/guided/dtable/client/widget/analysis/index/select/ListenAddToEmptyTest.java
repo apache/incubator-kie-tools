@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ChangeHandledMultiMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.junit.Before;
@@ -28,8 +31,8 @@ import static org.junit.Assert.*;
 
 public class ListenAddToEmptyTest {
 
-    private Listen<Person>                listen;
-    private ChangeHandledMultiMap<Person> map;
+    private Listen<Person>                        listen;
+    private MultiMap<Value, Person, List<Person>> map;
 
     private Collection<Person> all;
     private Person             first;
@@ -37,7 +40,8 @@ public class ListenAddToEmptyTest {
 
     @Before
     public void setUp() throws Exception {
-        map = new ChangeHandledMultiMap<>();
+        map = MultiMapFactory.make( true );
+
         listen = new Listen<>( map,
                                new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "ID" ).build(),
                                                  "notInTheList",
@@ -81,20 +85,6 @@ public class ListenAddToEmptyTest {
 
         assertEquals( baby, first );
         assertEquals( baby, last );
-        assertEquals( 1, all.size() );
-    }
-
-    @Test
-    public void testEnd() throws Exception {
-        final Person grandpa = new Person( 100,
-                                           "grandpa" );
-        map.put( new Value( 100 ),
-                 grandpa );
-
-        assertEquals( grandpa,
-                      first );
-        assertEquals( grandpa,
-                      last );
         assertEquals( 1, all.size() );
     }
 

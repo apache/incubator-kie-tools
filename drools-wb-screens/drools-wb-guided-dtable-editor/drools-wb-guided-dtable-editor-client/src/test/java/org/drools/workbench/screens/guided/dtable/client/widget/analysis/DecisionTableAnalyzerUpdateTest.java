@@ -214,7 +214,9 @@ public class DecisionTableAnalyzerUpdateTest
 
         assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
 
-        appendRow( 2 );
+        appendRow( DataType.DataTypes.NUMERIC,
+                   DataType.DataTypes.NUMERIC,
+                   DataType.DataTypes.STRING  );
 
         assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
     }

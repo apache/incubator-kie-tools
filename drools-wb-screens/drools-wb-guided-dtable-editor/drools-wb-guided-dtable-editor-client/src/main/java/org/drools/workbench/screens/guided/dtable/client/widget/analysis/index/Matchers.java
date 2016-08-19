@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.KeyMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;

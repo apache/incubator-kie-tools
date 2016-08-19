@@ -18,16 +18,16 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 import java.util.HashMap;
 import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 
 public class MapBy<KeyType, ValueType> {
 
-    private MultiMap<Value, ValueType> multiMap;
+    private MultiMap<Value, ValueType, List<ValueType>> multiMap;
 
     private HashMap<KeyType, Value> valueMap = new HashMap<>();
 
-    public MapBy( final MultiMap<Value, ValueType> multiMap ) {
+    public MapBy( final MultiMap<Value, ValueType, List<ValueType>> multiMap ) {
         this.multiMap = multiMap;
         for ( final Value value : multiMap.keySet() ) {
             valueMap.put( ( KeyType ) value.getComparable(),

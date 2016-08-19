@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -74,6 +75,45 @@ public abstract class AnalyzerUpdateTestBase {
         analyzer.deleteColumns( columnDataIndex, 1 );
     }
 
+    public ValueSetter setCoordinate() {
+        return new ValueSetter();
+    }
+
+    public class ValueSetter {
+
+        public ColumnValueSetter row( final int row ) {
+            return new ColumnValueSetter( row );
+        }
+
+        public class ColumnValueSetter {
+            private int row;
+
+            public ColumnValueSetter( final int row ) {
+                this.row = row;
+            }
+
+            public CellValueSetter column( final int column ) {
+                return new CellValueSetter( column );
+            }
+
+            public class CellValueSetter {
+                private int column;
+
+                public CellValueSetter( final int column ) {
+                    this.column = column;
+                }
+
+                public void toValue( final String value ) {
+                    setValue( row, column, value );
+                }
+
+                public void toValue( final Number value ) {
+                    setValue( row, column, value );
+                }
+            }
+        }
+    }
+
     protected void setValue( final int rowIndex,
                              final int columnIndex,
                              final Number value ) {
@@ -107,7 +147,7 @@ public abstract class AnalyzerUpdateTestBase {
         analyzer.updateColumns( table52.getData().size() );
     }
 
-    protected void appendRow( final int amountOfColumns ) {
+    protected void appendRow( final DataType.DataTypes... dataTypes) {
 
 
         final ArrayList<DTCellValue52> row = new ArrayList<>();
@@ -117,9 +157,11 @@ public abstract class AnalyzerUpdateTestBase {
         // Explanation
         row.add( new DTCellValue52() );
 
-        for ( int i = 0; i < amountOfColumns; i++ ) {
-            row.add( new DTCellValue52() );
+        for ( final DataType.DataTypes dataType : dataTypes ) {
+            row.add( new DTCellValue52( dataType,
+                                        true ) );
         }
+
         table52.getData().add( row );
         analyzer.appendRow();
         analyzer.updateColumns( table52.getData().size() );

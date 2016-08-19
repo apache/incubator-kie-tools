@@ -15,14 +15,14 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapFactory;
 import org.junit.Test;
 
 public class SelectNullTest {
 
     @Test( expected = IllegalArgumentException.class )
     public void testAll() throws Exception {
-        new Select<>( new MultiMap<>(),
+        new Select<>( MultiMapFactory.make(),
                       null );
     }
 }

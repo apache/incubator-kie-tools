@@ -16,10 +16,10 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ChangeHandledMultiMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMapChangeHandler;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapChangeHandler;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
 
@@ -32,55 +32,50 @@ public class Listen<T>
     private final ArrayList<FirstListener<T>> firstListeners = new ArrayList<>();
     private final ArrayList<LastListener<T>>  lastListeners  = new ArrayList<>();
 
-    private Entry<T>           first;
-    private Entry<T>           last;
-    private MultiMap<Value, T> all;
+    private Entry<T>                    first;
+    private Entry<T>                    last;
+    private MultiMap<Value, T, List<T>> all;
 
-    public Listen( final MultiMap<Value, T> map,
+    public Listen( final MultiMap<Value, T, List<T>> map,
                    final Matcher matcher ) {
         super( map,
                matcher );
 
         checkNotNull( "map",
                       map );
-        if ( map instanceof ChangeHandledMultiMap ) {
+        map.addChangeListener( new MultiMapChangeHandler<Value, T>() {
+            @Override
+            public void onChange( final ChangeSet<Value, T> changeSet ) {
 
-            (( ChangeHandledMultiMap ) map).addChangeListener( new MultiMapChangeHandler<T>() {
-                @Override
-                public void onChange( final ChangeSet<T> changeSet ) {
+                if ( hasNoListeners() ) {
+                    return;
+                }
 
-                    if ( hasNoListeners() ) {
-                        return;
+                final ChangeHelper<T> changeHelper = new ChangeHelper<T>( changeSet,
+                                                                          matcher );
+
+                if ( !firstListeners.isEmpty() ) {
+                    if ( first == null || changeHelper.firstChanged( first ) ) {
+                        first = firstEntry();
+                        notifyFirstListeners();
                     }
-
-                    final ChangeHelper<T> changeHelper = new ChangeHelper<T>( changeSet,
-                                                                              matcher );
-
-                    if ( !firstListeners.isEmpty() ) {
-                        if ( first == null || changeHelper.firstChanged( first ) ) {
-                            first = firstEntry();
-                            notifyFirstListeners();
                         }
-                    }
 
-                    if ( !lastListeners.isEmpty() ) {
-                        if ( last == null || changeHelper.lastChanged( last ) ) {
-                            last = lastEntry();
-                            notifyLastListeners();
-                        }
+                if ( !lastListeners.isEmpty() ) {
+                    if ( last == null || changeHelper.lastChanged( last ) ) {
+                        last = lastEntry();
+                        notifyLastListeners();
                     }
+                }
 
-                    if ( !allListeners.isEmpty() ) {
-                        all = asMap();
-                        notifyAllListeners();
-                    }
-                    }
+                if ( !allListeners.isEmpty() ) {
+                    all = asMap();
+                    notifyAllListeners();
+                }
+            }
 
-            } );
-        } else {
-            throw new IllegalArgumentException( "Can not listend to this map." );
+        } );
         }
-    }
 
     /**
      * Well not *all*, just the AllListeners.

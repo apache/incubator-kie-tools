@@ -15,7 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMapChangeHandler;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapChangeHandler;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
 
 class ChangeHelper<T> {
@@ -23,7 +24,7 @@ class ChangeHelper<T> {
     private final Select<T> addedSelector;
     private final Select<T> removedSelector;
 
-    ChangeHelper( final MultiMapChangeHandler.ChangeSet<T> changeSet,
+    ChangeHelper( final MultiMapChangeHandler.ChangeSet<Value, T> changeSet,
                   final Matcher matcher ) {
         addedSelector = new Select<T>( changeSet.getAdded(),
                                        matcher );

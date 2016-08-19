@@ -71,4 +71,15 @@ public class AbstractDecisionTableBuilder {
 
         return this;
     }
+
+    public Actions actionColumn() {
+        return new Actions();
+    }
+
+    public class Actions {
+
+        public AbstractDecisionTableBuilder retract() {
+            return withRetract();
+        }
+    }
 }

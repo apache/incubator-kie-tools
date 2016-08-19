@@ -61,9 +61,11 @@ public class RuleBuilder {
         for ( final CompositeColumn<? extends BaseColumn> column : model.getConditions() ) {
             if ( column instanceof Pattern52 ) {
 
+                final Pattern52 pattern52 = ( Pattern52 ) column;
+
                 final Pattern pattern = resolvePattern( index,
                                                         rule,
-                                                        ( Pattern52 ) column );
+                                                        pattern52 );
 
                 new FieldConditionsBuilder( index,
                                             model,

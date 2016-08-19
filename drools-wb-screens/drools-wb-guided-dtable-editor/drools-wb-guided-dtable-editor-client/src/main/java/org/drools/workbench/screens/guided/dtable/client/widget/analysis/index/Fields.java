@@ -16,8 +16,9 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.Listen;
@@ -52,7 +53,7 @@ public class Fields
         public Conditions conditions() {
             final Conditions conditions = new Conditions();
 
-            final MultiMap<Value, Field> subMap = asMap();
+            final MultiMap<Value, Field, List<Field>> subMap = asMap();
             if ( subMap != null ) {
                 final Collection<Field> fields = subMap.allValues();
                 for ( final Field field : fields ) {
@@ -67,7 +68,7 @@ public class Fields
         public Actions actions() {
             final Actions actions = new Actions();
 
-            final MultiMap<Value, Field> subMap = asMap();
+            final MultiMap<Value, Field, List<Field>> subMap = asMap();
             if ( subMap != null ) {
                 final Collection<Field> fields = subMap.allValues();
                 for ( final Field field : fields ) {

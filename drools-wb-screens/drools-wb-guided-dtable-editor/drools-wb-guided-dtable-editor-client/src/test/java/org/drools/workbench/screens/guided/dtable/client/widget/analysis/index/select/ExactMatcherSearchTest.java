@@ -15,8 +15,11 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import java.util.List;
+
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.junit.Before;
@@ -28,7 +31,7 @@ public class ExactMatcherSearchTest {
 
     private ExactMatcherSearch<Object> search;
 
-    private MultiMap<Value, Object> map = new MultiMap<>();
+    private MultiMap<Value, Object, List<Object>> map = MultiMapFactory.make();
 
     @Before
     public void setUp() throws Exception {
@@ -45,7 +48,7 @@ public class ExactMatcherSearchTest {
         search = new ExactMatcherSearch<>( new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "value" ).build(),
                                                              null ),
                                            map );
-        MultiMap<Value, Object> search1 = search.search();
+        MultiMap<Value, Object, List<Object>> search1 = search.search();
         assertEquals( "I am null", search1.get( new Value( null ) ).get( 0 ) );
 
     }
@@ -57,7 +60,7 @@ public class ExactMatcherSearchTest {
                                                              null,
                                                              true ),
                                            map );
-        MultiMap<Value, Object> search1 = search.search();
+        MultiMap<Value, Object, List<Object>> search1 = search.search();
         assertEquals( "hello", search1.get( new Value( "helloKey" ) ).get( 0 ) );
 
     }

@@ -23,7 +23,7 @@ import com.google.gwt.core.client.Scheduler;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.CancellableRepeatingCommand;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.Status;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.UpdateHandler;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 

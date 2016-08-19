@@ -16,9 +16,11 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
 import org.junit.Before;
@@ -32,7 +34,7 @@ public class SelectKeyMatcherTest {
 
     @Before
     public void setUp() throws Exception {
-        final MultiMap<Value, String> map = new MultiMap<>();
+        final MultiMap<Value, String, List<String>> map = MultiMapFactory.make();
         map.put( new Value( "value1" ),
                  "value1" );
         map.put( new Value( "value2" ),

@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
 
 public class IndexKey
         extends Key {

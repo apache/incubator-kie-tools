@@ -17,9 +17,11 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
@@ -37,8 +39,8 @@ public class SelectExactMatcherNegateTest {
     private Object       firstValue;
     private Object       lastValue;
 
-    private MultiMap<Value, Item> makeMap() {
-        final MultiMap<Value, Item> itemKeyTreeMap = new MultiMap<>();
+    private MultiMap<Value, Item, List<Item>> makeMap() {
+        final MultiMap<Value, Item, List<Item>> itemKeyTreeMap = MultiMapFactory.make();
 
         itemKeyTreeMap.put( new Value( null ),
                             new Item( null ) );

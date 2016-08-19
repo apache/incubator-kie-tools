@@ -17,9 +17,9 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 
 import java.util.ArrayList;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RetractHandler;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.RetractHandler;
 import org.uberfire.ext.wires.core.api.shapes.UUID;
 
 public class UUIDKey

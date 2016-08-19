@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 
 public class Issue {
 

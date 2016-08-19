@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks
 
 import java.util.Collection;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -17,9 +17,10 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyTreeMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyTreeMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.Listen;
@@ -79,7 +80,7 @@ public class ObjectTypes {
         public ObjectFields fields() {
             final ObjectFields fields = new ObjectFields();
 
-            final MultiMap<Value, ObjectType> subMap = asMap();
+            final MultiMap<Value, ObjectType, List<ObjectType>> subMap = asMap();
             if ( subMap != null ) {
                 final Collection<ObjectType> objectTypes = subMap.allValues();
                 for ( final ObjectType objectType : objectTypes ) {

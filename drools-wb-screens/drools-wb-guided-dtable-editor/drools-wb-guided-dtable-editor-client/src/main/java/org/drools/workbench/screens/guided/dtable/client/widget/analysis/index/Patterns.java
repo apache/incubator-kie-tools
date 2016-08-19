@@ -17,9 +17,10 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyTreeMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyTreeMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.Listen;
@@ -79,7 +80,7 @@ public class Patterns {
         public Fields fields() {
             final Fields fields = new Fields();
 
-            final MultiMap<Value, Pattern> subMap = asMap();
+            final MultiMap<Value, Pattern, List<Pattern>> subMap = asMap();
             if ( subMap != null ) {
                 final Collection<Pattern> patterns = subMap.allValues();
                 for ( final Pattern pattern : patterns ) {

@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 
 public abstract class SingleCheck
         extends CheckBase

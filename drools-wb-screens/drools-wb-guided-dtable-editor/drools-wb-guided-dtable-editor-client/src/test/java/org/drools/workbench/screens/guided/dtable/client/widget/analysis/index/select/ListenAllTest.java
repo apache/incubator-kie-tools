@@ -16,9 +16,11 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ChangeHandledMultiMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMapFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.junit.Before;
@@ -29,13 +31,13 @@ import static org.junit.Assert.*;
 public class ListenAllTest {
 
 
-    private Listen<String>                listen;
-    private ChangeHandledMultiMap<String> map;
-    private Collection<String>            all;
+    private Listen<String>                        listen;
+    private MultiMap<Value, String, List<String>> map;
+    private Collection<String>                    all;
 
     @Before
     public void setUp() throws Exception {
-        map = new ChangeHandledMultiMap<>();
+        map = MultiMapFactory.make( true );
 
         listen = new Listen<>( map,
                                new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "ID" ).build(),

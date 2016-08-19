@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,8 @@ public class DecisionTableAnalyzerAddRowScenarioTest
 
         fireUpAnalyzer();
 
-        appendRow( 2 );
+        appendRow( DataType.DataTypes.NUMERIC,
+                   DataType.DataTypes.BOOLEAN );
 
         final AnalysisReport analysisReport = analyzerProvider.getAnalysisReport();
         assertContains( "SingleHitLost", analyzerProvider.getAnalysisReport() );

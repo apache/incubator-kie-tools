@@ -16,8 +16,8 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
@@ -29,7 +29,10 @@ public abstract class FieldBase
                    HasKeys,
                    HumanReadable{
 
-    private static KeyDefinition NAME           = KeyDefinition.newKeyDefinition().withId( "name" ).build();
+    private static KeyDefinition NAME = KeyDefinition.newKeyDefinition()
+                                                     .withId( "name" )
+                                                     .updatable()
+                                                     .build();
 
     private final UUIDKey uuidKey = new UUIDKey( this );
     private final String factType;

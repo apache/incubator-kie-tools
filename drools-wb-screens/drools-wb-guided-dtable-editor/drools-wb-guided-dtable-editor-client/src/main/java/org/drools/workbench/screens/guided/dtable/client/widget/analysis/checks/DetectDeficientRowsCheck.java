@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.OneToManyCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
