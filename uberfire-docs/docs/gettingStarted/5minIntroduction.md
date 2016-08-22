@@ -21,7 +21,7 @@ This guide assumes you have the following software set up and working on your co
 -DarchetypeVersion=1.0.0.Beta1 \
 -DgroupId=org.uberfire \
 -DartifactId=demo \
--Dversion=1.0-SNAPSHOT\
+-Dversion=1.0-SNAPSHOT \
 -Dpackage=org.uberfire \
 -DcapitalizedRootArtifactId=Demo
 ```

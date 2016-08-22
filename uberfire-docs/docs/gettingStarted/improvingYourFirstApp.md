@@ -229,7 +229,7 @@ Click on MoodPerspective menu:
 ### Let's make the screens communicate
 Did you notice the CDI event raised by MoodScreen? If no, take a look at moodForm.setOnsubmit(..) call at init() method.
 
-Now let’s do something in response to the the event we fire in MoodListenerScreen when the user presses Enter. To do this we’ll add a CDI observer method at MoodListenerScreen:
+Now let’s do something in response to the event we fire in MoodListenerScreen when the user presses Enter. To do this we’ll add a CDI observer method at MoodListenerScreen:
 ```
 public void onMoodChange( @Observes Mood mood ) {
         moodTextBox.setText( "You are feeling " + mood.getText() );
