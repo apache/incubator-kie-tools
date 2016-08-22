@@ -33,6 +33,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -50,6 +51,7 @@ public class JGitFileSystemProviderBytemanTest extends AbstractTestInfra {
 
     private static Logger logger = LoggerFactory.getLogger( JGitFileSystemProviderBytemanTest.class );
 
+    @Ignore("This test produces a strange behaviour that locks the other test. Is ignored until a solution is found.")
     @Test()
     @BMScript(value = "byteman/squash_lock.btm")
     public void testConcurrentLocking() throws IOException, GitAPIException {
