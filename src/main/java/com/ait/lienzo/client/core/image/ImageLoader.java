@@ -31,30 +31,36 @@ public abstract class ImageLoader
     {
         final Image image = new Image();
 
+        final ImageElement element = ImageElement.as(image.getElement());
+
         image.setVisible(false);
 
         if (isValidDataURL(url))
         {
             RootPanel.get().add(image);
 
-            ImageElement.as(image.getElement()).setSrc(url);
+            element.setSrc(url);
 
-            onImageElementLoad(ImageElement.as(image.getElement()));
+            onImageElementLoad(element);
         }
         else
         {
-            /*
+            String anon = "";
+
             if (url.startsWith("http:") || (url.startsWith("https:")))
             {
-                setCrossOrigin(ImageElement.as(m_image.getElement()), "anonymous");
+                anon = "anonymous";
+
+                setCrossOrigin(element, anon);
             }
-            */
+            final String orig = anon;
+
             image.addLoadHandler(new LoadHandler()
             {
                 @Override
                 public final void onLoad(final LoadEvent event)
                 {
-                    doImageElementLoadAndRetry(ImageElement.as(image.getElement()), image, url);
+                    doImageElementLoadAndRetry(element, image, orig, url);
                 }
             });
             image.addErrorHandler(new ErrorHandler()
@@ -73,7 +79,7 @@ public abstract class ImageLoader
         }
     }
 
-    private final void doImageElementLoadAndRetry(final ImageElement elem, final Image image, final String url)
+    private final void doImageElementLoadAndRetry(final ImageElement elem, final Image image, final String orig, final String url)
     {
         final int w = Math.max(image.getWidth(), elem.getWidth());
 
@@ -81,7 +87,7 @@ public abstract class ImageLoader
 
         if ((w < 1) || (h < 1))
         {
-            load(url, "", new JSImageCallback()
+            load(url, orig, new JSImageCallback()
             {
                 @Override
                 public void onSuccess(final ImageElement e)
@@ -121,6 +127,8 @@ public abstract class ImageLoader
     {
         final Image image = new Image();
 
+        final ImageElement element = ImageElement.as(image.getElement());
+
         image.setVisible(false);
 
         image.addLoadHandler(new LoadHandler()
@@ -128,7 +136,7 @@ public abstract class ImageLoader
             @Override
             public final void onLoad(final LoadEvent event)
             {
-                onImageElementLoad(ImageElement.as(image.getElement()));
+                onImageElementLoad(element);
             }
         });
         image.addErrorHandler(new ErrorHandler()

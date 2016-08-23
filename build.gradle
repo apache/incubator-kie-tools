@@ -50,7 +50,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.1.1.1-SNAPSHOT'
+version = '2.0.271-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -98,7 +98,7 @@ sourceSets {
 }
 
 dependencies {
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.170-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.175-RELEASE')
     provided(group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0')
     testCompile(group: 'junit', name: 'junit', version: '4.12')
 }
@@ -117,8 +117,8 @@ uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            repository(url: "${sonatype_snapshotURL}") {
-            //repository(url: "${sonatype_stageingURL}") {
+            //repository(url: "${sonatype_snapshotURL}") {
+            repository(url: "${sonatype_stageingURL}") {
                 authentication(userName: "${sonatype_user}", password: "${sonatype_password}")
             }
             pom.project {
