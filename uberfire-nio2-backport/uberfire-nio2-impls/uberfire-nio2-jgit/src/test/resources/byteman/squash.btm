@@ -8,8 +8,8 @@ RULE define rendezvous
 CLASS org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider
 METHOD lockAndSquash
 AT INVOKE org.uberfire.java.nio.file.Path.getFileSystem
-IF NOT isRendezvous("rendezvous", 2)
-DO createRendezvous("rendezvous", 2, true);
+IF NOT isRendezvous("squash", 2)
+DO createRendezvous("squash", 2, true);
    traceln("rendezvous created");
 ENDRULE
 
@@ -18,7 +18,7 @@ CLASS org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider
 METHOD lockAndSquash
 AFTER INVOKE org.uberfire.java.nio.file.Path.getFileSystem
 BIND threadName = Thread.currentThread().getName();
-IF isRendezvous("rendezvous", 2)
-DO rendezvous("rendezvous");
-   rendezvous("rendezvous")
+IF isRendezvous("squash", 2)
+DO rendezvous("squash");
+   rendezvous("squash")
 ENDRULE
