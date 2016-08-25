@@ -17,10 +17,12 @@
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.kie.workbench.common.services.datamodeller.core.JavaClass;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeKind;
+import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.Visibility;
 
 public class JavaClassImpl extends AbstractJavaType implements JavaClass {
@@ -28,6 +30,10 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     private String superClassName;
 
     private List<String> interfaces = new ArrayList<String>(  );
+
+    private List<JavaClass> nestedClasses = new ArrayList<>(  );
+
+    private List<Method> methods = new ArrayList<>(  );
 
     boolean _static = false;
 
@@ -69,6 +75,58 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     }
 
     @Override
+    public List<JavaClass> getNestedClasses() {
+        return nestedClasses;
+    }
+
+    @Override
+    public JavaClass addNestedClass( JavaClass javaClass ) {
+        if (javaClass == null) {
+            return null;
+        }
+        Iterator<JavaClass> iterator = nestedClasses.listIterator();
+        while ( iterator.hasNext() ) {
+            JavaClass nestedClass = iterator.next();
+            if (nestedClass.getName().equals( javaClass.getName() )) {
+                iterator.remove();
+                break;
+            }
+        }
+        nestedClasses.add( javaClass );
+        return javaClass;
+    }
+
+    @Override
+    public JavaClass removeNestedClass( JavaClass javaClass ) {
+        boolean removed = nestedClasses.remove( javaClass );
+        return removed ? javaClass : null;
+    }
+
+    @Override
+    public List<Method> getMethods() {
+        return methods;
+    }
+
+    @Override
+    public Method addMethod(Method method) {
+        Iterator<Method> iterator = methods.listIterator();
+        while ( iterator.hasNext() ) {
+            Method existingMethod = iterator.next();
+            if (existingMethod.getName().equals( method.getName() )) {
+                iterator.remove();
+                break;
+            }
+        }
+        methods.add( method );
+        return method;
+    }
+
+    @Override
+    public Method removeMethod( Method method ) {
+        return methods.remove( method ) ? null : method;
+    }
+
+    @Override
     public String getSuperClassName() {
         return superClassName;
     }
@@ -85,6 +143,11 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     @Override
     public List<String> getInterfaces() {
         return interfaces;
+    }
+
+    @Override
+    public void addInterface( String interfaceDefinition ) {
+        interfaces.add( interfaceDefinition );
     }
 
     @Override public boolean equals( Object o ) {

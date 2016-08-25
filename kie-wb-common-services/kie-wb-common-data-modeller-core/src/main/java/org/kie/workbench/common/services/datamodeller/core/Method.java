@@ -1,11 +1,11 @@
-/**
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,10 +18,11 @@ package org.kie.workbench.common.services.datamodeller.core;
 
 import java.util.List;
 
-public interface HasInterfaces {
+public interface Method extends HasName {
 
-    public List<String> getInterfaces();
+    List<String> getParameters();
 
-    void addInterface( String interfaceDefinition );
+    String getBody();
 
+    String getReturnType();
 }

@@ -21,11 +21,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
 
 import java.io.InputStream;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -330,6 +332,43 @@ public class GenerationEngineTest {
         try {
             String result = engine.generateFieldString(generationContext, property);
             assertEquals( results.getProperty( "testFieldStringGeneration" ), result );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testMethodStringGeneration() {
+
+        DataModel dataModel = dataModelOracleDriver.createModel();
+        List<String> parameters = Arrays.asList( "com.test.Object1", "com.test.Object1" );
+        Method method = new MethodImpl( "test", parameters, "return o1;", "com.test.Object1" );
+
+        DataObject object = dataModel.addDataObject("com.test.Object1");
+        object.addMethod( method );
+
+        GenerationContext generationContext = new GenerationContext( dataModel );
+
+        try {
+            String result = engine.generateMethodString(generationContext, method);
+            assertEquals( results.getProperty( "testMethodStringGeneration" ), results.getProperty( "testMethodStringGeneration" ), result );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testClassWithNestedClassStringGeneration() {
+
+        DataModel dataModel = dataModelOracleDriver.createModel();
+
+        DataObject object = dataModel.addDataObject("com.test.Object1");
+
+        GenerationContext generationContext = new GenerationContext( dataModel );
+
+        try {
+            String result = engine.generateNestedClassString(generationContext, object);
+            assertEquals( results.getProperty( "testNestedClassStringGeneration" ), results.getProperty( "testNestedClassStringGeneration" ), result );
         } catch ( Exception e ) {
             e.printStackTrace();
         }

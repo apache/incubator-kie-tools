@@ -86,6 +86,11 @@ public class DataModelerEvent {
         return currentField;
     }
 
+    public DataModelerEvent withCurrentField( ObjectProperty currentField ) {
+        setCurrentField( currentField );
+        return this;
+    }
+
     public void setCurrentField( ObjectProperty currentField ) {
         this.currentField = currentField;
     }
@@ -94,9 +99,15 @@ public class DataModelerEvent {
         return source;
     }
 
+    public DataModelerEvent withSource( String source ) {
+        setSource( source );
+        return this;
+    }
+
     public void setSource( String source ) {
         this.source = source;
     }
+
 
     public Project getCurrentProject() {
         return currentProject;
@@ -120,6 +131,12 @@ public class DataModelerEvent {
 
     public String getContextId() {
         return contextId;
+    }
+
+
+    public DataModelerEvent withContextId( String contextId ) {
+        setContextId( contextId );
+        return this;
     }
 
     public void setContextId( String contextId ) {

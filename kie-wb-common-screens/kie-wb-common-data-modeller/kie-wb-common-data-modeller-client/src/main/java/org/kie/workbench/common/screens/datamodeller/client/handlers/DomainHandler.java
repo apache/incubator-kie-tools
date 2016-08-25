@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.datamodeller.client.handlers;
 
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerValueChangeEvent;
 
 public interface DomainHandler {
 
@@ -28,5 +30,7 @@ public interface DomainHandler {
     ResourceOptions getResourceOptions( boolean newInstance );
 
     void postCommandProcessing( DataModelCommand command );
+
+    void postEventProcessing( DataModelerEvent event );
 
 }

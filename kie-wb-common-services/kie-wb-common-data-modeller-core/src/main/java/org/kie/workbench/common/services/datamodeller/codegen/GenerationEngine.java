@@ -24,6 +24,8 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.HasAnnotations;
+import org.kie.workbench.common.services.datamodeller.core.JavaClass;
+import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.slf4j.Logger;
@@ -32,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
@@ -172,6 +173,14 @@ public class GenerationEngine {
         generateSubTemplate(generationContext, template);
     }
 
+    public void generateMethod( GenerationContext generationContext, Method method, String template) throws Exception {
+        generateSubTemplate(generationContext, template);
+    }
+
+    public void generateNestedClass( GenerationContext generationContext, JavaClass nestedClass, String template) throws Exception {
+        generateSubTemplate(generationContext, template);
+    }
+
     public void generateSetterGetter(GenerationContext generationContext, ObjectProperty attribute, String template) throws Exception {
         generateSubTemplate(generationContext, template);
     }
@@ -232,6 +241,26 @@ public class GenerationEngine {
         VelocityContext vc = buildContext(generationContext);
         vc.put("annotation", annotation);
         return generateSubTemplateString(generationContext, "java_annotation");
+    }
+
+    public String generateMethodString(GenerationContext generationContext, Method method, String indent) throws Exception {
+        return indentLines( generateMethodString( generationContext, method), indent);
+    }
+
+    public String generateMethodString(GenerationContext generationContext, Method method) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("attr", method);
+        return generateSubTemplateString(generationContext, "java_method");
+    }
+
+    public String generateNestedClassString(GenerationContext generationContext, JavaClass javaClass, String indent) throws Exception {
+        return indentLines( generateNestedClassString( generationContext, javaClass ), indent);
+    }
+
+    public String generateNestedClassString(GenerationContext generationContext, JavaClass javaClass) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("attr", javaClass);
+        return generateSubTemplateString(generationContext, "java_nested_class");
     }
 
     public String generateFieldString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
@@ -369,7 +398,7 @@ public class GenerationEngine {
      */
     public String generateFieldGetterSetterString(GenerationContext generationContext, ObjectProperty attribute, String indent) throws Exception {
         StringBuilder sb = new StringBuilder();
-        sb.append( generateFieldGetterString( generationContext, attribute ) ).append(GenerationTools.EOL).append(GenerationTools.EOL);
+        sb.append( generateFieldGetterString( generationContext, attribute ) ).append( GenerationTools.EOL).append( GenerationTools.EOL);
         sb.append( generateFieldSetterString( generationContext, attribute ) );
         return indentLines( sb.toString(), indent );
     }

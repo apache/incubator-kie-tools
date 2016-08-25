@@ -19,6 +19,7 @@ package org.kie.workbench.common.services.datamodeller.codegen;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +28,9 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.HasAnnotations;
+import org.kie.workbench.common.services.datamodeller.core.JavaClass;
+import org.kie.workbench.common.services.datamodeller.core.JavaType;
+import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
@@ -320,18 +324,24 @@ public class GenerationTools {
         return builder.toString();
     }
 
-    public String resolveSuperClassType( DataObject dataObject ) {
+    public String resolveSuperClassType( JavaClass javaClass ) {
         StringBuffer type = new StringBuffer( "" );
-        if ( dataObject.getSuperClassName() != null && !"".equals( dataObject.getSuperClassName() ) ) {
+        if ( javaClass.getSuperClassName() != null && !"".equals( javaClass.getSuperClassName() ) ) {
             type.append( "extends " );
-            type.append( dataObject.getSuperClassName() );
+            type.append( javaClass.getSuperClassName() );
         }
         return type.toString();
     }
 
-    public String resolveImplementedInterfacesType( DataObject dataObject ) {
+    public String resolveImplementedInterfacesType( JavaClass javaClass ) {
         StringBuffer type = new StringBuffer( "" );
         type.append( "implements java.io.Serializable" );
+        if ( javaClass.getInterfaces() != null ) {
+            for ( String interfaceDefinition : javaClass.getInterfaces() ) {
+                type.append( ", " )
+                    .append( interfaceDefinition );
+            }
+        }
         return type.toString();
     }
 
@@ -377,6 +387,22 @@ public class GenerationTools {
 
     public boolean hasClassAnnotations( DataObject dataObject ) {
         return dataObject != null && dataObject.getAnnotations() != null && dataObject.getAnnotations().size() > 0;
+    }
+
+    public String resolveMethodParameters( List<String> parameters ) {
+        StringBuilder builder = new StringBuilder( "" );
+        Iterator<String> parameterIterator = parameters.iterator();
+        int i = 1;
+        while ( parameterIterator.hasNext() ) {
+            builder.append( parameterIterator.next() )
+                    .append( " o" )
+                    .append( i );
+            if (parameterIterator.hasNext()) {
+                builder.append( "," );
+            }
+            i++;
+        }
+        return builder.toString();
     }
 
     public String resolveEquals( DataObject dataObject, String indent ) {

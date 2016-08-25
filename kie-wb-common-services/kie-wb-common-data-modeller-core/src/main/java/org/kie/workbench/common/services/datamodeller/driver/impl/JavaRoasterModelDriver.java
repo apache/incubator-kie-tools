@@ -23,15 +23,20 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.drools.core.base.ClassTypeResolver;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaClass;
 import org.jboss.forge.roaster.model.JavaType;
+import org.jboss.forge.roaster.model.Method;
+import org.jboss.forge.roaster.model.Parameter;
 import org.jboss.forge.roaster.model.SyntaxError;
 import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
@@ -39,6 +44,7 @@ import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.Import;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 import org.jboss.forge.roaster.model.source.ParameterSource;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
@@ -53,7 +59,9 @@ import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.JavaClassImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
@@ -398,7 +406,8 @@ public class JavaRoasterModelDriver implements ModelDriver {
         Visibility visibility = DriverUtils.buildVisibility( javaClassSource.getVisibility() );
 
         //TODO 6.3 we need a way to check if a class is final. Seems like Roaster do not provide this info
-        DataObject dataObject = new DataObjectImpl( packageName, className, visibility, javaClassSource.isAbstract(), false );
+        final DataObject dataObject = new DataObjectImpl( packageName, className, visibility, javaClassSource.isAbstract(), false );
+
         List<ObjectProperty> unmanagedProperties = new ArrayList<ObjectProperty>();
 
         try {
@@ -411,6 +420,29 @@ public class JavaRoasterModelDriver implements ModelDriver {
             if ( annotations != null ) {
                 for ( AnnotationSource annotation : annotations ) {
                     addDataObjectAnnotation( dataObject, annotation, classTypeResolver );
+                }
+            }
+
+            List<JavaSource<?>> nestedTypes = javaClassSource.getNestedTypes();
+            if (nestedTypes != null) {
+                for (JavaSource nestedType : nestedTypes) {
+                    if (nestedType instanceof JavaClassSource) {
+                        JavaClassImpl nestedJavaClass = new JavaClassImpl( "", nestedType.getName(), DriverUtils.buildVisibility( nestedType.getVisibility() ) );
+                        dataObject.addNestedClass( nestedJavaClass );
+                        if (javaClassSource.getInterfaces() != null) {
+                            for (String interfaceDefinition : ( (JavaClassSource) nestedType ).getInterfaces()) {
+                                nestedJavaClass.addInterface( interfaceDefinition );
+                            }
+                        }
+                        List<MethodSource<JavaClassSource>> nestedClassMethods = ( (JavaClassSource) nestedType ).getMethods();
+                        if (nestedClassMethods != null ) {
+                            for ( Method nestedClassMethod : nestedClassMethods ) {
+                                if ( !nestedClassMethod.isConstructor() ) {
+                                    addMethod( nestedJavaClass, nestedClassMethod, classTypeResolver );
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -440,6 +472,17 @@ public class JavaRoasterModelDriver implements ModelDriver {
         ObjectProperty property = parseProperty( field, classTypeResolver );
         dataObject.addProperty( property );
         return property;
+    }
+
+    private void addMethod( org.kie.workbench.common.services.datamodeller.core.JavaClass javaClass, Method method, ClassTypeResolver classTypeResolver ) throws ClassNotFoundException {
+        List<? extends Parameter> parameters = method.getParameters();
+        List<String> methodParameters = null;
+        if ( parameters != null ) {
+            methodParameters = parameters.stream().map( p -> p.getType().getQualifiedName() ).collect( Collectors.toList() );
+        }
+        String nestedClassMethodReturnType = resolveTypeName( classTypeResolver, method.getReturnType().getName() );
+
+        javaClass.addMethod( new MethodImpl( method.getName(), methodParameters, method.getBody(), nestedClassMethodReturnType ) );
     }
 
     public ObjectProperty parseProperty( FieldSource<JavaClassSource> field, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
@@ -660,6 +703,18 @@ public class JavaRoasterModelDriver implements ModelDriver {
         }
         for ( String fieldName : removableFields ) {
             removeField( javaClassSource, fieldName, classTypeResolver );
+        }
+        // update nested classes
+        List<JavaSource<?>> nestedTypes = javaClassSource.getNestedTypes();
+        if (nestedTypes != null) {
+            for (JavaSource nestedJavaSource : nestedTypes) {
+                javaClassSource.removeNestedType( nestedJavaSource );
+            }
+        }
+        GenerationEngine engine = GenerationEngine.getInstance();
+        GenerationContext context = new GenerationContext( null );
+        for ( org.kie.workbench.common.services.datamodeller.core.JavaClass nestedJavaClass : dataObject.getNestedClasses()) {
+            javaClassSource.addNestedType( engine.generateNestedClassString( context, nestedJavaClass, "" ));
         }
     }
 

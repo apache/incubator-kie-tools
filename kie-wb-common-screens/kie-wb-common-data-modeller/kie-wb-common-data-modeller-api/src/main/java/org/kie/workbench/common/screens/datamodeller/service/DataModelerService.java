@@ -19,7 +19,6 @@ package org.kie.workbench.common.screens.datamodeller.service;
 import java.util.List;
 import java.util.Map;
 
-import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;

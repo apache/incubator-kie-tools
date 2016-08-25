@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -103,6 +105,9 @@ public class JavaFileIndexer implements Indexer {
     @Inject
     protected JavaResourceTypeDefinition javaResourceTypeDefinition;
 
+    @Inject @Any
+    protected Instance<JavaFileIndexerExtension> javaFileIndexerExtensions;
+
     @Inject
     DataModelerServiceHelper dataModelerServiceHelper;
 
@@ -154,6 +159,12 @@ public class JavaFileIndexer implements Indexer {
 
                 builder.addGenerator( new JavaType( new ValueJavaTypeIndexTerm( javaTypeKind ) ) );
                 builder.addGenerator( new JavaTypeName( new ValueJavaTypeNameIndexTerm( javaTypeName ) ) );
+
+                if ( javaFileIndexerExtensions != null ) {
+                    for ( JavaFileIndexerExtension javaFileIndexerExtension : javaFileIndexerExtensions ) {
+                        javaFileIndexerExtension.process( builder, javaType );
+                    }
+                }
 
                 index = KObjectUtil.toKObject( path,
                                                builder.build() );

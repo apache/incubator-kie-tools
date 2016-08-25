@@ -2,6 +2,7 @@
 ## Template to generate a pojo.
 ##
 #set($attributes =  $nameTool.sortedProperties($context.currentDataObject))
+#set($nestedClasses =  $context.currentDataObject.getNestedClasses())
 #set($className =   $context.currentDataObject.name)
 #set($packageName = $context.currentDataObject.packageName)
 #set($typeAnnotations = $nameTool.sortedAnnotations($context.currentDataObject))
@@ -27,6 +28,10 @@ public class $className $nameTool.resolveSuperClassType($context.currentDataObje
     static final long serialVersionUID = 1L;
 #foreach( $attr in $attributes)
     $engine.generateAttribute($context, $attr, "java_attribute")
+#end
+
+#foreach( $nestedClass in $nestedClasses)
+    $engine.generateNestedClass($context, $nestedClass, "java_nested_class")
 #end
 
 ##

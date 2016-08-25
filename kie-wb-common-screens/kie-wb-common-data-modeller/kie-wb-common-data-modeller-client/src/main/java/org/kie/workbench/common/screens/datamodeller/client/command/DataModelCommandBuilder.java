@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.JavaClass;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 @ApplicationScoped
@@ -119,7 +120,6 @@ public class DataModelCommandBuilder {
         return new DataObjectRemoveAnnotationCommand( context, source, dataObject, annotationClassName, notifier );
     }
 
-
     public DataObjectAnnotationValueChangeCommand buildDataObjectAnnotationValueChangeCommand( final DataModelerContext context, final String source,
             final DataObject dataObject,
             final String annotationClassName, final String valuePair,
@@ -166,5 +166,19 @@ public class DataModelCommandBuilder {
             final DataObject dataObject,
             final String newName ) {
         return new DataObjectNameChangeCommand( context, source, dataObject, newName, notifier );
+    }
+
+    public DataObjectAddNestedClassCommand buildDataObjectAddNestedClassCommand( final DataModelerContext context,
+            final String source,
+            final DataObject dataObject,
+            final JavaClass nestedClass) {
+        return new DataObjectAddNestedClassCommand( context, source, dataObject, notifier, nestedClass );
+    }
+
+    public DataObjectRemoveNestedClassCommand buildDataObjectRemoveNestedClassCommand( final DataModelerContext context,
+            final String source,
+            final DataObject dataObject,
+            final JavaClass nestedClass) {
+        return new DataObjectRemoveNestedClassCommand( context, source, dataObject, notifier, nestedClass );
     }
 }

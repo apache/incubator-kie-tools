@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.datamodeller.core;
+package org.kie.workbench.common.screens.datamodeller.backend.server.indexing;
 
-import java.util.List;
+import org.jboss.forge.roaster.model.JavaType;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 
-public interface JavaClass extends JavaType, HasSuperClass, HasInterfaces, HasMethods  {
+/**
+ * Extension allowing clients to modify index definition for JavaType objects.
+ */
+public interface JavaFileIndexerExtension {
 
-    boolean isAbstract();
-
-    boolean isFinal();
-
-    boolean isStatic();
-
-    List<JavaClass> getNestedClasses();
-
-    JavaClass addNestedClass( JavaClass javaClass );
-
-    JavaClass removeNestedClass( JavaClass javaClass );
-
+    void process( DefaultIndexBuilder builder, JavaType javaType );
 }

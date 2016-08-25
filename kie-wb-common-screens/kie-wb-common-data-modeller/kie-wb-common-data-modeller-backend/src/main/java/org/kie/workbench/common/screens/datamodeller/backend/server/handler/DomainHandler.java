@@ -20,11 +20,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 public interface DomainHandler {
 
     void setDefaultValues( DataObject dataObject, Map<String, Object> options );
+
+    void processDataObject( DataObject dataObject, DataModel dataModel);
 
     List<AnnotationDefinition> getManagedAnnotations();
 

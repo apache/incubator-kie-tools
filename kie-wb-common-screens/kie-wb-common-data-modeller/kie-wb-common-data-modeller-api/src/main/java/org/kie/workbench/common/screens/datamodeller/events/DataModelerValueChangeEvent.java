@@ -108,6 +108,15 @@ public class DataModelerValueChangeEvent extends DataModelerEvent {
         return this;
     }
 
+    public void setChangeType( ChangeType changeType ) {
+        this.changeType = changeType;
+    }
+
+    public DataModelerValueChangeEvent withChangeType( ChangeType changeType ) {
+        setChangeType( changeType );
+        return this;
+    }
+
     public ChangeType getChangeType() {
         return changeType;
     }

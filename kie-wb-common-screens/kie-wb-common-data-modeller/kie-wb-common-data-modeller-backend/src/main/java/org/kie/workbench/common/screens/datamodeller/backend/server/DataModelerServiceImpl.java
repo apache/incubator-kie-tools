@@ -292,6 +292,12 @@ public class DataModelerServiceImpl
             editorModelContent.setCurrentProjectPackages( serviceHelper.resolvePackages( project ) );
             editorModelContent.setDataModel( resultPair.getK1() );
             editorModelContent.setDataObject( resultPair.getK1().getDataObject( className ) );
+
+            Iterator<DomainHandler> it = domainHandlers != null ? domainHandlers.iterator() : null;
+            while ( it != null && it.hasNext() ) {
+                it.next().processDataObject( resultPair.getK1().getDataObject( className ), resultPair.getK1() );
+            }
+
             editorModelContent.setDataObjectPaths( resultPair.getK2().getClassPaths() );
 
             editorModelContent.setOriginalClassName( className );

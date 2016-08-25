@@ -1,0 +1,3 @@
+public $attr.returnType $attr.getName()($nameTool.resolveMethodParameters($attr.getParameters())) {
+    $attr.getBody()
+}

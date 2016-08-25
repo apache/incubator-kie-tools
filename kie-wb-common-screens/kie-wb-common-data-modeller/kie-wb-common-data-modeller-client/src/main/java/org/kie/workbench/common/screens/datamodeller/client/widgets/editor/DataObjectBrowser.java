@@ -402,6 +402,13 @@ public class DataObjectBrowser
         }
     }
 
+    private void executePostEventProcessing( DataModelerEvent event ) {
+        List<DomainHandler> handlers = handlerRegistry.getDomainHandlers();
+        for ( DomainHandler handler : handlers ) {
+            handler.postEventProcessing( event );
+        }
+    }
+
     public void redrawFields() {
         view.redrawTable();
     }
@@ -494,6 +501,7 @@ public class DataObjectBrowser
                 // For self references: in case name or package changes redraw properties table
                 dataProvider.refresh();
                 dataProvider.flush();
+                executePostEventProcessing( event );
             }
         }
     }
@@ -515,6 +523,7 @@ public class DataObjectBrowser
                     }
                 }
             }
+            executePostEventProcessing( event );
         }
     }
 
@@ -526,7 +535,9 @@ public class DataObjectBrowser
     }
 
     private void notifyFieldDeleted( ObjectProperty deletedProperty ) {
-        dataModelerEvent.fire( new DataObjectFieldDeletedEvent( getContext().getContextId(), DataModelerEvent.DATA_OBJECT_BROWSER, getDataObject(), deletedProperty ) );
+        DataObjectFieldDeletedEvent dataObjectFieldDeletedEvent = new DataObjectFieldDeletedEvent( getContext().getContextId(), DataModelerEvent.DATA_OBJECT_BROWSER, getDataObject(), deletedProperty );
+        dataModelerEvent.fire( dataObjectFieldDeletedEvent );
+        executePostEventProcessing( dataObjectFieldDeletedEvent );
     }
 
     private void notifyObjectSelected() {

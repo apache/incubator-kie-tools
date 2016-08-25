@@ -21,6 +21,8 @@ import javax.enterprise.context.ApplicationScoped;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerValueChangeEvent;
 
 @ApplicationScoped
 public class MainDomainHandler implements DomainHandler {
@@ -47,5 +49,10 @@ public class MainDomainHandler implements DomainHandler {
     @Override
     public void postCommandProcessing( DataModelCommand command ) {
         //no post command processing for this domain.
+    }
+
+    @Override
+    public void postEventProcessing( DataModelerEvent event ) {
+        //no post event processing for this domain.
     }
 }

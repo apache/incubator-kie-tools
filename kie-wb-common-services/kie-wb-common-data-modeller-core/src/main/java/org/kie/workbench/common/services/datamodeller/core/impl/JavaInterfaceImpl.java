@@ -57,6 +57,11 @@ public class JavaInterfaceImpl extends AbstractJavaType implements JavaInterface
         return interfaces;
     }
 
+    @Override
+    public void addInterface( String interfaceDefinition ) {
+        interfaces.add( interfaceDefinition );
+    }
+
     @Override public boolean equals( Object o ) {
         if ( this == o ) {
             return true;
