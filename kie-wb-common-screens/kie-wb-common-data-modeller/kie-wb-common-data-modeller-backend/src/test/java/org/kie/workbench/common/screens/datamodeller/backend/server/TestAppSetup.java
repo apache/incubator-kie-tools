@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import javax.inject.Singleton;
 
 import org.guvnor.m2repo.service.M2RepoService;
 import org.guvnor.structure.server.config.ConfigurationService;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 
 import static org.mockito.Mockito.*;
@@ -46,6 +47,14 @@ public class TestAppSetup {
     @Alternative
     public ConfigurationService configurationService() {
         return mock( ConfigurationService.class );
+    }
+
+    @Produces
+    @Alternative
+    public ProjectClassLoaderHelper classLoaderHelper() {
+        ProjectClassLoaderHelper classLoaderHelper = mock( ProjectClassLoaderHelper.class );
+        when(classLoaderHelper.getProjectClassLoader(any())).thenReturn(this.getClass().getClassLoader());
+        return classLoaderHelper;
     }
 
 }

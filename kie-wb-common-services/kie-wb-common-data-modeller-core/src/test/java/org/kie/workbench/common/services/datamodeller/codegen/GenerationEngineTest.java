@@ -1,9 +1,9 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -24,6 +24,9 @@ import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.text.NumberFormat;
@@ -34,6 +37,8 @@ import java.util.Map;
 import java.util.Properties;
 
 public class GenerationEngineTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(GenerationEngineTest.class);
 
     private GenerationEngine engine;
     private DataModelOracleModelDriver dataModelOracleDriver;
@@ -594,7 +599,7 @@ public class GenerationEngineTest {
 
         try {
             String result = engine.generateJavaClassString(generationContext, object1);
-            System.out.println( result );
+            logger.debug( result );
         } catch ( Exception e ) {
             e.printStackTrace();
         }

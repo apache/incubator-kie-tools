@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,17 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.drl;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -31,25 +35,23 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.java.nio.file.Path;
 
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 
 public class IndexDrlInvalidDrl extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testIndexDrlInvalidRuleName() throws IOException, InterruptedException {
+    public void testIndexDrlInvalidRuleName() throws IOException, InterruptedException, ExecutionException {
         //Setup logging
         final Logger root = (Logger) LoggerFactory.getLogger( Logger.ROOT_LOGGER_NAME );
         final Appender<ILoggingEvent> mockAppender = mock( Appender.class );
@@ -59,15 +61,14 @@ public class IndexDrlInvalidDrl extends BaseIndexingTest<TestDrlFileTypeDefiniti
         //Add test files
         final Path path1 = basePath.resolve( "bz1269366.drl" );
         final String drl1 = loadText( "bz1269366.drl" );
-        ioService().write( path1,
-                           drl1 );
+        ioService().write( path1, drl1 );
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000);
 
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final Query query = new BasicQueryBuilder().addTerm( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant" ) ).build();
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant", ResourceType.JAVA ) ).build();
             final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
             final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
@@ -98,10 +99,7 @@ public class IndexDrlInvalidDrl extends BaseIndexingTest<TestDrlFileTypeDefiniti
 
     @Override
     public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-        }};
+        return Collections.<String, Analyzer>emptyMap();
     }
 
     @Override

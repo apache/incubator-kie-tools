@@ -15,6 +15,15 @@
  */
 package org.kie.workbench.common.services.refactoring.model.index.terms;
 
+/**
+ * An index term provides the key for a lucene field.
+ * </p>
+ * In short, a document (produced by an indexer) that's added to the Lucene index, is comprised of "fields", which are key-value pairs.
+ * We query the Lucene index on these key-value pairs in order to find the document, and use the info from the document to find
+ * out more about the resource that the Lucene document refers to.
+ * </p>
+ * The term returned by the {@link #getTerm()} method returns the key used in the document field.
+ */
 public interface IndexTerm {
 
     String getTerm();

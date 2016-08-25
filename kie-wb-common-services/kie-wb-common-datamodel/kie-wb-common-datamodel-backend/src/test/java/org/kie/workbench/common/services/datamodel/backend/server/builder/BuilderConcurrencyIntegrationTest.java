@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,10 @@ import java.util.concurrent.TimeUnit;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.junit.Test;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 
@@ -33,6 +36,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class BuilderConcurrencyIntegrationTest extends AbstractWeldBuilderIntegrationTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(BuilderConcurrencyIntegrationTest.class);
 
     @Test
     //https://bugzilla.redhat.com/show_bug.cgi?id=1145105
@@ -67,13 +72,13 @@ public class BuilderConcurrencyIntegrationTest extends AbstractWeldBuilderIntegr
                         @Override
                         public void run() {
                             try {
-                                System.out.println( "Thread " + Thread.currentThread().getName() + " has started: BuildService.build( project )" );
+                                logger.debug( "Thread " + Thread.currentThread().getName() + " has started: BuildService.build( project )" );
                                 buildService.build( project );
-                                System.out.println( "Thread " + Thread.currentThread().getName() + " has completed." );
+                                logger.debug( "Thread " + Thread.currentThread().getName() + " has completed." );
                             } catch ( Throwable e ) {
                                 result.setFailed( true );
                                 result.setMessage( e.getMessage() );
-                                System.out.println( e.getMessage() );
+                                logger.debug( e.getMessage() );
                             }
                         }
                     } );
@@ -83,15 +88,15 @@ public class BuilderConcurrencyIntegrationTest extends AbstractWeldBuilderIntegr
                         @Override
                         public void run() {
                             try {
-                                System.out.println( "Thread " + Thread.currentThread().getName() + " has started: LRUProjectDataModelOracleCache.invalidateProjectCache(...)" );
+                                logger.debug( "Thread " + Thread.currentThread().getName() + " has started: LRUProjectDataModelOracleCache.invalidateProjectCache(...)" );
                                 projectDMOCache.invalidateProjectCache( new InvalidateDMOProjectCacheEvent( sessionInfo,
                                                                                                             project,
                                                                                                             pomPath ) );
-                                System.out.println( "Thread " + Thread.currentThread().getName() + " has completed." );
+                                logger.debug( "Thread " + Thread.currentThread().getName() + " has completed." );
                             } catch ( Throwable e ) {
                                 result.setFailed( true );
                                 result.setMessage( e.getMessage() );
-                                System.out.println( e.getMessage() );
+                                logger.debug( e.getMessage() );
                             }
                         }
                     } );
@@ -101,13 +106,13 @@ public class BuilderConcurrencyIntegrationTest extends AbstractWeldBuilderIntegr
                         @Override
                         public void run() {
                             try {
-                                System.out.println( "Thread " + Thread.currentThread().getName() + " has started: LRUBuilderCache.assertBuilder( project ).getKieModuleIgnoringErrors();" );
+                                logger.debug( "Thread " + Thread.currentThread().getName() + " has started: LRUBuilderCache.assertBuilder( project ).getKieModuleIgnoringErrors();" );
                                 builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
-                                System.out.println( "Thread " + Thread.currentThread().getName() + " has completed." );
+                                logger.debug( "Thread " + Thread.currentThread().getName() + " has completed." );
                             } catch ( Throwable e ) {
                                 result.setFailed( true );
                                 result.setMessage( e.getMessage() );
-                                System.out.println( e.getMessage() );
+                                logger.debug( e.getMessage() );
                             }
                         }
                     } );

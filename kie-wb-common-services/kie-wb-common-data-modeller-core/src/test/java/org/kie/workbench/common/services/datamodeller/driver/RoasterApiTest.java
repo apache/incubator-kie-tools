@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,15 @@ import org.kie.workbench.common.services.datamodeller.annotations.ENUM3;
 import org.kie.workbench.common.services.datamodeller.annotations.EnumsAnnotation;
 import org.kie.workbench.common.services.datamodeller.annotations.PrimitivesAnnotation;
 import org.kie.workbench.common.services.datamodeller.annotations.TestEnums;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
 public class RoasterApiTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(RoasterApiTest.class);
 
     private JavaClassSource javaClass;
 
@@ -119,6 +124,6 @@ public class RoasterApiTest {
         assertEquals( "The Value1", primitivesArrayParamValue[0].getStringValue( "stringParam" ) );
         assertEquals( "The Value2", primitivesArrayParamValue[1].getStringValue( "stringParam" ) );
 
-        System.out.println( javaClass.toString() );
+        logger.debug( javaClass.toString() );
     }
 }

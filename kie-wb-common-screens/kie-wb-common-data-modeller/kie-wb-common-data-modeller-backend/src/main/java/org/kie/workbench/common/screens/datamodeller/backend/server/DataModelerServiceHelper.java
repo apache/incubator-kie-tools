@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,26 +24,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.guvnor.common.services.project.utils.ProjectResourcePaths;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.utils.ProjectResourcePaths;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.forge.roaster.model.SyntaxError;
-import org.kie.api.builder.KieModule;
-import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
-import org.kie.workbench.common.services.backend.builder.LRUProjectDependenciesClassLoaderCache;
 import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
-import org.kie.workbench.common.services.datamodeller.util.MapClassLoader;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
@@ -53,16 +47,9 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.rpc.SessionInfo;
 
 @ApplicationScoped
 public class DataModelerServiceHelper {
-
-    @Inject
-    private SessionInfo sessionInfo;
-
-    @Inject
-    private User identity;
 
     @Inject
     @Named("ioStrategy")
@@ -70,13 +57,6 @@ public class DataModelerServiceHelper {
 
     @Inject
     protected KieProjectService projectService;
-
-    @Inject
-    @Named("LRUProjectDependenciesClassLoaderCache")
-    private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
-
-    @Inject
-    private LRUBuilderCache builderCache;
 
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
@@ -186,20 +166,7 @@ public class DataModelerServiceHelper {
         return fileName.substring( 0, fileName.indexOf( "." ) );
     }
 
-    public ClassLoader getProjectClassLoader( KieProject project ) {
 
-        final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
-        ClassLoader dependenciesClassLoader = dependenciesClassLoaderCache.assertDependenciesClassLoader( project );
-        ClassLoader projectClassLoader;
-        if ( module instanceof InternalKieModule ) {
-            //will always be an internal kie module
-            InternalKieModule internalModule = (InternalKieModule) module;
-            projectClassLoader = new MapClassLoader( internalModule.getClassesMap( true ), dependenciesClassLoader );
-        } else {
-            projectClassLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
-        }
-        return projectClassLoader;
-    }
 
     public Set<String> resolvePackages( final KieProject project ) {
         final Set<String> packages = new HashSet<String>(  );

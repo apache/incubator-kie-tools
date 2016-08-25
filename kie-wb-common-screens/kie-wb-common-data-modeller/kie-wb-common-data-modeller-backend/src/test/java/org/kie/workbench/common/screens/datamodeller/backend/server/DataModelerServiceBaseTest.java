@@ -1,9 +1,9 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -16,23 +16,16 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.Map;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.environment.se.StartMain;
 import org.jboss.weld.environment.se.Weld;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
-import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.services.datamodeller.core.Visibility;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -82,42 +75,6 @@ public class DataModelerServiceBaseTest {
                 projectServiceCContext );
 
         systemAnnotations = dataModelService.getAnnotationDefinitions();
-
-    }
-
-    public DataObject createDataObject( String packageName,
-            String name,
-            String superClassName ) {
-        DataObject dataObject = new DataObjectImpl( packageName, name );
-        dataObject.setSuperClassName( superClassName );
-        return dataObject;
-    }
-
-    public ObjectProperty addProperty( DataObject dataObject,
-            String name,
-            String className,
-            boolean baseType,
-            boolean multiple,
-            String bag ) {
-        //todo set modifiers.
-        ObjectProperty property = new ObjectPropertyImpl( name, className, multiple,bag, Visibility.PUBLIC, false, false );
-        dataObject.addProperty( property );
-        return property;
-    }
-
-    public Annotation createAnnotation( Map<String, AnnotationDefinition> systemAnnotations,
-            String name,
-            String className,
-            String memberName,
-            Object value ) {
-        AnnotationDefinition annotationDefinition = systemAnnotations.get( className );
-
-        Annotation annotation = new AnnotationImpl( annotationDefinition );
-        if ( memberName != null ) {
-            annotation.setValue( memberName, value );
-        }
-
-        return annotation;
     }
 
     @After

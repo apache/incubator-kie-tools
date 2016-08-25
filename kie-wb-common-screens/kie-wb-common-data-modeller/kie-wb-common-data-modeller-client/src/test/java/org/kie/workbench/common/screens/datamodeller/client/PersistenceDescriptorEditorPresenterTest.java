@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,21 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -37,27 +43,12 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.datasourcese
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PersistenceUnitPropertyGrid;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ProjectClassList;
 import org.kie.workbench.common.screens.datamodeller.client.type.PersistenceDescriptorType;
-import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
-import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
-import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.TransactionType;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.ElementType;
-import org.kie.workbench.common.services.datamodeller.core.PropertyType;
-import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionRequest;
-import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionResponse;
-import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseRequest;
-import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseResponse;
-import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceRequest;
-import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceResponse;
-import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -65,8 +56,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith( GwtMockitoTestRunner.class)
 public class PersistenceDescriptorEditorPresenterTest {
@@ -320,144 +311,69 @@ public class PersistenceDescriptorEditorPresenterTest {
         }
     }
 
-    private class DataModelerServiceCallerMock
+    private static class DataModelerServiceCallerMock
                     implements Caller<DataModelerService> {
 
-        DataModelerService dataModelerService = new DataModelerServiceMock();
         RemoteCallback remoteCallback;
 
-        @Override public DataModelerService call() {
-            return dataModelerService;
+        @Override
+        public DataModelerService call() {
+            return DataModelerServiceMockProxy.getProxyInstance(remoteCallback);
         }
 
-        @Override public DataModelerService call( RemoteCallback<?> remoteCallback ) {
+        @Override
+        public DataModelerService call( RemoteCallback<?> remoteCallback ) {
             return call( remoteCallback, null );
         }
 
-        @Override public DataModelerService call( RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback ) {
+        @Override
+        public DataModelerService call( RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback ) {
             this.remoteCallback = remoteCallback;
-            return dataModelerService;
+            return DataModelerServiceMockProxy.getProxyInstance(remoteCallback);
         }
 
-        private class DataModelerServiceMock
-                implements DataModelerService {
+        /**
+         * And with this, I introduce the PROXY PATTERN!
+         *
+         * Travel the world,
+         * Learn the {@link InvocationHandler}/{@link Proxy} pattern,
+         * and save millions of pixels on your screen,
+         * -- not to mention the time saved by you AND others when reading your code!
+         *
+         * ;D
+         */
+        private static class DataModelerServiceMockProxy implements InvocationHandler {
 
-            @Override public Path createJavaFile( Path context, String fileName, String comment ) {
-                return null;
+            private final RemoteCallback proxyOwnedRemoteCallback;
+
+            private DataModelerServiceMockProxy(RemoteCallback remoteCallback) {
+                this.proxyOwnedRemoteCallback = remoteCallback;
             }
 
-            @Override public Path createJavaFile( Path context, String fileName, String comment, Map<String, Object> options ) {
-                return null;
+            public static DataModelerService getProxyInstance(RemoteCallback remoteCallback) {
+                return (DataModelerService) Proxy.newProxyInstance(
+                        DataModelerServiceMockProxy.class.getClassLoader(),
+                        new Class [] { DataModelerService.class },
+                        new DataModelerServiceMockProxy(remoteCallback));
             }
 
-            @Override public EditorModelContent loadContent( Path path ) {
-                return null;
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                String methodName = method.getName();
+                if( "findPersistableClasses".equals(methodName) ) {
+                    List<String> classes = new ArrayList<String>();
+                    classes.add( "Class3" );
+                    classes.add( "Class4" );
+                    proxyOwnedRemoteCallback.callback( classes );
+                    return classes;
+                } else if( "isPersistableClass".equals(methodName) ) {
+                    proxyOwnedRemoteCallback.callback( true );
+                    return true;
+                } else {
+                    return null;
+                }
             }
 
-            @Override public EditorModelContent loadContent( Path path, boolean includeTypesInfo ) {
-                return null;
-            }
-
-            @Override public DataModel loadModel( KieProject project ) {
-                return null;
-            }
-
-            @Override public GenerationResult saveModel( DataModel dataModel, KieProject project, boolean overwrite, String commitMessage ) {
-                return null;
-            }
-
-            @Override public GenerationResult saveModel( DataModel dataModel, KieProject project ) {
-                return null;
-            }
-
-            @Override public GenerationResult saveSource( String source, Path path, DataObject dataObject, Metadata metadata, String commitMessage ) {
-                return null;
-            }
-
-            @Override public GenerationResult saveSource( String source, Path path, DataObject dataObject, Metadata metadata, String commitMessage, String newPackageName, String newFileName ) {
-                return null;
-            }
-
-            @Override public GenerationResult updateSource( String source, Path path, DataObject dataObject ) {
-                return null;
-            }
-
-            @Override public GenerationResult updateDataObject( DataObject dataObject, String source, Path path ) {
-                return null;
-            }
-
-            @Override public Path copy( Path path, String newName, String newPackageName, Path targetDirectory, String comment, boolean refactor ) {
-                return null;
-            }
-
-            @Override public Path rename( Path path, String newName, String comment, boolean refactor, boolean saveCurrentChanges, String source, DataObject dataObject, Metadata metadata ) {
-                return null;
-            }
-
-            @Override public void delete( Path path, String comment ) {
-
-            }
-
-            @Override public GenerationResult refactorClass( Path path, String newPackageName, String newClassName ) {
-                return null;
-            }
-
-            @Override public List<ValidationMessage> validate( String source, Path path, DataObject dataObject ) {
-                return null;
-            }
-
-            @Override public TypeInfoResult loadJavaTypeInfo( String source ) {
-                return null;
-            }
-
-            @Override public List<PropertyType> getBasePropertyTypes() {
-                return null;
-            }
-
-            @Override public Map<String, AnnotationDefinition> getAnnotationDefinitions() {
-                return null;
-            }
-
-            @Override public List<Path> findClassUsages( Path currentPath, String className ) {
-                return null;
-            }
-
-            @Override public List<Path> findFieldUsages( Path currentPath, String className, String fieldName ) {
-                return null;
-            }
-
-            @Override public List<String> findPersistableClasses( Path path ) {
-                List<String> classes = new ArrayList<String>();
-                classes.add( "Class3" );
-                classes.add( "Class4" );
-                remoteCallback.callback( classes );
-                return classes;
-            }
-
-            @Override public Boolean isPersistableClass( String className, Path path ) {
-                remoteCallback.callback( true );
-                return true;
-            }
-
-            @Override public Boolean exists( Path path ) {
-                return null;
-            }
-
-            @Override public AnnotationSourceResponse resolveSourceRequest( AnnotationSourceRequest sourceRequest ) {
-                return null;
-            }
-
-            @Override public List<ValidationMessage> validateValuePair( String annotationClassName, ElementType target, String valuePairName, String literalValue ) {
-                return null;
-            }
-
-            @Override public AnnotationParseResponse resolveParseRequest( AnnotationParseRequest parseRequest, KieProject project ) {
-                return null;
-            }
-
-            @Override public AnnotationDefinitionResponse resolveDefinitionRequest( AnnotationDefinitionRequest definitionRequest, KieProject kieProject ) {
-                return null;
-            }
         }
     }
 

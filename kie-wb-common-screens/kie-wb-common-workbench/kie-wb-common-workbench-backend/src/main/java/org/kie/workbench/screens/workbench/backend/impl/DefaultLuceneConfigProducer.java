@@ -18,25 +18,17 @@ package org.kie.workbench.screens.workbench.backend.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.kie.workbench.common.screens.datamodeller.model.index.terms.FieldTypeIndexTerm;
-import org.kie.workbench.common.screens.datamodeller.model.index.terms.JavaTypeIndexTerm;
-import org.kie.workbench.common.screens.datamodeller.model.index.terms.JavaTypeInterfaceIndexTerm;
-import org.kie.workbench.common.screens.datamodeller.model.index.terms.JavaTypeNameIndexTerm;
-import org.kie.workbench.common.screens.datamodeller.model.index.terms.JavaTypeParentIndexTerm;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.FullyQualifiedClassNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.TypeIndexTerm;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
@@ -55,6 +47,7 @@ public class DefaultLuceneConfigProducer {
         final Map<String, Analyzer> analyzers = getAnalyzers();
         this.config = new LuceneConfigBuilder().withInMemoryMetaModelStore()
                 .usingAnalyzers( analyzers )
+                .usingAnalyzerWrapperFactory(ImpactAnalysisAnalyzerWrapperFactory.getInstance())
                 .useDirectoryBasedIndex()
                 .useNIODirectory()
                 .build();
@@ -68,30 +61,13 @@ public class DefaultLuceneConfigProducer {
 
     private Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
-            put( RuleIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-            put( RuleAttributeValueIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-
             put( ProjectRootPathIndexTerm.TERM,
                  new FilenameAnalyzer() );
-
             put( PackageNameIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer() );
-            put( FieldTypeIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer() );
-            put( JavaTypeIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer() );
-            put( JavaTypeInterfaceIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer() );
-            put( JavaTypeNameIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer() );
-            put( JavaTypeParentIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer() );
-            put( TypeIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer() );
+                 new LowerCaseOnlyAnalyzer() );
+
+            // all of the (resource, part, shared, etc) references and resource or part terms
+            // are taken care of via the ImpactAnalysisAnalyzerWrapper
         }};
     }
 }

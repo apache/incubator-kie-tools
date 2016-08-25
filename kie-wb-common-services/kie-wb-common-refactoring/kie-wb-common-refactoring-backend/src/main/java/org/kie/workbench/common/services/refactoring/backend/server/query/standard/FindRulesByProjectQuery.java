@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,60 +15,61 @@
  */
 package org.kie.workbench.common.services.refactoring.backend.server.query.standard;
 
-import java.util.HashSet;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.lucene.search.Query;
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SearchEmptyQueryBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
-import org.kie.workbench.common.services.refactoring.backend.server.query.NormalizedTerms;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SearchEmptyQueryBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.RuleNameResponseBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePackageNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueResourceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 @ApplicationScoped
-public class FindRulesByProjectQuery
-        implements NamedQuery {
+public class FindRulesByProjectQuery extends AbstractFindQuery implements NamedQuery {
 
-    public static String FIND_RULES_BY_PROJECT_QUERY = "FindRulesByProjectQuery";
+    public static String NAME = "FindRulesByProjectQuery";
 
     @Inject
     private RuleNameResponseBuilder responseBuilder;
 
     @Override
     public String getName() {
-        return FIND_RULES_BY_PROJECT_QUERY;
+        return NAME;
     }
 
     @Override
-    public Set<IndexTerm> getTerms() {
-        return new HashSet<IndexTerm>() {{
-            add( new PackageNameIndexTerm() );
-            add( new ProjectRootPathIndexTerm() );
-        }};
-    }
+    public Query toQuery( final Set<ValueIndexTerm> terms ) {
 
-    @Override
-    public Query toQuery( final Set<ValueIndexTerm> terms,
-                          final boolean useWildcards ) {
-        PortablePreconditions.checkNotNull( "terms",
-                                            terms );
+        checkNotNullAndNotEmpty(terms);
 
-        NormalizedTerms normalizedTerms = new NormalizedTerms( terms,
-                                                               PackageNameIndexTerm.TERM,
-                                                               ProjectRootPathIndexTerm.TERM );
+        ValuePackageNameIndexTerm packageTerm = null;
+        ValueProjectRootPathIndexTerm projectTerm = null;
+        ValueResourceIndexTerm ruleTerm = null;
+        for( ValueIndexTerm term : terms ) {
+           if( term instanceof ValuePackageNameIndexTerm ) {
+               packageTerm = (ValuePackageNameIndexTerm) term;
+           } else if ( term instanceof ValueProjectRootPathIndexTerm ) {
+               projectTerm = (ValueProjectRootPathIndexTerm) term;
+           } else if ( term instanceof ValueResourceIndexTerm ) {
+               ruleTerm = (ValueResourceIndexTerm) term;
+           }
+        }
 
-        SearchEmptyQueryBuilder queryBuilder = new SearchEmptyQueryBuilder( useWildcards );
-        queryBuilder
-                .addTerm( normalizedTerms.get( PackageNameIndexTerm.TERM ) )
-                .addTerm( normalizedTerms.get( ProjectRootPathIndexTerm.TERM ) )
-                .addRuleNameWildCardTerm();
+        SearchEmptyQueryBuilder queryBuilder = new SearchEmptyQueryBuilder()
+                .addTerm( packageTerm )
+                .addTerm( projectTerm );
+        if( ruleTerm != null ) {
+            queryBuilder.addTerm(ruleTerm);
+        } else {
+            queryBuilder.addRuleNameWildCardTerm();
+        }
 
         return queryBuilder.build();
     }
@@ -76,6 +77,28 @@ public class FindRulesByProjectQuery
     @Override
     public ResponseBuilder getResponseBuilder() {
         return responseBuilder;
+    }
+
+    private static final ValueResourceIndexTerm ruleTerm = new ValueResourceIndexTerm("not-used", ResourceType.RULE );
+
+    /* (non-Javadoc)
+     * @see org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery#validateTerms(java.util.Set)
+     */
+    @Override
+    public void validateTerms(Set<ValueIndexTerm> queryTerms) throws IllegalArgumentException {
+
+        checkInvalidAndRequiredTerms(queryTerms, NAME,
+                new String [] {
+                        ValuePackageNameIndexTerm.TERM,
+                        ValueProjectRootPathIndexTerm.TERM,
+                        null // not required
+                },
+                (t) -> ( t instanceof ValuePackageNameIndexTerm ),
+                (t) -> ( t instanceof ValueProjectRootPathIndexTerm ),
+                (t) -> ( t.getTerm().equals(ruleTerm.getTerm()) )
+                );
+
+        checkTermsSize(2, queryTerms);
     }
 
 }

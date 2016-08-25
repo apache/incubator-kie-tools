@@ -1,9 +1,9 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -33,8 +33,11 @@ import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -44,6 +47,8 @@ import static org.junit.Assert.*;
 
 @RunWith(WeldJUnitRunner.class)
 public class ProjectDataModelConcurrencyTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectDataModelConcurrencyTest.class);
 
     @Inject
     private Paths paths;
@@ -105,11 +110,11 @@ public class ProjectDataModelConcurrencyTest {
                         @Override
                         public void run() {
                             try {
-                                System.out.println( "[Thread: " + Thread.currentThread().getName() + "] Request to update POM received" );
+                                logger.debug( "[Thread: " + Thread.currentThread().getName() + "] Request to update POM received" );
                                 invalidateCaches( project,
                                                   pomPath );
                                 buildChangeListener.updateResource( pomPath );
-                                System.out.println( "[Thread: " + Thread.currentThread().getName() + "] POM update completed" );
+                                logger.debug( "[Thread: " + Thread.currentThread().getName() + "] POM update completed" );
                             } catch ( Throwable e ) {
                                 result.setFailed( true );
                                 result.setMessage( e.getMessage() );
@@ -123,11 +128,11 @@ public class ProjectDataModelConcurrencyTest {
                         @Override
                         public void run() {
                             try {
-                                System.out.println( "[Thread: " + Thread.currentThread().getName() + "] Request to update Resource received" );
+                                logger.debug( "[Thread: " + Thread.currentThread().getName() + "] Request to update Resource received" );
                                 invalidateCaches( project,
                                                   resourcePath );
                                 buildChangeListener.addResource( resourcePath );
-                                System.out.println( "[Thread: " + Thread.currentThread().getName() + "] Resource update completed" );
+                                logger.debug( "[Thread: " + Thread.currentThread().getName() + "] Resource update completed" );
                             } catch ( Throwable e ) {
                                 result.setFailed( true );
                                 result.setMessage( e.getMessage() );
@@ -141,9 +146,9 @@ public class ProjectDataModelConcurrencyTest {
                         @Override
                         public void run() {
                             try {
-                                System.out.println( "[Thread: " + Thread.currentThread().getName() + "] Request for DataModel received" );
+                                logger.debug( "[Thread: " + Thread.currentThread().getName() + "] Request for DataModel received" );
                                 dataModelService.getDataModel( resourcePath );
-                                System.out.println( "[Thread: " + Thread.currentThread().getName() + "] DataModel request completed" );
+                                logger.debug( "[Thread: " + Thread.currentThread().getName() + "] DataModel request completed" );
                             } catch ( Throwable e ) {
                                 result.setFailed( true );
                                 result.setMessage( e.getMessage() );

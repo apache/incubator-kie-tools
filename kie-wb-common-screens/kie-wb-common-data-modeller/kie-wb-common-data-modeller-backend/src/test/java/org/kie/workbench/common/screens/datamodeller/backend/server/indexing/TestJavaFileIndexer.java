@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.screens.datamodeller.backend.server.indexing;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -23,8 +26,6 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-
-import static org.mockito.Mockito.*;
 
 public class TestJavaFileIndexer extends JavaFileIndexer implements TestIndexer<JavaResourceTypeDefinition> {
 
@@ -56,6 +57,7 @@ public class TestJavaFileIndexer extends JavaFileIndexer implements TestIndexer<
 
         final KieProject mockProject = mock( KieProject.class );
         when( mockProject.getRootPath() ).thenReturn( mockRoot );
+        when( mockProject.getProjectName() ).thenReturn( BaseIndexingTest.TEST_PROJECT_NAME );
         return mockProject;
     }
 

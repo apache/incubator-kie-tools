@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
-import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
 
 @ApplicationScoped
 public class NamedQueries {
@@ -40,16 +39,6 @@ public class NamedQueries {
         for (NamedQuery namedQuery : namedQueries) {
             this.namedQueries.put( namedQuery.getName(), namedQuery );
         }
-    }
-
-    public Set<IndexTerm> getTerms( final String queryName ) {
-
-        for (NamedQuery namedQuery : namedQueries.values()) {
-            if ( namedQuery.getName().equals( queryName ) ) {
-                return namedQuery.getTerms();
-            }
-        }
-        throw new IllegalArgumentException( "Named Query '" + queryName + "' does not exist." );
     }
 
     public Set<String> getQueries() {

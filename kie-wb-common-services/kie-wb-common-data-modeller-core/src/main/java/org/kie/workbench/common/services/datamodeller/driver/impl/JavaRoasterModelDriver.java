@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -405,8 +405,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         Visibility visibility = DriverUtils.buildVisibility( javaClassSource.getVisibility() );
 
-        //TODO 6.3 we need a way to check if a class is final. Seems like Roaster do not provide this info
-        final DataObject dataObject = new DataObjectImpl( packageName, className, visibility, javaClassSource.isAbstract(), false );
+        DataObject dataObject = new DataObjectImpl( packageName, className, visibility, javaClassSource.isAbstract(), javaClassSource.isFinal() );
 
         List<ObjectProperty> unmanagedProperties = new ArrayList<ObjectProperty>();
 

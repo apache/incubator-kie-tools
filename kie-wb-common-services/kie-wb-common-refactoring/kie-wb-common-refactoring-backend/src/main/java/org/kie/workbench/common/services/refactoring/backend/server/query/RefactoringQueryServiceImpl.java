@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,16 @@
  */
 package org.kie.workbench.common.services.refactoring.backend.server.query;
 
+import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,19 +38,21 @@ import org.apache.lucene.search.TotalHitCountCollector;
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllChangeImpactQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueBranchNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
 import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.paging.PageResponse;
-
-import static org.kie.workbench.common.services.refactoring.backend.server.query.TermsCheck.*;
-import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.*;
 
 @Service
 @ApplicationScoped
@@ -61,10 +69,8 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
     @Inject
     public RefactoringQueryServiceImpl( @Named("luceneConfig") final LuceneConfig config,
                                         final NamedQueries namedQueries ) {
-        this.config = PortablePreconditions.checkNotNull( "config",
-                                                          config );
-        this.namedQueries = PortablePreconditions.checkNotNull( "namedQueries",
-                                            namedQueries );
+        this.config = PortablePreconditions.checkNotNull( "config", config );
+        this.namedQueries = PortablePreconditions.checkNotNull( "namedQueries", namedQueries );
     }
 
     @PostConstruct
@@ -77,14 +83,8 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         emptyResponse.setTotalRowSizeExact( true );
     }
 
-    @Override
     public Set<String> getQueries() {
         return namedQueries.getQueries();
-    }
-
-    @Override
-    public Set<IndexTerm> getTerms( final String queryName ) {
-        return namedQueries.getTerms( queryName );
     }
 
     @Override
@@ -96,19 +96,21 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         NamedQuery namedQuery = namedQueries.findNamedQuery( queryName );
 
         //Validate provided terms against those required for the named query
-        checkTermsMatch( request.getQueryTerms(),
-                         namedQuery.getTerms() );
+        namedQuery.validateTerms(request.getQueryTerms());
 
-        final Query query = namedQuery.toQuery( request.getQueryTerms(),
-                                                request.useWildcards() );
+        final Query query = namedQuery.toQuery( request.getQueryTerms() );
 
-        if ( searchHits( query ) > 0 ) {
-            final int pageSize = request.getPageSize();
-            final int startIndex = request.getStartRowIndex();
-            final List<KObject> kObjects = search( query,
-                                                   pageSize,
-                                                   startIndex );
+        final int pageSize = request.getPageSize();
+        final int startIndex = request.getStartRowIndex();
 
+        final List<KObject> kObjects
+            = search(query,
+                     (hits) -> ( (startIndex + 1) * ( pageSize > 0 ? pageSize : 1 ) ), // num docs to get
+                     (collector) -> (collector.topDocs( startIndex ).scoreDocs), // get docs starting at startIndex
+                     (numHits) -> ( numHits > pageSize ? pageSize : numHits ) // num docs to add to response
+                    );
+
+        if( ! kObjects.isEmpty() ) {
             final ResponseBuilder responseBuilder = namedQuery.getResponseBuilder();
             return responseBuilder.buildResponse( pageSize,
                                                   startIndex,
@@ -119,9 +121,7 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
     }
 
     @Override
-    public List<RefactoringPageRow> query( final String queryName,
-                                           final Set<ValueIndexTerm> queryTerms,
-                                           final boolean useWildcards ) {
+    public List<RefactoringPageRow> query( final String queryName, final Set<ValueIndexTerm> queryTerms ) {
         PortablePreconditions.checkNotNull( "queryName",
                                             queryName );
         PortablePreconditions.checkNotNull( "queryTerms",
@@ -130,17 +130,18 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         NamedQuery namedQuery = namedQueries.findNamedQuery( queryName );
 
         //Validate provided terms against those required for the named query
-        checkTermsMatch( queryTerms,
-                         namedQuery.getTerms() );
+        namedQuery.validateTerms(queryTerms);
 
-        final Query query = namedQuery.toQuery( queryTerms,
-                                                useWildcards );
+        final Query query = namedQuery.toQuery( queryTerms );
 
-        final int hits = searchHits( query );
-        if ( hits > 0 ) {
-            final List<KObject> kObjects = search( query,
-                                                   hits );
+        final List<KObject> kObjects
+            = search(query,
+                     (hits) -> (hits), // num docs to get
+                     (collector) -> (collector.topDocs().scoreDocs), // get all docs
+                     (numHits) -> (numHits) // num docs to add to response
+                    );
 
+        if( ! kObjects.isEmpty() ) {
             final ResponseBuilder responseBuilder = namedQuery.getResponseBuilder();
             return responseBuilder.buildResponse( kObjects );
         } else {
@@ -148,62 +149,32 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         }
     }
 
-    private int searchHits( final Query query,
-                            final ClusterSegment... clusterSegments ) {
+    private List<KObject> search(final Query query,
+            final IntFunction<Integer> totalHitsSupplier,
+            final Function<TopScoreDocCollector, ScoreDoc[]> getDocsHitFunction,
+            final IntFunction<Integer> numDocsInResponseFunction,
+            final ClusterSegment... clusterSegments ) {
+
         final LuceneIndexManager indexManager = ( (LuceneIndexManager) config.getIndexManager() );
         final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );
-        try {
-            final TotalHitCountCollector collector = new TotalHitCountCollector();
-            index.search( query,
-                          collector );
-            return collector.getTotalHits();
 
-        } catch ( final Exception ex ) {
-            throw new RuntimeException( "Error during Query!", ex );
-        } finally {
-            indexManager.release( index );
-        }
-    }
 
-    private List<KObject> search( final Query query,
-                                  final int pageSize,
-                                  final int startIndex,
-                                  final ClusterSegment... clusterSegments ) {
-        final LuceneIndexManager indexManager = ( (LuceneIndexManager) config.getIndexManager() );
-        final TopScoreDocCollector collector = TopScoreDocCollector.create( ( startIndex + 1 ) * pageSize );
-        final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );
-        final List<KObject> result = new ArrayList<KObject>( pageSize );
-        try {
-            index.search( query,
-                          collector );
-            final ScoreDoc[] hits = collector.topDocs( startIndex ).scoreDocs;
-            int iterations = hits.length > pageSize ? pageSize : hits.length;
-            for ( int i = 0; i < iterations; i++ ) {
-                result.add( toKObject( index.doc( hits[ i ].doc ) ) );
-            }
-        } catch ( final Exception ex ) {
-            throw new RuntimeException( "Error during Query!",
-                                        ex );
-        } finally {
-            indexManager.release( index );
-        }
-
-        return result;
-    }
-
-    private List<KObject> search( final Query query,
-                                  final int totalHits,
-                                  final ClusterSegment... clusterSegments ) {
-        final LuceneIndexManager indexManager = ( (LuceneIndexManager) config.getIndexManager() );
-        final TopScoreDocCollector collector = TopScoreDocCollector.create( totalHits );
-        final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );
         final List<KObject> result = new ArrayList<KObject>();
         try {
+            final TotalHitCountCollector totalHitCountCollector = new TotalHitCountCollector();
             index.search( query,
-                          collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            for ( int i = 0; i < hits.length; i++ ) {
-                result.add( toKObject( index.doc( hits[ i ].doc ) ) );
+                          totalHitCountCollector );
+
+            int numHits = totalHitCountCollector.getTotalHits();
+            if( numHits > 0 ) {
+                final TopScoreDocCollector topScoreDocCollector = TopScoreDocCollector.create( totalHitsSupplier.apply(numHits) );
+                index.search( query, topScoreDocCollector );
+                final ScoreDoc[] docsHit = getDocsHitFunction.apply(topScoreDocCollector);
+
+                int numDocs = numDocsInResponseFunction.apply(docsHit.length);
+                for ( int i = 0; i < numDocs; i++ ) {
+                    result.add( toKObject( index.doc( docsHit[ i ].doc ) ) );
+                }
             }
         } catch ( final Exception ex ) {
             throw new RuntimeException( "Error during Query!",
@@ -214,5 +185,56 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 
         return result;
     }
+
+    /* (non-Javadoc)
+     * @see org.kie.workbench.common.services.refactoring.service.RefactoringQueryService#queryToPageResponse(org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest)
+     */
+    @Override
+    public PageResponse<RefactoringPageRow> queryToPageResponse(QueryOperationRequest queryOpRequest) {
+        final RefactoringPageRequest request = convertToRefactoringPageRequest(queryOpRequest);
+
+        final PageResponse<RefactoringPageRow> response = query( request );
+
+        return response;
+    }
+
+    @Override
+    public List<RefactoringPageRow> queryToList( final QueryOperationRequest queryOpRequest ) {
+        final RefactoringPageRequest request = convertToRefactoringPageRequest(queryOpRequest);
+
+        final List<RefactoringPageRow> response = query( request.getQueryName(), request.getQueryTerms() );
+
+        return response;
+    }
+
+    private RefactoringPageRequest convertToRefactoringPageRequest(QueryOperationRequest refOpRequest) {
+        RefactoringPageRequest request = new RefactoringPageRequest(
+                FindAllChangeImpactQuery.NAME,
+                new HashSet<>(),
+                refOpRequest.getStartRowIndex(),
+                refOpRequest.getPageSize());
+
+        request.getQueryTerms().addAll(refOpRequest.getQueryTerms());
+
+        // add project info
+        String projectName = refOpRequest.getProjectName();
+        if( projectName != null && projectName != QueryOperationRequest.ALL ) {
+            ValueProjectNameIndexTerm  valueIndexTerm = new ValueProjectNameIndexTerm(projectName);
+            Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>(1);
+            queryTerms.add(valueIndexTerm);
+            request.getQueryTerms().addAll(queryTerms);
+        }
+
+        String branchName = refOpRequest.getBranchName();
+        if( branchName != null && branchName != QueryOperationRequest.ALL ) {
+            ValueBranchNameIndexTerm  valueIndexTerm = new ValueBranchNameIndexTerm(branchName);
+            Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>(1);
+            queryTerms.add(valueIndexTerm);
+            request.getQueryTerms().addAll(queryTerms);
+        }
+
+        return request;
+    }
+
 
 }

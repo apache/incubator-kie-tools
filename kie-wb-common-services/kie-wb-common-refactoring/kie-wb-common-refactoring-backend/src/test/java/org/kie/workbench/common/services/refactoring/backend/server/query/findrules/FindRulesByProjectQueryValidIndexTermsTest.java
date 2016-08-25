@@ -1,9 +1,9 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -15,30 +15,32 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.query.findrules;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.inject.Instance;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileTypeDefinition;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
+import org.kie.workbench.common.services.refactoring.backend.server.drl.TestPackageNameDrlFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.RuleNameResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
@@ -47,28 +49,25 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
-
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class FindRulesByProjectQueryValidIndexTermsTest
         extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     private static final String SOME_OTHER_PROJECT_ROOT = "some/other/projectRoot";
 
-    private Set<NamedQuery> queries = new HashSet<NamedQuery>() {{
-        add( new FindRulesByProjectQuery() {
-            @Override
-            public ResponseBuilder getResponseBuilder() {
-                return new RuleNameResponseBuilder();
-            }
-        } );
-    }};
-    
+    protected Set<NamedQuery> getQueries() {
+        return new HashSet<NamedQuery>() {{
+            add( new FindRulesByProjectQuery() {
+                @Override
+                public ResponseBuilder getResponseBuilder() {
+                    return new RuleNameResponseBuilder();
+                }
+            } );
+        }};
+    }
+
     @Override
     protected KieProjectService getProjectService() {
 
@@ -103,13 +102,6 @@ public class FindRulesByProjectQueryValidIndexTermsTest
 
     @Test
     public void testQueryValidIndexTerms() throws IOException, InterruptedException {
-        final Instance<NamedQuery> namedQueriesProducer = mock( Instance.class );
-        when( namedQueriesProducer.iterator() ).thenReturn( queries.iterator() );
-
-        final RefactoringQueryServiceImpl service = new RefactoringQueryServiceImpl( getConfig(),
-                                                                                     new NamedQueries( namedQueriesProducer ) );
-        service.init();
-
         //Add test files
         addTestDRL( BaseIndexingTest.TEST_PROJECT_ROOT,
                     "drl1.drl" );
@@ -126,9 +118,8 @@ public class FindRulesByProjectQueryValidIndexTermsTest
             final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
                                                                                new HashSet<ValueIndexTerm>() {{
                                                                                    add( new ValueProjectRootPathIndexTerm( BaseIndexingTest.TEST_PROJECT_ROOT ) );
-                                                                                   add( new ValuePackageNameIndexTerm( "" ) );
+                                                                                   add( new ValuePackageNameIndexTerm( "", TermSearchType.WILDCARD ) );
                                                                                }},
-                                                                               true,
                                                                                0,
                                                                                10 );
 
@@ -141,17 +132,17 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                                         "noPackage" );
 
             } catch (IllegalArgumentException e) {
-                fail();
+                e.printStackTrace();
+                fail("Unable to query: " + e.getMessage());
             }
         }
 
         {
             final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
                                                                                new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueProjectRootPathIndexTerm( "*" ) );
-                                                                                   add( new ValuePackageNameIndexTerm( "*" ) );
+                                                                                   add( new ValueProjectRootPathIndexTerm( "*", TermSearchType.WILDCARD ) );
+                                                                                   add( new ValuePackageNameIndexTerm( "*", TermSearchType.WILDCARD ) );
                                                                                }},
-                                                                               true,
                                                                                0,
                                                                                10 );
 
@@ -161,16 +152,17 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                 assertEquals( 4,
                               response.getPageRowList().size() );
                 assertResponseContains( response.getPageRowList(),
-                                        "myRule" );
+                                        TEST_PACKAGE_NAME + ".myRule" );
                 assertResponseContains( response.getPageRowList(),
-                                        "myRule2" );
+                                        TEST_PACKAGE_NAME + ".myRule2" );
                 assertResponseContains( response.getPageRowList(),
-                                        "myRule3" );
+                                        TEST_PACKAGE_NAME + ".myRule3" );
                 assertResponseContains( response.getPageRowList(),
                                         "noPackage" );
 
             } catch (IllegalArgumentException e) {
-                fail();
+                e.printStackTrace();
+                fail("Unable to query: " + e.getMessage());
             }
         }
 
@@ -180,7 +172,6 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                                                                                    add( new ValueProjectRootPathIndexTerm( BaseIndexingTest.TEST_PROJECT_ROOT ) );
                                                                                    add( new ValuePackageNameIndexTerm( BaseIndexingTest.TEST_PACKAGE_NAME ) );
                                                                                }},
-                                                                               false,
                                                                                0,
                                                                                10 );
 
@@ -190,12 +181,13 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                 assertEquals( 2,
                               response.getPageRowList().size() );
                 assertResponseContains( response.getPageRowList(),
-                                        "myRule" );
+                                        TEST_PACKAGE_NAME + ".myRule" );
                 assertResponseContains( response.getPageRowList(),
-                                        "myRule2" );
+                                        TEST_PACKAGE_NAME + ".myRule2" );
 
             } catch ( IllegalArgumentException e ) {
-                fail();
+                e.printStackTrace();
+                fail("Unable to query: " + e.getMessage());
             }
         }
 
@@ -205,7 +197,6 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                                                                                    add( new ValueProjectRootPathIndexTerm( SOME_OTHER_PROJECT_ROOT ) );
                                                                                    add( new ValuePackageNameIndexTerm( BaseIndexingTest.TEST_PACKAGE_NAME ) );
                                                                                }},
-                                                                               false,
                                                                                0,
                                                                                10 );
 
@@ -215,10 +206,11 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                 assertEquals( 1,
                               response.getPageRowList().size() );
                 assertResponseContains( response.getPageRowList(),
-                                        "myRule3" );
+                                        TEST_PACKAGE_NAME + ".myRule3" );
 
             } catch (IllegalArgumentException e) {
-                fail();
+                e.printStackTrace();
+                fail("Unable to query: " + e.getMessage());
             }
         }
 
@@ -228,7 +220,6 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                                                                                    add( new ValueProjectRootPathIndexTerm( BaseIndexingTest.TEST_PROJECT_ROOT ) );
                                                                                    add( new ValuePackageNameIndexTerm( "non-existent-package-name" ) );
                                                                                }},
-                                                                               false,
                                                                                0,
                                                                                10 );
 
@@ -239,7 +230,7 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                               response.getPageRowList().size() );
 
             } catch ( IllegalArgumentException e ) {
-                fail();
+                fail("Unable to query: " + e.getMessage());
             }
         }
 
@@ -249,7 +240,6 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                                                                                    add( new ValueProjectRootPathIndexTerm( "non-existent-project-root" ) );
                                                                                    add( new ValuePackageNameIndexTerm( BaseIndexingTest.TEST_PACKAGE_NAME ) );
                                                                                }},
-                                                                               false,
                                                                                0,
                                                                                10 );
 
@@ -260,7 +250,8 @@ public class FindRulesByProjectQueryValidIndexTermsTest
                               response.getPageRowList().size() );
 
             } catch ( IllegalArgumentException e ) {
-                fail();
+                e.printStackTrace();
+                fail("Unable to query: " + e.getMessage());
             }
         }
 
@@ -276,17 +267,7 @@ public class FindRulesByProjectQueryValidIndexTermsTest
 
     @Override
     protected TestIndexer getIndexer() {
-        return new TestDrlFileIndexer();
-    }
-
-    @Override
-    public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( ) );
-            put( ProjectRootPathIndexTerm.TERM,
-                 new FilenameAnalyzer( ) );
-        }};
+        return new TestPackageNameDrlFileIndexer();
     }
 
     @Override
@@ -297,17 +278,6 @@ public class FindRulesByProjectQueryValidIndexTermsTest
     @Override
     protected String getRepositoryName() {
         return this.getClass().getSimpleName();
-    }
-
-    private void assertResponseContains( final List<RefactoringPageRow> rows,
-                                         final String ruleName ) {
-        for ( RefactoringPageRow row : rows ) {
-            final String rowRuleName = ( (String) row.getValue() );
-            if ( rowRuleName.equals( ruleName ) ) {
-                return;
-            }
-        }
-        fail( "Response does not contain expected Rule Name '" + ruleName + "'." );
     }
 
 }

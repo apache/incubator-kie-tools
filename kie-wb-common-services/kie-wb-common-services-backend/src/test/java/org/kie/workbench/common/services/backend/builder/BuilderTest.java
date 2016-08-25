@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,14 @@ import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProv
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListLoader;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListSaver;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -61,6 +64,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class BuilderTest
         extends BuilderTestBase {
+
+    private static final Logger logger = LoggerFactory.getLogger(BuilderTest.class);
 
     private final Predicate<String> alwaysTrue = o -> true;
 
@@ -141,7 +146,7 @@ public class BuilderTest
         //Debug output
         if ( !results.getMessages().isEmpty() ) {
             for ( BuildMessage m : results.getMessages() ) {
-                System.out.println( m.getText() );
+                logger.debug( m.getText() );
             }
         }
 
@@ -171,7 +176,7 @@ public class BuilderTest
         //Debug output
         if ( !results.getMessages().isEmpty() ) {
             for ( BuildMessage m : results.getMessages() ) {
-                System.out.println( m.getText() );
+                logger.debug( m.getText() );
             }
         }
 
@@ -201,7 +206,7 @@ public class BuilderTest
         //Debug output
         if ( !results.getMessages().isEmpty() ) {
             for ( BuildMessage m : results.getMessages() ) {
-                System.out.println( m.getText() );
+                logger.debug( m.getText() );
             }
         }
 
@@ -259,7 +264,7 @@ public class BuilderTest
         //Debug output
         if ( !results.getMessages().isEmpty() ) {
             for ( BuildMessage m : results.getMessages() ) {
-                System.out.println( m.getText() );
+                logger.debug( m.getText() );
             }
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.kie.workbench.common.services.refactoring.backend.server.drl;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -25,10 +25,10 @@ import org.apache.lucene.search.Query;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.java.nio.file.Path;
 
@@ -56,30 +56,25 @@ public class IndexDrlLHSTypeTest extends BaseIndexingTest<TestDrlFileTypeDefinit
 
         //Check type extraction (with wildcards)
         {
-            final Query query = new BasicQueryBuilder()
-                    .useWildcards()
-                    .addTerm( new ValueTypeIndexTerm( "*.Applicant" ) ).build();
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "*.Applicant", ResourceType.JAVA, TermSearchType.WILDCARD ) ).build();
             searchFor(index, query, 3, path1, path2, path3 );
         }
 
         //Check type extraction (without wildcards)
         {
-            final Query query = new BasicQueryBuilder().addTerm( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant" ) ).build();
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant", ResourceType.JAVA ) ).build();
             searchFor(index, query, 3, path1, path2, path3 );
         }
 
         //Check type extraction (with wildcards)
         {
-            final Query query = new BasicQueryBuilder()
-                    .useWildcards()
-                    .addTerm( new ValueTypeIndexTerm( "*.Mortgage" ) )
-                    .build();
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "*.Mortgage", ResourceType.JAVA, TermSearchType.WILDCARD ) ).build();
             searchFor(index, query, 2, path2, path3 );
         }
 
         //Check type extraction (without wildcards)
         {
-            final Query query = new BasicQueryBuilder().addTerm( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage" ) ).build();
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage", ResourceType.JAVA, TermSearchType.WILDCARD ) ).build();
             searchFor(index, query, 2, path2, path3 );
         }
 
@@ -92,10 +87,7 @@ public class IndexDrlLHSTypeTest extends BaseIndexingTest<TestDrlFileTypeDefinit
 
     @Override
     public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( ) );
-        }};
+        return Collections.<String, Analyzer>emptyMap();
     }
 
     @Override

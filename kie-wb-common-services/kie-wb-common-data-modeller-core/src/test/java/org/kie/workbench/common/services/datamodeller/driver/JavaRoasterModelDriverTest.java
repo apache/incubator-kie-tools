@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,12 +69,17 @@ import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterMod
 import org.kie.workbench.common.services.datamodeller.driver.impl.UpdateInfo;
 import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 public class JavaRoasterModelDriverTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(JavaRoasterModelDriverTest.class);
 
     SimpleFileSystemProvider simpleFileSystemProvider = null;
     IOService ioService = new MockIOService();
@@ -308,7 +313,7 @@ public class JavaRoasterModelDriverTest {
             //and now compare the updatedResult with the expected value.
             DataModelerAssert.assertEqualsDataObject( annotationsUpdateTestResult, updatedResult.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package3.AnnotationsUpdateTestResult" ) );
 
-            System.out.println( annotationsUpdateTestJavaClassSource );
+            logger.debug( annotationsUpdateTestJavaClassSource.toString() );
 
         } catch ( Exception e ) {
             e.printStackTrace();

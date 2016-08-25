@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,11 @@
 
 package t1p2;
 
+/**
+ * This class is located in BOTH src/test/java and src/test/resources/DataModelerTest1/src/main/java
+ *
+ * Make sure that both copies match eachother!
+ */
 public class Pojo2 {
 
 }

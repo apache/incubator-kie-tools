@@ -89,6 +89,8 @@
               <includes>
                 <include>repository/**</include>
                 <include>.niogit/**</include>
+                <include>.index/**</include>
+                <include>.security/**</include>
               </includes>
             </fileset>
           </filesets>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,17 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,19 +35,21 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.guvnor.common.services.project.model.Package;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.ext.metadata.backend.lucene.index.CustomAnalyzerWrapperFactory;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
 import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
@@ -51,13 +61,12 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
 public abstract class IndexingTest<T extends ResourceTypeDefinition> {
 
+    protected static final Logger logger = LoggerFactory.getLogger( IndexingTest.class );
+
     public static final String TEST_PROJECT_ROOT = "/a/mock/project/root";
+    public static final String TEST_PROJECT_NAME = "mockProject";
 
     public static final String TEST_PACKAGE_NAME = "org.kie.workbench.mock.package";
 
@@ -72,6 +81,10 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
         for ( final File tempFile : tempFiles ) {
             FileUtils.deleteQuietly( tempFile );
         }
+        if( config != null ) {
+            config.dispose();
+            config = null;
+        }
     }
 
     protected static LuceneConfig getConfig() {
@@ -81,6 +94,10 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
     protected abstract TestIndexer<T> getIndexer();
 
     protected abstract Map<String, Analyzer> getAnalyzers();
+
+    protected CustomAnalyzerWrapperFactory getAnalyzerWrapperFactory() {
+        return ImpactAnalysisAnalyzerWrapperFactory.getInstance();
+    }
 
     protected abstract T getResourceTypeDefinition();
 
@@ -94,7 +111,14 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
     }
 
     protected String loadText( final String fileName ) throws IOException {
-        final BufferedReader br = new BufferedReader( new InputStreamReader( this.getClass().getResourceAsStream( fileName ) ) );
+        InputStream fileInputStream = this.getClass().getResourceAsStream( fileName );
+        if( fileInputStream == null ) {
+           File file = new File( fileName );
+           if( file.exists() ) {
+               fileInputStream = new FileInputStream(file);
+           }
+        }
+        final BufferedReader br = new BufferedReader( new InputStreamReader( fileInputStream ) );
         try {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
@@ -121,14 +145,21 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
     protected IOService ioService() {
         if ( ioService == null ) {
             final Map<String, Analyzer> analyzers = getAnalyzers();
-            config = new LuceneConfigBuilder()
+            LuceneConfigBuilder configBuilder = new LuceneConfigBuilder()
                     .withInMemoryMetaModelStore()
                     .usingAnalyzers( analyzers )
-                    .useDirectoryBasedIndex()
+                    .usingAnalyzerWrapperFactory(getAnalyzerWrapperFactory())
                     .useInMemoryDirectory()
-                    .build();
+                    // If you want to use Luke to inspect the index,
+                    // comment ".useInMemoryDirectory(), and uncomment below..
+//                     .useNIODirectory()
+                    .useDirectoryBasedIndex();
 
-            ioService = new IOServiceIndexedImpl( config.getIndexEngine() );
+            if( config == null ) {
+                config = configBuilder.build();
+            }
+
+            ioService = new IOServiceIndexedImpl(config.getIndexEngine());
             final TestIndexer indexer = getIndexer();
             IndexersFactory.clear();
             IndexersFactory.addIndexer( indexer );
@@ -152,6 +183,7 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
 
         final KieProject mockProject = mock( KieProject.class );
         when( mockProject.getRootPath() ).thenReturn( mockRoot );
+        when( mockProject.getProjectName() ).thenReturn( TEST_PROJECT_NAME );
 
         final Package mockPackage = mock( Package.class );
         when( mockPackage.getPackageName() ).thenReturn( TEST_PACKAGE_NAME );
@@ -189,31 +221,34 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
 
     public void searchFor( Index index, Query query, int expectedNumHits, Path... paths ) throws IOException {
         final IndexSearcher searcher = ((LuceneIndex) index).nrtSearcher();
-        final TopScoreDocCollector collector = TopScoreDocCollector.create(10);
-        searcher.search(query, collector);
-        final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-        // expectedNumHits of the properties files have a title containing "lucene"
-        assertEquals("Number of docs fulfilling the given query criteria", expectedNumHits, hits.length);
-
-        if( paths != null && paths.length > 0 ) {
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            for( Path path : paths ) {
-                assertContains( results, path );
-            }
-        }
+        searchFor(searcher, query, expectedNumHits, paths);
     }
 
     public void searchFor( Query query, int expectedNumHits ) throws IOException {
         final IndexSearcher searcher = ( (LuceneIndexManager) getConfig().getIndexManager() ).getIndexSearcher();
-        final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
-        searcher.search( query, collector );
-        final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-        // expectedHits of the properties files have a title containing "lucene"
-        assertEquals("Number of docs fulfilling the given query criteria", expectedNumHits, hits.length);
-        ( (LuceneIndexManager) getConfig().getIndexManager() ).release( searcher );
+        searchFor(searcher,query, expectedNumHits);
+    }
+
+    private void  searchFor( IndexSearcher searcher, Query query, int expectedNumHits, Path... paths ) throws IOException {
+        try {
+            final TopScoreDocCollector collector = TopScoreDocCollector.create(10 > expectedNumHits ? 10 : expectedNumHits );
+            searcher.search(query, collector);
+            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+
+            assertEquals("Number of docs fulfilling the given query criteria", expectedNumHits, hits.length);
+
+            if( paths != null && paths.length > 0 ) {
+                final List<KObject> results = new ArrayList<KObject>();
+                for ( int i = 0; i < hits.length; i++ ) {
+                    results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
+                }
+                for( Path path : paths ) {
+                    assertContains( results, path );
+                }
+            }
+        } finally {
+            ( (LuceneIndexManager) getConfig().getIndexManager() ).release( searcher );
+        }
     }
 
 }

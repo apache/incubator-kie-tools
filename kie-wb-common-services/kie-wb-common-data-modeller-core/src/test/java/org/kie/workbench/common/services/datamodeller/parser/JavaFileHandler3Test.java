@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,10 +68,10 @@ public class JavaFileHandler3Test extends JavaFileHandlerBaseTest {
             fileHandler.createMethod("\n\n    public java.lang.String getAddress() { return null; }");
             assertStrings(fileContents[5], fileHandler.buildResult());
 
-            //System.out.println(fileHandler.buildResult());
+            //logger.debug(fileHandler.buildResult());
 
             String classText = originalFileContent.substring(fileHandler.getFileDescr().getClassDescr().getStart(), fileHandler.getFileDescr().getClassDescr().getStop() +1);
-            System.out.println(classText);
+            logger.debug(classText);
 
 
             ((JavaFileHandlerImplOLD)fileHandler).populateUnManagedElements(fileHandler.getFileDescr());
@@ -91,10 +91,10 @@ public class JavaFileHandler3Test extends JavaFileHandlerBaseTest {
 
 
             fileHandler.deleteMethod("getField1");
-            System.out.println(fileHandler.build());
+            logger.debug(fileHandler.build());
 
             fileHandler.deleteField("setField2");
-            System.out.println(fileHandler.build());
+            logger.debug(fileHandler.build());
 
             fileHandler.deleteMethod("setField2");
             fileHandler.addField("\n\tprotected String surname = null;\n");
@@ -112,7 +112,7 @@ public class JavaFileHandler3Test extends JavaFileHandlerBaseTest {
             */
 
             String result = fileHandler.buildResult( );
-            //System.out.println(result);
+            //logger.debug(result);
 
         } catch ( Exception e ) {
             e.printStackTrace( );

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class JavaFileHandler2Test extends JavaFileHandlerBaseTest {
         try {
 
             String result = fileHandler.buildResult( );
-            System.out.println( result );
+            logger.debug( result );
 
             ClassDescr classDescr = fileHandler.getFileDescr( ).getClassDescr( );
 
@@ -57,13 +57,13 @@ public class JavaFileHandler2Test extends JavaFileHandlerBaseTest {
             classDescr.addField( field );
 
             result = fileHandler.buildResult( );
-            System.out.println( result );
+            logger.debug( result );
 
             classDescr.getElements( ).remove( field );
             classDescr.getElements( ).remove( field );
 
             result = fileHandler.buildResult( );
-            System.out.println( result );
+            logger.debug( result );
 
             assertEquals( originalFileContent, result );
             int i = 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,11 @@ import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -47,6 +50,8 @@ import static org.junit.Assert.*;
 
 @RunWith(WeldJUnitRunner.class)
 public class ResourceChangeIncrementalBuilderConcurrencyTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(ResourceChangeIncrementalBuilderConcurrencyTest.class);
 
     private static final String GLOBAL_SETTINGS = "settings";
 
@@ -121,13 +126,13 @@ public class ResourceChangeIncrementalBuilderConcurrencyTest {
                 @Override
                 public void run() {
                     try {
-                        System.out.println( "Thread " + Thread.currentThread().getName() + " has started for " + resourcePath.toURI() );
+                        logger.debug( "Thread " + Thread.currentThread().getName() + " has started for " + resourcePath.toURI() );
                         buildChangeListener.updateResource( resourcePath );
-                        System.out.println( "Thread " + Thread.currentThread().getName() + " has completed for " + resourcePath.toURI() );
+                        logger.debug( "Thread " + Thread.currentThread().getName() + " has completed for " + resourcePath.toURI() );
                     } catch ( Throwable e ) {
                         result.setFailed( true );
                         result.setMessage( e.getMessage() );
-                        System.out.println( e.getMessage() );
+                        logger.debug( e.getMessage() );
                     }
                 }
             } );

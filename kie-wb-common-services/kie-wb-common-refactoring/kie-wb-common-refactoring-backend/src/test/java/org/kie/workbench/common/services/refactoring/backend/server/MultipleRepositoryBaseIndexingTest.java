@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public abstract class MultipleRepositoryBaseIndexingTest<T extends ResourceTypeD
             final String path = createTempDirectory().getAbsolutePath();
             System.setProperty( "org.uberfire.nio.git.dir",
                                 path );
-            System.out.println( ".niogit: " + path );
+            logger.debug( ".niogit: " + path );
 
             for ( String repositoryName : getRepositoryNames() ) {
 
@@ -56,9 +56,9 @@ public abstract class MultipleRepositoryBaseIndexingTest<T extends ResourceTypeD
                     basePaths.put( repositoryName,
                                    basePath );
 
-                } catch ( final Exception ex ) {
-                    ex.fillInStackTrace();
-                    System.out.println( ex.getMessage() );
+                } catch ( final Exception e ) {
+                    e.fillInStackTrace();
+                    logger.warn( "Test setup failed: " + e.getMessage(), e );
                 } finally {
                     created = true;
                 }

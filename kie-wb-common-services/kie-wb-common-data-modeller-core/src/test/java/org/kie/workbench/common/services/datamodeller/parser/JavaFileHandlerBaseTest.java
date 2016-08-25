@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,17 @@ package org.kie.workbench.common.services.datamodeller.parser;
 import org.junit.Before;
 
 import org.kie.workbench.common.services.datamodeller.parser.util.ParserUtil;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 
 public class JavaFileHandlerBaseTest {
+
+    protected static final Logger logger = LoggerFactory.getLogger(JavaFileHandlerBaseTest.class);
 
     String fileName;
 

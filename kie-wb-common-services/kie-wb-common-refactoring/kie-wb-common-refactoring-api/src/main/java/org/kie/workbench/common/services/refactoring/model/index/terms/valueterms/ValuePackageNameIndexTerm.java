@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,29 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class ValuePackageNameIndexTerm extends PackageNameIndexTerm implements ValueIndexTerm {
 
     private String packageName;
+    private TermSearchType searchType = TermSearchType.NORMAL;
 
     public ValuePackageNameIndexTerm() {
         //Errai marshalling
     }
 
     public ValuePackageNameIndexTerm( final String packageName ) {
-        this.packageName = PortablePreconditions.checkNotNull( "packageName",
-                                                               packageName );
+        this(packageName, TermSearchType.NORMAL );
+    }
+
+    public ValuePackageNameIndexTerm( final String packageName, final TermSearchType searchType ) {
+        this.packageName = PortablePreconditions.checkNotNull( "packageName", packageName );
+        this.searchType = PortablePreconditions.checkNotNull( "searchType", searchType );
     }
 
     @Override
     public String getValue() {
         return packageName;
+    }
+
+    @Override
+    public TermSearchType getSearchType() {
+        return this.searchType;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringStringPageRow;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.paging.PageResponse;
@@ -77,7 +76,7 @@ public class RuleNameResponseBuilder
             return ruleNames;
         }
         for (KProperty property : kObject.getProperties()) {
-            if ( property.getName().equals( RuleIndexTerm.TERM ) ) {
+            if ( property.getName().equals( ResourceType.RULE.toString() ) ) {
                 ruleNames.add( property.getValue().toString() );
             }
         }

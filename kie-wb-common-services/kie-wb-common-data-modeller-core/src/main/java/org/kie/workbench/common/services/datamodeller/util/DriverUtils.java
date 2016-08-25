@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,17 +44,17 @@ import org.kie.workbench.common.services.datamodeller.driver.ModelDriverExceptio
 
 public class DriverUtils {
 
-
-    public static ClassTypeResolver createClassTypeResolver( JavaClassSource javaClassSource, ClassLoader classLoader ) {
-
+    public static ClassTypeResolver createClassTypeResolver( JavaSource javaSource, ClassLoader classLoader ) {
         String packageName;
         Set<String> classImports = new HashSet<String>();
 
-        List<Import> imports = javaClassSource.getImports();
+        // Importer.getImports() returns both normal and static imports
+        // You can see if an Import is static by calling hte
+        // Import.isStatic() method
+        List<Import> imports = javaSource.getImports();
         if ( imports != null ) {
             for ( Import currentImport : imports ) {
                 String importName = currentImport.getQualifiedName();
-                //TODO, check static imports
                 if ( currentImport.isWildcard() ) {
                     importName = importName + ".*";
                 }
@@ -62,19 +62,23 @@ public class DriverUtils {
             }
         }
 
-        packageName = javaClassSource.getPackage();
+        packageName = javaSource.getPackage();
         //add current package too, if not added, the class type resolver don't resolve current package classes.
         if ( packageName != null && !"".equals( packageName ) ) {
             classImports.add( packageName + ".*" );
         }
 
-        //add current file inner types as import clauses to help the ClassTypeResolver to find variables of inner types
-        //It was detected that current ClassTypeResolver don't resolve inner classes well.
-        //workaround for BZ https://bugzilla.redhat.com/show_bug.cgi?id=1172711
-        List<JavaSource<?>> innerTypes = javaClassSource.getNestedTypes();
-        if ( innerTypes != null ) {
-            for ( JavaSource<?> type : innerTypes ) {
-                classImports.add( packageName + "." + javaClassSource.getName() + "." + type.getName() );
+        if( javaSource instanceof JavaClassSource ) {
+            JavaClassSource javaClassSource = (JavaClassSource) javaSource;
+
+            //add current file inner types as import clauses to help the ClassTypeResolver to find variables of inner types
+            //It was detected that current ClassTypeResolver don't resolve inner classes well.
+            //workaround for BZ https://bugzilla.redhat.com/show_bug.cgi?id=1172711
+            List<JavaSource<?>> innerTypes = javaClassSource.getNestedTypes();
+            if ( innerTypes != null ) {
+                for ( JavaSource<?> type : innerTypes ) {
+                    classImports.add( packageName + "." + javaClassSource.getName() + "." + type.getName() );
+                }
             }
         }
 

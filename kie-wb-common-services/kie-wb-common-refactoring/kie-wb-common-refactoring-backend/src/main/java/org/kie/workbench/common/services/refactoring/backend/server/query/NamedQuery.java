@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,20 +17,12 @@ package org.kie.workbench.common.services.refactoring.backend.server.query;
 
 import java.util.Set;
 
-import org.apache.lucene.search.Query;
-import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 
-public interface NamedQuery {
+public interface NamedQuery extends IndexQuery {
 
     String getName();
 
-    Set<IndexTerm> getTerms();
-
-    Query toQuery( final Set<ValueIndexTerm> terms,
-                   final boolean useWildcards );
-
-    ResponseBuilder getResponseBuilder();
+    void validateTerms(Set<ValueIndexTerm> queryTerms) throws IllegalArgumentException;
 
 }

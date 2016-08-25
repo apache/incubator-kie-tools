@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +67,7 @@ import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
+import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
@@ -96,12 +96,11 @@ import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
 import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,10 +111,10 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.SegmentedPath;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.paging.PageResponse;
 
 @Service
 @ApplicationScoped
@@ -137,6 +136,9 @@ public class DataModelerServiceImpl
 
     @Inject
     private DataModelerServiceHelper serviceHelper;
+
+    @Inject
+    private ProjectClassLoaderHelper classLoaderHelper;
 
     @Inject
     private Event<DataObjectCreatedEvent> dataObjectCreatedEvent;
@@ -348,7 +350,7 @@ public class DataModelerServiceImpl
                 logger.debug( "Current project path is: " + projectPath );
             }
 
-            ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
+            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( project );
 
             ModelDriver modelDriver = new JavaRoasterModelDriver( ioService,
                                                                   Paths.convert( defaultPackage.getPackageMainSrcPath() ),
@@ -414,7 +416,7 @@ public class DataModelerServiceImpl
                 return new Pair<DataObject, List<DataModelerError>>( null, new ArrayList<DataModelerError>() );
             }
 
-            ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
+            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( project );
             JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, null, false, classLoader, filters );
             ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( sourcePath ) );
 
@@ -458,7 +460,7 @@ public class DataModelerServiceImpl
                 return result;
             }
 
-            ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
+            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( project );
             Pair<String, List<DataModelerError>> updateResult = updateJavaSource( source, dataObject, new HashMap<String, String>(), new ArrayList<String>(), classLoader );
             result.setSource( updateResult.getK1() );
             result.setDataObject( dataObject );
@@ -498,7 +500,7 @@ public class DataModelerServiceImpl
                 return result;
             }
 
-            ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
+            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( project );
             JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), false, classLoader, filters );
             ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( path ) );
 
@@ -633,7 +635,7 @@ public class DataModelerServiceImpl
             }
 
             if ( dataObject == null ) {
-                ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
+                ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( project );
                 JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), false, classLoader, filters );
                 ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( path ) );
 
@@ -1081,9 +1083,19 @@ public class DataModelerServiceImpl
     public List<Path> findClassUsages( Path currentPath,
                                        String className ) {
 
-        HashSet<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>();
-        queryTerms.add( new ValueTypeIndexTerm( className ) );
-        return executeReferencesQuery( currentPath, "FindTypesQuery", queryTerms );
+        KieProject project = projectService.resolveProject(currentPath);
+        String projectName = project.getProjectName();
+
+        String branch = "master";
+        if( currentPath instanceof SegmentedPath ) {
+            branch = ((SegmentedPath) currentPath).getSegmentId();
+        }
+
+        QueryOperationRequest request = QueryOperationRequest
+                .references(className, ResourceType.JAVA)
+                .inProject(projectName)
+                .onBranch(branch);
+        return executeReferencesQuery( request );
     }
 
     @Override
@@ -1091,10 +1103,19 @@ public class DataModelerServiceImpl
                                        String className,
                                        String fieldName ) {
 
-        HashSet<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>();
-        queryTerms.add( new ValueTypeIndexTerm( className ) );
-        queryTerms.add( new ValueFieldIndexTerm( fieldName ) );
-        return executeReferencesQuery( currentPath, "FindTypeFieldsQuery", queryTerms );
+        KieProject project = projectService.resolveProject(currentPath);
+        String projectName = project.getProjectName();
+
+        String branch = "master";
+        if( currentPath instanceof SegmentedPath ) {
+            branch = ((SegmentedPath) currentPath).getSegmentId();
+        }
+
+        QueryOperationRequest request = QueryOperationRequest
+                .referencesPart(className, fieldName, PartType.FIELD)
+                .inProject(projectName)
+                .onBranch(branch);
+        return executeReferencesQuery( request );
     }
 
     @Override
@@ -1119,7 +1140,7 @@ public class DataModelerServiceImpl
         //check the project class path to see if the class is defined likely in a project dependency or in curren project.
         KieProject project = projectService.resolveProject( path );
         if ( project != null ) {
-            ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
+            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( project );
             try {
                 classLoader.loadClass( className );
                 return true;
@@ -1130,59 +1151,24 @@ public class DataModelerServiceImpl
         return false;
     }
 
-    private List<Path> executeReferencesQuery(Path currentPath,
-                                              String queryName,
-                                              HashSet<ValueIndexTerm> queryTerms) {
+
+    private List<Path> executeReferencesQuery(QueryOperationRequest request) {
 
         List<Path> results = new ArrayList<Path>();
-        final RefactoringPageRequest request = new RefactoringPageRequest( queryName,
-                                                                           queryTerms,
-                                                                           0,
-                                                                           100 );
-
         try {
 
-            final PageResponse<RefactoringPageRow> response = queryService.query( request );
-            if ( response != null && response.getPageRowList() != null ) {
-                for ( RefactoringPageRow row : response.getPageRowList() ) {
+            final List<RefactoringPageRow> queryResults = queryService.queryToList(request);
+            if ( queryResults != null ) {
+                for ( RefactoringPageRow row : queryResults ) {
                     results.add( (org.uberfire.backend.vfs.Path) row.getValue() );
                 }
             }
-            return filterResults( currentPath, results );
-
-        } catch ( Exception e ) {
-            logger.error( "References query: " + queryName + ", couldn't be executed: " + e.getMessage(), e );
-            throw new ServiceException( "References query: " + queryName + ", couldn't be executed: " + e.getMessage(), e );
-        }
-    }
-
-    private List<Path> filterResults( Path currentPath,
-                                      List<Path> results ) {
-
-        if ( currentPath == null ) {
             return results;
+        } catch ( Exception e ) {
+            String msg = "Unable to query lucene index for resource references: " + e.getMessage();
+            logger.error( msg );
+            throw new ServiceException( msg, e );
         }
-
-        KieProject project = projectService.resolveProject( currentPath );
-        if ( project == null ) {
-            return results;//uncommon case
-        }
-
-        Path rootPath = project.getRootPath();
-        if ( rootPath == null ) {
-            return results;//uncommon case
-        }
-
-        List<Path> filteredResults = new ArrayList<Path>();
-        String projectURI = rootPath.toURI();
-        if ( results != null ) {
-            for ( Path result : results ) {
-                if ( result.toURI().startsWith( projectURI ) ) {
-                    filteredResults.add( result );
-                }
-            }
-        }
-        return filteredResults;
     }
 
     @Override
@@ -1265,7 +1251,7 @@ public class DataModelerServiceImpl
                 parseRequest.getTarget(),
                 parseRequest.getValuePairName(),
                 parseRequest.getValuePairLiteralValue(),
-                serviceHelper.getProjectClassLoader( kieProject ) );
+                classLoaderHelper.getProjectClassLoader( kieProject ) );
 
         AnnotationParseResponse response = new AnnotationParseResponse( driverResult.getK1() );
         response.withErrors( driverResult.getK2() );
@@ -1277,7 +1263,7 @@ public class DataModelerServiceImpl
                                                                   KieProject kieProject ) {
 
         JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
-        ClassLoader classLoader = serviceHelper.getProjectClassLoader( kieProject );
+        ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( kieProject );
         ClassTypeResolver classTypeResolver = DriverUtils.createClassTypeResolver( classLoader );
         AnnotationDefinitionResponse definitionResponse = new AnnotationDefinitionResponse();
 

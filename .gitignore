@@ -1,4 +1,7 @@
-/target
+# everywhere
+target/
+
+# only in the root directory
 /classes
 /local
 /repository

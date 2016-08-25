@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
@@ -62,13 +64,13 @@ public class RuleNameServiceImpl
 
     private List<String> queryRuleNames( final String packageName,
                                          final String projectPath ) {
+
         //Query for Rule Names
-        final List<RefactoringPageRow> results = queryService.query( "FindRulesByProjectQuery",
+        final List<RefactoringPageRow> results = queryService.query( FindRulesByProjectQuery.NAME,
                                                                      new HashSet<ValueIndexTerm>() {{
                                                                          add( new ValueProjectRootPathIndexTerm( projectPath ) );
                                                                          add( new ValuePackageNameIndexTerm( packageName ) );
-                                                                     }},
-                                                                     false );
+                                                                     }} );
 
         return convertToRuleNames( results );
     }

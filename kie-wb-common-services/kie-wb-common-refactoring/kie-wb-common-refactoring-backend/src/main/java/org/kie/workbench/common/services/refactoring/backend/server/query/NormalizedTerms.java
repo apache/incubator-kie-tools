@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.workbench.common.services.refactoring.model.index.terms.CompositeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 
+/**
+ * In some cases it's important that there is exactly one and only one {@link ValueIndexTerm} implementation type instance
+ * in a {@link Set} of {@link ValueIndexTerm} instances.
+ * </p>
+ * This class "normalizes" a set in order to acheive that.
+ */
 public class NormalizedTerms {
 
     private final Map<String, ValueIndexTerm> normalizedTerms = new HashMap<String, ValueIndexTerm>();
@@ -45,8 +52,11 @@ public class NormalizedTerms {
 
     private void addTerms( final Set<ValueIndexTerm> terms ) {
         for (ValueIndexTerm term : terms) {
-            normalizedTerms.put( term.getTerm(),
-                                 term );
+            if( term instanceof CompositeIndexTerm ) {
+                normalizedTerms.put( ((CompositeIndexTerm) term).getTermBase(), term );
+            } else {
+                normalizedTerms.put( term.getTerm(), term );
+            }
         }
     }
 

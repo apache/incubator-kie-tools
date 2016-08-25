@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,30 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class ValueProjectRootPathIndexTerm extends ProjectRootPathIndexTerm implements ValueIndexTerm {
 
     private String projectPath;
+    private TermSearchType searchType;
 
     public ValueProjectRootPathIndexTerm() {
         //Errai marshalling
     }
 
     public ValueProjectRootPathIndexTerm( final String projectPath ) {
-        this.projectPath = PortablePreconditions.checkNotNull( "projectPath",
-                                                               projectPath );
+        this(projectPath, TermSearchType.NORMAL);
     }
+
+    public ValueProjectRootPathIndexTerm( final String projectPath, final TermSearchType searchType ) {
+        this.projectPath = PortablePreconditions.checkNotNull( "projectPath", projectPath );
+        this.searchType = PortablePreconditions.checkNotNull( "searchType", searchType );
+    }
+
 
     @Override
     public String getValue() {
         return projectPath;
+    }
+
+    @Override
+    public TermSearchType getSearchType() {
+        return searchType;
     }
 
 }

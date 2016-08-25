@@ -1,4 +1,3 @@
-package org.kie.workbench.mock.package;
 /*
  * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
@@ -13,6 +12,8 @@ package org.kie.workbench.mock.package;
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
+package org.kie.workbench.mock.package;
 
 import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Bank;
 

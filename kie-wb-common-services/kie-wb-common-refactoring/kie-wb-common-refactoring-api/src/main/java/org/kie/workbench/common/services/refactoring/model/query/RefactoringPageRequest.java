@@ -1,12 +1,12 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
- * 
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -29,24 +29,12 @@ import org.uberfire.paging.PageRequest;
 @Portable
 public class RefactoringPageRequest extends PageRequest {
 
+
     private String queryName;
     private Set<ValueIndexTerm> queryTerms;
-    private boolean useWildcards = false;
-
-    public RefactoringPageRequest( final String queryName,
-                                   final Set<ValueIndexTerm> queryTerms,
-                                   final int startRowIndex,
-                                   final Integer pageSize ) {
-        this( queryName,
-              queryTerms,
-              false,
-              startRowIndex,
-              pageSize );
-    }
 
     public RefactoringPageRequest( @MapsTo("queryName") final String queryName,
                                    @MapsTo("queryTerms") final Set<ValueIndexTerm> queryTerms,
-                                   @MapsTo("useWildcards") final boolean useWildcards,
                                    @MapsTo("startRowIndex") final int startRowIndex,
                                    @MapsTo("pageSize") final Integer pageSize ) {
         super( startRowIndex,
@@ -55,19 +43,22 @@ public class RefactoringPageRequest extends PageRequest {
                                                              queryName );
         this.queryTerms = PortablePreconditions.checkNotNull( "queryTerms",
                                                               queryTerms );
-        this.useWildcards = useWildcards;
     }
 
     public String getQueryName() {
         return queryName;
     }
 
+    public void setQueryName( String queryName ) {
+        this.queryName = queryName;
+    }
+
     public Set<ValueIndexTerm> getQueryTerms() {
         return queryTerms;
     }
 
-    public boolean useWildcards() {
-        return useWildcards;
+    public void setQueryTerms( Set<ValueIndexTerm> queryTerms ) {
+        this.queryTerms = queryTerms;
     }
 
 }
