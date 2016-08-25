@@ -15,83 +15,102 @@
  */
 package org.drools.workbench.screens.guided.scorecard.backend.server.indexing;
 
-import java.util.Set;
-
+import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleUtils;
 import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.Type;
-import org.kie.workbench.common.services.refactoring.model.index.TypeField;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
-import org.uberfire.commons.data.Pair;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
+import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
+import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Visitor to extract index information from a Guided Score Card Model
  */
-public class GuidedScoreCardIndexVisitor {
+public class GuidedScoreCardIndexVisitor extends ResourceReferenceCollector {
+
+    private static final Logger logger = LoggerFactory.getLogger( GuidedScoreCardIndexVisitor.class );
 
     private final ProjectDataModelOracle dmo;
-    private final DefaultIndexBuilder builder;
     private final ScoreCardModel model;
 
     public GuidedScoreCardIndexVisitor( final ProjectDataModelOracle dmo,
-                                        final DefaultIndexBuilder builder,
                                         final ScoreCardModel model ) {
         this.dmo = PortablePreconditions.checkNotNull( "dmo",
                                                        dmo );
-        this.builder = PortablePreconditions.checkNotNull( "builder",
-                                                           builder );
         this.model = PortablePreconditions.checkNotNull( "model",
                                                          model );
     }
 
-    public Set<Pair<String, String>> visit() {
+    public void visit() {
         //Add type
         final String typeName = model.getFactName();
         if ( typeName == null || typeName.isEmpty() ) {
-            return builder.build();
+            return;
         }
         final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-        builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
 
         //Add field
         final String fieldName = model.getFieldName();
         if ( fieldName == null || fieldName.isEmpty() ) {
-            return builder.build();
+            return;
         }
-        final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
-                                                                                     fieldName );
-        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                             new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        resRef.addPartReference(fieldName, PartType.FIELD);
+        final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName, fieldName );
+        addResourceReference(fieldFullyQualifiedClassName, ResourceType.JAVA);
 
         //Add Characteristics
         for ( Characteristic c : model.getCharacteristics() ) {
             visit( c );
         }
 
-        return builder.build();
+        // agenda-group, ruleflow-group
+        String agendaGroup = model.getAgendaGroup();
+        if( agendaGroup != null && ! agendaGroup.isEmpty() ) {
+           addSharedReference(agendaGroup, PartType.AGENDA_GROUP);
+        }
+        String ruleFlowGroup = model.getRuleFlowGroup();
+        if( ruleFlowGroup != null && ! ruleFlowGroup.isEmpty() ) {
+           addSharedReference(ruleFlowGroup, PartType.RULEFLOW_GROUP);
+        }
+
+        Imports imports = model.getImports();
+        if( imports != null ) {
+           visit(imports);
+        }
+    }
+
+    private void visit( final Imports imports ) {
+        for( Import imp : imports.getImports() ) {
+           String impStr = imp.getType();
+           if( ! impStr.endsWith("*") ) {
+               addResourceReference(impStr, ResourceType.JAVA );
+           } else {
+               logger.debug("Wildcard import encountered : '" + impStr + "'");
+           }
+        }
     }
 
     private void visit( final Characteristic c ) {
         //Add type
         final String typeName = c.getFact();
         final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-        builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
 
         //Add field
         final String fieldName = c.getField();
         final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                      fieldName );
-        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                             new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        resRef.addPartReference(fieldName, PartType.FIELD);
+        addResourceReference(fieldFullyQualifiedClassName, ResourceType.JAVA);
+
     }
 
     private String getFullyQualifiedClassName( final String typeName ) {
@@ -110,13 +129,11 @@ public class GuidedScoreCardIndexVisitor {
 
     private String getFieldFullyQualifiedClassName( final String fullyQualifiedClassName,
                                                     final String fieldName ) {
-        final ModelField[] mfs = dmo.getProjectModelFields().get( fullyQualifiedClassName );
-        for ( ModelField mf : mfs ) {
-            if ( mf.getName().equals( fieldName ) ) {
-                return mf.getClassName();
-            }
+        String className = ProjectDataModelOracleUtils.getFieldFullyQualifiedClassName(dmo, fullyQualifiedClassName, fieldName);
+        if( className == null ) {
+            className = DataType.TYPE_OBJECT;
         }
-        return DataType.TYPE_OBJECT;
+        return className;
     }
 
 }

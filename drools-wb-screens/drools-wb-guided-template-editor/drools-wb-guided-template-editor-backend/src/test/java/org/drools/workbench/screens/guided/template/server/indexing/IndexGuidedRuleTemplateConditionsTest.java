@@ -19,14 +19,10 @@ package org.drools.workbench.screens.guided.template.server.indexing;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
@@ -34,18 +30,11 @@ import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResou
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.engine.Index;
-import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.java.nio.file.Path;
-
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
 
 public class IndexGuidedRuleTemplateConditionsTest extends BaseIndexingTest<GuidedRuleTemplateResourceTypeDefinition> {
 
@@ -68,15 +57,13 @@ public class IndexGuidedRuleTemplateConditionsTest extends BaseIndexingTest<Guid
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.guided.template.server.indexing.classes.Applicant" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.guided.template.server.indexing.classes.Applicant", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 1, path);
         }
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.guided.template.server.indexing.classes.Mortgage" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.guided.template.server.indexing.classes.Mortgage", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 1, path);
         }
@@ -86,14 +73,6 @@ public class IndexGuidedRuleTemplateConditionsTest extends BaseIndexingTest<Guid
     @Override
     protected TestIndexer getIndexer() {
         return new TestGuidedRuleTemplateFileIndexer();
-    }
-
-    @Override
-    public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( ) );
-        }};
     }
 
     @Override

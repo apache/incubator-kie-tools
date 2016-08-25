@@ -17,20 +17,17 @@
 package org.drools.workbench.screens.enums.backend.server.indexing;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePartReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.java.nio.file.Path;
 
@@ -58,33 +55,28 @@ public class IndexEnumEntriesTest extends BaseIndexingTest<EnumResourceTypeDefin
 
         //Enumerations using org.drools.workbench.screens.enums.backend.server.indexing.classes.Applicant
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.enums.backend.server.indexing.classes.Applicant" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.enums.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 2, path1, path2);
         }
 
         //Enumerations using org.drools.workbench.screens.enums.backend.server.indexing.classes.Mortgage
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.enums.backend.server.indexing.classes.Mortgage" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.enums.backend.server.indexing.classes.Mortgage", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 1, path2);
         }
 
         //Enumerations using org.drools.workbench.screens.enums.backend.server.indexing.classes.Mortgage#amount
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.enums.backend.server.indexing.classes.Mortgage" ) )
-                    .addTerm( new ValueFieldIndexTerm( "amount" ) )
+            final Query query = new SingleTermQueryBuilder( new ValuePartReferenceIndexTerm( "org.drools.workbench.screens.enums.backend.server.indexing.classes.Mortgage", "amount", PartType.FIELD ) )
                     .build();
             searchFor(index, query, 1, path2);
         }
 
         //Enumerations using java.lang.Integer
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "java.lang.Integer" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "java.lang.Integer", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 2, path1, path2);
         }
@@ -94,14 +86,6 @@ public class IndexEnumEntriesTest extends BaseIndexingTest<EnumResourceTypeDefin
     @Override
     protected TestIndexer getIndexer() {
         return new TestEnumFileIndexer();
-    }
-
-    @Override
-    public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-        }};
     }
 
     @Override

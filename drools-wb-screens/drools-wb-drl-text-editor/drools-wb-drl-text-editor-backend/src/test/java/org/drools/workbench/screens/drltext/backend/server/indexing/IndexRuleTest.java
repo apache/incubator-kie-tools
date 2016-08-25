@@ -26,10 +26,11 @@ import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueResourceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
@@ -39,18 +40,27 @@ public class IndexRuleTest extends BaseIndexingTest<DRLResourceTypeDefinition> {
     @Test
     public void testIndexDrlRules() throws IOException, InterruptedException {
         //Add test files
-        final Path path = basePath.resolve( "drl1.drl" );
-        final String drl = loadText( "drl1.drl" );
-        ioService().write( path,
-                           drl );
+        Path path = basePath.resolve( "drl1.drl" );
+        String drl = loadText( "drl1.drl" );
+        ioService().write( path, drl );
+
+        path = basePath.resolve( "drl2.drl" );
+        drl = loadText( "drl2.drl" );
+        ioService().write( path, drl );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueRuleIndexTerm( "myRule" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueResourceIndexTerm( "myRule", ResourceType.RULE ) )
+                    .build();
+            searchFor(index, query, 1);
+        }
+
+        {
+            final Query query = new SingleTermQueryBuilder(
+                    new ValueResourceIndexTerm( "org.drools.workbench.screens.drltext.backend.server.indexing.classes.myRule", ResourceType.RULE ) )
                     .build();
             searchFor(index, query, 1);
         }
@@ -63,10 +73,11 @@ public class IndexRuleTest extends BaseIndexingTest<DRLResourceTypeDefinition> {
 
     @Override
     public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-        }};
+        return new HashMap<String, Analyzer>() {
+            {
+                put( ProjectRootPathIndexTerm.TERM, new FilenameAnalyzer() );
+            }
+        };
     }
 
     @Override

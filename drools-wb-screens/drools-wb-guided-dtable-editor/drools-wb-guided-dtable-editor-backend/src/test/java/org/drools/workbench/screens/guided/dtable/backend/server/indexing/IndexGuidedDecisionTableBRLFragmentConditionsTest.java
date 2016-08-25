@@ -30,10 +30,9 @@ import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeD
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.java.nio.file.Path;
 
@@ -53,20 +52,18 @@ public class IndexGuidedDecisionTableBRLFragmentConditionsTest extends BaseIndex
         ioService().write( path,
                            xml );
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep( 7500 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Applicant" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 1, path);
         }
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Mortgage" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Mortgage", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 1, path);
         }
@@ -76,14 +73,6 @@ public class IndexGuidedDecisionTableBRLFragmentConditionsTest extends BaseIndex
     @Override
     protected TestIndexer getIndexer() {
         return new TestGuidedDecisionTableFileIndexer();
-    }
-
-    @Override
-    public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-        }};
     }
 
     @Override

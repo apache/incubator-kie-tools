@@ -38,20 +38,18 @@ import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.Type;
-import org.kie.workbench.common.services.refactoring.model.index.TypeField;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
+import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Visitor to extract index information from a Guided Rule Model
  */
-public class GuidedRuleModelIndexVisitor {
+public class GuidedRuleModelIndexVisitor extends ResourceReferenceCollector {
 
     private final DefaultIndexBuilder builder;
     private final RuleModel model;
@@ -102,25 +100,25 @@ public class GuidedRuleModelIndexVisitor {
     }
 
     private void visitRuleAttribute( final RuleAttribute attr ) {
-        builder.addGenerator( new org.kie.workbench.common.services.refactoring.model.index.RuleAttribute( new ValueRuleAttributeIndexTerm( attr.getAttributeName() ),
-                                                                                                           new ValueRuleAttributeValueIndexTerm( attr.getValue() ) ) );
+        PartType type = PartType.getPartTypeFromAttribueDescrName(attr.getAttributeName());
+        addSharedReference(attr.getValue(), type);
     }
 
     //ActionInsertFact, ActionSetField, ActionUpdateField
     private void visitActionFieldList( final ActionInsertFact afl ) {
-        builder.addGenerator( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( afl.getFactType() ) ) ) );
+        String fqClassName = getFullyQualifiedClassName( afl.getFactType() );
+        addResourceReference(fqClassName, ResourceType.JAVA);
     }
 
     private void visitActionFieldList( final String fullyQualifiedClassName,
                                        final ActionSetField afl ) {
         for ( ActionFieldValue afv : afl.getFieldValues() ) {
-            visit( fullyQualifiedClassName,
-                   afv );
+            visit( fullyQualifiedClassName, afv );
         }
     }
 
     private void visitCompositeFactPattern( final CompositeFactPattern pattern ) {
-        builder.addGenerator( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( pattern.getType() ) ) ) );
+        addResourceReference(getFullyQualifiedClassName( pattern.getType() ), ResourceType.JAVA);
         if ( pattern.getPatterns() != null ) {
             for ( IFactPattern fp : pattern.getPatterns() ) {
                 visit( fp );
@@ -142,7 +140,7 @@ public class GuidedRuleModelIndexVisitor {
     }
 
     private void visitFactPattern( final FactPattern pattern ) {
-        builder.addGenerator( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( pattern.getFactType() ) ) ) );
+        addResourceReference(getFullyQualifiedClassName( pattern.getFactType() ), ResourceType.JAVA);
         for ( FieldConstraint fc : pattern.getFieldConstraints() ) {
             visit( fc );
         }
@@ -210,9 +208,16 @@ public class GuidedRuleModelIndexVisitor {
     }
 
     private void visitSingleFieldConstraint( final SingleFieldConstraint sfc ) {
-        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( sfc.getFieldName() ),
-                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( sfc.getFieldType() ) ),
-                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( sfc.getFactType() ) ) ) );
+        // add the type of the field owner and the field reference
+        ResourceReference resRef = addResourceReference(getFullyQualifiedClassName(sfc.getFactType()), ResourceType.JAVA);
+        resRef.addPartReference(sfc.getFieldName(), PartType.FIELD);
+
+        // add the type of the field
+        String fieldType = sfc.getFieldType();
+        if( fieldType != null && ! fieldType.isEmpty() ) {
+            addResourceReference(getFullyQualifiedClassName(sfc.getFactType()), ResourceType.JAVA);
+        }
+
         if ( sfc.getConnectives() != null ) {
             for ( int i = 0; i < sfc.getConnectives().length; i++ ) {
                 visit( sfc.getConnectives()[ i ] );
@@ -221,9 +226,10 @@ public class GuidedRuleModelIndexVisitor {
     }
 
     private void visitConnectiveConstraint( final ConnectiveConstraint cc ) {
-        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( cc.getFieldName() ),
-                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( cc.getFieldType() ) ),
-                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( cc.getFactType() ) ) ) );
+        String fqClassName = getFullyQualifiedClassName( cc.getFactType() );
+        ResourceReference resRef = addResourceReference(fqClassName, ResourceType.JAVA);
+        resRef.addPartReference( cc.getFieldName(), PartType.FIELD);
+        addResourceReference( getFullyQualifiedClassName( cc.getFieldType() ), ResourceType.JAVA );
     }
 
     private void visitSingleFieldConstraint( final SingleFieldConstraintEBLeftSide sfexp ) {
@@ -238,9 +244,9 @@ public class GuidedRuleModelIndexVisitor {
 
     private void visit( final String fullyQualifiedClassName,
                         final ActionFieldValue afv ) {
-        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( afv.getField() ),
-                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( afv.getType() ) ),
-                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
+        resRef.addPartReference( afv.getField(), PartType.FIELD );
+        addResourceReference( getFullyQualifiedClassName( afv.getType() ), ResourceType.JAVA );
     }
 
     private String getFullyQualifiedClassName( final String typeName ) {

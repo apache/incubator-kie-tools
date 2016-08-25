@@ -17,36 +17,23 @@ package org.drools.workbench.screens.guided.template.server.indexing;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.ext.metadata.engine.Indexer;
-import org.uberfire.ext.metadata.model.KObject;
-import org.uberfire.ext.metadata.model.KObjectKey;
-import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
 @ApplicationScoped
-public class GuidedRuleTemplateFileIndexer implements Indexer {
+public class GuidedRuleTemplateFileIndexer extends AbstractFileIndexer {
 
     private static final Logger logger = LoggerFactory.getLogger( GuidedRuleTemplateFileIndexer.class );
-
-    @Inject
-    @Named("ioStrategy")
-    protected IOService ioService;
-
-    @Inject
-    protected KieProjectService projectService;
 
     @Inject
     protected GuidedRuleTemplateResourceTypeDefinition type;
@@ -57,36 +44,20 @@ public class GuidedRuleTemplateFileIndexer implements Indexer {
     }
 
     @Override
-    public KObject toKObject( final Path path ) {
-        KObject index = null;
+    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
+        final String content = ioService.readAllString( path );
+        final TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
 
-        try {
-            final String content = ioService.readAllString( path );
-            final TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
-
-            final Project project = projectService.resolveProject( Paths.convert( path ) );
-            final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
-
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
-                                                                         pkg );
-            final GuidedRuleTemplateIndexVisitor visitor = new GuidedRuleTemplateIndexVisitor( builder,
-                                                                                               model );
-            visitor.visit();
-
-            index = KObjectUtil.toKObject( path,
-                                           builder.build() );
-
-        } catch ( Exception e ) {
-            logger.error( "Unable to index '" + path.toUri().toString() + "'.",
-                          e );
+        final DefaultIndexBuilder builder = getIndexBuilder(path);
+        if( builder == null ) {
+            return null;
         }
 
-        return index;
-    }
+        final GuidedRuleTemplateIndexVisitor visitor = new GuidedRuleTemplateIndexVisitor( builder, model );
+        visitor.visit();
+        addReferencedResourcesToIndexBuilder(builder, visitor);
 
-    @Override
-    public KObjectKey toKObjectKey( final Path path ) {
-        return KObjectUtil.toKObjectKey( path );
+        return builder;
     }
 
 }

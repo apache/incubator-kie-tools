@@ -30,11 +30,10 @@ import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResou
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.java.nio.file.Path;
 
@@ -59,8 +58,7 @@ public class IndexGuidedRuleTemplateAttributesTest extends BaseIndexingTest<Guid
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueSharedPartIndexTerm( "*", PartType.RULEFLOW_GROUP, TermSearchType.WILDCARD ) )
                     .build();
             searchFor(index, query, 1, path);
         }
@@ -68,9 +66,7 @@ public class IndexGuidedRuleTemplateAttributesTest extends BaseIndexingTest<Guid
         //Rule Template defining a RuleFlow-Group named myRuleFlowGroup. This should match template1.template
         //This checks whether there is a Rule Attribute "ruleflow-group" and its Value is "myRuleflowGroup"
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) )
-                    .addTerm( new ValueRuleAttributeValueIndexTerm( "myRuleFlowGroup" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueSharedPartIndexTerm( "myRuleFlowGroup", PartType.RULEFLOW_GROUP) )
                     .build();
             searchFor(index, query, 1, path);
         }
@@ -80,14 +76,6 @@ public class IndexGuidedRuleTemplateAttributesTest extends BaseIndexingTest<Guid
     @Override
     protected TestIndexer getIndexer() {
         return new TestGuidedRuleTemplateFileIndexer();
-    }
-
-    @Override
-    public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( ) );
-        }};
     }
 
     @Override

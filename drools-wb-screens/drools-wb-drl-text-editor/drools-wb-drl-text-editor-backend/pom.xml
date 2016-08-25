@@ -50,6 +50,7 @@
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
+    
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -155,5 +156,5 @@
     </dependency>
 
   </dependencies>
-
+  
 </project>

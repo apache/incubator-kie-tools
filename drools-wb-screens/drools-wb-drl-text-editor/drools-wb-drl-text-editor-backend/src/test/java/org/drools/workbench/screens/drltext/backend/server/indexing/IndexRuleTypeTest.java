@@ -26,10 +26,12 @@ import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
@@ -53,16 +55,13 @@ public class IndexRuleTypeTest extends BaseIndexingTest<DRLResourceTypeDefinitio
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 2);
         }
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .useWildcards()
-                    .addTerm( new ValueTypeIndexTerm( "*.Applicant" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "*.Applicant", ResourceType.JAVA, TermSearchType.WILDCARD ) )
                     .build();
             searchFor(index, query, 2);
         }
@@ -74,12 +73,14 @@ public class IndexRuleTypeTest extends BaseIndexingTest<DRLResourceTypeDefinitio
         return new TestDrlFileIndexer();
     }
 
+
     @Override
     public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-        }};
+        return new HashMap<String, Analyzer>() {
+            {
+                put( ProjectRootPathIndexTerm.TERM, new FilenameAnalyzer() );
+            }
+        };
     }
 
     @Override

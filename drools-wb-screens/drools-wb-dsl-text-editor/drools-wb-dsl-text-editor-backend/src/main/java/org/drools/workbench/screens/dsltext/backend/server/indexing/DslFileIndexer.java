@@ -18,13 +18,11 @@ package org.drools.workbench.screens.dsltext.backend.server.indexing;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.dsl.DSLMapping;
 import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
@@ -33,35 +31,27 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.ErrorMessageUtilities;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
-import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.kie.workbench.common.services.refactoring.model.index.IndexElementsGenerator;
-import org.kie.workbench.common.services.refactoring.model.index.Rule;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.refactoring.model.index.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.ext.metadata.engine.Indexer;
-import org.uberfire.ext.metadata.model.KObject;
-import org.uberfire.ext.metadata.model.KObjectKey;
-import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
+// TODO: yeah, so there's no "rule => <rule name>" key-value pair added to the lucene index doc here
+// (because we don't want to add the name of a dummy rule -- a name which is repeatedly used in order to
+// be able to convert the DSl to a DRL and parse it..
+
+// so..  what to do? :D (Maybe add DSL("dsl") to ResourceType and add a key-value pair of dsl => <dsl name>
+// but what's the "dsl name" then?!?
 @ApplicationScoped
-public class DslFileIndexer implements Indexer {
+public class DslFileIndexer extends AbstractDrlFileIndexer {
 
-    private static final Logger logger = LoggerFactory.getLogger( DslFileIndexer.class );
-
-    @Inject
-    @Named("ioStrategy")
-    protected IOService ioService;
+    private static final Logger logger = LoggerFactory.getLogger( AbstractDrlFileIndexer.class );
 
     @Inject
     private DataModelService dataModelService;
-
-    @Inject
-    protected KieProjectService projectService;
 
     @Inject
     protected DSLResourceTypeDefinition dslType;
@@ -72,91 +62,76 @@ public class DslFileIndexer implements Indexer {
     }
 
     @Override
-    public KObject toKObject( final Path path ) {
-        KObject index = null;
+    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
 
-        try {
-            final List<String> lhs = new ArrayList<String>();
-            final List<String> rhs = new ArrayList<String>();
-            final String dsl = ioService.readAllString( path );
+        final List<String> lhs = new ArrayList<String>();
+        final List<String> rhs = new ArrayList<String>();
+        final String dsl = ioService.readAllString( path );
 
-            //Construct a dummy DRL file to parse index elements
-            final DSLTokenizedMappingFile dslLoader = new DSLTokenizedMappingFile();
-            if ( dslLoader.parseAndLoad( new StringReader( dsl ) ) ) {
-                for ( DSLMappingEntry e : dslLoader.getMapping().getEntries() ) {
-                    switch ( e.getSection() ) {
-                        case CONDITION:
-                            lhs.add( e.getValuePattern() );
-                            break;
-                        case CONSEQUENCE:
-                            rhs.add( e.getValuePattern() );
-                            break;
-                    }
+        //Construct a dummy DRL file to parse index elements
+        final DSLTokenizedMappingFile dslLoader = new DSLTokenizedMappingFile();
+        if ( dslLoader.parseAndLoad( new StringReader( dsl ) ) ) {
+            DSLMapping dslMapping = dslLoader.getMapping();
+            for ( DSLMappingEntry e : dslMapping.getEntries() ) {
+                switch ( e.getSection() ) {
+                case CONDITION:
+                    lhs.add( e.getValuePattern() );
+                    break;
+                case CONSEQUENCE:
+                    rhs.add( e.getValuePattern() );
+                    break;
+                default:
+                    // no-op
                 }
-
-                final String drl = makeDrl( path,
-                                            lhs,
-                                            rhs );
-                final DrlParser drlParser = new DrlParser();
-                final PackageDescr packageDescr = drlParser.parse( true,
-                                                                   drl );
-
-                if ( drlParser.hasErrors() ) {
-                    final List<DroolsError> errors = drlParser.getErrors();
-                    logger.warn( ErrorMessageUtilities.makeErrorMessage( path,
-                                                                         errors.toArray( new DroolsError[ errors.size() ] ) ) );
-                    return index;
-                }
-                if ( packageDescr == null ) {
-                    logger.warn( ErrorMessageUtilities.makeErrorMessage( path ) );
-                    return index;
-                }
-
-                final Project project = projectService.resolveProject( Paths.convert( path ) );
-                final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
-
-                //Don't include rules created to parse DSL
-                final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
-                                                                             pkg ) {
-                    @Override
-                    public DefaultIndexBuilder addGenerator( final IndexElementsGenerator generator ) {
-                        if ( generator instanceof Rule ) {
-                            return this;
-                        }
-                        return super.addGenerator( generator );
-                    }
-                };
-
-                final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
-                final PackageDescrIndexVisitor visitor = new PackageDescrIndexVisitor( dmo,
-                                                                                       builder,
-                                                                                       packageDescr );
-                visitor.visit();
-
-                return KObjectUtil.toKObject( path,
-                                              builder.build() );
             }
-        } catch ( Exception e ) {
-            logger.error( "Unable to index '" + path.toUri().toString() + "'.",
-                          e.getMessage() );
+
+            final String drl = makeDrl( path,
+                    lhs,
+                    rhs );
+
+            return fillDrlIndexBuilder(path, drl);
         }
-        return index;
+
+        return null;
     }
 
     @Override
-    public KObjectKey toKObjectKey( final Path path ) {
-        return KObjectUtil.toKObjectKey( path );
-    }
+    protected DefaultIndexBuilder getIndexBuilder(Path path) {
+        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        if ( project == null ) {
+            logger.error( "Unable to index " + path.toUri().toString() + ": project could not be resolved." );
+            return null;
+        }
 
-    //Delegate resolution of package name to method to assist testing
-    protected String getPackageName( final Path path ) {
-        return projectService.resolvePackage( Paths.convert( path ) ).getPackageName();
-    }
+        final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+        if ( pkg == null ) {
+            logger.error( "Unable to index " + path.toUri().toString() + ": package could not be resolved." );
+            return null;
+        }
 
-    //Delegate resolution of DMO to method to assist testing
+        // responsible for basic index info: project name, branch, etc
+        return new DefaultIndexBuilder( project, pkg ) {
+            @Override
+            public DefaultIndexBuilder addGenerator( final IndexElementsGenerator generator ) {
+                // Don't include the rule created to parse DSL
+                if ( generator instanceof Resource && ((Resource) generator).getResourceFQN().endsWith(MOCK_RULE_NAME) ) {
+                    return this;
+                }
+                return super.addGenerator( generator );
+            }
+        };
+     }
+
+    /*
+     * (non-Javadoc)
+     * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer#getProjectDataModelOracle(org.uberfire.java.nio.file.Path)
+     */
+    @Override
     protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
         return dataModelService.getProjectDataModel( Paths.convert( path ) );
     }
+
+    public static final String MOCK_RULE_NAME = DslFileIndexer.class.getSimpleName() + "_parsing_dummy_rule";
 
     private String makeDrl( final Path path,
                             final List<String> lhs,
@@ -165,7 +140,7 @@ public class DslFileIndexer implements Indexer {
         final String packageName = getPackageName( path );
 
         sb.append( "package " ).append( packageName ).append( "\n" );
-        sb.append( "rule \"mock\"\n" );
+        sb.append( "rule \"" + MOCK_RULE_NAME + "\"\n" );
         sb.append( "when\n" );
         for ( String e : lhs ) {
             sb.append( e ).append( "\n" );

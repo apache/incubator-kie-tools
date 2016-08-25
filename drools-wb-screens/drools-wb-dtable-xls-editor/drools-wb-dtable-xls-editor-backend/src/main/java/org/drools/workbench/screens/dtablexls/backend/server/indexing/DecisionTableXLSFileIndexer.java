@@ -17,49 +17,25 @@ package org.drools.workbench.screens.dtablexls.backend.server.indexing;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.drools.compiler.compiler.DecisionTableFactory;
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
-import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.ErrorMessageUtilities;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
-import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.ext.metadata.engine.Indexer;
-import org.uberfire.ext.metadata.model.KObject;
-import org.uberfire.ext.metadata.model.KObjectKey;
-import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardOpenOption;
 
 @ApplicationScoped
-public class DecisionTableXLSFileIndexer implements Indexer {
-
-    private static final Logger logger = LoggerFactory.getLogger( DecisionTableXLSFileIndexer.class );
-
-    @Inject
-    @Named("ioStrategy")
-    protected IOService ioService;
+public class DecisionTableXLSFileIndexer extends AbstractDrlFileIndexer {
 
     @Inject
     private DataModelService dataModelService;
-
-    @Inject
-    protected KieProjectService projectService;
 
     @Inject
     protected DecisionTableXLSResourceTypeDefinition type;
@@ -70,66 +46,27 @@ public class DecisionTableXLSFileIndexer implements Indexer {
     }
 
     @Override
-    public KObject toKObject( final Path path ) {
-        KObject index = null;
+    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
         InputStream inputStream = null;
-
         try {
             inputStream = ioService.newInputStream( path,
                                                     StandardOpenOption.READ );
             final String drl = DecisionTableFactory.loadFromInputStream( inputStream,
                                                                          null );
-            final DrlParser drlParser = new DrlParser();
-            final PackageDescr packageDescr = drlParser.parse( true,
-                                                               drl );
 
-            if ( drlParser.hasErrors() ) {
-                final List<DroolsError> errors = drlParser.getErrors();
-                logger.warn( ErrorMessageUtilities.makeErrorMessage( path,
-                                                                     errors.toArray( new DroolsError[ errors.size() ] ) ) );
-                return index;
-            }
-            if ( packageDescr == null ) {
-                logger.warn( ErrorMessageUtilities.makeErrorMessage( path ) );
-                return index;
-            }
-
-            final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
-            final Project project = projectService.resolveProject( Paths.convert( path ) );
-            final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
-
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
-                                                                         pkg );
-            final PackageDescrIndexVisitor visitor = new PackageDescrIndexVisitor( dmo,
-                                                                                   builder,
-                                                                                   packageDescr );
-            visitor.visit();
-
-            index = KObjectUtil.toKObject( path,
-                                           builder.build() );
-
-        } catch ( Exception e ) {
-            logger.error( "Unable to index '" + path.toUri().toString() + "'.",
-                          e );
-
+            return fillDrlIndexBuilder(path, drl);
         } finally {
             if ( inputStream != null ) {
                 try {
                     inputStream.close();
                 } catch ( IOException e ) {
+                    // no-op
                 }
             }
         }
-
-        return index;
     }
 
     @Override
-    public KObjectKey toKObjectKey( final Path path ) {
-        return KObjectUtil.toKObjectKey( path );
-    }
-
-    //Delegate resolution of DMO to method to assist testing
     protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
         return dataModelService.getProjectDataModel( Paths.convert( path ) );
     }

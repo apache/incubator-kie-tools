@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -35,23 +36,19 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.Rule;
-import org.kie.workbench.common.services.refactoring.model.index.RuleAttribute;
-import org.kie.workbench.common.services.refactoring.model.index.Type;
-import org.kie.workbench.common.services.refactoring.model.index.TypeField;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
+import org.kie.workbench.common.services.refactoring.model.index.SharedPart;
+import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Visitor to extract index information from a Guided Decision Table
  */
-public class GuidedDecisionTableModelIndexVisitor {
+public class GuidedDecisionTableModelIndexVisitor extends ResourceReferenceCollector {
 
     private final DefaultIndexBuilder builder;
     private final GuidedDecisionTable52 model;
@@ -88,10 +85,14 @@ public class GuidedDecisionTableModelIndexVisitor {
             visit( (ActionInsertFactCol52) o );
         } else if ( o instanceof ActionSetFieldCol52 ) {
             visit( (ActionSetFieldCol52) o );
+        } else if( o instanceof Imports ) {
+           visit( (Imports) o );
         }
     }
 
     private void visit( final GuidedDecisionTable52 o ) {
+        //Add Imports
+        visit( o.getImports() );
         //Add attributes
         for ( AttributeCol52 c : o.getAttributeCols() ) {
             visit( c );
@@ -108,8 +109,10 @@ public class GuidedDecisionTableModelIndexVisitor {
         final String parentRuleName = model.getParentName();
         for ( List<DTCellValue52> row : model.getData() ) {
             final String ruleName = "Row " + row.get( 0 ).getNumericValue().longValue() + " " + model.getTableName();
-            builder.addGenerator( new Rule( new ValueRuleIndexTerm( ruleName ),
-                                            ( parentRuleName == null ? null : new ValueRuleIndexTerm( parentRuleName ) ) ) );
+            addResourceReference(ruleName, ResourceType.RULE);
+            if( parentRuleName != null ) {
+                addResourceReference(parentRuleName, ResourceType.RULE);
+            }
         }
     }
 
@@ -118,14 +121,29 @@ public class GuidedDecisionTableModelIndexVisitor {
         for ( List<DTCellValue52> row : model.getData() ) {
             final String attributeValue = row.get( iCol ).getStringValue();
             if ( !( attributeValue == null || attributeValue.isEmpty() ) ) {
-                builder.addGenerator( new RuleAttribute( new ValueRuleAttributeIndexTerm( o.getAttribute() ),
-                                                         new ValueRuleAttributeValueIndexTerm( attributeValue ) ) );
+                String attrName = o.getAttribute();
+                PartType type = PartType.getPartTypeFromAttribueDescrName(attrName);
+                switch(type) {
+                    case AGENDA_GROUP:
+                    case ACTIVATION_GROUP:
+                    case RULEFLOW_GROUP:
+                    case ENTRY_POINT:
+                        SharedPart sharedRef = new SharedPart(attributeValue, type);
+                        builder.addGenerator( sharedRef );
+                    break;
+                    // OCRAM: finish
+                    default:
+//                        logger.info("Not processing attribute: " + descr.getName());
+
+                }
             }
         }
     }
 
     private void visit( final Pattern52 o ) {
-        builder.addGenerator( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getFactType() ) ) ) );
+        String fqClassName = getFullyQualifiedClassName( o.getFactType() );
+        addResourceReference(fqClassName, ResourceType.JAVA);
+
         for ( ConditionCol52 c : o.getChildColumns() ) {
             visit( c );
         }
@@ -140,14 +158,17 @@ public class GuidedDecisionTableModelIndexVisitor {
         final GuidedRuleModelIndexVisitor visitor = new GuidedRuleModelIndexVisitor( builder,
                                                                                      rm );
         results.addAll( visitor.visit() );
+        addResourceReferences(visitor);
     }
 
     private void visit( final ConditionCol52 o ) {
         final Pattern52 p = model.getPattern( o );
         final String fullyQualifiedClassName = getFullyQualifiedClassName( p.getFactType() );
-        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( o.getFactField() ),
-                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getFieldType() ) ),
-                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
+        // add reference to field
+        resRef.addPartReference(o.getFactField(), PartType.FIELD );
+        // add reference to field type
+        addResourceReference(getFullyQualifiedClassName( o.getFieldType() ), ResourceType.JAVA);
     }
 
     private void visit( final BRLActionColumn o ) {
@@ -163,18 +184,24 @@ public class GuidedDecisionTableModelIndexVisitor {
 
     private void visit( final ActionInsertFactCol52 o ) {
         final String fullyQualifiedClassName = getFullyQualifiedClassName( o.getFactType() );
-        builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
-        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( o.getFactField() ),
-                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getType() ) ),
-                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
+        resRef.addPartReference(o.getFactField(), PartType.FIELD);
+        addResourceReference( getFullyQualifiedClassName( o.getType() ), ResourceType.JAVA );
     }
 
     private void visit( final ActionSetFieldCol52 o ) {
         final Pattern52 p = model.getConditionPattern( o.getBoundName() );
+
         final String fullyQualifiedClassName = getFullyQualifiedClassName( p.getFactType() );
-        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( o.getFactField() ),
-                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getType() ) ),
-                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
+        resRef.addPartReference(o.getFactField(), PartType.FIELD );
+        addResourceReference( getFullyQualifiedClassName( o.getType() ), ResourceType.JAVA );
+    }
+
+    private void visit( final Imports o ) {
+        for( Import imp : o.getImports() ) {
+           addResourceReference(imp.getType(), ResourceType.JAVA);
+        }
     }
 
     private String getFullyQualifiedClassName( final String typeName ) {

@@ -29,9 +29,12 @@ import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.SharedPartIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
@@ -51,28 +54,23 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<DRLReso
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final BooleanQuery query = new BooleanQuery();
-            query.add( new TermQuery( new Term( RuleAttributeIndexTerm.TERM,
-                                                "ruleflow-group" ) ),
-                       BooleanClause.Occur.MUST );
-            query.add( new TermQuery( new Term( RuleAttributeValueIndexTerm.TERM,
-                                                "nonexistent" ) ),
-                       BooleanClause.Occur.MUST );
-            searchFor(index, query, 0);
+            final BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
+            queryBuilder.add( new TermQuery( new Term((new SharedPartIndexTerm(PartType.RULEFLOW_GROUP)).getTerm()) ), BooleanClause.Occur.MUST );
+            queryBuilder.add( new TermQuery( new Term("nonexistent") ), BooleanClause.Occur.MUST );
+            searchFor(index, queryBuilder.build(), 0);
         }
 
-        //This simply checks whether there is a Rule Attribute "ruleflow-group" and a Rule Attribute Value "myRuleflowGroup"
-        //The specific query does not check that the Rule Attribute Value corresponds to the Rule Attribute, so it is possible
-        //that the value relates to a different Rule Attribute.
+
+        // This note replaces an earlier note, if it doesn't make sense, delete or ignore it.
+
+        // Both pieces of info (that it's a ruleflow group, and that the ruleflow group is called "myruleflowgroup")
+        // are present in the same field ("shared:ruleflowgroup" => "myruleflowgroup"), so this only returns
+        // documents that match that field (as opposed to the structure we had before).
         {
-            final BooleanQuery query = new BooleanQuery();
-            query.add( new TermQuery( new Term( RuleAttributeIndexTerm.TERM,
-                                                "ruleflow-group" ) ),
-                       BooleanClause.Occur.MUST );
-            query.add( new TermQuery( new Term( RuleAttributeValueIndexTerm.TERM,
-                                                "myruleflowgroup" ) ),
-                       BooleanClause.Occur.MUST );
-            searchFor(index, query, 1);
+            final BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
+            ValueIndexTerm termVals = new ValueSharedPartIndexTerm("myruleflowgroup", PartType.RULEFLOW_GROUP);
+            queryBuilder.add( new TermQuery( new Term(termVals.getTerm(), termVals.getValue() )), BooleanClause.Occur.MUST );
+            searchFor(index, queryBuilder.build(), 1);
         }
 
     }
@@ -80,14 +78,6 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<DRLReso
     @Override
     protected TestIndexer getIndexer() {
         return new TestDrlFileIndexer();
-    }
-
-    @Override
-    public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-        }};
     }
 
     @Override

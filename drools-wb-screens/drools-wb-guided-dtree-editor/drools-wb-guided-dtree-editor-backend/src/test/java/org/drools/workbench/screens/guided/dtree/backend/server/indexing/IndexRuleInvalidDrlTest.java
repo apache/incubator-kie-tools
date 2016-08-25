@@ -22,19 +22,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueResourceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.engine.Index;
@@ -66,8 +64,7 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<GuidedDTreeResourc
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueRuleIndexTerm( "myRule" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueResourceIndexTerm( "*myRule", ResourceType.RULE, TermSearchType.WILDCARD ) )
                     .build();
             searchFor(index, query, 0);
 
@@ -85,14 +82,6 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<GuidedDTreeResourc
     @Override
     protected TestIndexer getIndexer() {
         return new TestGuidedDecisionTreeFileIndexer();
-    }
-
-    @Override
-    public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer() );
-        }};
     }
 
     @Override

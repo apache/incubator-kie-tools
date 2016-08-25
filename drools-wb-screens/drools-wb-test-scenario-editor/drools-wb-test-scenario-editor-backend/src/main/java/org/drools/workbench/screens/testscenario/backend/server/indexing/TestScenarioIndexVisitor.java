@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.testscenario.backend.server.indexing;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,20 +32,18 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.Rule;
-import org.kie.workbench.common.services.refactoring.model.index.Type;
-import org.kie.workbench.common.services.refactoring.model.index.TypeField;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.ResourceReference;
+import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Visitor to extract index information from a Scenario
  */
-public class TestScenarioIndexVisitor {
+public class TestScenarioIndexVisitor extends ResourceReferenceCollector {
 
     private final ProjectDataModelOracle dmo;
     private final DefaultIndexBuilder builder;
@@ -70,12 +67,11 @@ public class TestScenarioIndexVisitor {
     }
 
     private void visit(final Scenario scenario) {
-        visit(scenario.getGlobals());
-        visit(scenario.getFixtures());
-    }
+        for( FactData global : scenario.getGlobals()) {
+            visit(global);
+        }
 
-    private void visit(List<? extends Fixture> fixtures) {
-        for (Fixture fixture : fixtures) {
+        for (Fixture fixture : scenario.getFixtures()) {
             visit(fixture);
         }
     }
@@ -95,7 +91,7 @@ public class TestScenarioIndexVisitor {
             final FactData factData = (FactData) fixture;
             final String typeName = factData.getType();
             final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-            builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+            ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
 
             factDataToFullyQualifiedClassNameMap.put( factData.getName(),
                                                       fullyQualifiedClassName );
@@ -104,9 +100,8 @@ public class TestScenarioIndexVisitor {
                 final String fieldName = field.getName();
                 final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                              fieldName );
-                builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                                     new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                                     new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+                resRef.addPartReference(fieldName, PartType.FIELD);
+                addResourceReference(fieldFullyQualifiedClassName, ResourceType.JAVA);
             }
 
         } else if ( fixture instanceof VerifyFact ) {
@@ -120,21 +115,21 @@ public class TestScenarioIndexVisitor {
             } else {
                 fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
             }
+            ResourceReference resRef = null;
             if ( fullyQualifiedClassName != null ) {
-                builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
-            }
+                resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
 
-            for ( VerifyField field : verifyFact.getFieldValues() ) {
-                final String fieldName = field.getFieldName();
-                final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
+                for ( VerifyField field : verifyFact.getFieldValues() ) {
+                    final String fieldName = field.getFieldName();
+                    final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                              fieldName );
-                builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                                     new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                                     new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+                    resRef.addPartReference(fieldName, PartType.FIELD);
+                    addResourceReference(fieldFullyQualifiedClassName, ResourceType.JAVA);
+                }
             }
         } else if ( fixture instanceof VerifyRuleFired ) {
             final VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
-            builder.addGenerator( new Rule( new ValueRuleIndexTerm( verifyRuleFired.getRuleName() ) ) );
+            addResourceReference(verifyRuleFired.getRuleName(), ResourceType.RULE);
         }
     }
 

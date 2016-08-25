@@ -25,13 +25,13 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.WildcardQuery;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
@@ -51,29 +51,23 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<GuidedR
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final BooleanQuery query = new BooleanQuery();
-            query.add( new TermQuery( new Term( RuleAttributeIndexTerm.TERM,
-                                                "ruleflow-group" ) ),
+            final BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
+            ValueSharedPartIndexTerm indexTerm = new ValueSharedPartIndexTerm("*", PartType.RULEFLOW_GROUP);
+            queryBuilder.add( new WildcardQuery( new Term( indexTerm.getTerm(), indexTerm.getValue() ) ),
                        BooleanClause.Occur.MUST );
-            query.add( new TermQuery( new Term( RuleAttributeValueIndexTerm.TERM,
-                                                "nonexistent" ) ),
+            queryBuilder.add( new WildcardQuery( new Term( "shared:nonexistend", "*" ) ),
                        BooleanClause.Occur.MUST );
-            searchFor(index, query, 0);
+            searchFor(index, queryBuilder.build(), 0);
 
         }
 
-        //This simply checks whether there is a Rule Attribute "ruleflow-group" and a Rule Attribute Value "myRuleflowGroup"
-        //The specific query does not check that the Rule Attribute Value corresponds to the Rule Attribute, so it is possible
-        //that the value relates to a different Rule Attribute.
         {
-            final BooleanQuery query = new BooleanQuery();
-            query.add( new TermQuery( new Term( RuleAttributeIndexTerm.TERM,
-                                                "ruleflow-group" ) ),
+            // This could also just be a TermQuery..
+            final BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
+            ValueSharedPartIndexTerm indexTerm = new ValueSharedPartIndexTerm("myruleflowgroup", PartType.RULEFLOW_GROUP);
+            queryBuilder.add( new TermQuery( new Term( indexTerm.getTerm(), indexTerm.getValue() ) ),
                        BooleanClause.Occur.MUST );
-            query.add( new TermQuery( new Term( RuleAttributeValueIndexTerm.TERM,
-                                                "myruleflowgroup" ) ),
-                       BooleanClause.Occur.MUST );
-            searchFor(index, query, 1);
+            searchFor(index, queryBuilder.build(), 1);
         }
 
     }
@@ -81,14 +75,6 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<GuidedR
     @Override
     protected TestIndexer getIndexer() {
         return new TestGuidedRuleDrlFileIndexer();
-    }
-
-    @Override
-    public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( ) );
-        }};
     }
 
     @Override

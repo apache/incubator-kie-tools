@@ -17,19 +17,15 @@
 package org.drools.workbench.screens.guided.rule.backend.server.indexing;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.java.nio.file.Path;
 
@@ -52,15 +48,13 @@ public class IndexRuleMultipleTypesTest extends BaseIndexingTest<GuidedRuleDRLRe
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.guided.rule.backend.server.indexing.classes.Applicant" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.guided.rule.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 2, path1, path2);
         }
 
         {
-            final Query query = new BasicQueryBuilder()
-                    .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.guided.rule.backend.server.indexing.classes.Mortgage" ) )
+            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.guided.rule.backend.server.indexing.classes.Mortgage", ResourceType.JAVA ) )
                     .build();
             searchFor(index, query, 1, path2);
         }
@@ -70,14 +64,6 @@ public class IndexRuleMultipleTypesTest extends BaseIndexingTest<GuidedRuleDRLRe
     @Override
     protected TestIndexer getIndexer() {
         return new TestGuidedRuleDrlFileIndexer();
-    }
-
-    @Override
-    public Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( ) );
-        }};
     }
 
     @Override
