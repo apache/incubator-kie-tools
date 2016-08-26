@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller;
 
 public interface AnalyzerController {
 

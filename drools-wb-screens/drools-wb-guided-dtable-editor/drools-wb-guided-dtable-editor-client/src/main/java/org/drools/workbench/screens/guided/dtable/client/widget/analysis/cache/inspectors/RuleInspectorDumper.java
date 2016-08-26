@@ -16,8 +16,10 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.action.ActionsInspectorMultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.ConditionsInspectorMultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable;
 
 /**
  * This class is for debugging purposes. It is way easier to just dump the inspector into a string than compare the
@@ -45,6 +47,8 @@ public class RuleInspectorDumper {
 
         dumpConditions();
 
+        dumpActions();
+
         return dump.toString();
     }
 
@@ -57,6 +61,9 @@ public class RuleInspectorDumper {
             dump.append( "Conditions{\n" );
             dumpCondition( patternInspector.getConditionsInspector() );
             dump.append( "}\n" );
+            dump.append( "Actions{\n" );
+            dumpAction( patternInspector.getActionsInspector() );
+            dump.append( "}\n" );
         }
         dump.append( "}\n" );
     }
@@ -67,6 +74,28 @@ public class RuleInspectorDumper {
             dumpCondition( conditionsInspectorMultiMap );
         }
         dump.append( "}\n" );
+    }
+
+    private void dumpActions() {
+
+        dump.append( "Actions{\n" );
+        for ( final ActionsInspectorMultiMap actionsInspectorMultiMap : ruleInspector.getActionsInspectors() ) {
+            dumpAction( actionsInspectorMultiMap );
+        }
+        dump.append( "}\n" );
+
+    }
+
+    private void dumpAction( final ActionsInspectorMultiMap actionsInspectorMultiMap ) {
+        for ( final Object object : actionsInspectorMultiMap.allValues() ) {
+            dump.append( "Action{\n" );
+            if ( object instanceof HumanReadable ) {
+                dump.append( (( HumanReadable ) object).toHumanReadableString() );
+            } else {
+                dump.append( object.toString() );
+            }
+            dump.append( "}\n" );
+        }
     }
 
     private void dumpCondition( final ConditionsInspectorMultiMap conditionsInspectorMultiMap ) {

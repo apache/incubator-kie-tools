@@ -70,7 +70,7 @@ import org.drools.workbench.screens.guided.dtable.client.GuidedDecisionTable;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.DefaultClipboard;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalyzerController;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.auditlog.AuditLog;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;

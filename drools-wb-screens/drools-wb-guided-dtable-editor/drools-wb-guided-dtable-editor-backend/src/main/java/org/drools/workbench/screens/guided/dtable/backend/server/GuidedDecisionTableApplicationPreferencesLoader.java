@@ -39,17 +39,17 @@ public class GuidedDecisionTableApplicationPreferencesLoader
         final Map<String, String> preferences = new HashMap<String, String>();
 
         final String property = getProperty();
-        log.info( "Setting preference '" + GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED + "' to '" + property + "'." );
-        preferences.put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED,
+        log.info( "Setting preference '" + GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED + "' to '" + property + "'." );
+        preferences.put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
                          property );
 
         return preferences;
     }
 
     private String getProperty() {
-        final String property = System.getProperty( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED );
+        final String property = System.getProperty( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED );
         if ( property == null ) {
-            return "true";
+            return "false";
         } else {
             return property;
         }

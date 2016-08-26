@@ -48,30 +48,24 @@ public class ExtendedGuidedDecisionTableBuilder
         table.setTableName( tableName );
     }
 
-    public ExtendedGuidedDecisionTableBuilder withConditionBRLColumn() {
-        final BRLConditionColumn column = new BRLConditionColumn();
-
-        final ArrayList<IPattern> definition = new ArrayList<IPattern>();
+    public static BRLConditionColumn createBRLConditionColumn() {
+        final BRLConditionColumn brlConditionColumn = new BRLConditionColumn();
+        final ArrayList<IPattern> definition = new ArrayList<>();
         definition.add( mock( IPattern.class ) );
-        column.setDefinition( definition );
+        brlConditionColumn.setDefinition( definition );
 
-        ArrayList<BRLConditionVariableColumn> childColumns = new ArrayList<>();
-        BRLConditionVariableColumn brlConditionVariableColumn = new BRLConditionVariableColumn();
+        final ArrayList<BRLConditionVariableColumn> childColumns = new ArrayList<>();
+        final BRLConditionVariableColumn brlConditionVariableColumn = new BRLConditionVariableColumn();
         brlConditionVariableColumn.getFactType();
         childColumns.add( brlConditionVariableColumn );
-        column.setChildColumns( childColumns );
+        brlConditionColumn.setChildColumns( childColumns );
 
-        table.getConditions().add( column );
-
-        return this;
+        return brlConditionColumn;
     }
 
     public AbstractDecisionTableBuilder withActionBRLFragment() {
 
-        final BRLActionColumn brlActionColumn = new BRLActionColumn();
-        final ArrayList<IAction> definition = new ArrayList<IAction>();
-        definition.add( mock( IAction.class ) );
-        brlActionColumn.setDefinition( definition );
+        final BRLActionColumn brlActionColumn = createBRLActionColumn();
 
 
         ArrayList<BRLActionVariableColumn> childColumns = new ArrayList<>();
@@ -231,6 +225,22 @@ public class ExtendedGuidedDecisionTableBuilder
         column.setFactField( factField );
         column.setType( typeNumericInteger );
         return column;
+    }
+
+    public ExtendedGuidedDecisionTableBuilder withConditionBRLColumn() {
+        final BRLConditionColumn column = createBRLConditionColumn();
+
+        table.getConditions().add( column );
+
+        return this;
+    }
+
+    public static BRLActionColumn createBRLActionColumn() {
+        final BRLActionColumn brlActionColumn = new BRLActionColumn();
+        final ArrayList<IAction> definition = new ArrayList<IAction>();
+        definition.add( mock( IAction.class ) );
+        brlActionColumn.setDefinition( definition );
+        return brlActionColumn;
     }
 
     public static ActionInsertFactCol52 createActionInsertFact( String factType,

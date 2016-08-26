@@ -20,6 +20,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
@@ -120,10 +124,34 @@ public class DecisionTableAnalyzer {
         analyze();
     }
 
-    public void insertColumn( final int index ) {
-        cache.newColumn( index );
+    public void insertColumn( final BaseColumn baseColumn ) {
+        cache.newColumn( getColumnIndex( baseColumn ) );
         resetChecks();
         analyze();
+    }
+
+    private int getColumnIndex( final BaseColumn baseColumn ) {
+        final int indexOf = model.getExpandedColumns().indexOf( baseColumn );
+        if ( indexOf < 0 ) {
+            if ( baseColumn instanceof BRLConditionColumn ) {
+
+                for ( final BaseColumn column : model.getExpandedColumns() ) {
+                    if ( column instanceof BRLConditionVariableColumn ) {
+                        if ( (( BRLConditionColumn ) baseColumn).getChildColumns().contains( column ) ) {
+                            return model.getExpandedColumns().indexOf( column );
+                        }
+                    }
+                }
+
+                throw new IllegalArgumentException( "Could not find BRLConditionColumn: " + baseColumn.toString() );
+            } else if ( baseColumn instanceof BRLVariableColumn ) {
+                return model.getExpandedColumns().indexOf( model.getBRLColumn( ( BRLVariableColumn ) baseColumn ) );
+            } else {
+                throw new IllegalArgumentException( "Could not find baseColumn: " + baseColumn.toString() );
+            }
+        } else {
+            return indexOf;
+        }
     }
 
     public void updateColumns( final int amountOfRows ) {

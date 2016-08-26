@@ -165,13 +165,40 @@ public class DecisionTableAnalyzerUpdateTest
 
         assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
 
-        appendColumn( 4,
-                      createActionSetField( "a", "approved", DataType.TYPE_BOOLEAN ),
-                      true,
-                      true,
-                      false );
+        appendActionColumn( 4,
+                            createActionSetField( "a", "approved", DataType.TYPE_BOOLEAN ),
+                            true,
+                            true,
+                            false );
 
         assertContains( "MultipleValuesForOneAction", analyzerProvider.getAnalysisReport(), 3 );
+
+    }
+
+    @Test
+    public void testAddBRLColumn() throws Exception {
+        table52 = analyzerProvider
+                .makeAnalyser()
+                .withPersonAgeColumn( "==" )
+                .withPersonApprovedActionSetField()
+                .withData( DataBuilderProvider
+                                   .row( 1, true )
+                                   .row( 2, true )
+                                   .row( 3, true )
+                                   .end() )
+                .buildTable();
+
+        fireUpAnalyzer();
+
+        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
+
+        insertConditionColumn( 3,
+                               createBRLConditionColumn(),
+                               true,
+                               true,
+                               true );
+
+        assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
 
     }
 

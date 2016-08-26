@@ -25,6 +25,8 @@ import java.util.Set;
 import javax.enterprise.event.Event;
 
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.DefaultClipboard;
@@ -196,7 +198,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     protected ModelSynchronizer synchronizer = spy( new ModelSynchronizerImpl() {
 
         @Override
-        protected void fireAfterColumnInsertedEvent( final int columnIndex ) {
+        protected void fireAfterColumnInsertedEvent( final BaseColumn column ) {
             //Do nothing; we're not testing V&V integration in these tests.
         }
 

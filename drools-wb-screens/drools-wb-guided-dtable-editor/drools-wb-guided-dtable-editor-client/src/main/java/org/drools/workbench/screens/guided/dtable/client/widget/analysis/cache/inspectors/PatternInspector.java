@@ -44,7 +44,7 @@ public class PatternInspector
 
     private final UUIDKey uuidKey = new UUIDKey( this );
 
-    private final Pattern          pattern;
+    private final Pattern pattern;
 
     private final InspectorList<FieldInspector> inspectorList = new InspectorList<>();
     private final RelationResolver relationResolver;

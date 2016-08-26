@@ -85,7 +85,6 @@ public class RuleInspectorCache {
             rowIndex++;
         }
 
-        reset();
     }
 
     public void deleteColumns( final int firstColumnIndex,

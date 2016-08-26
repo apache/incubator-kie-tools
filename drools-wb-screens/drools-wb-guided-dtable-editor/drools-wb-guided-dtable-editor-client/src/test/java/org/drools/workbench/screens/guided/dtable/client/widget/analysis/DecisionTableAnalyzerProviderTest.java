@@ -23,6 +23,7 @@ import java.util.Map;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerControllerImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.junit.Test;
@@ -55,10 +56,10 @@ public class DecisionTableAnalyzerProviderTest {
     }
 
     @Test
-    public void settingFalse() throws Exception {
+    public void verificationDisabledWithSetting() throws Exception {
         final Map<String, String> preferences = new HashMap<String, String>() {{
-            put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED,
-                 "false" );
+            put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
+                 "true" );
         }};
 
         ApplicationPreferences.setUp( preferences );
@@ -71,10 +72,10 @@ public class DecisionTableAnalyzerProviderTest {
     }
 
     @Test
-    public void settingTrue() throws Exception {
+    public void verificationEnabledWithSetting() throws Exception {
         final Map<String, String> preferences = new HashMap<String, String>() {{
-            put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED,
-                 "true" );
+            put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
+                 "false" );
         }};
 
         ApplicationPreferences.setUp( preferences );

@@ -34,7 +34,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.ValidateEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.ValidateEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.SalienceUiColumn;
@@ -49,8 +49,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnInserted;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AfterColumnDeleted;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AfterColumnInserted;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
@@ -209,7 +209,8 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        fireAfterColumnInsertedEvent( model.getExpandedColumns().indexOf( column ) );
+
+        fireAfterColumnInsertedEvent( column );
     }
 
     @Override
@@ -224,7 +225,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        fireAfterColumnInsertedEvent( model.getExpandedColumns().indexOf( column ) );
+        fireAfterColumnInsertedEvent( column );
     }
 
     @Override
@@ -519,8 +520,8 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
         uiModel.indexColumn( columnIndex );
     }
 
-    protected void fireAfterColumnInsertedEvent( final int columnIndex ) {
-        eventBus.fireEvent( new AfterColumnInserted( columnIndex ) );
+    protected void fireAfterColumnInsertedEvent( final BaseColumn column ) {
+        eventBus.fireEvent( new AfterColumnInserted( column ) );
     }
 
     protected void fireAfterColumnDeletedEvent( final int columnIndex ) {

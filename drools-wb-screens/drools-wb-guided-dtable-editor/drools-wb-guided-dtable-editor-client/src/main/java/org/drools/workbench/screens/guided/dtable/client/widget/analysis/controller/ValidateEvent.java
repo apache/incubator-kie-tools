@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +27,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordin
  */
 public class ValidateEvent extends GwtEvent<ValidateEvent.Handler> {
 
-    public static interface Handler
+    public interface Handler
             extends
             EventHandler {
 

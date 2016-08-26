@@ -17,16 +17,23 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.BRLCondition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.AnalyzerProvider;
 import org.junit.Before;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
@@ -128,16 +135,28 @@ public abstract class AnalyzerUpdateTestBase {
         analyzer.analyze( getUpdates( rowIndex, columnIndex ) );
     }
 
-    protected void appendColumn( final int columnNumber,
-                                 final ActionSetFieldCol52 actionSetField,
-                                 final Comparable... cellValues ) {
+    protected void appendActionColumn( final int columnNumber,
+                                       final ActionSetFieldCol52 actionSetField,
+                                       final Comparable... cellValues ) {
         table52.getActionCols().add( actionSetField );
 
         for ( int i = 0; i < cellValues.length; i++ ) {
             table52.getData().get( i ).add( new DTCellValue52( cellValues[i] ) );
         }
 
-        analyzer.insertColumn( columnNumber );
+        analyzer.insertColumn( table52.getExpandedColumns().get( columnNumber ) );
+    }
+
+    protected void insertConditionColumn( final int columnNumber,
+                                          final BRLConditionColumn brlConditionColumn,
+                                          final Comparable... cellValues ) {
+        table52.getConditions().add( brlConditionColumn);
+
+        for ( int i = 0; i < cellValues.length; i++ ) {
+            table52.getData().get( i ).add( new DTCellValue52( cellValues[i] ) );
+        }
+
+        analyzer.insertColumn( table52.getExpandedColumns().get( columnNumber ) );
     }
 
     protected void insertRow( final int rowNumber ) {

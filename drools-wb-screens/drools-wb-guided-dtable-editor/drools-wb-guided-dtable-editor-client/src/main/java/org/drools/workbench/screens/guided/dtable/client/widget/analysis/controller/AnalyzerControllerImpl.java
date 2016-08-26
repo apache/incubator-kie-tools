@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller;
 
 import com.google.gwt.event.shared.EventBus;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnInserted;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
@@ -84,7 +83,7 @@ public class AnalyzerControllerImpl
 
     @Override
     public void onAfterColumnInserted( final AfterColumnInserted event ) {
-        decisionTableAnalyzer.insertColumn( event.getIndex() );
+        decisionTableAnalyzer.insertColumn( event.getColumn() );
     }
 
     @Override

@@ -26,26 +26,26 @@ public class GuidedDecisionTableApplicationPreferencesLoaderTest {
 
     @After
     public void tearDown() throws Exception {
-        System.clearProperty( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED );
+        System.clearProperty( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED );
     }
 
     @Test
     public void notSet() throws Exception {
 
-        assertEquals( "true", new GuidedDecisionTableApplicationPreferencesLoader().load().get( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED ) );
+        assertEquals( "false", new GuidedDecisionTableApplicationPreferencesLoader().load().get( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED ) );
     }
 
     @Test
     public void setTrue() throws Exception {
-        System.setProperty( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED, "true" );
+        System.setProperty( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED, "true" );
 
-        assertEquals( "true", new GuidedDecisionTableApplicationPreferencesLoader().load().get( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED ) );
+        assertEquals( "true", new GuidedDecisionTableApplicationPreferencesLoader().load().get( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED ) );
     }
 
     @Test
     public void setFalse() throws Exception {
-        System.setProperty( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED, "false" );
+        System.setProperty( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED, "false" );
 
-        assertEquals( "false", new GuidedDecisionTableApplicationPreferencesLoader().load().get( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED ) );
+        assertEquals( "false", new GuidedDecisionTableApplicationPreferencesLoader().load().get( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED ) );
     }
 }

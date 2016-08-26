@@ -21,6 +21,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerControllerImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
@@ -55,8 +57,8 @@ public class DecisionTableAnalyzerProvider {
     }
 
     private boolean isAnalysisEnabled() {
-        if ( ApplicationPreferences.getStringPref( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED ) != null ) {
-            return ApplicationPreferences.getBooleanPref( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_ENABLED );
+        if ( ApplicationPreferences.getStringPref( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED ) != null ) {
+            return !ApplicationPreferences.getBooleanPref( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED );
         } else {
             return true;
         }
