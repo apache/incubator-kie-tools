@@ -20,6 +20,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class DataModelerEvent {
@@ -34,6 +35,8 @@ public class DataModelerEvent {
 
     protected String contextId;
 
+    protected Path path;
+
     public static final String DATA_MODEL_BROWSER = "DATA_MODEL_BROWSER";
 
     public static final String DATA_OBJECT_BROWSER = "DATA_OBJECT_BROWSER";
@@ -41,6 +44,10 @@ public class DataModelerEvent {
     public static final String DATA_OBJECT_EDITOR = "DATA_OBJECT_EDITOR";
 
     public DataModelerEvent() {
+    }
+
+    public DataModelerEvent( DataObject currentDataObject ) {
+        this.currentDataObject = currentDataObject;
     }
 
     public DataModelerEvent( String contextId, String source, DataObject currentDataObject ) {
@@ -73,13 +80,13 @@ public class DataModelerEvent {
         return currentDataObject;
     }
 
-    public void setCurrentDataObject( DataObject currentDataObject ) {
-        this.currentDataObject = currentDataObject;
-    }
-
     public DataModelerEvent withCurrentDataObject( DataObject currentDataObject ) {
         setCurrentDataObject( currentDataObject );
         return this;
+    }
+
+    public void setCurrentDataObject( DataObject currentDataObject ) {
+        this.currentDataObject = currentDataObject;
     }
 
     public ObjectProperty getCurrentField() {
@@ -95,6 +102,19 @@ public class DataModelerEvent {
         this.currentField = currentField;
     }
 
+    public Project getCurrentProject() {
+        return currentProject;
+    }
+
+    public DataModelerEvent withCurrentProject( Project currentProject ) {
+        setCurrentProject( currentProject );
+        return this;
+    }
+
+    public void setCurrentProject( Project currentProject ) {
+        this.currentProject = currentProject;
+    }
+
     public String getSource() {
         return source;
     }
@@ -108,13 +128,30 @@ public class DataModelerEvent {
         this.source = source;
     }
 
-
-    public Project getCurrentProject() {
-        return currentProject;
+    public String getContextId() {
+        return contextId;
     }
 
-    public void setCurrentProject( Project currentProject ) {
-        this.currentProject = currentProject;
+    public DataModelerEvent withContextId( String contextId ) {
+        setContextId( contextId );
+        return this;
+    }
+
+    public void setContextId( String contextId ) {
+        this.contextId = contextId;
+    }
+
+    public Path getPath() {
+        return path;
+    }
+
+    public DataModelerEvent withPath( Path path ) {
+        setPath( path );
+        return this;
+    }
+
+    public void setPath( Path path ) {
+        this.path = path;
     }
 
     public boolean isFrom( Project project ) {
@@ -129,17 +166,4 @@ public class DataModelerEvent {
         return this.contextId != null && this.contextId.equals( contextId );
     }
 
-    public String getContextId() {
-        return contextId;
-    }
-
-
-    public DataModelerEvent withContextId( String contextId ) {
-        setContextId( contextId );
-        return this;
-    }
-
-    public void setContextId( String contextId ) {
-        this.contextId = contextId;
-    }
 }

@@ -75,7 +75,7 @@ public interface DataModelerService {
             final boolean saveCurrentChanges, final String source, final DataObject dataObject,
             final Metadata metadata );
 
-    void delete( final Path path, final String comment );
+    void delete( final Path path, final DataObject dataObject, final String comment );
 
     GenerationResult refactorClass( final Path path, final String newPackageName, final String newClassName );
 

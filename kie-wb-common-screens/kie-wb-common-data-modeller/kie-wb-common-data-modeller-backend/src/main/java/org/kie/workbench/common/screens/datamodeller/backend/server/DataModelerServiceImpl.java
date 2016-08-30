@@ -61,6 +61,7 @@ import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataMod
 import org.kie.workbench.common.screens.datamodeller.backend.server.handler.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectSavedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
@@ -145,6 +146,9 @@ public class DataModelerServiceImpl
 
     @Inject
     private Event<DataObjectDeletedEvent> dataObjectDeletedEvent;
+
+    @Inject
+    private Event<DataObjectSavedEvent> dataObjectSavedEvent;
 
     @Inject
     private RefactoringQueryService queryService;
@@ -564,6 +568,11 @@ public class DataModelerServiceImpl
 
             fireMetadataSocialEvents( path, metadataService.getMetadata( path ), metadata );
 
+            DataObjectSavedEvent event = (DataObjectSavedEvent) new DataObjectSavedEvent()
+                    .withCurrentDataObject( dataObject )
+                    .withPath( path );
+            dataObjectSavedEvent.fire( event );
+
             if ( packageChanged ) {
                 targetPath = Paths.convert( targetPackage.getPackageMainSrcPath() ).resolve( targetName );
 
@@ -878,6 +887,7 @@ public class DataModelerServiceImpl
 
     @Override
     public void delete( final Path path,
+                        final DataObject dataObject,
                         final String comment ) {
         try {
             KieProject project = projectService.resolveProject( path );
@@ -886,11 +896,12 @@ public class DataModelerServiceImpl
                 return;
             }
             deleteService.delete( path, comment );
-            String className = calculateClassName( project, path );
-            DataObject dataObject = new DataObjectImpl(
-                    NamingUtils.extractPackageName( className ),
-                    NamingUtils.extractClassName( className ) );
-            dataObjectDeletedEvent.fire( new DataObjectDeletedEvent( project, dataObject ) );
+
+            DataObjectDeletedEvent event = (DataObjectDeletedEvent) new DataObjectDeletedEvent()
+                    .withCurrentProject( project )
+                    .withCurrentDataObject( dataObject )
+                    .withPath( path );
+            dataObjectDeletedEvent.fire( event );
         } catch ( final Exception e ) {
             logger.error( "File: " + path.toURI() + " couldn't be deleted due to the following error. ", e );
             throw new ServiceException( "File: " + path.toURI() + " couldn't be deleted due to the following error. " + e.getMessage() );
