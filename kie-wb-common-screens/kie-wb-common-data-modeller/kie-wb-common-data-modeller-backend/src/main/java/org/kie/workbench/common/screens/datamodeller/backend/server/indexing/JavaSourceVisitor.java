@@ -214,9 +214,13 @@ public class JavaSourceVisitor extends ResourceReferenceCollector {
                visit(annoSource) ;
             }
         }
-        String returnType = methodSource.getReturnType().getQualifiedName();
-        if( ! returnType.endsWith(".void") ) {
-            addJavaResourceReference(returnType);
+
+        Type<? extends JavaClassSource> returnType = methodSource.getReturnType();
+        if (returnType != null) {
+            String returnTypeQualifiedName = returnType.getQualifiedName();
+            if ( !returnTypeQualifiedName.endsWith( ".void" ) ) {
+                addJavaResourceReference( returnTypeQualifiedName );
+            }
         }
 
          // method annotations
