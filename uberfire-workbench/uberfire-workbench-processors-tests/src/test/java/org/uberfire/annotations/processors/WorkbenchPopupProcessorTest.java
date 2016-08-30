@@ -252,4 +252,22 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
         assertEquals( result.getExpectedCode(),
                 result.getActualCode() );
     }
+
+    @Test
+    public void testQualifiersInTheActivity() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest14";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest14.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
+    }
 }

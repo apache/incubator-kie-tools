@@ -30,6 +30,5 @@
         <module>uberfire-preferences-api</module>
         <module>uberfire-preferences-backend</module>
         <module>uberfire-preferences-client</module>
-        <module>uberfire-preferences-processors</module>
     </modules>
 </project>

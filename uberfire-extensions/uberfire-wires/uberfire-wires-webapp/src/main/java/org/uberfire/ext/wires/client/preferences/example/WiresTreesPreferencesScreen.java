@@ -24,14 +24,16 @@ import javax.inject.Inject;
 
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.ext.preferences.client.ioc.annotations.ComponentKey;
+import org.uberfire.ext.preferences.client.ioc.annotations.PreferenceForm;
 import org.uberfire.ext.preferences.client.ioc.store.PreferenceStore;
-import org.uberfire.ext.preferences.client.mvp.WorkbenchPreferences;
 import org.uberfire.ext.wires.client.preferences.form.PreferencesEditorFormPresenter;
 import org.uberfire.ext.wires.client.preferences.form.ViewMode;
 
 @Dependent
-@WorkbenchPreferences(identifier = WiresTreesPreferencesScreen.IDENTIFIER)
+@PreferenceForm
+@WorkbenchScreen(identifier = WiresTreesPreferencesScreen.IDENTIFIER)
 public class WiresTreesPreferencesScreen {
 
     public static final String IDENTIFIER = "WiresTreesPreferencesScreen";

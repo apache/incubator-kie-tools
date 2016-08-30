@@ -19,6 +19,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -151,6 +152,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         final boolean needsElementWrapper = isWidgetMethodReturnTypeElement || isTitleWidgetMethodReturnTypeElement;
 
+        final List<String> qualifiers = GeneratorUtils.getAllQualifiersDeclarationFromType( classElement );
+
         if ( GeneratorUtils.debugLoggingEnabled() ) {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
             messager.printMessage( Kind.NOTE, "Class name: " + className );
@@ -179,6 +182,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "needsElementWrapper: " + Boolean.toString( needsElementWrapper ) );
             messager.printMessage( Kind.NOTE, "getMenuBarMethodName: " + getMenuBarMethodName );
             messager.printMessage( Kind.NOTE, "getToolBarMethodName: " + getToolBarMethodName );
+            messager.printMessage( Kind.NOTE, "Qualifiers: " + String.join( ", ", qualifiers ) );
         }
 
         //Validate getWidgetMethodName and isWidget
@@ -257,6 +261,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   getToolBarMethodName );
         root.put( "isDynamic",
                   isDynamic );
+        root.put( "qualifiers",
+                  qualifiers );
 
         //Generate code
         final StringWriter sw = new StringWriter();

@@ -75,12 +75,18 @@ import org.jboss.errai.ioc.client.api.Shared;
 <#if isDynamic>
 @JsType
 </#if>
+<#list qualifiers as qualifier>
+${qualifier}
+</#list>
 /*
  * WARNING! This class is generated. Do not modify.
  */
 public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTemplate> implements TemplatedActivity</#if> {
 
     @Inject
+<#list qualifiers as qualifier>
+    ${qualifier}
+</#list>
     private ${realClassName} realPresenter;
 
     @Inject

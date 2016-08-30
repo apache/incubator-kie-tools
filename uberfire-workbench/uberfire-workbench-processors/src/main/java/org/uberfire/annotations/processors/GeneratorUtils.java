@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.inject.Qualifier;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -1348,5 +1349,22 @@ public class GeneratorUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * This method builds a list of all qualifier annotations source-code declaration that annotates the passed element.
+     * @param element {@link TypeElement} which will be scanned for qualifier annotations.
+     * @return A list of the annotations source-code declarations.
+     */
+    public static List<String> getAllQualifiersDeclarationFromType( TypeElement element ) {
+        List<String> qualifiers = new ArrayList<>();
+        for ( final AnnotationMirror am : element.getAnnotationMirrors() ) {
+            final TypeElement annotationElement = (TypeElement) am.getAnnotationType().asElement();
+            if ( annotationElement.getAnnotation( Qualifier.class ) != null ) {
+                qualifiers.add( am.toString() );
+            }
+        }
+
+        return qualifiers;
     }
 }

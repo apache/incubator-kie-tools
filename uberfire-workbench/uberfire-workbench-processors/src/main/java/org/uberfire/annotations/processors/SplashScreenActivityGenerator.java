@@ -19,6 +19,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -102,6 +103,7 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
                                                                                        processingEnvironment );
         final String getInterceptMethodName = GeneratorUtils.getInterceptMethodName( classElement,
                                                                                      processingEnvironment );
+        final List<String> qualifiers = GeneratorUtils.getAllQualifiersDeclarationFromType( classElement );
 
 
         if ( GeneratorUtils.debugLoggingEnabled() ) {
@@ -119,10 +121,10 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "getWidgetMethodName: " + getWidgetMethodName );
             messager.printMessage( Kind.NOTE, "isWidget: " + Boolean.toString( isWidget ) );
             messager.printMessage( Kind.NOTE, "hasUberView: " + Boolean.toString( hasUberView ) );
-
             messager.printMessage( Kind.NOTE, "getSplashFilterMethodName: " + getSplashFilterMethodName );
             messager.printMessage( Kind.NOTE, "getInterceptMethodName: " + getInterceptMethodName );
             messager.printMessage( Kind.NOTE, "getBodyHeightMethodName: " + getBodyHeightMethodName );
+            messager.printMessage( Kind.NOTE, "Qualifiers: " + String.join( ", ", qualifiers ) );
         }
 
         //Validate getWidgetMethodName and isWidget
@@ -184,6 +186,8 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
                   getInterceptMethodName );
         root.put( "getBodyHeightMethodName",
                   getBodyHeightMethodName );
+        root.put( "qualifiers",
+                  qualifiers );
 
         //Generate code
         final StringWriter sw = new StringWriter();

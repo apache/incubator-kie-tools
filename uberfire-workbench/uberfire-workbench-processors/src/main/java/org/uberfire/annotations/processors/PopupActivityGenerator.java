@@ -19,6 +19,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -96,6 +97,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
         final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
                                                              processingEnvironment );
+        final List<String> qualifiers = GeneratorUtils.getAllQualifiersDeclarationFromType( classElement );
 
         if ( GeneratorUtils.debugLoggingEnabled() ) {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
@@ -113,6 +115,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "getWidgetMethodName: " + getWidgetMethodName );
             messager.printMessage( Kind.NOTE, "isWidget: " + Boolean.toString( isWidget ) );
             messager.printMessage( Kind.NOTE, "hasUberView: " + Boolean.toString( hasUberView ) );
+            messager.printMessage( Kind.NOTE, "Qualifiers: " + String.join( ", ", qualifiers ) );
         }
 
         //Validate getWidgetMethodName and isWidget
@@ -165,6 +168,8 @@ public class PopupActivityGenerator extends AbstractGenerator {
                   isWidget );
         root.put( "hasUberView",
                   hasUberView );
+        root.put( "qualifiers",
+                  qualifiers );
 
         //Generate code
         final StringWriter sw = new StringWriter();

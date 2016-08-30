@@ -24,8 +24,9 @@ import javax.inject.Inject;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.preferences.client.mvp.AbstractWorkbenchPreferencesActivity;
+import org.uberfire.ext.preferences.client.ioc.annotations.PreferenceForm;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = PreferencesCentralNavbarPresenter.IDENTIFIER)
@@ -34,7 +35,8 @@ public class PreferencesCentralNavbarPresenter {
     public static final String IDENTIFIER = "PreferencesCentralNavbar";
 
     @Inject
-    private Instance<AbstractWorkbenchPreferencesActivity> preferencesActivities;
+    @PreferenceForm
+    private Instance<AbstractWorkbenchScreenActivity> preferencesActivities;
 
     public interface View extends UberElement<PreferencesCentralNavbarPresenter> {
 
@@ -62,7 +64,7 @@ public class PreferencesCentralNavbarPresenter {
         return view;
     }
 
-    public Iterable<AbstractWorkbenchPreferencesActivity> getPreferencesActivitiesIterator() {
+    public Iterable<AbstractWorkbenchScreenActivity> getPreferencesActivitiesIterator() {
         return preferencesActivities;
     }
 }
