@@ -26,7 +26,8 @@ import org.kie.workbench.common.screens.server.management.model.RuntimeStrategy;
 public enum ClientRuntimeStrategy {
     SINGLETON( Constants.ClientRuntimeStrategy_Singleton, RuntimeStrategy.SINGLETON ),
     PER_REQUEST( Constants.ClientRuntimeStrategy_PerRequest, RuntimeStrategy.PER_REQUEST ),
-    PER_PROCESS_INSTANCE( Constants.ClientRuntimeStrategy_PerProcessInstance, RuntimeStrategy.PER_PROCESS_INSTANCE );
+    PER_PROCESS_INSTANCE( Constants.ClientRuntimeStrategy_PerProcessInstance, RuntimeStrategy.PER_PROCESS_INSTANCE ),
+    PER_CASE( Constants.ClientRuntimeStrategy_PerCase, RuntimeStrategy.PER_CASE );
 
     private final String valueTranslationKey;
     private final RuntimeStrategy runtimeStrategy;
@@ -53,6 +54,8 @@ public enum ClientRuntimeStrategy {
                 return ClientRuntimeStrategy.PER_REQUEST;
             case PER_PROCESS_INSTANCE:
                 return ClientRuntimeStrategy.PER_PROCESS_INSTANCE;
+            case PER_CASE:
+                return ClientRuntimeStrategy.PER_CASE;
         }
         throw new RuntimeException( "Invalid parameter" );
     }
