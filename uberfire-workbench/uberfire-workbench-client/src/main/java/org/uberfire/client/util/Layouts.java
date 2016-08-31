@@ -16,6 +16,7 @@
 
 package org.uberfire.client.util;
 
+import static org.uberfire.plugin.PluginUtil.*;
 import org.uberfire.client.workbench.panels.SplitPanel;
 import org.uberfire.debug.Debug;
 import org.uberfire.workbench.model.CompassPosition;
@@ -200,11 +201,13 @@ public class Layouts {
     }
 
     public static int heightOrDefault( PanelDefinition def ) {
-        return def.getHeight() == null ? DEFAULT_CHILD_SIZE : def.getHeight();
+        Integer height = toInteger( def.getHeightAsInt() );
+        return  height == null ? DEFAULT_CHILD_SIZE : height;
     }
 
     public static int widthOrDefault( PanelDefinition def ) {
-        return def.getWidth() == null ? DEFAULT_CHILD_SIZE : def.getWidth();
+        Integer width = toInteger (def.getWidthAsInt() );
+        return width == null ? DEFAULT_CHILD_SIZE : width;
     }
 
     /**
