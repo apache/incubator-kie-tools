@@ -18,9 +18,11 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+    <ui:with field="i18n" type="org.uberfire.ext.properties.editor.client.resources.i18n.CommonConstants"/>
+
     <g:HTMLPanel>
         <b:InputGroup ui:field="filterGroup">
-            <b:TextBox ui:field="filterBox" placeholder="filter properties..."/>
+            <b:TextBox ui:field="filterBox" placeholder="{i18n.FilterProperties}"/>
             <b:InputGroupButton>
                 <b:Button icon="RETWEET" ui:field="reload"/>
             </b:InputGroupButton>
