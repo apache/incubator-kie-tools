@@ -231,14 +231,6 @@ public class GuidedDecisionTableLHSBuilder
         final TreeSet<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
         final List<BRLVariableColumn> variableColumns = new ArrayList<BRLVariableColumn>();
 
-        //If the Pattern spans multiple columns create a column header
-        String columnHeader = this.columnHeaders.get( sortedIndexes.first() );
-        if ( sortedIndexes.size() > 1 ) {
-            columnHeader = "Converted from cell [" +
-                    RuleSheetParserUtil.rc2name( this.headerRow + 1,
-                                                 this.headerCol ) + "]";
-        }
-
         //DRL prefix
         final StringBuffer drl = new StringBuffer();
         drl.append( this.colDefPrefix );
@@ -250,7 +242,7 @@ public class GuidedDecisionTableLHSBuilder
             for ( String parameter : vb.getParameters() ) {
                 final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn( parameter,
                                                                                                    DataType.TYPE_OBJECT );
-                ( (BRLConditionVariableColumn) parameterColumn ).setHeader( columnHeader );
+                parameterColumn.setHeader( this.columnHeaders.get( index ) );
                 variableColumns.add( parameterColumn );
             }
 

@@ -34,6 +34,7 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
@@ -51,6 +52,8 @@ import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders
 import static org.drools.workbench.screens.dtablexls.backend.server.conversion.DTCellValueUtilities.*;
 
 public class GuidedDecisionTablePopulater {
+
+    private static final String UNDEFINED = "(undefined)";
 
     private final GuidedDecisionTable52 dtable;
     private final List<GuidedDecisionTableSourceBuilder> sourceBuilders;
@@ -125,7 +128,7 @@ public class GuidedDecisionTablePopulater {
         }
         rule.append( "end" );
         final RuleModel rm = RuleModelDRLPersistenceImpl.getInstance().unmarshal( rule.toString(),
-                                                                                  Collections.EMPTY_LIST,
+                                                                                  Collections.emptyList(),
                                                                                   dmo );
         if ( rm.lhs != null ) {
             for ( IPattern pattern : rm.lhs ) {
@@ -133,36 +136,30 @@ public class GuidedDecisionTablePopulater {
                 column.getDefinition().add( pattern );
                 dtable.getConditions().add( column );
 
-                final Map<InterpolationVariable, Integer> templateKeys = new HashMap<InterpolationVariable, Integer>();
+                final Map<InterpolationVariable, Integer> templateKeys = new HashMap<>();
                 final RuleModelVisitor rmv = new RuleModelVisitor( templateKeys );
                 rmv.visit( pattern );
 
-                final List<InterpolationVariable> ivs = new ArrayList<InterpolationVariable>( templateKeys.keySet() );
+                final List<InterpolationVariable> ivs = new ArrayList<>( templateKeys.keySet() );
                 for ( BRLVariableColumn variableColumn : variableColumns ) {
                     final Iterator<InterpolationVariable> ivsIts = ivs.iterator();
                     while ( ivsIts.hasNext() ) {
                         final InterpolationVariable iv = ivsIts.next();
                         if ( iv.getVarName().equals( variableColumn.getVarName() ) ) {
                             final BRLConditionVariableColumn source = (BRLConditionVariableColumn) variableColumn;
-                            final String varName = source.getVarName();
-                            final String dataType = iv.getDataType() == null ? DataType.TYPE_OBJECT : iv.getDataType();
-                            final BRLConditionVariableColumn target = new BRLConditionVariableColumn( varName,
-                                                                                                      dataType );
-                            target.setHeader( source.getHeader() );
-                            column.setHeader( source.getHeader() );
+                            final BRLConditionVariableColumn target = makeBRLConditionVariableColumn( source,
+                                                                                                      iv );
                             column.getChildColumns().add( target );
                             ivsIts.remove();
                         }
                     }
                 }
 
-                if ( column.getChildColumns().size() == 0 ) {
-                    final BRLConditionVariableColumn source = findZeroParameterSourceConditionColumn( variableColumns );
-                    final BRLConditionVariableColumn target = new BRLConditionVariableColumn( "",
-                                                                                              DataType.TYPE_BOOLEAN );
-                    target.setHeader( source.getHeader() );
-                    column.setHeader( source.getHeader() );
-                    column.getChildColumns().add( target );
+                if ( column.getChildColumns().isEmpty() ) {
+                    setZeroParameterConditionColumnHeader( column,
+                                                           variableColumns );
+                } else {
+                    setCompositeColumnHeader( column );
                 }
             }
         }
@@ -173,39 +170,70 @@ public class GuidedDecisionTablePopulater {
                 column.getDefinition().add( action );
                 dtable.getActionCols().add( column );
 
-                final Map<InterpolationVariable, Integer> templateKeys = new HashMap<InterpolationVariable, Integer>();
-                final RuleModelVisitor rmv = new RuleModelVisitor( templateKeys );
+                final Map<InterpolationVariable, Integer> templateKeys = new HashMap<>();
+                final RuleModelVisitor rmv = new RuleModelVisitor( rm.lhs,
+                                                                   templateKeys );
                 rmv.visit( action );
 
-                final List<InterpolationVariable> ivs = new ArrayList<InterpolationVariable>( templateKeys.keySet() );
+                final List<InterpolationVariable> ivs = new ArrayList<>( templateKeys.keySet() );
                 for ( BRLVariableColumn variableColumn : variableColumns ) {
                     final Iterator<InterpolationVariable> ivsIts = ivs.iterator();
                     while ( ivsIts.hasNext() ) {
                         final InterpolationVariable iv = ivsIts.next();
                         if ( iv.getVarName().equals( variableColumn.getVarName() ) ) {
                             final BRLActionVariableColumn source = (BRLActionVariableColumn) variableColumn;
-                            final String varName = source.getVarName();
-                            final String dataType = iv.getDataType() == null ? DataType.TYPE_OBJECT : iv.getDataType();
-                            final BRLActionVariableColumn target = new BRLActionVariableColumn( varName,
-                                                                                                dataType );
-                            target.setHeader( source.getHeader() );
-                            column.setHeader( source.getHeader() );
+                            final BRLActionVariableColumn target = makeBRLActionVariableColumn( source,
+                                                                                                iv );
                             column.getChildColumns().add( target );
                             ivsIts.remove();
                         }
                     }
                 }
 
-                if ( column.getChildColumns().size() == 0 ) {
-                    final BRLActionVariableColumn source = findZeroParameterSourceActionColumn( variableColumns );
-                    final BRLActionVariableColumn target = new BRLActionVariableColumn( "",
-                                                                                        DataType.TYPE_BOOLEAN );
-                    target.setHeader( source.getHeader() );
-                    column.setHeader( source.getHeader() );
-                    column.getChildColumns().add( target );
+                if ( column.getChildColumns().isEmpty() ) {
+                    setZeroParameterActionColumnHeader( column,
+                                                        variableColumns );
+                } else {
+                    setCompositeColumnHeader( column );
                 }
+
             }
         }
+    }
+
+    private BRLConditionVariableColumn makeBRLConditionVariableColumn( final BRLConditionVariableColumn source,
+                                                                       final InterpolationVariable iv ) {
+        final String varName = source.getVarName();
+        final String dataType = iv.getDataType() == null ? DataType.TYPE_OBJECT : iv.getDataType();
+        final String factType = iv.getFactType();
+        final String factField = iv.getFactField();
+
+        BRLConditionVariableColumn target;
+        if ( factType != null && factField != null ) {
+            target = new BRLConditionVariableColumn( varName,
+                                                     dataType,
+                                                     factType,
+                                                     factField );
+        } else {
+            target = new BRLConditionVariableColumn( varName,
+                                                     dataType );
+
+        }
+        target.setHeader( source.getHeader() );
+
+        return target;
+    }
+
+    private void setZeroParameterConditionColumnHeader( final BRLConditionColumn column,
+                                                        final List<BRLVariableColumn> allVariableColumns ) {
+        final BRLConditionVariableColumn source = findZeroParameterSourceConditionColumn( allVariableColumns );
+        final BRLConditionVariableColumn target = new BRLConditionVariableColumn( "",
+                                                                                  DataType.TYPE_BOOLEAN );
+        column.getChildColumns().add( target );
+
+        setZeroParameterColumnHeader( column,
+                                      source,
+                                      target );
     }
 
     private BRLConditionVariableColumn findZeroParameterSourceConditionColumn( final List<BRLVariableColumn> variableColumns ) {
@@ -219,6 +247,85 @@ public class GuidedDecisionTablePopulater {
         return null;
     }
 
+    private void setCompositeColumnHeader( final BRLConditionColumn column ) {
+        final List<BRLConditionVariableColumn> columnVariableColumns = column.getChildColumns();
+        final StringBuilder sb = new StringBuilder();
+        final List<String> variableColumnHeaders = new ArrayList<>();
+        sb.append( "Converted from [" );
+        for ( int i = 0; i < columnVariableColumns.size(); i++ ) {
+            final BRLConditionVariableColumn variableColumn = columnVariableColumns.get( i );
+            final String header = variableColumn.getHeader();
+            variableColumnHeaders.add( header );
+            sb.append( "'" ).append( header ).append( "'" );
+            sb.append( i < columnVariableColumns.size() - 1 ? ", " : "" );
+        }
+        sb.append( "]" );
+
+        column.setHeader( sb.toString() );
+
+        for ( int i = 0; i < columnVariableColumns.size(); i++ ) {
+            final BRLConditionVariableColumn variableColumn = columnVariableColumns.get( i );
+            variableColumn.setHeader( variableColumnHeaders.get( i ) );
+        }
+    }
+
+    private BRLActionVariableColumn makeBRLActionVariableColumn( final BRLActionVariableColumn source,
+                                                                 final InterpolationVariable iv ) {
+        final String varName = source.getVarName();
+        final String dataType = iv.getDataType() == null ? DataType.TYPE_OBJECT : iv.getDataType();
+        final String factType = iv.getFactType();
+        final String factField = iv.getFactField();
+
+        BRLActionVariableColumn target;
+        if ( factType != null && factField != null ) {
+            target = new BRLActionVariableColumn( varName,
+                                                  dataType,
+                                                  factType,
+                                                  factField );
+        } else {
+            target = new BRLActionVariableColumn( varName,
+                                                  dataType );
+
+        }
+        target.setHeader( source.getHeader() );
+
+        return target;
+    }
+
+    private void setZeroParameterActionColumnHeader( final BRLActionColumn column,
+                                                     final List<BRLVariableColumn> allVariableColumns ) {
+        final BRLActionVariableColumn source = findZeroParameterSourceActionColumn( allVariableColumns );
+        final BRLActionVariableColumn target = new BRLActionVariableColumn( "",
+                                                                            DataType.TYPE_BOOLEAN );
+        column.getChildColumns().add( target );
+
+        setZeroParameterColumnHeader( column,
+                                      source,
+                                      target );
+    }
+
+    private void setCompositeColumnHeader( final BRLActionColumn column ) {
+        final List<BRLActionVariableColumn> columnVariableColumns = column.getChildColumns();
+        final StringBuilder sb = new StringBuilder();
+        final List<String> variableColumnHeaders = new ArrayList<>();
+        sb.append( "Converted from [" );
+        for ( int i = 0; i < columnVariableColumns.size(); i++ ) {
+            final BRLActionVariableColumn variableColumn = columnVariableColumns.get( i );
+            final String header = variableColumn.getHeader();
+            variableColumnHeaders.add( header );
+            sb.append( "'" ).append( header ).append( "'" );
+            sb.append( i < columnVariableColumns.size() - 1 ? ", " : "" );
+        }
+        sb.append( "]" );
+
+        column.setHeader( sb.toString() );
+
+        for ( int i = 0; i < columnVariableColumns.size(); i++ ) {
+            final BRLActionVariableColumn variableColumn = columnVariableColumns.get( i );
+            variableColumn.setHeader( variableColumnHeaders.get( i ) );
+        }
+    }
+
     private BRLActionVariableColumn findZeroParameterSourceActionColumn( final List<BRLVariableColumn> variableColumns ) {
         for ( BRLVariableColumn variableColumn : variableColumns ) {
             if ( variableColumn instanceof BRLActionVariableColumn ) {
@@ -228,6 +335,18 @@ public class GuidedDecisionTablePopulater {
             }
         }
         return null;
+    }
+
+    private void setZeroParameterColumnHeader( final BRLColumn column,
+                                               final BaseColumn source,
+                                               final BaseColumn target ) {
+        final StringBuilder sb = new StringBuilder();
+        final String header = source == null ? UNDEFINED : source.getHeader();
+        sb.append( source == null ? "" : "Converted from ['" );
+        sb.append( header );
+        sb.append( source == null ? "" : "']" );
+        column.setHeader( sb.toString() );
+        target.setHeader( header );
     }
 
     private void addIndirectSourceBuildersData( final int maxRowCount ) {
@@ -270,7 +389,7 @@ public class GuidedDecisionTablePopulater {
             for ( int iRow = columnData.size(); iRow < maxRowCount; iRow++ ) {
                 final List<DTCellValue52> brlFragmentData = new ArrayList<DTCellValue52>();
                 for ( int iCol = 0; iCol < parameters.size(); iCol++ ) {
-                    brlFragmentData.add( new DTCellValue52( ) );
+                    brlFragmentData.add( new DTCellValue52() );
                 }
                 columnData.add( brlFragmentData );
             }

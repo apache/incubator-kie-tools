@@ -101,6 +101,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
                                                                               "age" );
         column.getChildColumns().add( columnV0 );
         column.setHeader( "col1" );
+        columnV0.setHeader( "col1v0" );
 
         modelSynchronizer.appendColumn( column );
 
@@ -129,6 +130,8 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         column.getChildColumns().add( columnV0 );
         column.getChildColumns().add( columnV1 );
         column.setHeader( "col1" );
+        columnV0.setHeader( "col1v0" );
+        columnV1.setHeader( "col1v1" );
 
         modelSynchronizer.appendColumn( column );
 
@@ -153,6 +156,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
                                                                               "age" );
         column.getChildColumns().add( columnV0 );
         column.setHeader( "col1" );
+        columnV0.setHeader( "col1v0" );
 
         modelSynchronizer.appendColumn( column );
 
@@ -173,6 +177,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         edited.getChildColumns().add( editedColumnV0 );
         edited.setHideColumn( true );
         edited.setHeader( "updated" );
+        editedColumnV0.setHeader( "updated" );
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
                                                                           edited );
@@ -209,6 +214,8 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         column.getChildColumns().add( columnV0 );
         column.getChildColumns().add( columnV1 );
         column.setHeader( "col1" );
+        columnV0.setHeader( "col1v0" );
+        columnV1.setHeader( "col1v1" );
 
         modelSynchronizer.appendColumn( column );
 
@@ -230,6 +237,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         edited.getChildColumns().add( editedColumnV0 );
         edited.setHideColumn( true );
         edited.setHeader( "updated" );
+        editedColumnV0.setHeader( "updated" );
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
                                                                           edited );
@@ -266,6 +274,8 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         column.getChildColumns().add( columnV0 );
         column.getChildColumns().add( columnV1 );
         column.setHeader( "col1" );
+        columnV0.setHeader( "col1v0" );
+        columnV1.setHeader( "col1v1" );
 
         modelSynchronizer.appendColumn( column );
 
@@ -280,13 +290,14 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue( uiModel.getColumns().get( 3 ) instanceof StringUiColumn );
 
         final BRLActionColumn edited = new BRLActionColumn();
-        final BRLActionVariableColumn editedV0 = new BRLActionVariableColumn( "$s",
-                                                                              DataType.TYPE_NUMERIC_LONG,
-                                                                              "Applicant",
-                                                                              "salary" );
-        edited.getChildColumns().add( editedV0 );
+        final BRLActionVariableColumn editedColumnV0 = new BRLActionVariableColumn( "$s",
+                                                                                    DataType.TYPE_NUMERIC_LONG,
+                                                                                    "Applicant",
+                                                                                    "salary" );
+        edited.getChildColumns().add( editedColumnV0 );
         edited.setHideColumn( true );
         edited.setHeader( "updated" );
+        editedColumnV0.setHeader( "updated" );
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
                                                                           edited );
@@ -322,6 +333,8 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         column.getChildColumns().add( columnV0 );
         column.getChildColumns().add( columnV1 );
         column.setHeader( "col1" );
+        columnV0.setHeader( "col1v0" );
+        columnV1.setHeader( "col1v1" );
 
         modelSynchronizer.appendColumn( column );
 

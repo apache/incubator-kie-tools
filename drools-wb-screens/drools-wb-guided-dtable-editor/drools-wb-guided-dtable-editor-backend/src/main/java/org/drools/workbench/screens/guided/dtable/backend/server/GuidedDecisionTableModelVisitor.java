@@ -54,7 +54,7 @@ public class GuidedDecisionTableModelVisitor {
         final Set<String> factTypes = new HashSet<String>();
 
         //Extract Fact Types from model
-        for ( CompositeColumn<?> cc : model.getPatterns() ) {
+        for ( CompositeColumn<?> cc : model.getConditions() ) {
 
             if ( cc instanceof BRLConditionColumn ) {
                 final List<IPattern> definition = ( (BRLConditionColumn) cc ).getDefinition();
