@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.plugin.client.explorer;
 
+import java.util.Collection;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -47,11 +52,6 @@ import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Collection;
-
 @Dependent
 @WorkbenchScreen( identifier = "Plugins Explorer" )
 public class PluginExplorerScreen
@@ -64,6 +64,8 @@ public class PluginExplorerScreen
     }
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+
+    private CommonConstants constants = CommonConstants.INSTANCE;
 
     @UiField
     FlowPanel htmlPanel;
@@ -94,7 +96,7 @@ public class PluginExplorerScreen
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Plugins Explorer";
+        return constants.PluginsExplorer();
     }
 
     @WorkbenchMenu

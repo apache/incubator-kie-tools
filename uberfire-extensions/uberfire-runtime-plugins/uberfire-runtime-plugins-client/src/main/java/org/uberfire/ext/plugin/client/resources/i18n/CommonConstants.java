@@ -132,4 +132,6 @@ public interface CommonConstants
     String EmptyTitleText();
 
     String EmptySubTitleText();
+
+    String PluginsExplorer();
 }
