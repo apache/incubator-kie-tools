@@ -184,7 +184,6 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     public static final String REPOSITORIES_CONTAINER_DIR = ".niogit";
     public static final String SSH_FILE_CERT_CONTAINER_DIR = ".security";
 
-    public static final String DEFAULT_HOST_NAME = "localhost";
     public static final String DEFAULT_HOST_ADDR = "127.0.0.1";
     public static final String DAEMON_DEFAULT_ENABLED = "true";
     public static final String DAEMON_DEFAULT_PORT = "9418";
@@ -203,14 +202,10 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     private boolean daemonEnabled;
     private int daemonPort;
     private String daemonHostAddr;
-    private String daemonHostName;
-    private int daemonHostPort;
 
     private boolean sshEnabled;
     private int sshPort;
     private String sshHostAddr;
-    private String sshHostName;
-    private int sshHostPort;
     private File sshFileCertDir;
     private String sshAlgorithm;
     private String sshPassphrase;
@@ -242,15 +237,11 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final ConfigProperty bareReposDirProp = config.get( "org.uberfire.nio.git.dir", currentDirectory );
         final ConfigProperty enabledProp = config.get( "org.uberfire.nio.git.daemon.enabled", DAEMON_DEFAULT_ENABLED );
         final ConfigProperty hostProp = config.get( "org.uberfire.nio.git.daemon.host", DEFAULT_HOST_ADDR );
-        final ConfigProperty hostNameProp = config.get( "org.uberfire.nio.git.daemon.hostname", hostProp.isDefault() ? DEFAULT_HOST_NAME : hostProp.getValue() );
         final ConfigProperty portProp = config.get( "org.uberfire.nio.git.daemon.port", DAEMON_DEFAULT_PORT );
-        final ConfigProperty hostPortProp = config.get( "org.uberfire.nio.git.daemon.hostport", DAEMON_DEFAULT_PORT );
         final ConfigProperty sshEnabledProp = config.get( "org.uberfire.nio.git.ssh.enabled", SSH_DEFAULT_ENABLED );
         final ConfigProperty sshHostProp = config.get( "org.uberfire.nio.git.ssh.host", DEFAULT_HOST_ADDR );
-        final ConfigProperty sshHostNameProp = config.get( "org.uberfire.nio.git.ssh.hostname", sshHostProp.isDefault() ? DEFAULT_HOST_NAME : sshHostProp.getValue() );
         final ConfigProperty sshPortProp = config.get( "org.uberfire.nio.git.ssh.port", SSH_DEFAULT_PORT );
         final ConfigProperty sshCertDirProp = config.get( "org.uberfire.nio.git.ssh.cert.dir", currentDirectory );
-        final ConfigProperty sshHostPortProp = config.get( "org.uberfire.nio.git.ssh.hostport", SSH_DEFAULT_PORT );
         final ConfigProperty sshIdleTimeoutProp = config.get( "org.uberfire.nio.git.ssh.idle.timeout", SSH_IDLE_TIMEOUT );
         final ConfigProperty sshAlgorithmProp = config.get( "org.uberfire.nio.git.ssh.algorithm", SSH_ALGORITHM );
         final ConfigProperty sshPassphraseProp = config.get( "org.uberfire.nio.git.ssh.passphrase", SSH_CERT_PASSPHRASE );
@@ -274,16 +265,12 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         if ( daemonEnabled ) {
             daemonPort = portProp.getIntValue();
             daemonHostAddr = hostProp.getValue();
-            daemonHostName = hostNameProp.getValue();
-            daemonHostPort = hostPortProp.getIntValue();
         }
 
         sshEnabled = sshEnabledProp.getBooleanValue();
         if ( sshEnabled ) {
             sshPort = sshPortProp.getIntValue();
             sshHostAddr = sshHostProp.getValue();
-            sshHostName = sshHostNameProp.getValue();
-            sshHostPort = sshHostPortProp.getIntValue();
             sshFileCertDir = new File( sshCertDirProp.getValue(), SSH_FILE_CERT_CONTAINER_DIR );
             sshAlgorithm = sshAlgorithmProp.getValue();
             sshIdleTimeout = sshIdleTimeoutProp.getValue();
@@ -431,10 +418,10 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
         //Setup daemon and service
         if ( daemonEnabled ) {
-            fullHostNames.put( "git", daemonHostName + ":" + daemonHostPort );
+            fullHostNames.put( "git", daemonHostAddr + ":" + daemonPort );
         }
         if ( sshEnabled ) {
-            fullHostNames.put( "ssh", sshHostName + ":" + sshHostPort );
+            fullHostNames.put( "ssh", sshHostAddr + ":" + sshPort );
         }
 
         rescanForExistingRepositories();
