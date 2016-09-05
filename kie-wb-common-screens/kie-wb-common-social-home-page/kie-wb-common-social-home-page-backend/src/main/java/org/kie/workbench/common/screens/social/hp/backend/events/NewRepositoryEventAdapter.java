@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.social.hp.backend.events;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
@@ -31,15 +32,21 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
+import org.kie.workbench.common.screens.social.hp.config.SocialConfigurationService;
 
 @ApplicationScoped
 public class NewRepositoryEventAdapter implements SocialAdapter<NewRepositoryEvent> {
+
+    public static final String CREATED_MESSAGE = "created";
 
     @Inject
     private User loggedUser;
 
     @Inject
     private SocialUserRepositoryAPI socialUserRepositoryAPI;
+
+    @Inject
+    private SocialConfigurationService socialConfigurationService;
 
     @Override
     public Class<NewRepositoryEvent> eventToIntercept() {
@@ -69,7 +76,7 @@ public class NewRepositoryEventAdapter implements SocialAdapter<NewRepositoryEve
             //clean repository
             socialUser = new SocialUser( "system" );
         }
-        String additionalInfo = "created ";
+        String additionalInfo = getCreatedMessage();
         return new SocialActivitiesEvent( socialUser, ExtendedTypes.NEW_REPOSITORY_EVENT, new Date() ).withAdicionalInfo( additionalInfo ).withLink( event.getNewRepository().getAlias(), event.getNewRepository().getUri() ).withDescription( "" );
     }
 
@@ -83,5 +90,16 @@ public class NewRepositoryEventAdapter implements SocialAdapter<NewRepositoryEve
     public List<String> getTimelineFiltersNames() {
         List<String> names = new ArrayList<String>();
         return names;
+    }
+
+    String getCreatedMessage() {
+        Map<String, String> messages = socialConfigurationService.getSocialMessages();
+
+        if ( messages != null ) {
+            final String message = messages.get( CREATED_MESSAGE );
+            return message != null ? message : CREATED_MESSAGE;
+        }
+
+        return CREATED_MESSAGE;
     }
 }

@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.social.hp.backend.events;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -28,6 +29,7 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
+import org.kie.workbench.common.screens.social.hp.config.SocialConfigurationService;
 import org.kie.workbench.common.screens.social.hp.model.HomePageTypes;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -35,6 +37,8 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @ApplicationScoped
 public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdatedEvent> {
+
+    public static final String EDITED_MESSAGE = "edited";
 
     @Inject
     private User loggedUser;
@@ -44,6 +48,9 @@ public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdate
 
     @Inject
     private VersionService versionService;
+
+    @Inject
+    private SocialConfigurationService socialConfigurationService;
 
     @Override
     public Class<ResourceUpdatedEvent> eventToIntercept() {
@@ -78,7 +85,7 @@ public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdate
     public SocialActivitiesEvent toSocial( Object object ) {
         ResourceUpdatedEvent event = (ResourceUpdatedEvent) object;
         SocialUser socialUser = socialUserRepositoryAPI.findSocialUser( event.getSessionInfo().getIdentity().getIdentifier() );
-        String additionalInfo = "edited ";
+        String additionalInfo = getEditedMessage();
         String description = getCommitDescription( event );
         return new SocialActivitiesEvent( socialUser, HomePageTypes.RESOURCE_UPDATE_EVENT.name(), new Date() ).withLink( event.getPath().getFileName(), event.getPath().toURI() ).withAdicionalInfo( additionalInfo ).withDescription( description );
     }
@@ -100,5 +107,16 @@ public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdate
     public List<String> getTimelineFiltersNames() {
         List<String> names = new ArrayList<String>();
         return names;
+    }
+
+    String getEditedMessage() {
+        Map<String, String> messages = socialConfigurationService.getSocialMessages();
+
+        if ( messages != null ) {
+            final String message = messages.get( EDITED_MESSAGE );
+            return message != null ? message : EDITED_MESSAGE;
+        }
+
+        return EDITED_MESSAGE;
     }
 }

@@ -206,13 +206,13 @@ public class UserHomePageSidePresenter {
             public void execute( String parameter ) {
                 refreshCacheAndGeneratesSelectEvent( parameter );
             }
-        }, "user login..." );
+        }, Constants.INSTANCE.UserLogin() );
     }
 
     private void setupUserMenu( SocialUser userOnPage ) {
         String userName = ( userOnPage != null && userOnPage.getRealName() != null && !userOnPage.getRealName().isEmpty() ) ? userOnPage.getRealName() : userOnPage.getUserName();
         view.setupUserInfo( userName, setupSideUserInfoPresenter( userOnPage ) );
-        final String title = userName + Constants.INSTANCE.UserProfile();
+        final String title = Constants.INSTANCE.UserNameProfile( userName );
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( this.place, title ) );
     }
 
@@ -246,7 +246,7 @@ public class UserHomePageSidePresenter {
 
     private void generateFollowButton( final SocialUser socialUser,
                                        Button button ) {
-        button.setText( "Follow" );
+        button.setText( Constants.INSTANCE.Follow() );
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -257,7 +257,7 @@ public class UserHomePageSidePresenter {
 
     private void generateUnFollowButton( final SocialUser socialUser,
                                          Button button ) {
-        button.setText( "Unfollow" );
+        button.setText( Constants.INSTANCE.Unfollow() );
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -300,7 +300,7 @@ public class UserHomePageSidePresenter {
 
     private void createLoggedUserActionLink( final SocialUser socialUser,
                                              final Button followUnfollow ) {
-        followUnfollow.setText( "Edit" );
+        followUnfollow.setText( Constants.INSTANCE.Edit() );
         followUnfollow.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {

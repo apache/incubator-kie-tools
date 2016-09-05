@@ -153,8 +153,8 @@ public class UserHomePageMainPresenter {
 
     private void setupMainWidget( SocialUser socialUser,
                                   SocialPaged socialPaged ) {
-        String title = ( socialUser != null && socialUser.getRealName() != null && !socialUser.getRealName().isEmpty() ) ? socialUser.getRealName() : socialUser.getUserName();
-        title += Constants.INSTANCE.UserRecentActivities();
+        String userName = ( socialUser != null && socialUser.getRealName() != null && !socialUser.getRealName().isEmpty() ) ? socialUser.getRealName() : socialUser.getUserName();
+        String title = Constants.INSTANCE.UserNameRecentActivities( userName );
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( place, title ) );
         SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, socialPaged )
                 .withIcons( iconLocator.getResourceTypes() )

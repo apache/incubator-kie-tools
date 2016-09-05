@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.social.hp.backend.events;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -28,12 +29,15 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
+import org.kie.workbench.common.screens.social.hp.config.SocialConfigurationService;
 import org.kie.workbench.common.screens.social.hp.model.HomePageTypes;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 
 @ApplicationScoped
 public class ResourceAddedEventAdapter implements SocialAdapter<ResourceAddedEvent> {
+
+    public static final String ADDED_MESSAGE = "added";
 
     @Inject
     private User loggedUser;
@@ -43,6 +47,9 @@ public class ResourceAddedEventAdapter implements SocialAdapter<ResourceAddedEve
 
     @Inject
     private VersionService versionService;
+
+    @Inject
+    private SocialConfigurationService socialConfigurationService;
 
     @Override
     public Class<ResourceAddedEvent> eventToIntercept() {
@@ -77,7 +84,7 @@ public class ResourceAddedEventAdapter implements SocialAdapter<ResourceAddedEve
     public SocialActivitiesEvent toSocial( Object object ) {
         ResourceAddedEvent event = (ResourceAddedEvent) object;
         SocialUser socialUser = socialUserRepositoryAPI.findSocialUser( event.getSessionInfo().getIdentity().getIdentifier() );
-        String additionalInfo = "added ";
+        String additionalInfo = getAddedMessage();
         String description = getCommitDescription( event );
         return new SocialActivitiesEvent( socialUser, HomePageTypes.RESOURCE_ADDED_EVENT.name(), new Date() ).withLink( event.getPath().getFileName(), event.getPath().toURI() ).withAdicionalInfo( additionalInfo ).withDescription( description );
     }
@@ -99,5 +106,16 @@ public class ResourceAddedEventAdapter implements SocialAdapter<ResourceAddedEve
     public List<String> getTimelineFiltersNames() {
         List<String> names = new ArrayList<String>();
         return names;
+    }
+
+    String getAddedMessage() {
+        Map<String, String> messages = socialConfigurationService.getSocialMessages();
+
+        if ( messages != null ) {
+            final String message = messages.get( ADDED_MESSAGE );
+            return message != null ? message : ADDED_MESSAGE;
+        }
+
+        return ADDED_MESSAGE;
     }
 }

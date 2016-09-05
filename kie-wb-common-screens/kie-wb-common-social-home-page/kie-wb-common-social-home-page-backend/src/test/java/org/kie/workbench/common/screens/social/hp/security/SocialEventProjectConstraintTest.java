@@ -15,7 +15,9 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
+import org.drools.core.spi.Restriction;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -33,7 +35,9 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.authz.Permission;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,6 +64,9 @@ public class SocialEventProjectConstraintTest {
 
     @Mock
     private UserCDIContextHelper userCDIContextHelper;
+
+    @Mock
+    private ConfiguredRepositories configuredRepositories;
 
     private SocialEventProjectConstraint socialEventProjectConstraint;
 
@@ -151,7 +158,8 @@ public class SocialEventProjectConstraintTest {
         assertFalse( socialEventProjectConstraint.hasRestrictions( vsfEvent ) );
         assertFalse( socialEventProjectConstraint.hasRestrictions( projectEvent ) );
 
-        verify( authorizationManager, never() ).authorize( null, user );
+        verify( authorizationManager, never() ).authorize( (Resource) null, user );
+        verify( authorizationManager, never() ).authorize( (Permission) null, user );
     }
 
     @Test
@@ -187,7 +195,7 @@ public class SocialEventProjectConstraintTest {
     private SocialEventProjectConstraint createSocialEventProjectConstraint() {
         final SocialEventRepositoryConstraint delegate = new SocialEventRepositoryConstraint( organizationalUnitService,
                                                                                               authorizationManager,
-                                                                                              repositoryService,
+                                                                                              configuredRepositories,
                                                                                               userCDIContextHelper ) {
             @Override
             Repository getEventRepository( final SocialActivitiesEvent event ) {

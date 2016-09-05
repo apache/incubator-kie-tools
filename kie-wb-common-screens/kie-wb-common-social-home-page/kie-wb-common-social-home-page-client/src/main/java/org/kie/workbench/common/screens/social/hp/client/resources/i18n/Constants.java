@@ -41,9 +41,13 @@ public interface Constants
 
     String UserProfile();
 
+    String UserNameProfile( String userName );
+
     String UserInfo();
 
     String UserRecentActivities();
+
+    String UserNameRecentActivities( String userName );
 
     String SearchUsers();
 
@@ -58,4 +62,20 @@ public interface Constants
     String NoSocialConnections();
 
     String Connections();
+
+    String UserLogin();
+
+    String Edit();
+
+    String Follow();
+
+    String Unfollow();
+
+    String RecentActivities();
+
+    String Added();
+
+    String Edited();
+
+    String Created();
 }

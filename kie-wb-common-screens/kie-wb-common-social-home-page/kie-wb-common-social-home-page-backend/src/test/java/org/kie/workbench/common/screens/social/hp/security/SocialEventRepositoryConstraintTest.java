@@ -16,6 +16,7 @@ package org.kie.workbench.common.screens.social.hp.security;
  * limitations under the License.
  */
 
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -57,6 +58,9 @@ public class SocialEventRepositoryConstraintTest {
 
     @Mock
     private UserCDIContextHelper userCDIContextHelper;
+
+    @Mock
+    private ConfiguredRepositories configuredRepositories;
 
     private SocialEventRepositoryConstraint socialEventRepositoryConstraint;
 
@@ -155,7 +159,7 @@ public class SocialEventRepositoryConstraintTest {
         return new SocialEventRepositoryConstraint(
                 organizationalUnitService,
                 authorizationManager,
-                repositoryService,
+                configuredRepositories,
                 userCDIContextHelper ) {
             @Override
             Repository getEventRepository( SocialActivitiesEvent event ) {

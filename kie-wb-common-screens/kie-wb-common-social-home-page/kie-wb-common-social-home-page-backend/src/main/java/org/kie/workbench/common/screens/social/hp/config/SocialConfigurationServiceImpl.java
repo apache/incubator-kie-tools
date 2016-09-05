@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.screens.social.hp.config;
 
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -23,13 +24,25 @@ import org.kie.uberfire.social.activities.server.SocialConfiguration;
 
 @ApplicationScoped
 @Service
-public class SocialConfigurationServiceImpl implements  SocialConfigurationService {
+public class SocialConfigurationServiceImpl implements SocialConfigurationService {
 
     @Inject
     private SocialConfiguration socialConfiguration;
 
+    private Map<String, String> messagesByKey = null;
+
     @Override
     public Boolean isSocialEnable() {
         return socialConfiguration.isSocialEnable();
+    }
+
+    @Override
+    public void registerSocialMessages( final Map<String, String> messagesByKey ) {
+        this.messagesByKey = messagesByKey;
+    }
+
+    @Override
+    public Map<String, String> getSocialMessages() {
+        return this.messagesByKey;
     }
 }

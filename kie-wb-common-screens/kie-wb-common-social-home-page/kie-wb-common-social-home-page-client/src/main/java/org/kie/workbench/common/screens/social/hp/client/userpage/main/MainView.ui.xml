@@ -21,9 +21,11 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants"/>
+
     <b:FieldSet>
         <b:Legend>
-            <small>Recent Activities</small>
+            <small><ui:text from="{i18n.RecentActivities}"/></small>
         </b:Legend>
         <g:FlowPanel ui:field="timeline"/>
     </b:FieldSet>
