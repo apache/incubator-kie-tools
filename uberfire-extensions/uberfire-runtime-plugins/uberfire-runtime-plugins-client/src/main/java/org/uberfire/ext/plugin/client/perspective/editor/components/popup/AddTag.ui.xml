@@ -33,10 +33,10 @@
         </b:FormLabel>
         <b:HelpBlock ui:field="tagInline"/>
       </g:FlowPanel>
-      <g:FlowPanel addStyleNames="col-sm-7">
+      <g:FlowPanel addStyleNames="col-sm-6">
         <b:TextBox ui:field="tag" placeholder="{i18n.TagNameHolder}"/>
       </g:FlowPanel>
-      <g:FlowPanel addStyleNames="col-sm-2">
+      <g:FlowPanel addStyleNames="col-sm-3">
         <b:Button icon="PLUS" type="PRIMARY" ui:field="addTag" text="{i18n.AddTag}"/>
       </g:FlowPanel>
 

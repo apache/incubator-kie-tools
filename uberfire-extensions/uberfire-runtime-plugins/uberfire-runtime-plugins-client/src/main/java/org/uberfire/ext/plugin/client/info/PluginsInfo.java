@@ -17,6 +17,7 @@
 package org.uberfire.ext.plugin.client.info;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.uberfire.client.screen.JSWorkbenchScreenActivity;
 import org.uberfire.client.splash.JSSplashScreenActivity;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
 import org.uberfire.ext.plugin.client.type.EditorPluginResourceType;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
@@ -149,5 +151,18 @@ public class PluginsInfo {
 
     <T> Collection<SyncBeanDef<T>> lookupBeans( Class<T> clazz ) {
         return IOC.getBeanManager().lookupBeans( clazz );
+    }
+
+    public Map<ClientResourceType, String> getPluginsTypeLabels() {
+
+        final Map<ClientResourceType, String> labelsByResourceType = new HashMap<ClientResourceType, String>();
+
+        labelsByResourceType.put( perspectiveLayoutPluginResourceType, CommonConstants.INSTANCE.PerspectivePlugin() );
+        labelsByResourceType.put( screenPluginResourceType, CommonConstants.INSTANCE.ScreenPlugin() );
+        labelsByResourceType.put( editorPluginResourceType, CommonConstants.INSTANCE.EditorPlugin() );
+        labelsByResourceType.put( splashPluginResourceType, CommonConstants.INSTANCE.SplashScreenPlugin() );
+        labelsByResourceType.put( dynamicMenuResourceType, CommonConstants.INSTANCE.DynamicMenu() );
+
+        return labelsByResourceType;
     }
 }

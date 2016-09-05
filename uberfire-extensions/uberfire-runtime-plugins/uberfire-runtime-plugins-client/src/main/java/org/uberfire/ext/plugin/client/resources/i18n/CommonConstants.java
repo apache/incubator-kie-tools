@@ -134,4 +134,36 @@ public interface CommonConstants
     String EmptySubTitleText();
 
     String PluginsExplorer();
+
+    String PerspectivePlugin();
+
+    String ScreenPlugin();
+
+    String EditorPlugin();
+
+    String SplashScreenPlugin();
+
+    String DynamicMenu();
+
+    String PerspectiveEditor();
+
+    String ScreenPluginEditor();
+
+    String EditorPluginEditor();
+
+    String SplashScreenPluginEditor();
+
+    String DynamicMenuEditor();
+
+    String MenuItem();
+
+    String ActivityId();
+
+    String MenuLabel();
+
+    String Ok();
+
+    String Cancel();
+
+    String Name();
 }

@@ -28,6 +28,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.type.SplashPluginResourceType;
 import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.ext.plugin.model.PluginContent;
@@ -69,7 +70,7 @@ public class SplashEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitleText() {
-        return "SplashScreen PlugIn Editor [" + this.plugin.getName() + "]";
+        return CommonConstants.INSTANCE.SplashScreenPluginEditor() + " [" + this.plugin.getName() + "]";
     }
 
     @WorkbenchMenu

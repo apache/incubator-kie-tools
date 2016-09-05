@@ -46,6 +46,7 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
 import org.uberfire.ext.plugin.client.validation.NameValidator;
 import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
@@ -142,7 +143,7 @@ public class DynamicMenuEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitleText() {
-        return "Dynamic Menu Editor [" + plugin.getName() + "]";
+        return CommonConstants.INSTANCE.DynamicMenuEditor() + " [" + plugin.getName() + "]";
     }
 
     @WorkbenchMenu

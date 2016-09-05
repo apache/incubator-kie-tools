@@ -24,37 +24,41 @@
     .content {
       margin: 20px 20px;
     }
+
+    .small {
+      font-size: 12px;
+    }
+
+    .required {
+      color: red;
+      margin-right: 3px;
+    }
   </ui:style>
+
+  <ui:with field="i18n" type="org.uberfire.ext.plugin.client.resources.i18n.CommonConstants"/>
 
   <g:HTMLPanel addStyleNames="{style.content}">
     <b:Row>
       <b:Column size="MD_6">
         <b:FieldSet>
-          <b:Legend>
-            Menu Item
-            <small>* is required</small>
-          </b:Legend>
+          <b:Legend text="{i18n.MenuItem}" />
           <b:FormGroup ui:field="activityIdControlGroup">
-            <b:FormLabel for="activityId">
-              <span style="color: red;">*</span>
-              Activity Id
-            </b:FormLabel>
+            <g:InlineLabel addStyleNames="{style.required}">*</g:InlineLabel>
+            <b:FormLabel for="activityId" text="{i18n.ActivityId}" />
             <b:TextBox b:id="activityId"
-                       ui:field="activityId" placeholder="Activity Id"/>
+                       ui:field="activityId" placeholder="{i18n.ActivityId}"/>
             <b:HelpBlock ui:field="activityIdHelpInline"/>
           </b:FormGroup>
           <b:FormGroup ui:field="menuLabelControlGroup">
-            <b:FormLabel for="menuLabel">
-              <span style="color: red;">*</span>
-              Menu Label
-            </b:FormLabel>
+            <g:InlineLabel addStyleNames="{style.required}">*</g:InlineLabel>
+            <b:FormLabel for="menuLabel" text="{i18n.MenuLabel}" />
             <b:TextBox b:id="menuLabel"
-                       ui:field="menuLabel" placeholder="Label"/>
+                       ui:field="menuLabel" placeholder="{i18n.MenuLabel}"/>
             <b:HelpBlock ui:field="menuLabelHelpInline"/>
           </b:FormGroup>
           <b:FormGroup>
-            <b:Button ui:field="okButton">Ok</b:Button>
-            <b:Button ui:field="cancelButton">Cancel</b:Button>
+            <b:Button ui:field="okButton" text="{i18n.Ok}" />
+            <b:Button ui:field="cancelButton" text="{i18n.Cancel}" />
           </b:FormGroup>
         </b:FieldSet>
       </b:Column>
