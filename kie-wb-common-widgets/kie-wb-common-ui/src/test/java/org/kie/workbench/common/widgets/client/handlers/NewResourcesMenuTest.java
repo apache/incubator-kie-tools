@@ -124,7 +124,6 @@ public class NewResourcesMenuTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOnProjectContextChangedEnabled() {
-
         doAnswer( new Answer() {
             public Object answer( final InvocationOnMock invocation ) {
                 final Object[] args = invocation.getArguments();
@@ -135,8 +134,13 @@ public class NewResourcesMenuTest {
         } ).when( handler ).acceptContext( any( Callback.class ) );
 
         menu.onChange();
+        verify( handler,
+                times( 1 ) ).acceptContext( any( Callback.class ) );
 
         final List<MenuItem> menus = menu.getMenuItems();
+        verify( handler,
+                times( 2 ) ).acceptContext( any( Callback.class ) );
+
         final MenuItem mi = menus.get( 0 );
         assertTrue( mi.isEnabled() );
     }
@@ -144,7 +148,6 @@ public class NewResourcesMenuTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOnProjectContextChangedDisabled() {
-
         doAnswer( new Answer() {
             public Object answer( final InvocationOnMock invocation ) {
                 final Object[] args = invocation.getArguments();
@@ -155,10 +158,33 @@ public class NewResourcesMenuTest {
         } ).when( handler ).acceptContext( any( Callback.class ) );
 
         menu.onChange();
+        verify( handler,
+                times( 1 ) ).acceptContext( any( Callback.class ) );
 
         final List<MenuItem> menus = menu.getMenuItems();
+        verify( handler,
+                times( 2 ) ).acceptContext( any( Callback.class ) );
+
         final MenuItem mi = menus.get( 0 );
         assertFalse( mi.isEnabled() );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void getMenuItemsSynchronizesEnabledState() {
+        menu.getMenuItems();
+
+        verify( handler,
+                times( 1 ) ).acceptContext( any( Callback.class ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void getMenuItemsWithoutProjectSynchronizesEnabledState() {
+        menu.getMenuItemsWithoutProject();
+
+        verify( handler,
+                times( 1 ) ).acceptContext( any( Callback.class ) );
     }
 
 }

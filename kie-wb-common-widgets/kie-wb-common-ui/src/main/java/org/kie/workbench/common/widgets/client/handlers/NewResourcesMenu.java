@@ -60,6 +60,7 @@ public class NewResourcesMenu
         this.newResourcePresenter = newResourcePresenter;
         projectContext.addChangeHandler( this );
     }
+
     private MenuItem projectMenuItem;
 
     @PostConstruct
@@ -82,7 +83,7 @@ public class NewResourcesMenu
 
     private void addMenuItem( final NewResourceHandler newResourceHandler ) {
 
-        if ( newResourceHandler.canCreate( ) ) {
+        if ( newResourceHandler.canCreate() ) {
 
             final MenuItem menuItem = getMenuItem( newResourceHandler );
 
@@ -134,10 +135,14 @@ public class NewResourcesMenu
     }
 
     public List<MenuItem> getMenuItems() {
+        enableMenuItemsForContext();
+
         return items;
     }
 
     public List<MenuItem> getMenuItemsWithoutProject() {
+        enableMenuItemsForContext();
+
         if ( projectMenuItem != null && items.contains( projectMenuItem ) ) {
             return items.subList( 1,
                                   items.size() );
@@ -148,6 +153,10 @@ public class NewResourcesMenu
 
     @Override
     public void onChange() {
+        enableMenuItemsForContext();
+    }
+
+    void enableMenuItemsForContext() {
         for ( Map.Entry<NewResourceHandler, MenuItem> entry : this.newResourceHandlers.entrySet() ) {
             final NewResourceHandler handler = entry.getKey();
             final MenuItem menuItem = entry.getValue();
