@@ -77,7 +77,8 @@ public interface WiresGridsDemoView extends IsWidget,
 
     /**
      * Sets the Zoom level of the View.
-     * @param zoom An int based percentage, where for example 100 represents 100%. Must be positive.
+     * @param zoom
+     *         An int based percentage, where for example 100 represents 100%. Must be positive.
      */
     void setZoom( final int zoom );
 
@@ -113,5 +114,13 @@ public interface WiresGridsDemoView extends IsWidget,
      * @return
      */
     HandlerRegistration addAppendRowClickHandler( final ClickHandler handler );
+
+    /**
+     * Adds a handler for when the User, interacting with the View, requests a row to be deleted.
+     * @param handler
+     *         The handler. Cannot be null.
+     * @return A registration for the handler.
+     */
+    HandlerRegistration addDeleteRowClickHandler( final ClickHandler handler );
 
 }

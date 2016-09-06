@@ -238,11 +238,7 @@ public class BaseGridWidget extends Group implements GridWidget {
         //If there's no RenderingInformation the GridWidget is not visible
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if ( renderingInformation == null ) {
-            for ( GridColumn<?> column : model.getColumns() ) {
-                if ( column.getColumnRenderer() instanceof HasDOMElementResources ) {
-                    ( (HasDOMElementResources) column.getColumnRenderer() ).destroyResources();
-                }
-            }
+            destroyDOMElementResources();
             return;
         }
 
@@ -251,19 +247,33 @@ public class BaseGridWidget extends Group implements GridWidget {
         final List<GridColumn<?>> allColumns = renderingInformation.getAllColumns();
         final List<GridColumn<?>> bodyColumns = bodyBlockInformation.getColumns();
         final List<GridColumn<?>> floatingColumns = floatingBlockInformation.getColumns();
+        final boolean isSelectionLayer = context.isSelection();
 
         this.allColumns.addAll( allColumns );
         this.bodyColumns.addAll( bodyColumns );
         this.floatingColumns.addAll( floatingColumns );
 
+        //Signal columns to attach or detach rendering support
+        if ( !isSelectionLayer ) {
+            for ( GridColumn<?> column : model.getColumns() ) {
+                if ( bodyColumns.contains( column ) || floatingColumns.contains( column ) ) {
+                    if ( column instanceof HasMultipleDOMElementResources ) {
+                        ( (HasMultipleDOMElementResources) column ).initialiseResources();
+                    }
+                } else if ( column instanceof HasDOMElementResources ) {
+                    ( (HasDOMElementResources) column ).destroyResources();
+                }
+            }
+        }
+
         //Draw if required
         if ( this.bodyColumns.size() > 0 ) {
             drawHeader( renderingInformation,
-                        context.isSelection() );
+                        isSelectionLayer );
 
             if ( model.getRowCount() > 0 ) {
                 drawBody( renderingInformation,
-                          context.isSelection() );
+                          isSelectionLayer );
             }
 
             if ( body != null ) {
@@ -296,12 +306,18 @@ public class BaseGridWidget extends Group implements GridWidget {
                 add( selection );
             }
 
-        } else {
-            if ( !context.isSelection() ) {
-                for ( GridColumn<?> column : model.getColumns() ) {
-                    if ( column.getColumnRenderer() instanceof HasDOMElementResources ) {
-                        ( (HasDOMElementResources) column.getColumnRenderer() ).destroyResources();
-                    }
+        }
+
+        //Signal columns to free any unused resources
+        if ( !isSelectionLayer ) {
+            for ( GridColumn<?> column : bodyColumns ) {
+                if ( column instanceof HasMultipleDOMElementResources ) {
+                    ( (HasMultipleDOMElementResources) column ).freeUnusedResources();
+                }
+            }
+            for ( GridColumn<?> column : floatingColumns ) {
+                if ( column instanceof HasMultipleDOMElementResources ) {
+                    ( (HasMultipleDOMElementResources) column ).freeUnusedResources();
                 }
             }
         }
@@ -310,6 +326,14 @@ public class BaseGridWidget extends Group implements GridWidget {
         super.drawWithoutTransforms( context,
                                      alpha,
                                      bb );
+    }
+
+    void destroyDOMElementResources() {
+        for ( GridColumn<?> column : model.getColumns() ) {
+            if ( column.getColumnRenderer() instanceof HasDOMElementResources ) {
+                ( (HasDOMElementResources) column.getColumnRenderer() ).destroyResources();
+            }
+        }
     }
 
     @Override
@@ -377,19 +401,6 @@ public class BaseGridWidget extends Group implements GridWidget {
         final int minVisibleRowIndex = renderingInformation.getMinVisibleRowIndex();
         final int maxVisibleRowIndex = renderingInformation.getMaxVisibleRowIndex();
 
-        //Signal columns to attach or detach rendering support
-        if ( !isSelectionLayer ) {
-            for ( GridColumn<?> column : model.getColumns() ) {
-                if ( bodyColumns.contains( column ) || floatingColumns.contains( column ) ) {
-                    if ( column.getColumnRenderer() instanceof HasMultipleDOMElementResources ) {
-                        ( (HasMultipleDOMElementResources) column.getColumnRenderer() ).initialiseResources();
-                    }
-                } else if ( column instanceof HasDOMElementResources ) {
-                    ( (HasDOMElementResources) column.getColumnRenderer() ).destroyResources();
-                }
-            }
-        }
-
         body = renderGridBodyWidget( bodyColumns,
                                      bodyBlockInformation.getX(),
                                      minVisibleRowIndex,
@@ -432,27 +443,16 @@ public class BaseGridWidget extends Group implements GridWidget {
                                                         renderingInformation ) );
             }
         }
-
-        //Signal columns to free any unused resources
-        if ( !isSelectionLayer ) {
-            for ( GridColumn<?> column : bodyColumns ) {
-                if ( column.getColumnRenderer() instanceof HasMultipleDOMElementResources ) {
-                    ( (HasMultipleDOMElementResources) column.getColumnRenderer() ).freeUnusedResources();
-                }
-            }
-            for ( GridColumn<?> column : floatingColumns ) {
-                if ( column.getColumnRenderer() instanceof HasMultipleDOMElementResources ) {
-                    ( (HasMultipleDOMElementResources) column.getColumnRenderer() ).freeUnusedResources();
-                }
-            }
-        }
     }
 
     /**
      * Render the Widget's Header and append to this Group.
-     * @param allColumns All columns in the model.
-     * @param blockColumns The columns to render for a block.
-     * @param isSelectionLayer Is the SelectionLayer being rendered.
+     * @param allColumns
+     *         All columns in the model.
+     * @param blockColumns
+     *         The columns to render for a block.
+     * @param isSelectionLayer
+     *         Is the SelectionLayer being rendered.
      */
     protected Group renderGridHeaderWidget( final List<GridColumn<?>> allColumns,
                                             final List<GridColumn<?>> blockColumns,
@@ -470,12 +470,18 @@ public class BaseGridWidget extends Group implements GridWidget {
 
     /**
      * Render the Widget's Body and append to this Group.
-     * @param blockColumns The columns to render.
-     * @param absoluteColumnOffsetX Absolute offset from Grid's X co-ordinate to render first column in block.
-     * @param minVisibleRowIndex The index of the first visible row.
-     * @param maxVisibleRowIndex The index of the last visible row.
-     * @param isSelectionLayer Is the SelectionLayer being rendered.
-     * @param transformer SelectionTransformer in operation.
+     * @param blockColumns
+     *         The columns to render.
+     * @param absoluteColumnOffsetX
+     *         Absolute offset from Grid's X co-ordinate to render first column in block.
+     * @param minVisibleRowIndex
+     *         The index of the first visible row.
+     * @param maxVisibleRowIndex
+     *         The index of the last visible row.
+     * @param isSelectionLayer
+     *         Is the SelectionLayer being rendered.
+     * @param transformer
+     *         SelectionTransformer in operation.
      */
     protected Group renderGridBodyWidget( final List<GridColumn<?>> blockColumns,
                                           final double absoluteColumnOffsetX,
@@ -511,9 +517,12 @@ public class BaseGridWidget extends Group implements GridWidget {
 
     /**
      * Render the selected ranges and append to the Body Group.
-     * @param blockColumns The columns to render.
-     * @param absoluteColumnOffsetX Absolute offset from Grid's X co-ordinate to render first column in block.
-     * @param renderingInformation Calculated rendering information supporting rendering.
+     * @param blockColumns
+     *         The columns to render.
+     * @param absoluteColumnOffsetX
+     *         Absolute offset from Grid's X co-ordinate to render first column in block.
+     * @param renderingInformation
+     *         Calculated rendering information supporting rendering.
      * @return A Group containing the boundary.
      */
     protected Group renderGridBoundary( final List<GridColumn<?>> blockColumns,
@@ -532,11 +541,16 @@ public class BaseGridWidget extends Group implements GridWidget {
 
     /**
      * Render the selected ranges and append to the Body Group.
-     * @param blockColumns The columns to render.
-     * @param absoluteColumnOffsetX Absolute offset from Grid's X co-ordinate to render first column in block.
-     * @param minVisibleRowIndex The index of the first visible row.
-     * @param maxVisibleRowIndex The index of the last visible row.
-     * @param transformer SelectionTransformer in operation.
+     * @param blockColumns
+     *         The columns to render.
+     * @param absoluteColumnOffsetX
+     *         Absolute offset from Grid's X co-ordinate to render first column in block.
+     * @param minVisibleRowIndex
+     *         The index of the first visible row.
+     * @param maxVisibleRowIndex
+     *         The index of the last visible row.
+     * @param transformer
+     *         SelectionTransformer in operation.
      * @return
      */
     protected Group renderSelectedRanges( final List<GridColumn<?>> blockColumns,

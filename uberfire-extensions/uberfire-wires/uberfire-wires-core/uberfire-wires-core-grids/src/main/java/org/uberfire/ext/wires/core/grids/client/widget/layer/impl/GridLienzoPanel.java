@@ -38,7 +38,15 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
     protected final LienzoPanel lienzoPanel;
 
     public GridLienzoPanel() {
-        this.lienzoPanel = new LienzoPanel();
+        this.lienzoPanel = new LienzoPanel() {
+            @Override
+            public void onResize() {
+                // Do nothing. Resize is handled by AttachHandler. LienzoPanel calls onResize() in
+                // it's onAttach() method which causes the Canvas to be redrawn. However when LienzoPanel
+                // is adopted by another Widget LienzoPanel's onAttach() is called before its children
+                // have been attached. Should redraw require children to be attached errors arise.
+            }
+        };
 
         domElementContainer.add( lienzoPanel );
         add( domElementContainer );
@@ -49,7 +57,15 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
     public GridLienzoPanel( final int width,
                             final int height ) {
         this.lienzoPanel = new LienzoPanel( width,
-                                            height );
+                                            height ) {
+            @Override
+            public void onResize() {
+                // Do nothing. Resize is handled by AttachHandler. LienzoPanel calls onResize() in
+                // it's onAttach() method which causes the Canvas to be redrawn. However when LienzoPanel
+                // is adopted by another Widget LienzoPanel's onAttach() is called before its children
+                // have been attached. Should redraw require children to be attached errors arise.
+            }
+        };
         this.domElementContainer.setPixelSize( width,
                                                height );
 
@@ -73,7 +89,9 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         addAttachHandler( new AttachEvent.Handler() {
             @Override
             public void onAttachOrDetach( final AttachEvent event ) {
-                onResize();
+                if ( event.isAttached() ) {
+                    onResize();
+                }
             }
         } );
     }

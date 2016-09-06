@@ -35,4 +35,7 @@ public interface WiresGridsDemoConstants {
     @TranslationKey(defaultValue = "")
     String Options_AppendRow = "Options.AppendRow";
 
+    @TranslationKey(defaultValue = "")
+    String Options_DeleteRow = "Options.DeleteRow";
+
 }

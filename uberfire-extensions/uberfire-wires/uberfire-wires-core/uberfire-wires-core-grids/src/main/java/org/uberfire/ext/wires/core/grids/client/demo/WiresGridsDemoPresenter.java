@@ -26,7 +26,6 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -125,6 +124,7 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
         setupStyleChangeHandler();
         setupMergedStateValueChangeHandler();
         setupAppendRowClickHandler();
+        setupDeleteRowClickHandler();
 
         this.gridWidget1 = makeGridWidget1();
         this.gridWidget2 = makeGridWidget2();
@@ -481,16 +481,26 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
     }
 
     private void setupAppendRowClickHandler() {
-        view.addAppendRowClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( final ClickEvent event ) {
-                for ( GridWidget gridWidget : view.getGridWidgets() ) {
-                    if ( gridWidget.isSelected() ) {
-                        gridWidget.getModel().appendRow( new BaseGridRow() );
+        view.addAppendRowClickHandler( ( final ClickEvent event ) -> {
+            for ( GridWidget gridWidget : view.getGridWidgets() ) {
+                if ( gridWidget.isSelected() ) {
+                    gridWidget.getModel().appendRow( new BaseGridRow() );
+                }
+            }
+            view.refresh();
+        } );
+    }
+
+    private void setupDeleteRowClickHandler() {
+        view.addDeleteRowClickHandler( ( final ClickEvent event ) -> {
+            for ( GridWidget gridWidget : view.getGridWidgets() ) {
+                if ( gridWidget.isSelected() ) {
+                    if ( gridWidget.getModel().getRowCount() > 0 ) {
+                        gridWidget.getModel().deleteRow( 0 );
                     }
                 }
-                view.refresh();
             }
+            view.refresh();
         } );
     }
 

@@ -73,6 +73,9 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
     @DataField("btnAppendRow")
     Button btnAppendRow;
 
+    @DataField("btnDeleteRow")
+    Button btnDeleteRow;
+
     private final DefaultGridLayer gridLayer = new DefaultGridLayer();
     private final RestrictedMousePanMediator mousePanMediator = new RestrictedMousePanMediator( gridLayer );
     private final Map<String, GridRendererTheme> themes = new HashMap<String, GridRendererTheme>();
@@ -84,11 +87,13 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
                                    final ListBox basicRendererSelector,
                                    final CheckBox chkShowMerged,
                                    final Button btnAppendRow,
+                                   final Button btnDeleteRow,
                                    final TranslationService translationService ) {
         this.zoom = zoom;
         this.basicRendererSelector = basicRendererSelector;
         this.chkShowMerged = chkShowMerged;
         this.btnAppendRow = btnAppendRow;
+        this.btnDeleteRow = btnDeleteRow;
         this.translationService = translationService;
     }
 
@@ -100,6 +105,7 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
 
         chkShowMerged.setText( translationService.getTranslation( WiresGridsDemoConstants.Options_ShowMerged ) );
         btnAppendRow.setText( translationService.getTranslation( WiresGridsDemoConstants.Options_AppendRow ) );
+        btnDeleteRow.setText( translationService.getTranslation( WiresGridsDemoConstants.Options_DeleteRow ) );
     }
 
     private void setupCanvas() {
@@ -225,6 +231,11 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
     @Override
     public HandlerRegistration addAppendRowClickHandler( final ClickHandler handler ) {
         return btnAppendRow.addClickHandler( handler );
+    }
+
+    @Override
+    public HandlerRegistration addDeleteRowClickHandler( final ClickHandler handler ) {
+        return btnDeleteRow.addClickHandler( handler );
     }
 
     @Override
