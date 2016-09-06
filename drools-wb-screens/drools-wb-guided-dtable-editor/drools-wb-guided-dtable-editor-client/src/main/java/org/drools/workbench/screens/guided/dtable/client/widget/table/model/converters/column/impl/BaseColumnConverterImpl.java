@@ -135,7 +135,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
         //Get a column based upon the data-type
         final String type = columnUtilities.getType( column );
 
-        if ( type.equals( DataType.TYPE_NUMERIC ) ) {
+        if ( DataType.TYPE_NUMERIC.equals( type ) ) {
             return newNumericColumn( makeHeaderMetaData( column ),
                                      Math.max( column.getWidth(),
                                                DEFAULT_COLUMN_WIDTH ),
@@ -144,7 +144,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                      access,
                                      gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
+        } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( type ) ) {
             return newBigDecimalColumn( makeHeaderMetaData( column ),
                                         Math.max( column.getWidth(),
                                                   DEFAULT_COLUMN_WIDTH ),
@@ -153,7 +153,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                         access,
                                         gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
+        } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( type ) ) {
             return newBigIntegerColumn( makeHeaderMetaData( column ),
                                         Math.max( column.getWidth(),
                                                   DEFAULT_COLUMN_WIDTH ),
@@ -162,7 +162,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                         access,
                                         gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
+        } else if ( DataType.TYPE_NUMERIC_BYTE.equals( type ) ) {
             return newByteColumn( makeHeaderMetaData( column ),
                                   Math.max( column.getWidth(),
                                             DEFAULT_COLUMN_WIDTH ),
@@ -171,7 +171,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                   access,
                                   gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
+        } else if ( DataType.TYPE_NUMERIC_DOUBLE.equals( type ) ) {
             return newDoubleColumn( makeHeaderMetaData( column ),
                                     Math.max( column.getWidth(),
                                               DEFAULT_COLUMN_WIDTH ),
@@ -180,7 +180,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                     access,
                                     gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
+        } else if ( DataType.TYPE_NUMERIC_FLOAT.equals( type ) ) {
             return newFloatColumn( makeHeaderMetaData( column ),
                                    Math.max( column.getWidth(),
                                              DEFAULT_COLUMN_WIDTH ),
@@ -189,7 +189,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                    access,
                                    gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
+        } else if ( DataType.TYPE_NUMERIC_INTEGER.equals( type ) ) {
             return newIntegerColumn( makeHeaderMetaData( column ),
                                      Math.max( column.getWidth(),
                                                DEFAULT_COLUMN_WIDTH ),
@@ -198,7 +198,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                      access,
                                      gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_NUMERIC_LONG ) ) {
+        } else if ( DataType.TYPE_NUMERIC_LONG.equals( type ) ) {
             return newLongColumn( makeHeaderMetaData( column ),
                                   Math.max( column.getWidth(),
                                             DEFAULT_COLUMN_WIDTH ),
@@ -207,7 +207,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                   access,
                                   gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
+        } else if ( DataType.TYPE_NUMERIC_SHORT.equals( type ) ) {
             return newShortColumn( makeHeaderMetaData( column ),
                                    Math.max( column.getWidth(),
                                              DEFAULT_COLUMN_WIDTH ),
@@ -216,7 +216,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                    access,
                                    gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_BOOLEAN ) ) {
+        } else if ( DataType.TYPE_BOOLEAN.equals( type ) ) {
             return newBooleanColumn( makeHeaderMetaData( column ),
                                      Math.max( column.getWidth(),
                                                DEFAULT_COLUMN_WIDTH ),
@@ -225,7 +225,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                      access,
                                      gridWidget );
 
-        } else if ( type.equals( DataType.TYPE_DATE ) ) {
+        } else if ( DataType.TYPE_DATE.equals( type ) ) {
             return newDateColumn( makeHeaderMetaData( column ),
                                   Math.max( column.getWidth(),
                                             DEFAULT_COLUMN_WIDTH ),

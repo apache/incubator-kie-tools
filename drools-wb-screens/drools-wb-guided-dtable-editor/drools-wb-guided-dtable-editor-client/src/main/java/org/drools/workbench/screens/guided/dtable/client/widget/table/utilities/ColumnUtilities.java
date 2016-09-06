@@ -264,27 +264,27 @@ public class ColumnUtilities {
     }
 
     private DataType.DataTypes convertToTypeSafeType( final String type ) {
-        if ( type.equals( DataType.TYPE_NUMERIC ) ) {
+        if ( DataType.TYPE_NUMERIC.equals( type ) ) {
             return DataType.DataTypes.NUMERIC;
-        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
+        } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( type ) ) {
             return DataType.DataTypes.NUMERIC_BIGDECIMAL;
-        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
+        } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( type ) ) {
             return DataType.DataTypes.NUMERIC_BIGINTEGER;
-        } else if ( type.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
+        } else if ( DataType.TYPE_NUMERIC_BYTE.equals( type ) ) {
             return DataType.DataTypes.NUMERIC_BYTE;
-        } else if ( type.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
+        } else if ( DataType.TYPE_NUMERIC_DOUBLE.equals( type ) ) {
             return DataType.DataTypes.NUMERIC_DOUBLE;
-        } else if ( type.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
+        } else if ( DataType.TYPE_NUMERIC_FLOAT.equals( type ) ) {
             return DataType.DataTypes.NUMERIC_FLOAT;
-        } else if ( type.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
+        } else if ( DataType.TYPE_NUMERIC_INTEGER.equals( type ) ) {
             return DataType.DataTypes.NUMERIC_INTEGER;
-        } else if ( type.equals( DataType.TYPE_NUMERIC_LONG ) ) {
+        } else if ( DataType.TYPE_NUMERIC_LONG.equals( type ) ) {
             return DataType.DataTypes.NUMERIC_LONG;
-        } else if ( type.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
+        } else if ( DataType.TYPE_NUMERIC_SHORT.equals( type ) ) {
             return DataType.DataTypes.NUMERIC_SHORT;
-        } else if ( type.equals( DataType.TYPE_BOOLEAN ) ) {
+        } else if ( DataType.TYPE_BOOLEAN.equals( type ) ) {
             return DataType.DataTypes.BOOLEAN;
-        } else if ( type.equals( DataType.TYPE_DATE ) ) {
+        } else if ( DataType.TYPE_DATE.equals( type ) ) {
             return DataType.DataTypes.DATE;
         }
         return DataType.DataTypes.STRING;
@@ -482,8 +482,10 @@ public class ColumnUtilities {
 
     /**
      * Get the Data Type corresponding to a given column
-     * @param pattern Pattern52
-     * @param condition ConditionCol52
+     * @param pattern
+     *         Pattern52
+     * @param condition
+     *         ConditionCol52
      * @return
      */
     public DataType.DataTypes getDataType( Pattern52 pattern,
@@ -506,8 +508,10 @@ public class ColumnUtilities {
 
     /**
      * Get the Data Type corresponding to a given column
-     * @param pattern Pattern52
-     * @param action ActionSetFieldCol52
+     * @param pattern
+     *         Pattern52
+     * @param action
+     *         ActionSetFieldCol52
      * @return
      */
     public DataType.DataTypes getDataType( Pattern52 pattern,

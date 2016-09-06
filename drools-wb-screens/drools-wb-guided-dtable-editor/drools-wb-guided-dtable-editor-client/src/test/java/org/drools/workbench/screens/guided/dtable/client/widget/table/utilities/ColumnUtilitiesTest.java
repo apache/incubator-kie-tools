@@ -28,20 +28,25 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ColumnUtilitiesTest {
 
-    @Mock
-    GuidedDecisionTable52 model;
+    private static final String FACT_TYPE = "MyFactType";
+
+    private static final String FIELD_NAME = "myField";
 
     @Mock
-    AsyncPackageDataModelOracle oracle;
+    private GuidedDecisionTable52 model;
 
-    Pattern52 pattern;
-    ConditionCol52 column;
-    ColumnUtilities utilities;
+    @Mock
+    private AsyncPackageDataModelOracle oracle;
+
+    private Pattern52 pattern;
+    private ConditionCol52 column;
+    private ColumnUtilities utilities;
 
     @Before
     public void setUp() {
@@ -62,6 +67,34 @@ public class ColumnUtilitiesTest {
     public void getTypeSafeType_operatorNotIn() {
         column.setOperator( "not in" );
         check();
+    }
+
+    @Test
+    public void unknownDataTypeDefaultsToString() {
+        assertEquals( DataType.TYPE_STRING,
+                      utilities.getType( column ) );
+    }
+
+    @Test
+    public void knownDataTypeWithoutOperator() {
+        pattern.setFactType( FACT_TYPE );
+        column.setFactField( FIELD_NAME );
+        column.setOperator( null );
+
+        assertEquals( DataType.TYPE_STRING,
+                      utilities.getType( column ) );
+    }
+
+    @Test
+    public void knownDataTypeWithOperator() {
+        pattern.setFactType( FACT_TYPE );
+        column.setFactField( FIELD_NAME );
+        column.setOperator( "==" );
+        when( oracle.getFieldType( eq( FACT_TYPE ),
+                                   eq( FIELD_NAME ) ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
+
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      utilities.getType( column ) );
     }
 
     private void check() {

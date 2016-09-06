@@ -32,6 +32,8 @@ import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
@@ -57,14 +59,23 @@ public class GuidedDecisionTablePopulater {
 
     private final GuidedDecisionTable52 dtable;
     private final List<GuidedDecisionTableSourceBuilder> sourceBuilders;
+    private final ConversionResult conversionResult;
     private final PackageDataModelOracle dmo;
+    private final int ruleRowStartIndex;
+    private final int ruleColumnStartIndex;
 
     public GuidedDecisionTablePopulater( final GuidedDecisionTable52 dtable,
                                          final List<GuidedDecisionTableSourceBuilder> sourceBuilders,
-                                         final PackageDataModelOracle dmo ) {
+                                         final ConversionResult conversionResult,
+                                         final PackageDataModelOracle dmo,
+                                         final int ruleRowStartIndex,
+                                         final int ruleColumnStartIndex ) {
         this.dtable = dtable;
         this.sourceBuilders = sourceBuilders;
+        this.conversionResult = conversionResult;
         this.dmo = dmo;
+        this.ruleRowStartIndex = ruleRowStartIndex;
+        this.ruleColumnStartIndex = ruleColumnStartIndex;
     }
 
     public void populate() {
@@ -405,11 +416,18 @@ public class GuidedDecisionTablePopulater {
             for ( ParameterizedValueBuilder pvb : valueBuilders ) {
                 if ( pvb instanceof LiteralValueBuilder ) {
                     for ( int iRowIndex = 0; iRowIndex < maxRowCount; iRowIndex++ ) {
+                        final int _rowIndex = ruleRowStartIndex + iRowIndex;
+                        final int _columnIndex = ruleColumnStartIndex + valueBuilders.indexOf( pvb ) + 1;
                         final List<DTCellValue52> fragmentRow = pvb.getColumnData().get( iRowIndex );
                         final List<DTCellValue52> dtableRow = dtable.getData().get( iRowIndex );
                         final DTCellValue52 fragmentCell = fragmentRow.get( 0 );
                         assertDTCellValue( varDataType,
-                                           fragmentCell );
+                                           fragmentCell,
+                                           ( final String value,
+                                             final DataType.DataTypes dataType ) -> addConversionMessage( value,
+                                                                                                          dataType,
+                                                                                                          _rowIndex,
+                                                                                                          _columnIndex ) );
                         dtableRow.add( fragmentCell );
                     }
                     break;
@@ -421,17 +439,41 @@ public class GuidedDecisionTablePopulater {
                 final int varNameIndex = pvb.getParameters().indexOf( varName );
                 if ( varNameIndex > -1 ) {
                     for ( int iRowIndex = 0; iRowIndex < maxRowCount; iRowIndex++ ) {
+                        final int _rowIndex = ruleRowStartIndex + iRowIndex;
+                        final int _columnIndex = ruleColumnStartIndex + valueBuilders.indexOf( pvb ) + 1;
                         final List<DTCellValue52> fragmentRow = pvb.getColumnData().get( iRowIndex );
                         final List<DTCellValue52> dtableRow = dtable.getData().get( iRowIndex );
                         final DTCellValue52 fragmentCell = fragmentRow.get( varNameIndex );
                         assertDTCellValue( varDataType,
-                                           fragmentCell );
+                                           fragmentCell,
+                                           ( final String value,
+                                             final DataType.DataTypes dataType ) -> addConversionMessage( value,
+                                                                                                          dataType,
+                                                                                                          _rowIndex,
+                                                                                                          _columnIndex ) );
                         dtableRow.add( fragmentCell );
                     }
                     break;
                 }
             }
         }
+    }
+
+    private void addConversionMessage( final String value,
+                                       final DataType.DataTypes dataType,
+                                       final int rowIndex,
+                                       final int columnIndex ) {
+        conversionResult.addMessage( "Unable to convert value '" + value + "' to " + dataType + ". Cell (" + toColumnName( columnIndex ) + rowIndex + ")",
+                                     ConversionMessageType.WARNING );
+    }
+
+    private String toColumnName( int columnIndex ) {
+        StringBuilder sb = new StringBuilder();
+        while ( columnIndex-- > 0 ) {
+            sb.append( (char) ( 'A' + ( columnIndex % 26 ) ) );
+            columnIndex /= 26;
+        }
+        return sb.reverse().toString();
     }
 
 }

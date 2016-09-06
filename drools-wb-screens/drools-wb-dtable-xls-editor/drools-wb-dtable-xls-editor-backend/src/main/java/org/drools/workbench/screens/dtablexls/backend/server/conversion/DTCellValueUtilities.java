@@ -35,6 +35,23 @@ public class DTCellValueUtilities {
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat( DATE_FORMAT );
 
     /**
+     * Callback to record data-type conversion errors.
+     */
+    public interface ConversionErrorCallback {
+
+        /**
+         * Called when a conversion error occurred.
+         * @param value
+         *         The value being converted.
+         * @param dataType
+         *         The target data-type to which the value is being converted.
+         */
+        void onConversionError( final String value,
+                                final DataType.DataTypes dataType );
+
+    }
+
+    /**
      * The column-data type is looked up from the SuggestionCompletionEngine and
      * represents the *true* data-type that the column represents. The data-type
      * associated with the Cell Value can be incorrect for legacy models. For
@@ -44,7 +61,8 @@ public class DTCellValueUtilities {
      * @param dcv
      */
     public static void assertDTCellValue( final String type,
-                                          final DTCellValue52 dcv ) {
+                                          final DTCellValue52 dcv,
+                                          final ConversionErrorCallback callback ) {
         if ( dcv == null ) {
             return;
         }
@@ -62,7 +80,8 @@ public class DTCellValueUtilities {
                 break;
             default:
                 convertDTCellValueFromString( dataType,
-                                              dcv );
+                                              dcv,
+                                              callback );
         }
     }
 
@@ -98,7 +117,8 @@ public class DTCellValueUtilities {
     //function attempts to set the correct DTCellValue property based on
     //the DTCellValue's data type.
     private static void convertDTCellValueFromString( final DataType.DataTypes dataType,
-                                                      final DTCellValue52 dcv ) {
+                                                      final DTCellValue52 dcv,
+                                                      final ConversionErrorCallback callback ) {
         String text = dcv.getStringValue();
         switch ( dataType ) {
             case BOOLEAN:
@@ -111,96 +131,116 @@ public class DTCellValueUtilities {
                         d = FORMATTER.parse( text );
                     }
                 } catch ( ParseException e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setDateValue( d );
                 break;
             case NUMERIC:
                 BigDecimal numericValue = null;
                 try {
-                    if ( text != null ) {
+                    if ( !( text == null || text.isEmpty() ) ) {
                         numericValue = new BigDecimal( text );
                     }
                 } catch ( Exception e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setNumericValue( numericValue );
                 break;
             case NUMERIC_BIGDECIMAL:
                 BigDecimal bigDecimalValue = null;
                 try {
-                    if ( text != null ) {
+                    if ( !( text == null || text.isEmpty() ) ) {
                         bigDecimalValue = new BigDecimal( text );
                     }
                 } catch ( Exception e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setNumericValue( bigDecimalValue );
                 break;
             case NUMERIC_BIGINTEGER:
                 BigInteger bigIntegerValue = null;
                 try {
-                    if ( text != null ) {
+                    if ( !( text == null || text.isEmpty() ) ) {
                         bigIntegerValue = new BigInteger( text );
                     }
                 } catch ( Exception e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setNumericValue( bigIntegerValue );
                 break;
             case NUMERIC_BYTE:
                 Byte byteValue = null;
                 try {
-                    if ( text != null ) {
+                    if ( !( text == null || text.isEmpty() ) ) {
                         byteValue = Byte.valueOf( text );
                     }
                 } catch ( Exception e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setNumericValue( byteValue );
                 break;
             case NUMERIC_DOUBLE:
                 Double doubleValue = null;
                 try {
-                    if ( text != null ) {
+                    if ( !( text == null || text.isEmpty() ) ) {
                         doubleValue = Double.valueOf( text );
                     }
                 } catch ( Exception e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setNumericValue( doubleValue );
                 break;
             case NUMERIC_FLOAT:
                 Float floatValue = null;
                 try {
-                    if ( text != null ) {
+                    if ( !( text == null || text.isEmpty() ) ) {
                         floatValue = Float.valueOf( text );
                     }
                 } catch ( Exception e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setNumericValue( floatValue );
                 break;
             case NUMERIC_INTEGER:
                 Integer integerValue = null;
                 try {
-                    if ( text != null ) {
+                    if ( !( text == null || text.isEmpty() ) ) {
                         integerValue = Integer.valueOf( text );
                     }
                 } catch ( Exception e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setNumericValue( integerValue );
                 break;
             case NUMERIC_LONG:
                 Long longValue = null;
                 try {
-                    if ( text != null ) {
+                    if ( !( text == null || text.isEmpty() ) ) {
                         longValue = Long.valueOf( text );
                     }
                 } catch ( Exception e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setNumericValue( longValue );
                 break;
             case NUMERIC_SHORT:
                 Short shortValue = null;
                 try {
-                    if ( text != null ) {
+                    if ( !( text == null || text.isEmpty() ) ) {
                         shortValue = Short.valueOf( text );
                     }
                 } catch ( Exception e ) {
+                    callback.onConversionError( text,
+                                                dataType );
                 }
                 dcv.setNumericValue( shortValue );
                 break;

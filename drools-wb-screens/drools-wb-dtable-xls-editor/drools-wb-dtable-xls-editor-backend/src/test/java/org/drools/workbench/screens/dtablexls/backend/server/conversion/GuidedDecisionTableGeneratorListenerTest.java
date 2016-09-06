@@ -2511,6 +2511,231 @@ public class GuidedDecisionTableGeneratorListenerTest {
                                      dtable.getData().get( 3 ) ) );
     }
 
+    @Test
+    //https://issues.jboss.org/browse/RHBRMS-2055
+    public void conversionWithEnumerationsInCells() {
+        final ConversionResult result = new ConversionResult();
+        final List<DataListener> listeners = new ArrayList<>();
+
+        addModelField( "org.test.Message",
+                       "this",
+                       "org.test.Message",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Message",
+                       "status",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField( "org.test.Message",
+                       "message",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result,
+                                                                                                        dmo );
+        listeners.add( listener );
+
+        //Convert
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "RHBRMS-2055 (Decision table with enums).xls" );
+
+        try {
+            parser.parseFile( is );
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException ioe ) {
+                fail( ioe.getMessage() );
+            }
+        }
+
+        //Check conversion results
+        assertEquals( 3,
+                      result.getMessages().size() );
+        assertTrue( result.getMessages().get( 0 ).getMessage().contains( "C11" ) );
+        assertTrue( result.getMessages().get( 1 ).getMessage().contains( "C12" ) );
+        assertTrue( result.getMessages().get( 2 ).getMessage().contains( "F11" ) );
+
+        //Check basics
+        final List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+        assertNotNull( dtables );
+        assertEquals( 1,
+                      dtables.size() );
+
+        GuidedDecisionTable52 dtable = dtables.get( 0 );
+
+        assertEquals( "HelloWorld1",
+                      dtable.getTableName() );
+        assertEquals( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,
+                      dtable.getTableFormat() );
+
+        //Check expanded columns
+        List<BaseColumn> columns = dtable.getExpandedColumns();
+        assertNotNull( columns );
+        assertEquals( 6,
+                      columns.size() );
+        assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
+        assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
+        assertTrue( columns.get( 2 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 3 ) instanceof BRLActionVariableColumn );
+        assertTrue( columns.get( 4 ) instanceof BRLActionVariableColumn );
+        assertTrue( columns.get( 5 ) instanceof BRLActionVariableColumn );
+
+        //Check individual condition columns
+        assertEquals( 1,
+                      dtable.getConditions().size() );
+        assertTrue( dtable.getConditions().get( 0 ) instanceof BRLConditionColumn );
+
+        BRLConditionColumn conditionCol0 = ( (BRLConditionColumn) dtable.getConditions().get( 0 ) );
+        assertEquals( "Converted from ['Status']",
+                      conditionCol0.getHeader() );
+        assertEquals( 1,
+                      conditionCol0.getChildColumns().size() );
+
+        List<IPattern> conditionCol0definition = conditionCol0.getDefinition();
+        assertEquals( 1,
+                      conditionCol0definition.size() );
+        assertTrue( conditionCol0definition.get( 0 ) instanceof FactPattern );
+
+        FactPattern conditionCol0fp = (FactPattern) conditionCol0definition.get( 0 );
+        assertEquals( "Message",
+                      conditionCol0fp.getFactType() );
+        assertEquals( 1,
+                      conditionCol0fp.getNumberOfConstraints() );
+
+        //Field Constraint 1
+        assertTrue( conditionCol0fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint conditionCol0fpsfc0 = (SingleFieldConstraint) conditionCol0fp.getConstraint( 0 );
+        assertEquals( "status",
+                      conditionCol0fpsfc0.getFieldName() );
+        assertEquals( "==",
+                      conditionCol0fpsfc0.getOperator() );
+        assertEquals( "param1",
+                      conditionCol0fpsfc0.getValue() );
+        assertEquals( SingleFieldConstraint.TYPE_TEMPLATE,
+                      conditionCol0fpsfc0.getConstraintValueType() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      conditionCol0fpsfc0.getFieldType() );
+
+        //Field Constraint 1 - Variable 1
+        BRLConditionVariableColumn conditionCol0param0 = conditionCol0.getChildColumns().get( 0 );
+        assertEquals( "param1",
+                      conditionCol0param0.getVarName() );
+        assertEquals( "Status",
+                      conditionCol0param0.getHeader() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      conditionCol0param0.getFieldType() );
+        assertEquals( "Message",
+                      conditionCol0param0.getFactType() );
+        assertEquals( "status",
+                      conditionCol0param0.getFactField() );
+
+        //Check individual action columns
+        assertEquals( 2,
+                      dtable.getActionCols().size() );
+
+        //Action 1
+        assertTrue( dtable.getActionCols().get( 0 ) instanceof BRLActionColumn );
+
+        BRLActionColumn actionCol0 = ( (BRLActionColumn) dtable.getActionCols().get( 0 ) );
+        assertEquals( "Converted from ['Print out message?']",
+                      actionCol0.getHeader() );
+        assertEquals( 1,
+                      actionCol0.getChildColumns().size() );
+
+        List<IAction> actionCol0definition = actionCol0.getDefinition();
+        assertEquals( 1,
+                      actionCol0definition.size() );
+        assertTrue( actionCol0definition.get( 0 ) instanceof FreeFormLine );
+
+        FreeFormLine actionCol0ffl0 = (FreeFormLine) actionCol0definition.get( 0 );
+        assertEquals( "System.out.println(m.getMessage());",
+                      actionCol0ffl0.getText() );
+
+        //Action 2
+        BRLActionColumn actionCol1 = ( (BRLActionColumn) dtable.getActionCols().get( 1 ) );
+        assertEquals( "Converted from ['Set message', 'Set status']",
+                      actionCol1.getHeader() );
+        assertEquals( 2,
+                      actionCol1.getChildColumns().size() );
+
+        List<IAction> actionCol1definition = actionCol1.getDefinition();
+        assertEquals( 1,
+                      actionCol1definition.size() );
+        assertTrue( actionCol1definition.get( 0 ) instanceof ActionSetField );
+
+        ActionSetField actionCol1asf0 = (ActionSetField) actionCol1definition.get( 0 );
+        assertEquals( "m",
+                      actionCol1asf0.getVariable() );
+        ActionFieldValue[] actionCol1asf0afvs = actionCol1asf0.getFieldValues();
+        assertEquals( 2,
+                      actionCol1asf0afvs.length );
+        ActionFieldValue actionCol1asf0afv0 = actionCol1asf0afvs[ 0 ];
+        assertEquals( "message",
+                      actionCol1asf0afv0.getField() );
+        assertEquals( "param2",
+                      actionCol1asf0afv0.getValue() );
+        assertEquals( FieldNatureType.TYPE_TEMPLATE,
+                      actionCol1asf0afv0.getNature() );
+        assertEquals( DataType.TYPE_STRING,
+                      actionCol1asf0afv0.getType() );
+        ActionFieldValue actionCol1asf0afv1 = actionCol1asf0afvs[ 1 ];
+        assertEquals( "status",
+                      actionCol1asf0afv1.getField() );
+        assertEquals( "param3",
+                      actionCol1asf0afv1.getValue() );
+        assertEquals( FieldNatureType.TYPE_TEMPLATE,
+                      actionCol1asf0afv1.getNature() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      actionCol1asf0afv1.getType() );
+
+        //Action 1 - Variable 1
+        BRLActionVariableColumn actionCol0param0 = actionCol0.getChildColumns().get( 0 );
+        assertEquals( "",
+                      actionCol0param0.getVarName() );
+        assertEquals( "Print out message?",
+                      actionCol0param0.getHeader() );
+        assertEquals( DataType.TYPE_BOOLEAN,
+                      actionCol0param0.getFieldType() );
+        assertNull( actionCol0param0.getFactType() );
+        assertNull( actionCol0param0.getFactField() );
+
+        assertTrue( dtable.getActionCols().get( 0 ) instanceof BRLActionColumn );
+
+        //Action 2 - Variable 1
+        BRLActionVariableColumn actionCol1param0 = actionCol1.getChildColumns().get( 0 );
+        assertEquals( "param2",
+                      actionCol1param0.getVarName() );
+        assertEquals( "Set message",
+                      actionCol1param0.getHeader() );
+        assertEquals( DataType.TYPE_STRING,
+                      actionCol1param0.getFieldType() );
+        assertEquals( "Message",
+                      actionCol1param0.getFactType() );
+        assertEquals( "message",
+                      actionCol1param0.getFactField() );
+
+        //Action 2 - Variable 2
+        BRLActionVariableColumn actionCol1param1 = actionCol1.getChildColumns().get( 1 );
+        assertEquals( "param3",
+                      actionCol1param1.getVarName() );
+        assertEquals( "Set status",
+                      actionCol1param1.getHeader() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      actionCol1param1.getFieldType() );
+        assertEquals( "Message",
+                      actionCol1param1.getFactType() );
+        assertEquals( "status",
+                      actionCol1param1.getFactField() );
+
+        //Check data
+        assertEquals( 2,
+                      dtable.getData().size() );
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 11", null, false, "Goodbye cruel world", null },
+                                     dtable.getData().get( 0 ) ) );
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 12", null, false, "", null },
+                                     dtable.getData().get( 1 ) ) );
+    }
+
     private boolean isRowEquivalent( Object[] expected,
                                      List<DTCellValue52> actual ) {
         //Sizes should match
@@ -2524,70 +2749,89 @@ public class GuidedDecisionTableGeneratorListenerTest {
             switch ( dcv.getDataType() ) {
                 case NUMERIC:
                     final BigDecimal numeric = (BigDecimal) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numeric ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        numeric ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_BIGDECIMAL:
                     final BigDecimal numericBigDecimal = (BigDecimal) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericBigDecimal ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        numericBigDecimal ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_BIGINTEGER:
                     final BigInteger numericBigInteger = (BigInteger) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericBigInteger ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        numericBigInteger ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_BYTE:
                     final Byte numericByte = (Byte) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericByte ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        numericByte ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_DOUBLE:
                     final Double numericDouble = (Double) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericDouble ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        numericDouble ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_FLOAT:
                     final Float numericFloat = (Float) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericFloat ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        numericFloat ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_INTEGER:
                     final Integer numericInteger = (Integer) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericInteger ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        numericInteger ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_LONG:
                     final Long numericLong = (Long) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericLong ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        numericLong ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_SHORT:
                     final Short numericShort = (Short) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericShort ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        numericShort ) ) {
                         return false;
                     }
                     break;
                 case BOOLEAN:
-                    if ( !expected[ i ].equals( dcv.getBooleanValue() ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        dcv.getBooleanValue() ) ) {
                         return false;
                     }
                     break;
                 default:
-                    if ( !expected[ i ].equals( dcv.getStringValue() ) ) {
+                    if ( !assertValues( expected[ i ],
+                                        dcv.getStringValue() ) ) {
                         return false;
                     }
             }
         }
         return true;
+    }
+
+    private boolean assertValues( final Object expected,
+                                  final Object actual ) {
+        if ( expected == null ) {
+            return actual == null;
+        }
+        return expected.equals( actual );
     }
 
     private void addModelField( final String factName,

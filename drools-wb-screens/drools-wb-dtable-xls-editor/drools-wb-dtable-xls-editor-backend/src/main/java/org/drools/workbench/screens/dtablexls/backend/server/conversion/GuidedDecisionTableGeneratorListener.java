@@ -233,7 +233,10 @@ public class GuidedDecisionTableGeneratorListener
     private void populateDecisionTable() {
         final GuidedDecisionTablePopulater populator = new GuidedDecisionTablePopulater( _dtable,
                                                                                          _sourceBuilders,
-                                                                                         _dmo );
+                                                                                         _conversionResult,
+                                                                                         _dmo,
+                                                                                         _ruleRow,
+                                                                                         _ruleStartColumn);
         populator.populate();
     }
 
