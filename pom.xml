@@ -51,7 +51,7 @@
   <properties>
     <uberfire.version>${project.version}</uberfire.version>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
-    <version.com.google.gwt>2.8.0-rc1</version.com.google.gwt>
+    <version.com.google.gwt>2.8.0-rc2</version.com.google.gwt>
     <version.com.ahome-it.lienzo-core>2.0.270-RELEASE</version.com.ahome-it.lienzo-core>
     <version.com.ahome-it.lienzo-tests>1.0.0-RC1</version.com.ahome-it.lienzo-tests>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
