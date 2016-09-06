@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ContextAwareBaseDomainEditor;
 
-@Dependent
+@ApplicationScoped
 public class AdvancedDomainEditor extends ContextAwareBaseDomainEditor {
 
     public static final String ADVANCED_DOMAIN = "ADVANCED";

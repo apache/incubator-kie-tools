@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ContextAwareBaseDomainEditor;
 
-@Dependent
+@ApplicationScoped
 public class JPADomainEditor extends ContextAwareBaseDomainEditor {
 
     public static final String JPA_DOMAIN = "JPA";
