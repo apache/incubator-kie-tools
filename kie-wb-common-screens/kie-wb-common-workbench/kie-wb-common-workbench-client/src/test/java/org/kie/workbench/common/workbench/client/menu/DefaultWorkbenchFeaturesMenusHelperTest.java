@@ -39,8 +39,10 @@ import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -67,6 +69,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
     @Mock
     protected UtilityMenuBar utilityMenuBar;
+
+    @Mock
+    protected PerspectiveManager perspectiveManager;
 
     @Spy
     @InjectMocks
@@ -236,6 +241,15 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         assertEquals( 1, menusList.get( 0 ).getItems().size() );
 
         checkIfMenuContainsRole( menusList, menusHelper.constants.LogOut() );
+    }
+
+    @Test
+    public void logoutCommandTest() {
+        final DefaultWorkbenchFeaturesMenusHelper.LogoutCommand logoutCommand = spy( menusHelper.new LogoutCommand() );
+
+        logoutCommand.execute();
+
+        verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
     }
 
     private void mockGroups() {

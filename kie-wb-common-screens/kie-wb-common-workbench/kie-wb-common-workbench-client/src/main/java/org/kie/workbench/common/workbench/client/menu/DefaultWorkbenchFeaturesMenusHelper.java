@@ -40,6 +40,7 @@ import org.uberfire.client.menu.WorkbenchViewModeSwitcherMenuBuilder;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.mvp.Command;
@@ -47,8 +48,8 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
+import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 public class DefaultWorkbenchFeaturesMenusHelper {
 
@@ -59,6 +60,9 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
     @Inject
     private ActivityManager activityManager;
+
+    @Inject
+    private PerspectiveManager perspectiveManager;
 
     @Inject
     protected Caller<AuthenticationService> authService;
@@ -251,10 +255,10 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
         @Override
         public void execute() {
-            authService.call( response -> {
+            perspectiveManager.savePerspectiveState( () -> authService.call( response -> {
                 final String location = GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "/logout.jsp" );
                 redirect( location );
-            } ).logout();
+            } ).logout() );
         }
     }
 
