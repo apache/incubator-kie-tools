@@ -54,9 +54,14 @@ public class Bs3Modal extends Modal {
     boolean hasBeenShown;
 
     public Bs3Modal() {
+        setup();
+    }
+
+    protected void setup() {
         this.add( body );
         this.setDataBackdrop( ModalBackdrop.STATIC );
         this.setFade( true );
+        this.setRemoveOnHide( true );
         this.getElement().setAttribute( Attributes.ROLE, "dialog" );
         this.getElement().setAttribute( Attributes.TABINDEX, "-1" );
         this.addStyleName( WorkbenchResources.INSTANCE.CSS().modal() );

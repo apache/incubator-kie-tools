@@ -32,8 +32,10 @@ import org.uberfire.mvp.PlaceRequest;
 /**
  * An example popup
  */
-@WorkbenchPopup(identifier = "MyTestPopUp", size = WorkbenchPopup.WorkbenchPopupSize.LARGE)
+@WorkbenchPopup(identifier = SimplePopUp.SCREEN_ID, size = WorkbenchPopup.WorkbenchPopupSize.LARGE)
 public class SimplePopUp {
+
+    public static final String SCREEN_ID = "MyTestPopUp";
 
     @Inject
     private PlaceManager placeManager;
