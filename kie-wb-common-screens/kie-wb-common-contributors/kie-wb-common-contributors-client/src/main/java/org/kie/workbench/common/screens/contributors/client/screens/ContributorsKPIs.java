@@ -100,7 +100,7 @@ public class ContributorsKPIs {
         return DisplayerSettingsFactory.newBarChartSettings()
                 .dataset(GIT_CONTRIB)
                 .filter(COLUMN_DATE, FilterFactory.notNull())
-                .group(COLUMN_DATE).fixed(DAY_OF_WEEK, false).firstDay(SUNDAY)
+                .group(COLUMN_DATE).fixed(DAY_OF_WEEK, true).firstDay(SUNDAY)
                 .column(COLUMN_DATE)
                 .column(COUNT, "#commits").format(i18n.numberOfCommits(), "#,##0")
                 .title(i18n.dayOfWeek())

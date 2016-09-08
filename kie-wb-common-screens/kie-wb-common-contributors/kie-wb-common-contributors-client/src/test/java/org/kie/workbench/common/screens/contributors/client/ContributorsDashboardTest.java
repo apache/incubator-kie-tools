@@ -38,7 +38,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 import static org.dashbuilder.dataset.Assertions.*;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContributorsDashboardTest extends AbstractDisplayerTest {
@@ -250,6 +252,8 @@ public class ContributorsDashboardTest extends AbstractDisplayerTest {
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
         assertDataSetValues(dataSet, new String[][]{
+                {"1", "0.00"},
+                {"2", "0.00"},
                 {"3", "2.00"},
                 {"4", "1.00"},
                 {"5", "1.00"},
@@ -285,5 +289,62 @@ public class ContributorsDashboardTest extends AbstractDisplayerTest {
         assertDataSetValues(dataSet, new String[][]{
                 {"user1", "repo1", "01/01/19 12:00", "Commit 1"},
         }, 0);
+    }
+
+    @Test
+    public void testClickOnOrgUnit() throws Exception {
+        commitsPerOrganization.filterUpdate(COLUMN_ORG, 0); // "org1" selected
+        DataSet dataSet = allCommitsDisplayer.getDataSetHandler().getLastDataSet();
+        assertEquals(dataSet.getRowCount(), 4);
+    }
+
+    @Test
+    public void testSelectOrgUnit() throws Exception {
+        organizationSelectorDisplayer.filterUpdate(COLUMN_ORG, 0); // "emptyOrg" selected
+        DataSet dataSet = allCommitsDisplayer.getDataSetHandler().getLastDataSet();
+        assertEquals(dataSet.getRowCount(), 1);
+    }
+
+    @Test
+    public void testSelectRepo() throws Exception {
+        repositorySelectorDisplayer.filterUpdate(COLUMN_REPO, 1); // "repo1" selected
+        DataSet dataSet = allCommitsDisplayer.getDataSetHandler().getLastDataSet();
+        assertEquals(dataSet.getRowCount(), 2);
+    }
+
+    @Test
+    public void testSelectYear() throws Exception {
+        yearsSelectorDisplayer.filterUpdate(COLUMN_DATE, 0); // "2019" selected
+        DataSet dataSet = allCommitsDisplayer.getDataSetHandler().getLastDataSet();
+        assertEquals(dataSet.getRowCount(), 7);
+    }
+
+    @Test
+    public void testSelectWeekOfDay() throws Exception {
+        dayOfWeekSelectorDisplayer.filterUpdate(COLUMN_DATE, 2); // "Tuesday" selected
+        DataSet dataSet = allCommitsDisplayer.getDataSetHandler().getLastDataSet();
+        assertEquals(dataSet.getRowCount(), 2);
+    }
+
+    @Test
+    public void testAlwaysShow7Days() throws Exception {
+        authorSelectorDisplayer.filterUpdate(COLUMN_AUTHOR, 1); // "user" selected
+        DataSet dataSet = allCommitsDisplayer.getDataSetHandler().getLastDataSet();
+        assertEquals(dataSet.getRowCount(), 1);
+
+        // Bar chart must always show 7 bars, one per day of week
+        dataSet = dayOfWeekSelectorDisplayer.getDataSetHandler().getLastDataSet();
+        assertEquals(dataSet.getRowCount(), 7);
+    }
+
+    @Test
+    public void testSelectAuthorAndWeekOfDay() throws Exception {
+        authorSelectorDisplayer.filterUpdate(COLUMN_AUTHOR, 1); // "user" selected
+        DataSet dataSet = allCommitsDisplayer.getDataSetHandler().getLastDataSet();
+        assertEquals(dataSet.getRowCount(), 1);
+
+        dayOfWeekSelectorDisplayer.filterUpdate(COLUMN_DATE, 2); // "Tuesday" selected
+        dataSet = allCommitsDisplayer.getDataSetHandler().getLastDataSet();
+        assertEquals(dataSet.getRowCount(), 1);
     }
 }
