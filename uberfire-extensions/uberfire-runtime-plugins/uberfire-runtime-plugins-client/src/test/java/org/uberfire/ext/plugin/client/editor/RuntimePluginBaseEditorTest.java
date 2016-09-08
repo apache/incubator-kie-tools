@@ -57,9 +57,9 @@ public class RuntimePluginBaseEditorTest {
     public void setup() {
         pluginServices = mock( PluginServices.class );
         callerMock = new CallerMock<PluginServices>( pluginServices );
-        editor = spy( createRuntimePluginBaseEditor() );
         successCallBack = mock( RemoteCallback.class );
         baseEditorView = mock( RuntimePluginBaseView.class );
+        editor = spy( createRuntimePluginBaseEditor() );
     }
 
     @Test
@@ -105,6 +105,12 @@ public class RuntimePluginBaseEditorTest {
         verify( editor ).registerPlugin( any( Plugin.class ) );
     }
 
+    @Test
+    public void saveCommandTest() {
+        editor.getSaveCommand().execute( "commitMessage" );
+        verify( baseEditorView ).onSave();
+    }
+
     private RuntimePluginBaseEditor createRuntimePluginBaseEditor() {
 
         return new RuntimePluginBaseEditor( baseEditorView ) {
@@ -144,6 +150,11 @@ public class RuntimePluginBaseEditorTest {
 
             @Override
             void registerPlugin( Plugin plugin ) {
+            }
+
+            @Override
+            protected RemoteCallback<Path> getSaveSuccessCallback( final int newHash ) {
+                return path -> { };
             }
         };
     }

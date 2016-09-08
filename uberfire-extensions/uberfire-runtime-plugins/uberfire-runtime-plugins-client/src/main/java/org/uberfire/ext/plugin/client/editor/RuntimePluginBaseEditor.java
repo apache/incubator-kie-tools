@@ -84,7 +84,7 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     private SavePopUpPresenter savePopUpPresenter;
 
     protected RuntimePluginBaseEditor( final BaseEditorView baseView ) {
-        this.baseView = baseView;
+        super( baseView );
     }
 
     protected abstract PluginType getPluginType();
@@ -167,21 +167,24 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     }
 
     protected void save() {
-        savePopUpPresenter.show( getCurrentPath(),
-                                 new ParameterizedCommand<String>() {
-
-                                     @Override
-                                     public void execute( final String commitMessage ) {
-                                         pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).save(
-                                                 getContent(),
-                                                 commitMessage );
-                                     }
-                                 }
-                               );
+        savePopUpPresenter.show( getCurrentPath(), getSaveCommand() );
         concurrentUpdateSessionInfo = null;
     }
 
+    ParameterizedCommand<String> getSaveCommand() {
+        return new ParameterizedCommand<String>() {
+            @Override
+            public void execute( final String commitMessage ) {
+                getPluginServices().call( getSaveSuccessCallback( getContent().hashCode() ) ).save(
+                        getContent(),
+                        commitMessage );
+                view().onSave();
+            }
+        };
+    }
+
     public boolean mayClose() {
+        view().onClose();
         return super.mayClose( getContent().hashCode() );
     }
 

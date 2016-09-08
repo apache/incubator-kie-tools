@@ -265,4 +265,12 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
         rightHorizontalSplit.getElement().getStyle().setTop( rightTopArea.getOffsetHeight() - 6, Style.Unit.PX );
         editorResizing.execute();
     }
+
+    public void onSave() {
+        mediaLibraryWidget.updateMediaOnSave();
+    }
+
+    public void onClose() {
+        mediaLibraryWidget.updateMediaOnClose();
+    }
 }

@@ -16,8 +16,10 @@
 
 package org.uberfire.ext.plugin.client.widget.media;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -92,6 +94,9 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
 
     private Map<Path, IsWidget> mediaRef = new HashMap<Path, IsWidget>();
 
+    private List<Command> updateMediaOnSaveCommands = new ArrayList<>();
+    private List<Command> updateMediaOnCloseCommands = new ArrayList<>();
+
     @PostConstruct
     public void init() {
         fileUpload = createFileUpload();
@@ -163,7 +168,16 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
 
     public void onNewMedia( @Observes final MediaAdded mediaAddedEvent ) {
         if ( mediaAddedEvent.getPluginName().equals( pluginName ) ) {
-            addMedia( mediaAddedEvent.getMedia() );
+            final Media media = mediaAddedEvent.getMedia();
+
+            addMedia( media );
+
+            updateMediaOnCloseCommands.add( new Command() {
+                @Override
+                public void execute() {
+                    onMediaDelete.execute( media );
+                }
+            } );
         }
     }
 
@@ -199,18 +213,38 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
             }} );
         }};
 
-        trash.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( final ClickEvent event ) {
-                mediaRef.remove( media.getPath() );
-                onMediaDelete.execute( media );
-                library.remove( column );
-            }
-        } );
+        trash.addClickHandler( getTrashClickHandler( media, column ) );
 
         column.add( thumbnail );
         library.add( column );
 
         mediaRef.put( media.getPath(), column );
+    }
+
+    private ClickHandler getTrashClickHandler( final Media media,
+                                               final Column column ) {
+        return event -> {
+            mediaRef.remove( media.getPath() );
+            updateMediaOnSaveCommands.add( new Command() {
+                @Override
+                public void execute() {
+                    onMediaDelete.execute( media );
+                }
+            } );
+            library.remove( column );
+        };
+    }
+
+    public void updateMediaOnClose() {
+        for ( Command command : updateMediaOnCloseCommands ) {
+            command.execute();
+        }
+    }
+
+    public void updateMediaOnSave() {
+        for ( Command command : updateMediaOnSaveCommands ) {
+            command.execute();
+        }
+        updateMediaOnCloseCommands = new ArrayList<>();
     }
 }

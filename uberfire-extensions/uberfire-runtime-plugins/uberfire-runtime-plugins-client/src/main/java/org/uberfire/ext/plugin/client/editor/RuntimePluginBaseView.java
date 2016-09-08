@@ -55,4 +55,12 @@ public abstract class RuntimePluginBaseView extends BaseEditorViewImpl {
     protected abstract void setFramework( Collection<Framework> frameworks );
 
     protected abstract Collection<Framework> getFrameworks();
+
+    public void onSave() {
+        editor.onSave();
+    }
+
+    public void onClose() {
+        editor.onClose();
+    }
 }
