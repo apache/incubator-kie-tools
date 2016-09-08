@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -77,7 +78,7 @@ import static java.util.Collections.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Service
-@ApplicationScoped
+@Dependent
 public class ExplorerServiceImpl
         implements ExplorerService {
 
