@@ -521,7 +521,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                             fs.unlock();
                             final String userName = req.getUser().getName();
                             for ( Map.Entry<String, RevCommit> oldTreeRef : oldTreeRefs.entrySet() ) {
-                                final List<RevCommit> commits = JGitUtil.getCommits( fs, oldTreeRef.getKey(), oldTreeRef.getValue(), JGitUtil.getLastCommit( fs.gitRepo(), oldTreeRef.getKey() ) );
+                                final List<RevCommit> commits = JGitUtil.getCommits( fs.gitRepo(), oldTreeRef.getKey(), oldTreeRef.getValue(), JGitUtil.getLastCommit( fs.gitRepo(), oldTreeRef.getKey() ) );
                                 for ( final RevCommit revCommit : commits ) {
                                     final RevTree parent = revCommit.getParentCount() > 0 ? revCommit.getParent( 0 ).getTree() : null;
                                     notifyDiffs( fs,
