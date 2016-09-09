@@ -232,10 +232,14 @@ public class FormEditorHelper {
     protected void resetField( FieldDefinition field ) {
         if ( field.getName().startsWith( UNBINDED_FIELD_NAME_PREFFIX ) ) return;
 
+        availableFields.put(field.getId(), field);
+
         editorService.call(new RemoteCallback<FieldDefinition>() {
             @Override
-            public void callback(FieldDefinition field) {
-                availableFields.put(field.getId(), field);
+            public void callback( FieldDefinition field ) {
+                if ( availableFields.containsKey( field.getId() ) ) {
+                    availableFields.put( field.getId(), field );
+                }
             }
         }).resetField(content.getDefinition(), field, content.getPath());
     }

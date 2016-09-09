@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.mockito.Matchers.anyString;
@@ -135,8 +136,8 @@ public class FormEditorPresenterTest extends TestCase {
     }
 
     protected void loadContent() {
-        when( formDefinitionResourceType.getSuffix() ).thenReturn("form.frm");
-        when( formDefinitionResourceType.accept(path) ).thenReturn(true);
+        when( formDefinitionResourceType.getSuffix() ).thenReturn( "form.frm" );
+        when( formDefinitionResourceType.accept(path) ).thenReturn( true );
 
         when( beanManager.lookupBean(eq(EditorFieldLayoutComponent.class)) ).thenReturn( fieldLayoutComponentDef );
 
@@ -206,6 +207,41 @@ public class FormEditorPresenterTest extends TestCase {
         testUnbindedFieldProperties();
     }
 
+    @Test
+    public void testMoveFormFields() {
+        loadContent();
+
+        testAddRemoveDataTypes();
+
+        testAddAndMoveFields();
+
+    }
+
+    protected void testAddAndMoveFields() {
+        testAddFields( true );
+
+        FormDefinition form = editorContext.getFormDefinition();
+
+        int formFields = form.getFields().size();
+
+        assertTrue( "Form should have fields.", formFields > 0 );
+        assertEquals( "Form should contain '" + employeeFields.size() + "' fields.", formFields, employeeFields.size() );
+
+        int availableFields = editorContext.getAvailableFields().size();
+        assertTrue( "There should not exist available fields.", availableFields == 0 );
+
+        List<FieldDefinition> formFieldsList = new ArrayList<>( form.getFields() );
+
+        for ( FieldDefinition field : formFieldsList ) {
+
+            presenter.onRemoveComponent( createComponentRemovedEvent( form, field) );
+            checkExpectedFields( 1, formFields - 1, true );
+
+            presenter.onDropComponent( createComponentDropEvent( form, field) );
+            checkExpectedFields( 0, formFields, true );
+        }
+    }
+
     protected void testAddRemoveDataTypes() {
         verify(objectsView, never()).addDataType(anyString());
 
@@ -240,26 +276,38 @@ public class FormEditorPresenterTest extends TestCase {
     }
 
     public void testAddRemoveDataTypeFields() {
-        testAddRemoveFields(employeeFields, editorContext.getAvailableFields().size(), true);
+        testAddFields( true );
+        testRemoveFields( true );
     }
 
-    protected void testAddRemoveFields (List<FieldDefinition> fields, int availableFields, boolean checkAvailable ) {
-        int formFields = 0;
+    protected void testAddFields( boolean checkAvailable ) {
+        int formFields = editorContext.getFormDefinition().getFields().size();
+        int availableFields = editorContext.getAvailableFields().size();
 
-        for ( FieldDefinition field : fields ) {
+        for ( FieldDefinition field : employeeFields ) {
             presenter.onDropComponent( createComponentDropEvent( editorContext.getFormDefinition(), field) );
             availableFields --;
             formFields ++;
-            checkExpectedFields(availableFields, formFields, checkAvailable);
+            checkExpectedFields( availableFields, formFields, checkAvailable );
         }
+    }
 
-        List<FieldDefinition> formFieldsList = new ArrayList<FieldDefinition>( editorContext.getFormDefinition().getFields() );
+    protected void testRemoveFields( boolean checkAvailable ) {
+        int formFields = editorContext.getFormDefinition().getFields().size();
+
+        assertTrue( "Form should have fields.", formFields > 0 );
+        assertEquals( "Form should contain '" + employeeFields.size() + "' fields.", formFields, employeeFields.size() );
+
+        int availableFields = editorContext.getAvailableFields().size();
+        assertTrue( "There should not exist available fields.", availableFields == 0 );
+
+        List<FieldDefinition> formFieldsList = new ArrayList<>( editorContext.getFormDefinition().getFields() );
 
         for ( FieldDefinition field : formFieldsList ) {
             presenter.onRemoveComponent( createComponentRemovedEvent( editorContext.getFormDefinition(), field) );
             availableFields ++;
             formFields --;
-            checkExpectedFields(availableFields, formFields, checkAvailable);
+            checkExpectedFields( availableFields, formFields, checkAvailable );
         }
     }
 
@@ -341,8 +389,8 @@ public class FormEditorPresenterTest extends TestCase {
     }
 
     protected void checkExpectedFields( int expectedAvailable, int expectedFormFields, boolean checkAvailable ) {
-        if (checkAvailable) assertEquals("There should be " + expectedAvailable + " available fields", editorContext.getAvailableFields().size(), expectedAvailable);
-        assertEquals("The form must contain " + expectedFormFields + " fields ", editorContext.getFormDefinition().getFields().size(), expectedFormFields);
+        if (checkAvailable) assertEquals( "There should be " + expectedAvailable + " available fields", editorContext.getAvailableFields().size(), expectedAvailable );
+        assertEquals( "The form must contain " + expectedFormFields + " fields ", editorContext.getFormDefinition().getFields().size(), expectedFormFields );
     }
 
     private class ServiceMock
