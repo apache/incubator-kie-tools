@@ -3,7 +3,7 @@
   
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-tests</artifactId>
-  <version>1.0.0-RC1</version>
+  <version>1.0.0-RC2</version>
   <name>Lienzo - Testing Framework</name>
   <description>Lienzo - Testing Framework</description>
   <packaging>jar</packaging>
@@ -28,7 +28,7 @@
   <properties>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.com.ahomeit.lienzo>2.0.270-RELEASE</version.com.ahomeit.lienzo>
+    <version.com.ahomeit.lienzo>2.0.275-RELEASE</version.com.ahomeit.lienzo>
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
     <version.junit>4.11</version.junit>
     <version.org.mockito>1.9.5</version.org.mockito>
