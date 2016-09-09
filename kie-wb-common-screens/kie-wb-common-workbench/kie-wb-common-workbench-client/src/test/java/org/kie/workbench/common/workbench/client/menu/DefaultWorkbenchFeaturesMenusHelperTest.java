@@ -22,6 +22,7 @@ import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.Group;
@@ -36,6 +37,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
@@ -60,6 +62,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
     @Mock
     protected Caller<AuthenticationService> authService;
+
+    @Mock
+    protected AuthenticationService authServiceImpl;
 
     @Mock
     protected User identity;
@@ -181,7 +186,7 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     private void checkIfMenuContainsRole( final List<Menus> menusList,
                                           String role ) {
         assertContains( menusList,
-                        ( menus ) -> contains( ( ( Menus ) menus ).getItems(),
+                        ( menus ) -> contains( ( (Menus) menus ).getItems(),
                                                ( menuItem ) -> ( (MenuItem) menuItem )
                                                        .getCaption().equals( role )
                                              )
@@ -252,6 +257,54 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void logoutCommandRedirectIncludesLocaleTest() throws Throwable {
+        final DefaultWorkbenchFeaturesMenusHelper.LogoutCommand logoutCommand = spy( menusHelper.new LogoutCommand() {
+
+            @Override
+            void doRedirect( final String url ) {
+                //Do nothing
+            }
+
+            @Override
+            String getGWTModuleBaseURL() {
+                return "/gwtModule/";
+            }
+
+            @Override
+            String getGWTModuleName() {
+                return "gwtModule";
+            }
+
+            @Override
+            String getLocale() {
+                return "en_GB";
+            }
+        } );
+
+        logoutCommand.execute();
+
+        final ArgumentCaptor<Command> postSaveStateCommandCaptor = ArgumentCaptor.forClass( Command.class );
+        final ArgumentCaptor<String> redirectURLCaptor = ArgumentCaptor.forClass( String.class );
+
+        when( authService.call( any( RemoteCallback.class ) ) ).thenAnswer( ( final InvocationOnMock invocation ) -> {
+            ( (RemoteCallback) invocation.getArguments()[ 0 ] ).callback( null );
+            return authServiceImpl;
+        } );
+        verify( perspectiveManager ).savePerspectiveState( postSaveStateCommandCaptor.capture() );
+
+        final Command postSaveStateCommand = postSaveStateCommandCaptor.getValue();
+        postSaveStateCommand.execute();
+
+        verify( logoutCommand ).getRedirectURL();
+        verify( logoutCommand ).doRedirect( redirectURLCaptor.capture() );
+        verify( authServiceImpl ).logout();
+
+        final String redirectURL = redirectURLCaptor.getValue();
+        assertTrue( redirectURL.contains( "/logout.jsp?locale=en_GB" ) );
+    }
+
     private void mockGroups() {
         Set<Group> groups = new HashSet<>( 2 );
         groups.add( () -> "group1" );
@@ -285,7 +338,7 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     }
 
     private void mockIocManager() {
-        doAnswer( invocationOnMock -> createSyncBeanDef( (Class<?>) invocationOnMock.getArguments()[0] ) )
+        doAnswer( invocationOnMock -> createSyncBeanDef( (Class<?>) invocationOnMock.getArguments()[ 0 ] ) )
                 .when( iocManager ).lookupBean( any( Class.class ) );
     }
 
@@ -334,6 +387,7 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     }
 
     private interface Checker<T> {
+
         boolean check( T object );
     }
 }

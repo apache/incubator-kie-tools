@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.LocaleInfo;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -86,7 +87,7 @@ public class DefaultWorkbenchFeaturesMenusHelper {
                             .build().getItems().get( 0 ) );
 
         result.addAll( getSocialViews( socialEnabled ) );
-        result.addAll( getSecurityManagementViews( ) );
+        result.addAll( getSecurityManagementViews() );
 
         return result;
     }
@@ -255,11 +256,33 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
         @Override
         public void execute() {
-            perspectiveManager.savePerspectiveState( () -> authService.call( response -> {
-                final String location = GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "/logout.jsp" );
-                redirect( location );
-            } ).logout() );
+            perspectiveManager.savePerspectiveState( () -> authService.call( ( o ) -> doRedirect( getRedirectURL() ) ).logout() );
         }
+
+        void doRedirect( final String url ) {
+            redirect( url );
+        }
+
+        String getRedirectURL() {
+            final String gwtModuleBaseURL = getGWTModuleBaseURL();
+            final String gwtModuleName = getGWTModuleName();
+            final String locale = getLocale();
+            final String url = gwtModuleBaseURL.replaceFirst( "/" + gwtModuleName + "/", "/logout.jsp?locale=" + locale );
+            return url;
+        }
+
+        String getGWTModuleBaseURL() {
+            return GWT.getModuleBaseURL();
+        }
+
+        String getGWTModuleName() {
+            return GWT.getModuleName();
+        }
+
+        String getLocale() {
+            return LocaleInfo.getCurrentLocale().getLocaleName();
+        }
+
     }
 
     public static native void redirect( String url )/*-{
