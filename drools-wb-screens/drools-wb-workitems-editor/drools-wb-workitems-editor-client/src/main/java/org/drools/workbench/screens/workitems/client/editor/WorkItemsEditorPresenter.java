@@ -41,7 +41,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -140,8 +139,8 @@ public class WorkItemsEditorPresenter
                             ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
-                                                          view.getContent() );
+                } ).validate( versionRecordManager.getCurrentPath(),
+                              view.getContent() );
             }
         };
     }

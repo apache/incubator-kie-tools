@@ -37,7 +37,6 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -114,8 +113,8 @@ public class ScoreCardXLSEditorPresenter
                             ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
-                                                          versionRecordManager.getCurrentPath() );
+                } ).validate( versionRecordManager.getCurrentPath(),
+                              versionRecordManager.getCurrentPath() );
             }
         };
     }

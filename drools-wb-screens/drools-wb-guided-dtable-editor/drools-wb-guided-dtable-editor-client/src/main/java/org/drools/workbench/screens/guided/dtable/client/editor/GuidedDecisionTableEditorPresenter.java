@@ -59,7 +59,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -372,9 +371,8 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
                                   ValidationPopup.showMessages( results );
                               }
                           }
-                      },
-                      new DefaultErrorCallback() ).validate( path,
-                                                             model );
+                      } ).validate( path,
+                                    model );
     }
 
     @Override

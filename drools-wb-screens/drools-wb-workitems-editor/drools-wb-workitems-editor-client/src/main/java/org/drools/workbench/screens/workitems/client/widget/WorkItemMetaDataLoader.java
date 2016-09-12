@@ -22,7 +22,6 @@ import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
 /**
  * Loader for Work Items Editors meta-data.
@@ -37,8 +36,7 @@ public class WorkItemMetaDataLoader {
 
     public void loadMetaContent( final HasWorkItemDefinitionElements handler ) {
         if ( metaContent == null ) {
-            workItemsService.call( getMetaContentSuccessCallback( handler ),
-                                   new DefaultErrorCallback() ).loadDefinitionElements();
+            workItemsService.call( getMetaContentSuccessCallback( handler ) ).loadDefinitionElements();
         } else {
             handler.setDefinitionElements( metaContent );
         }
