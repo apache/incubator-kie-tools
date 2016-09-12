@@ -41,7 +41,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnMayClose;
@@ -307,7 +306,7 @@ public class DriverDefEditor
 
     protected void validate() {
         editorService.call(
-                getValidationSuccessCallback(), new DefaultErrorCallback() ).validate( getContent().getDriverDef() );
+                getValidationSuccessCallback() ).validate( getContent().getDriverDef() );
     }
 
     private RemoteCallback<DriverDefEditorContent> getLoadContentSuccessCallback() {

@@ -41,7 +41,6 @@ import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorComboBox;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemLabel;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
 import org.uberfire.ext.services.shared.preferences.UserWorkbenchPreferences;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -158,8 +157,7 @@ public class WorkbenchConfigurationPopup extends BaseModal {
                                                       response );
                                          }
                                      }
-                                 },
-                                 new DefaultErrorCallback() ).loadUserPreferences( new UserWorkbenchPreferences( "default" ) );
+                                 } ).loadUserPreferences( new UserWorkbenchPreferences( "default" ) );
     }
 
     public void onOk() {

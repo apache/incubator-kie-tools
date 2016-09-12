@@ -16,9 +16,6 @@
 
 package org.kie.workbench.common.workbench.client.entrypoint;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
@@ -30,10 +27,12 @@ import org.guvnor.common.services.shared.config.AppConfigService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.UncaughtExceptionHandler;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.widgets.client.resources.RoundedCornersResource;
 import org.uberfire.client.mvp.ActivityBeansCache;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
 public abstract class DefaultWorkbenchEntryPoint {
 
@@ -42,6 +41,8 @@ public abstract class DefaultWorkbenchEntryPoint {
     protected Caller<PlaceManagerActivityService> pmas;
 
     protected ActivityBeansCache activityBeansCache;
+
+    private DefaultErrorCallback defaultErrorCallback = new DefaultErrorCallback();
 
     @Inject
     public DefaultWorkbenchEntryPoint( Caller<AppConfigService> appConfigService,
@@ -59,6 +60,11 @@ public abstract class DefaultWorkbenchEntryPoint {
         initializeWorkbench();
 
         pmas.call().initActivities( activityBeansCache.getActivitiesById() );
+    }
+
+    @UncaughtExceptionHandler
+    private void handleUncaughtException( Throwable t ) {
+        defaultErrorCallback.error( null, t );
     }
 
     void loadPreferences() {

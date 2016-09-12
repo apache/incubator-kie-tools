@@ -24,7 +24,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
 @ApplicationScoped
 public class ClientValidationService {
@@ -46,7 +45,7 @@ public class ClientValidationService {
                     callback.onFailure();
                 }
             }
-        }, new DefaultErrorCallback() ).validateGroupId( groupId );
+        } ).validateGroupId( groupId );
     }
 
     public void isValidArtifactId( final String artifactId, final ValidatorCallback callback ) {
@@ -59,7 +58,7 @@ public class ClientValidationService {
                     callback.onFailure();
                 }
             }
-        }, new DefaultErrorCallback() ).validateArtifactId( artifactId );
+        } ).validateArtifactId( artifactId );
     }
 
     public void isValidVersionId( final String versionId, final ValidatorCallback callback ) {
@@ -72,7 +71,7 @@ public class ClientValidationService {
                     callback.onFailure();
                 }
             }
-        }, new DefaultErrorCallback() ).validateGAVVersion( versionId );
+        } ).validateGAVVersion( versionId );
     }
 
     public void isValidClassName( final String className, final ValidatorCallback callback ) {
@@ -95,7 +94,7 @@ public class ClientValidationService {
                     callback.onFailure();
                 }
             }
-        }, new DefaultErrorCallback() ).evaluateJavaIdentifiers( identifiers );
+        } ).evaluateJavaIdentifiers( identifiers );
     }
 
     public void isValidDriverName( final String driverName, final ValidatorCallback callback ) {

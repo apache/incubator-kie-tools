@@ -38,7 +38,6 @@ import org.kie.workbench.common.screens.datasource.management.events.BaseDriverE
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQuery;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQueryResult;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQueryService;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
 @Dependent
 public class ProjectDataSourceExplorer
@@ -124,7 +123,7 @@ public class ProjectDataSourceExplorer
     }
 
     private void refresh( final DefExplorerQuery query ) {
-        explorerService.call( getRefreshCallback(), new DefaultErrorCallback() ).executeQuery( query );
+        explorerService.call( getRefreshCallback() ).executeQuery( query );
     }
 
     @Override

@@ -469,8 +469,7 @@ public abstract class BaseViewPresenter implements BranchChangeHandler {
                     public void callback( final BuildResults results ) {
                         buildResultsEvent.fire( results );
                     }
-                },
-                new DefaultErrorCallback() ).build( project );
+                } ).build( project );
     }
 
     public void onOrganizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
@@ -637,12 +636,12 @@ public abstract class BaseViewPresenter implements BranchChangeHandler {
                     baseView.setItems( folderListing );
                 }
             }
-        }, new DefaultErrorCallback() ).getFolderListing( activeContextItems.getActiveOrganizationalUnit(),
-                                                          activeContextItems.getActiveRepository(),
-                                                          activeContextItems.getActiveBranch(),
-                                                          activeContextItems.getActiveProject(),
-                                                          activeContextItems.getActiveFolderItem(),
-                                                          activeOptions.getOptions() );
+        } ).getFolderListing( activeContextItems.getActiveOrganizationalUnit(),
+                              activeContextItems.getActiveRepository(),
+                              activeContextItems.getActiveBranch(),
+                              activeContextItems.getActiveProject(),
+                              activeContextItems.getActiveFolderItem(),
+                              activeOptions.getOptions() );
     }
 
     public void onSocialFileSelected( @Observes final SocialFileSelectedEvent event ) {
@@ -730,13 +729,12 @@ public abstract class BaseViewPresenter implements BranchChangeHandler {
                                       public void callback( final FolderListing folderListing ) {
                                           baseView.setItems( folderListing );
                                       }
-                                  },
-                                  new DefaultErrorCallback() ).getFolderListing( activeContextItems.getActiveOrganizationalUnit(),
-                                                                                 activeContextItems.getActiveRepository(),
-                                                                                 activeContextItems.getActiveBranch(),
-                                                                                 activeContextItems.getActiveProject(),
-                                                                                 activeContextItems.getActiveFolderItem(),
-                                                                                 activeOptions.getOptions() );
+                                  } ).getFolderListing( activeContextItems.getActiveOrganizationalUnit(),
+                                                        activeContextItems.getActiveRepository(),
+                                                        activeContextItems.getActiveBranch(),
+                                                        activeContextItems.getActiveProject(),
+                                                        activeContextItems.getActiveFolderItem(),
+                                                        activeOptions.getOptions() );
         }
     }
 

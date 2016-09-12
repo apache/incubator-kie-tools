@@ -25,7 +25,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
 import org.uberfire.ext.services.shared.preferences.UserWorkbenchPreferences;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
 /**
  * Definition of Handler to support add new menu of workbench configuration
@@ -79,7 +78,7 @@ public abstract class WorkbenchConfigurationHandler {
                     configurationSetting( true );
                 }
             }
-        }, new DefaultErrorCallback() ).loadUserPreferences( new UserWorkbenchPreferences( "default" ) );
+        } ).loadUserPreferences( new UserWorkbenchPreferences( "default" ) );
 
     }
 
@@ -94,7 +93,7 @@ public abstract class WorkbenchConfigurationHandler {
             public void callback( Void response ) {
 
             }
-        }, new DefaultErrorCallback() ).saveUserPreferences( preferences );
+        } ).saveUserPreferences( preferences );
     }
 
     /**

@@ -94,7 +94,6 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
@@ -1049,13 +1048,12 @@ public class ProjectScreenPresenter
                                           @Override
                                           public void callback(Void aVoid) {
                                           }
-                                          }, new DefaultErrorCallback()
+                                          }
                                    ).startContainer(containerSpec);
                                }
 
                            }
-                       }, new DefaultErrorCallback()
-                        ).saveContainerSpec(serverTemplate, containerSpec);
+                       } ).saveContainerSpec(serverTemplate, containerSpec);
                     }
                 } else {
                     notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildFailed(),

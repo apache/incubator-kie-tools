@@ -79,7 +79,6 @@ import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitM
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
@@ -488,7 +487,7 @@ public class DataModelerScreenPresenter
                             ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( getSource(), versionRecordManager.getCurrentPath(), modifiedDataObject[ 0 ] );
+                } ).validate( getSource(), versionRecordManager.getCurrentPath(), modifiedDataObject[ 0 ] );
             }
         };
     }

@@ -33,7 +33,6 @@ import org.kie.workbench.common.screens.datasource.management.events.UpdateDrive
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQuery;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQueryResult;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQueryService;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
 public abstract class DefExplorerBase {
 
@@ -74,7 +73,7 @@ public abstract class DefExplorerBase {
     protected abstract void onAddDriver();
 
     public void refresh() {
-        explorerService.call( getRefreshCallback(), new DefaultErrorCallback() ).executeQuery( createRefreshQuery() );
+        explorerService.call( getRefreshCallback() ).executeQuery( createRefreshQuery() );
     }
 
     protected abstract DefExplorerQuery createRefreshQuery();

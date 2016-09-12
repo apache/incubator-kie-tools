@@ -42,7 +42,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnMayClose;
@@ -386,6 +385,6 @@ public class DataSourceDefEditor
                 popupsUtil.showInformationPopup( new SafeHtmlBuilder().appendEscapedLines(
                         testResult.getMessage() ).toSafeHtml().asString() );
             }
-        }, new DefaultErrorCallback() ).testDataSource( getContent().getDataSourceDef().getUuid() );
+        } ).testDataSource( getContent().getDataSourceDef().getUuid() );
     }
 }

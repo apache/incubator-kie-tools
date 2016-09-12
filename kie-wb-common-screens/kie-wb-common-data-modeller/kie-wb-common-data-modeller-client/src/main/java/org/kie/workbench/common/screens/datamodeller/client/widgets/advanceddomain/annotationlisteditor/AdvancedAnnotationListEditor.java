@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.bus.client.api.base.DefaultErrorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -99,7 +98,7 @@ public class AdvancedAnnotationListEditor
         if ( annotations != null && annotations.size() > 0 ) {
             AnnotationSourceRequest sourceRequest = new AnnotationSourceRequest();
             sourceRequest.withAnnotations( annotations );
-            modelerService.call( getLoadAnnotationSourcesSuccessCallback(), new DefaultErrorCallback() )
+            modelerService.call( getLoadAnnotationSourcesSuccessCallback() )
                     .resolveSourceRequest( sourceRequest );
         }
     }
@@ -235,7 +234,7 @@ public class AdvancedAnnotationListEditor
 
         if ( valuePairEditor.isGenericEditor() ) {
             String strValue = value != null ? value.toString() : null;
-            modelerService.call( getValuePairChangeSuccessCallback( valuePairEditor ), new DefaultErrorCallback() )
+            modelerService.call( getValuePairChangeSuccessCallback( valuePairEditor ) )
                     .resolveParseRequest( new AnnotationParseRequest( valuePairEditor.getAnnotationClassName(),
                                                 elementType,
                                                 valuePairEditor.getValuePairDefinition().getName(),
