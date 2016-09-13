@@ -104,24 +104,27 @@ public class DefaultGuidedDecisionTableLinkManager implements GuidedDecisionTabl
                                                final String fieldName,
                                                final GuidedDecisionTable52 model,
                                                final BRLRuleModel helper ) {
+        if ( factType == null || fieldName == null ) {
+            return null;
+        }
 
         for ( ActionCol52 ac : model.getActionCols() ) {
             if ( ac instanceof ActionInsertFactCol52 ) {
                 final ActionInsertFactCol52 aif = (ActionInsertFactCol52) ac;
-                if ( aif.getFactType().equals( factType ) && aif.getFactField().equals( fieldName ) ) {
+                if ( factType.equals( aif.getFactType() ) && fieldName.equals( aif.getFactField() ) ) {
                     return ac;
                 }
             } else if ( ac instanceof ActionSetFieldCol52 ) {
                 final ActionSetFieldCol52 asf = (ActionSetFieldCol52) ac;
                 final String binding = asf.getBoundName();
                 final String asfFactType = helper.getLHSBindingType( binding );
-                if ( asfFactType.equals( factType ) && asf.getFactField().equals( fieldName ) ) {
+                if ( factType.equals( asfFactType ) && fieldName.equals( asf.getFactField() ) ) {
                     return ac;
                 }
             } else if ( ac instanceof BRLActionColumn ) {
                 final BRLActionColumn fragment = (BRLActionColumn) ac;
                 for ( BRLActionVariableColumn var : fragment.getChildColumns() ) {
-                    if ( var.getFactType().equals( factType ) && var.getFactField().equals( fieldName ) ) {
+                    if ( factType.equals( var.getFactType() ) && fieldName.equals( var.getFactField() ) ) {
                         return ac;
                     }
                 }

@@ -16,11 +16,19 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.linkmanager.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
+import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -206,6 +214,59 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
                       sourceColumnIndex );
         assertEquals( 2,
                       targetColumnIndex );
+    }
+
+    @Test
+    public void fieldConstraintWithActionBRLFragmentFieldWithBoolean() {
+        //Columns: Row#[0], Description[1], Action[2]
+        final GuidedDecisionTableView.Presenter dtPresenter1 = makeGuidedDecisionTablePresenter();
+        final BRLActionColumn brl = new BRLActionColumn();
+        final ActionSetField asf = new ActionSetField();
+        asf.setVariable( "$f" );
+        asf.addFieldValue( new ActionFieldValue() {{
+            setField( "field" );
+            setValue( "10" );
+            setNature( FieldNatureType.TYPE_LITERAL );
+        }} );
+        brl.setDefinition( new ArrayList<IAction>() {{
+            add( asf );
+        }} );
+        brl.getChildColumns().add( new BRLActionVariableColumn( "",
+                                                                DataType.TYPE_BOOLEAN ) );
+
+        dtPresenter1.getModel().getActionCols().add( brl );
+
+        //Columns: Row#[0], Description[1], Condition[2]
+        final GuidedDecisionTableView.Presenter dtPresenter2 = makeGuidedDecisionTablePresenter();
+        final Pattern52 p2 = new Pattern52();
+        p2.setBoundName( "$f" );
+        p2.setFactType( "Fact" );
+        final ConditionCol52 p2c1 = new ConditionCol52();
+        p2c1.setFactField( "field" );
+        p2.getChildColumns().add( p2c1 );
+        dtPresenter2.getModel().getConditions().add( p2 );
+
+        //Mock uiModel's columns
+        final GridData dtPresenter1UiModel = dtPresenter1.getView().getModel();
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+
+        final GridData dtPresenter2UiModel = dtPresenter2.getView().getModel();
+        dtPresenter2UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+
+        manager.link( dtPresenter1,
+                      new HashSet<GuidedDecisionTableView.Presenter>() {{
+                          add( dtPresenter2 );
+                      }} );
+
+        verify( manager,
+                never() ).linkColumns( any( GridData.class ),
+                                       any( GridData.class ),
+                                       any( Integer.class ),
+                                       any( Integer.class ) );
     }
 
 }
