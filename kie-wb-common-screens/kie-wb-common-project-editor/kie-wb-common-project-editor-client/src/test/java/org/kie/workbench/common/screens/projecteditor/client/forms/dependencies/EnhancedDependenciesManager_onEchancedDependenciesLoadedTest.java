@@ -33,6 +33,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.Util.makeDependency;
 import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -120,13 +121,4 @@ public class EnhancedDependenciesManager_onEchancedDependenciesLoadedTest {
         assertFalse( originalSetOfDependencies.contains( junit ) );
     }
 
-    private Dependency makeDependency( final String artifactId,
-                                       final String groupId,
-                                       final String version ) {
-        final Dependency dependency = new Dependency();
-        dependency.setArtifactId( artifactId );
-        dependency.setGroupId( groupId );
-        dependency.setVersion( version );
-        return dependency;
-    }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.Caller;
@@ -26,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -33,8 +36,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith( GwtMockitoTestRunner.class )
 public class DependencyLoaderLoadFailureTest {
+
+    @GwtMock
+    private CommonConstants commonConstants;
 
     @Mock
     private EnhancedDependenciesManager manager;
@@ -45,11 +51,15 @@ public class DependencyLoaderLoadFailureTest {
     @Mock
     private DependencyService dependencyService;
 
+    @Mock
+    private DependencyLoaderView view;
+
     private DependencyLoader dependencyLoader;
 
     @Before
     public void setUp() throws Exception {
-        dependencyLoader = new DependencyLoader( dependencyServiceCaller );
+        dependencyLoader = new DependencyLoader( view,
+                                                 dependencyServiceCaller );
         dependencyLoader.init( manager );
 
         when( dependencyServiceCaller.call( any( RemoteCallback.class ),
@@ -66,6 +76,9 @@ public class DependencyLoaderLoadFailureTest {
         failLoad();
 
         final EnhancedDependencies enhancedDependencies = getUpdatedEnhancedDependencies();
+
+        verify( view ).showBusyIndicator( "Loading" );
+        verify( view ).hideBusyIndicator();
 
         assertEquals( 1, enhancedDependencies.size() );
         assertNotNull( enhancedDependencies.get( new GAV( "org.junit", "junit", "1.0" ) ) );

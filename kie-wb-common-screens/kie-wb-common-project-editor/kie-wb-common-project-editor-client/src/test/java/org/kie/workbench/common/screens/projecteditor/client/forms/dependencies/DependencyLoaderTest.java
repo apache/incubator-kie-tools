@@ -16,22 +16,27 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
-import org.guvnor.common.services.project.model.Dependency;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.Util.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith( GwtMockitoTestRunner.class )
 public class DependencyLoaderTest {
+
+    @GwtMock
+    private CommonConstants commonConstants;
 
     @Mock
     private EnhancedDependenciesManager manager;
@@ -39,12 +44,17 @@ public class DependencyLoaderTest {
     @Mock
     private DependencyService dependencyService;
 
+    @Mock
+    private DependencyLoaderView view;
+
+
     private DependencyLoader dependencyLoader;
 
     @Before
     public void setUp() throws Exception {
 
-        dependencyLoader = new DependencyLoader( new CallerMock<>( dependencyService ) );
+        dependencyLoader = new DependencyLoader( view,
+                                                 new CallerMock<>( dependencyService ) );
         dependencyLoader.init( manager );
     }
 
@@ -67,18 +77,11 @@ public class DependencyLoaderTest {
 
         dependencyLoader.load();
 
+        verify( view ).showBusyIndicator( "Loading" );
+        verify( view ).hideBusyIndicator();
+
         final EnhancedDependencies updatedEnhancedDependencies = getUpdatedEnhancedDependencies();
         assertEquals( enhancedDependencies, updatedEnhancedDependencies );
-    }
-
-    private Dependency makeDependency( final String artifactId,
-                                       final String groupId,
-                                       final String version ) {
-        final Dependency dependency = new Dependency();
-        dependency.setArtifactId( artifactId );
-        dependency.setGroupId( groupId );
-        dependency.setVersion( version );
-        return dependency;
     }
 
     private EnhancedDependencies getUpdatedEnhancedDependencies() {

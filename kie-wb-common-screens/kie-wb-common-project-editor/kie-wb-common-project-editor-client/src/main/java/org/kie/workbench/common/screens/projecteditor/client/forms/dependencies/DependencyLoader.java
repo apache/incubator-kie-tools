@@ -29,17 +29,21 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
 import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 @Dependent
 public class DependencyLoader {
 
     private final List<Dependency> updateQueue = new ArrayList<>();
 
+    private       DependencyLoaderView        view;
     private final Caller<DependencyService>   dependencyService;
     private       EnhancedDependenciesManager manager;
 
     @Inject
-    public DependencyLoader( final Caller<DependencyService> dependencyService ) {
+    public DependencyLoader( final DependencyLoaderView view,
+                             final Caller<DependencyService> dependencyService ) {
+        this.view = view;
         this.dependencyService = dependencyService;
     }
 
@@ -70,10 +74,13 @@ public class DependencyLoader {
 
     private void loadFromServer() {
 
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
         dependencyService.call( new RemoteCallback<EnhancedDependencies>() {
                                     @Override
                                     public void callback( final EnhancedDependencies result ) {
                                         onLoadSuccess( result );
+                                        view.hideBusyIndicator();
                                     }
                                 },
                                 new ErrorCallback<Object>() {
@@ -83,6 +90,7 @@ public class DependencyLoader {
 
 
                                         returnDefault();
+                                        view.hideBusyIndicator();
                                         return false;
                                     }
                                 } ).loadEnhancedDependencies( updateQueue );
