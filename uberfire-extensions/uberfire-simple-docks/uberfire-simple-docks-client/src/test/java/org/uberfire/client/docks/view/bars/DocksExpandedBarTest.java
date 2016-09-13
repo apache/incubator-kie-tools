@@ -16,6 +16,7 @@
 
 package org.uberfire.client.docks.view.bars;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,19 +25,60 @@ import org.uberfire.client.workbench.docks.UberfireDockPosition;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith( GwtMockitoTestRunner.class )
 public class DocksExpandedBarTest {
 
     private DocksExpandedBar docksExpandedBar;
+    private FlowPanel targetPanel;
 
     @Before
     public void setup() {
-        docksExpandedBar = spy( new DocksExpandedBar( UberfireDockPosition.WEST ) );
+        DocksExpandedBar dock = new DocksExpandedBar( UberfireDockPosition.WEST );
+        targetPanel = mock( FlowPanel.class );
+        dock.targetPanel = targetPanel;
+        docksExpandedBar = spy( dock );
     }
 
     @Test
     public void resizeTest() {
         docksExpandedBar.onResize();
         verify( docksExpandedBar ).resizeTargetPanel();
+    }
+
+    @Test
+    public void resizeWithAnInvalidWidthShouldNeverSetupSizeOfTargetPanel() {
+        doReturn( 0 ).when( docksExpandedBar ).calculateDockHeight();
+        doReturn( 0 ).when( docksExpandedBar ).calculateDockWidth();
+
+        docksExpandedBar.onResize();
+
+        verify( targetPanel, never() ).setPixelSize( anyInt(), anyInt() );
+    }
+
+    @Test
+    public void resizeWithAValidWidthShouldNeverSetupSizeOfTargetPanel() {
+        doReturn( 10 ).when( docksExpandedBar ).calculateDockHeight();
+        doReturn( 110 ).when( docksExpandedBar ).calculateDockWidth();
+
+        docksExpandedBar.onResize();
+
+        verify( targetPanel, never() ).setPixelSize( 10, 110 );
+    }
+
+    @Test
+    public void setPanelSizeWithAnInvalidWidthShouldNeverSetupSizeOfTargetPanel() {
+
+        docksExpandedBar.setPanelSize( 0, -1 );
+
+        verify( targetPanel, never() ).setPixelSize( anyInt(), anyInt() );
+    }
+
+
+    @Test
+    public void setPanelSizeAValidWidthShouldNeverSetupSizeOfTargetPanel() {
+
+        docksExpandedBar.setPanelSize( 1, 10 );
+
+        verify( targetPanel ).setPixelSize( 1, 10 );
     }
 }
