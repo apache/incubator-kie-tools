@@ -17,6 +17,7 @@
 package org.uberfire.ext.editor.commons.client.history;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,31 +54,27 @@ public class VersionRecordManagerTest {
         setUpUtil();
         setUpVersions();
 
-        versionSelectedEvent = spy(
-                new VersionSelectedEventMock(
-                        new Callback<VersionSelectedEvent>() {
-                            @Override
-                            public void callback( VersionSelectedEvent result ) {
-                                manager.onVersionSelectedEvent( result );
-                            }
-                        } ) );
-        manager = spy( new VersionRecordManager(
-                dropDownButton,
-                saveButton,
-                restorePopup,
-                util,
-                versionSelectedEvent,
-                new VersionServiceCallerMock( versions ) ) );
+        versionSelectedEvent = spy( new VersionSelectedEventMock( new Callback<VersionSelectedEvent>() {
+            @Override
+            public void callback( VersionSelectedEvent result ) {
+                manager.onVersionSelectedEvent( result );
+            }
+        } ) );
+        manager = spy( new VersionRecordManager( dropDownButton,
+                                                 saveButton,
+                                                 restorePopup,
+                                                 util,
+                                                 versionSelectedEvent,
+                                                 new VersionServiceCallerMock( versions ) ) );
 
-        manager.init(
-                null,
-                pathTo333,
-                new Callback<VersionRecord>() {
-                    @Override
-                    public void callback( VersionRecord result ) {
-                        manager.setVersion( result.id() );
-                    }
-                } );
+        manager.init( null,
+                      pathTo333,
+                      new Callback<VersionRecord>() {
+                          @Override
+                          public void callback( VersionRecord result ) {
+                              manager.setVersion( result.id() );
+                          }
+                      } );
     }
 
     private void setUpVersions() {
@@ -101,7 +98,6 @@ public class VersionRecordManagerTest {
 
     @Test
     public void testSimple() throws Exception {
-
         verify( dropDownButton ).setItems( versions );
         assertEquals( pathTo333, manager.getCurrentPath() );
         assertEquals( pathTo333, manager.getPathToLatest() );
@@ -120,7 +116,6 @@ public class VersionRecordManagerTest {
 
     @Test
     public void testVersionChange() throws Exception {
-
         manager.onVersionSelectedEvent( new VersionSelectedEvent( pathTo333, getVersionRecord( "111" ) ) );
 
         assertEquals( pathTo111, manager.getCurrentPath() );
@@ -138,7 +133,6 @@ public class VersionRecordManagerTest {
 
     @Test
     public void testReload() throws Exception {
-
         versions.add( getVersionRecord( "444" ) );
 
         ObservablePath pathTo444 = mock( ObservablePath.class );
@@ -180,7 +174,6 @@ public class VersionRecordManagerTest {
 
     @Test
     public void testInitNeedsToClearTheState() throws Exception {
-
         // clear the state before to init. This will cover the cases where the init method is invoked multiple
         // times. for example if KieEditor.init(...) method is invoked multiple times, or KieMultipleDocumentEditor
         // re-initialises VersionRecordManager for different document.
@@ -244,6 +237,30 @@ public class VersionRecordManagerTest {
                       manager.getPathToLatest() );
         assertEquals( "333",
                       manager.getVersion() );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void zeroVersionRecordsForDeletedFile() {
+        reset( saveButton );
+        reset( dropDownButton );
+
+        versions.clear();
+
+        manager.init( null,
+                      pathTo111,
+                      ( VersionRecord result ) -> manager.setVersion( result.id() ) );
+
+        verify( dropDownButton,
+                never() ).setItems( any( List.class ) );
+        verify( dropDownButton,
+                never() ).setVersion( any( String.class ) );
+
+        assertEquals( pathTo111,
+                      manager.getCurrentPath() );
+        assertEquals( pathTo111,
+                      manager.getPathToLatest() );
+        assertNull( manager.getVersion() );
     }
 
 }

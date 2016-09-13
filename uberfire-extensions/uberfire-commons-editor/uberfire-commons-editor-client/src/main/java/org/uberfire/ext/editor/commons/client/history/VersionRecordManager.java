@@ -259,7 +259,6 @@ public class VersionRecordManager {
         versionService.call( new RemoteCallback<List<VersionRecord>>() {
             @Override
             public void callback( final List<VersionRecord> records ) {
-
                 String uri = path.toURI();
 
                 // We should not recreate the path to latest,
@@ -268,8 +267,10 @@ public class VersionRecordManager {
                     setPathToLatest( restoreUtil.createObservablePath( path,
                                                                        uri ) );
                 }
-                setVersions( records );
-                callback.callback( records );
+                if ( !records.isEmpty() ) {
+                    setVersions( records );
+                    callback.callback( records );
+                }
             }
         } ).getVersions( path );
     }
