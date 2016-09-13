@@ -28,10 +28,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Maps;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -59,6 +58,7 @@ import org.jboss.errai.common.client.util.CreationalCallback;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.async.AsyncBeanDef;
 import org.jboss.errai.ioc.client.container.async.AsyncBeanManager;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
@@ -98,6 +98,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -110,6 +111,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -121,7 +123,8 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
 public class ProjectScreenPresenter
         implements ProjectScreenView.Presenter {
 
-    private ProjectScreenView view;
+    private ProjectScreenView         view;
+    private User                      user;
     private Caller<ValidationService> validationService;
 
     private Caller<ProjectScreenService> projectScreenService;
@@ -152,7 +155,6 @@ public class ProjectScreenPresenter
 
     private ButtonGroup buildOptions;
     private Collection<Widget> buildExtensions;
-    private boolean disableBuildOption = false;
 
     private ProjectContext workbenchContext;
     private ProjectContextChangeHandle projectContextChangeHandle;
@@ -209,6 +211,7 @@ public class ProjectScreenPresenter
                                    final ProjectContext workbenchContext,
                                    final Caller<ProjectScreenService> projectScreenService,
                                    final Caller<BuildService> buildServiceCaller,
+                                   final User user,
                                    final Event<BuildResults> buildResultsEvent,
                                    final Event<NotificationEvent> notificationEvent,
                                    final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent,
@@ -227,6 +230,7 @@ public class ProjectScreenPresenter
                                    final SavePopUpPresenter savePopUpPresenter) {
 
         this.view = view;
+        this.user = user;
         view.setPresenter( this );
         view.setGAVCheckDisabledSetting( ApplicationPreferences.getBooleanPref( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED ) );
 
@@ -279,6 +283,19 @@ public class ProjectScreenPresenter
         };
 
         this.deploymentScreenPopupView = deploymentScreenPopupView;
+    }
+
+
+    /**
+     * This is in no way a permanent fix for the refresh issue.
+     * We need something reusable for all the multi file editors we have and will have.
+     */
+    void onResourceUpdated( final @Observes ResourceUpdatedEvent resourceUpdatedEvent ) {
+        if ( resourceUpdatedEvent.getSessionInfo().getIdentity().equals( user ) ) {
+            if ( resourceUpdatedEvent.getPath().equals( pathToPomXML ) ) {
+                reloadRunnable.run();
+            }
+        }
     }
 
     private void configureBuildExtensions( final Project project,
@@ -366,14 +383,6 @@ public class ProjectScreenPresenter
 
     @OnStartup
     public void onStartup( final PlaceRequest placeRequest ) {
-        final boolean paramProjectEditorDisableBuild = Window.Location.getParameterMap().containsKey("no_build");
-        final boolean projectEditorDisableBuild = placeRequest.getParameters().containsKey("no_build");
-        if ( paramProjectEditorDisableBuild ) {
-            disableBuildOption = true;
-        } else if ( projectEditorDisableBuild ) {
-            disableBuildOption = true;
-        }
-
         this.placeRequest = placeRequest;
         update();
     }
@@ -1200,36 +1209,6 @@ public class ProjectScreenPresenter
             building = false;
             return super.error( message,
                                 throwable );
-        }
-    }
-
-    private void enableBuild( boolean enabled,
-                              boolean changeTitle ) {
-        final DropDownMenu menu = (DropDownMenu) buildOptions.getWidget( 1 );
-        menu.getWidget( 0 ).setVisible( enabled );
-        if ( changeTitle ) {
-            ( (AnchorListItem) menu.getWidget( 0 ) ).setText( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
-        } else {
-            ( (AnchorListItem) menu.getWidget( 0 ) ).setText( ProjectEditorResources.CONSTANTS.Compile() );
-        }
-
-    }
-
-    private void enableBuildAndInstall( boolean enabled,
-                                        boolean changeTitle ) {
-        final DropDownMenu menu = (DropDownMenu) buildOptions.getWidget( 1 );
-        menu.getWidget( 1 ).setVisible( enabled );
-        if ( changeTitle ) {
-            ( (AnchorListItem) menu.getWidget( 1 ) ).setText( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
-        } else {
-            ( (AnchorListItem) menu.getWidget( 1 ) ).setText( ProjectEditorResources.CONSTANTS.BuildAndInstall() );
-        }
-    }
-
-    private void enableBuildAndDeploy( boolean enabled ) {
-        if ( Boolean.TRUE.equals( ApplicationPreferences.getBooleanPref( "support.runtime.deploy" ) ) ) {
-            final DropDownMenu menu = (DropDownMenu) buildOptions.getWidget( 1 );
-            menu.getWidget( 2 ).setVisible( enabled );
         }
     }
 

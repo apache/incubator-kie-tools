@@ -18,13 +18,11 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.event.Event;
 
 import com.google.common.collect.Sets;
 import com.google.gwtmockito.GwtMock;
@@ -32,20 +30,13 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -54,34 +45,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
-import org.kie.workbench.common.screens.projecteditor.client.editor.extension.BuildOptionExtension;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
-import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.mvp.LockManager;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.commons.data.Pair;
-import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
-import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
-import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
-import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
-import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -91,109 +68,41 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ProjectScreenPresenterTest {
-
-    @GwtMock
-    @SuppressWarnings("unused")
-    private ButtonGroup buildOptions;
-
-    @GwtMock
-    @SuppressWarnings("unused")
-    private Button buildOptionsButton1;
-
-    @GwtMock
-    @SuppressWarnings("unused")
-    private DropDownMenu buildOptionsMenu;
-
-    @GwtMock
-    @SuppressWarnings("unused")
-    private AnchorListItem buildOptionsMenuButton1;
+public class ProjectScreenPresenterTest
+        extends ProjectScreenPresenterTestBase {
 
     @GwtMock
     @SuppressWarnings("unused")
     private com.google.gwt.user.client.ui.Widget dependenciesPart;
 
-    @Mock
-    private DeploymentScreenPopupViewImpl deploymentScreenPopupView;
-
-    protected CopyPopUpPresenter copyPopUpPresenter;
-
-    @Mock
-    protected RenamePopUpPresenter renamePopUpPresenter;
-
-    @Mock
-    protected DeletePopUpPresenter deletePopUpPresenter;
-
-    @Mock
-    protected SavePopUpPresenter savePopUpPresenter;
-
-    @Spy
-    private MockLockManagerInstances lockManagerInstanceProvider = new MockLockManagerInstances();
-
-    private SpecManagementService specManagementServiceMock = mock( SpecManagementService.class );
-    private ProjectScreenView view = mock( ProjectScreenView.class );
-    private ProjectContext context = spy( new ProjectContext() );
-    private ProjectScreenService projectScreenService = mock( ProjectScreenService.class );
-    private BuildService buildService = mock( BuildService.class );
-    private Event<NotificationEvent> notificationEvent = mock( EventSourceMock.class );
-    private ConflictingRepositoriesPopup conflictingRepositoriesPopup = mock( ConflictingRepositoriesPopup.class );
-
-    private Repository repository = mock( Repository.class );
-    private KieProject project = mock( KieProject.class );
-    private Path pomPath = mock( Path.class );
-
     private ProjectScreenModel model;
-    private ProjectScreenPresenter presenter;
 
     @Before
     public void setup() {
         ApplicationPreferences.setUp( new HashMap<String, String>() );
 
         //The BuildOptions widget is manipulated in the Presenter so we need some nasty mocking
-        when( view.getBuildButtons() ).thenReturn( buildOptions );
-        when( buildOptions.getWidget( eq( 0 ) ) ).thenReturn( buildOptionsButton1 );
-        when( buildOptions.getWidget( eq( 1 ) ) ).thenReturn( buildOptionsMenu );
-        when( buildOptionsMenu.getWidget( eq( 0 ) ) ).thenReturn( buildOptionsMenuButton1 );
-        when( buildOptionsMenu.getWidget( eq( 1 ) ) ).thenReturn( buildOptionsMenuButton1 );
+        mockBuildOptions();
 
-        constructProjectScreenPresenter( new CallerMock<BuildService>( buildService ),
+        constructProjectScreenPresenter( project,
+                                         new CallerMock<BuildService>( buildService ),
                                          new CallerMock<SpecManagementService>( specManagementServiceMock ) );
 
         //Mock ProjectScreenService
-        final POM pom = new POM( new GAV( "groupId",
-                                          "artifactId",
-                                          "version" ) );
         model = new ProjectScreenModel();
-        model.setPOM( pom );
-        when( projectScreenService.load( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( model );
+        final POM pom = mockProjectScreenService( model );
 
         //Mock BuildService
-        when( buildService.build( any( KieProject.class ) ) ).thenReturn( new BuildResults() );
-        when( buildService.buildAndDeploy( any( KieProject.class ),
-                                           any( DeploymentMode.class ) ) ).thenReturn( new BuildResults() );
+        mockBuildService( buildService );
 
         //Mock LockManager initialisation
-        final Path path = mock( Path.class );
-        final Metadata pomMetadata = mock( Metadata.class );
-        model.setPOMMetaData( pomMetadata );
-        when( pomMetadata.getPath() ).thenReturn( path );
-        final Metadata kmoduleMetadata = mock( Metadata.class );
-        model.setKModuleMetaData( kmoduleMetadata );
-        when( kmoduleMetadata.getPath() ).thenReturn( path );
-        final Metadata importsMetadata = mock( Metadata.class );
-        model.setProjectImportsMetaData( importsMetadata );
-        when( importsMetadata.getPath() ).thenReturn( path );
+        mockLockManager( model );
 
         //Mock ProjectContext
-        when( context.getActiveRepository() ).thenReturn( repository );
-        when( context.getActiveBranch() ).thenReturn( "master" );
-        when( repository.getAlias() ).thenReturn( "repository" );
-
-        when( project.getProjectName() ).thenReturn( "project" );
-        when( project.getPomXMLPath() ).thenReturn( pomPath );
-        when( project.getPom() ).thenReturn( pom );
-        when( pomPath.getFileName() ).thenReturn( "pom.xml" );
-        when( context.getActiveProject() ).thenReturn( project );
+        mockProjectContext( pom,
+                            repository,
+                            project,
+                            pomPath );
 
         //Trigger initialisation of view. Unfortunately this is the only way to initialise a Project in the Presenter
         context.onProjectContextChanged( new ProjectContextChangeEvent( mock( OrganizationalUnit.class ),
@@ -394,7 +303,9 @@ public class ProjectScreenPresenterTest {
 
     @Test
     public void testAlreadyRunningBuild() {
-        constructProjectScreenPresenter( buildServiceCaller(), new CallerMock<SpecManagementService>( specManagementServiceMock ) );
+        constructProjectScreenPresenter( project,
+                                         buildServiceCaller(),
+                                         new CallerMock<SpecManagementService>( specManagementServiceMock ) );
 
         presenter.triggerBuild();
         presenter.triggerBuild();
@@ -406,7 +317,9 @@ public class ProjectScreenPresenterTest {
 
     @Test
     public void testAlreadyRunningBuildAndDeploy() {
-        constructProjectScreenPresenter( buildServiceCaller(), new CallerMock<SpecManagementService>(specManagementServiceMock) );
+        constructProjectScreenPresenter( project,
+                                         buildServiceCaller(),
+                                         new CallerMock<SpecManagementService>( specManagementServiceMock ) );
         presenter.onStartup( mock( PlaceRequest.class ) );
 
         presenter.triggerBuildAndDeploy();
@@ -673,51 +586,6 @@ public class ProjectScreenPresenterTest {
         } );
 
         return caller;
-    }
-
-    private void constructProjectScreenPresenter( Caller<BuildService> buildServiceCaller,
-                                                  Caller<SpecManagementService> specManagementServiceCaller ) {
-
-        presenter = new ProjectScreenPresenter( view,
-                                                context,
-                                                new CallerMock<ProjectScreenService>( projectScreenService ),
-                                                buildServiceCaller,
-                                                mock( EventSourceMock.class ),
-                                                notificationEvent,
-                                                mock( EventSourceMock.class ),
-                                                mock( ProjectNameValidator.class ),
-                                                mock( PlaceManager.class ),
-                                                mock( BusyIndicatorView.class ),
-                                                new CallerMock<ValidationService>( mock( ValidationService.class ) ),
-                                                lockManagerInstanceProvider,
-                                                mock( EventSourceMock.class ),
-                                                conflictingRepositoriesPopup,
-                                                specManagementServiceCaller,
-                                                deploymentScreenPopupView,
-                                                copyPopUpPresenter,
-                                                renamePopUpPresenter,
-                                                deletePopUpPresenter,
-                                                savePopUpPresenter ) {
-
-            @Override
-            protected void setupPathToPomXML() {
-                //Stub the real implementation that makes direct use of IOC and fails to be mocked
-                pathToPomXML = new ObservablePathImpl().wrap( project.getPomXMLPath() );
-            }
-
-            @Override
-            protected Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> getBuildExtensions() {
-                //Do nothing. This method makes direct use of IOC and fails to be mocked
-                return new Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>>( Collections.EMPTY_LIST,
-                                                                                                     Collections.EMPTY_LIST );
-            }
-
-            @Override
-            protected void destroyExtensions( final Collection<BuildOptionExtension> extensions ) {
-                //Do nothing. This method makes direct use of IOC and fails to be mocked
-            }
-        };
-
     }
 
 }
