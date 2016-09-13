@@ -17,6 +17,7 @@
 package org.uberfire.ext.editor.commons.client.htmleditor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +42,8 @@ public class HtmlEditorViewTest {
         libraryLoader = mock( HtmlEditorLibraryLoader.class );
         view = spy( new HtmlEditorView( translationService, libraryLoader ) );
         doNothing().when( view ).configureScreenComponents( anyString(), anyString() );
+        view.htmlEditor = mock( Div.class );
+        doReturn( "content" ).when( view.htmlEditor ).getInnerHTML();
         presenter = spy( new HtmlEditorPresenter( view ) );
 
         doNothing().when( view ).loadEditor( anyString(), anyString() );
@@ -52,5 +55,12 @@ public class HtmlEditorViewTest {
         presenter.load();
 
         verify( view, times( 1 ) ).loadEditor( anyString(), anyString() );
+    }
+
+    @Test
+    public void synchronizeViewWhenReturningContent() {
+        presenter.getContent();
+
+        verify( view, times( 1 ) ).synchronizeView();
     }
 }

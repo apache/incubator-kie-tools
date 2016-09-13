@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
@@ -53,6 +54,8 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
     private EditorTitle title;
 
     private boolean loaded = false;
+
+    private JavaScriptObject jsEditor;
 
     @Inject
     @DataField("container")
@@ -219,8 +222,17 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
 
     @Override
     public String getContent() {
+        synchronizeView();
         return htmlEditor.getInnerHTML();
     }
+
+    public final native void synchronizeView() /*-{
+        var editor = this.@org.uberfire.ext.editor.commons.client.htmleditor.HtmlEditorView::jsEditor;
+
+        if ( editor.currentView == "source" ) {
+            editor.fire("change_view", "composer");
+        }
+    }-*/;
 
     protected void configureScreenComponents( final String editorId,
                                             final String toolbarId ) {
@@ -240,6 +252,8 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
             toolbar : $wnd.document.getElementById( toolbarId ),
             parserRules : $wnd.wysihtmlParserRules
         } );
+
+        this.@org.uberfire.ext.editor.commons.client.htmleditor.HtmlEditorView::jsEditor = editor;
     }-*/;
 
     public void docksInteractionEvent( @Observes UberfireDocksInteractionEvent event ) {
