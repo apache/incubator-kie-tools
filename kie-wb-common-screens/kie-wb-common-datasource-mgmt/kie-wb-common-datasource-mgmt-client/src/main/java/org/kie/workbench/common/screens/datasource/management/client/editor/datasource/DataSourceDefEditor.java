@@ -42,6 +42,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnMayClose;
@@ -297,7 +298,7 @@ public class DataSourceDefEditor
                     defaultCommand.execute();
                 }
             }
-        } ).getDataSourceDeploymentInfo( getContent().getDataSourceDef().getUuid() );
+        } ).getDataSourceDeploymentInfo( getContent().getDef().getUuid() );
     }
 
     /**
@@ -339,7 +340,7 @@ public class DataSourceDefEditor
 
     protected void setContent( final DataSourceDefEditorContent editorContent ) {
         this.editorContent = editorContent;
-        editorHelper.setDataSourceDef( editorContent.getDataSourceDef() );
+        editorHelper.setDataSourceDef( editorContent.getDef() );
         editorHelper.setProject( editorContent.getProject() );
         editorHelper.setValid( true );
     }
@@ -347,7 +348,7 @@ public class DataSourceDefEditor
     public Command getLoadDriversSuccessCommand() {
         return new Command() {
             @Override public void execute() {
-                mainPanel.setDriver( getContent().getDataSourceDef().getDriverUuid() );
+                mainPanel.setDriver( getContent().getDef().getDriverUuid() );
             }
         };
     }
@@ -385,6 +386,6 @@ public class DataSourceDefEditor
                 popupsUtil.showInformationPopup( new SafeHtmlBuilder().appendEscapedLines(
                         testResult.getMessage() ).toSafeHtml().asString() );
             }
-        } ).testDataSource( getContent().getDataSourceDef().getUuid() );
+        }, new DefaultErrorCallback() ).testDataSource( getContent().getDef().getUuid() );
     }
 }

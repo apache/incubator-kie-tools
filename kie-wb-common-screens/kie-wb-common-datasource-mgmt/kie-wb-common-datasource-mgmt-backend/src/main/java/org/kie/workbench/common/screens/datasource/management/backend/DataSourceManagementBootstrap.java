@@ -31,7 +31,7 @@ import org.uberfire.commons.services.cdi.StartupType;
  * Initializations required by the data sources management system.
  */
 @ApplicationScoped
-@Startup( StartupType.BOOTSTRAP)
+@Startup( StartupType.BOOTSTRAP )
 public class DataSourceManagementBootstrap {
 
     @Inject

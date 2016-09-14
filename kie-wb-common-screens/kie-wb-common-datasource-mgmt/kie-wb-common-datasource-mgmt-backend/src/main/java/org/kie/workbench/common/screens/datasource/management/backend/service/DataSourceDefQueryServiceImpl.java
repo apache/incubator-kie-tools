@@ -33,6 +33,7 @@ import org.kie.workbench.common.screens.datasource.management.backend.core.DataS
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDefInfo;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDeploymentInfo;
+import org.kie.workbench.common.screens.datasource.management.model.DeploymentInfo;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDefInfo;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDeploymentInfo;
@@ -61,23 +62,30 @@ public class DataSourceDefQueryServiceImpl
 
     private static String DRIVER_FILE_TYPE = ".driver";
 
-    @Inject
-    @Named( "ioStrategy" )
     private IOService ioService;
 
-    @Inject
     private KieProjectService projectService;
 
-    @Inject
     private DataSourceServicesHelper serviceHelper;
 
-    @Inject
     private DataSourceProviderFactory providerFactory;
 
-    @Inject
     private DataSourceRuntimeManager runtimeManager;
 
     public DataSourceDefQueryServiceImpl() {
+    }
+
+    @Inject
+    public DataSourceDefQueryServiceImpl( @Named( "ioStrategy" ) IOService ioService,
+            KieProjectService projectService,
+            DataSourceServicesHelper serviceHelper,
+            DataSourceProviderFactory providerFactory,
+            DataSourceRuntimeManager runtimeManager ) {
+        this.ioService = ioService;
+        this.projectService = projectService;
+        this.serviceHelper = serviceHelper;
+        this.providerFactory = providerFactory;
+        this.runtimeManager = runtimeManager;
     }
 
     @Override
@@ -90,8 +98,11 @@ public class DataSourceDefQueryServiceImpl
             }
             try {
                 List<DataSourceDef> allDeployments = providerFactory.getDataSourceProvider().getDeployments();
+                DeploymentInfo deploymentInfo;
                 for ( DataSourceDef dataSourceDef : allDeployments ) {
-                    if ( !managedDataSources.containsKey( dataSourceDef.getUuid() ) ) {
+                    deploymentInfo = runtimeManager.getDataSourceDeploymentInfo( dataSourceDef.getUuid() );
+                    if ( !managedDataSources.containsKey( dataSourceDef.getUuid() ) &&
+                            ( deploymentInfo != null && !deploymentInfo.isManaged() ) ) {
                         result.add( new DataSourceDefInfo( dataSourceDef.getUuid(),
                                 dataSourceDef.getName(),
                                 runtimeManager.getDataSourceDeploymentInfo( dataSourceDef.getUuid() ) ) );

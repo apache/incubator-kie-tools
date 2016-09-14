@@ -1,0 +1,8 @@
+{
+  "uuid": "ds2Id",
+  "name": "DS2",
+  "connectionURL": "connectionURL2",
+  "driverUuid": "driver2Id",
+  "user": "user2",
+  "password": "password2"
+}

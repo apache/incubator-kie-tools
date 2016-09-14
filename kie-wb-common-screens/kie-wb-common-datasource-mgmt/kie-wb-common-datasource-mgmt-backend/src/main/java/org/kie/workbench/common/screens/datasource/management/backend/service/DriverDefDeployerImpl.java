@@ -36,58 +36,41 @@ import org.uberfire.io.IOService;
 
 @ApplicationScoped
 public class DriverDefDeployerImpl
+        extends AbstractDefDeployer<DriverDefInfo>
         implements DriverDefDeployer {
 
     private static final Logger logger = LoggerFactory.getLogger( DriverDefDeployerImpl.class );
 
-    @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
-
-    @Inject
-    private DataSourceDefQueryService queryService;
-
-    @Inject
-    private DataSourceRuntimeManager runtimeManager;
-
     public DriverDefDeployerImpl() {
     }
 
+    @Inject
+    public DriverDefDeployerImpl( @Named("ioStrategy") IOService ioService,
+            DataSourceDefQueryService queryService,
+            DataSourceRuntimeManager runtimeManager ) {
+        super( ioService, queryService, runtimeManager );
+    }
+
     @Override
-    public void deployGlobalDefs() {
-        try {
-            logger.debug( "Starting global drivers deployment." );
-            deployDrivers( queryService.findGlobalDrivers() );
-            logger.debug( "End of global drivers deployment." );
-        } catch ( Exception e ) {
-            logger.error( "Global drivers deployment failed.", e );
-        }
+    protected Collection<DriverDefInfo> findGlobalDefs() {
+        return queryService.findGlobalDrivers();
     }
 
-    private void deployDrivers( Collection<DriverDefInfo> defs ) {
-        for ( DriverDefInfo driverDefInfo : defs ) {
-            deployDriver( driverDefInfo );
-        }
+    @Override
+    protected Collection<DriverDefInfo> findProjectDefs( Path path ) {
+        return queryService.findProjectDrivers( path );
     }
 
-    private void deployDriver( DriverDefInfo driverDefInfo ) {
+    @Override
+    protected void deployDef( DriverDefInfo defInfo ) {
         try {
-            String source = ioService.readAllString( Paths.convert( driverDefInfo.getPath() ) );
+            logger.debug( "Deploying driver def: " + defInfo );
+            String source = ioService.readAllString( Paths.convert( defInfo.getPath() ) );
             DriverDef driverDef = DriverDefSerializer.deserialize( source );
             runtimeManager.deployDriver( driverDef, DeploymentOptions.createOrResync() );
+            logger.debug( "Driver was successfully deployed" );
         } catch ( Exception e ) {
-            logger.error( "Driver deployment failed, driverDefInfo: " + driverDefInfo, e );
-        }
-    }
-
-    @Override
-    public void deployProjectDefs( Path path ) {
-        try {
-            logger.debug( "Starting project drivers deployment for path: " + path );
-            deployDrivers( queryService.findProjectDrivers( path ) );
-            logger.debug( "End of project drivers deployment for path: " + path );
-        } catch ( Exception e ) {
-            logger.error( "Project drivers deployment failed for paht: " + path, e );
+            logger.error( "Driver deployment failed, defInfo: " + defInfo, e );
         }
     }
 }

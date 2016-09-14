@@ -19,38 +19,9 @@ package org.kie.workbench.common.screens.datasource.management.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class DriverDefEditorContent {
-
-    private DriverDef driverDef;
+public class DriverDefEditorContent
+        extends DefEditorContent<DriverDef> {
 
     public DriverDefEditorContent() {
-    }
-
-    public DriverDef getDriverDef() {
-        return driverDef;
-    }
-
-    public void setDriverDef( DriverDef driverDef ) {
-        this.driverDef = driverDef;
-    }
-
-    @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() ) {
-            return false;
-        }
-
-        DriverDefEditorContent that = ( DriverDefEditorContent ) o;
-
-        return !( driverDef != null ? !driverDef.equals( that.driverDef ) : that.driverDef != null );
-
-    }
-
-    @Override
-    public int hashCode() {
-        return driverDef != null ? ~driverDef.hashCode() : 0;
     }
 }

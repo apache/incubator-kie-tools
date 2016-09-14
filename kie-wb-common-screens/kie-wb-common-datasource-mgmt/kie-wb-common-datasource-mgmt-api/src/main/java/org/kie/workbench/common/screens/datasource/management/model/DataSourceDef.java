@@ -19,47 +19,18 @@ package org.kie.workbench.common.screens.datasource.management.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class DataSourceDef {
+public class DataSourceDef
+        extends Def {
 
-    String uuid;
+    private String connectionURL;
 
-    String name;
+    private String driverUuid;
 
-    String jndi;
+    private String user;
 
-    String connectionURL;
-
-    String driverUuid;
-
-    String user;
-
-    String password;
+    private String password;
 
     public DataSourceDef() {
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid( String uuid ) {
-        this.uuid = uuid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName( String name ) {
-        this.name = name;
-    }
-
-    public String getJndi() {
-        return jndi;
-    }
-
-    public void setJndi( String jndi ) {
-        this.jndi = jndi;
     }
 
     public String getConnectionURL() {
@@ -99,7 +70,6 @@ public class DataSourceDef {
         return "DataSourceDef{" +
                 "uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
-                ", jndi='" + jndi + '\'' +
                 ", connectionURL='" + connectionURL + '\'' +
                 ", driverUuid='" + driverUuid + '\'' +
                 ", user='******'" +
@@ -115,18 +85,12 @@ public class DataSourceDef {
         if ( o == null || getClass() != o.getClass() ) {
             return false;
         }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
 
         DataSourceDef that = ( DataSourceDef ) o;
 
-        if ( uuid != null ? !uuid.equals( that.uuid ) : that.uuid != null ) {
-            return false;
-        }
-        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
-            return false;
-        }
-        if ( jndi != null ? !jndi.equals( that.jndi ) : that.jndi != null ) {
-            return false;
-        }
         if ( connectionURL != null ? !connectionURL.equals( that.connectionURL ) : that.connectionURL != null ) {
             return false;
         }
@@ -136,18 +100,12 @@ public class DataSourceDef {
         if ( user != null ? !user.equals( that.user ) : that.user != null ) {
             return false;
         }
-        return !( password != null ? !password.equals( that.password ) : that.password != null );
-
+        return password != null ? password.equals( that.password ) : that.password == null;
     }
 
     @Override
     public int hashCode() {
-        int result = uuid != null ? uuid.hashCode() : 0;
-        result = ~~result;
-        result = 31 * result + ( name != null ? name.hashCode() : 0 );
-        result = ~~result;
-        result = 31 * result + ( jndi != null ? jndi.hashCode() : 0 );
-        result = ~~result;
+        int result = super.hashCode();
         result = 31 * result + ( connectionURL != null ? connectionURL.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( driverUuid != null ? driverUuid.hashCode() : 0 );

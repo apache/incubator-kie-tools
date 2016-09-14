@@ -28,11 +28,11 @@ public class UpdateDataSourceEvent extends BaseDataSourceEvent {
     public UpdateDataSourceEvent() {
     }
 
-    public UpdateDataSourceEvent( final DataSourceDef dataSourceDef,
+    public UpdateDataSourceEvent( final DataSourceDef originalDataSourceDef,
+            final DataSourceDef dataSourceDef,
             final Project project,
             final String sessionId,
-            final String identity,
-            final DataSourceDef originalDataSourceDef ) {
+            final String identity ) {
         super( dataSourceDef, project, sessionId, identity );
         this.originalDataSourceDef = originalDataSourceDef;
     }
@@ -47,5 +47,32 @@ public class UpdateDataSourceEvent extends BaseDataSourceEvent {
 
     public DataSourceDef getOriginalDataSourceDef() {
         return originalDataSourceDef;
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        UpdateDataSourceEvent that = ( UpdateDataSourceEvent ) o;
+
+        return originalDataSourceDef != null ? originalDataSourceDef.equals( that.originalDataSourceDef ) : that.originalDataSourceDef == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + ( originalDataSourceDef != null ? originalDataSourceDef.hashCode() : 0 );
+        result = ~~result;
+        return result;
     }
 }

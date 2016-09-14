@@ -183,11 +183,11 @@ public class DataSourceDefEditorTest
         assertEquals( content, editor.getContent() );
 
         verify( mainPanelView, times( 1 ) ).loadDriverOptions( eq( options ), eq( true ) );
-        verify( mainPanelView, times( 1 ) ).setName( content.getDataSourceDef().getName() );
-        verify( mainPanelView, times( 1 ) ).setConnectionURL( content.getDataSourceDef().getConnectionURL() );
-        verify( mainPanelView, times( 1 ) ).setUser( content.getDataSourceDef().getUser() );
-        verify( mainPanelView, times( 1 ) ).setPassword( content.getDataSourceDef().getPassword() );
-        verify( mainPanelView, times( 2 ) ).setDriver( content.getDataSourceDef().getDriverUuid() );
+        verify( mainPanelView, times( 1 ) ).setName( content.getDef().getName() );
+        verify( mainPanelView, times( 1 ) ).setConnectionURL( content.getDef().getConnectionURL() );
+        verify( mainPanelView, times( 1 ) ).setUser( content.getDef().getUser() );
+        verify( mainPanelView, times( 1 ) ).setPassword( content.getDef().getPassword() );
+        verify( mainPanelView, times( 2 ) ).setDriver( content.getDef().getDriverUuid() );
     }
 
     @Test
@@ -210,21 +210,21 @@ public class DataSourceDefEditorTest
         mainPanel.onDriverChange();
 
         //the content of the editor should have been properly modified.
-        assertEquals( NAME_2, content.getDataSourceDef().getName() );
-        assertEquals( CONNECTION_URL_2, content.getDataSourceDef().getConnectionURL() );
-        assertEquals( USER_2, content.getDataSourceDef().getUser() );
-        assertEquals( PASSWORD_2, content.getDataSourceDef().getPassword() );
-        assertEquals( DRIVER_UUID_2, content.getDataSourceDef().getDriverUuid() );
+        assertEquals( NAME_2, content.getDef().getName() );
+        assertEquals( CONNECTION_URL_2, content.getDef().getConnectionURL() );
+        assertEquals( USER_2, content.getDef().getUser() );
+        assertEquals( PASSWORD_2, content.getDef().getPassword() );
+        assertEquals( DRIVER_UUID_2, content.getDef().getDriverUuid() );
     }
 
     private DataSourceDefEditorContent createContent() {
         DataSourceDefEditorContent content = new DataSourceDefEditorContent();
-        content.setDataSourceDef( new DataSourceDef() );
-        content.getDataSourceDef().setName( NAME );
-        content.getDataSourceDef().setDriverUuid( DRIVER_UUID );
-        content.getDataSourceDef().setConnectionURL( CONNECTION_URL );
-        content.getDataSourceDef().setUser( USER );
-        content.getDataSourceDef().setPassword( PASSWORD );
+        content.setDef( new DataSourceDef() );
+        content.getDef().setName( NAME );
+        content.getDef().setDriverUuid( DRIVER_UUID );
+        content.getDef().setConnectionURL( CONNECTION_URL );
+        content.getDef().setUser( USER );
+        content.getDef().setPassword( PASSWORD );
         return content;
     }
 

@@ -32,8 +32,6 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDefEdi
 import org.kie.workbench.common.screens.datasource.management.model.DriverDeploymentInfo;
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceRuntimeManagerClientService;
 import org.kie.workbench.common.screens.datasource.management.service.DriverDefEditorService;
-import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
-import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -41,6 +39,9 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnMayClose;
@@ -232,7 +233,7 @@ public class DriverDefEditor
                     defaultCommand.execute();
                 }
             }
-        } ).getDriverDeploymentInfo( getContent().getDriverDef().getUuid() );
+        } ).getDriverDeploymentInfo( getContent().getDef().getUuid() );
     }
 
     /**
@@ -306,7 +307,7 @@ public class DriverDefEditor
 
     protected void validate() {
         editorService.call(
-                getValidationSuccessCallback() ).validate( getContent().getDriverDef() );
+                getValidationSuccessCallback(), new DefaultErrorCallback() ).validate( getContent().getDef() );
     }
 
     private RemoteCallback<DriverDefEditorContent> getLoadContentSuccessCallback() {
@@ -334,7 +335,7 @@ public class DriverDefEditor
 
     protected void setContent( final DriverDefEditorContent editorContent ) {
         this.editorContent = editorContent;
-        this.editorHelper.setDriverDef( editorContent.getDriverDef() );
+        this.editorHelper.setDriverDef( editorContent.getDef() );
         editorHelper.setValid( true );
     }
 
@@ -376,7 +377,7 @@ public class DriverDefEditor
                 if ( deploymentInfo == null ) {
                     builder.append( editorHelper.getMessage(
                             DataSourceManagementConstants.DriverDefEditor_DriverNotRegisteredMessage,
-                            getContent().getDriverDef().getUuid() ) );
+                            getContent().getDef().getUuid() ) );
                 } else if ( !deploymentInfo.hasDependants() ) {
                     builder.append( editorHelper.getMessage(
                             DataSourceManagementConstants.DriverDefEditor_DriverHasNoDependantsMessage ) );
@@ -387,6 +388,6 @@ public class DriverDefEditor
                 }
                 popupsUtil.showInformationPopup( builder.toString() );
             }
-        } ).getDriverDeploymentInfo( getContent().getDriverDef().getUuid() );
+        } ).getDriverDeploymentInfo( getContent().getDef().getUuid() );
     }
 }

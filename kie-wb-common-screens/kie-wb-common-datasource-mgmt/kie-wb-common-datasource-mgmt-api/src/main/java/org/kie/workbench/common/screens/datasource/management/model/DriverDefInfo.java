@@ -60,4 +60,31 @@ public class DriverDefInfo extends DefInfo {
                 "deploymentInfo=" + deploymentInfo +
                 "} " + super.toString();
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        DriverDefInfo that = ( DriverDefInfo ) o;
+
+        return deploymentInfo != null ? deploymentInfo.equals( that.deploymentInfo ) : that.deploymentInfo == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + ( deploymentInfo != null ? deploymentInfo.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }

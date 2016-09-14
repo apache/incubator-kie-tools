@@ -19,11 +19,8 @@ package org.kie.workbench.common.screens.datasource.management.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class DriverDef {
-
-    private String uuid;
-
-    private String name;
+public class DriverDef
+        extends Def {
 
     private String groupId;
 
@@ -34,22 +31,6 @@ public class DriverDef {
     private String driverClass;
 
     public DriverDef() {
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid( String uuid ) {
-        this.uuid = uuid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName( String name ) {
-        this.name = name;
     }
 
     public String getDriverClass() {
@@ -92,15 +73,12 @@ public class DriverDef {
         if ( o == null || getClass() != o.getClass() ) {
             return false;
         }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
 
         DriverDef driverDef = ( DriverDef ) o;
 
-        if ( uuid != null ? !uuid.equals( driverDef.uuid ) : driverDef.uuid != null ) {
-            return false;
-        }
-        if ( name != null ? !name.equals( driverDef.name ) : driverDef.name != null ) {
-            return false;
-        }
         if ( groupId != null ? !groupId.equals( driverDef.groupId ) : driverDef.groupId != null ) {
             return false;
         }
@@ -110,15 +88,12 @@ public class DriverDef {
         if ( version != null ? !version.equals( driverDef.version ) : driverDef.version != null ) {
             return false;
         }
-        return !( driverClass != null ? !driverClass.equals( driverDef.driverClass ) : driverDef.driverClass != null );
-
+        return driverClass != null ? driverClass.equals( driverDef.driverClass ) : driverDef.driverClass == null;
     }
 
     @Override
     public int hashCode() {
-        int result = uuid != null ? uuid.hashCode() : 0;
-        result = ~~result;
-        result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        int result = super.hashCode();
         result = ~~result;
         result = 31 * result + ( groupId != null ? groupId.hashCode() : 0 );
         result = ~~result;

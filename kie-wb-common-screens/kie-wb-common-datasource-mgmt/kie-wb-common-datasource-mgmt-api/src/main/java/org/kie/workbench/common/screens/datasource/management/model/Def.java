@@ -16,55 +16,29 @@
 
 package org.kie.workbench.common.screens.datasource.management.model;
 
-import org.uberfire.backend.vfs.Path;
-
-public abstract class DefInfo {
+public abstract class Def {
 
     protected String uuid;
 
     protected String name;
 
-    protected Path path;
-
-    public DefInfo() {
-    }
-
-    public DefInfo( String uuid, String name, Path path ) {
-        this.uuid = uuid;
-        this.name = name;
-        this.path = path;
-    }
-
-    public DefInfo( String uuid, String name ) {
-        this.uuid = uuid;
-        this.name = name;
-    }
-
-    public boolean isManaged() {
-        return path != null;
+    public Def() {
     }
 
     public String getUuid() {
         return uuid;
     }
 
+    public void setUuid( String uuid ) {
+        this.uuid = uuid;
+    }
+
     public String getName() {
         return name;
     }
 
-    public Path getPath() {
-        return path;
-    }
-
-    abstract boolean isDeployed();
-
-    @Override
-    public String toString() {
-        return "DefInfo{" +
-                "uuid='" + uuid + '\'' +
-                ", name='" + name + '\'' +
-                ", path=" + path +
-                '}';
+    public void setName( String name ) {
+        this.name = name;
     }
 
     @Override
@@ -76,15 +50,12 @@ public abstract class DefInfo {
             return false;
         }
 
-        DefInfo defInfo = ( DefInfo ) o;
+        Def def = ( Def ) o;
 
-        if ( uuid != null ? !uuid.equals( defInfo.uuid ) : defInfo.uuid != null ) {
+        if ( uuid != null ? !uuid.equals( def.uuid ) : def.uuid != null ) {
             return false;
         }
-        if ( name != null ? !name.equals( defInfo.name ) : defInfo.name != null ) {
-            return false;
-        }
-        return path != null ? path.equals( defInfo.path ) : defInfo.path == null;
+        return name != null ? name.equals( def.name ) : def.name == null;
 
     }
 
@@ -93,8 +64,6 @@ public abstract class DefInfo {
         int result = uuid != null ? uuid.hashCode() : 0;
         result = ~~result;
         result = 31 * result + ( name != null ? name.hashCode() : 0 );
-        result = ~~result;
-        result = 31 * result + ( path != null ? path.hashCode() : 0 );
         result = ~~result;
         return result;
     }

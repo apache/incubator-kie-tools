@@ -33,7 +33,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 
 /**
- * Help methods to be used by the different services related to data sources and drivers.
+ * Helper methods to be used by the different services related to data sources and drivers.
  */
 @ApplicationScoped
 public class DataSourceServicesHelper {

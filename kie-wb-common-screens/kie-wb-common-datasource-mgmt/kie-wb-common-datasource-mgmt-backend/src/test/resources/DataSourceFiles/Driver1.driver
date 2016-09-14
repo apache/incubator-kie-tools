@@ -1,0 +1,8 @@
+{
+  "uuid": "driver1Id",
+  "name": "Driver1",
+  "groupId": "groupId1",
+  "artifactId": "artifactId1",
+  "version": "version1",
+  "driverClass": "Class1"
+}

@@ -70,4 +70,40 @@ public abstract class BaseDriverEvent {
         return project == null;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        BaseDriverEvent that = ( BaseDriverEvent ) o;
+
+        if ( driverDef != null ? !driverDef.equals( that.driverDef ) : that.driverDef != null ) {
+            return false;
+        }
+        if ( project != null ? !project.equals( that.project ) : that.project != null ) {
+            return false;
+        }
+        if ( sessionId != null ? !sessionId.equals( that.sessionId ) : that.sessionId != null ) {
+            return false;
+        }
+        return identity != null ? identity.equals( that.identity ) : that.identity == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = driverDef != null ? driverDef.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + ( project != null ? project.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( sessionId != null ? sessionId.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( identity != null ? identity.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }

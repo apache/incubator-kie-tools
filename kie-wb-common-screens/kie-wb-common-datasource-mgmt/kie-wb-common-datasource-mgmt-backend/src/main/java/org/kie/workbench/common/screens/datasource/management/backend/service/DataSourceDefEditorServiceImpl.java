@@ -24,7 +24,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -47,193 +46,115 @@ import org.kie.workbench.common.screens.datasource.management.service.DriverDefE
 import org.kie.workbench.common.screens.datasource.management.util.DataSourceDefSerializer;
 import org.kie.workbench.common.screens.datasource.management.util.MavenArtifactResolver;
 import org.kie.workbench.common.screens.datasource.management.util.URLConnectionFactory;
-import org.kie.workbench.common.screens.datasource.management.util.UUIDGenerator;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.FileAlreadyExistsException;
 
 import static org.kie.workbench.common.screens.datasource.management.util.ServiceUtil.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped
 public class DataSourceDefEditorServiceImpl
+        extends AbstractDefEditorService<DataSourceDefEditorContent, DataSourceDef, DataSourceDeploymentInfo>
         implements DataSourceDefEditorService {
 
-    private static final Logger logger = LoggerFactory.getLogger( DataSourceDefEditorServiceImpl.class );
-
-    @Inject
-    @Named( "ioStrategy" )
-    private IOService ioService;
-
-    @Inject
-    private CommentedOptionFactory optionsFactory;
-
-    @Inject
-    protected KieProjectService projectService;
-
-    @Inject
     private DataSourceDefQueryService dataSourceDefQueryService;
 
-    @Inject
-    private DataSourceRuntimeManager runtimeManager;
-
-    @Inject
-    private DataSourceServicesHelper serviceHelper;
-
-    @Inject
     private DriverDefEditorService driverDefService;
 
-    @Inject
-    private MavenArtifactResolver artifactResolver;
-
-    @Inject
-    private RenameService renameService;
-
-    @Inject
     private Event<NewDataSourceEvent> newDataSourceEvent;
 
-    @Inject
-    private Event<DeleteDataSourceEvent> deleteDataSourceEvent;
-
-    @Inject
     private Event<UpdateDataSourceEvent> updateDataSourceEvent;
+
+    private Event<DeleteDataSourceEvent> deleteDataSourceEvent;
 
     public DataSourceDefEditorServiceImpl() {
     }
 
-    @Override
-    public DataSourceDefEditorContent loadContent( final Path path ) {
-
-        checkNotNull( "path", path );
-
-        DataSourceDefEditorContent editorContent = new DataSourceDefEditorContent();
-        String content = ioService.readAllString( Paths.convert( path ) );
-        DataSourceDef dataSourceDef = DataSourceDefSerializer.deserialize( content );
-        editorContent.setDataSourceDef( dataSourceDef );
-        editorContent.setProject( projectService.resolveProject( path ) );
-        return editorContent;
+    @Inject
+    public DataSourceDefEditorServiceImpl( DataSourceRuntimeManager runtimeManager,
+            DataSourceServicesHelper serviceHelper,
+            @Named("ioStrategy") IOService ioService,
+            KieProjectService projectService,
+            CommentedOptionFactory optionsFactory,
+            RenameService renameService,
+            MavenArtifactResolver artifactResolver,
+            DataSourceDefQueryService dataSourceDefQueryService,
+            DriverDefEditorService driverDefService,
+            Event<NewDataSourceEvent> newDataSourceEvent,
+            Event<UpdateDataSourceEvent> updateDataSourceEvent,
+            Event<DeleteDataSourceEvent> deleteDataSourceEvent ) {
+        super( runtimeManager, serviceHelper, ioService, projectService, optionsFactory, renameService, artifactResolver );
+        this.dataSourceDefQueryService = dataSourceDefQueryService;
+        this.driverDefService = driverDefService;
+        this.newDataSourceEvent = newDataSourceEvent;
+        this.updateDataSourceEvent = updateDataSourceEvent;
+        this.deleteDataSourceEvent = deleteDataSourceEvent;
     }
 
     @Override
-    public Path save( final Path path,
-            final DataSourceDefEditorContent editorContent,
-            final String comment ) {
-
-        checkNotNull( "path", path );
-        checkNotNull( "content", editorContent );
-
-        Path newPath = path;
-        try {
-            final DataSourceDef originalDataSourceDef = DataSourceDefSerializer.deserialize(
-                    ioService.readAllString( Paths.convert( path ) ) );
-            final String content = DataSourceDefSerializer.serialize( editorContent.getDataSourceDef() );
-
-            DataSourceDeploymentInfo deploymentInfo = runtimeManager.getDataSourceDeploymentInfo(
-                    editorContent.getDataSourceDef().getUuid() );
-            if ( deploymentInfo != null ) {
-                runtimeManager.unDeployDataSource( deploymentInfo, UnDeploymentOptions.forcedUnDeployment() );
-            }
-            runtimeManager.deployDataSource( editorContent.getDataSourceDef(), DeploymentOptions.create() );
-
-            ioService.write( Paths.convert( path ), content, optionsFactory.makeCommentedOption( comment ) );
-
-            if ( originalDataSourceDef.getName() != null &&
-                    !originalDataSourceDef.getName().equals( editorContent.getDataSourceDef().getName() ) ) {
-                newPath = renameService.rename( path, editorContent.getDataSourceDef().getName(), comment );
-            }
-
-            updateDataSourceEvent.fire( new UpdateDataSourceEvent( editorContent.getDataSourceDef(),
-                    editorContent.getProject(),
-                    optionsFactory.getSafeSessionId(),
-                    optionsFactory.getSafeIdentityName(),
-                    originalDataSourceDef ) );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
-        return newPath;
+    protected DataSourceDefEditorContent newContent() {
+        return new DataSourceDefEditorContent();
     }
 
     @Override
-    public Path create( final DataSourceDef dataSourceDef, final Project project ) {
-        checkNotNull( "dataSourceDef", dataSourceDef );
-        checkNotNull( "project", project );
+    protected String serializeDef( DataSourceDef def ) {
+        return DataSourceDefSerializer.serialize( def );
+    }
 
-        Path context = serviceHelper.getProjectDataSourcesContext( project );
-        Path newPath = create( dataSourceDef, context );
+    @Override
+    protected DataSourceDef deserializeDef( String source ) {
+        return DataSourceDefSerializer.deserialize( source );
+    }
 
-        newDataSourceEvent.fire( new NewDataSourceEvent( dataSourceDef,
+    @Override
+    protected DataSourceDeploymentInfo readDeploymentInfo( String uuid ) throws Exception {
+        return runtimeManager.getDataSourceDeploymentInfo( uuid );
+    }
+
+    @Override
+    protected void deploy( DataSourceDef def, DeploymentOptions options ) throws Exception {
+        runtimeManager.deployDataSource( def, options );
+    }
+
+    @Override
+    protected void unDeploy( DataSourceDeploymentInfo deploymentInfo, UnDeploymentOptions options ) throws Exception {
+        runtimeManager.unDeployDataSource( deploymentInfo, options );
+    }
+
+    @Override
+    protected void fireCreateEvent( DataSourceDef def, Project project ) {
+        newDataSourceEvent.fire( new NewDataSourceEvent( def,
                 project,
                 optionsFactory.getSafeSessionId(),
                 optionsFactory.getSafeIdentityName() ) );
-
-        return newPath;
     }
 
     @Override
-    public Path createGlobal( DataSourceDef dataSourceDef ) {
-        checkNotNull( "dataSourceDef", dataSourceDef );
-
-        Path context = serviceHelper.getGlobalDataSourcesContext();
-        Path newPath = create( dataSourceDef, context );
-
-        newDataSourceEvent.fire( new NewDataSourceEvent( dataSourceDef,
+    protected void fireCreateEvent( DataSourceDef def ) {
+        newDataSourceEvent.fire( new NewDataSourceEvent( def,
                 optionsFactory.getSafeSessionId(),
                 optionsFactory.getSafeIdentityName() ) );
-
-        return newPath;
     }
 
-    private Path create( final DataSourceDef dataSourceDef, final Path context ) {
-        checkNotNull( "dataSourceDef", dataSourceDef );
-        checkNotNull( "context", context );
+    @Override
+    protected void fireUpdateEvent( DataSourceDef def, Project project, DataSourceDef originalDef ) {
+        updateDataSourceEvent.fire( new UpdateDataSourceEvent( originalDef,
+                def,
+                project,
+                optionsFactory.getSafeSessionId(),
+                optionsFactory.getSafeIdentityName() ) );
+    }
 
-        if ( dataSourceDef.getUuid() == null ) {
-            dataSourceDef.setUuid( UUIDGenerator.generateUUID() );
-        }
+    @Override
+    protected void fireDeleteEvent( DataSourceDef def, Project project ) {
+        deleteDataSourceEvent.fire( new DeleteDataSourceEvent( def,
+                project, optionsFactory.getSafeSessionId(), optionsFactory.getSafeIdentityName() ) );
+    }
 
-        String fileName = dataSourceDef.getName() + ".datasource";
-        String content = DataSourceDefSerializer.serialize( dataSourceDef );
-
-        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
-        final Path newPath = Paths.convert( nioPath );
-        boolean fileCreated = false;
-
-        if ( ioService.exists( nioPath ) ) {
-            throw new FileAlreadyExistsException( nioPath.toString() );
-        }
-
-        try {
-            ioService.startBatch( nioPath.getFileSystem() );
-
-            //create the datasource file.
-            ioService.write( nioPath, content, new CommentedOption( optionsFactory.getSafeIdentityName() ) );
-            fileCreated = true;
-
-            runtimeManager.deployDataSource( dataSourceDef, DeploymentOptions.create() );
-
-        } catch ( Exception e1 ) {
-            logger.error( "It was not possible to create data source: {}", dataSourceDef.getName(), e1 );
-            if ( fileCreated ) {
-                //the file was created, but the deployment failed.
-                try {
-                    ioService.delete( nioPath );
-                } catch ( Exception e2 ) {
-                    logger.warn( "Removal of orphan data source file failed: {}", newPath, e2 );
-                }
-            }
-            throw ExceptionUtilities.handleException( e1 );
-        } finally {
-            ioService.endBatch();
-        }
-        return newPath;
+    @Override
+    protected String buildFileName( DataSourceDef def ) {
+        return def.getName() + ".datasource";
     }
 
     @Override
@@ -273,7 +194,7 @@ public class DataSourceDefEditorServiceImpl
         }
 
         DriverDefEditorContent driverDefEditorContent = driverDefService.loadContent( driverDefInfo.getPath() );
-        DriverDef driverDef = driverDefEditorContent.getDriverDef();
+        DriverDef driverDef = driverDefEditorContent.getDef();
         URI uri;
 
         try {
@@ -326,32 +247,6 @@ public class DataSourceDefEditorServiceImpl
         } catch ( Exception e ) {
             result.setMessage( e.getMessage() );
             return result;
-        }
-    }
-
-    @Override
-    public void delete( final Path path, final String comment ) {
-        checkNotNull( "path", path );
-
-        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-        if ( ioService.exists( nioPath ) ) {
-            String content = ioService.readAllString( Paths.convert( path ) );
-            DataSourceDef dataSourceDef = DataSourceDefSerializer.deserialize( content );
-            Project project = projectService.resolveProject( path );
-            try {
-
-                DataSourceDeploymentInfo deploymentInfo = runtimeManager.getDataSourceDeploymentInfo( dataSourceDef.getUuid() );
-                if ( deploymentInfo != null ) {
-                    runtimeManager.unDeployDataSource( deploymentInfo, UnDeploymentOptions.forcedUnDeployment() );
-                }
-
-                ioService.delete( Paths.convert( path ), optionsFactory.makeCommentedOption( comment ) );
-                deleteDataSourceEvent.fire( new DeleteDataSourceEvent( dataSourceDef,
-                        project, optionsFactory.getSafeSessionId(), optionsFactory.getSafeIdentityName() ) );
-
-            } catch ( Exception e ) {
-                throw ExceptionUtilities.handleException( e );
-            }
         }
     }
 }

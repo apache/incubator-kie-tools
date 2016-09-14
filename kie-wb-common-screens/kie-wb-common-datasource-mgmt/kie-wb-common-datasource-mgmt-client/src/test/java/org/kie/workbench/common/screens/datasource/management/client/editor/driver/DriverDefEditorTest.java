@@ -145,11 +145,11 @@ public class DriverDefEditorTest
         verify( view, times( 1 ) ).hideBusyIndicator();
         assertEquals( content, editor.getContent() );
 
-        verify( mainPanelView, times( 1 ) ).setName( content.getDriverDef().getName() );
-        verify( mainPanelView, times( 1 ) ).setGroupId( content.getDriverDef().getGroupId() );
-        verify( mainPanelView, times( 1 ) ).setArtifactId( content.getDriverDef().getArtifactId() );
-        verify( mainPanelView, times( 1 ) ).setVersion( content.getDriverDef().getVersion() );
-        verify( mainPanelView, times( 1 ) ).setDriverClass( content.getDriverDef().getDriverClass() );
+        verify( mainPanelView, times( 1 ) ).setName( content.getDef().getName() );
+        verify( mainPanelView, times( 1 ) ).setGroupId( content.getDef().getGroupId() );
+        verify( mainPanelView, times( 1 ) ).setArtifactId( content.getDef().getArtifactId() );
+        verify( mainPanelView, times( 1 ) ).setVersion( content.getDef().getVersion() );
+        verify( mainPanelView, times( 1 ) ).setDriverClass( content.getDef().getDriverClass() );
     }
 
     @Test
@@ -172,22 +172,22 @@ public class DriverDefEditorTest
         mainPanel.onVersionChange();
 
         //the content of the editor should have been properly modified.
-        assertEquals( NAME_2, editor.getContent().getDriverDef().getName() );
-        assertEquals( GROUP_ID_2, editor.getContent().getDriverDef().getGroupId() );
-        assertEquals( ARTIFACT_ID_2, editor.getContent().getDriverDef().getArtifactId() );
-        assertEquals( VERSION_2, editor.getContent().getDriverDef().getVersion() );
-        assertEquals( DRIVER_CLASS_2, editor.getContent().getDriverDef().getDriverClass() );
+        assertEquals( NAME_2, editor.getContent().getDef().getName() );
+        assertEquals( GROUP_ID_2, editor.getContent().getDef().getGroupId() );
+        assertEquals( ARTIFACT_ID_2, editor.getContent().getDef().getArtifactId() );
+        assertEquals( VERSION_2, editor.getContent().getDef().getVersion() );
+        assertEquals( DRIVER_CLASS_2, editor.getContent().getDef().getDriverClass() );
     }
 
     private DriverDefEditorContent createContent() {
         DriverDefEditorContent content = new DriverDefEditorContent();
-        content.setDriverDef( new DriverDef() );
-        content.getDriverDef().setUuid( DRIVER_UUID );
-        content.getDriverDef().setName( NAME );
-        content.getDriverDef().setGroupId( GROUP_ID );
-        content.getDriverDef().setArtifactId( ARTIFACT_ID );
-        content.getDriverDef().setVersion( VERSION );
-        content.getDriverDef().setDriverClass( DRIVER_CLASS );
+        content.setDef( new DriverDef() );
+        content.getDef().setUuid( DRIVER_UUID );
+        content.getDef().setName( NAME );
+        content.getDef().setGroupId( GROUP_ID );
+        content.getDef().setArtifactId( ARTIFACT_ID );
+        content.getDef().setVersion( VERSION );
+        content.getDef().setDriverClass( DRIVER_CLASS );
         return content;
     }
 }

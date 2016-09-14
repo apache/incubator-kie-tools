@@ -36,58 +36,41 @@ import org.uberfire.io.IOService;
 
 @ApplicationScoped
 public class DataSourceDefDeployerImpl
+        extends AbstractDefDeployer<DataSourceDefInfo>
         implements DataSourceDefDeployer {
 
     private static final Logger logger = LoggerFactory.getLogger( DataSourceDefDeployerImpl.class );
 
-    @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
-
-    @Inject
-    private DataSourceDefQueryService queryService;
-
-    @Inject
-    private DataSourceRuntimeManager runtimeManager;
-
     public DataSourceDefDeployerImpl() {
     }
 
-    @Override
-    public void deployGlobalDefs() {
-        try {
-            logger.debug( "Starting global data sources deployment" );
-            deployDefs( queryService.findGlobalDataSources( false ) );
-            logger.debug( "End of global data sources deployment" );
-        } catch ( Exception e ) {
-            logger.error( "Global data sources deployment failed.", e );
-        }
+    @Inject
+    public DataSourceDefDeployerImpl( @Named("ioStrategy") IOService ioService,
+            DataSourceDefQueryService queryService,
+            DataSourceRuntimeManager runtimeManager ) {
+        super( ioService, queryService, runtimeManager );
     }
 
     @Override
-    public void deployProjectDefs( Path path ) {
-        try {
-            logger.debug( "Starting project data sources deployment for path: " + path );
-            deployDefs( queryService.findProjectDataSources( path ) );
-            logger.debug( "End of project data sources deployment for path: " + path );
-        } catch ( Exception e ) {
-            logger.error( "Project data sources deployment failed for paht: " + path, e );
-        }
+    protected Collection<DataSourceDefInfo> findGlobalDefs() {
+        return queryService.findGlobalDataSources( false );
     }
 
-    private void deployDefs( Collection<DataSourceDefInfo> defs ) {
-        for ( DataSourceDefInfo dataSourceDefInfo : defs ) {
-            deployDataSource( dataSourceDefInfo );
-        }
+    @Override
+    protected Collection<DataSourceDefInfo> findProjectDefs( Path path ) {
+        return queryService.findProjectDataSources( path );
     }
 
-    private void deployDataSource( DataSourceDefInfo dataSourceDefInfo ) {
+    @Override
+    protected void deployDef( DataSourceDefInfo defInfo ) {
         try {
-            String source = ioService.readAllString( Paths.convert( dataSourceDefInfo.getPath() ) );
+            logger.debug( "Deploying data source def: " + defInfo );
+            String source = ioService.readAllString( Paths.convert( defInfo.getPath() ) );
             DataSourceDef dataSourceDef = DataSourceDefSerializer.deserialize( source );
             runtimeManager.deployDataSource( dataSourceDef, DeploymentOptions.createOrResync() );
+            logger.debug( "Data source was successfully deployed" );
         } catch ( Exception e ) {
-            logger.error( "Data source deployment failed, dataSourceDefInfo: " + dataSourceDefInfo, e );
+            logger.error( "Data source deployment failed, defInfo: " + defInfo, e );
         }
     }
 }

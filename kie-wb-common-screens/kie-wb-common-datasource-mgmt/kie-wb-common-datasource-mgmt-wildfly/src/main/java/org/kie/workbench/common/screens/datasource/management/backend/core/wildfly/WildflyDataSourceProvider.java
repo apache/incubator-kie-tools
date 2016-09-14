@@ -92,7 +92,6 @@ public class WildflyDataSourceProvider
 
             dataSourceDef.setUuid( dataSourceUuid );
             dataSourceDef.setName( internalDef.getName() );
-            dataSourceDef.setJndi( internalDef.getJndi() );
             dataSourceDef.setConnectionURL( internalDef.getConnectionURL() );
             dataSourceDef.setDriverUuid( driverUuid );
             dataSourceDef.setUser( internalDef.getUser() );
@@ -116,8 +115,8 @@ public class WildflyDataSourceProvider
         DataSourceDeploymentInfo deploymentInfo = deploy( dataSourceDef, deploymentJndi, deploymentId );
 
         javax.sql.DataSource dataSource = (javax.sql.DataSource) lookupDataSource( deploymentJndi );
-        WildlfyDataSource wfDataSource = new WildlfyDataSource( dataSource );
-        bindDataSource( kieJndi, dataSource );
+        WildlfyDataSource wfDataSource = new WildlfyDataSource( dataSource, deploymentJndi );
+        //bindDataSource( kieJndi, dataSource );
         managedDataSources.put( deploymentId, wfDataSource );
         return deploymentInfo;
     }
@@ -148,7 +147,8 @@ public class WildflyDataSourceProvider
 
     public DataSourceDeploymentInfo resync( DataSourceDef dataSourceDef, DataSourceDeploymentInfo deploymentInfo ) throws Exception {
         javax.sql.DataSource dataSource = (javax.sql.DataSource) lookupDataSource( deploymentInfo.getJndi() );
-        WildlfyDataSource wfDataSource = new WildlfyDataSource( dataSource );
+        WildlfyDataSource wfDataSource = new WildlfyDataSource( dataSource, deploymentInfo.getJndi() );
+        //bindDataSource( kieJndi, dataSource );
         managedDataSources.put( deploymentInfo.getDeploymentId(), wfDataSource );
         return deploymentInfo;
     }
@@ -156,7 +156,7 @@ public class WildflyDataSourceProvider
     /**
      * Deletes a data source in the Widlfy server.
      *
-     * @param uuid Identifier of the data source definiton to be deleted.
+     * @param uuid Identifier of the data source definition to be deleted.
      *
      * @throws Exception exceptions may be thrown if the data source couldn't be deleted.
      */
@@ -204,16 +204,25 @@ public class WildflyDataSourceProvider
         List<DataSourceDeploymentInfo> result = new ArrayList<>( );
         DataSourceDeploymentInfo deploymentInfo;
         String uuid;
+        WildlfyDataSource managedDataSource;
         boolean managed;
+        String jndi;
         for ( WildflyDataSourceDef internalDef : dataSources ) {
             try {
                 uuid = DeploymentIdGenerator.extractUuid( internalDef.getName() );
             } catch ( Exception e ) {
                 uuid = internalDef.getName();
             }
-            managed = managedDataSources.containsKey( internalDef.getName() );
+            managedDataSource = managedDataSources.get( internalDef.getName() );
+            if ( managedDataSource != null ) {
+                managed = true;
+                jndi = managedDataSource.getExternalJndi();
+            } else {
+                managed = false;
+                jndi = internalDef.getJndi();
+            }
             deploymentInfo = new DataSourceDeploymentInfo( internalDef.getName(),
-                    managed, uuid, internalDef.getJndi(), wasReferenced( internalDef.getName() ) );
+                    managed, uuid, jndi, wasReferenced( internalDef.getName() ) );
             result.add( deploymentInfo );
         }
         return result;
@@ -230,7 +239,7 @@ public class WildflyDataSourceProvider
             if ( refreshedDeploymentInfo != null && refreshedDeploymentInfo.getJndi() != null ) {
                 javax.sql.DataSource sqlDataSource = (javax.sql.DataSource) lookupDataSource( refreshedDeploymentInfo.getJndi() );
                 if ( sqlDataSource != null) {
-                    dataSource = new WildlfyDataSource( sqlDataSource );
+                    dataSource = new WildlfyDataSource( sqlDataSource, refreshedDeploymentInfo.getJndi() );
                     unManagedDataSources.put( deploymentInfo.getDeploymentId(), dataSource );
                     return dataSource;
                 }

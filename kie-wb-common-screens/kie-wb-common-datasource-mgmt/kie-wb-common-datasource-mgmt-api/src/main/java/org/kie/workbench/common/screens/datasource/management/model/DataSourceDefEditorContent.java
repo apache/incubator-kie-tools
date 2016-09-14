@@ -16,52 +16,12 @@
 
 package org.kie.workbench.common.screens.datasource.management.model;
 
-import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class DataSourceDefEditorContent {
-
-    private DataSourceDef dataSourceDef;
-
-    private Project project;
+public class DataSourceDefEditorContent
+        extends DefEditorContent<DataSourceDef> {
 
     public DataSourceDefEditorContent() {
-    }
-
-    public DataSourceDef getDataSourceDef() {
-        return dataSourceDef;
-    }
-
-    public void setDataSourceDef( DataSourceDef dataSourceDef ) {
-        this.dataSourceDef = dataSourceDef;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject( Project project ) {
-        this.project = project;
-    }
-
-    @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() ) {
-            return false;
-        }
-
-        DataSourceDefEditorContent that = ( DataSourceDefEditorContent ) o;
-
-        return !( dataSourceDef != null ? !dataSourceDef.equals( that.dataSourceDef ) : that.dataSourceDef != null );
-
-    }
-
-    @Override
-    public int hashCode() {
-        return dataSourceDef != null ? dataSourceDef.hashCode() : 0;
     }
 }
