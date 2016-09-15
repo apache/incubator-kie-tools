@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -144,6 +145,7 @@ import org.uberfire.java.nio.fs.jgit.util.DefaultCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 import org.uberfire.java.nio.fs.jgit.util.MoveCommitContent;
+import org.uberfire.java.nio.fs.jgit.util.ProxyAuthenticator;
 import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.commands.Squash;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
@@ -252,6 +254,11 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final ConfigProperty sshPassphraseProp = config.get( "org.uberfire.nio.git.ssh.passphrase", SSH_CERT_PASSPHRASE );
         final ConfigProperty commitLimitProp = config.get( "org.uberfire.nio.git.gc.limit", DEFAULT_COMMIT_LIMIT_TO_GC );
 
+        final ConfigProperty httpProxyUserProp = config.get( "http.proxyUser", null );
+        final ConfigProperty httpProxyPasswordProp = config.get( "http.proxyPassword", null );
+        final ConfigProperty httpsProxyUserProp = config.get( "https.proxyUser", null );
+        final ConfigProperty httpsProxyPasswordProp = config.get( "https.proxyPassword", null );
+
         if ( LOG.isDebugEnabled() ) {
             LOG.debug( config.getConfigurationSummary( "Summary of JGit configuration:" ) );
         }
@@ -289,6 +296,26 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             }
         }
         sshPassphrase = sshPassphraseProp.getValue();
+
+        if ( ( httpProxyUserProp.getValue() != null &&
+                httpProxyPasswordProp.getValue() != null ) ||
+                ( httpsProxyUserProp.getValue() != null &&
+                        httpsProxyPasswordProp.getValue() != null ) ) {
+            setupProxyAuthentication( httpProxyUserProp.getValue(),
+                                      httpProxyPasswordProp.getValue(),
+                                      httpsProxyUserProp.getValue(),
+                                      httpsProxyPasswordProp.getValue() );
+        }
+    }
+
+    private void setupProxyAuthentication( final String httpProxyUser,
+                                           final String httpProxyPassword,
+                                           final String httpsProxyUser,
+                                           final String httpsProxyPassword ) {
+        Authenticator.setDefault( new ProxyAuthenticator( httpProxyUser,
+                                                          httpProxyPassword,
+                                                          httpsProxyUser,
+                                                          httpsProxyPassword ) );
     }
 
     public void onCloseFileSystem( final JGitFileSystem fileSystem ) {
@@ -554,7 +581,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                                               put( "fs_id", fs.id() );
                                                               put( "fs_uri", fs.toString() );
                                                           }}
-                                                        );
+                                );
 
                                 clusterService.unlock();
                             }
