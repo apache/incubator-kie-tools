@@ -27,14 +27,16 @@ public class URLHelper {
 
     private static final String BASE = "scorecardxls/file";
 
-    public static String getServletUrl() {
+    public static String getServletUrl( final String clientId ) {
+        return getServletUrl() + "?clientId=" + clientId;
+    }
+
+    public static String getDownloadUrl( final Path path,
+                                         final String clientId ) {
+        return URLHelper.getServletUrl( clientId ) + "&" + FileManagerFields.FORM_FIELD_PATH + "=" + URL.encode( path.toURI() );
+    }
+
+    private static String getServletUrl() {
         return GWT.getModuleBaseURL() + BASE;
     }
-
-    public static String getDownloadUrl( final Path path ) {
-        final StringBuilder sb = new StringBuilder( URLHelper.getServletUrl() );
-        sb.append( "?" ).append( FileManagerFields.FORM_FIELD_PATH ).append( "=" ).append( URL.encode( path.toURI() ) );
-        return sb.toString();
-    }
-
 }

@@ -25,6 +25,8 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
 import org.guvnor.common.services.project.model.Package;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +59,9 @@ public class NewDecisionTableXLSHandlerTest {
     @Mock
     private NewResourcePresenter newResourcePresenter;
 
+    @Mock
+    private ClientMessageBus clientMessageBus;
+
     @GwtMock
     private FileExtensionSelector fileExtensionSelector;
 
@@ -83,7 +88,8 @@ public class NewDecisionTableXLSHandlerTest {
         handler = new NewDecisionTableXLSHandler( placeManager,
                                                   decisionTableXLSResourceType,
                                                   decisionTableXLSXResourceType,
-                                                  busyIndicatorView ) {
+                                                  busyIndicatorView,
+                                                  clientMessageBus ) {
             {
                 this.notificationEvent = mockNotificationEvent;
             }
@@ -91,6 +97,11 @@ public class NewDecisionTableXLSHandlerTest {
             @Override
             protected String encode( final String fileName ) {
                 return NewDecisionTableXLSHandlerTest.this.encode( fileName );
+            }
+
+            @Override
+            protected String getClientId() {
+                return "123";
             }
         };
         handler.setFileExtensionSelector( fileExtensionSelector );
@@ -240,6 +251,11 @@ public class NewDecisionTableXLSHandlerTest {
 
         assertEquals( "default://%E3%81%82%E3%81%82/src/main/resources/%E3%81%82%E3%81%82%E3%81%82.xls",
                       newPathCaptor.getValue().toURI() );
+    }
+
+    @Test
+    public void testGetServletUrl() {
+        assertEquals( "dtablexls/file?clientId=123", handler.getServletUrl() );
     }
 
     private String encode( final String s ) {

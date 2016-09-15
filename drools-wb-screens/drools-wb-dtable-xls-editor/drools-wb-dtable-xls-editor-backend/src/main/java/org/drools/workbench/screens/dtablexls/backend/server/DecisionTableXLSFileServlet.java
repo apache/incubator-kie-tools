@@ -21,12 +21,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.guvnor.common.services.backend.file.upload.AbstractFileServlet;
-import org.uberfire.io.IOService;
+import org.jboss.errai.bus.client.api.QueueSession;
+import org.jboss.errai.bus.server.api.SessionProvider;
+import org.jboss.errai.bus.server.servlet.ServletBootstrapUtil;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 
 /**
  * This is for dealing with XLS Decision Tables
@@ -46,7 +51,7 @@ public class DecisionTableXLSFileServlet extends AbstractFileServlet {
     protected InputStream doLoad( final Path path,
                                   final HttpServletRequest request ) {
         return decisionTableXLSService.load( path,
-                                             request.getSession().getId() );
+                                             getSessionId( request, sessionProvider ) );
     }
 
     @Override
@@ -56,7 +61,7 @@ public class DecisionTableXLSFileServlet extends AbstractFileServlet {
                              final String comment ) {
         decisionTableXLSService.create( path,
                                         data,
-                                        request.getSession().getId(),
+                                        getSessionId( request, sessionProvider ),
                                         comment );
     }
 
@@ -67,7 +72,7 @@ public class DecisionTableXLSFileServlet extends AbstractFileServlet {
                              final String comment ) {
         decisionTableXLSService.save( path,
                                       data,
-                                      request.getSession().getId(),
+                                      getSessionId( request, sessionProvider ),
                                       comment );
     }
 

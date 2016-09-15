@@ -29,6 +29,8 @@ import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEd
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.guvnor.common.services.project.model.Package;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
@@ -48,6 +50,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     private PlaceManager placeManager;
     private ScoreCardXLSResourceType resourceType;
     private BusyIndicatorView busyIndicatorView;
+    private ClientMessageBus clientMessageBus;
 
     private AttachmentFileWidget uploadWidget;
 
@@ -57,10 +60,12 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     @Inject
     public NewScoreCardXLSHandler( final PlaceManager placeManager,
                                    final ScoreCardXLSResourceType resourceType,
-                                   final BusyIndicatorView busyIndicatorView ) {
+                                   final BusyIndicatorView busyIndicatorView,
+                                   final ClientMessageBus clientMessageBus ) {
         this.placeManager = placeManager;
         this.resourceType = resourceType;
         this.busyIndicatorView = busyIndicatorView;
+        this.clientMessageBus = clientMessageBus;
     }
 
     void setUploadWidget( final AttachmentFileWidget uploadWidget ) {
@@ -110,7 +115,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
                                                          path );
         uploadWidget.submit( path,
                              fileName,
-                             URLHelper.getServletUrl(),
+                             getServletUrl(),
                              new Command() {
 
                                  @Override
@@ -131,6 +136,14 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
                              }
                            );
 
+    }
+
+    protected String getServletUrl() {
+        return URLHelper.getServletUrl( getClientId() );
+    }
+
+    protected String getClientId() {
+        return clientMessageBus.getClientId();
     }
 
     protected String encode( final String fileName ) {

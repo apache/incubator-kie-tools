@@ -21,9 +21,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.guvnor.common.services.backend.file.upload.AbstractFileServlet;
+import org.jboss.errai.bus.server.api.SessionProvider;
+import org.jboss.errai.bus.server.servlet.ServletBootstrapUtil;
 import org.uberfire.io.IOService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -46,7 +50,7 @@ public class ScoreCardXLSFileServlet extends AbstractFileServlet {
     protected InputStream doLoad( final Path path,
                                   final HttpServletRequest request ) {
         return scoreCardXLSService.load( path,
-                                         request.getSession().getId() );
+                                         getSessionId( request, sessionProvider ) );
     }
 
     @Override
@@ -56,7 +60,7 @@ public class ScoreCardXLSFileServlet extends AbstractFileServlet {
                              final String comment ) {
         scoreCardXLSService.create( path,
                                     data,
-                                    request.getSession().getId(),
+                                    getSessionId( request, sessionProvider ),
                                     comment );
     }
 
@@ -67,7 +71,7 @@ public class ScoreCardXLSFileServlet extends AbstractFileServlet {
                              final String comment ) {
         scoreCardXLSService.save( path,
                                   data,
-                                  request.getSession().getId(),
+                                  getSessionId( request, sessionProvider ),
                                   comment );
     }
 

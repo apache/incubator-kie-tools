@@ -31,6 +31,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.gwtbootstrap3.client.ui.Button;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
@@ -64,6 +66,9 @@ public class ScoreCardXLSEditorViewImpl
 
     @Inject
     private ScoreCardXLSResourceType resourceType;
+
+    @Inject
+    private ClientMessageBus clientMessageBus;
 
     private ScoreCardXLSEditorView.Presenter presenter;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo;
@@ -122,7 +127,7 @@ public class ScoreCardXLSEditorViewImpl
         downloadButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
-                Window.open( URLHelper.getDownloadUrl( path ),
+                Window.open( getDownloadUrl( path ),
                              "downloading",
                              "resizable=no,scrollbars=yes,status=no" );
             }
@@ -131,7 +136,7 @@ public class ScoreCardXLSEditorViewImpl
 
     private void submit( final Path path ) {
         uploadWidget.submit( path,
-                             URLHelper.getServletUrl(),
+                             getServletUrl(),
                              new Command() {
 
                                  @Override
@@ -151,6 +156,18 @@ public class ScoreCardXLSEditorViewImpl
                              }
                            );
         concurrentUpdateSessionInfo = null;
+    }
+
+    String getServletUrl() {
+        return URLHelper.getServletUrl( getClientId() );
+    }
+
+    String getDownloadUrl( final Path path ) {
+        return URLHelper.getDownloadUrl( path, getClientId() );
+    }
+
+    String getClientId() {
+        return clientMessageBus.getClientId();
     }
 
     @Override

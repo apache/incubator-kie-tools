@@ -30,6 +30,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.gwtbootstrap3.client.ui.Button;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
@@ -62,6 +64,9 @@ public class DecisionTableXLSEditorViewImpl
     @Inject
     private Event<NotificationEvent> notificationEvent;
 
+    @Inject
+    private ClientMessageBus clientMessageBus;
+
     private DecisionTableXLSEditorView.Presenter presenter;
 
     public DecisionTableXLSEditorViewImpl() {
@@ -93,7 +98,7 @@ public class DecisionTableXLSEditorViewImpl
         downloadButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
-                Window.open( URLHelper.getDownloadUrl( path ),
+                Window.open( getDownloadUrl( path ),
                              "downloading",
                              "resizable=no,scrollbars=yes,status=no" );
             }
@@ -103,7 +108,7 @@ public class DecisionTableXLSEditorViewImpl
     @Override
     public void submit( final Path path ) {
         uploadWidget.submit( path,
-                             URLHelper.getServletUrl(),
+                             getServletUrl(),
                              new Command() {
 
                                  @Override
@@ -133,4 +138,15 @@ public class DecisionTableXLSEditorViewImpl
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
     }
 
+    String getDownloadUrl( final Path path ) {
+        return URLHelper.getDownloadUrl( path, getClientId() );
+    }
+
+    String getServletUrl() {
+        return URLHelper.getServletUrl( getClientId() );
+    }
+
+    String getClientId() {
+        return clientMessageBus.getClientId();
+    }
 }

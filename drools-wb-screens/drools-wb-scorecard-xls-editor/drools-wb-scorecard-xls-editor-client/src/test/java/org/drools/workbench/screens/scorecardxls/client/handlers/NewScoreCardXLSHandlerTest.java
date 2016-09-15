@@ -24,6 +24,8 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.guvnor.common.services.project.model.Package;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +58,9 @@ public class NewScoreCardXLSHandlerTest {
     @Mock
     private NewResourcePresenter newResourcePresenter;
 
+    @Mock
+    private ClientMessageBus clientMessageBus;
+
     @GwtMock
     private AttachmentFileWidget uploadWidget;
 
@@ -77,7 +82,8 @@ public class NewScoreCardXLSHandlerTest {
     public void setup() {
         handler = new NewScoreCardXLSHandler( placeManager,
                                               resourceType,
-                                              busyIndicatorView ) {
+                                              busyIndicatorView,
+                                              clientMessageBus ) {
             {
                 this.notificationEvent = mockNotificationEvent;
             }
@@ -85,6 +91,11 @@ public class NewScoreCardXLSHandlerTest {
             @Override
             protected String encode( final String fileName ) {
                 return NewScoreCardXLSHandlerTest.this.encode( fileName );
+            }
+
+            @Override
+            protected String getClientId() {
+                return "123";
             }
         };
         handler.setUploadWidget( uploadWidget );
@@ -231,6 +242,11 @@ public class NewScoreCardXLSHandlerTest {
 
         assertEquals( "default://%E3%81%82%E3%81%82/src/main/resources/%E3%81%82%E3%81%82%E3%81%82.sxls",
                       newPathCaptor.getValue().toURI() );
+    }
+
+    @Test
+    public void testGetServletUrl() {
+        assertEquals( "scorecardxls/file?clientId=123", handler.getServletUrl() );
     }
 
     private String encode( final String s ) {

@@ -30,6 +30,8 @@ import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTabl
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
 import org.guvnor.common.services.project.model.Package;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
@@ -46,6 +48,7 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 @ApplicationScoped
 public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
+    private ClientMessageBus clientMessageBus;
     private PlaceManager placeManager;
     private DecisionTableXLSResourceType decisionTableXLSResourceType;
     private DecisionTableXLSXResourceType decisionTableXLSXResourceType;
@@ -61,11 +64,13 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
     public NewDecisionTableXLSHandler( final PlaceManager placeManager,
                                        final DecisionTableXLSResourceType decisionTableXLSResourceType,
                                        final DecisionTableXLSXResourceType decisionTableXLSXResourceType,
-                                       final BusyIndicatorView busyIndicatorView ) {
+                                       final BusyIndicatorView busyIndicatorView,
+                                       final ClientMessageBus clientMessageBus ) {
         this.placeManager = placeManager;
         this.decisionTableXLSResourceType = decisionTableXLSResourceType;
         this.decisionTableXLSXResourceType = decisionTableXLSXResourceType;
         this.busyIndicatorView = busyIndicatorView;
+        this.clientMessageBus = clientMessageBus;
     }
 
     void setFileExtensionSelector( final FileExtensionSelector fileExtensionSelector ) {
@@ -128,7 +133,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
         uploadWidget.submit( path,
                              fileName,
-                             URLHelper.getServletUrl(),
+                             getServletUrl(),
                              new Command() {
 
                                  @Override
@@ -148,6 +153,14 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                  }
                              }
                            );
+    }
+
+    protected String getServletUrl() {
+        return URLHelper.getServletUrl( getClientId() );
+    }
+
+    protected String getClientId() {
+        return clientMessageBus.getClientId();
     }
 
     protected String encode( final String fileName ) {
