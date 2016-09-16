@@ -173,9 +173,9 @@ public class LuceneSearchIndex implements SearchIndex {
                 final Long to = ( (DateRange) entry.getValue() ).before().getTime();
                 query.add( newLongRange( entry.getKey(), from, to, true, true ), MUST );
             } else if ( entry.getValue() instanceof String ) {
-                query.add( new WildcardQuery( new Term( buildTerm( entry.getKey() ), entry.getValue().toString() ) ), MUST );
+                query.add( new WildcardQuery( new Term( entry.getKey(), entry.getValue().toString() ) ), MUST );
             } else if ( entry.getValue() instanceof Boolean ) {
-                query.add( new TermQuery( new Term( buildTerm( entry.getKey() ), ( (Boolean) entry.getValue() ) ? "0" : "1" ) ), MUST );
+                query.add( new TermQuery( new Term( entry.getKey(), ( (Boolean) entry.getValue() ) ? "0" : "1" ) ), MUST );
             }
         }
         return composeQuery( query, clusterSegments );
@@ -195,17 +195,6 @@ public class LuceneSearchIndex implements SearchIndex {
         }
 
         return composeQuery( fullText, clusterSegments );
-    }
-
-    // DublinCoreView has field names containing the "[" and "]" characters.
-    // Lucene reserves use of "[" and "]" and hence we need to escape them in the Term.
-    private String buildTerm( final String term ) {
-        String _term = term;
-        _term = _term.replaceAll( "\\[",
-                                  "\\\\[" );
-        _term = _term.replaceAll( "\\]",
-                                  "\\\\]" );
-        return _term;
     }
 
     private Query composeQuery( final Query query,
