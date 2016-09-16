@@ -17,22 +17,23 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * A DOMElement Factory for single-instance ListBoxes.
  */
 public abstract class ListBoxSingletonDOMElementFactory<T, W extends ListBox> extends MultiValueSingletonDOMElementFactory<T, W, ListBoxDOMElement<T, W>> {
 
-    public ListBoxSingletonDOMElementFactory( final GridLayer gridLayer,
+    public ListBoxSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                              final GridLayer gridLayer,
                                               final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 
@@ -41,6 +42,8 @@ public abstract class ListBoxSingletonDOMElementFactory<T, W extends ListBox> ex
                                                      final GridWidget gridWidget,
                                                      final GridBodyCellRenderContext context ) {
         this.widget = createWidget();
+        this.widget.addKeyDownHandler( ( e ) -> e.stopPropagation() );
+        this.widget.addMouseDownHandler( ( e ) -> e.stopPropagation() );
         this.e = new ListBoxDOMElement<T, W>( widget,
                                               gridLayer,
                                               gridWidget );
@@ -50,13 +53,7 @@ public abstract class ListBoxSingletonDOMElementFactory<T, W extends ListBox> ex
             public void onBlur( final BlurEvent event ) {
                 destroyResources();
                 gridLayer.batch();
-            }
-        } );
-        widget.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( final ChangeEvent event ) {
-                destroyResources();
-                gridLayer.batch();
+                gridPanel.setFocus( true );
             }
         } );
 

@@ -18,19 +18,21 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 public class ListBoxByteSingletonDOMElementFactory extends ListBoxSingletonDOMElementFactory<Byte, ListBox> {
 
-    public ListBoxByteSingletonDOMElementFactory( final GridLayer gridLayer,
+    public ListBoxByteSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                                  final GridLayer gridLayer,
                                                   final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 
     @Override
     public ListBox createWidget() {
-        final ListBox listBox = new ListBox();
-        return listBox;
+        return new ListBox();
     }
 
     @Override

@@ -86,6 +86,10 @@
     <g:HTMLPanel styleName="{css.canvas}">
       <uf:GridLienzoPanel ui:field="gridPanel" styleName="{css.nofocus}"/>
     </g:HTMLPanel>
+    <!-- This is required (for some inexplicable reason) to be able to programmatically call gridPanel.setFocus(true) -->
+    <!-- when tabbing out of a BaseDOMElement. This is the case when a BaseDOMElement receives a blur Event and we want -->
+    <!-- to setFocus on gridPanel to provide a "seamless" in-grid editing experience to Users using keyboard navigation -->
+    <g:FocusPanel/>
   </g:HTMLPanel>
 
 </ui:UiBinder>

@@ -45,6 +45,7 @@ import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -81,6 +82,8 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
     void refreshColumnsNote( final boolean hasColumnDefinitions );
 
     GridLayer getGridLayerView();
+
+    GridLienzoPanel getGridPanel();
 
     Bounds getBounds();
 

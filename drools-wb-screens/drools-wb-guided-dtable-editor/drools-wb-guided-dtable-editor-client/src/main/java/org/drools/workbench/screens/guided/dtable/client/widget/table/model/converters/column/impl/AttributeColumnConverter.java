@@ -173,7 +173,8 @@ public class AttributeColumnConverter extends BaseColumnConverterImpl {
                                     isResizable,
                                     isVisible,
                                     access,
-                                    new ListBoxStringSingletonDOMElementFactory( gridLayer,
+                                    new ListBoxStringSingletonDOMElementFactory( gridPanel,
+                                                                                 gridLayer,
                                                                                  gridWidget ) );
     }
 

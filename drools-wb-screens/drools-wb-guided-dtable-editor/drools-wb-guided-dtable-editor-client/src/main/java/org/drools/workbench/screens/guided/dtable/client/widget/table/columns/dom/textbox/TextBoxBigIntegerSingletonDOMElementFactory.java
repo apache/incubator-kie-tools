@@ -20,12 +20,15 @@ import java.math.BigInteger;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.uberfire.ext.widgets.common.client.common.NumericBigIntegerTextBox;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 public class TextBoxBigIntegerSingletonDOMElementFactory extends TextBoxSingletonDOMElementFactory<BigInteger, NumericBigIntegerTextBox> {
 
-    public TextBoxBigIntegerSingletonDOMElementFactory( final GridLayer gridLayer,
+    public TextBoxBigIntegerSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                                        final GridLayer gridLayer,
                                                         final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 

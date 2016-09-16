@@ -19,28 +19,33 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * A DOMElement Factory for single-instance single-value DOMElements.
  */
 public abstract class SingleValueSingletonDOMElementFactory<T, W extends Widget, E extends SingleValueDOMElement<T, W>> extends BaseSingletonDOMElementFactory<T, W, E> {
 
-    public SingleValueSingletonDOMElementFactory( final GridLayer gridLayer,
+    public SingleValueSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                                  final GridLayer gridLayer,
                                                   final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 
     /**
      * Convert from the given typed value to a String
-     * @param value The value to be converted
+     * @param value
+     *         The value to be converted
      * @return A String representing the type
      */
     public abstract String convert( final T value );
 
     /**
      * Convert from the given String to a typed value
-     * @param value The String to be converted
+     * @param value
+     *         The String to be converted
      * @return A typed value
      */
     public abstract T convert( final String value );

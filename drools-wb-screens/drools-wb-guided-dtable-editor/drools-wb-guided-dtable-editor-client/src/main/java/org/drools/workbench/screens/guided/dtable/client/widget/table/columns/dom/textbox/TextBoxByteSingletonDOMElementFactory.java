@@ -18,12 +18,15 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.uberfire.ext.widgets.common.client.common.NumericByteTextBox;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 public class TextBoxByteSingletonDOMElementFactory extends TextBoxSingletonDOMElementFactory<Byte, NumericByteTextBox> {
 
-    public TextBoxByteSingletonDOMElementFactory( final GridLayer gridLayer,
+    public TextBoxByteSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                                  final GridLayer gridLayer,
                                                   final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 

@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
@@ -94,6 +95,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl.CheckBoxDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * Generic Handler for different BaseUiColumn types
@@ -106,6 +108,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
     protected AsyncPackageDataModelOracle oracle;
     protected ColumnUtilities columnUtilities;
     protected GuidedDecisionTableView.Presenter presenter;
+
+    protected GridLienzoPanel gridPanel;
     protected GridLayer gridLayer;
 
     @Override
@@ -127,6 +131,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
         this.presenter = PortablePreconditions.checkNotNull( "presenter",
                                                              presenter );
         this.gridLayer = presenter.getModellerPresenter().getView().getGridLayerView();
+        this.gridPanel = presenter.getModellerPresenter().getView().getGridPanel();
     }
 
     protected GridColumn<?> newColumn( final BaseColumn column,
@@ -255,7 +260,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                       true,
                                       !column.isHideColumn(),
                                       access,
-                                      new ListBoxSingletonDOMElementFactory<String, ListBox>( gridLayer,
+                                      new ListBoxSingletonDOMElementFactory<String, ListBox>( gridPanel,
+                                                                                              gridLayer,
                                                                                               gridWidget ) {
 
                                           @Override
@@ -270,6 +276,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                                                                       final GridWidget gridWidget,
                                                                                                       final GridBodyCellRenderContext context ) {
                                               this.widget = createWidget();
+                                              this.widget.addKeyDownHandler( ( e ) -> e.stopPropagation() );
+                                              this.widget.addMouseDownHandler( ( e ) -> e.stopPropagation() );
                                               this.e = new ListBoxDOMElement<String, ListBox>( widget,
                                                                                                gridLayer,
                                                                                                gridWidget );
@@ -277,17 +285,9 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                               widget.addBlurHandler( new BlurHandler() {
                                                   @Override
                                                   public void onBlur( final BlurEvent event ) {
-                                                      e.flush( fromWidget( widget ) );
-                                                      e.detach();
+                                                      destroyResources();
                                                       gridLayer.batch();
-                                                  }
-                                              } );
-                                              widget.addChangeHandler( new ChangeHandler() {
-                                                  @Override
-                                                  public void onChange( final ChangeEvent event ) {
-                                                      e.flush( fromWidget( widget ) );
-                                                      e.detach();
-                                                      gridLayer.batch();
+                                                      gridPanel.setFocus( true );
                                                   }
                                               } );
 
@@ -365,7 +365,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                       true,
                                       !column.isHideColumn(),
                                       access,
-                                      new ListBoxStringSingletonDOMElementFactory( gridLayer,
+                                      new ListBoxStringSingletonDOMElementFactory( gridPanel,
+                                                                                   gridLayer,
                                                                                    gridWidget ),
                                       presenter.getValueListLookups( column ) );
     }
@@ -381,7 +382,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                             true,
                                             !column.isHideColumn(),
                                             access,
-                                            new ListBoxSingletonDOMElementFactory<String, ListBox>( gridLayer,
+                                            new ListBoxSingletonDOMElementFactory<String, ListBox>( gridPanel,
+                                                                                                    gridLayer,
                                                                                                     gridWidget ) {
 
                                                 @Override
@@ -396,6 +398,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                                                                             final GridWidget gridWidget,
                                                                                                             final GridBodyCellRenderContext context ) {
                                                     this.widget = createWidget();
+                                                    this.widget.addKeyDownHandler( ( e ) -> e.stopPropagation() );
+                                                    this.widget.addMouseDownHandler( ( e ) -> e.stopPropagation() );
                                                     this.e = new ListBoxDOMElement<String, ListBox>( widget,
                                                                                                      gridLayer,
                                                                                                      gridWidget );
@@ -403,17 +407,9 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                     widget.addBlurHandler( new BlurHandler() {
                                                         @Override
                                                         public void onBlur( final BlurEvent event ) {
-                                                            e.flush( fromWidget( widget ) );
-                                                            e.detach();
+                                                            destroyResources();
                                                             gridLayer.batch();
-                                                        }
-                                                    } );
-                                                    widget.addChangeHandler( new ChangeHandler() {
-                                                        @Override
-                                                        public void onChange( final ChangeEvent event ) {
-                                                            e.flush( fromWidget( widget ) );
-                                                            e.detach();
-                                                            gridLayer.batch();
+                                                            gridPanel.setFocus( true );
                                                         }
                                                     } );
 
@@ -472,9 +468,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                         true,
                                                         !column.isHideColumn(),
                                                         access,
-                                                        new ListBoxNumericSingletonDOMElementFactory( gridLayer,
+                                                        new ListBoxNumericSingletonDOMElementFactory( gridPanel,
+                                                                                                      gridLayer,
                                                                                                       gridWidget ),
-                                                        new TextBoxNumericSingletonDOMElementFactory( gridLayer,
+                                                        new TextBoxNumericSingletonDOMElementFactory( gridPanel,
+                                                                                                      gridLayer,
                                                                                                       gridWidget ),
                                                         presenter,
                                                         factType,
@@ -487,9 +485,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                            true,
                                                            !column.isHideColumn(),
                                                            access,
-                                                           new ListBoxBigDecimalSingletonDOMElementFactory( gridLayer,
+                                                           new ListBoxBigDecimalSingletonDOMElementFactory( gridPanel,
+                                                                                                            gridLayer,
                                                                                                             gridWidget ),
-                                                           new TextBoxBigDecimalSingletonDOMElementFactory( gridLayer,
+                                                           new TextBoxBigDecimalSingletonDOMElementFactory( gridPanel,
+                                                                                                            gridLayer,
                                                                                                             gridWidget ),
 
                                                            presenter,
@@ -503,9 +503,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                            true,
                                                            !column.isHideColumn(),
                                                            access,
-                                                           new ListBoxBigIntegerSingletonDOMElementFactory( gridLayer,
+                                                           new ListBoxBigIntegerSingletonDOMElementFactory( gridPanel,
+                                                                                                            gridLayer,
                                                                                                             gridWidget ),
-                                                           new TextBoxBigIntegerSingletonDOMElementFactory( gridLayer,
+                                                           new TextBoxBigIntegerSingletonDOMElementFactory( gridPanel,
+                                                                                                            gridLayer,
                                                                                                             gridWidget ),
                                                            presenter,
                                                            factType,
@@ -518,9 +520,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                      true,
                                                      !column.isHideColumn(),
                                                      access,
-                                                     new ListBoxByteSingletonDOMElementFactory( gridLayer,
+                                                     new ListBoxByteSingletonDOMElementFactory( gridPanel,
+                                                                                                gridLayer,
                                                                                                 gridWidget ),
-                                                     new TextBoxByteSingletonDOMElementFactory( gridLayer,
+                                                     new TextBoxByteSingletonDOMElementFactory( gridPanel,
+                                                                                                gridLayer,
                                                                                                 gridWidget ),
                                                      presenter,
                                                      factType,
@@ -533,9 +537,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                        true,
                                                        !column.isHideColumn(),
                                                        access,
-                                                       new ListBoxDoubleSingletonDOMElementFactory( gridLayer,
+                                                       new ListBoxDoubleSingletonDOMElementFactory( gridPanel,
+                                                                                                    gridLayer,
                                                                                                     gridWidget ),
-                                                       new TextBoxDoubleSingletonDOMElementFactory( gridLayer,
+                                                       new TextBoxDoubleSingletonDOMElementFactory( gridPanel,
+                                                                                                    gridLayer,
                                                                                                     gridWidget ),
                                                        presenter,
                                                        factType,
@@ -548,9 +554,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                       true,
                                                       !column.isHideColumn(),
                                                       access,
-                                                      new ListBoxFloatSingletonDOMElementFactory( gridLayer,
+                                                      new ListBoxFloatSingletonDOMElementFactory( gridPanel,
+                                                                                                  gridLayer,
                                                                                                   gridWidget ),
-                                                      new TextBoxFloatSingletonDOMElementFactory( gridLayer,
+                                                      new TextBoxFloatSingletonDOMElementFactory( gridPanel,
+                                                                                                  gridLayer,
                                                                                                   gridWidget ),
                                                       presenter,
                                                       factType,
@@ -563,9 +571,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                         true,
                                                         !column.isHideColumn(),
                                                         access,
-                                                        new ListBoxIntegerSingletonDOMElementFactory( gridLayer,
+                                                        new ListBoxIntegerSingletonDOMElementFactory( gridPanel,
+                                                                                                      gridLayer,
                                                                                                       gridWidget ),
-                                                        new TextBoxIntegerSingletonDOMElementFactory( gridLayer,
+                                                        new TextBoxIntegerSingletonDOMElementFactory( gridPanel,
+                                                                                                      gridLayer,
                                                                                                       gridWidget ),
                                                         presenter,
                                                         factType,
@@ -578,9 +588,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                      true,
                                                      !column.isHideColumn(),
                                                      access,
-                                                     new ListBoxLongSingletonDOMElementFactory( gridLayer,
+                                                     new ListBoxLongSingletonDOMElementFactory( gridPanel,
+                                                                                                gridLayer,
                                                                                                 gridWidget ),
-                                                     new TextBoxLongSingletonDOMElementFactory( gridLayer,
+                                                     new TextBoxLongSingletonDOMElementFactory( gridPanel,
+                                                                                                gridLayer,
                                                                                                 gridWidget ),
                                                      presenter,
                                                      factType,
@@ -593,9 +605,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                       true,
                                                       !column.isHideColumn(),
                                                       access,
-                                                      new ListBoxShortSingletonDOMElementFactory( gridLayer,
+                                                      new ListBoxShortSingletonDOMElementFactory( gridPanel,
+                                                                                                  gridLayer,
                                                                                                   gridWidget ),
-                                                      new TextBoxShortSingletonDOMElementFactory( gridLayer,
+                                                      new TextBoxShortSingletonDOMElementFactory( gridPanel,
+                                                                                                  gridLayer,
                                                                                                   gridWidget ),
                                                       presenter,
                                                       factType,
@@ -617,9 +631,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                      true,
                                                      !column.isHideColumn(),
                                                      access,
-                                                     new ListBoxDateSingletonDOMElementFactory( gridLayer,
+                                                     new ListBoxDateSingletonDOMElementFactory( gridPanel,
+                                                                                                gridLayer,
                                                                                                 gridWidget ),
-                                                     new DatePickerSingletonDOMElementFactory( gridLayer,
+                                                     new DatePickerSingletonDOMElementFactory( gridPanel,
+                                                                                               gridLayer,
                                                                                                gridWidget ),
                                                      presenter,
                                                      factType,
@@ -632,9 +648,11 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                        true,
                                                        !column.isHideColumn(),
                                                        access,
-                                                       new ListBoxStringSingletonDOMElementFactory( gridLayer,
+                                                       new ListBoxStringSingletonDOMElementFactory( gridPanel,
+                                                                                                    gridLayer,
                                                                                                     gridWidget ),
-                                                       new TextBoxStringSingletonDOMElementFactory( gridLayer,
+                                                       new TextBoxStringSingletonDOMElementFactory( gridPanel,
+                                                                                                    gridLayer,
                                                                                                     gridWidget ),
                                                        presenter,
                                                        factType,
@@ -653,7 +671,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                        isResizable,
                                        isVisible,
                                        access,
-                                       new TextBoxBigDecimalSingletonDOMElementFactory( gridLayer,
+                                       new TextBoxBigDecimalSingletonDOMElementFactory( gridPanel,
+                                                                                        gridLayer,
                                                                                         gridWidget ) );
     }
 
@@ -668,7 +687,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                        isResizable,
                                        isVisible,
                                        access,
-                                       new TextBoxBigDecimalSingletonDOMElementFactory( gridLayer,
+                                       new TextBoxBigDecimalSingletonDOMElementFactory( gridPanel,
+                                                                                        gridLayer,
                                                                                         gridWidget ) );
     }
 
@@ -683,7 +703,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                        isResizable,
                                        isVisible,
                                        access,
-                                       new TextBoxBigIntegerSingletonDOMElementFactory( gridLayer,
+                                       new TextBoxBigIntegerSingletonDOMElementFactory( gridPanel,
+                                                                                        gridLayer,
                                                                                         gridWidget ) );
     }
 
@@ -698,7 +719,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                  isResizable,
                                  isVisible,
                                  access,
-                                 new TextBoxByteSingletonDOMElementFactory( gridLayer,
+                                 new TextBoxByteSingletonDOMElementFactory( gridPanel,
+                                                                            gridLayer,
                                                                             gridWidget ) );
     }
 
@@ -713,7 +735,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                    isResizable,
                                    isVisible,
                                    access,
-                                   new TextBoxDoubleSingletonDOMElementFactory( gridLayer,
+                                   new TextBoxDoubleSingletonDOMElementFactory( gridPanel,
+                                                                                gridLayer,
                                                                                 gridWidget ) );
     }
 
@@ -728,7 +751,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                   isResizable,
                                   isVisible,
                                   access,
-                                  new TextBoxFloatSingletonDOMElementFactory( gridLayer,
+                                  new TextBoxFloatSingletonDOMElementFactory( gridPanel,
+                                                                              gridLayer,
                                                                               gridWidget ) {
 
                                   } );
@@ -745,7 +769,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                     isResizable,
                                     isVisible,
                                     access,
-                                    new TextBoxIntegerSingletonDOMElementFactory( gridLayer,
+                                    new TextBoxIntegerSingletonDOMElementFactory( gridPanel,
+                                                                                  gridLayer,
                                                                                   gridWidget ) );
     }
 
@@ -762,7 +787,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                      isVisible,
                                      access,
                                      useRowNumber,
-                                     new TextBoxIntegerSingletonDOMElementFactory( gridLayer,
+                                     new TextBoxIntegerSingletonDOMElementFactory( gridPanel,
+                                                                                   gridLayer,
                                                                                    gridWidget ) );
     }
 
@@ -777,7 +803,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                  isResizable,
                                  isVisible,
                                  access,
-                                 new TextBoxLongSingletonDOMElementFactory( gridLayer,
+                                 new TextBoxLongSingletonDOMElementFactory( gridPanel,
+                                                                            gridLayer,
                                                                             gridWidget ) );
     }
 
@@ -792,7 +819,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                   isResizable,
                                   isVisible,
                                   access,
-                                  new TextBoxShortSingletonDOMElementFactory( gridLayer,
+                                  new TextBoxShortSingletonDOMElementFactory( gridPanel,
+                                                                              gridLayer,
                                                                               gridWidget ) );
     }
 
@@ -807,7 +835,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                  isResizable,
                                  isVisible,
                                  access,
-                                 new DatePickerSingletonDOMElementFactory( gridLayer,
+                                 new DatePickerSingletonDOMElementFactory( gridPanel,
+                                                                           gridLayer,
                                                                            gridWidget ) );
     }
 
@@ -828,6 +857,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                         public CheckBox createWidget() {
                                             final CheckBox checkBox = super.createWidget();
                                             checkBox.setEnabled( access.isEditable() );
+                                            checkBox.addKeyDownHandler( ( e ) -> e.stopPropagation() );
+                                            checkBox.addMouseDownHandler( ( e ) -> e.stopPropagation() );
                                             return checkBox;
                                         }
                                     } );
@@ -844,7 +875,8 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                    isResizable,
                                    isVisible,
                                    access,
-                                   new TextBoxStringSingletonDOMElementFactory( gridLayer,
+                                   new TextBoxStringSingletonDOMElementFactory( gridPanel,
+                                                                                gridLayer,
                                                                                 gridWidget ) );
     }
 

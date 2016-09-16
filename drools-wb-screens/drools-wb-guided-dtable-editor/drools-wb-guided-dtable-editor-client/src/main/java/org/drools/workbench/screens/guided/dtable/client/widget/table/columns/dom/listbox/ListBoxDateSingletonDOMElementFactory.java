@@ -22,22 +22,24 @@ import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 public class ListBoxDateSingletonDOMElementFactory extends ListBoxSingletonDOMElementFactory<Date, ListBox> {
 
     private static final String droolsDateFormat = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat( droolsDateFormat );
 
-    public ListBoxDateSingletonDOMElementFactory( final GridLayer gridLayer,
+    public ListBoxDateSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                                  final GridLayer gridLayer,
                                                   final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 
     @Override
     public ListBox createWidget() {
-        final ListBox listBox = new ListBox();
-        return listBox;
+        return new ListBox();
     }
 
     @Override

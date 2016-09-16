@@ -30,6 +30,7 @@ import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * A DOMElement Factory for single-instance TextBoxes.
@@ -39,9 +40,11 @@ public class DatePickerSingletonDOMElementFactory extends SingleValueSingletonDO
     private static final String droolsDateFormat = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat( droolsDateFormat );
 
-    public DatePickerSingletonDOMElementFactory( final GridLayer gridLayer,
+    public DatePickerSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                                 final GridLayer gridLayer,
                                                  final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 
@@ -72,6 +75,7 @@ public class DatePickerSingletonDOMElementFactory extends SingleValueSingletonDO
             public void onValueChange( final ValueChangeEvent event ) {
                 destroyResources();
                 gridLayer.batch();
+                gridPanel.setFocus( true );
             }
         } );
 
@@ -80,6 +84,7 @@ public class DatePickerSingletonDOMElementFactory extends SingleValueSingletonDO
             public void onBlur( final BlurEvent event ) {
                 destroyResources();
                 gridLayer.batch();
+                gridPanel.setFocus( true );
             }
         } );
 

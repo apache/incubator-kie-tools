@@ -18,18 +18,24 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 public class TextBoxStringSingletonDOMElementFactory extends TextBoxSingletonDOMElementFactory<String, TextBox> {
 
-    public TextBoxStringSingletonDOMElementFactory( final GridLayer gridLayer,
+    public TextBoxStringSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                                    final GridLayer gridLayer,
                                                     final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 
     @Override
     public TextBox createWidget() {
-        return new TextBox();
+        final TextBox widget = new TextBox();
+        widget.addKeyDownHandler( ( e ) -> e.stopPropagation() );
+        widget.addMouseDownHandler( ( e ) -> e.stopPropagation() );
+        return widget;
     }
 
     @Override

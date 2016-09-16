@@ -70,7 +70,8 @@ public class ActionRetractFactColumnConverter extends BaseColumnConverterImpl {
                                       isVisible,
                                       access,
                                       presenter,
-                                      new ListBoxStringSingletonDOMElementFactory( gridLayer,
+                                      new ListBoxStringSingletonDOMElementFactory( gridPanel,
+                                                                                   gridLayer,
                                                                                    gridWidget ) );
     }
 

@@ -20,12 +20,15 @@ import java.math.BigDecimal;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.uberfire.ext.widgets.common.client.common.NumericBigDecimalTextBox;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 public class TextBoxNumericSingletonDOMElementFactory extends TextBoxSingletonDOMElementFactory<Number, NumericBigDecimalTextBox> {
 
-    public TextBoxNumericSingletonDOMElementFactory( final GridLayer gridLayer,
+    public TextBoxNumericSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                                     final GridLayer gridLayer,
                                                      final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 

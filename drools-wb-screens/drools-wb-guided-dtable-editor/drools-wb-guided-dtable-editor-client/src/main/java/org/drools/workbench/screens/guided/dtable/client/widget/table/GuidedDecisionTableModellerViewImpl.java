@@ -16,9 +16,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -36,7 +34,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -270,8 +267,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public HandlerRegistration addKeyDownHandler( final KeyDownHandler handler ) {
-        return RootPanel.get().addDomHandler( handler,
-                                              KeyDownEvent.getType() );
+        return gridPanel.addKeyDownHandler( handler );
     }
 
     @Override
@@ -282,8 +278,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public HandlerRegistration addMouseDownHandler( final MouseDownHandler handler ) {
-        return RootPanel.get().addDomHandler( handler,
-                                              MouseDownEvent.getType() );
+        return gridPanel.addMouseDownHandler( handler );
     }
 
     private Widget getRuleInheritanceWidget() {
@@ -981,6 +976,11 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     @Override
     public GridLayer getGridLayerView() {
         return gridLayer;
+    }
+
+    @Override
+    public GridLienzoPanel getGridPanel() {
+        return gridPanel;
     }
 
     @Override

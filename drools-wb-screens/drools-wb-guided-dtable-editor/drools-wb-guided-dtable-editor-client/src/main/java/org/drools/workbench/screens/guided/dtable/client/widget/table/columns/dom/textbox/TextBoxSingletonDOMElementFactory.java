@@ -22,15 +22,18 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * A DOMElement Factory for single-instance TextBoxes.
  */
 public abstract class TextBoxSingletonDOMElementFactory<T, W extends TextBox> extends SingleValueSingletonDOMElementFactory<T, W, TextBoxDOMElement<T, W>> {
 
-    public TextBoxSingletonDOMElementFactory( final GridLayer gridLayer,
+    public TextBoxSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                              final GridLayer gridLayer,
                                               final GuidedDecisionTableView gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 
@@ -39,6 +42,8 @@ public abstract class TextBoxSingletonDOMElementFactory<T, W extends TextBox> ex
                                                      final GridWidget gridWidget,
                                                      final GridBodyCellRenderContext context ) {
         this.widget = createWidget();
+        this.widget.addKeyDownHandler( ( e ) -> e.stopPropagation() );
+        this.widget.addMouseDownHandler( ( e ) -> e.stopPropagation() );
         this.e = new TextBoxDOMElement<T, W>( widget,
                                               gridLayer,
                                               gridWidget );
@@ -48,6 +53,7 @@ public abstract class TextBoxSingletonDOMElementFactory<T, W extends TextBox> ex
             public void onBlur( final BlurEvent event ) {
                 destroyResources();
                 gridLayer.batch();
+                gridPanel.setFocus( true );
             }
         } );
 
