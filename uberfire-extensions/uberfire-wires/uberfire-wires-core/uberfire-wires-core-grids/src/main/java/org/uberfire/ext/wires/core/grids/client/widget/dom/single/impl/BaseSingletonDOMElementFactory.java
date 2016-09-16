@@ -23,26 +23,33 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMEl
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * Base Factory for single-instance DOMElements, i.e. there can only be one instance "on screen" at any given time,
  * for example to handle "in cell" editing; when a DOMElement is required to "edit" the cell but not when the cell
  * is rendered ordinarily. This implementation keeps a single DOMElement that is detached from the GWT container
  * when not needed.
- * @param <T> The data-type of the cell
- * @param <W> The Widget to be wrapped by the DOMElement.
- * @param <E> The DOMElement type that this Factory generates.
+ * @param <T>
+ *         The data-type of the cell
+ * @param <W>
+ *         The Widget to be wrapped by the DOMElement.
+ * @param <E>
+ *         The DOMElement type that this Factory generates.
  */
 public abstract class BaseSingletonDOMElementFactory<T, W extends Widget, E extends BaseDOMElement<T, W>> implements SingletonDOMElementFactory<W, E> {
 
+    protected final GridLienzoPanel gridPanel;
     protected final GridLayer gridLayer;
     protected final GridWidget gridWidget;
 
     protected W widget;
     protected E e;
 
-    public BaseSingletonDOMElementFactory( final GridLayer gridLayer,
+    public BaseSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                           final GridLayer gridLayer,
                                            final GridWidget gridWidget ) {
+        this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.gridWidget = gridWidget;
     }

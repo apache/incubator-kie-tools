@@ -20,8 +20,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import org.gwtbootstrap3.client.shared.event.ModalShowEvent;
-import org.gwtbootstrap3.client.shared.event.ModalShowHandler;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
@@ -82,19 +80,15 @@ public class EditorPopup extends Modal {
         footer.add( cancelButton );
         add( footer );
 
-        addShowHandler( new ModalShowHandler() {
-            @Override
-            public void onShow( final ModalShowEvent evt ) {
-                textBox.setFocus( true );
-            }
-        } );
-
+        addShownHandler( ( e ) -> textBox.setFocus( true ) );
     }
 
     /**
      * Show the popup
-     * @param value The value to show in the editor.
-     * @param callback Callback to invoke when the popup is "OK'ed".
+     * @param value
+     *         The value to show in the editor.
+     * @param callback
+     *         Callback to invoke when the popup is "OK'ed".
      */
     public void edit( final GridCellValue<String> value,
                       final Callback<GridCellValue<String>> callback ) {

@@ -22,21 +22,27 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * A DOMElement Factory for single-instance TextBoxes.
  */
 public class TextBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFactory<String, TextBox, TextBoxDOMElement> {
 
-    public TextBoxSingletonDOMElementFactory( final GridLayer gridLayer,
+    public TextBoxSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                              final GridLayer gridLayer,
                                               final GridWidget gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 
     @Override
     public TextBox createWidget() {
-        return new TextBox();
+        return new TextBox() {{
+            addKeyDownHandler( ( e ) -> e.stopPropagation() );
+            addMouseDownHandler( ( e ) -> e.stopPropagation() );
+        }};
     }
 
     @Override
@@ -52,6 +58,7 @@ public class TextBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFa
             public void onBlur( final BlurEvent event ) {
                 destroyResources();
                 gridLayer.batch();
+                gridPanel.setFocus( true );
             }
         } );
         return e;

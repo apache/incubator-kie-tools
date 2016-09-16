@@ -178,9 +178,14 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
     }
 
     @Override
+    public GridLienzoPanel getGridPanel() {
+        return gridPanel;
+    }
+
+    @Override
     public HandlerRegistration addKeyDownHandler( final KeyDownHandler handler ) {
-        return RootPanel.get().addDomHandler( handler,
-                                              KeyDownEvent.getType() );
+        return gridPanel.addDomHandler( handler,
+                                        KeyDownEvent.getType() );
     }
 
     @Override

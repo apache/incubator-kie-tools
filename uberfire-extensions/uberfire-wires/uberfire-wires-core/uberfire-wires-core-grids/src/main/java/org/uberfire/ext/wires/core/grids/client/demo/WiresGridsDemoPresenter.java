@@ -219,7 +219,8 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
 
         //Add a floating column
         final GridColumn.HeaderMetaData grid1ColumnFloatingHeaderMetaData = new BaseHeaderMetaData( "Floating" );
-        final TextBoxSingletonDOMElementFactory grid1ColumnFloatingFactory = new TextBoxSingletonDOMElementFactory( view.getGridLayer(),
+        final TextBoxSingletonDOMElementFactory grid1ColumnFloatingFactory = new TextBoxSingletonDOMElementFactory( view.getGridPanel(),
+                                                                                                                    view.getGridLayer(),
                                                                                                                     gridWidget1 );
         final BaseGridColumn<String> grid1ColumnFloating = new StringDOMElementSingletonColumn( grid1ColumnFloatingHeaderMetaData,
                                                                                                 grid1ColumnFloatingFactory,
@@ -326,7 +327,8 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
         final String grid3ColumnGroup1 = "grid3ColumnGroup1";
         final GridColumn.HeaderMetaData grid3Column2HeaderMetaData = new BaseHeaderMetaData( "G3-G1-C2",
                                                                                              grid3ColumnGroup1 );
-        final TextBoxSingletonDOMElementFactory grid3Column2Factory = new TextBoxSingletonDOMElementFactory( view.getGridLayer(),
+        final TextBoxSingletonDOMElementFactory grid3Column2Factory = new TextBoxSingletonDOMElementFactory( view.getGridPanel(),
+                                                                                                             view.getGridLayer(),
                                                                                                              gridWidget3 );
         final BaseGridColumn<String> grid3Column2 = new StringDOMElementSingletonColumn( grid3Column2HeaderMetaData,
                                                                                          grid3Column2Factory,
@@ -357,7 +359,8 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
         //Add DOM Column - ListBox
         final GridColumn.HeaderMetaData grid3Column4HeaderMetaData = new BaseHeaderMetaData( "G3-G1-C4",
                                                                                              grid3ColumnGroup1 );
-        final ListBoxSingletonDOMElementFactory grid3Column4Factory = new ListBoxSingletonDOMElementFactory( view.getGridLayer(),
+        final ListBoxSingletonDOMElementFactory grid3Column4Factory = new ListBoxSingletonDOMElementFactory( view.getGridPanel(),
+                                                                                                             view.getGridLayer(),
                                                                                                              gridWidget3 );
         final BaseGridColumn<String> grid3Column4 = new ListBoxDOMElementSingletonColumn( grid3Column4HeaderMetaData,
                                                                                           grid3Column4Factory,

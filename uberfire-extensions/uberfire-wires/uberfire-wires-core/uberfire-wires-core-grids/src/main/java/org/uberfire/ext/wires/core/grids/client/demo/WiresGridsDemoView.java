@@ -27,6 +27,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * View and Presenter definition for WiresGridDemo
@@ -61,6 +62,12 @@ public interface WiresGridsDemoView extends IsWidget,
      * @return
      */
     GridLayer getGridLayer();
+
+    /**
+     * Gets the underlying GridLienzoPanel associated with the View.
+     * @return The associated GridLienzoPanel.
+     */
+    GridLienzoPanel getGridPanel();
 
     /**
      * Adds a handler for when the Zoom level in the View is changed.

@@ -22,21 +22,27 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.ListBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * A DOMElement Factory for single-instance ListBoxes.
  */
 public class ListBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFactory<String, ListBox, ListBoxDOMElement> {
 
-    public ListBoxSingletonDOMElementFactory( final GridLayer gridLayer,
+    public ListBoxSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
+                                              final GridLayer gridLayer,
                                               final GridWidget gridWidget ) {
-        super( gridLayer,
+        super( gridPanel,
+               gridLayer,
                gridWidget );
     }
 
     @Override
     public ListBox createWidget() {
-        return new ListBox();
+        return new ListBox() {{
+            addKeyDownHandler( ( e ) -> e.stopPropagation() );
+            addMouseDownHandler( ( e ) -> e.stopPropagation() );
+        }};
     }
 
     @Override
@@ -52,6 +58,7 @@ public class ListBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFa
             public void onBlur( final BlurEvent event ) {
                 destroyResources();
                 gridLayer.batch();
+                gridPanel.setFocus( true );
             }
         } );
         return e;
