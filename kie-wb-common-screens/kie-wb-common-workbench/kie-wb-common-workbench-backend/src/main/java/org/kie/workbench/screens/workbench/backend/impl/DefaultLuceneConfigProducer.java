@@ -18,7 +18,6 @@ package org.kie.workbench.screens.workbench.backend.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -32,6 +31,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRo
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
+import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 
 /**
  * This class contains the default Lucene configuration, and can be
@@ -47,7 +47,7 @@ public class DefaultLuceneConfigProducer {
         final Map<String, Analyzer> analyzers = getAnalyzers();
         this.config = new LuceneConfigBuilder().withInMemoryMetaModelStore()
                 .usingAnalyzers( analyzers )
-                .usingAnalyzerWrapperFactory(ImpactAnalysisAnalyzerWrapperFactory.getInstance())
+                .usingAnalyzerWrapperFactory( ImpactAnalysisAnalyzerWrapperFactory.getInstance() )
                 .useDirectoryBasedIndex()
                 .useNIODirectory()
                 .build();
@@ -59,12 +59,14 @@ public class DefaultLuceneConfigProducer {
         return this.config;
     }
 
-    private Map<String, Analyzer> getAnalyzers() {
+    Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( ProjectRootPathIndexTerm.TERM,
                  new FilenameAnalyzer() );
             put( PackageNameIndexTerm.TERM,
                  new LowerCaseOnlyAnalyzer() );
+            put( LuceneIndex.CUSTOM_FIELD_FILENAME,
+                 new FilenameAnalyzer() );
 
             // all of the (resource, part, shared, etc) references and resource or part terms
             // are taken care of via the ImpactAnalysisAnalyzerWrapper
