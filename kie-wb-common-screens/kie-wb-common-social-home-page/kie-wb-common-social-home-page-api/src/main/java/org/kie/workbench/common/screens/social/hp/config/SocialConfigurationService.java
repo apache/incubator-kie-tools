@@ -15,16 +15,10 @@
 
 package org.kie.workbench.common.screens.social.hp.config;
 
-import java.util.Map;
-
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface SocialConfigurationService {
 
-    public Boolean isSocialEnable();
-
-    void registerSocialMessages( Map<String, String> messagesByKey );
-
-    Map<String, String> getSocialMessages();
+    Boolean isSocialEnable();
 }

@@ -37,8 +37,6 @@ import org.kie.workbench.common.screens.social.hp.config.SocialConfigurationServ
 @ApplicationScoped
 public class NewRepositoryEventAdapter implements SocialAdapter<NewRepositoryEvent> {
 
-    public static final String CREATED_MESSAGE = "created";
-
     @Inject
     private User loggedUser;
 
@@ -76,7 +74,7 @@ public class NewRepositoryEventAdapter implements SocialAdapter<NewRepositoryEve
             //clean repository
             socialUser = new SocialUser( "system" );
         }
-        String additionalInfo = getCreatedMessage();
+        String additionalInfo = "Created";
         return new SocialActivitiesEvent( socialUser, ExtendedTypes.NEW_REPOSITORY_EVENT, new Date() ).withAdicionalInfo( additionalInfo ).withLink( event.getNewRepository().getAlias(), event.getNewRepository().getUri() ).withDescription( "" );
     }
 
@@ -90,16 +88,5 @@ public class NewRepositoryEventAdapter implements SocialAdapter<NewRepositoryEve
     public List<String> getTimelineFiltersNames() {
         List<String> names = new ArrayList<String>();
         return names;
-    }
-
-    String getCreatedMessage() {
-        Map<String, String> messages = socialConfigurationService.getSocialMessages();
-
-        if ( messages != null ) {
-            final String message = messages.get( CREATED_MESSAGE );
-            return message != null ? message : CREATED_MESSAGE;
-        }
-
-        return CREATED_MESSAGE;
     }
 }

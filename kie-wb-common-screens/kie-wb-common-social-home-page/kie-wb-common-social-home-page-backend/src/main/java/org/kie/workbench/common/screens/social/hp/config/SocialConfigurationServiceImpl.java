@@ -15,7 +15,6 @@
 
 package org.kie.workbench.common.screens.social.hp.config;
 
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -29,20 +28,8 @@ public class SocialConfigurationServiceImpl implements SocialConfigurationServic
     @Inject
     private SocialConfiguration socialConfiguration;
 
-    private Map<String, String> messagesByKey = null;
-
     @Override
     public Boolean isSocialEnable() {
         return socialConfiguration.isSocialEnable();
-    }
-
-    @Override
-    public void registerSocialMessages( final Map<String, String> messagesByKey ) {
-        this.messagesByKey = messagesByKey;
-    }
-
-    @Override
-    public Map<String, String> getSocialMessages() {
-        return this.messagesByKey;
     }
 }

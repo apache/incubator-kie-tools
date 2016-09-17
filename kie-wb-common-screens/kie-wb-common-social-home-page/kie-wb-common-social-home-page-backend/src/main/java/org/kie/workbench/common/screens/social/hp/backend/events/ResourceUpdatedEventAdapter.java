@@ -38,8 +38,6 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 @ApplicationScoped
 public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdatedEvent> {
 
-    public static final String EDITED_MESSAGE = "edited";
-
     @Inject
     private User loggedUser;
 
@@ -85,7 +83,7 @@ public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdate
     public SocialActivitiesEvent toSocial( Object object ) {
         ResourceUpdatedEvent event = (ResourceUpdatedEvent) object;
         SocialUser socialUser = socialUserRepositoryAPI.findSocialUser( event.getSessionInfo().getIdentity().getIdentifier() );
-        String additionalInfo = getEditedMessage();
+        String additionalInfo = "Edited";
         String description = getCommitDescription( event );
         return new SocialActivitiesEvent( socialUser, HomePageTypes.RESOURCE_UPDATE_EVENT.name(), new Date() ).withLink( event.getPath().getFileName(), event.getPath().toURI() ).withAdicionalInfo( additionalInfo ).withDescription( description );
     }
@@ -107,16 +105,5 @@ public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdate
     public List<String> getTimelineFiltersNames() {
         List<String> names = new ArrayList<String>();
         return names;
-    }
-
-    String getEditedMessage() {
-        Map<String, String> messages = socialConfigurationService.getSocialMessages();
-
-        if ( messages != null ) {
-            final String message = messages.get( EDITED_MESSAGE );
-            return message != null ? message : EDITED_MESSAGE;
-        }
-
-        return EDITED_MESSAGE;
     }
 }
