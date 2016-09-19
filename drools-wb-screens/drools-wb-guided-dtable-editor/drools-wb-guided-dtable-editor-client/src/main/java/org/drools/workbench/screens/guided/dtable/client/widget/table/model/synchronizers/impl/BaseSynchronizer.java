@@ -225,7 +225,11 @@ public abstract class BaseSynchronizer<A extends Synchronizer.MetaData, U extend
             dcv = new DTCellValue52( Boolean.FALSE );
 
         } else if ( dataType == DataType.DataTypes.BOOLEAN ) {
-            dcv = new DTCellValue52( defaultValue == null ? false : defaultValue );
+            if ( defaultValue == null ) {
+                dcv = new DTCellValue52( false );
+            } else {
+                dcv = new DTCellValue52( defaultValue );
+            }
 
         } else {
             dcv = new DTCellValue52( defaultValue );

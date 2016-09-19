@@ -19,9 +19,11 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
@@ -422,6 +424,50 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
                       model.getData().get( 1 ).get( 0 ).getNumericValue() );
         assertEquals( 3,
                       model.getData().get( 2 ).get( 0 ).getNumericValue() );
+    }
+
+    @Test
+    public void checkBooleanDefaultValueTrue() throws ModelSynchronizer.MoveColumnVetoException {
+        final AttributeCol52 column = new AttributeCol52();
+        column.setAttribute( RuleAttributeWidget.ENABLED_ATTR );
+        column.setDefaultValue( new DTCellValue52( true ) );
+
+        modelSynchronizer.appendColumn( column );
+
+        modelSynchronizer.appendRow();
+
+        assertTrue( (Boolean) uiModel.getRow( 0 ).getCells().get( 2 ).getValue().getValue() );
+
+        assertTrue( model.getData().get( 0 ).get( 2 ).getBooleanValue() );
+    }
+
+    @Test
+    public void checkBooleanDefaultValueFalse() throws ModelSynchronizer.MoveColumnVetoException {
+        final AttributeCol52 column = new AttributeCol52();
+        column.setAttribute( RuleAttributeWidget.ENABLED_ATTR );
+        column.setDefaultValue( new DTCellValue52( false ) );
+
+        modelSynchronizer.appendColumn( column );
+
+        modelSynchronizer.appendRow();
+
+        assertFalse( (Boolean) uiModel.getRow( 0 ).getCells().get( 2 ).getValue().getValue() );
+
+        assertFalse( model.getData().get( 0 ).get( 2 ).getBooleanValue() );
+    }
+
+    @Test
+    public void checkBooleanDefaultValueNotSet() throws ModelSynchronizer.MoveColumnVetoException {
+        final AttributeCol52 column = new AttributeCol52();
+        column.setAttribute( RuleAttributeWidget.ENABLED_ATTR );
+
+        modelSynchronizer.appendColumn( column );
+
+        modelSynchronizer.appendRow();
+
+        assertFalse( (Boolean) uiModel.getRow( 0 ).getCells().get( 2 ).getValue().getValue() );
+
+        assertFalse( model.getData().get( 0 ).get( 2 ).getBooleanValue() );
     }
 
 }
