@@ -222,14 +222,11 @@ public class DefaultValueWidgetFactory {
                 final DatePicker datePicker = new DatePicker();
 
                 // Wire up update handler
-                datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
-                    @Override
-                    public void onValueChange( final ValueChangeEvent<Date> event ) {
-                        DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
-                        defaultValue.setDateValue( datePicker.getValue() );
-                        defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue,
-                                                                                                             clonedDefaultValue ) );
-                    }
+                datePicker.addChangeDateHandler( ( e ) -> {
+                    DTCellValue52 editedDefaultValue = defaultValue.cloneDefaultValueCell();
+                    editedDefaultValue.setDateValue( datePicker.getValue() );
+                    defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue,
+                                                                                                         editedDefaultValue ) );
                 } );
 
                 final Date dateValue = defaultValue.getDateValue();

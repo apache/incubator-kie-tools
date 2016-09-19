@@ -18,10 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 import java.util.Date;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.SingleValueSingletonDOMElementFactory;
@@ -70,25 +66,16 @@ public class DatePickerSingletonDOMElementFactory extends SingleValueSingletonDO
                                            gridLayer,
                                            gridWidget );
 
-        widget.addValueChangeHandler( new ValueChangeHandler<Date>() {
-            @Override
-            public void onValueChange( final ValueChangeEvent event ) {
-                destroyResources();
-                gridLayer.batch();
-                gridPanel.setFocus( true );
-            }
-        } );
-
-        widget.addBlurHandler( new BlurHandler() {
-            @Override
-            public void onBlur( final BlurEvent event ) {
-                destroyResources();
-                gridLayer.batch();
-                gridPanel.setFocus( true );
-            }
-        } );
+        widget.addChangeDateHandler( ( e ) -> doValueUpdate() );
+        widget.addBlurHandler( ( e ) -> doValueUpdate() );
 
         return e;
+    }
+
+    private void doValueUpdate() {
+        destroyResources();
+        gridLayer.batch();
+        gridPanel.setFocus( true );
     }
 
     @Override

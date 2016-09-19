@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -880,12 +879,7 @@ public class DTCellValueWidgetFactory {
         final DatePicker datePicker = new DatePicker( allowEmptyValues );
 
         // Wire up update handler
-        datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
-            @Override
-            public void onValueChange( final ValueChangeEvent<Date> event ) {
-                value.setDateValue( datePicker.getValue() );
-            }
-        } );
+        datePicker.addChangeDateHandler( ( e ) -> value.setDateValue( datePicker.getValue() ) );
 
         datePicker.setFormat( DATE_FORMAT );
         datePicker.setValue( value.getDateValue() );
