@@ -11,6 +11,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -248,6 +249,9 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
         //Wire-up widgets
         gridPanel.add( gridLayer );
+
+        //Set ID on GridLienzoPanel for Selenium tests.
+        gridPanel.getElement().setId( "dtable_container_" + Document.get().createUniqueId() );
     }
 
     private DecoratedDisclosurePanel setupDisclosurePanel( final String title,
