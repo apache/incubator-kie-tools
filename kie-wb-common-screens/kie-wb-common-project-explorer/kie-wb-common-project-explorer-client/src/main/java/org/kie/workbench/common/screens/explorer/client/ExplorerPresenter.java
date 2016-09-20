@@ -102,7 +102,7 @@ public class ExplorerPresenter {
                             } );
     }
 
-    private void init( String initPath ) {
+    private void init( final String initPath ) {
 
         menu.refresh();
 

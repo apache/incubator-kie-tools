@@ -39,10 +39,12 @@ import org.kie.workbench.common.screens.explorer.model.FolderListing;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-public class Explorer extends Composite {
+public class Explorer
+        extends Composite {
 
     public enum NavType {
-        TREE, BREADCRUMB
+        TREE,
+        BREADCRUMB
     }
 
     private final FlowPanel container = new FlowPanel();
@@ -61,7 +63,8 @@ public class Explorer extends Composite {
 
     public Explorer() {
         initWidget( container );
-        IdHelper.setId( container, "pex_nav_" );
+        IdHelper.setId( container,
+                        "pex_nav_" );
     }
 
     public void init( final NavigatorExpandCollapseButton.Mode mode,
@@ -70,12 +73,14 @@ public class Explorer extends Composite {
                       final BaseViewPresenter presenter ) {
         this.presenter = presenter;
         this.navigatorExpandCollapseButton = new NavigatorExpandCollapseButton( mode );
-        setNavType( navType, options );
+        setNavType( navType,
+                    options );
     }
 
     public void setNavType( final NavType navType,
                             final NavigatorOptions options ) {
-        checkNotNull( "navType", navType );
+        checkNotNull( "navType",
+                      navType );
         if ( activeNavigator != null ) {
             if ( navType.equals( NavType.TREE ) && activeNavigator instanceof TreeNavigator ) {
                 activeNavigator.loadContent( presenter.getActiveContent() );
@@ -89,13 +94,18 @@ public class Explorer extends Composite {
 
         if ( !navigators.containsKey( navType ) ) {
             if ( navType.equals( NavType.TREE ) ) {
-                activeNavigator = IOC.getBeanManager().lookupBean( TreeNavigator.class ).getInstance();
+                activeNavigator = IOC.getBeanManager()
+                        .lookupBean( TreeNavigator.class )
+                        .getInstance();
             } else {
-                activeNavigator = IOC.getBeanManager().lookupBean( BreadcrumbNavigator.class ).getInstance();
+                activeNavigator = IOC.getBeanManager()
+                        .lookupBean( BreadcrumbNavigator.class )
+                        .getInstance();
             }
             activeNavigator.setPresenter( presenter );
             activeNavigator.setOptions( options );
-            navigators.put( navType, activeNavigator );
+            navigators.put( navType,
+                            activeNavigator );
         } else {
             activeNavigator = navigators.get( navType );
         }
@@ -120,68 +130,19 @@ public class Explorer extends Composite {
                              final Set<Project> projects,
                              final Project activeProject ) {
 
-        this.organizationUnits.clear();
-        if ( activeOrganizationalUnit != null ) {
-            this.organizationUnits.setText( activeOrganizationalUnit.getName() );
-        }
-        for ( final OrganizationalUnit ou : organizationalUnits ) {
-            this.organizationUnits.add( new AnchorListItem( ou.getName() ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        presenter.onOrganizationalUnitSelected( ou );
-                    }
-                } );
-            }} );
-        }
-
-        this.repos.clear();
-        if ( activeRepository != null ) {
-            this.repos.setText( activeRepository.getAlias() );
-        }
-
-        for ( final Repository repository : repositories ) {
-            this.repos.add( new AnchorListItem( repository.getAlias() ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        presenter.onRepositorySelected( repository );
-                    }
-                } );
-            }} );
-        }
-
-        this.projects.clear();
-        if ( activeProject != null ) {
-            this.projects.setText( activeProject.getProjectName() );
-        }
-
-        for ( final Project project : projects ) {
-            this.projects.add( new AnchorListItem( project.getProjectName() ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        presenter.onProjectSelected( project );
-                    }
-                } );
-            }} );
-        }
+        setupOrganizationalUnits( organizationalUnits,
+                                  activeOrganizationalUnit );
+        setupRepositories( activeRepository,
+                           repositories );
+        setupProjects( activeProject,
+                       projects );
 
         if ( organizationalUnits.isEmpty() ) {
-            this.organizationUnits.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.organizationUnits.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.repos.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.repos.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.projects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.projects.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            showEmptyOU();
         } else if ( repositories.isEmpty() ) {
-            this.repos.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.repos.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.projects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.projects.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            showEmptyRepositories();
         } else if ( projects.isEmpty() ) {
-            this.projects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.projects.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            showEmptyProject();
         }
 
         if ( !isAlreadyInitialized ) {
@@ -199,9 +160,83 @@ public class Explorer extends Composite {
         }
     }
 
+    private void setupOrganizationalUnits( final Set<OrganizationalUnit> organizationalUnits,
+                                           final OrganizationalUnit activeOrganizationalUnit ) {
+        this.organizationUnits.clear();
+        if ( activeOrganizationalUnit != null ) {
+            this.organizationUnits.setText( activeOrganizationalUnit.getName() );
+        }
+        for ( final OrganizationalUnit ou : organizationalUnits ) {
+            this.organizationUnits.add( new AnchorListItem( ou.getName() ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.onOrganizationalUnitSelected( ou );
+                    }
+                } );
+            }} );
+        }
+    }
+
+    private void setupRepositories( final Repository activeRepository,
+                                    final Set<Repository> repositories ) {
+        this.repos.clear();
+        if ( activeRepository != null ) {
+            this.repos.setText( activeRepository.getAlias() );
+        }
+        for ( final Repository repository : repositories ) {
+            this.repos.add( new AnchorListItem( repository.getAlias() ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.onRepositorySelected( repository );
+                    }
+                } );
+            }} );
+        }
+    }
+
+    private void setupProjects( final Project activeProject,
+                                final Set<Project> projects ) {
+        this.projects.clear();
+        if ( activeProject != null ) {
+            this.projects.setText( activeProject.getProjectName() );
+        }
+
+        for ( final Project project : projects ) {
+            this.projects.add( new AnchorListItem( project.getProjectName() ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.onProjectSelected( project );
+                    }
+                } );
+            }} );
+        }
+    }
+
+    private void showEmptyOU() {
+        this.organizationUnits.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
+        this.organizationUnits.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+        showEmptyRepositories();
+    }
+
+    private void showEmptyRepositories() {
+        this.repos.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
+        this.repos.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+        showEmptyProject();
+    }
+
+    private void showEmptyProject() {
+        this.projects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
+        this.projects.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+    }
+
     private void addDivToAlignComponents() {
         FlowPanel divClear = new FlowPanel();
-        divClear.getElement().getStyle().setClear( Style.Clear.BOTH );
+        divClear.getElement()
+                .getStyle()
+                .setClear( Style.Clear.BOTH );
         container.add( divClear );
     }
 
@@ -219,23 +254,27 @@ public class Explorer extends Composite {
             }
         } );
 
-        FlowPanel navigatorExpandCollapseButtonContainer = new FlowPanel();
-        navigatorExpandCollapseButtonContainer.getElement().getStyle().setFloat( Style.Float.RIGHT );
+        final FlowPanel navigatorExpandCollapseButtonContainer = new FlowPanel();
+        navigatorExpandCollapseButtonContainer.getElement()
+                .getStyle()
+                .setFloat( Style.Float.RIGHT );
         navigatorExpandCollapseButtonContainer.add( navigatorExpandCollapseButton );
         container.add( navigatorExpandCollapseButtonContainer );
     }
 
     private void setupNavigatorBreadcrumbs() {
         this.navigatorBreadcrumbs = new NavigatorBreadcrumbs( NavigatorBreadcrumbs.Mode.HEADER ) {{
-            build( organizationUnits, repos, Explorer.this.projects );
+            build( organizationUnits,
+                   repos,
+                   Explorer.this.projects );
         }};
 
-        if ( hideHeaderNavigator ) {
-            navigatorBreadcrumbs.setVisible( false );
-        }
+        navigatorBreadcrumbs.setVisible( !hideHeaderNavigator );
 
-        FlowPanel navigatorBreadcrumbsContainer = new FlowPanel();
-        navigatorBreadcrumbsContainer.getElement().getStyle().setFloat( Style.Float.LEFT );
+        final FlowPanel navigatorBreadcrumbsContainer = new FlowPanel();
+        navigatorBreadcrumbsContainer.getElement()
+                .getStyle()
+                .setFloat( Style.Float.LEFT );
         navigatorBreadcrumbsContainer.add( navigatorBreadcrumbs );
         container.add( navigatorBreadcrumbsContainer );
     }
@@ -247,7 +286,14 @@ public class Explorer extends Composite {
         }
     }
 
-    public void loadContent( FolderListing content ) {
+    public void showHeaderNavigator() {
+        hideHeaderNavigator = false;
+        if ( navigatorBreadcrumbs != null ) {
+            navigatorBreadcrumbs.setVisible( true );
+        }
+    }
+
+    public void loadContent( final FolderListing content ) {
         if ( content != null ) {
             activeNavigator.loadContent( content );
         }

@@ -74,4 +74,5 @@ public interface View extends HasBusyIndicator,
 
     void hideHeaderNavigator();
 
+    void showHeaderNavigator();
 }

@@ -62,4 +62,20 @@ public class BusinessViewWidgetTest {
 
         verify( branchSelector ).addBranchChangeHandler( presenter );
     }
+
+    @Test
+    public void showHeaderNavigation() throws Exception {
+        businessViewWidget.showHeaderNavigator();
+
+        verify( explorer ).showHeaderNavigator();
+        verify( explorer, never() ).hideHeaderNavigator();
+    }
+
+    @Test
+    public void hideHeaderNavigation() throws Exception {
+        businessViewWidget.hideHeaderNavigator();
+
+        verify( explorer ).hideHeaderNavigator();
+        verify( explorer, never() ).showHeaderNavigator();
+    }
 }

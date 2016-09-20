@@ -264,6 +264,11 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
     }
 
     @Override
+    public void showHeaderNavigator() {
+        explorer.showHeaderNavigator();
+    }
+
+    @Override
     public Explorer getExplorer() {
         return explorer;
     }

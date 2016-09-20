@@ -39,6 +39,7 @@ public class ActiveContextOptions {
     private Caller<ExplorerService> explorerService;
 
     private Event<ActiveOptionsChangedEvent> activeContextOptionsChangedEvent;
+    private PlaceRequest placeRequest;
 
     @Inject
     public ActiveContextOptions( final Caller<ExplorerService> explorerService,
@@ -69,7 +70,9 @@ public class ActiveContextOptions {
 
     public void init( final PlaceRequest placeRequest,
                       final Command completeCommand ) {
-        Set<Option> optionsFromModeParameter = getOptionsFromModeParameter( placeRequest.getParameter( "mode", "" ) );
+        this.placeRequest = placeRequest;
+        Set<Option> optionsFromModeParameter = getOptionsFromModeParameter( placeRequest.getParameter( "mode",
+                                                                                                       "" ) );
 
         if ( optionsFromModeParameter.isEmpty() ) {
             options.addAll( getOptionsFromModeParameter( getWindowParameter( "explorer_mode" ) ) );
@@ -77,9 +80,6 @@ public class ActiveContextOptions {
             options.addAll( optionsFromModeParameter );
         }
 
-        if ( isContextNavigationOff( placeRequest ) ) {
-            options.add( Option.NO_CONTEXT_NAVIGATION );
-        }
 
         if ( options.isEmpty() ) {
             load( completeCommand );
@@ -110,16 +110,10 @@ public class ActiveContextOptions {
         return result;
     }
 
-    private boolean isContextNavigationOff( final PlaceRequest placeRequest ) {
-        final boolean noContextNavigationOption = doWindowParametersContain( "no_context_navigation" );
-        final boolean noContext = placeRequest.getParameterNames().contains( "no_context" );
-
-        return noContext || noContextNavigationOption;
-    }
-
     public void load( final Command configCommand ) {
         explorerService.call( getLoadSuccessCallback( configCommand ),
-                              getLoadErrorCallback( configCommand ) ).getLastUserOptions();
+                              getLoadErrorCallback( configCommand ) )
+                .getLastUserOptions();
     }
 
     private RemoteCallback<Set<Option>> getLoadSuccessCallback( final Command configCommand ) {
@@ -206,18 +200,26 @@ public class ActiveContextOptions {
     }
 
     public boolean isHeaderNavigationHidden() {
-        return options.contains( Option.NO_CONTEXT_NAVIGATION );
+        final boolean noContextNavigationOption = doWindowParametersContain( "no_context_navigation" );
+        final boolean noContext = placeRequest.getParameterNames()
+                .contains( "no_context" );
+
+        return noContext || noContextNavigationOption;
     }
 
     protected String getWindowParameter( final String parameterName ) {
         if ( doWindowParametersContain( parameterName ) ) {
-            return Window.Location.getParameterMap().get( parameterName ).get( 0 ).trim();
+            return Window.Location.getParameterMap()
+                    .get( parameterName )
+                    .get( 0 )
+                    .trim();
         } else {
             return "";
         }
     }
 
     private boolean doWindowParametersContain( final String parameterName ) {
-        return Window.Location.getParameterMap().containsKey( parameterName );
+        return Window.Location.getParameterMap()
+                .containsKey( parameterName );
     }
 }

@@ -171,6 +171,11 @@ public class TechnicalViewWidget
     }
 
     @Override
+    public void showHeaderNavigator() {
+        explorer.showHeaderNavigator();
+    }
+
+    @Override
     public void showBusyIndicator( final String message ) {
         BusyPopup.showMessage( message );
     }

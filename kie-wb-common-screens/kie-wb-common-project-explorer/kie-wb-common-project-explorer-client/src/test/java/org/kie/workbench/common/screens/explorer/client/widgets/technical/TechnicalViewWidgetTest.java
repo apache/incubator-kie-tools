@@ -30,7 +30,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Naviga
 import static org.mockito.Mockito.*;
 
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class TechnicalViewWidgetTest {
 
     @GwtMock
@@ -58,11 +58,27 @@ public class TechnicalViewWidgetTest {
         technicalViewWidget.init( presenter );
 
         verify( explorer ).init( eq( NavigatorExpandCollapseButton.Mode.EXPANDED ),
-                                 any( NavigatorOptions.class ),
-                                 eq( Explorer.NavType.BREADCRUMB ),
-                                 eq( presenter ) );
+                any( NavigatorOptions.class ),
+                eq( Explorer.NavType.BREADCRUMB ),
+                eq( presenter ) );
 
         verify( branchSelector ).addBranchChangeHandler( presenter );
 
+    }
+
+    @Test
+    public void showHeaderNavigation() throws Exception {
+        technicalViewWidget.showHeaderNavigator();
+
+        verify( explorer ).showHeaderNavigator();
+        verify( explorer, never() ).hideHeaderNavigator();
+    }
+
+    @Test
+    public void hideHeaderNavigation() throws Exception {
+        technicalViewWidget.hideHeaderNavigator();
+
+        verify( explorer ).hideHeaderNavigator();
+        verify( explorer, never() ).showHeaderNavigator();
     }
 }
