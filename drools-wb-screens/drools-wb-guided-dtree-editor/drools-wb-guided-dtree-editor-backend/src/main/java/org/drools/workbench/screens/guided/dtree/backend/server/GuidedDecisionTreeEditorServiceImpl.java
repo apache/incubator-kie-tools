@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtree.backend.server;
 
-import java.io.ByteArrayInputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +24,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.base.Charsets;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
@@ -63,7 +61,7 @@ public class GuidedDecisionTreeEditorServiceImpl
         implements GuidedDecisionTreeEditorService {
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
@@ -108,7 +106,7 @@ public class GuidedDecisionTreeEditorServiceImpl
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
-            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -153,7 +151,8 @@ public class GuidedDecisionTreeEditorServiceImpl
     }
 
     @Override
-    protected GuidedDecisionTreeEditorContent constructContent( Path path, Overview overview ) {
+    protected GuidedDecisionTreeEditorContent constructContent( Path path,
+                                                                Overview overview ) {
         final GuidedDecisionTree model = load( path );
         final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -277,10 +276,10 @@ public class GuidedDecisionTreeEditorServiceImpl
     }
 
     @Override
-    public String toSource(final Path path,
-                           final GuidedDecisionTree model) {
-        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path),
-                model);
+    public String toSource( final Path path,
+                            final GuidedDecisionTree model ) {
+        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ),
+                                                                                model );
     }
 
     @Override
@@ -288,9 +287,7 @@ public class GuidedDecisionTreeEditorServiceImpl
                                              final GuidedDecisionTree content ) {
         try {
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream(
-                                                      GuidedDecisionTreeDRLPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
-                                              ) );
+                                              GuidedDecisionTreeDRLPersistence.getInstance().marshal( content ) );
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }

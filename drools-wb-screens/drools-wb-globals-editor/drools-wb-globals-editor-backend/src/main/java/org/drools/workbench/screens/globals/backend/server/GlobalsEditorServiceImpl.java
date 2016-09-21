@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.globals.backend.server;
 
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -24,7 +23,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.base.Charsets;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.globals.backend.server.util.GlobalsPersistence;
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
@@ -59,7 +57,7 @@ public class GlobalsEditorServiceImpl
         implements GlobalsEditorService {
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
@@ -103,7 +101,7 @@ public class GlobalsEditorServiceImpl
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
-            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -142,16 +140,17 @@ public class GlobalsEditorServiceImpl
     }
 
     @Override
-    protected GlobalsEditorContent constructContent( Path path, Overview overview ) {
+    protected GlobalsEditorContent constructContent( Path path,
+                                                     Overview overview ) {
         //De-serialize model
         final GlobalsModel model = load( path );
         final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
-        final String[] fullyQualifiedClassNames = new String[oracle.getProjectModelFields().size()];
+        final String[] fullyQualifiedClassNames = new String[ oracle.getProjectModelFields().size() ];
         oracle.getProjectModelFields().keySet().toArray( fullyQualifiedClassNames );
 
         //Signal opening to interested parties
         resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                           safeSessionInfo) );
+                                                           safeSessionInfo ) );
 
         return new GlobalsEditorContent( model,
                                          overview,
@@ -166,7 +165,7 @@ public class GlobalsEditorServiceImpl
                       final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( resource );
-            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
             Metadata currentMetadata = metadataService.getMetadata( resource );
@@ -244,10 +243,10 @@ public class GlobalsEditorServiceImpl
     }
 
     @Override
-    public String toSource(final Path path,
-                           final GlobalsModel model) {
-        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path),
-                GlobalsPersistence.getInstance().marshal(model));
+    public String toSource( final Path path,
+                            final GlobalsModel model ) {
+        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ),
+                                                                                GlobalsPersistence.getInstance().marshal( model ) );
     }
 
     @Override
@@ -255,9 +254,7 @@ public class GlobalsEditorServiceImpl
                                              final GlobalsModel content ) {
         try {
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream(
-                                                      GlobalsPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
-                                              ) );
+                                              GlobalsPersistence.getInstance().marshal( content ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

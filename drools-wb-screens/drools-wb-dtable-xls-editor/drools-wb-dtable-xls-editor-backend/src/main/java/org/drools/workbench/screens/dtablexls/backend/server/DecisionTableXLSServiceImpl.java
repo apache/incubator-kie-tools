@@ -350,21 +350,11 @@ public class DecisionTableXLSServiceImpl
     @Override
     public List<ValidationMessage> validate( final Path path,
                                              final Path resource ) {
-        InputStream inputStream = null;
         try {
-            inputStream = ioService.newInputStream( Paths.convert( path ),
-                                                    StandardOpenOption.READ );
-            return genericValidator.validate( path, inputStream );
+            return genericValidator.validate( path );
+
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
-        } finally {
-            if ( inputStream != null ) {
-                try {
-                    inputStream.close();
-                } catch ( IOException ioe ) {
-                    throw ExceptionUtilities.handleException( ioe );
-                }
-            }
         }
     }
 

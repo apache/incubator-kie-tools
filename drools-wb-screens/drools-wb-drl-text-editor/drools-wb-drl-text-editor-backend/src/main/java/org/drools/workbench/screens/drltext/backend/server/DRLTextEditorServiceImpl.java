@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.drltext.backend.server;
 
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -24,7 +23,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.base.Charsets;
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
@@ -63,7 +61,7 @@ public class DRLTextEditorServiceImpl
         implements DRLTextEditorService {
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
@@ -147,7 +145,8 @@ public class DRLTextEditorServiceImpl
     }
 
     @Override
-    protected DrlModelContent constructContent( Path path, Overview overview ) {
+    protected DrlModelContent constructContent( Path path,
+                                                Overview overview ) {
         final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes( oracle );
         final List<DSLSentence> dslConditions = oracle.getPackageDslConditionSentences();
@@ -262,7 +261,8 @@ public class DRLTextEditorServiceImpl
     public List<ValidationMessage> validate( final Path path,
                                              final String content ) {
         try {
-            return genericValidator.validate( path, new ByteArrayInputStream( content.getBytes( Charsets.UTF_8 ) ) );
+            return genericValidator.validate( path,
+                                              content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

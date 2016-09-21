@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.backend.server;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,7 +26,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.base.Charsets;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
@@ -299,9 +297,7 @@ public class GuidedDecisionTableEditorServiceImpl
                                              final GuidedDecisionTable52 content ) {
         try {
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream(
-                                                      GuidedDTXMLPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
-                                              ) );
+                                              GuidedDTXMLPersistence.getInstance().marshal( content ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

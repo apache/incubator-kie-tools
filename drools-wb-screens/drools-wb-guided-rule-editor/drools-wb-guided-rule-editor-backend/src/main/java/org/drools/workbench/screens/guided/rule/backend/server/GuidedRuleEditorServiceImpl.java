@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.rule.backend.server;
 
-import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
@@ -24,7 +23,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.base.Charsets;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
@@ -63,7 +61,7 @@ public class GuidedRuleEditorServiceImpl
         implements GuidedRuleEditorService {
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
@@ -113,7 +111,7 @@ public class GuidedRuleEditorServiceImpl
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
-            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             model.setPackageName( packageName );
 
             // Temporal fix for https://bugzilla.redhat.com/show_bug.cgi?id=998922
@@ -171,7 +169,8 @@ public class GuidedRuleEditorServiceImpl
     }
 
     @Override
-    protected GuidedEditorContent constructContent( Path path, Overview overview ) {
+    protected GuidedEditorContent constructContent( Path path,
+                                                    Overview overview ) {
         final RuleModel model = load( path );
         final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -185,15 +184,15 @@ public class GuidedRuleEditorServiceImpl
 
         DataModelOracleUtilities.populateDataModel( oracle,
                                                     dataModel,
-                                                   consumedFQCNs);
+                                                    consumedFQCNs );
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         safeSessionInfo));
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                           safeSessionInfo ) );
 
-        return new GuidedEditorContent(model,
-                                       overview,
-                                       dataModel);
+        return new GuidedEditorContent( model,
+                                        overview,
+                                        dataModel );
     }
 
     @Override
@@ -296,17 +295,18 @@ public class GuidedRuleEditorServiceImpl
         try {
             final String source = toSourceUnexpanded( path,
                                                       content );
-            return genericValidator.validate( path, new ByteArrayInputStream( source.getBytes( Charsets.UTF_8 ) ) );
+            return genericValidator.validate( path,
+                                              source );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
     }
 
-    private String toSourceExpanded(final Path path,
-                                    final RuleModel model) {
+    private String toSourceExpanded( final Path path,
+                                     final RuleModel model ) {
         //This returns the expanded Source as used in "View Source" within the UI.
-        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path), model);
+        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
     }
 
     private String toSourceUnexpanded( final Path path,

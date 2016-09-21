@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.template.server;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +24,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.base.Charsets;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
@@ -64,7 +62,7 @@ public class GuidedRuleTemplateEditorServiceImpl
         implements GuidedRuleTemplateEditorService {
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
@@ -88,7 +86,6 @@ public class GuidedRuleTemplateEditorServiceImpl
     @Inject
     private GuidedRuleTemplateResourceTypeDefinition resourceTypeDefinition;
 
-
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
     private SafeSessionInfo safeSessionInfo;
@@ -107,7 +104,7 @@ public class GuidedRuleTemplateEditorServiceImpl
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
-            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -133,7 +130,7 @@ public class GuidedRuleTemplateEditorServiceImpl
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            return ( TemplateModel ) RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
+            return (TemplateModel) RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -146,7 +143,8 @@ public class GuidedRuleTemplateEditorServiceImpl
     }
 
     @Override
-    protected GuidedTemplateEditorContent constructContent( Path path, Overview overview ) {
+    protected GuidedTemplateEditorContent constructContent( Path path,
+                                                            Overview overview ) {
         final TemplateModel model = load( path );
         final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -178,7 +176,7 @@ public class GuidedRuleTemplateEditorServiceImpl
                       final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( resource );
-            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             model.setPackageName( packageName );
 
             Metadata currentMetadata = metadataService.getMetadata( resource );
@@ -252,9 +250,9 @@ public class GuidedRuleTemplateEditorServiceImpl
     }
 
     @Override
-    public String toSource(final Path path,
-                           final TemplateModel model) {
-        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path), model);
+    public String toSource( final Path path,
+                            final TemplateModel model ) {
+        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
     }
 
     @Override
@@ -282,7 +280,7 @@ public class GuidedRuleTemplateEditorServiceImpl
             final List<ValidationMessage> messages = validateTemplateVariables( path,
                                                                                 model );
             messages.addAll( genericValidator.validate( path,
-                                                        new ByteArrayInputStream( RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ).getBytes( Charsets.UTF_8 ) ) ) );
+                                                        RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ) ) );
             return messages;
 
         } catch ( Exception e ) {

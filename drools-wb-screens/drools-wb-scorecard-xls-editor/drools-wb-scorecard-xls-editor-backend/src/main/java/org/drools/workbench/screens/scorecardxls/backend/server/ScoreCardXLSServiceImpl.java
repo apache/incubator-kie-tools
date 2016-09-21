@@ -128,7 +128,7 @@ public class ScoreCardXLSServiceImpl
                         final InputStream content,
                         final String sessionId,
                         final String comment ) {
-        return writeToFile(resource, content, sessionId, comment, true);
+        return writeToFile( resource, content, sessionId, comment, true );
     }
 
     @Override
@@ -136,17 +136,17 @@ public class ScoreCardXLSServiceImpl
                       final InputStream content,
                       final String sessionId,
                       final String comment ) {
-        return writeToFile(resource, content, sessionId, comment, false);
+        return writeToFile( resource, content, sessionId, comment, false );
     }
 
     private Path writeToFile( final Path resource,
                               final InputStream content,
                               final String sessionId,
                               final String comment,
-                              boolean create) {
+                              boolean create ) {
         final SessionInfo sessionInfo = getSessionInfo( sessionId );
         String userAction = "UPDATING";
-        if (create) {
+        if ( create ) {
             userAction = "CREATING";
         }
         log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " " + userAction + " asset [" + resource.getFileName() + "]" );
@@ -154,7 +154,7 @@ public class ScoreCardXLSServiceImpl
         OutputStream outputStream = null;
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
-            if (create) {
+            if ( create ) {
                 ioService.createFile( nioPath );
             }
             outputStream = ioService.newOutputStream( nioPath,
@@ -175,7 +175,7 @@ public class ScoreCardXLSServiceImpl
             } catch ( IOException e ) {
                 throw ExceptionUtilities.handleException( e );
             }
-            if (outputStream != null) {
+            if ( outputStream != null ) {
                 try {
                     outputStream.close();
                 } catch ( IOException e ) {
@@ -244,22 +244,11 @@ public class ScoreCardXLSServiceImpl
     @Override
     public List<ValidationMessage> validate( final Path path,
                                              final Path resource ) {
-        InputStream inputStream = null;
         try {
-            inputStream = ioService.newInputStream( Paths.convert( path ),
-                                                                   StandardOpenOption.READ );
-            return genericValidator.validate( path, inputStream );
+            return genericValidator.validate( path );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
-        } finally {
-            if ( inputStream != null ) {
-                try {
-                    inputStream.close();
-                } catch ( IOException ioe ) {
-                    throw ExceptionUtilities.handleException( ioe );
-                }
-            }
         }
     }
 
