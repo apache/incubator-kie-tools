@@ -32,8 +32,13 @@ public class ValidatorResultBuilder {
         this.validationMessages = new ArrayList<>();
     }
 
-    public ValidatorResultBuilder add( List<BuildMessage> messages ) {
+    public ValidatorResultBuilder add( final List<BuildMessage> messages ) {
         validationMessages.addAll( filterValidationMessages( messages ) );
+        return this;
+    }
+
+    public ValidatorResultBuilder remove( final List<BuildMessage> messages ) {
+        validationMessages.removeAll( filterValidationMessages( messages ) );
         return this;
     }
 

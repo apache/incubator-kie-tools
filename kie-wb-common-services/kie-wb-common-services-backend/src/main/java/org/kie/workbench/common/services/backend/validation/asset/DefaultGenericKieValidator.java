@@ -15,43 +15,63 @@
  */
 package org.kie.workbench.common.services.backend.validation.asset;
 
-import java.io.InputStream;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.validation.GenericValidator;
-import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Validator capable of validating generic Kie assets (i.e those that are handled by KieBuilder)
  */
+@ApplicationScoped
 public class DefaultGenericKieValidator implements GenericValidator {
 
-    private BuildService buildService;
-
-    private KieProjectService projectService;
+    private ValidatorBuildService validatorBuildService;
 
     public DefaultGenericKieValidator() {
+        //CDI proxies
     }
 
     @Inject
-    public DefaultGenericKieValidator( final KieProjectService projectService,
-                                       final BuildService buildService ) {
-        this.projectService = projectService;
-        this.buildService = buildService;
+    public DefaultGenericKieValidator( final ValidatorBuildService validatorBuildService ) {
+        this.validatorBuildService = validatorBuildService;
     }
 
-    @Override
-    public List<ValidationMessage> validate( final Path resourcePath,
-                                             final InputStream inputStream ) {
-
-        return validator().validate( resourcePath, inputStream );
+    public List<ValidationMessage> validate( final Path path,
+                                             final String content ) {
+        return validatorBuildService.validate( path,
+                                               content )
+                .stream()
+                .filter( fromValidatedPath( path ) )
+                .collect( Collectors.toList() );
     }
 
-    private Validator validator() {
-        return new Validator( projectService, buildService );
+    public List<ValidationMessage> validate( final Path path ) {
+        return validatorBuildService.validate( path )
+                .stream()
+                .filter( fromValidatedPath( path ) )
+                .collect( Collectors.toList() );
     }
+
+    protected Predicate<ValidationMessage> fromValidatedPath( final Path path ) {
+        return message -> {
+            final String destinationPathURI = removeFileExtension( path.toURI() );
+            final String messageURI = message.getPath() != null ? removeFileExtension( message.getPath().toURI() ) : "";
+            return messageURI.isEmpty() || destinationPathURI.endsWith( messageURI );
+        };
+    }
+
+    private String removeFileExtension( final String pathURI ) {
+        if ( pathURI != null && pathURI.contains( "." ) ) {
+            return pathURI.substring( 0, pathURI.lastIndexOf( "." ) );
+        }
+
+        return pathURI;
+    }
+
 }

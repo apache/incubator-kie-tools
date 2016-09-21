@@ -16,11 +16,12 @@
 
 package org.kie.workbench.common.services.backend.validation.asset;
 
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 
+import com.google.common.io.Resources;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.TestFileSystem;
 import org.junit.After;
@@ -33,7 +34,7 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DefaultGenericKieValidatorTest {
 
     private TestFileSystem testFileSystem;
@@ -54,10 +55,10 @@ public class DefaultGenericKieValidatorTest {
     @Test
     public void testWorks() throws Exception {
         final Path path = resourcePath( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
-        final InputStream inputStream = this.getClass().getResourceAsStream( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
+        final URL urlToValidate = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
 
         final List<ValidationMessage> errors = validator.validate( path,
-                                                                   inputStream );
+                                                                   Resources.toString( urlToValidate, Charset.forName( "UTF-8" ) ) );
 
         assertTrue( errors.isEmpty() );
     }

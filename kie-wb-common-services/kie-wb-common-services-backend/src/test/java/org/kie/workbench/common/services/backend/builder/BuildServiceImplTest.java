@@ -16,13 +16,12 @@
 
 package org.kie.workbench.common.services.backend.builder;
 
-import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import javax.enterprise.inject.Instance;
 
+import com.google.common.base.Charsets;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
@@ -205,7 +204,7 @@ public class BuildServiceImplTest {
     public void testBuildThatDoesNotUpdateTheCache() throws Exception {
         final Path path = path();
 
-        service.build( projectService.resolveProject( path ), path, inputStream() );
+        service.build( projectService.resolveProject( path ) );
 
         assertTrue( cachedFileSystemDoesNotChange() );
     }
@@ -215,7 +214,7 @@ public class BuildServiceImplTest {
         final Path path = path();
 
         service.build( projectService.resolveProject( path ) );
-        service.updatePackageResource( path, inputStream() );
+        service.updatePackageResource( path );
 
         assertTrue( cachedFileSystemDoesNotChange() );
     }
@@ -229,21 +228,20 @@ public class BuildServiceImplTest {
         return Paths.convert( testFileSystem.fileSystemProvider.getPath( urlToValidate.toURI() ) );
     }
 
-    private ByteArrayInputStream inputStream() {
-        final String content = "package org.kie.workbench.common.services.builder.tests.test1\n" +
+    private String content() {
+        return "package org.kie.workbench.common.services.builder.tests.test1\n" +
                 "\n" +
                 "rule R2\n" +
                 "when\n" +
                 "Ban()\n" +
                 "then\n" +
                 "end";
-        return new ByteArrayInputStream( content.getBytes() );
     }
 
     private boolean cachedFileSystemDoesNotChange() throws URISyntaxException {
         final Builder builder = service.getCache().assertBuilder( projectService.resolveProject( path() ) );
         final KieFileSystem fileSystem = builder.getKieFileSystem();
-        final String fileContent = new String( fileSystem.read( "src/main/resources/rule2.drl" ), StandardCharsets.UTF_8 );
+        final String fileContent = new String( fileSystem.read( "src/main/resources/rule2.drl" ), Charsets.UTF_8 );
 
         return fileContent.contains( "Bean" );
     }

@@ -18,6 +18,7 @@ package org.kie.workbench.common.services.backend.builder;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,11 +26,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import com.google.common.io.Resources;
 import org.drools.core.rule.TypeMetaInfo;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -45,7 +46,6 @@ import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProv
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListLoader;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListSaver;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
-import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
@@ -65,7 +65,7 @@ import static org.mockito.Mockito.*;
 public class BuilderTest
         extends BuilderTestBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(BuilderTest.class);
+    private static final Logger logger = LoggerFactory.getLogger( BuilderTest.class );
 
     private final Predicate<String> alwaysTrue = o -> true;
 
@@ -78,6 +78,7 @@ public class BuilderTest
     private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
     private LRUPomModelCache pomModelCache;
     private BuildService buildService;
+    private DefaultGenericKieValidator validator;
 
     @Before
     public void setUp() throws Exception {
@@ -93,6 +94,7 @@ public class BuilderTest
         dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
         pomModelCache = getReference( LRUPomModelCache.class );
         buildService = getReference( BuildService.class );
+        validator = getReference( DefaultGenericKieValidator.class );
     }
 
     @After
@@ -114,7 +116,7 @@ public class BuilderTest
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>(),
+                                             new ArrayList<>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
                                              getPackageNameWhiteListService(),
@@ -135,7 +137,7 @@ public class BuilderTest
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>(),
+                                             new ArrayList<>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
                                              getPackageNameWhiteListService(),
@@ -165,7 +167,7 @@ public class BuilderTest
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>(),
+                                             new ArrayList<>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
                                              getPackageNameWhiteListService(),
@@ -195,7 +197,7 @@ public class BuilderTest
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>(),
+                                             new ArrayList<>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
                                              getPackageNameWhiteListService(),
@@ -215,7 +217,7 @@ public class BuilderTest
         final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
 
         //Check packages
-        final Set<String> packageNames = new HashSet<String>();
+        final Set<String> packageNames = new HashSet<>();
         final Iterator<String> packageNameIterator = metaData.getPackages().iterator();
         while ( packageNameIterator.hasNext() ) {
             packageNames.add( packageNameIterator.next() );
@@ -253,7 +255,7 @@ public class BuilderTest
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>(),
+                                             new ArrayList<>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
                                              getPackageNameWhiteListService(),
@@ -285,7 +287,7 @@ public class BuilderTest
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>(),
+                                             new ArrayList<>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
                                              mock( PackageNameWhiteListService.class ),
@@ -317,7 +319,7 @@ public class BuilderTest
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>(),
+                                             new ArrayList<>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
                                              getPackageNameWhiteListService(),
@@ -326,11 +328,10 @@ public class BuilderTest
         assertNotNull( builder.getKieContainer() );
 
         //Validate Rule excluding Global definition
-        final DefaultGenericKieValidator validator = new DefaultGenericKieValidator( projectService, buildService );
         final URL urlToValidate = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
         final org.uberfire.java.nio.file.Path pathToValidate = p.getPath( urlToValidate.toURI() );
         final List<ValidationMessage> validationMessages = validator.validate( Paths.convert( pathToValidate ),
-                                                                               this.getClass().getResourceAsStream( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" ) );
+                                                                               Resources.toString( urlToValidate, Charset.forName( "UTF-8" ) ) );
         assertNotNull( validationMessages );
         assertEquals( 0,
                       validationMessages.size() );

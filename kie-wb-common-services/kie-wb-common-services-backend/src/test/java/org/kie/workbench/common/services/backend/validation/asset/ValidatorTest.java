@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.services.backend.validation.asset;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,7 +23,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.guvnor.common.services.project.builder.service.BuildService;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.TestFileSystem;
@@ -33,12 +32,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.io.IOService;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -51,12 +48,14 @@ public class ValidatorTest {
 
     private TestFileSystem testFileSystem;
 
-    private Validator validator;
+    private DefaultGenericKieValidator validator;
+    private ValidatorBuildService validatorBuildService;
 
     @Before
     public void setUp() throws Exception {
         testFileSystem = new TestFileSystem();
-        validator = new Validator( projectService(), buildService() );
+        validatorBuildService = testFileSystem.getReference( ValidatorBuildService.class );
+        validator = new DefaultGenericKieValidator( validatorBuildService );
     }
 
     @After
@@ -75,7 +74,8 @@ public class ValidatorTest {
                 "then\n" +
                 "end";
 
-        List<ValidationMessage> errors = validator.validate( path, new ByteArrayInputStream( content.getBytes() ) );
+        List<ValidationMessage> errors = validator.validate( path,
+                                                             content );
 
         assertTrue( errors.isEmpty() );
     }
@@ -91,7 +91,8 @@ public class ValidatorTest {
                 "then\n" +
                 "end";
 
-        List<ValidationMessage> errors = validator.validate( path, new ByteArrayInputStream( content.getBytes() ) );
+        List<ValidationMessage> errors = validator.validate( path,
+                                                             content );
 
         assertFalse( errors.isEmpty() );
     }
@@ -110,13 +111,14 @@ public class ValidatorTest {
                 "\n" +
                 "}";
 
-        List<ValidationMessage> validate = validator.validate( path1, new ByteArrayInputStream( content.getBytes() ) );
+        List<ValidationMessage> validate = validator.validate( path1,
+                                                               content );
 
         assertTrue( validate.isEmpty() );
     }
 
     @Test
-    public void testValidateWithAInalidJavaFile() throws Throwable {
+    public void testValidateWithAInvalidJavaFile() throws Throwable {
         final Path path1 = path( "/GuvnorM2RepoDependencyExample1/src/main/java/org/kie/workbench/common/services/builder/tests/test1/Bean.java" );
         final String content = "package org.kie.workbench.common.services.builder.tests.test1;\n" +
                 "\n" +
@@ -125,7 +127,8 @@ public class ValidatorTest {
                 "\n" +
                 "}\n";
 
-        List<ValidationMessage> validate = validator.validate( path1, new ByteArrayInputStream( content.getBytes() ) );
+        List<ValidationMessage> validate = validator.validate( path1,
+                                                               content );
 
         assertFalse( validate.isEmpty() );
     }
@@ -133,9 +136,11 @@ public class ValidatorTest {
     @Test
     public void testValidateWhenTheresNoProject() throws Exception {
         Path path = path( "/META-INF/beans.xml" );
-        InputStream inputStream = this.getClass().getResourceAsStream( "/META-INF/beans.xml" );
+        URL urlToValidate = this.getClass().getResource( "/META-INF/beans.xml" );
 
-        List<ValidationMessage> errors = validator.validate( path, inputStream );
+        List<ValidationMessage> errors = validator.validate( path,
+                                                             Resources.toString( urlToValidate,
+                                                                                 Charsets.UTF_8 ) );
 
         assertTrue( errors.isEmpty() );
     }
@@ -145,7 +150,8 @@ public class ValidatorTest {
         Path path = path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
         ValidationMessage errorMessage = errorMessage( path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule1.drl" ) );
 
-        List<ValidationMessage> result = applyPredicate( errorMessage, validator.fromValidatedPath( path ) );
+        List<ValidationMessage> result = applyPredicate( errorMessage,
+                                                         validator.fromValidatedPath( path ) );
 
         assertTrue( result.isEmpty() );
     }
@@ -155,7 +161,8 @@ public class ValidatorTest {
         Path path = path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
         ValidationMessage errorMessage = errorMessage( path );
 
-        List<ValidationMessage> result = applyPredicate( errorMessage, validator.fromValidatedPath( path ) );
+        List<ValidationMessage> result = applyPredicate( errorMessage,
+                                                         validator.fromValidatedPath( path ) );
 
         assertFalse( result.isEmpty() );
     }
@@ -165,7 +172,8 @@ public class ValidatorTest {
         Path path = path( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
         ValidationMessage errorMessage = errorMessage( null );
 
-        List<ValidationMessage> result = applyPredicate( errorMessage, validator.fromValidatedPath( path ) );
+        List<ValidationMessage> result = applyPredicate( errorMessage,
+                                                         validator.fromValidatedPath( path ) );
 
         assertFalse( result.isEmpty() );
     }
@@ -185,7 +193,12 @@ public class ValidatorTest {
     }
 
     private ValidationMessage errorMessage( Path path ) {
-        return new ValidationMessage( 0, Level.ERROR, path, 0, 0, null );
+        return new ValidationMessage( 0,
+                                      Level.ERROR,
+                                      path,
+                                      0,
+                                      0,
+                                      null );
     }
 
     private Path path( final String resourceName ) throws URISyntaxException {
@@ -193,15 +206,4 @@ public class ValidatorTest {
         return Paths.convert( testFileSystem.fileSystemProvider.getPath( urlToValidate.toURI() ) );
     }
 
-    private BuildService buildService() {
-        return testFileSystem.getReference( BuildService.class );
-    }
-
-    private KieProjectService projectService() {
-        return testFileSystem.getReference( KieProjectService.class );
-    }
-
-    private IOService ioService() {
-        return testFileSystem.getReference( IOService.class );
-    }
 }

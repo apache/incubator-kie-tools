@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,7 +35,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Entity;
 
-import com.google.common.base.Charsets;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
@@ -973,7 +971,7 @@ public class DataModelerServiceImpl
                 validationSource = source;
             }
 
-            return genericValidator.validate( path, new ByteArrayInputStream( validationSource != null ? validationSource.getBytes( Charsets.UTF_8 ) : "".getBytes() ) );
+            return genericValidator.validate( path, validationSource != null ? validationSource : "" );
 
         } catch ( Exception e ) {
             logger.error( "An error was produced during validation", e );
