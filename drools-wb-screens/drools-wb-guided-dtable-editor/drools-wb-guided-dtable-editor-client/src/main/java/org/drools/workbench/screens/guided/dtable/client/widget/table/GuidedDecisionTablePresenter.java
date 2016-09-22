@@ -70,8 +70,8 @@ import org.drools.workbench.screens.guided.dtable.client.GuidedDecisionTable;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.DefaultClipboard;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerProvider;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
 import org.drools.workbench.screens.guided.dtable.client.widget.auditlog.AuditLog;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
@@ -723,12 +723,14 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         final Map<String, String> convertedDropDownData = new TreeMap<String, String>();
         for ( int i = 0; i < dropDownItems.length; i++ ) {
             final String dropDownItem = dropDownItems[ i ];
+            String key = dropDownItem;
             String display = dropDownItem;
             if ( dropDownItem.indexOf( '=' ) > 0 ) {
                 final String[] split = ConstraintValueHelper.splitValue( dropDownItem );
+                key = split[ 0 ];
                 display = split[ 1 ];
             }
-            convertedDropDownData.put( dropDownItem.trim(),
+            convertedDropDownData.put( key.trim(),
                                        display.trim() );
         }
         return convertedDropDownData;

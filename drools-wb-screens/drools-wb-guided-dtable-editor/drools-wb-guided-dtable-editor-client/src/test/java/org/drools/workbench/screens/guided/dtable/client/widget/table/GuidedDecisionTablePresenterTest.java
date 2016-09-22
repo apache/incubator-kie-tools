@@ -504,6 +504,36 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
     @Test
     @SuppressWarnings("unchecked")
+    public void getEnumLookupsWithFixedListDefinitionWithSplitter() {
+        final DependentEnumsUtilities.Context context = mock( DependentEnumsUtilities.Context.class );
+        final Callback<Map<String, String>> callback = mock( Callback.class );
+        final DropDownData dd = DropDownData.create( new String[]{ "1=one", "2=two" } );
+
+        when( oracle.getEnums( eq( "FactType" ),
+                               eq( "field" ),
+                               any( Map.class ) ) ).thenReturn( dd );
+
+        dtPresenter.getEnumLookups( "FactType",
+                                    "field",
+                                    context,
+                                    callback );
+
+        verify( callback,
+                times( 1 ) ).callback( callbackValueCaptor.capture() );
+
+        final Map<String, String> callbackValue = callbackValueCaptor.getValue();
+        assertNotNull( callbackValue );
+        assertFalse( callbackValue.isEmpty() );
+        assertTrue( callbackValue.containsKey( "1" ) );
+        assertTrue( callbackValue.containsKey( "2" ) );
+        assertEquals( "one",
+                      callbackValue.get( "1" ) );
+        assertEquals( "two",
+                      callbackValue.get( "2" ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void getEnumLookupsWithQueryExpressionDefinition() {
         final DependentEnumsUtilities.Context context = mock( DependentEnumsUtilities.Context.class );
         final Callback<Map<String, String>> callback = mock( Callback.class );
