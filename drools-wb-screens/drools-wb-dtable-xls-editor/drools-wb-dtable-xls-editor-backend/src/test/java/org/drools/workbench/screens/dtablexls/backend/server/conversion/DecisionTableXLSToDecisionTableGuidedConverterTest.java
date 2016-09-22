@@ -27,6 +27,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
+import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSXResourceTypeDefinition;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
@@ -104,6 +105,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
     private Path expectedProjectImportsPath;
 
     private DecisionTableXLSResourceTypeDefinition xlsDTableType = new DecisionTableXLSResourceTypeDefinition();
+    private DecisionTableXLSXResourceTypeDefinition xlsxDTableType = new DecisionTableXLSXResourceTypeDefinition();
     private GuidedDTableResourceTypeDefinition guidedDTableType = new GuidedDTableResourceTypeDefinition();
     private DRLResourceTypeDefinition drlType = new DRLResourceTypeDefinition();
     private GlobalResourceTypeDefinition globalsType = new GlobalResourceTypeDefinition();
@@ -146,6 +148,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
                                                                         dataModelService,
                                                                         appConfigService,
                                                                         xlsDTableType,
+                                                                        xlsxDTableType,
                                                                         guidedDTableType,
                                                                         drlType,
                                                                         globalsType );
@@ -223,6 +226,21 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
                       projectImports.getImports().getImports().size() );
         assertEquals( "java.util.List",
                       projectImports.getImports().getImports().get( 0 ).getType() );
+
+        verify( guidedDecisionTableService,
+                times( 1 ) ).create( any( Path.class ),
+                                     any( String.class ),
+                                     any( GuidedDecisionTable52.class ),
+                                     any( String.class ) );
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2696
+    public void checkConversionOfXLSXFiles() {
+        final InputStream is = this.getClass().getResourceAsStream( "GUVNOR-2696.xlsx" );
+        when( ioService.newInputStream( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( is );
+        final ConversionResult result = converter.convert( path );
+        assertNotNull( result );
 
         verify( guidedDecisionTableService,
                 times( 1 ) ).create( any( Path.class ),

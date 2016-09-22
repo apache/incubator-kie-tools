@@ -40,6 +40,7 @@ import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversionService;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
+import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSXResourceTypeDefinition;
 import org.drools.workbench.screens.factmodel.backend.server.util.FactModelPersistence;
 import org.drools.workbench.screens.factmodel.model.AnnotationMetaModel;
 import org.drools.workbench.screens.factmodel.model.FactMetaModel;
@@ -94,6 +95,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     private DataModelService dataModelService;
     private AppConfigService appConfigService;
     private DecisionTableXLSResourceTypeDefinition xlsDTableType;
+    private DecisionTableXLSXResourceTypeDefinition xlsxDTableType;
     private GuidedDTableResourceTypeDefinition guidedDTableType;
     private DRLResourceTypeDefinition drlType;
     private GlobalResourceTypeDefinition globalsType;
@@ -117,6 +119,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                                                            final DataModelService dataModelService,
                                                            final AppConfigService appConfigService,
                                                            final DecisionTableXLSResourceTypeDefinition xlsDTableType,
+                                                           final DecisionTableXLSXResourceTypeDefinition xlsxDTableType,
                                                            final GuidedDTableResourceTypeDefinition guidedDTableType,
                                                            final DRLResourceTypeDefinition drlType,
                                                            final GlobalResourceTypeDefinition globalsType ) {
@@ -131,6 +134,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         this.dataModelService = dataModelService;
         this.appConfigService = appConfigService;
         this.xlsDTableType = xlsDTableType;
+        this.xlsxDTableType = xlsxDTableType;
         this.guidedDTableType = guidedDTableType;
         this.drlType = drlType;
         this.globalsType = globalsType;
@@ -163,8 +167,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         ConversionResult result = new ConversionResult();
 
         //Check Asset is of the correct format
-        if ( !xlsDTableType.accept( path ) ) {
-            result.addMessage( "Source Asset is not an XLS Decision Table.",
+        if ( !( xlsDTableType.accept( path ) || xlsxDTableType.accept( path ) ) ) {
+            result.addMessage( "Source Asset must be either a XLS or XLSX Decision Table file.",
                                ConversionMessageType.ERROR );
             return result;
         }
