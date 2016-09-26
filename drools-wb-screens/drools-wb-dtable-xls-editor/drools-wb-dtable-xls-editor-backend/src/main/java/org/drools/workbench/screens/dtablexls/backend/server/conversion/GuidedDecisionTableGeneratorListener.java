@@ -300,8 +300,15 @@ public class GuidedDecisionTableGeneratorListener
             return;
         }
 
-        // Ignore any comments cells preceding the first rule table column
+        // Row description set according to _ruleStartColumn preceding column
         if ( column < this._ruleStartColumn ) {
+            if( row - this._ruleStartRow > LABEL_ROW &&
+                    (column + 1) == this._ruleStartColumn &&
+                    row - this._ruleRow < 2 ) {
+                DEFAULT_DESCRIPTION_BUILDER.addCellValue( row,
+                        1,
+                        trimVal );
+            }
             return;
         }
 
@@ -346,9 +353,6 @@ public class GuidedDecisionTableGeneratorListener
                     ROW_NUMBER_BUILDER.addCellValue( row,
                                                      0,
                                                      "" );
-                    DEFAULT_DESCRIPTION_BUILDER.addCellValue( row,
-                                                              1,
-                                                              "" );
                 }
                 doDataCell( row,
                             column,

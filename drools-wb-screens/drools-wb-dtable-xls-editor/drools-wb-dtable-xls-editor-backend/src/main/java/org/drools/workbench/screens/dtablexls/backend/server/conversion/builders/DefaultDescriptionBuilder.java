@@ -57,7 +57,8 @@ public class DefaultDescriptionBuilder
     public void addCellValue( final int row,
                               final int column,
                               final String value ) {
-        this.values.add( new DTCellValue52( "Created from row " + ( row + 1 ) ) );
+        String description = (value != null && !value.isEmpty()) ? value : "Created from row " + ( row + 1 ) ;
+        this.values.add( new DTCellValue52( description ) );
     }
 
     @Override

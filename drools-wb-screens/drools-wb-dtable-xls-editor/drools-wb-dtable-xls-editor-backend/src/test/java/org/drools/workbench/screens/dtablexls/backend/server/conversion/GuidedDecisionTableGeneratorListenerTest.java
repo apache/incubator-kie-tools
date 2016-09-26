@@ -279,9 +279,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 8", 2 },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Rule 1", 2 },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 9", 1 },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Rule 2", 1 },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -350,9 +350,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", 0 },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Rule 1", 0 },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", 0 },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Rule 2", 0 },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -421,9 +421,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", 0 },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Rule 1", 0 },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", 0 },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Rule 2", 0 },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -484,9 +484,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", "cheddar" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Rule 1", "cheddar" },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", "edam" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Rule 2", "edam" },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -713,17 +713,17 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", "10", "20", "30", "hello", true },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Row 1", "10", "20", "30", "hello", true },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", "50", "60", "70", "goodbye", false },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Row 2", "50", "60", "70", "goodbye", false },
                                      dtable.getData().get( 1 ) ) );
     }
 
     @Test
     public void testConditions() {
         final List<Object[]> expectedRows = new ArrayList<Object[]>( 2 );
-        expectedRows.add( new Object[]{ 1, "Created from row 7", 20, "Mike", "Brown", "BMW", "M3" } );
-        expectedRows.add( new Object[]{ 2, "Created from row 8", 30, "Jason", "Grey", "Audi", "S4" } );
+        expectedRows.add( new Object[]{ 1, "Row 1", 20, "Mike", "Brown", "BMW", "M3" } );
+        expectedRows.add( new Object[]{ 2, "Row 2", 30, "Jason", "Grey", "Audi", "S4" } );
         conditionsTest( "Conditions.xls",
                         expectedRows );
     }
@@ -731,8 +731,8 @@ public class GuidedDecisionTableGeneratorListenerTest {
     @Test
     public void testConditionsIndexedParameters() {
         final List<Object[]> expectedRows = new ArrayList<Object[]>( 2 );
-        expectedRows.add( new Object[]{ 1, "Created from row 7", 20, "Mike", "Brown", "BMW", "M3" } );
-        expectedRows.add( new Object[]{ 2, "Created from row 8", 30, "Jason", "Grey", "", "" } );
+        expectedRows.add( new Object[]{ 1, "Row 1", 20, "Mike", "Brown", "BMW", "M3" } );
+        expectedRows.add( new Object[]{ 2, "Row 2", 30, "Jason", "Grey", "", "" } );
         conditionsTest( "Conditions-indexedParameters.xls",
                         expectedRows );
     }
@@ -1142,7 +1142,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
                       dtable0.getData().size() );
         assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", "AG1", "John", "Hello Sir" },
                                      dtable0.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", "AG2", "Jane", "Hello Madam" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Row 2", "AG2", "Jane", "Hello Madam" },
                                      dtable0.getData().get( 1 ) ) );
 
         //Check expanded columns
@@ -1227,7 +1227,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 2,
                       dtable1.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 15", "John", "25" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Row 1", "John", "25" },
                                      dtable1.getData().get( 0 ) ) );
         assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 16", "Jane", "29" },
                                      dtable1.getData().get( 1 ) ) );
@@ -1318,9 +1318,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", "isQualified" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Row 1", "isQualified" },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", "isLicensed" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Row 2", "isLicensed" },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -1751,8 +1751,55 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 1,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 10", "false", "", "true", "0" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "asd", "false", "", "true", "0" },
                                      dtable.getData().get( 0 ) ) );
+    }
+
+    @Test
+    public void testRowDescriptions() {
+        final ConversionResult result = new ConversionResult();
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result,
+                dmo );
+        listeners.add( listener );
+
+        //Convert
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "MultipleRuleTables.xls" );
+
+        try {
+            parser.parseFile( is );
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException ioe ) {
+                fail( ioe.getMessage() );
+            }
+        }
+
+        //Check conversion results
+        assertEquals( 0,
+                result.getMessages().size() );
+
+        //Check basics
+        final List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+        assertNotNull( dtables );
+        assertEquals( 2,
+                dtables.size() );
+
+        GuidedDecisionTable52 dtable = dtables.get( 0 );
+        assertEquals( 2, dtable.getData().size() );
+        assertEquals( "Created from row 7",
+                        dtable.getData().get(0).get(1).getStringValue());
+        assertEquals( "Row 2",
+                        dtable.getData().get(1).get(1).getStringValue());
+
+        dtable = dtables.get( 1 );
+        assertEquals( 2, dtable.getData().size() );
+        assertEquals( "Row 1",
+                dtable.getData().get(0).get(1).getStringValue());
+        assertEquals( "Created from row 16",
+                dtable.getData().get(1).get(1).getStringValue());
     }
 
     @Test
@@ -2113,7 +2160,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 1,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 10", false, true, false, false },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "asd", false, true, false, false },
                                      dtable.getData().get( 0 ) ) );
     }
 
@@ -2501,13 +2548,13 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 4,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 11", "ALL", "XYZ", "EL", "HighEnd", 1, 0, 1.75d },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "1", "ALL", "XYZ", "EL", "HighEnd", 1, 0, 1.75d },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 12", "ALL", "XYZ", "EL", "HighEnd", 5, 1, 2.00d },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "2", "ALL", "XYZ", "EL", "HighEnd", 5, 1, 2.00d },
                                      dtable.getData().get( 1 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 3, "Created from row 13", "ALL", "XYZ", "EL", "HighEnd", 7, 5, 2.00d },
+        assertTrue( isRowEquivalent( new Object[]{ 3, "3", "ALL", "XYZ", "EL", "HighEnd", 7, 5, 2.00d },
                                      dtable.getData().get( 2 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 4, "Created from row 14", "ALL", "XYZ", "EL", "HighEnd", 10, 7, 1.00d },
+        assertTrue( isRowEquivalent( new Object[]{ 4, "4", "ALL", "XYZ", "EL", "HighEnd", 10, 7, 1.00d },
                                      dtable.getData().get( 3 ) ) );
     }
 
@@ -2730,9 +2777,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 11", null, false, "Goodbye cruel world", null },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Hello World", null, false, "Goodbye cruel world", null },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 12", null, false, "", null },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Goodbye", null, false, "", null },
                                      dtable.getData().get( 1 ) ) );
     }
 
