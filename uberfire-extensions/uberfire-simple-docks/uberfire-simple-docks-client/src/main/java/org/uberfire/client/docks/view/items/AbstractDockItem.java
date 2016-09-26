@@ -16,6 +16,7 @@
 
 package org.uberfire.client.docks.view.items;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
@@ -23,30 +24,40 @@ import com.google.gwt.user.client.ui.Image;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.html.Span;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
-
 
 public abstract class AbstractDockItem extends Composite {
 
     private final boolean selected;
     private final UberfireDock dock;
 
-    AbstractDockItem(UberfireDock dock) {
+    AbstractDockItem( UberfireDock dock ) {
         this.dock = dock;
         this.selected = false;
     }
 
-    public static AbstractDockItem create(UberfireDock dock, ParameterizedCommand<String> selectCommand, ParameterizedCommand<String> deselectCommand) {
-        if (dock.getDockPosition() == UberfireDockPosition.SOUTH) {
-            return new SouthDockItem(dock, selectCommand, deselectCommand);
+    public static AbstractDockItem create( UberfireDock dock,
+                                           ParameterizedCommand<String> selectCommand,
+                                           ParameterizedCommand<String> deselectCommand ) {
+        if ( dock.getDockPosition() == UberfireDockPosition.SOUTH ) {
+            return new SouthDockItem( dock, selectCommand, deselectCommand );
         } else {
-            return new SideDockItem(dock, selectCommand, deselectCommand);
+            return new SideDockItem( dock, selectCommand, deselectCommand );
         }
     }
 
-    void configureIcon( Button itemButton, ImageResource imageResource ) {
+    void configureText( final Button itemButton,
+                        final String text ) {
+        Span itemButtonText = GWT.create( Span.class );
+        itemButtonText.setText( text );
+        itemButton.insert( itemButtonText, 0 );
+    }
+
+    void configureIcon( Button itemButton,
+                        ImageResource imageResource ) {
         if ( getDock().getIconType() != null ) {
             itemButton.setIcon( getIcon() );
             itemButton.setIconFixedWidth( true );
@@ -63,11 +74,11 @@ public abstract class AbstractDockItem extends Composite {
             imageIcon.getElement().getStyle().setWidth( 14, Style.Unit.PX );
             imageIcon.getElement().getStyle().setHeight( 14, Style.Unit.PX );
 
-            if ( itemButton.getText() != null && !itemButton.getText().isEmpty() ) {
+            if ( itemButton.getWidgetCount() > 1 ) {
                 imageIcon.getElement().getStyle().setPosition( Style.Position.ABSOLUTE );
                 imageIcon.getElement().getStyle().setTop( 3, Style.Unit.PX );
                 imageIcon.getElement().getStyle().setLeft( 3, Style.Unit.PX );
-                
+
                 itemButton.getElement().getStyle().setPaddingLeft( 20, Style.Unit.PX );
                 itemButton.getElement().getStyle().setPosition( Style.Position.RELATIVE );
             }
@@ -77,17 +88,16 @@ public abstract class AbstractDockItem extends Composite {
     }
 
     private IconType getIcon() {
-        if (dock.getIconType() == null) {
+        if ( dock.getIconType() == null ) {
             return null;
         }
 
         try {
-            return IconType.valueOf(dock.getIconType());
-        } catch (Exception e) {
+            return IconType.valueOf( dock.getIconType() );
+        } catch ( Exception e ) {
             return IconType.FOLDER_OPEN;
         }
     }
-
 
     public UberfireDock getDock() {
         return dock;

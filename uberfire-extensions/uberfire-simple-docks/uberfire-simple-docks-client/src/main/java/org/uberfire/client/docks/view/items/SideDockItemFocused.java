@@ -25,13 +25,11 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 
 public class SideDockItemFocused
@@ -61,7 +59,7 @@ public class SideDockItemFocused
     void createButton( final SideDockItem parent ) {
         itemButton.setSize( ButtonSize.SMALL );
         itemButton.setType( ButtonType.INFO );
-        itemButton.setText( parent.getLabel() );
+        parent.configureText( itemButton, parent.getLabel() );
         parent.configureIcon( itemButton, parent.getDock().getImageIconFocused() );
         onMouseOutHidePopup();
         itemButton.addClickHandler( new ClickHandler() {

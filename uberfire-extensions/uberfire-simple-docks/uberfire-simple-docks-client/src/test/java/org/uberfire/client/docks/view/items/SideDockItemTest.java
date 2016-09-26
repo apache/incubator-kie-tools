@@ -22,6 +22,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -75,6 +76,7 @@ public class SideDockItemTest {
         sideDockWithFontIcon.getPopup().createButton( sideDockWithFontIcon );
 
         verify( sideDockWithFontIcon ).configureIcon( any( Button.class ), eq( (ImageResource) null ) );
+        verify( sideDockWithFontIcon ).configureIcon( any( Button.class ), eq( (ImageResource) null ) );
         verify( sideDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
     }
 
@@ -104,8 +106,10 @@ public class SideDockItemTest {
     public void createSideDockItemFocusedWithImageIconTest() {
         sideDockWithImageIcon.getPopup().createButton( sideDockWithImageIcon );
 
-        verify( sideDockWithImageIcon ).configureIcon( any( Button.class ), eq( imageResourceFocused ) );
-        verify( sideDockWithImageIcon ).configureImageIcon( any( Button.class ), eq( imageResourceFocused ) );
+        InOrder ordenatedVerification = inOrder( sideDockWithImageIcon );
+        ordenatedVerification.verify( sideDockWithImageIcon ).configureText( any( Button.class ), anyString() );
+        ordenatedVerification.verify( sideDockWithImageIcon ).configureIcon( any( Button.class ), eq( imageResourceFocused ) );
+        ordenatedVerification.verify( sideDockWithImageIcon ).configureImageIcon( any( Button.class ), eq( imageResourceFocused ) );
     }
 
     @Test

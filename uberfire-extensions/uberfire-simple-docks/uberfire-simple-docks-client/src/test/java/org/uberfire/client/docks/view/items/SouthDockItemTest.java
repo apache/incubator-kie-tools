@@ -22,6 +22,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -66,8 +67,10 @@ public class SouthDockItemTest {
     public void createSouthDockItemWithFontIconTest() {
         southDockWithFontIcon.createButton();
 
-        verify( southDockWithFontIcon ).configureIcon( any( Button.class ), eq( (ImageResource) null ) );
-        verify( southDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
+        InOrder ordenatedVerification = inOrder( southDockWithFontIcon );
+        ordenatedVerification.verify( southDockWithFontIcon ).configureText( any( Button.class ), anyString() );
+        ordenatedVerification.verify( southDockWithFontIcon ).configureIcon( any( Button.class ), eq( (ImageResource) null ) );
+        ordenatedVerification.verify( southDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
     }
 
     @Test

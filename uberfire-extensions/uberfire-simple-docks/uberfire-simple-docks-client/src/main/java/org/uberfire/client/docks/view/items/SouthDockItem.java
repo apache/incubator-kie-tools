@@ -17,17 +17,14 @@
 package org.uberfire.client.docks.view.items;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -67,7 +64,7 @@ public class SouthDockItem
     void createButton() {
         itemButton.setSize( ButtonSize.SMALL );
         itemButton.setType( ButtonType.LINK );
-        itemButton.setText( getDock().getLabel() );
+        configureText( itemButton, getDock().getLabel() );
         configureIcon( itemButton, getDock().getImageIcon() );
         itemButton.getElement().addClassName( CSS.CSS().southDockItem() );
         itemButton.addClickHandler( new ClickHandler() {
