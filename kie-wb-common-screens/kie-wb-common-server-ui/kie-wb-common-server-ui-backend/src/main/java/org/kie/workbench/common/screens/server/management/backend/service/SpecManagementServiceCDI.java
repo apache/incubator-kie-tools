@@ -70,7 +70,7 @@ public class SpecManagementServiceCDI extends RestSpecManagementServiceImpl impl
     @Override
     public boolean isContainerIdValid( String serverTemplateId,
                                        String containerId ) {
-        if ( !isValidJavaIdentifier( containerId ) ) {
+        if ( !isValidIdentifier( containerId ) ) {
             return false;
         }
         final ServerTemplate template = getServerTemplate( serverTemplateId );
@@ -86,23 +86,13 @@ public class SpecManagementServiceCDI extends RestSpecManagementServiceImpl impl
         return !getTemplateStorage().exists( serverTemplateId );
     }
 
-    private boolean isValidJavaIdentifier( String s ) {
-        // an empty or null string cannot be a valid identifier
-        if ( s == null || s.length() == 0 ) {
-            return false;
-        }
-
-        char[] c = s.toCharArray();
-        if ( !Character.isJavaIdentifierStart( c[ 0 ] ) ) {
-            return false;
-        }
-
-        for ( int i = 1; i < c.length; i++ ) {
-            if ( !Character.isJavaIdentifierPart( c[ i ] ) ) {
+    private boolean isValidIdentifier( final String s ) {
+        for ( char c : s.toCharArray() ) {
+            if ( !( Character.isLetterOrDigit( c ) ||
+                    c == ':' || c == '-' || c == '.' ) ) {
                 return false;
             }
         }
-
         return true;
     }
 }
