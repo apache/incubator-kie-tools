@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -94,6 +93,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.Gui
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.EnumLoaderUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.rule.client.util.GWTDateConverter;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -103,17 +103,14 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.LockTarget;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
-import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -135,7 +132,6 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private final User identity;
     private final GuidedDTableResourceType resourceType;
     private final Caller<RuleNamesService> ruleNameService;
-    private final Caller<EnumDropdownService> enumDropdownService;
     private final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent;
     private final Event<DecisionTableColumnSelectedEvent> decisionTableColumnSelectedEvent;
     private final Event<DecisionTableSelectionsChangedEvent> decisionTableSelectionsChangedEvent;
@@ -153,6 +149,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private final GuidedDecisionTableLinkManager linkManager;
     private final Clipboard clipboard;
     private final DecisionTableAnalyzerProvider decisionTableAnalyzerProvider;
+    private final EnumLoaderUtilities enumLoaderUtilities;
 
     private final Access access = new Access();
 
@@ -233,7 +230,6 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     public GuidedDecisionTablePresenter( final User identity,
                                          final GuidedDTableResourceType resourceType,
                                          final Caller<RuleNamesService> ruleNameService,
-                                         final Caller<EnumDropdownService> enumDropdownService,
                                          final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
                                          final Event<DecisionTableColumnSelectedEvent> decisionTableColumnSelectedEvent,
                                          final Event<DecisionTableSelectionsChangedEvent> decisionTableSelectionsChangedEvent,
@@ -250,11 +246,11 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                          final @GuidedDecisionTable GuidedDecisionTableLockManager lockManager,
                                          final @GuidedDecisionTable GuidedDecisionTableLinkManager linkManager,
                                          final Clipboard clipboard,
-                                         final DecisionTableAnalyzerProvider decisionTableAnalyzerProvider ) {
+                                         final DecisionTableAnalyzerProvider decisionTableAnalyzerProvider,
+                                         final EnumLoaderUtilities enumLoaderUtilities ) {
         this.identity = identity;
         this.resourceType = resourceType;
         this.ruleNameService = ruleNameService;
-        this.enumDropdownService = enumDropdownService;
         this.decisionTableSelectedEvent = decisionTableSelectedEvent;
         this.decisionTableColumnSelectedEvent = decisionTableColumnSelectedEvent;
         this.decisionTableSelectionsChangedEvent = decisionTableSelectionsChangedEvent;
@@ -272,6 +268,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         this.linkManager = linkManager;
         this.clipboard = clipboard;
         this.decisionTableAnalyzerProvider = decisionTableAnalyzerProvider;
+        this.enumLoaderUtilities = enumLoaderUtilities;
 
         CellUtilities.injectDateConvertor( getDateConverter() );
     }
@@ -716,24 +713,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     @Override
     public Map<String, String> getValueListLookups( final BaseColumn column ) {
         final String[] dropDownItems = columnUtilities.getValueList( column );
-        return convertDropDownData( dropDownItems );
-    }
-
-    private Map<String, String> convertDropDownData( final String[] dropDownItems ) {
-        final Map<String, String> convertedDropDownData = new TreeMap<String, String>();
-        for ( int i = 0; i < dropDownItems.length; i++ ) {
-            final String dropDownItem = dropDownItems[ i ];
-            String key = dropDownItem;
-            String display = dropDownItem;
-            if ( dropDownItem.indexOf( '=' ) > 0 ) {
-                final String[] split = ConstraintValueHelper.splitValue( dropDownItem );
-                key = split[ 0 ];
-                display = split[ 1 ];
-            }
-            convertedDropDownData.put( key.trim(),
-                                       display.trim() );
-        }
-        return convertedDropDownData;
+        return enumLoaderUtilities.convertDropDownData( dropDownItems );
     }
 
     @Override
@@ -741,40 +721,14 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                 final String factField,
                                 final DependentEnumsUtilities.Context context,
                                 final Callback<Map<String, String>> callback ) {
-        final DropDownData dropDownData = oracle.getEnums( factType,
+        final DropDownData enumDefinition = oracle.getEnums( factType,
                                                            factField,
                                                            this.dependentEnumsUtilities.getCurrentValueMap( context ) );
-        if ( dropDownData == null ) {
-            callback.callback( Collections.<String, String>emptyMap() );
-            return;
-        }
-
-        if ( dropDownData.getFixedList() != null ) {
-            final Map<String, String> convertedDropDownData = convertDropDownData( dropDownData.getFixedList() );
-            callback.callback( convertedDropDownData );
-            return;
-        }
-
-        //Lookup data from server if the list of enumerations comes from an external query
-        if ( dropDownData.getQueryExpression() == null ) {
-            callback.callback( Collections.<String, String>emptyMap() );
-        }
-        view.showBusyIndicator( CommonConstants.INSTANCE.RefreshingList() );
-        enumDropdownService.call( new RemoteCallback<String[]>() {
-                                      @Override
-                                      public void callback( final String[] items ) {
-                                          view.hideBusyIndicator();
-                                          if ( items.length == 0 ) {
-                                              callback.callback( Collections.<String, String>emptyMap() );
-                                          } else {
-                                              final Map<String, String> convertedDropDownData = convertDropDownData( items );
-                                              callback.callback( convertedDropDownData );
-                                          }
-                                      }
-                                  },
-                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).loadDropDownExpression( getCurrentPath(),
-                                                                                                             dropDownData.getValuePairs(),
-                                                                                                             dropDownData.getQueryExpression() );
+        enumLoaderUtilities.getEnums( enumDefinition,
+                                callback,
+                                this,
+                                      ()->view.showBusyIndicator( CommonConstants.INSTANCE.RefreshingList() ),
+                                      ()->view.hideBusyIndicator());
     }
 
     @Override

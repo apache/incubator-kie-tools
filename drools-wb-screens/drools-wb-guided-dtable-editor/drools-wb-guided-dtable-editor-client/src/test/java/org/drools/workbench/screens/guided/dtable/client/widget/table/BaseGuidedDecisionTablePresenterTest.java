@@ -26,7 +26,6 @@ import javax.enterprise.event.Event;
 
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.DefaultClipboard;
@@ -78,6 +77,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.sync
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.MetaDataColumnSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ModelSynchronizerImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.RowSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.EnumLoaderUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
@@ -117,6 +117,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     @Mock
     protected EnumDropdownService enumDropdownService;
     protected Caller<EnumDropdownService> enumDropdownServiceCaller;
+    protected EnumLoaderUtilities enumLoaderUtilities;
 
     @Mock
     protected AsyncPackageDataModelOracleFactory oracleFactory;
@@ -265,13 +266,13 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     private void setupServices() {
         ruleNameServiceCaller = new CallerMock<>( ruleNameService );
         enumDropdownServiceCaller = new CallerMock<>( enumDropdownService );
+        enumLoaderUtilities =new EnumLoaderUtilities( enumDropdownServiceCaller );
     }
 
     private void setupPresenter() {
         final GuidedDecisionTablePresenter wrapped = new GuidedDecisionTablePresenter( identity,
                                                                                        resourceType,
                                                                                        ruleNameServiceCaller,
-                                                                                       enumDropdownServiceCaller,
                                                                                        decisionTableSelectedEvent,
                                                                                        decisionTableColumnSelectedEvent,
                                                                                        decisionTableSelectionsChangedEvent,
@@ -288,7 +289,8 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                                                                                        lockManager,
                                                                                        linkManager,
                                                                                        clipboard,
-                                                                                       decisionTableAnalyzerProvider  ) {
+                                                                                       decisionTableAnalyzerProvider,
+                                                                                       enumLoaderUtilities ) {
             @Override
             void initialiseLockManager() {
                 //Do nothing for tests

@@ -46,6 +46,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.conv
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.GridWidgetColumnFactoryImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.MoveColumnVetoException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.EnumLoaderUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.gwtbootstrap3.client.ui.html.Text;
@@ -108,6 +109,9 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
     @Mock
     private DecisionTableAnalyzerProvider decisionTableAnalyzerProvider;
 
+    @Mock
+    private EnumLoaderUtilities enumLoaderUtilities;
+
     private GridWidgetColumnFactory gridWidgetColumnFactory = new GridWidgetColumnFactoryImpl();
     private GuidedDecisionTablePresenter dtPresenter;
     private GuidedDecisionTableEditorContent dtContent;
@@ -141,7 +145,6 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
                                                         null,
                                                         null,
                                                         null,
-                                                        null,
                                                         refreshAttributesPanelEvent,
                                                         refreshMetaDataPanelEvent,
                                                         refreshConditionsPanelEvent,
@@ -155,7 +158,8 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
                                                         lockManager,
                                                         null,
                                                         null,
-                                                        decisionTableAnalyzerProvider ) {
+                                                        decisionTableAnalyzerProvider,
+                                                        enumLoaderUtilities ) {
             @Override
             void initialiseLockManager() {
                 //Do nothing for tests
