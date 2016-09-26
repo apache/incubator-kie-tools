@@ -124,6 +124,11 @@ public class ValidatorBuildService {
                 builder.build();
             }
             final Builder clone = builder.clone();
+            //First delete resource otherwise if the resource already had errors following builder.build()
+            //the incremental compilation will not report any additional errors and the resource will be
+            //considered valid.
+            clone.deleteResource( nioResourcePath );
+
             final IncrementalBuildResults incrementalBuildResults = clone.updateResource( nioResourcePath,
                                                                                           inputStream );
             resultBuilder.add( incrementalBuildResults.getAddedMessages() );
