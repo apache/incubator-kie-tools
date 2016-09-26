@@ -16,12 +16,16 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
@@ -38,8 +42,6 @@ import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.CopyService;
@@ -169,24 +171,24 @@ public class ScenarioTestEditorServiceImpl
         try {
             return renameService.rename( path,
                                          newName,
-                                        comment);
+                                         comment );
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
     @Override
-    public Path copy(final Path path,
-                     final String newName,
-                     final String comment) {
+    public Path copy( final Path path,
+                      final String newName,
+                      final String comment ) {
         try {
-            return copyService.copy(path,
-                                    newName,
-                                    comment);
+            return copyService.copy( path,
+                                     newName,
+                                     comment );
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
@@ -207,49 +209,81 @@ public class ScenarioTestEditorServiceImpl
     }
 
     @Override
-    public TestScenarioModelContent loadContent(Path path) {
-        return super.loadContent(path);
+    public TestScenarioModelContent loadContent( Path path ) {
+        return super.loadContent( path );
     }
 
     @Override
-    protected TestScenarioModelContent constructContent(Path path, Overview overview) {
-        final Scenario scenario = load(path);
-        final String packageName = projectService.resolvePackage(path).getPackageName();
-        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+    protected TestScenarioModelContent constructContent( Path path,
+                                                         Overview overview ) {
+        final Scenario scenario = load( path );
+        final String packageName = projectService.resolvePackage( path ).getPackageName();
+        final PackageDataModelOracle dataModelOracle = getDataModel( path );
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        final Set<String> usedFullyQualifiedClassNames = getUsedFullyQualifiedClassNames( scenario, dataModelOracle );
 
-        //Get FQCN's used by model
-        final TestScenarioModelVisitor visitor = new TestScenarioModelVisitor(dataModel, scenario);
-        final Set<String> consumedFQCNs = visitor.visit();
-
-        //Get FQCN's used by Globals
-        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
-
-        DataModelOracleUtilities.populateDataModel(oracle,
-                                                   dataModel,
-                                                   consumedFQCNs);
+        DataModelOracleUtilities.populateDataModel( dataModelOracle,
+                                                    dataModel,
+                                                    usedFullyQualifiedClassNames );
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         safeSessionInfo));
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                           safeSessionInfo ) );
 
-        return new TestScenarioModelContent(scenario,
-                                            overview,
-                                            packageName,
-                                            dataModel);
+        return new TestScenarioModelContent( scenario,
+                                             overview,
+                                             packageName,
+                                             dataModel );
     }
 
     @Override
-    public TestScenarioResult runScenario(final Path path,
-                                          final Scenario scenario) {
+    public TestScenarioResult runScenario( final Path path,
+                                           final Scenario scenario ) {
+        addDependentImportsToScenario( scenario, path );
+
         try {
             return scenarioRunner.run(
                     scenario,
-                    projectService.resolveProject(path));
+                    projectService.resolveProject( path ) );
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
+    void addDependentImportsToScenario( final Scenario scenario,
+                                        final Path path ) {
+        final PackageDataModelOracle dataModel = getDataModel( path );
+        final Set<String> usedFullyQualifiedClassNames = getUsedFullyQualifiedClassNames( scenario, dataModel );
+
+        for ( String className : usedFullyQualifiedClassNames ) {
+            final Import imp = new Import( className );
+            final List<Import> scenarioImports = scenario.getImports().getImports();
+
+            if ( !scenarioImports.contains( imp ) ) {
+                scenarioImports.add( imp );
+            }
+        }
+    }
+
+    PackageDataModelOracle getDataModel( final Path path ) {
+        return dataModelService.getDataModel( path );
+    }
+
+    Collection<String> getFullyQualifiedClassNamesUsedByGlobals( final PackageDataModelOracle dataModelOracle ) {
+        return dataModelOracle.getPackageGlobals().values();
+    }
+
+    Set<String> getFullyQualifiedClassNamesUsedByModel( final Scenario scenario ) {
+        final TestScenarioModelVisitor visitor = new TestScenarioModelVisitor( scenario );
+        return visitor.visit();
+    }
+
+    private Set<String> getUsedFullyQualifiedClassNames( final Scenario scenario,
+                                                 final PackageDataModelOracle dataModelOracle ) {
+        return new HashSet<String>() {{
+            addAll( getFullyQualifiedClassNamesUsedByModel( scenario ) );
+            addAll( getFullyQualifiedClassNamesUsedByGlobals( dataModelOracle ) );
+        }};
+    }
 }

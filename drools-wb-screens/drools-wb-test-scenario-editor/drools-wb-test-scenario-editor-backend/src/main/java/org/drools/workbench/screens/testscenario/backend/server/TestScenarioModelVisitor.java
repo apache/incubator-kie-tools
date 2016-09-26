@@ -28,13 +28,10 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleB
 
 public class TestScenarioModelVisitor {
 
-    private final PackageDataModelOracleBaselinePayload dmo;
     private final Scenario scenario;
     private HashSet<String> fqcNames = new HashSet<String>();
 
-    public TestScenarioModelVisitor( PackageDataModelOracleBaselinePayload dmo,
-                                     Scenario scenario ) {
-        this.dmo = dmo;
+    public TestScenarioModelVisitor( Scenario scenario ) {
         this.scenario = scenario;
     }
 
