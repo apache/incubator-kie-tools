@@ -98,7 +98,6 @@ import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -482,8 +481,8 @@ public class ProjectScreenPresenter
     }
 
     private void updateEditorTitle() {
-        title = ProjectEditorResources.CONSTANTS.ProjectScreenWithName( model.getPOM().getGav().getArtifactId() + ":" +
-                                                                                model.getPOM().getGav().getGroupId() + ":" +
+        title = ProjectEditorResources.CONSTANTS.ProjectScreenWithName( model.getPOM().getGav().getGroupId() + ":" +
+                                                                                model.getPOM().getGav().getArtifactId() + ":" +
                                                                                 model.getPOM().getGav().getVersion() );
 
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
