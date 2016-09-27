@@ -20,7 +20,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
@@ -652,6 +651,26 @@ public class KieMultipleDocumentEditorTest {
                 times( 1 ) ).setReadOnly( eq( true ) );
         verify( editor,
                 times( 1 ) ).refreshDocument( document );
+    }
+
+    @Test
+    public void verifyOverviewPageUsesVersionManagerVersion() {
+        final TestDocument document = createTestDocument();
+
+        registerDocument( document );
+        activateDocument( document );
+
+        final ArgumentCaptor<com.google.gwt.user.client.Command> onFocusCommandCaptor = ArgumentCaptor.forClass( com.google.gwt.user.client.Command.class );
+        verify( kieEditorWrapperView,
+                times( 1 ) ).addOverviewPage( any( OverviewWidgetPresenter.class ),
+                                              onFocusCommandCaptor.capture() );
+
+        final com.google.gwt.user.client.Command onFocusCommand = onFocusCommandCaptor.getValue();
+        assertNotNull( onFocusCommand );
+        onFocusCommand.execute();
+
+        verify( versionRecordManager,
+                times( 1 ) ).getVersion();
     }
 
     @Test

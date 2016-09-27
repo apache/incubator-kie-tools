@@ -67,7 +67,8 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
  * {@link KieDocument} documents are first registered and then activated. Registration ensures the document
  * is configured for optimistic concurrent lock handling. Activation updates the content of the editor to
  * reflect the active document.
- * @param <D> Document type
+ * @param <D>
+ *         Document type
  */
 public abstract class KieMultipleDocumentEditor<D extends KieDocument> implements KieMultipleDocumentEditorPresenter<D> {
 
@@ -362,7 +363,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
         kieEditorWrapperView.addMainEditorPage( editorView );
 
         kieEditorWrapperView.addOverviewPage( overviewWidget,
-                                              () -> overviewWidget.refresh( document.getVersion() ) );
+                                              () -> overviewWidget.refresh( versionRecordManager.getVersion() ) );
 
         kieEditorWrapperView.addSourcePage( sourceWidget );
 
@@ -587,7 +588,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     //Package protected to allow overriding for Unit Tests
     void doSave( final D document ) {
         savePopUpPresenter.show( document.getCurrentPath(),
-                                   getSaveCommand( document ) );
+                                 getSaveCommand( document ) );
     }
 
     //Package protected to allow overriding for Unit Tests
