@@ -33,8 +33,7 @@ import javax.inject.Qualifier;
 public @interface ComponentKey {
 
     /**
-     * This parameter specify which WorkbenchPreferences screen is the key for the
-     * COMPONENT scope.
+     * This parameter specify the key for the COMPONENT scope.
      */
     String value() default "";
 }

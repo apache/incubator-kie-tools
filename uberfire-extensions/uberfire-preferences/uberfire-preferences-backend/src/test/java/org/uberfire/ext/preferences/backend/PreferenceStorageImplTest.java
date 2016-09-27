@@ -21,7 +21,6 @@ import java.net.URI;
 import java.util.Collection;
 
 import org.jboss.errai.marshalling.server.MappingContextSingleton;
-import org.jboss.errai.marshalling.server.ServerMappingContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,13 +28,13 @@ import org.uberfire.backend.server.io.object.ObjectStorage;
 import org.uberfire.backend.server.io.object.ObjectStorageImpl;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeImpl;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
 import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeTypes;
 import org.uberfire.ext.preferences.shared.impl.DefaultScopes;
 import org.uberfire.ext.preferences.shared.impl.PreferenceScopeFactoryImpl;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeImpl;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.FileSystemTestingUtils;
@@ -43,7 +42,8 @@ import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.*;
 
 public class PreferenceStorageImplTest {

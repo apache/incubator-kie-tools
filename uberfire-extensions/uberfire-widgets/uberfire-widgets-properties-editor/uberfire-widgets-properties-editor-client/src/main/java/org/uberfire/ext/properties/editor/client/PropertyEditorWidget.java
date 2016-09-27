@@ -101,4 +101,7 @@ public class PropertyEditorWidget extends Composite {
         filterGroup.setVisible( visible );
     }
 
+    public PanelGroup getPropertyMenu() {
+        return propertyMenu;
+    }
 }

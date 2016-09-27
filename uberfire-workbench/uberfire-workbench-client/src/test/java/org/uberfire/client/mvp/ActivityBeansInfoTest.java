@@ -44,7 +44,7 @@ public class ActivityBeansInfoTest {
         syncBeanManager = mock( SyncBeanManager.class );
         activityBeansInfo = new ActivityBeansInfo(){
             @Override
-            SyncBeanManager getBeanManager() {
+            public SyncBeanManager getBeanManager() {
                 return syncBeanManager;
             }
         };

@@ -59,8 +59,7 @@ public class DefaultPreferenceScopeResolutionStrategy implements PreferenceScope
     }
 
     public PreferenceScope getDefaultScope( final List<PreferenceScope> order ) {
-        final int last = order.size() - 1;
-        return order.get( last );
+        return order.get( 0 );
     }
 
     private List<PreferenceScope> getScopeOrder( final PreferenceScopeFactory scopeFactory,

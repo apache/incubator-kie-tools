@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.preferences.client.ioc.store.PreferenceStore;
+import org.uberfire.ext.preferences.client.store.PreferenceStore;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
 import org.uberfire.workbench.events.NotificationEvent;

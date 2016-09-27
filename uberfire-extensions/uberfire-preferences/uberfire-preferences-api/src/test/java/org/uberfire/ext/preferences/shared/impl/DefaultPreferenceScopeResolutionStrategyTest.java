@@ -111,8 +111,8 @@ public class DefaultPreferenceScopeResolutionStrategyTest {
     public void defaultScopeTest() {
         final PreferenceScope defaultScope = defaultPreferenceScopeResolutionStrategy.getInfo().defaultScope();
 
-        assertEquals( allUsersScopeType, defaultScope.type() );
-        assertEquals( allUsersScopeKey, defaultScope.key() );
+        assertEquals( userScopeType, defaultScope.type() );
+        assertEquals( userScopeKey, defaultScope.key() );
         final PreferenceScope defaultScopeChild = defaultScope.childScope();
         assertEquals( entireApplicationScopeType, defaultScopeChild.type() );
         assertEquals( entireApplicationScopeKey, defaultScopeChild.key() );

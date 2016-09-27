@@ -27,7 +27,6 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-import org.uberfire.ext.preferences.client.ioc.store.PreferenceStore;
 import org.uberfire.ext.wires.client.preferences.central.PreferencesCentralPerspective;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -51,13 +50,9 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
-    @Inject
-    private PreferenceStore preferenceStore;
-
     @AfterInitialization
     public void startApp() {
         setupMenu();
-        setupGlobalPreferences();
         hideLoadingPopup();
     }
 
@@ -114,11 +109,6 @@ public class ShowcaseEntryPoint {
             }
         } ).endMenu().build();
         menubar.addMenus( menus );
-    }
-
-    private void setupGlobalPreferences() {
-        preferenceStore.putIfAbsent( "date.format", "yyyy-MM-dd HH:mm" );
-        preferenceStore.putIfAbsent( "connection.timeout", "1000" );
     }
 
     // Fade out the "Loading application" pop-up

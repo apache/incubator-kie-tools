@@ -48,7 +48,7 @@ public class BooleanField extends AbstractField {
                     propertyEditorChangeEventEvent.fire( new PropertyEditorChangeEvent( property, checkBox.getValue().toString() ) );
                 } else {
                     checkBox.setValidationError( getValidatorErrorMessage( property, checkBox.getValue().toString() ) );
-                    checkBox.setValue( new Boolean( property.getCurrentStringValue() ) );
+                    checkBox.setValue( Boolean.valueOf( property.getCurrentStringValue() ) );
                 }
             }
         } );

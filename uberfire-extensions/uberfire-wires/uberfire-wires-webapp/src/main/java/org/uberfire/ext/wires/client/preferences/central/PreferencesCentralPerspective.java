@@ -22,6 +22,8 @@ import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.ext.wires.client.preferences.central.actions.PreferencesCentralActionsScreen;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -36,17 +38,25 @@ public class PreferencesCentralPerspective {
 
     public static final String IDENTIFIER = "PreferencesCentralPerspective";
 
+    private PerspectiveDefinition perspective;
+
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         perspective.setName( "Preferences Central" );
 
-        final PanelDefinition west = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        west.setWidth( 400 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( PreferencesCentralNavbarPresenter.IDENTIFIER ) ) );
+        final PanelDefinition navBar = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        navBar.setWidth( 400 );
+        navBar.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( PreferencesCentralNavBarScreen.IDENTIFIER ) ) );
+
+        final PanelDefinition actionsBar = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        actionsBar.setHeight( 80 );
+        actionsBar.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( PreferencesCentralActionsScreen.IDENTIFIER ) ) );
 
         perspective.getRoot().insertChild( CompassPosition.WEST,
-                                           west );
+                                           navBar );
+        perspective.getRoot().insertChild( CompassPosition.SOUTH,
+                                           actionsBar );
 
         return perspective;
     }

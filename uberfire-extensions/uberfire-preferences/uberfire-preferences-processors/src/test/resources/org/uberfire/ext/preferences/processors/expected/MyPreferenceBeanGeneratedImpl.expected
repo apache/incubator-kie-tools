@@ -1,0 +1,99 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.uberfire.ext.preferences.processors;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.annotation.Generated;
+
+import org.uberfire.ext.preferences.shared.bean.BasePreferenceBean;
+import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
+import org.uberfire.ext.preferences.shared.bean.PreferenceBeanStore;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+
+@Dependent
+@Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
+/*
+* WARNING! This class is generated. Do not modify.
+*/
+public class MyPreferenceBeanGeneratedImpl extends MyPreference implements BasePreferenceBean<MyPreference> {
+
+    @Inject
+    private PreferenceBeanStore store;
+
+    @Override
+    public void load() {
+        load( null );
+    }
+
+    @Override
+    public void load( final ParameterizedCommand<Throwable> errorCallback ) {
+        load( null, errorCallback );
+    }
+
+    @Override
+    public void load( final ParameterizedCommand<MyPreference> successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        final MyPreferenceBeanGeneratedImpl preferenceBean = this;
+
+        store.load( new MyPreferencePortableGeneratedImpl(), new ParameterizedCommand<BasePreferencePortable<MyPreference>>() {
+            @Override
+            public void execute( final BasePreferencePortable<MyPreference> portablePreference ) {
+                copy( (MyPreferencePortableGeneratedImpl) portablePreference, preferenceBean );
+                if ( successCallback != null ) {
+                    successCallback.execute( preferenceBean );
+                }
+            }
+        }, errorCallback );
+    }
+
+    private void copy( final MyPreference from,
+                       final MyPreference to ) {
+        to.text = from.text;
+        to.sendReports = from.sendReports;
+        to.backgroundColor = from.backgroundColor;
+        to.age = from.age;
+        to.password = from.password;
+        to.myInnerPreference = from.myInnerPreference;
+        to.myInheritedPreference = from.myInheritedPreference;
+    }
+
+    @Override
+    public void save() {
+        save( null );
+    }
+
+    @Override
+    public void save( final ParameterizedCommand<Throwable> errorCallback ) {
+        save( null, errorCallback );
+    }
+
+    @Override
+    public void save( final Command successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        store.save( createPortableCopy(), successCallback, errorCallback );
+    }
+
+    private BasePreferencePortable<MyPreference> createPortableCopy() {
+        MyPreferencePortableGeneratedImpl portablePreference = new MyPreferencePortableGeneratedImpl();
+
+        copy( this, portablePreference );
+
+        return portablePreference;
+    }
+}

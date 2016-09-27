@@ -85,6 +85,10 @@ public class PropertyEditorCategory {
         this.idEvent = idEvent;
     }
 
+    public void undo() {
+        fields.forEach( field -> field.undo() );
+    }
+
     @Override
     public String toString() {
         return "PropertyEditorCategory{" +

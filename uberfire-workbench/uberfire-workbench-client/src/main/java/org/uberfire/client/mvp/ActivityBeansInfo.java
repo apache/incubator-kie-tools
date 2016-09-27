@@ -15,19 +15,18 @@
  */
 package org.uberfire.client.mvp;
 
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 @ApplicationScoped
 public class ActivityBeansInfo {
@@ -48,33 +47,33 @@ public class ActivityBeansInfo {
         return lookupBeansId( WorkbenchEditorActivity.class );
     }
 
-    public void addActivityBean( List<String> activityBeans, String newBean ) {
+    public void addActivityBean( List<String> activityBeans,
+                                 String newBean ) {
         activityBeans.add( newBean );
         Collections.sort( activityBeans, ALPHABETICAL_ORDER );
     }
 
     private List<String> lookupBeansId( Class<?> activityClass ) {
-        final Collection<? extends IOCBeanDef<?>> screens = getBeanManager().lookupBeans( activityClass );
+        final Collection<? extends IOCBeanDef<?>> screens = lookupBeans( activityClass );
         List<String> result = new ArrayList<String>();
-        for (final IOCBeanDef<?> beanDef : screens) {
+        for ( final IOCBeanDef<?> beanDef : screens ) {
             result.add( getId( beanDef ) );
         }
         Collections.sort( result, ALPHABETICAL_ORDER );
         return result;
     }
 
-    SyncBeanManager getBeanManager() {
-        return IOC.getBeanManager();
+    public Collection<? extends IOCBeanDef<?>> lookupBeans( final Class<?> activityClass ) {
+        return getBeanManager().lookupBeans( activityClass );
     }
 
-
-    private String getId( final IOCBeanDef<?> beanDef ) {
-        for (final Annotation annotation : beanDef.getQualifiers()) {
-            if (isNamed( annotation )) {
-                return ((Named) annotation).value();
+    public String getId( final IOCBeanDef<?> beanDef ) {
+        for ( final Annotation annotation : beanDef.getQualifiers() ) {
+            if ( isNamed( annotation ) ) {
+                return ( (Named) annotation ).value();
             }
         }
-        if (hasBeanName( beanDef )) {
+        if ( hasBeanName( beanDef ) ) {
             return beanDef.getName();
         }
         return "";
@@ -82,6 +81,10 @@ public class ActivityBeansInfo {
 
     boolean isNamed( Annotation annotation ) {
         return annotation instanceof Named;
+    }
+
+    public SyncBeanManager getBeanManager() {
+        return IOC.getBeanManager();
     }
 
     private boolean hasBeanName( IOCBeanDef<?> beanDef ) {
@@ -92,7 +95,7 @@ public class ActivityBeansInfo {
         public int compare( String str1,
                             String str2 ) {
             int res = String.CASE_INSENSITIVE_ORDER.compare( str1, str2 );
-            if (res == 0) {
+            if ( res == 0 ) {
                 res = str1.compareTo( str2 );
             }
             return res;

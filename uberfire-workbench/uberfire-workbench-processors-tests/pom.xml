@@ -37,7 +37,6 @@
       <artifactId>uberfire-workbench-processors</artifactId>
     </dependency>
 
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
@@ -59,8 +58,13 @@
       <artifactId>junit</artifactId>
     </dependency>
 
-  </dependencies>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>test</scope>
+    </dependency>
 
+  </dependencies>
 
   <build>
     <plugins>

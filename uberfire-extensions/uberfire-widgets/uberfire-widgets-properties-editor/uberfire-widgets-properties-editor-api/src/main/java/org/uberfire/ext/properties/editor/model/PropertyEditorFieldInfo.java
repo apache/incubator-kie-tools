@@ -130,6 +130,10 @@ public class PropertyEditorFieldInfo {
         return this;
     }
 
+    public void undo() {
+        currentStringValue = originalValue;
+    }
+
     public List<String> getComboValues() {
         return comboValues;
     }

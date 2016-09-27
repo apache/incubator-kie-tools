@@ -28,7 +28,7 @@
 
   <inherits name="org.uberfire.UberfireWorkbench"/>
 
-  <set-property name="gwt.logging.enabled" value="TRUE"/>
+  <inherits name="org.uberfire.UberfireClientAPI"/>
 
   <source path='client'/>
 </module>

@@ -32,8 +32,7 @@ public enum DefaultScopes {
     ENTIRE_APPLICATION( "entire-application" ),
 
     /**
-     * Scope type responsible to store preferences separately for each component, represented by
-     * a WorkbenchPreferences part.
+     * Scope type responsible to store preferences separately for each component.
      */
     COMPONENT( "component" ),
 

@@ -323,7 +323,11 @@
       <artifactId>uberfire-preferences-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-processors</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- UberFire Plugins Extension -->
     <dependency>

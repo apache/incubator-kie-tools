@@ -90,7 +90,7 @@ public class PreferencesEditorItemView implements IsElement,
 
     @Override
     public void setValue( final Object value ) {
-        preferenceValue.setValue( (String) value );
+        preferenceValue.setValue( value.toString() );
     }
 
     @Override

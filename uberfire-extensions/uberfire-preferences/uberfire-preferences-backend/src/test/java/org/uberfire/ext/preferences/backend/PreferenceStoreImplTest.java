@@ -33,13 +33,13 @@ import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeImpl;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
 import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeTypes;
 import org.uberfire.ext.preferences.shared.impl.DefaultScopes;
 import org.uberfire.ext.preferences.shared.impl.PreferenceScopeFactoryImpl;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeImpl;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.FileSystemTestingUtils;
@@ -48,7 +48,9 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class PreferenceStoreImplTest {

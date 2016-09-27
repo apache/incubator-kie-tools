@@ -86,6 +86,8 @@
    * [Dashbuilder](uberfireExtensions/dashbuilder.md)
    * [Simple Docks](uberfireExtensions/docks.md)
    * [Preferences](uberfireExtensions/preferences.md)
+       * [Beans API](uberfireExtensions/preferencesBeansAPI.md)
+       * [Low-level Storage API](uberfireExtensions/preferencesLowLevelStorageAPI.md)
    * [Breadcrumbs](uberfireExtensions/breadcrumbs.md)
 * [Integration](integration/integration.md)
    * [From Angular](integration/fromAngular.md)
