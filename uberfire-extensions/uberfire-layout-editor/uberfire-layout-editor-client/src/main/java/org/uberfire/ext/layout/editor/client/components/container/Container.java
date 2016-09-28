@@ -5,6 +5,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
+import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.rows.EmptyDropRow;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
@@ -218,6 +219,7 @@ public class Container {
             }
             newRows.add( createRow( dropRow ) );
         }
+        notifyDrop( dropRow.getComponent() );
     }
 
     private boolean newRowIsBeforeThisRow( RowDrop dropRow ) {

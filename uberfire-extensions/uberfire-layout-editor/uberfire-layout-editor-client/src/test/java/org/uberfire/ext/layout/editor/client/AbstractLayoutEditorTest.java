@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
+import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.columns.ColumnWithComponents;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
@@ -16,9 +18,12 @@ import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.infra.DnDManager;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
+import org.uberfire.mocks.EventSourceMock;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.util.TypeLiteral;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -51,6 +56,20 @@ public abstract class AbstractLayoutEditorTest {
     @Mock
     protected LayoutDragComponentHelper helper;
 
+    @Mock
+    protected ComponentDropEventMock componentDropEventMock;
+
+    public static class ComponentDropEventMock extends EventSourceMock<ComponentDropEvent> {
+
+    }
+
+    @Mock
+    protected ComponentRemovedEventMock componentRemoveEventMock;
+
+    public static class ComponentRemovedEventMock extends EventSourceMock<ComponentRemovedEvent> {
+
+    }
+
     protected EmptyDropRow emptyDropRow = new EmptyDropRow( mock( EmptyDropRow.View.class ), helper );
 
     protected DnDManager dnDManager = new DnDManager();
@@ -59,7 +78,7 @@ public abstract class AbstractLayoutEditorTest {
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public Container createContainer() {
-        return new Container( view, rowInstance, emptyDropRowInstance, mock( Event.class ) ) {
+        return new Container( view, rowInstance, emptyDropRowInstance, componentDropEventMock ) {
             private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
             @Override
@@ -82,8 +101,8 @@ public abstract class AbstractLayoutEditorTest {
     }
 
     private Row rowProducer() {
-        return new Row( mock( Row.View.class ), null, null, dnDManager, helper, mock( Event.class ),
-                        mock( Event.class ) ) {
+        return new Row( mock( Row.View.class ), null, null, dnDManager, helper, componentDropEventMock,
+                        componentRemoveEventMock ) {
             private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
             @Override

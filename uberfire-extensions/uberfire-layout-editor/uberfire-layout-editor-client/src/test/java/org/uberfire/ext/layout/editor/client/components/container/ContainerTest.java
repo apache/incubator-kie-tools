@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.AbstractLayoutEditorTest;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
+import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
@@ -15,6 +17,8 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
@@ -39,6 +43,7 @@ public class ContainerTest extends AbstractLayoutEditorTest {
                 .execute( new RowDrop( new LayoutComponent( "dragType" ), emptyDropRow.getId(),
                                        RowDrop.Orientation.BEFORE ) );
         assertEquals( 1, getRowsSizeFromContainer() );
+        verify( componentDropEventMock, times( 1 ) ).fire( any( ComponentDropEvent.class ) );
     }
 
     @Test
@@ -74,6 +79,8 @@ public class ContainerTest extends AbstractLayoutEditorTest {
                 .getDragTypeName() );
 
         assertEquals( dropRow, getRowByIndex( SECOND_ROW ) );
+
+        verify( componentDropEventMock, times( 1 ) ).fire( any( ComponentDropEvent.class ) );
     }
 
     @Test
@@ -91,6 +98,10 @@ public class ContainerTest extends AbstractLayoutEditorTest {
         assertEquals( 2, getRowsSizeFromContainer() );
         assertEquals( 1, getColumns( getRowByIndex( FIRST_ROW ) ).size() );
         assertEquals( 1, getColumns( getRowByIndex( SECOND_ROW ) ).size() );
+
+        verify( componentDropEventMock, times( 1 ) ).fire( any( ComponentDropEvent.class ) );
+        verify( componentRemoveEventMock, times( 1 ) ).fire( any( ComponentRemovedEvent.class ) );
+
     }
 
     @Test
@@ -121,6 +132,8 @@ public class ContainerTest extends AbstractLayoutEditorTest {
 
         assertEquals( 2, getRowsSizeFromContainer() );
         assertEquals( dropRow, getRowByIndex( FIRST_ROW ) );
+
+        verify( componentDropEventMock, times( 1 ) ).fire( any( ComponentDropEvent.class ) );
     }
 
 
