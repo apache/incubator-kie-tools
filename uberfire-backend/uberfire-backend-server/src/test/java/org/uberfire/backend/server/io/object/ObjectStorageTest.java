@@ -54,15 +54,12 @@ public class ObjectStorageTest {
 
     @Before
     public void setup() throws IOException {
-
-        MappingContextSingleton.get();
         fileSystemTestingUtils.setup();
         sessionInfo = mockSessionInfo();
         fileSystem = mockFileSystem();
         ioService = mockIoService( fileSystem );
         objectStorage = new ObjectStorageImpl( ioService );
         objectStorage.init( "default://object/store" );
-
     }
 
     @After

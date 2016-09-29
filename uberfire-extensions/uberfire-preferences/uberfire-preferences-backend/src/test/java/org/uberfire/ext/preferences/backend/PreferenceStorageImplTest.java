@@ -83,7 +83,7 @@ public class PreferenceStorageImplTest {
 
         ObjectStorage objectStorage = new ObjectStorageImpl( ioService );
 
-        scopeTypes = new DefaultPreferenceScopeTypes( sessionInfo );
+        scopeTypes = new DefaultPreferenceScopeTypes( new ServerUsernameProvider( sessionInfo ) );
         scopeFactory = new PreferenceScopeFactoryImpl( scopeTypes );
         scopeResolutionStrategyInfo = new DefaultPreferenceScopeResolutionStrategy( scopeFactory,
                                                                                     null ).getInfo();

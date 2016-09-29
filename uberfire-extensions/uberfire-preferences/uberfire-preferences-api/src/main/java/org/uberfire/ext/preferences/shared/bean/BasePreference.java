@@ -76,4 +76,14 @@ public interface BasePreference<T> extends Preference {
                        final ParameterizedCommand<Throwable> errorCallback ) {
         throw new UnsupportedOperationException( "You should call this method only for default qualified injected instances." );
     }
+
+    /**
+     * Returns the default value of this preference object. All users will start with this value
+     * unless they change it.
+     * @param defaultValue Preference to be filled and returned. It contains all child preferences already instantiated.
+     * @return The defaultValue received as parameter, just with its value updated. Null if there is not a default value.
+     */
+    default T defaultValue( T defaultValue ) {
+        return null;
+    }
 }

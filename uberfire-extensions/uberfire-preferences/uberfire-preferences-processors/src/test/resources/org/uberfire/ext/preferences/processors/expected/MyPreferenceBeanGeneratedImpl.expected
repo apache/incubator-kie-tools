@@ -33,8 +33,12 @@ import org.uberfire.mvp.ParameterizedCommand;
 */
 public class MyPreferenceBeanGeneratedImpl extends MyPreference implements BasePreferenceBean<MyPreference> {
 
-    @Inject
     private PreferenceBeanStore store;
+
+    @Inject
+    public MyPreferenceBeanGeneratedImpl( final PreferenceBeanStore store ) {
+        this.store = store;
+    }
 
     @Override
     public void load() {
@@ -87,6 +91,30 @@ public class MyPreferenceBeanGeneratedImpl extends MyPreference implements BaseP
     public void save( final Command successCallback,
                       final ParameterizedCommand<Throwable> errorCallback ) {
         store.save( createPortableCopy(), successCallback, errorCallback );
+    }
+
+    @Override
+    public void saveDefaultValue() {
+        saveDefaultValue( null );
+    }
+
+    @Override
+    public void saveDefaultValue( final ParameterizedCommand<Throwable> errorCallback ) {
+        saveDefaultValue( null, errorCallback);
+    }
+
+    @Override
+    public void saveDefaultValue( final Command successCallback,
+                                  final ParameterizedCommand<Throwable> errorCallback ) {
+        final MyPreference defaultValue = defaultValue( new MyPreferencePortableGeneratedImpl() );
+
+        if ( defaultValue != null ) {
+            if ( defaultValue instanceof MyPreferencePortableGeneratedImpl ) {
+                store.saveDefaultValue( (MyPreferencePortableGeneratedImpl) defaultValue, successCallback, errorCallback );
+            } else {
+                throw new RuntimeException( "Your MyPreference.defaultValue( MyPreference emptyPreference ) implementation must return the emptyPreference parameter, only with its attributes modified." );
+            }
+        }
     }
 
     private BasePreferencePortable<MyPreference> createPortableCopy() {

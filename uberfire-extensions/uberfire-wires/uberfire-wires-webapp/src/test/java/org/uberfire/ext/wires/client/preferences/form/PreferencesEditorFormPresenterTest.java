@@ -28,6 +28,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.ext.preferences.client.scope.ClientUsernameProvider;
 import org.uberfire.ext.preferences.client.store.PreferenceStore;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
@@ -64,7 +65,7 @@ public class PreferencesEditorFormPresenterTest {
         editorItemProvider = mock( ManagedInstance.class );
 
         final SessionInfoMock sessionInfo = new SessionInfoMock();
-        final DefaultPreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes( sessionInfo );
+        final DefaultPreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes( new ClientUsernameProvider( sessionInfo ) );
         final PreferenceScopeFactoryImpl scopeFactory = new PreferenceScopeFactoryImpl( scopeTypes );
         final DefaultPreferenceScopeResolutionStrategy defaultPreferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopeFactory, null );
         final PreferenceScopeResolutionStrategyInfo info = defaultPreferenceScopeResolutionStrategy.getInfo();

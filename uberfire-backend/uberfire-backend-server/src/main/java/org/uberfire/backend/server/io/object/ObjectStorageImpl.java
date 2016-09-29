@@ -21,6 +21,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.errai.marshalling.server.MappingContextSingleton;
 import org.jboss.errai.marshalling.server.ServerMarshalling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +31,6 @@ import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 
 public class ObjectStorageImpl implements ObjectStorage {
-
-    private static final Logger logger = LoggerFactory.getLogger( ObjectStorageImpl.class );
 
     private IOService ioService;
 
@@ -44,15 +43,8 @@ public class ObjectStorageImpl implements ObjectStorage {
 
     @Override
     public void init( String rootPath ) {
-        try {
-            fileSystem = ioService.newFileSystem( URI.create( rootPath ),
-                                                  new HashMap<String, Object>() {{
-                                                      put( "init", Boolean.TRUE );
-                                                      put( "internal", Boolean.TRUE );
-                                                  }} );
-        } catch ( FileSystemAlreadyExistsException e ) {
-            fileSystem = ioService.getFileSystem( URI.create( rootPath ) );
-        }
+        initializeMarshaller();
+        initializeFileSystem( rootPath );
     }
 
     @Override
@@ -106,5 +98,21 @@ public class ObjectStorageImpl implements ObjectStorage {
     public Path getPath( String first,
                          String... paths ) {
         return this.fileSystem.getPath( first, paths );
+    }
+
+    private void initializeMarshaller() {
+        MappingContextSingleton.get();
+    }
+
+    private void initializeFileSystem( final String rootPath ) {
+        try {
+            fileSystem = ioService.newFileSystem( URI.create( rootPath ),
+                                                  new HashMap<String, Object>() {{
+                                                      put( "init", Boolean.TRUE );
+                                                      put( "internal", Boolean.TRUE );
+                                                  }} );
+        } catch ( FileSystemAlreadyExistsException e ) {
+            fileSystem = ioService.getFileSystem( URI.create( rootPath ) );
+        }
     }
 }

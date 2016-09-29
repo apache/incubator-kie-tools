@@ -100,6 +100,11 @@
       <artifactId>errai-cdi-server</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-marshalling</artifactId>
+    </dependency>
+
     <!-- Encryption\Decryption service-->
     <dependency>
       <groupId>org.jasypt</groupId>

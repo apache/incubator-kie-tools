@@ -45,6 +45,14 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
     <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( T portablePreference );
 
     /**
+     * Saves all preference data, in the last scope of the hierarchy.
+     * @param defaultValue Preference instance to be saved as default.
+     * @param <U> Preference bean type.
+     * @param <T> Preference bean generated portable type.
+     */
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue( T defaultValue );
+
+    /**
      * Saves all preferences passed.
      * @param portablePreferences Preference instances to be saved.
      */

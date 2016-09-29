@@ -18,6 +18,7 @@ package org.uberfire.ext.preferences.backend;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Generated;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -29,6 +30,10 @@ import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 @Portable(mapSuperTypes = true)
 @PortablePreference
 @RootPreference
+@Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
+/*
+* WARNING! This class is generated. Do not modify.
+*/
 public class MyInheritedPreference2PortableGeneratedImpl extends MyInheritedPreference2 implements BasePreferencePortable<MyInheritedPreference2> {
 
     public MyInheritedPreference2PortableGeneratedImpl() {

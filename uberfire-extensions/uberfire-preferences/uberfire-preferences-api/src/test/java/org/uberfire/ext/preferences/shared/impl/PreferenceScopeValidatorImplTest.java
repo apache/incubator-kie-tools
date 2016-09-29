@@ -32,7 +32,7 @@ public class PreferenceScopeValidatorImplTest {
     @Before
     public void setup() {
         final SessionInfoMock sessionInfo = new SessionInfoMock( "my-user" );
-        final DefaultPreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes( sessionInfo );
+        final DefaultPreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes( new UsernameProviderMock( sessionInfo ) );
         final PreferenceScopeFactory scopeFactory = new PreferenceScopeFactoryImpl( scopeTypes );
         final DefaultPreferenceScopeResolutionStrategy scopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopeFactory, null );
 

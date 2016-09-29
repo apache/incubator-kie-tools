@@ -11,6 +11,7 @@ To transform a POJO in a preference, you should:
 * Annotate it with `@WorkbenchPreference`;
 * Annotate its properties with `@Property`;
 * Extend `BasePreference<YourPreferencePOJO>`;
+* Optionally override the `defaultValue` method to define the preference default value.
 
 Each of those annotations have some attributes that can be customized:
 
@@ -25,6 +26,7 @@ Each of those annotations have some attributes that can be customized:
 
 Observations:
 * It is expected that the `private` properties have one setter and one getter method.
+* To override the method `defaultValue`, you must only set the desired values in its parameter and return it, like in the example below.
 
 ## How it works
 
@@ -59,6 +61,21 @@ public class MyPreference implements BasePreference<MyPreference> {
 
     @Property(inherited = true, bundleKey = "MyPreference.MyInheritedPreference")
     MyInheritedPreference myInheritedPreference;
+
+    @Override
+    public MyPreference defaultValue( final MyPreference defaultValue ) {
+        defaultValue.text = "text";
+        defaultValue.sendReports = true;
+        defaultValue.backgroundColor = "ABCDEF";
+        defaultValue.age = 27;
+        defaultValue.password = "password";
+        defaultValue.myInnerPreference.text = "text";
+        defaultValue.myInheritedPreference.text = "text";
+        defaultValue.myInheritedPreference.myInnerPreference2.text = "text";
+        defaultValue.myInheritedPreference.myInnerPreference2.myInheritedPreference2.text = "text";
+
+        return defaultValue;
+    }
 }
 ```
 

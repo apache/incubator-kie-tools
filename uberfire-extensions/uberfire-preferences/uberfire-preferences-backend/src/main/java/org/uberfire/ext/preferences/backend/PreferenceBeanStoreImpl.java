@@ -26,6 +26,9 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.annotations.Customizable;
+import org.uberfire.ext.preferences.shared.PreferenceScope;
+import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.PreferenceStore;
 import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
 import org.uberfire.ext.preferences.shared.annotations.Property;
@@ -52,6 +55,8 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     private PreferenceStore preferenceStore;
 
+    private PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy;
+
     private Instance<Preference> preferences;
 
     public PreferenceBeanStoreImpl() {
@@ -59,8 +64,10 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     @Inject
     public PreferenceBeanStoreImpl( final PreferenceStore preferenceStore,
+                                    @Customizable final PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy,
                                     @PortablePreference final Instance<Preference> preferences ) {
         this.preferenceStore = preferenceStore;
+        this.defaultScopeResolutionStrategy = defaultScopeResolutionStrategy;
         this.preferences = preferences;
     }
 
@@ -111,6 +118,32 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
                                                                                          final ParameterizedCommand<Throwable> errorCallback ) {
         try {
             save( portablePreference );
+        } catch ( Exception e ) {
+            if ( errorCallback != null ) {
+                errorCallback.execute( e );
+            }
+        }
+
+        if ( successCallback != null ) {
+            successCallback.execute();
+        }
+    }
+
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue( final T defaultValue ) {
+        final List<PreferenceScope> scopeOrder = defaultScopeResolutionStrategy.getInfo().order();
+        final int lastIndex = scopeOrder.size() - 1;
+        final PreferenceScope lastScope = scopeOrder.get( lastIndex );
+
+        preferenceStore.put( lastScope, defaultValue.key(), defaultValue );
+    }
+
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue( final T defaultValue,
+                                                                                                     final Command successCallback,
+                                                                                                     final ParameterizedCommand<Throwable> errorCallback ) {
+        try {
+            saveDefaultValue( defaultValue );
         } catch ( Exception e ) {
             if ( errorCallback != null ) {
                 errorCallback.execute( e );

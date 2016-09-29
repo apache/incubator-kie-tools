@@ -19,10 +19,12 @@ package org.uberfire.ext.preferences.shared.impl;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
 import org.uberfire.annotations.FallbackImplementation;
+import org.uberfire.ext.preferences.shared.UsernameProvider;
 import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 import org.uberfire.rpc.SessionInfo;
 
@@ -36,14 +38,14 @@ public class DefaultPreferenceScopeTypes implements PreferenceScopeTypes {
 
     private Map<String, DefaultKey> defaultKeyByType;
 
-    private SessionInfo sessionInfo;
+    private UsernameProvider usernameProvider;
 
     protected DefaultPreferenceScopeTypes() {
     }
 
     @Inject
-    public DefaultPreferenceScopeTypes( final SessionInfo sessionInfo ) {
-        this.sessionInfo = sessionInfo;
+    public DefaultPreferenceScopeTypes( final UsernameProvider usernameProvider ) {
+        this.usernameProvider = usernameProvider;
 
         defaultKeyByType = new HashMap<>();
         defaultKeyByType.put( DefaultScopes.ALL_USERS.type(),
@@ -53,7 +55,7 @@ public class DefaultPreferenceScopeTypes implements PreferenceScopeTypes {
         defaultKeyByType.put( DefaultScopes.COMPONENT.type(),
                               null );
         defaultKeyByType.put( DefaultScopes.USER.type(),
-                              () -> sessionInfo.getIdentity().getIdentifier() );
+                              usernameProvider::get );
     }
 
     @Override

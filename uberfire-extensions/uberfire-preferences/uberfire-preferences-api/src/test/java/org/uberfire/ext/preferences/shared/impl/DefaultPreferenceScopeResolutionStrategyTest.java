@@ -38,7 +38,8 @@ public class DefaultPreferenceScopeResolutionStrategyTest {
 
     @Before
     public void setup() {
-        scopeTypes = new DefaultPreferenceScopeTypes( new SessionInfoMock( userScopeKey ) );
+        final SessionInfoMock sessionInfo = new SessionInfoMock( userScopeKey );
+        scopeTypes = new DefaultPreferenceScopeTypes( new UsernameProviderMock( sessionInfo ) );
         scopesBuilder = new PreferenceScopeFactoryImpl( scopeTypes );
 
         defaultPreferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopesBuilder, null );

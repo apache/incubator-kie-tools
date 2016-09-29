@@ -34,7 +34,7 @@ public class DefaultPreferenceScopeTypesTest {
     @Before
     public void setup() {
         final SessionInfo sessionInfo = new SessionInfoMock();
-        defaultPreferenceScopeTypes = new DefaultPreferenceScopeTypes( sessionInfo );
+        defaultPreferenceScopeTypes = new DefaultPreferenceScopeTypes( new UsernameProviderMock( sessionInfo ) );
     }
 
     @Test

@@ -40,6 +40,8 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class MyPreferencePortableGeneratedImpl extends MyPreference implements BasePreferencePortable<MyPreference> {
 
     public MyPreferencePortableGeneratedImpl() {
+        this.myInnerPreference = new org.uberfire.ext.preferences.processors.MyInnerPreferencePortableGeneratedImpl();
+        this.myInheritedPreference = new org.uberfire.ext.preferences.processors.MyInheritedPreferencePortableGeneratedImpl();
     }
 
     public MyPreferencePortableGeneratedImpl( @MapsTo("text") java.lang.String text, @MapsTo("sendReports") boolean sendReports, @MapsTo("backgroundColor") java.lang.String backgroundColor, @MapsTo("age") int age, @MapsTo("password") java.lang.String password, @MapsTo("myInnerPreference") org.uberfire.ext.preferences.processors.MyInnerPreference myInnerPreference, @MapsTo("myInheritedPreference") org.uberfire.ext.preferences.processors.MyInheritedPreference myInheritedPreference ) {

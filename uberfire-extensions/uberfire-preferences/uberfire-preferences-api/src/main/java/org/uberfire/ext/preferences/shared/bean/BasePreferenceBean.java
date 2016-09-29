@@ -16,9 +16,31 @@
 
 package org.uberfire.ext.preferences.shared.bean;
 
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+
 /**
  * Represents a generated managed bean implementation of a preference bean.
  * @param <T> The preference bean type implementing the interface.
  */
 public interface BasePreferenceBean<T> extends BasePreference<T> {
+
+    /**
+     * Saves the default preference value.
+     */
+    void saveDefaultValue();
+
+    /**
+     * Saves the preference content recursively through its properties.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     */
+    void saveDefaultValue( final ParameterizedCommand<Throwable> errorCallback );
+
+    /**
+     * Saves the preference content recursively through its properties.
+     * @param successCallback Success callback that indicates that the preference was saved.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     */
+    void saveDefaultValue( final Command successCallback,
+                           final ParameterizedCommand<Throwable> errorCallback );
 }

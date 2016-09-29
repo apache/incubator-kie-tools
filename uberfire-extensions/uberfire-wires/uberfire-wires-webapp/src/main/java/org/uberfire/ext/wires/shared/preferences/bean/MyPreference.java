@@ -44,4 +44,19 @@ public class MyPreference implements BasePreference<MyPreference> {
 
     @Property(inherited = true, bundleKey = "MyPreference.MyInheritedPreference")
     MyInheritedPreference myInheritedPreference;
+
+    @Override
+    public MyPreference defaultValue( final MyPreference defaultValue ) {
+        defaultValue.text = "text";
+        defaultValue.sendReports = true;
+        defaultValue.backgroundColor = "ABCDEF";
+        defaultValue.age = 27;
+        defaultValue.password = "password";
+        defaultValue.myInnerPreference.text = "text";
+        defaultValue.myInheritedPreference.text = "text";
+        defaultValue.myInheritedPreference.myInnerPreference2.text = "text";
+        defaultValue.myInheritedPreference.myInnerPreference2.myInheritedPreference2.text = "text";
+
+        return defaultValue;
+    }
 }

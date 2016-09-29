@@ -30,12 +30,12 @@ import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScope
 public class PreferenceScopeResolutionStrategyInfo {
 
     /**
-     * Defines the default scope that will be used to persist a preference, when none is passed.
+     * Defines the order of scopes that will be used when a preference value is searched.
      */
     private final List<PreferenceScope> order;
 
     /**
-     * Defines the order of scopes that will be used when a preference value is searched.
+     * Defines the default scope that will be used to persist a preference, when none is passed.
      */
     private final PreferenceScope defaultScope;
 

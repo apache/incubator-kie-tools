@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package ${targetPackage};
+package org.uberfire.ext.preferences.backend;
 
+import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.annotation.Generated;
 
 import org.uberfire.ext.preferences.shared.bean.BasePreferenceBean;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
@@ -31,12 +31,12 @@ import org.uberfire.mvp.ParameterizedCommand;
 /*
 * WARNING! This class is generated. Do not modify.
 */
-public class ${targetClassName} extends ${sourceClassName} implements BasePreferenceBean<${sourceClassName}> {
+public class MyInheritedPreference2BeanGeneratedImpl extends MyInheritedPreference2 implements BasePreferenceBean<MyInheritedPreference2> {
 
     private PreferenceBeanStore store;
 
     @Inject
-    public ${targetClassName}( final PreferenceBeanStore store ) {
+    public MyInheritedPreference2BeanGeneratedImpl( final PreferenceBeanStore store ) {
         this.store = store;
     }
 
@@ -51,14 +51,14 @@ public class ${targetClassName} extends ${sourceClassName} implements BasePrefer
     }
 
     @Override
-    public void load( final ParameterizedCommand<${sourceClassName}> successCallback,
+    public void load( final ParameterizedCommand<MyInheritedPreference2> successCallback,
                       final ParameterizedCommand<Throwable> errorCallback ) {
-        final ${targetClassName} preferenceBean = this;
+        final MyInheritedPreference2BeanGeneratedImpl preferenceBean = this;
 
-        store.load( new ${sourceClassName}PortableGeneratedImpl(), new ParameterizedCommand<BasePreferencePortable<${sourceClassName}>>() {
+        store.load( new MyInheritedPreference2PortableGeneratedImpl(), new ParameterizedCommand<BasePreferencePortable<MyInheritedPreference2>>() {
             @Override
-            public void execute( final BasePreferencePortable<${sourceClassName}> portablePreference ) {
-                copy( (${sourceClassName}PortableGeneratedImpl) portablePreference, preferenceBean );
+            public void execute( final BasePreferencePortable<MyInheritedPreference2> portablePreference ) {
+                copy( (MyInheritedPreference2PortableGeneratedImpl) portablePreference, preferenceBean );
                 if ( successCallback != null ) {
                     successCallback.execute( preferenceBean );
                 }
@@ -66,15 +66,9 @@ public class ${targetClassName} extends ${sourceClassName} implements BasePrefer
         }, errorCallback );
     }
 
-    private void copy( final ${sourceClassName} from,
-                       final ${sourceClassName} to ) {
-    <#list properties as property>
-        <#if property.isPrivateAccess()>
-        to.set${property.getCapitalizedFieldName()}( from.get${property.getCapitalizedFieldName()}() );
-        <#else>
-        to.${property.getFieldName()} = from.${property.getFieldName()};
-        </#if>
-    </#list>
+    private void copy( final MyInheritedPreference2 from,
+                       final MyInheritedPreference2 to ) {
+        to.text = from.text;
     }
 
     @Override
@@ -100,25 +94,25 @@ public class ${targetClassName} extends ${sourceClassName} implements BasePrefer
 
     @Override
     public void saveDefaultValue( final ParameterizedCommand<Throwable> errorCallback ) {
-        saveDefaultValue( null, errorCallback);
+        saveDefaultValue( null, errorCallback );
     }
 
     @Override
     public void saveDefaultValue( final Command successCallback,
                                   final ParameterizedCommand<Throwable> errorCallback ) {
-        final ${sourceClassName} defaultValue = defaultValue( new ${sourceClassName}PortableGeneratedImpl() );
+        final MyInheritedPreference2 defaultValue = defaultValue( new MyInheritedPreference2PortableGeneratedImpl() );
 
         if ( defaultValue != null ) {
-            if ( defaultValue instanceof ${sourceClassName}PortableGeneratedImpl ) {
-                store.saveDefaultValue( (${sourceClassName}PortableGeneratedImpl) defaultValue, successCallback, errorCallback );
+            if ( defaultValue instanceof MyInheritedPreference2PortableGeneratedImpl ) {
+                store.saveDefaultValue( (MyInheritedPreference2PortableGeneratedImpl) defaultValue, successCallback, errorCallback );
             } else {
-                throw new RuntimeException( "Your ${sourceClassName}.defaultValue( ${sourceClassName} emptyPreference ) implementation must return the emptyPreference parameter, only with its attributes modified." );
+                throw new RuntimeException( "Your MyInheritedPreference2.defaultValue( MyInheritedPreference2 emptyPreference ) implementation must return the emptyPreference parameter, only with its attributes modified." );
             }
         }
     }
 
-    private BasePreferencePortable<${sourceClassName}> createPortableCopy() {
-        ${sourceClassName}PortableGeneratedImpl portablePreference = new ${sourceClassName}PortableGeneratedImpl();
+    private BasePreferencePortable<MyInheritedPreference2> createPortableCopy() {
+        MyInheritedPreference2PortableGeneratedImpl portablePreference = new MyInheritedPreference2PortableGeneratedImpl();
 
         copy( this, portablePreference );
 

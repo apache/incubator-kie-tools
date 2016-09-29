@@ -52,6 +52,18 @@ public interface PreferenceBeanStore {
                                                                                   ParameterizedCommand<Throwable> errorCallback );
 
     /**
+     * Saves all preference data, in the last scope of the hierarchy.
+     * @param defaultValue Preference instance to be saved as default.
+     * @param successCallback Success callback that indicates that the preference was saved.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     * @param <U> Preference bean type.
+     * @param <T> Preference bean generated portable type.
+     */
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue( T defaultValue,
+                                                                                              Command successCallback,
+                                                                                              ParameterizedCommand<Throwable> errorCallback );
+
+    /**
      * Saves all preferences passed.
      * @param portablePreferences Preference instances to be saved.
      * @param successCallback Success callback that indicates that the preference was saved.

@@ -24,36 +24,38 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.preferences.shared.PropertyFormType;
 import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
+import org.uberfire.ext.preferences.shared.annotations.RootPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 
 @Portable(mapSuperTypes = true)
 @PortablePreference
+@RootPreference
 @Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
 /*
 * WARNING! This class is generated. Do not modify.
 */
-public class MyInnerPreferencePortableGeneratedImpl extends MyInnerPreference implements BasePreferencePortable<MyInnerPreference> {
+public class InvalidDefaultPreferencePortableGeneratedImpl extends InvalidDefaultPreference implements BasePreferencePortable<InvalidDefaultPreference> {
 
-    public MyInnerPreferencePortableGeneratedImpl() {
+    public InvalidDefaultPreferencePortableGeneratedImpl() {
     }
 
-    public MyInnerPreferencePortableGeneratedImpl( @MapsTo("text") String text ) {
+    public InvalidDefaultPreferencePortableGeneratedImpl( @MapsTo("text") String text ) {
         this.text = text;
     }
 
     @Override
-    public Class<MyInnerPreference> getPojoClass() {
-        return MyInnerPreference.class;
+    public Class<InvalidDefaultPreference> getPojoClass() {
+        return InvalidDefaultPreference.class;
     }
 
     @Override
     public String bundleKey() {
-        return "MyInnerPreference.Label";
+        return "InvalidDefaultPreference";
     }
 
     @Override
     public String key() {
-        return "org.uberfire.ext.preferences.backend.MyInnerPreference";
+        return "org.uberfire.ext.preferences.backend.InvalidDefaultPreference";
     }
 
     @Override
@@ -93,7 +95,7 @@ public class MyInnerPreferencePortableGeneratedImpl extends MyInnerPreference im
             return false;
         }
 
-        final MyInnerPreferencePortableGeneratedImpl that = (MyInnerPreferencePortableGeneratedImpl) o;
+        final InvalidDefaultPreferencePortableGeneratedImpl that = (InvalidDefaultPreferencePortableGeneratedImpl) o;
 
         if ( text != null ? !text.equals( that.text ) : that.text != null ) {
             return false;

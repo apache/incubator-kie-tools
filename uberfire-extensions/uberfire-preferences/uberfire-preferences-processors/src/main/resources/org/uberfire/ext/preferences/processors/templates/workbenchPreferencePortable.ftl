@@ -44,6 +44,13 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class ${targetClassName} extends ${sourceClassName} implements BasePreferencePortable<${sourceClassName}> {
 
     public ${targetClassName}() {
+    <#list subPreferences as subPreference>
+        <#if subPreference.isPrivateAccess()>
+        set${subPreference.getCapitalizedFieldName()}( new ${subPreference.getTypeFullName()}PortableGeneratedImpl() );
+        <#else>
+        this.${subPreference.getFieldName()} = new ${subPreference.getTypeFullName()}PortableGeneratedImpl();
+        </#if>
+    </#list>
     }
 
     public ${targetClassName}( ${constructorParamsText} ) {

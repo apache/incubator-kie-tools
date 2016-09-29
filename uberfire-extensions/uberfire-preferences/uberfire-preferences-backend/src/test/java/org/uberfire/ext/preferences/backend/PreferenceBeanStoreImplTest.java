@@ -17,14 +17,18 @@
 package org.uberfire.ext.preferences.backend;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.ext.preferences.shared.PreferenceScope;
+import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.PreferenceStore;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.ext.preferences.shared.bean.PreferenceHierarchyElement;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -35,10 +39,16 @@ public class PreferenceBeanStoreImplTest {
 
     private PreferenceBeanStoreImpl preferenceBeanStoreImpl;
 
+    private PreferenceScopeResolutionStrategy preferenceScopeResolutionStrategy;
+
     @Before
     public void setup() {
+        preferenceScopeResolutionStrategy = mock( PreferenceScopeResolutionStrategy.class );
         preferenceStore = mock( PreferenceStore.class );
-        preferenceBeanStoreImpl = spy( new PreferenceBeanStoreImpl( preferenceStore, null ) );
+        preferenceBeanStoreImpl = spy( new PreferenceBeanStoreImpl( preferenceStore, preferenceScopeResolutionStrategy, null ) );
+
+        PreferenceScopeResolutionStrategyInfo scopeInfo = new PreferenceScopeResolutionStrategyInfo( Arrays.asList( mock( PreferenceScope.class ) ), mock( PreferenceScope.class ) );
+        doReturn( scopeInfo ).when( preferenceScopeResolutionStrategy ).getInfo();
 
         doAnswer( invocationOnMock -> {
             Object[] args = invocationOnMock.getArguments();
@@ -84,6 +94,17 @@ public class PreferenceBeanStoreImplTest {
     }
 
     @Test
+    public void saveDefaultValueTest() {
+        final MyPreferencePortableGeneratedImpl myPreference = new MyPreferencePortableGeneratedImpl();
+
+        preferenceBeanStoreImpl.saveDefaultValue( (MyPreferencePortableGeneratedImpl) myPreference.defaultValue( myPreference ) );
+
+        verify( preferenceStore, times( 1 ) ).put( any( PreferenceScope.class ), anyString(), any( Object.class ) );
+
+        verify( preferenceStore ).put( any( PreferenceScope.class ), eq( MyPreference.class.getName() ), eq( myPreference ) );
+    }
+
+    @Test
     public void saveCollectionTest() {
         final List<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = getRootPortablePreferences();
         final MyPreference myPreference = (MyPreference) preferencesToSave.get( 0 );
@@ -118,25 +139,25 @@ public class PreferenceBeanStoreImplTest {
         assertEquals( 2, firstElement.getChildren().size() );
 
         final PreferenceHierarchyElement<?> firstElementFirstChild = firstElement.getChildren().get( 0 );
-        assertEquals( ( ( MyInnerPreferencePortableGeneratedImpl ) myPreference.myInnerPreference ).key(), firstElementFirstChild.getPortablePreference().key() );
+        assertEquals( ( (MyInnerPreferencePortableGeneratedImpl) myPreference.myInnerPreference ).key(), firstElementFirstChild.getPortablePreference().key() );
         assertFalse( firstElementFirstChild.isRoot() );
         assertFalse( firstElementFirstChild.isInherited() );
         assertEquals( 0, firstElementFirstChild.getChildren().size() );
 
         final PreferenceHierarchyElement<?> firstElementSecondChild = firstElement.getChildren().get( 1 );
-        assertEquals( ( ( MyInheritedPreferencePortableGeneratedImpl ) myPreference.myInheritedPreference ).key(), firstElementSecondChild.getPortablePreference().key() );
+        assertEquals( ( (MyInheritedPreferencePortableGeneratedImpl) myPreference.myInheritedPreference ).key(), firstElementSecondChild.getPortablePreference().key() );
         assertFalse( firstElementSecondChild.isRoot() );
         assertTrue( firstElementSecondChild.isInherited() );
         assertEquals( 1, firstElementSecondChild.getChildren().size() );
 
         final PreferenceHierarchyElement<?> firstElementSecondChildFirstChild = firstElementSecondChild.getChildren().get( 0 );
-        assertEquals( ( ( MyInnerPreference2PortableGeneratedImpl ) myPreference.myInheritedPreference.myInnerPreference2 ).key(), firstElementSecondChildFirstChild.getPortablePreference().key() );
+        assertEquals( ( (MyInnerPreference2PortableGeneratedImpl) myPreference.myInheritedPreference.myInnerPreference2 ).key(), firstElementSecondChildFirstChild.getPortablePreference().key() );
         assertFalse( firstElementSecondChildFirstChild.isRoot() );
         assertFalse( firstElementSecondChildFirstChild.isInherited() );
         assertEquals( 1, firstElementSecondChildFirstChild.getChildren().size() );
 
         final PreferenceHierarchyElement<?> firstElementSecondChildFirstChildFirstChild = firstElementSecondChildFirstChild.getChildren().get( 0 );
-        assertEquals( ( ( MyInheritedPreference2PortableGeneratedImpl ) myPreference.myInheritedPreference.myInnerPreference2.myInheritedPreference2 ).key(), firstElementSecondChildFirstChildFirstChild.getPortablePreference().key() );
+        assertEquals( ( (MyInheritedPreference2PortableGeneratedImpl) myPreference.myInheritedPreference.myInnerPreference2.myInheritedPreference2 ).key(), firstElementSecondChildFirstChildFirstChild.getPortablePreference().key() );
         assertFalse( firstElementSecondChildFirstChildFirstChild.isRoot() );
         assertTrue( firstElementSecondChildFirstChildFirstChild.isInherited() );
         assertEquals( 0, firstElementSecondChildFirstChildFirstChild.getChildren().size() );

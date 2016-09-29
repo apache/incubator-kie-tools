@@ -85,6 +85,23 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanStore {
     }
 
     @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue( final T defaultValue,
+                                                                                                     final Command successCallback,
+                                                                                                     final ParameterizedCommand<Throwable> errorCallback ) {
+        store.call( voidReturn -> {
+                        if ( successCallback != null ) {
+                            successCallback.execute();
+                        }
+                    },
+                    ( message, throwable ) -> {
+                        if ( errorCallback != null ) {
+                            errorCallback.execute( throwable );
+                        }
+                        return false;
+                    } ).saveDefaultValue( defaultValue );
+    }
+
+    @Override
     public void save( final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
                       final Command successCallback,
                       final ParameterizedCommand<Throwable> errorCallback ) {

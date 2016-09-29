@@ -18,6 +18,7 @@ package org.uberfire.ext.preferences.backend;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Generated;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -29,9 +30,15 @@ import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 @Portable(mapSuperTypes = true)
 @PortablePreference
 @RootPreference
+@Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
+/*
+* WARNING! This class is generated. Do not modify.
+*/
 public class MyPreferencePortableGeneratedImpl extends MyPreference implements BasePreferencePortable<MyPreference> {
 
     public MyPreferencePortableGeneratedImpl() {
+        this.myInnerPreference = new org.uberfire.ext.preferences.backend.MyInnerPreferencePortableGeneratedImpl();
+        this.myInheritedPreference = new org.uberfire.ext.preferences.backend.MyInheritedPreferencePortableGeneratedImpl();
     }
 
     public MyPreferencePortableGeneratedImpl( @MapsTo("text") String text,
@@ -39,8 +46,8 @@ public class MyPreferencePortableGeneratedImpl extends MyPreference implements B
                                               @MapsTo("backgroundColor") String backgroundColor,
                                               @MapsTo("age") int age,
                                               @MapsTo("password") String password,
-                                              @MapsTo("myInnerPreference") MyInnerPreference myInnerPreference,
-                                              @MapsTo("myInheritedPreference") MyInheritedPreference myInheritedPreference ) {
+                                              @MapsTo("myInnerPreference") org.uberfire.ext.preferences.backend.MyInnerPreference myInnerPreference,
+                                              @MapsTo("myInheritedPreference") org.uberfire.ext.preferences.backend.MyInheritedPreference myInheritedPreference ) {
         this.text = text;
         this.sendReports = sendReports;
         this.backgroundColor = backgroundColor;
@@ -155,11 +162,11 @@ public class MyPreferencePortableGeneratedImpl extends MyPreference implements B
 
         result = 31 * result + ( text != null ? text.hashCode() : 0 );
         result = ~~result;
-        result = 31 * result + java.lang.Boolean.hashCode( sendReports );
+        result = 31 * result + Boolean.hashCode( sendReports );
         result = ~~result;
         result = 31 * result + ( backgroundColor != null ? backgroundColor.hashCode() : 0 );
         result = ~~result;
-        result = 31 * result + java.lang.Integer.hashCode( age );
+        result = 31 * result + Integer.hashCode( age );
         result = ~~result;
         result = 31 * result + ( password != null ? password.hashCode() : 0 );
         result = ~~result;
