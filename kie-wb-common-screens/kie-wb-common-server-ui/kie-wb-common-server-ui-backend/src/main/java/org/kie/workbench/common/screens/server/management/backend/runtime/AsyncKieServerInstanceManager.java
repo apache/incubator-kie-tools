@@ -16,12 +16,17 @@
 
 package org.kie.workbench.common.screens.server.management.backend.runtime;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.server.api.model.KieContainerStatus;
+import org.kie.server.api.model.Message;
+import org.kie.server.api.model.Severity;
 import org.kie.server.controller.api.model.events.ServerInstanceUpdated;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.runtime.ServerInstance;
@@ -30,16 +35,33 @@ import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.service.NotificationService;
 import org.kie.server.controller.impl.KieServerInstanceManager;
+import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation;
+import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeState;
+import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
 import org.uberfire.commons.async.DisposableExecutor;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
+
+import static org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation.*;
 
 @ApplicationScoped
 public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
 
     private DisposableExecutor executor;
+    private NotificationService notificationService;
+    private Event<ContainerUpdateEvent> containerUpdateEvent;
+
+    protected void setExecutor(DisposableExecutor executor) {
+        this.executor = executor;
+    }
+
+    public AsyncKieServerInstanceManager() {
+    }
 
     @Inject
-    private NotificationService notificationService;
+    public AsyncKieServerInstanceManager(NotificationService notificationService, Event<ContainerUpdateEvent> containerUpdateEvent) {
+        this.notificationService = notificationService;
+        this.containerUpdateEvent = containerUpdateEvent;
+    }
 
     @PostConstruct
     public void configure() {
@@ -56,6 +78,8 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
                 List<Container> containers = AsyncKieServerInstanceManager.super.startScanner( serverTemplate, containerSpec, interval );
 
                 notificationService.notify( serverTemplate, containerSpec, containers );
+
+                produceContainerUpdateEvent(serverTemplate, containerSpec, containers, START_SCANNER);
             }
         } );
         return Collections.emptyList();
@@ -69,6 +93,8 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
             public void run() {
                 List<Container> containers = AsyncKieServerInstanceManager.super.stopScanner( serverTemplate, containerSpec );
                 notificationService.notify( serverTemplate, containerSpec, containers );
+
+                produceContainerUpdateEvent(serverTemplate, containerSpec, containers, STOP_SCANNER);
             }
         } );
         return Collections.emptyList();
@@ -82,6 +108,8 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
             public void run() {
                 List<Container> containers = AsyncKieServerInstanceManager.super.scanNow( serverTemplate, containerSpec );
                 notificationService.notify( serverTemplate, containerSpec, containers );
+
+                produceContainerUpdateEvent(serverTemplate, containerSpec, containers, SCAN);
             }
         } );
         return Collections.emptyList();
@@ -95,6 +123,8 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
             public void run() {
                 List<Container> containers = AsyncKieServerInstanceManager.super.startContainer( serverTemplate, containerSpec );
                 notificationService.notify( serverTemplate, containerSpec, containers );
+
+                produceContainerUpdateEvent(serverTemplate, containerSpec, containers, START_CONTAINER);
             }
         } );
         return Collections.emptyList();
@@ -108,6 +138,8 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
             public void run() {
                 List<Container> containers = AsyncKieServerInstanceManager.super.stopContainer( serverTemplate, containerSpec );
                 notificationService.notify( serverTemplate, containerSpec, containers );
+
+                produceContainerUpdateEvent(serverTemplate, containerSpec, containers, STOP_CONTAINER);
             }
         } );
         return Collections.emptyList();
@@ -121,6 +153,8 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
             public void run() {
                 List<Container> containers = AsyncKieServerInstanceManager.super.upgradeContainer( serverTemplate, containerSpec );
                 notificationService.notify( serverTemplate, containerSpec, containers );
+
+                produceContainerUpdateEvent(serverTemplate, containerSpec, containers, UPGRADE_CONTAINER);
             }
         } );
         return Collections.emptyList();
@@ -158,5 +192,46 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
             }
         } );
         return Collections.emptyList();
+    }
+
+    protected void produceContainerUpdateEvent(ServerTemplate serverTemplate, ContainerSpec containerSpec, List<Container> containers, ContainerRuntimeOperation containerRuntimeOperation) {
+        List<ServerInstanceKey> failedServerInstances = new ArrayList<ServerInstanceKey>();
+        for (Container container : containers) {
+            if (hasIssues(container)) {
+                failedServerInstances.add(container.getServerInstanceKey());
+            }
+        }
+
+        ContainerRuntimeState containerRuntimeState = ContainerRuntimeState.ONLINE;
+        if (failedServerInstances.size() == containers.size()) {
+            containerRuntimeState = ContainerRuntimeState.OFFLINE;
+        } else if (!failedServerInstances.isEmpty()) {
+            containerRuntimeState = ContainerRuntimeState.PARTIAL_ONLINE;
+        }
+
+        ContainerUpdateEvent updateEvent = new ContainerUpdateEvent(
+                serverTemplate,
+                containerSpec,
+                failedServerInstances,
+                containerRuntimeState,
+                containerRuntimeOperation
+        );
+
+        containerUpdateEvent.fire(updateEvent);
+    }
+
+    protected boolean hasIssues(Container container) {
+        if (container.getStatus().equals(KieContainerStatus.FAILED)) {
+            return true;
+        } else if (container.getMessages() != null) {
+
+            for (Message message : container.getMessages()) {
+                if (message.getSeverity().equals(Severity.ERROR) || message.getSeverity().equals(Severity.WARN)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
