@@ -20,20 +20,11 @@ package com.ait.lienzo.client.core.shape.wires;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.event.AnimationFrameAttributesChangedBatcher;
-import com.ait.lienzo.client.core.event.AttributesChangedEvent;
-import com.ait.lienzo.client.core.event.AttributesChangedHandler;
-import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
-import com.ait.lienzo.client.core.shape.*;
-import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.tooling.common.api.flow.Flows;
+import com.ait.lienzo.client.core.shape.IContainer;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.tooling.common.api.types.Activatable;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.core.client.GWT;
-
-import static com.ait.lienzo.client.core.AttributeOp.any;
 
 public class ControlHandleList extends Activatable implements IControlHandleList
 {

@@ -1,17 +1,50 @@
+/*
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+// TODO - review DSJ
+
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.*;
+import java.util.Iterator;
+
+import com.ait.lienzo.client.core.event.AbstractNodeDragEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.event.*;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresMoveEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresMoveHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-
-import java.util.Iterator;
 
 /**
  * This class handles the Wires Shape controls to provide additional features.
@@ -22,26 +55,28 @@ import java.util.Iterator;
  * Future thoughts: if the different parts of the multipath are stored as attributes, another approach based on attributes
  * changed batcher could be used.
  */
-public class WiresShapeControlHandleList implements IControlHandleList {
+public class WiresShapeControlHandleList implements IControlHandleList
+{
 
-    private static final int                             C_POINTS_SIZE           = 4;
+    private static final int                       C_POINTS_SIZE = 4;
 
-    private final WiresShape m_wires_shape;
-    private final ControlHandleList m_ctrls;
+    private final WiresShape                       m_wires_shape;
+
+    private final ControlHandleList                m_ctrls;
+
     private final IControlHandle.ControlHandleType m_ctrls_type;
-    private final HandlerRegistrationManager m_registrationManager;
-    private Group parent;
 
-    public WiresShapeControlHandleList( final WiresShape m_wires_shape,
-                                        final IControlHandle.ControlHandleType m_ctrls_type,
-                                        final ControlHandleList m_ctrls ) {
-        this( m_wires_shape, m_ctrls_type, m_ctrls, new HandlerRegistrationManager() );
+    private final HandlerRegistrationManager       m_registrationManager;
+
+    private Group                                  parent;
+
+    public WiresShapeControlHandleList(final WiresShape m_wires_shape, final IControlHandle.ControlHandleType m_ctrls_type, final ControlHandleList m_ctrls)
+    {
+        this(m_wires_shape, m_ctrls_type, m_ctrls, new HandlerRegistrationManager());
     }
 
-    WiresShapeControlHandleList( final WiresShape m_wires_shape,
-                                 final IControlHandle.ControlHandleType m_ctrls_type,
-                                 final ControlHandleList m_ctrls,
-                                 final HandlerRegistrationManager m_registrationManager ) {
+    WiresShapeControlHandleList(final WiresShape m_wires_shape, final IControlHandle.ControlHandleType m_ctrls_type, final ControlHandleList m_ctrls, final HandlerRegistrationManager m_registrationManager)
+    {
         this.m_wires_shape = m_wires_shape;
         this.m_ctrls = m_ctrls;
         this.m_ctrls_type = m_ctrls_type;
@@ -52,83 +87,99 @@ public class WiresShapeControlHandleList implements IControlHandleList {
     }
 
     @Override
-    public void show() {
-        switchVisibility( true );
+    public void show()
+    {
+        switchVisibility(true);
     }
 
-    void refresh() {
+    void refresh()
+    {
         final BoundingBox bb = getPath().getBoundingBox();
         final double width = bb.getWidth();
         final double height = bb.getHeight();
-        this.resize( null, null, width, height, true );
+        this.resize(null, null, width, height, true);
     }
 
     @Override
-    public void destroy() {
+    public void destroy()
+    {
         m_ctrls.destroy();
         m_registrationManager.removeHandler();
-        if ( null != parent ) {
+        if (null != parent)
+        {
             parent.removeFromParent();
         }
     }
 
     @Override
-    public int size() {
+    public int size()
+    {
         return m_ctrls.size();
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return m_ctrls.isEmpty();
     }
 
     @Override
-    public IControlHandle getHandle( int index ) {
-        return m_ctrls.getHandle( index );
+    public IControlHandle getHandle(int index)
+    {
+        return m_ctrls.getHandle(index);
     }
 
     @Override
-    public void add( IControlHandle handle ) {
-        m_ctrls.add( handle );
+    public void add(IControlHandle handle)
+    {
+        m_ctrls.add(handle);
     }
 
     @Override
-    public void remove( IControlHandle handle ) {
-        m_ctrls.remove( handle );
+    public void remove(IControlHandle handle)
+    {
+        m_ctrls.remove(handle);
     }
 
     @Override
-    public boolean contains( IControlHandle handle ) {
-        return m_ctrls.contains( handle );
+    public boolean contains(IControlHandle handle)
+    {
+        return m_ctrls.contains(handle);
     }
 
     @Override
-    public void hide() {
-        switchVisibility( false );
+    public void hide()
+    {
+        switchVisibility(false);
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isVisible()
+    {
         return m_ctrls.isVisible();
     }
 
     @Override
-    public HandlerRegistrationManager getHandlerRegistrationManager() {
+    public HandlerRegistrationManager getHandlerRegistrationManager()
+    {
         return m_ctrls.getHandlerRegistrationManager();
     }
 
     @Override
-    public boolean isActive() {
+    public boolean isActive()
+    {
         return m_ctrls.isActive();
     }
 
     @Override
-    public boolean setActive( boolean b ) {
-        return m_ctrls.setActive( b );
+    public boolean setActive(boolean b)
+    {
+        return m_ctrls.setActive(b);
     }
 
     @Override
-    public Iterator<IControlHandle> iterator() {
+    public Iterator<IControlHandle> iterator()
+    {
         return m_ctrls.iterator();
     }
 
@@ -136,135 +187,138 @@ public class WiresShapeControlHandleList implements IControlHandleList {
     {
 
         // Control points - to provide the resize support.
-        if ( IControlHandle.ControlHandleStandardType.RESIZE.equals( m_ctrls_type ) ) {
+        if (IControlHandle.ControlHandleStandardType.RESIZE.equals(m_ctrls_type))
+        {
 
-            for ( int i = 0; i < C_POINTS_SIZE; i++ ) {
+            for (int i = 0; i < C_POINTS_SIZE; i++)
+            {
 
-                final IControlHandle handle = m_ctrls.getHandle( i );
+                final IControlHandle handle = m_ctrls.getHandle(i);
                 final IPrimitive<?> ctrol = handle.getControl();
 
                 m_registrationManager.register(
 
-                        ctrol.addNodeDragStartHandler( new NodeDragStartHandler() {
+                        ctrol.addNodeDragStartHandler(new NodeDragStartHandler()
+                        {
                             @Override
-                            public void onNodeDragStart( final NodeDragStartEvent event ) {
-                                WiresShapeControlHandleList.this.resizeStart( event );
+                            public void onNodeDragStart(final NodeDragStartEvent event)
+                            {
+                                WiresShapeControlHandleList.this.resizeStart(event);
                             }
-                        } )
-                );
+                        }));
 
-                m_registrationManager.register(
-                        ctrol.addNodeDragMoveHandler( new NodeDragMoveHandler() {
-                            @Override
-                            public void onNodeDragMove( final NodeDragMoveEvent event ) {
-                                WiresShapeControlHandleList.this.resizeMove( event );
-                            }
-                        } )
-                );
+                m_registrationManager.register(ctrol.addNodeDragMoveHandler(new NodeDragMoveHandler()
+                {
+                    @Override
+                    public void onNodeDragMove(final NodeDragMoveEvent event)
+                    {
+                        WiresShapeControlHandleList.this.resizeMove(event);
+                    }
+                }));
 
-                m_registrationManager.register(
-                        ctrol.addNodeDragEndHandler( new NodeDragEndHandler() {
-                            @Override
-                            public void onNodeDragEnd( final NodeDragEndEvent event ) {
-                                WiresShapeControlHandleList.this.resizeEnd( event );
-                            }
-                        } )
-                );
+                m_registrationManager.register(ctrol.addNodeDragEndHandler(new NodeDragEndHandler()
+                {
+                    @Override
+                    public void onNodeDragEnd(final NodeDragEndEvent event)
+                    {
+                        WiresShapeControlHandleList.this.resizeEnd(event);
+                    }
+                }));
 
             }
 
         }
 
         // Shape container's drag.
-        m_registrationManager.register(
-                m_wires_shape.addWiresDragStartHandler( new WiresDragStartHandler() {
-                    @Override
-                    public void onShapeDragStart( WiresDragStartEvent event ) {
-                        updateParentLocation();
+        m_registrationManager.register(m_wires_shape.addWiresDragStartHandler(new WiresDragStartHandler()
+        {
+            @Override
+            public void onShapeDragStart(WiresDragStartEvent event)
+            {
+                updateParentLocation();
 
-                    }
-                } )
-        );;
+            }
+        }));
+        ;
 
-        m_registrationManager.register(
-                m_wires_shape.addWiresDragMoveHandler( new WiresDragMoveHandler() {
-                    @Override
-                    public void onShapeDragMove( WiresDragMoveEvent event ) {
-                        updateParentLocation();
-                    }
-                } )
-        );
+        m_registrationManager.register(m_wires_shape.addWiresDragMoveHandler(new WiresDragMoveHandler()
+        {
+            @Override
+            public void onShapeDragMove(WiresDragMoveEvent event)
+            {
+                updateParentLocation();
+            }
+        }));
 
-        m_registrationManager.register(
-                m_wires_shape.addWiresDragEndHandler( new WiresDragEndHandler() {
-                    @Override
-                    public void onShapeDragEnd( WiresDragEndEvent event ) {
-                        updateParentLocation();
-                    }
-                } )
-        );
+        m_registrationManager.register(m_wires_shape.addWiresDragEndHandler(new WiresDragEndHandler()
+        {
+            @Override
+            public void onShapeDragEnd(WiresDragEndEvent event)
+            {
+                updateParentLocation();
+            }
+        }));
 
         // Shape container's position.
-        m_registrationManager.register(
-                m_wires_shape.addWiresMoveHandler( new WiresMoveHandler() {
-                    @Override
-                    public void onShapeMoved( WiresMoveEvent event ) {
-                        updateParentLocation();
-                    }
-                } )
-        );
+        m_registrationManager.register(m_wires_shape.addWiresMoveHandler(new WiresMoveHandler()
+        {
+            @Override
+            public void onShapeMoved(WiresMoveEvent event)
+            {
+                updateParentLocation();
+            }
+        }));
 
     }
 
-    private void resizeStart( final AbstractNodeDragEvent dragEvent ) {
-        final double[] r = this.resizeWhileDrag( dragEvent );
+    private void resizeStart(final AbstractNodeDragEvent<?> dragEvent)
+    {
+        final double[] r = this.resizeWhileDrag(dragEvent);
 
-        if ( m_wires_shape.isResizable() ) {
-            m_wires_shape.getHandlerManager().fireEvent(
-                    new WiresResizeStartEvent( m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3] )
-            );
+        if (m_wires_shape.isResizable())
+        {
+            m_wires_shape.getHandlerManager().fireEvent(new WiresResizeStartEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
         }
 
     }
 
-    private void resizeMove( final AbstractNodeDragEvent dragEvent ) {
-        final double[] r = this.resizeWhileDrag( dragEvent );
+    private void resizeMove(final AbstractNodeDragEvent<?> dragEvent)
+    {
+        final double[] r = this.resizeWhileDrag(dragEvent);
 
-        if ( m_wires_shape.isResizable() ) {
-            m_wires_shape.getHandlerManager().fireEvent(
-                    new WiresResizeStepEvent( m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3] )
-            );
+        if (m_wires_shape.isResizable())
+        {
+            m_wires_shape.getHandlerManager().fireEvent(new WiresResizeStepEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
         }
     }
 
-    private void resizeEnd( final AbstractNodeDragEvent dragEvent ) {
-        final double[] r = this.resizeWhileDrag( dragEvent );
+    private void resizeEnd(final AbstractNodeDragEvent<?> dragEvent)
+    {
+        final double[] r = this.resizeWhileDrag(dragEvent);
 
-        if ( m_wires_shape.isResizable() ) {
-            m_wires_shape.getHandlerManager().fireEvent(
-                    new WiresResizeEndEvent( m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3] )
-            );
+        if (m_wires_shape.isResizable())
+        {
+            m_wires_shape.getHandlerManager().fireEvent(new WiresResizeEndEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
         }
     }
 
-    private double[] resizeWhileDrag( final AbstractNodeDragEvent dragEvent ) {
+    private double[] resizeWhileDrag(final AbstractNodeDragEvent<?> dragEvent)
+    {
 
-        if ( m_wires_shape.isResizable() ) {
+        if (m_wires_shape.isResizable())
+        {
 
             // Ensure magnets hidden while resizing.
-            if ( null != m_wires_shape.getMagnets() ) {
+            if (null != m_wires_shape.getMagnets())
+            {
                 m_wires_shape.getMagnets().hide();
             }
 
             final Point2DArray points = getControlPointsArray();
 
-            final double[] attrs = getBBAttributes( points );
+            final double[] attrs = getBBAttributes(points);
 
-            this.resize( attrs[0],
-                    attrs[1],
-                    attrs[2],
-                    attrs[3],
-                    false );
+            this.resize(attrs[0], attrs[1], attrs[2], attrs[3], false);
 
             return attrs;
 
@@ -273,27 +327,25 @@ public class WiresShapeControlHandleList implements IControlHandleList {
         return null;
     }
 
-    private void resize( final Double x,
-                         final Double y,
-                         final double width,
-                         final double height,
-                         final boolean refresh ) {
+    private void resize(final Double x, final Double y, final double width, final double height, final boolean refresh)
+    {
 
-        if ( null != x && null != y ) {
-            m_wires_shape.getLayoutContainer()
-                    .setOffset( new Point2D( x, y ) );
+        if (null != x && null != y)
+        {
+            m_wires_shape.getLayoutContainer().setOffset(new Point2D(x, y));
         }
 
-        m_wires_shape.getLayoutContainer()
-                .setSize( width, height );
+        m_wires_shape.getLayoutContainer().setSize(width, height);
 
-        if ( refresh ) {
+        if (refresh)
+        {
             m_wires_shape.getLayoutContainer().refresh();
         }
 
         m_wires_shape.getLayoutContainer().execute();
 
-        if ( null != m_wires_shape.getMagnets() ) {
+        if (null != m_wires_shape.getMagnets())
+        {
             m_wires_shape.getMagnets().shapeChanged();
         }
 
@@ -302,40 +354,48 @@ public class WiresShapeControlHandleList implements IControlHandleList {
 
     }
 
-    private Point2DArray getControlPointsArray() {
+    private Point2DArray getControlPointsArray()
+    {
 
         Point2DArray result = new Point2DArray();
 
-        for ( int i = 0; i < C_POINTS_SIZE; i++ ) {
+        for (int i = 0; i < C_POINTS_SIZE; i++)
+        {
 
-            final IControlHandle handle = m_ctrls.getHandle( i );
+            final IControlHandle handle = m_ctrls.getHandle(i);
             final IPrimitive<?> ctrol = handle.getControl();
-            final Point2D p = new Point2D( ctrol.getX(), ctrol.getY() );
-            result.push( p );
+            final Point2D p = new Point2D(ctrol.getX(), ctrol.getY());
+            result.push(p);
 
         }
 
         return result;
     }
 
-    private void updateParentLocation() {
+    private void updateParentLocation()
+    {
 
-        if ( null == parent && null != getGroup().getLayer()) {
+        if (null == parent && null != getGroup().getLayer())
+        {
             this.parent = new Group();
-            getGroup().getLayer().add( parent );
+            getGroup().getLayer().add(parent);
         }
 
-        if ( null != parent ) {
+        if (null != parent)
+        {
 
-            final double[] ap = getAbsolute( getGroup() );
-            parent.setX( ap[0] );
-            parent.setY( ap[1] );
+            final double[] ap = getAbsolute(getGroup());
+            parent.setX(ap[0]);
+            parent.setY(ap[1]);
             parent.moveToTop();
 
             final NFastArrayList<WiresShape> children = m_wires_shape.getChildShapes();
-            if ( null != children && !children.isEmpty() ) {
-                for ( final WiresShape child : children ) {
-                    if ( null != child.getControls() ) {
+            if (null != children && !children.isEmpty())
+            {
+                for (final WiresShape child : children)
+                {
+                    if (null != child.getControls())
+                    {
                         child.getControls().updateParentLocation();
                     }
                 }
@@ -343,19 +403,19 @@ public class WiresShapeControlHandleList implements IControlHandleList {
 
         }
 
-
     }
 
-    private double[] getBBAttributes( final Point2DArray point2Ds )
+    private double[] getBBAttributes(final Point2DArray point2Ds)
     {
-        double minx = point2Ds.get( 0 ).getX();
-        double miny = point2Ds.get( 0 ).getY();
-        double maxx = point2Ds.get( 0 ).getX();
-        double maxy = point2Ds.get( 0 ).getY();;
+        double minx = point2Ds.get(0).getX();
+        double miny = point2Ds.get(0).getY();
+        double maxx = point2Ds.get(0).getX();
+        double maxy = point2Ds.get(0).getY();
+        ;
 
-        for ( int pos = 0; pos < 4; pos++ )
+        for (int pos = 0; pos < 4; pos++)
         {
-            final Point2D control = point2Ds.get( pos );
+            final Point2D control = point2Ds.get(pos);
 
             if (control.getX() < minx)
             {
@@ -383,21 +443,29 @@ public class WiresShapeControlHandleList implements IControlHandleList {
 
     }
 
-    private void switchVisibility( final boolean visible ) {
+    private void switchVisibility(final boolean visible)
+    {
 
-        if ( null != parent) {
+        if (null != parent)
+        {
 
             final NFastArrayList<WiresShape> children = m_wires_shape.getChildShapes();
 
-            if ( null != children ) {
+            if (null != children)
+            {
 
-                for ( final WiresShape shape : children ) {
+                for (final WiresShape shape : children)
+                {
 
-                    if ( shape.getControls() != null ) {
+                    if (shape.getControls() != null)
+                    {
 
-                        if ( visible ) {
+                        if (visible)
+                        {
                             shape.getControls().show();
-                        } else {
+                        }
+                        else
+                        {
                             shape.getControls().hide();
                         }
 
@@ -407,9 +475,12 @@ public class WiresShapeControlHandleList implements IControlHandleList {
 
             }
 
-            if ( visible ) {
-                m_ctrls.showOn( parent );
-            } else {
+            if (visible)
+            {
+                m_ctrls.showOn(parent);
+            }
+            else
+            {
                 m_ctrls.hide();
             }
 
@@ -417,16 +488,19 @@ public class WiresShapeControlHandleList implements IControlHandleList {
 
     }
 
-    private static double[] getAbsolute( final Group group ) {
-        final Point2D p = WiresUtils.getLocation( group );
+    private static double[] getAbsolute(final Group group)
+    {
+        final Point2D p = WiresUtils.getLocation(group);
         return new double[] { p.getX(), p.getY() };
     }
 
-    private MultiPath getPath() {
+    private MultiPath getPath()
+    {
         return m_wires_shape.getPath();
     }
 
-    private Group getGroup() {
+    private Group getGroup()
+    {
         return m_wires_shape.getGroup();
     }
 }

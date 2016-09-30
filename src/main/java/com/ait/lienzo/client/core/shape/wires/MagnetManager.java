@@ -19,12 +19,23 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Shape;
-import com.ait.lienzo.client.core.types.*;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.ColorKeyRotor;
+import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ColorName;
@@ -35,15 +46,15 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public class MagnetManager
 {
-    private static final int            CONTROL_RADIUS       = 10;
+    private static final int          CONTROL_RADIUS       = 10;
 
-    private static final double        CONTROL_STROKE_WIDTH = 2;
+    private static final double       CONTROL_STROKE_WIDTH = 2;
 
     public static final ColorKeyRotor m_c_rotor            = new ColorKeyRotor();
 
     private NFastStringMap<Magnets>   m_magnetRegistry     = new NFastStringMap<Magnets>();
 
-    private int                 m_ctrlSize = CONTROL_RADIUS;
+    private int                       m_ctrlSize           = CONTROL_RADIUS;
 
     public ImageData drawMagnetsToBack(Magnets magnets, NFastStringMap<WiresShape> shape_color_map, NFastStringMap<WiresMagnet> magnet_color_map, ScratchPad scratch)
     {
@@ -61,7 +72,7 @@ public class MagnetManager
             String c = m_c_rotor.next();
             magnet_color_map.put(c, m);
             ctx.beginPath();
-            ctx.setStrokeWidth( m_ctrlSize );
+            ctx.setStrokeWidth(m_ctrlSize);
             ctx.setStrokeColor(c);
             ctx.setFillColor(c);
             ctx.arc(m.getControl().getX(), m.getControl().getY(), m_ctrlSize, 0, 2 * Math.PI, false);
@@ -71,10 +82,10 @@ public class MagnetManager
         return ctx.getImageData(0, 0, scratch.getHeight(), scratch.getHeight());
     }
 
-    public Magnets createMagnets( final WiresShape wiresShape)
+    public Magnets createMagnets(final WiresShape wiresShape)
     {
         final IPrimitive<?> primTarget = wiresShape.getGroup();
-        final Point2DArray points = getWiresIntersectionPoints( wiresShape );
+        final Point2DArray points = getWiresIntersectionPoints(wiresShape);
         final ControlHandleList list = new ControlHandleList(primTarget);
         final BoundingBox box = wiresShape.getPath().getBoundingBox();
 
@@ -83,7 +94,7 @@ public class MagnetManager
         double top = box.getY();
         double bottom = top + box.getHeight();
 
-        final Point2D primLoc = WiresUtils.getLocation( primTarget );
+        final Point2D primLoc = WiresUtils.getLocation(primTarget);
         final Magnets magnets = new Magnets(this, list, wiresShape);
 
         for (Point2D p : points)
@@ -99,7 +110,7 @@ public class MagnetManager
         String uuid = primTarget.uuid();
         m_magnetRegistry.put(uuid, magnets);
 
-        wiresShape.setMagnets( magnets );
+        wiresShape.setMagnets(magnets);
 
         return magnets;
     }
@@ -196,36 +207,38 @@ public class MagnetManager
         }
     }
 
-    public void setHotspotSize( int m_ctrlSize ) {
+    public void setHotspotSize(int m_ctrlSize)
+    {
         this.m_ctrlSize = m_ctrlSize;
     }
 
-    private static Point2DArray getWiresIntersectionPoints( final WiresShape wiresShape ) {
-        return Geometry.getCardinalIntersects( wiresShape.getPath() );
+    private static Point2DArray getWiresIntersectionPoints(final WiresShape wiresShape)
+    {
+        return Geometry.getCardinalIntersects(wiresShape.getPath());
     }
 
-    private Circle getControlPrimitive( double x, double y)
+    private Circle getControlPrimitive(double x, double y)
     {
-        return new Circle( m_ctrlSize ).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x).setY(y).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(CONTROL_STROKE_WIDTH);
+        return new Circle(m_ctrlSize).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x).setY(y).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(CONTROL_STROKE_WIDTH);
     }
 
     public static class Magnets implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        private IControlHandleList m_list;
+        private IControlHandleList               m_list;
 
-        private MagnetManager      m_magnetManager;
+        private MagnetManager                    m_magnetManager;
 
-        private WiresShape         m_wiresShape;
+        private WiresShape                       m_wiresShape;
 
-        private Shape<?>           m_shape;
+        private Shape<?>                         m_shape;
 
-        private IPrimitive<?>      m_primTarget;
+        private IPrimitive<?>                    m_primTarget;
 
-        private boolean            m_isDragging;
+        private boolean                          m_isDragging;
 
         private final HandlerRegistrationManager m_registrationManager = new HandlerRegistrationManager();
 
-        public Magnets(MagnetManager magnetManager, IControlHandleList list, WiresShape wiresShape )
+        public Magnets(MagnetManager magnetManager, IControlHandleList list, WiresShape wiresShape)
         {
             m_list = list;
             m_magnetManager = magnetManager;
@@ -233,25 +246,15 @@ public class MagnetManager
             m_primTarget = wiresShape.getGroup();
             m_wiresShape = wiresShape;
 
-            m_registrationManager.register(
-                    m_primTarget.addAttributesChangedHandler( Attribute.X, this )
-            );
+            m_registrationManager.register(m_primTarget.addAttributesChangedHandler(Attribute.X, this));
 
-            m_registrationManager.register(
-                    m_primTarget.addAttributesChangedHandler( Attribute.Y, this )
-            );
+            m_registrationManager.register(m_primTarget.addAttributesChangedHandler(Attribute.Y, this));
 
-            m_registrationManager.register(
-                    m_primTarget.addNodeDragStartHandler( this )
-            );
+            m_registrationManager.register(m_primTarget.addNodeDragStartHandler(this));
 
-            m_registrationManager.register(
-                    m_primTarget.addNodeDragMoveHandler( this )
-            );
+            m_registrationManager.register(m_primTarget.addNodeDragMoveHandler(this));
 
-            m_registrationManager.register(
-                    m_primTarget.addNodeDragEndHandler( this )
-            );
+            m_registrationManager.register(m_primTarget.addNodeDragEndHandler(this));
         }
 
         public WiresShape getWiresShape()
@@ -292,16 +295,16 @@ public class MagnetManager
             shapeMoved();
         }
 
-        public void shapeMoved() {
+        public void shapeMoved()
+        {
             IPrimitive<?> prim = getPrimTarget();
-            Point2D absLoc = WiresUtils.getLocation( prim );
+            Point2D absLoc = WiresUtils.getLocation(prim);
             double x = absLoc.getX();
             double y = absLoc.getY();
-            shapeMoved( x, y );
+            shapeMoved(x, y);
         }
 
-        private void shapeMoved( final double x,
-                                 final double y )
+        private void shapeMoved(final double x, final double y)
         {
 
             for (int i = 0; i < m_list.size(); i++)
@@ -322,17 +325,19 @@ public class MagnetManager
 
         }
 
-        public void shapeChanged() {
+        public void shapeChanged()
+        {
 
-            final Point2DArray points = m_magnetManager.getWiresIntersectionPoints( m_wiresShape );
+            final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape);
 
-            if ( points.size() == m_list.size() ) {
+            if (points.size() == m_list.size())
+            {
 
                 for (int i = 0; i < m_list.size(); i++)
                 {
-                    Point2D p = points.get( i );
+                    Point2D p = points.get(i);
                     WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
-                    m.setRx( p.getX() ).setRy( p.getY() );
+                    m.setRx(p.getX()).setRy(p.getY());
                 }
 
                 this.shapeMoved();
@@ -391,8 +396,10 @@ public class MagnetManager
             return (WiresMagnet) m_list.getHandle(index);
         }
 
-        private void batch() {
-            if ( null != m_shape.getLayer() ) {
+        private void batch()
+        {
+            if (null != m_shape.getLayer())
+            {
                 m_shape.getLayer().batch();
             }
         }

@@ -16,7 +16,12 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
+import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
+import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingAndContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDragControlContext;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -31,30 +36,30 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
     public DockingAndContainmentHandler(WiresShape shape, WiresManager wiresManager)
     {
 
-        this.dockingAndContainmentControl = wiresManager.getControlFactory().newDockingAndContainmentControl( shape, wiresManager );
+        this.dockingAndContainmentControl = wiresManager.getControlFactory().newDockingAndContainmentControl(shape, wiresManager);
     }
 
-    public WiresDockingAndContainmentControl getDockingAndContainmentControl() {
+    public WiresDockingAndContainmentControl getDockingAndContainmentControl()
+    {
         return dockingAndContainmentControl;
     }
 
     @Override
     public void startDrag(DragContext dragContext)
     {
-        this.dockingAndContainmentControl.dragStart( new WiresDragControlContext(  dragContext.getDragStartX(),
-                dragContext.getDragStartY(), dragContext.getNode() ) );
+        this.dockingAndContainmentControl.dragStart(new WiresDragControlContext(dragContext.getDragStartX(), dragContext.getDragStartY(), dragContext.getNode()));
     }
 
     @Override
     public boolean adjust(final Point2D dxy)
     {
-        return this.dockingAndContainmentControl.dragAdjust( dxy );
+        return this.dockingAndContainmentControl.dragAdjust(dxy);
     }
 
     @Override
     public void onNodeDragEnd(NodeDragEndEvent event)
     {
-        this.dockingAndContainmentControl.dragEnd( new WiresDragControlContext( event.getX(), event.getY(), event.getSource() ));
+        this.dockingAndContainmentControl.dragEnd(new WiresDragControlContext(event.getX(), event.getY(), event.getSource()));
     }
 
     @Override

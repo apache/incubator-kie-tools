@@ -85,7 +85,7 @@ public class BackingColorMapUtils
             ctx.setFillColor(color);
             ctx.beginPath();
 
-            Point2D absLoc = WiresUtils.getLocation( multiPath );
+            Point2D absLoc = WiresUtils.getLocation(multiPath);
             double offsetX = absLoc.getX();
             double offsetY = absLoc.getY();
 

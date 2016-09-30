@@ -18,15 +18,15 @@ package com.ait.lienzo.client.core.shape.wires;
 
 public class SelectionManager
 {
-    private boolean changeInProgress;
+    private boolean m_changeInProgress;
 
     public boolean isChangeInProgress()
     {
-        return changeInProgress;
+        return m_changeInProgress;
     }
 
     public void setChangeInProgress(boolean changeInProgress)
     {
-        this.changeInProgress = changeInProgress;
+        m_changeInProgress = changeInProgress;
     }
 }

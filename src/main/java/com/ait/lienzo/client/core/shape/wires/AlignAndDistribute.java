@@ -16,17 +16,24 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
+import com.ait.lienzo.client.core.shape.Attributes;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IDrawable;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Line;
+import com.ait.lienzo.client.core.shape.PolyLine;
+import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.AlignAndDistributeControlImpl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * This class indexes related classes for alignment and distribution.
@@ -218,8 +225,9 @@ public class AlignAndDistribute
         }
     }
 
-    public AlignAndDistributeControl getControlForShape( final String uuid ) {
-        return m_shapes.get( uuid );
+    public AlignAndDistributeControl getControlForShape(final String uuid)
+    {
+        return m_shapes.get(uuid);
     }
 
     public void addAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeControl>> index, AlignAndDistributeControl handler, double pos)

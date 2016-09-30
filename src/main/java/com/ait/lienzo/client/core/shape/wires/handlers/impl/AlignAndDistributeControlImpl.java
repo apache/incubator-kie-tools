@@ -1,3 +1,4 @@
+
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -26,56 +27,53 @@ import static com.ait.lienzo.client.core.AttributeOp.any;
 
 public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 {
-    protected AlignAndDistribute                m_alignAndDistribute;
+    protected AlignAndDistribute                                   m_alignAndDistribute;
 
-    protected IPrimitive<?> m_shape;
+    protected IPrimitive<?>                                        m_shape;
 
-    protected BoundingBox m_box;
+    protected BoundingBox                                          m_box;
 
-    protected boolean                           m_isDraggable;
+    protected boolean                                              m_isDraggable;
 
-    protected boolean                           m_isDragging;
+    protected boolean                                              m_isDragging;
 
-    protected HandlerRegistrationManager m_attrHandlerRegs;
+    protected HandlerRegistrationManager                           m_attrHandlerRegs;
 
-    protected HandlerRegistration m_dragEndHandlerReg;
+    protected HandlerRegistration                                  m_dragEndHandlerReg;
 
     protected AlignAndDistribute.AlignAndDistributeMatchesCallback m_alignAndDistributeMatchesCallback;
 
-    protected double                            m_startLeft;
+    protected double                                               m_startLeft;
 
-    protected double                            m_startTop;
+    protected double                                               m_startTop;
 
-    protected double                            m_left;
+    protected double                                               m_left;
 
-    protected double                            m_hCenter;
+    protected double                                               m_hCenter;
 
-    protected double                            m_right;
+    protected double                                               m_right;
 
-    protected double                            m_top;
+    protected double                                               m_top;
 
-    protected double                            m_vCenter;
+    protected double                                               m_vCenter;
 
-    protected double                            m_bottom;
+    protected double                                               m_bottom;
 
-    protected Set<AlignAndDistribute.DistributionEntry> m_horizontalDistEntries;
+    protected Set<AlignAndDistribute.DistributionEntry>            m_horizontalDistEntries;
 
     protected Set<AlignAndDistribute.DistributionEntry>            m_verticalDistEntries;
 
-    private boolean                             indexed;
+    private boolean                                                indexed;
 
-    private final Flows.BooleanOp m_bboxOp;
+    private final Flows.BooleanOp                                  m_bboxOp;
 
-    private final Flows.BooleanOp m_tranOp;
+    private final Flows.BooleanOp                                  m_tranOp;
 
-    private double                              m_leftOffset;
+    private double                                                 m_leftOffset;
 
-    private double                              m_topOffset;
+    private double                                                 m_topOffset;
 
-    public AlignAndDistributeControlImpl( IPrimitive<?> shape,
-                                          AlignAndDistribute alignAndDistribute,
-                                          AlignAndDistribute.AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback,
-                                          List<Attribute> attributes )
+    public AlignAndDistributeControlImpl(IPrimitive<?> shape, AlignAndDistribute alignAndDistribute, AlignAndDistribute.AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
     {
         m_shape = shape;
 
@@ -90,7 +88,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         m_leftOffset = shape.getX() - m_box.getX();
         m_topOffset = shape.getY() - m_box.getY();
 
-        Point2D absLoc = WiresUtils.getLocation( shape );
+        Point2D absLoc = WiresUtils.getLocation(shape);
 
         double left = absLoc.getX() + m_leftOffset;
         double right = left + m_box.getWidth();
@@ -137,15 +135,16 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         m_tranOp = any(Attribute.ROTATION, Attribute.SCALE, Attribute.SHEAR);
     }
 
-
-    private final AttributesChangedHandler ShapeAttributesChangedHandler = new AttributesChangedHandler() {
+    private final AttributesChangedHandler ShapeAttributesChangedHandler = new AttributesChangedHandler()
+    {
         @Override
-        public void onAttributesChanged( AttributesChangedEvent event ) {
-            refresh( event.evaluate(m_tranOp), event.evaluate(m_bboxOp) );
+        public void onAttributesChanged(AttributesChangedEvent event)
+        {
+            refresh(event.evaluate(m_tranOp), event.evaluate(m_bboxOp));
         }
     };
 
-    public void addHandlers( IDrawable<?> drawable, ArrayList<Attribute> list)
+    public void addHandlers(IDrawable<?> drawable, ArrayList<Attribute> list)
     {
         for (Attribute attribute : list)
         {
@@ -263,7 +262,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         // circles xy are in centre, where as others are top left.
         // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
         // However getBoundingBox here is still relative to parent, so must offset against parent absolute xy
-        Point2D absLoc = WiresUtils.getLocation( m_shape );
+        Point2D absLoc = WiresUtils.getLocation(m_shape);
 
         double left = absLoc.getX() + m_leftOffset;
         double right = left + m_box.getWidth();
@@ -386,7 +385,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     private final boolean hasComplexTransformAttributes()
     {
-        final Attributes attr = m_alignAndDistribute.getAttributes(m_shape);
+        final Attributes attr = AlignAndDistribute.getAttributes(m_shape);
 
         if (attr.hasComplexTransformAttributes())
         {
@@ -421,11 +420,11 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
     @Override
     public void refresh()
     {
-        refresh( true, true );
+        refresh(true, true);
     }
 
     @Override
-    public void refresh( boolean transforms, boolean attributes )
+    public void refresh(boolean transforms, boolean attributes)
     {
 
         if (m_isDragging)
@@ -433,7 +432,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
             // ignore attribute changes while dragging
             return;
         }
-        if ( transforms )
+        if (transforms)
         {
             boolean hasTransformations = hasComplexTransformAttributes();
 
@@ -461,7 +460,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
             // was on, now on off
             draggOff();
         }
-        if (indexed && attributes )
+        if (indexed && attributes)
         {
             updateIndex();
         }
@@ -480,14 +479,15 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
     }
 
     @Override
-    public void remove() {
+    public void remove()
+    {
         this.removeHandlerRegistrations();
     }
 
-    public void iterateAndRemoveIndex( IPrimitive<?> prim)
+    public void iterateAndRemoveIndex(IPrimitive<?> prim)
     {
         indexOff(prim);
-        if (prim instanceof Group )
+        if (prim instanceof Group)
         {
             for (IPrimitive<?> child : prim.asGroup().getChildNodes())
             {

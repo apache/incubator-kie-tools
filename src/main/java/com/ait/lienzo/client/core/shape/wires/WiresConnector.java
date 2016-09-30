@@ -17,15 +17,34 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.*;
-import com.ait.lienzo.client.core.shape.*;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
+
+import com.ait.lienzo.client.core.event.AbstractNodeDragEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
+import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
+import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
+import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
+import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.MultiPathDecorator;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDragControlContext;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
 public class WiresConnector
 {
@@ -74,7 +93,7 @@ public class WiresConnector
 
     public WiresConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
     {
-        this(line, headDecorator, tailDecorator );
+        this(line, headDecorator, tailDecorator);
         setHeadMagnet(headMagnet);
         setTailMagnet(tailMagnet);
     }
@@ -107,7 +126,8 @@ public class WiresConnector
         m_connectionAcceptor = connectionAcceptor;
     }
 
-    public void destroy() {
+    public void destroy()
+    {
         removeHandlers();
         removeFromLayer();
     }
@@ -214,22 +234,21 @@ public class WiresConnector
         return m_pointHandles;
     }
 
-    static class WiresConnectorHandler
-            implements
-            NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler,
-            NodeMouseExitHandler, NodeMouseEnterHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
+    static class WiresConnectorHandler implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseExitHandler, NodeMouseEnterHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
     {
         private final WiresConnectorControl m_control;
-        private final WiresConnector m_connector;
 
-        WiresConnectorHandler( WiresConnector connector, WiresManager wiresManager)
+        private final WiresConnector        m_connector;
+
+        WiresConnectorHandler(WiresConnector connector, WiresManager wiresManager)
         {
-            this.m_control = wiresManager.getControlFactory().newConnectorControl( connector, wiresManager );
+            this.m_control = wiresManager.getControlFactory().newConnectorControl(connector, wiresManager);
             this.m_connector = connector;
             init();
         }
 
-        private void init() {
+        private void init()
+        {
             if (m_connector.m_HandlerRegistrationManager != null)
             {
                 m_connector.m_HandlerRegistrationManager.removeHandler();
@@ -251,24 +270,24 @@ public class WiresConnector
         @Override
         public void onNodeDragStart(NodeDragStartEvent event)
         {
-            this.m_control.dragStart( buildDragControlContext( event ) );
+            this.m_control.dragStart(buildDragControlContext(event));
         }
 
         @Override
         public void onNodeDragMove(NodeDragMoveEvent event)
         {
-            this.m_control.dragMove( buildDragControlContext( event ) );
+            this.m_control.dragMove(buildDragControlContext(event));
         }
 
         @Override
         public void onNodeDragEnd(NodeDragEndEvent event)
         {
-            this.m_control.dragEnd( buildDragControlContext( event ) );
+            this.m_control.dragEnd(buildDragControlContext(event));
         }
 
-        private WiresDragControlContext buildDragControlContext( final AbstractNodeDragEvent event ) {
-            return new WiresDragControlContext( event.getDragContext().getDx(),
-                    event.getDragContext().getDy(), event.getSource() );
+        private WiresDragControlContext buildDragControlContext(final AbstractNodeDragEvent<?> event)
+        {
+            return new WiresDragControlContext(event.getDragContext().getDx(), event.getDragContext().getDy(), event.getSource());
         }
 
         @Override
@@ -276,7 +295,7 @@ public class WiresConnector
         {
             if (event.isShiftKeyDown())
             {
-                this.m_control.addControlPoint( event.getX(), event.getY() );
+                this.m_control.addControlPoint(event.getX(), event.getY());
             }
         }
 
@@ -284,13 +303,13 @@ public class WiresConnector
         public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
         {
 
-            this.m_control.destroyControlPoint( event.getSource() );
+            this.m_control.destroyControlPoint(event.getSource());
         }
 
         @Override
         public void onNodeMouseEnter(NodeMouseEnterEvent event)
         {
-            if (((Node<?> ) event.getSource()).getParent() == m_connector.getGroup() && event.isShiftKeyDown())
+            if (((Node<?>) event.getSource()).getParent() == m_connector.getGroup() && event.isShiftKeyDown())
             {
                 this.m_control.showControlPoints();
             }
@@ -302,7 +321,8 @@ public class WiresConnector
             this.m_control.hideControlPoints();
         }
 
-        public WiresConnectorControl getControl() {
+        public WiresConnectorControl getControl()
+        {
             return m_control;
         }
 

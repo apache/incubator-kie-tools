@@ -34,26 +34,27 @@ import com.ait.lienzo.client.core.types.Point2D;
  */
 public class WiresShapeControlImpl implements WiresShapeControl
 {
-    private WiresManager                m_manager;
+    @SuppressWarnings("unused")
+    private WiresManager                      m_manager;
 
-    private WiresShape                   m_shape;
+    private WiresShape                        m_shape;
 
-    private AlignAndDistributeControl m_alignAndDistributeHandler;
+    private AlignAndDistributeControl         m_alignAndDistributeHandler;
 
     private WiresDockingAndContainmentControl m_dockingAndContainmentControl;
 
-    private double                       m_shapeStartX;
+    private double                            m_shapeStartX;
 
-    private double                       m_shapeStartY;
+    private double                            m_shapeStartY;
 
-    public WiresShapeControlImpl( WiresShape shape, WiresManager wiresManager)
+    public WiresShapeControlImpl(WiresShape shape, WiresManager wiresManager)
     {
         m_manager = wiresManager;
         m_shape = shape;
     }
 
     @Override
-    public void setAlignAndDistributeControl( AlignAndDistributeControl alignAndDistributeHandler)
+    public void setAlignAndDistributeControl(AlignAndDistributeControl alignAndDistributeHandler)
     {
         m_alignAndDistributeHandler = alignAndDistributeHandler;
     }
@@ -64,20 +65,20 @@ public class WiresShapeControlImpl implements WiresShapeControl
         this.m_dockingAndContainmentControl = m_dockingAndContainmentControl;
     }
 
-
     @Override
-    public void dragStart( final Context context ) {
+    public void dragStart(final Context context)
+    {
 
-        final Point2D absShapeLoc =  WiresUtils.getLocation( m_shape.getPath() );
+        final Point2D absShapeLoc = WiresUtils.getLocation(m_shape.getPath());
         m_shapeStartX = absShapeLoc.getX();
         m_shapeStartY = absShapeLoc.getY();
 
-        if ( m_dockingAndContainmentControl != null )
+        if (m_dockingAndContainmentControl != null)
         {
-            m_dockingAndContainmentControl.dragStart( context );
+            m_dockingAndContainmentControl.dragStart(context);
         }
 
-        if ( m_alignAndDistributeHandler != null )
+        if (m_alignAndDistributeHandler != null)
         {
             m_alignAndDistributeHandler.dragStart();
         }
@@ -85,14 +86,15 @@ public class WiresShapeControlImpl implements WiresShapeControl
     }
 
     @Override
-    public void dragEnd( final Context context ) {
+    public void dragEnd(final Context context)
+    {
 
-        if ( m_dockingAndContainmentControl != null )
+        if (m_dockingAndContainmentControl != null)
         {
-            m_dockingAndContainmentControl.dragEnd( context );
+            m_dockingAndContainmentControl.dragEnd(context);
         }
 
-        if ( m_alignAndDistributeHandler != null )
+        if (m_alignAndDistributeHandler != null)
         {
             m_alignAndDistributeHandler.dragEnd();
         }
@@ -100,15 +102,17 @@ public class WiresShapeControlImpl implements WiresShapeControl
     }
 
     @Override
-    public void dragMove( final Context context ) {
+    public void dragMove(final Context context)
+    {
         // Nothing to do.
     }
 
     @Override
-    public boolean dragAdjust( final Point2D dxy ) {
+    public boolean dragAdjust(final Point2D dxy)
+    {
 
         boolean adjusted1 = false;
-        if ( m_dockingAndContainmentControl != null )
+        if (m_dockingAndContainmentControl != null)
         {
             adjusted1 = m_dockingAndContainmentControl.dragAdjust(dxy);
         }
@@ -116,19 +120,18 @@ public class WiresShapeControlImpl implements WiresShapeControl
         double dx = dxy.getX();
         double dy = dxy.getY();
         boolean adjusted2 = false;
-        if ( m_alignAndDistributeHandler != null && m_alignAndDistributeHandler.isDraggable())
+        if (m_alignAndDistributeHandler != null && m_alignAndDistributeHandler.isDraggable())
         {
             adjusted2 = m_alignAndDistributeHandler.dragAdjust(dxy);
         }
 
-        if ( adjusted1 && adjusted2 && ( dxy.getX() != dx || dxy.getY() != dy ) )
+        if (adjusted1 && adjusted2 && (dxy.getX() != dx || dxy.getY() != dy))
         {
             BoundingBox box = m_shape.getPath().getBoundingBox();
 
-            PickerPart part = m_dockingAndContainmentControl.getPicker().findShapeAt((int) (m_shapeStartX + dxy.getX() + (box.getWidth()/2)),
-                    (int) (m_shapeStartY + dxy.getY() + (box.getHeight()/2)));
+            PickerPart part = m_dockingAndContainmentControl.getPicker().findShapeAt((int) (m_shapeStartX + dxy.getX() + (box.getWidth() / 2)), (int) (m_shapeStartY + dxy.getY() + (box.getHeight() / 2)));
 
-            if ( part == null || part.getShapePart() != PickerPart.ShapePart.BORDER)
+            if (part == null || part.getShapePart() != PickerPart.ShapePart.BORDER)
             {
                 dxy.setX(dx);
                 dxy.setY(dy);
@@ -143,7 +146,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
     @Override
     public void onNodeMouseDown()
     {
-        if ( m_dockingAndContainmentControl != null )
+        if (m_dockingAndContainmentControl != null)
         {
             m_dockingAndContainmentControl.onNodeMouseDown();
         }
@@ -152,7 +155,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
     @Override
     public void onNodeMouseUp()
     {
-        if ( m_dockingAndContainmentControl != null )
+        if (m_dockingAndContainmentControl != null)
         {
             m_dockingAndContainmentControl.onNodeMouseUp();
         }

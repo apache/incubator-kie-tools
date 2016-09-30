@@ -17,55 +17,68 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import static com.ait.lienzo.client.core.AttributeOp.any;
+
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.event.AnimationFrameAttributesChangedBatcher;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.wires.event.*;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresMoveEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresMoveHandler;
 import com.ait.tooling.common.api.flow.Flows;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-import java.util.Objects;
-
-import static com.ait.lienzo.client.core.AttributeOp.any;
-
 public class WiresContainer
 {
-    private static final Flows.BooleanOp                 XYWH_OP                  = any( Attribute.X, Attribute.Y );
+    private static final Flows.BooleanOp     XYWH_OP               = any(Attribute.X, Attribute.Y);
 
-    private NFastArrayList<WiresShape>   m_childShapes;
+    private NFastArrayList<WiresShape>       m_childShapes;
 
-    private IContainer<?, IPrimitive<?>> m_container;
+    private IContainer<?, IPrimitive<?>>     m_container;
 
-    private WiresContainer               m_parent;
+    private WiresContainer                   m_parent;
 
-    private IContainmentAcceptor         m_containmentAcceptor = IContainmentAcceptor.ALL;;
+    private IContainmentAcceptor             m_containmentAcceptor = IContainmentAcceptor.ALL;;
 
-    private IDockingAcceptor             m_dockingAcceptor     = IDockingAcceptor.ALL;
+    private IDockingAcceptor                 m_dockingAcceptor     = IDockingAcceptor.ALL;
 
-    private WiresContainer               dockedTo;
+    private WiresContainer                   dockedTo;
 
-    private final HandlerManager         m_manager;
+    private final HandlerManager             m_manager;
 
-    private boolean                      m_dragging;
+    private boolean                          m_dragging;
 
     private final IAttributesChangedBatcher  attributesChangedBatcher;
 
     private final HandlerRegistrationManager m_registrationManager;
 
-    public WiresContainer( final IContainer<?, IPrimitive<?>> container )
+    public WiresContainer(final IContainer<?, IPrimitive<?>> container)
     {
-        this( container, null, new HandlerRegistrationManager(), new AnimationFrameAttributesChangedBatcher() );
+        this(container, null, new HandlerRegistrationManager(), new AnimationFrameAttributesChangedBatcher());
     }
 
-    WiresContainer( final IContainer<?, IPrimitive<?>> container,
-                    final HandlerManager m_manager,
-                    final HandlerRegistrationManager m_registrationManager,
-                    final IAttributesChangedBatcher  attributesChangedBatcher )
+    WiresContainer(final IContainer<?, IPrimitive<?>> container, final HandlerManager m_manager, final HandlerRegistrationManager m_registrationManager, final IAttributesChangedBatcher attributesChangedBatcher)
     {
         this.m_container = container;
         this.m_manager = null != m_manager ? m_manager : new HandlerManager(this);
@@ -78,70 +91,58 @@ public class WiresContainer
 
     private void init()
     {
-        if ( null != m_container ) {
+        if (null != m_container)
+        {
 
-            m_registrationManager.register(
-                    m_container.addNodeDragStartHandler( new NodeDragStartHandler() {
-                        @Override
-                        public void onNodeDragStart( final NodeDragStartEvent event ) {
-                            WiresContainer.this.m_dragging = true;
-                            m_manager.fireEvent(
-                                    new WiresDragStartEvent(
-                                            WiresContainer.this,
-                                            event ) );
-                        }
-                    } )
-            );
-
-            m_registrationManager.register(
-                    m_container.addNodeDragMoveHandler( new NodeDragMoveHandler() {
-                        @Override
-                        public void onNodeDragMove( final NodeDragMoveEvent event ) {
-                            WiresContainer.this.m_dragging = true;
-                            m_manager.fireEvent(
-                                    new WiresDragMoveEvent(
-                                            WiresContainer.this,
-                                            event ) );
-                        }
-                    } )
-            );
-
-            m_registrationManager.register(
-                    m_container.addNodeDragEndHandler( new NodeDragEndHandler() {
-                        @Override
-                        public void onNodeDragEnd( final NodeDragEndEvent event ) {
-                            WiresContainer.this.m_dragging = false;
-                            m_manager.fireEvent(
-                                    new WiresDragEndEvent(
-                                            WiresContainer.this,
-                                            event ) );
-                        }
-                    } )
-            );
-
-            m_container.setAttributesChangedBatcher( attributesChangedBatcher );
-
-            final AttributesChangedHandler handler = new AttributesChangedHandler() {
+            m_registrationManager.register(m_container.addNodeDragStartHandler(new NodeDragStartHandler()
+            {
                 @Override
-                public void onAttributesChanged( AttributesChangedEvent event ) {
-                    if ( !WiresContainer.this.m_dragging && event.evaluate( XYWH_OP ) ) {
-                        m_manager.fireEvent(
-                                new WiresMoveEvent( WiresContainer.this,
-                                        ( int ) getGroup().getX(),
-                                        ( int ) getGroup().getY() ) );
+                public void onNodeDragStart(final NodeDragStartEvent event)
+                {
+                    WiresContainer.this.m_dragging = true;
+                    m_manager.fireEvent(new WiresDragStartEvent(WiresContainer.this, event));
+                }
+            }));
+
+            m_registrationManager.register(m_container.addNodeDragMoveHandler(new NodeDragMoveHandler()
+            {
+                @Override
+                public void onNodeDragMove(final NodeDragMoveEvent event)
+                {
+                    WiresContainer.this.m_dragging = true;
+                    m_manager.fireEvent(new WiresDragMoveEvent(WiresContainer.this, event));
+                }
+            }));
+
+            m_registrationManager.register(m_container.addNodeDragEndHandler(new NodeDragEndHandler()
+            {
+                @Override
+                public void onNodeDragEnd(final NodeDragEndEvent event)
+                {
+                    WiresContainer.this.m_dragging = false;
+                    m_manager.fireEvent(new WiresDragEndEvent(WiresContainer.this, event));
+                }
+            }));
+
+            m_container.setAttributesChangedBatcher(attributesChangedBatcher);
+
+            final AttributesChangedHandler handler = new AttributesChangedHandler()
+            {
+                @Override
+                public void onAttributesChanged(AttributesChangedEvent event)
+                {
+                    if (!WiresContainer.this.m_dragging && event.evaluate(XYWH_OP))
+                    {
+                        m_manager.fireEvent(new WiresMoveEvent(WiresContainer.this, (int) getGroup().getX(), (int) getGroup().getY()));
                     }
 
                 }
             };
 
             // Attribute change handlers.
-            m_registrationManager.register(
-                    m_container.addAttributesChangedHandler( Attribute.X, handler )
-            );
+            m_registrationManager.register(m_container.addAttributesChangedHandler(Attribute.X, handler));
 
-            m_registrationManager.register(
-                    m_container.addAttributesChangedHandler( Attribute.Y, handler )
-            );
+            m_registrationManager.register(m_container.addAttributesChangedHandler(Attribute.Y, handler));
 
         }
 
@@ -152,7 +153,8 @@ public class WiresContainer
         return m_container;
     }
 
-    public Group getGroup() {
+    public Group getGroup()
+    {
         return getContainer().asGroup();
     }
 
@@ -241,7 +243,7 @@ public class WiresContainer
         return dockedTo;
     }
 
-    public WiresContainer setDraggable( final boolean draggable )
+    public WiresContainer setDraggable(final boolean draggable)
     {
 
         getGroup().setDraggable(draggable);
@@ -250,43 +252,45 @@ public class WiresContainer
 
     }
 
-    public final HandlerRegistration addWiresMoveHandler( final WiresMoveHandler handler )
+    public final HandlerRegistration addWiresMoveHandler(final WiresMoveHandler handler)
     {
-        Objects.requireNonNull( handler );
+        Objects.requireNonNull(handler);
 
-        return m_manager.addHandler( WiresMoveEvent.TYPE, handler );
+        return m_manager.addHandler(WiresMoveEvent.TYPE, handler);
 
     }
 
-    public final HandlerRegistration addWiresDragStartHandler( final WiresDragStartHandler dragHandler )
+    public final HandlerRegistration addWiresDragStartHandler(final WiresDragStartHandler dragHandler)
     {
-        Objects.requireNonNull( dragHandler );
+        Objects.requireNonNull(dragHandler);
 
-        return m_manager.addHandler( WiresDragStartEvent.TYPE, dragHandler );
+        return m_manager.addHandler(WiresDragStartEvent.TYPE, dragHandler);
 
     }
 
-    public final HandlerRegistration addWiresDragMoveHandler( final WiresDragMoveHandler dragHandler )
+    public final HandlerRegistration addWiresDragMoveHandler(final WiresDragMoveHandler dragHandler)
     {
-        Objects.requireNonNull( dragHandler );
+        Objects.requireNonNull(dragHandler);
 
-        return m_manager.addHandler( WiresDragMoveEvent.TYPE, dragHandler );
+        return m_manager.addHandler(WiresDragMoveEvent.TYPE, dragHandler);
 
     }
 
-    public final HandlerRegistration addWiresDragEndHandler( final WiresDragEndHandler dragHandler )
+    public final HandlerRegistration addWiresDragEndHandler(final WiresDragEndHandler dragHandler)
     {
-        Objects.requireNonNull( dragHandler );
+        Objects.requireNonNull(dragHandler);
 
-        return m_manager.addHandler( WiresDragEndEvent.TYPE, dragHandler );
-
-    }
-
-    protected void preDestroy() {
+        return m_manager.addHandler(WiresDragEndEvent.TYPE, dragHandler);
 
     }
 
-    public void destroy() {
+    protected void preDestroy()
+    {
+
+    }
+
+    public void destroy()
+    {
         preDestroy();
         removeHandlers();
         m_container.removeFromParent();
@@ -299,8 +303,8 @@ public class WiresContainer
         attributesChangedBatcher.cancelAttributesChangedBatcher();
     }
 
-
-    protected HandlerManager getHandlerManager() {
+    protected HandlerManager getHandlerManager()
+    {
         return m_manager;
     }
 

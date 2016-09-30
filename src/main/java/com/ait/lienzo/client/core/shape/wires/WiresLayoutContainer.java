@@ -30,44 +30,44 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
  */
 public class WiresLayoutContainer implements LayoutContainer
 {
-    private static final LayoutBuilder                   CENTER_LAYOUT            = new CenterLayoutBuilder();
+    private static final LayoutBuilder       CENTER_LAYOUT = new CenterLayoutBuilder();
 
-    private static final LayoutBuilder                   TOP_LAYOUT               = new TopLayoutBuilder();
+    private static final LayoutBuilder       TOP_LAYOUT    = new TopLayoutBuilder();
 
-    private static final LayoutBuilder                   BOTTOM_LAYOUT            = new BottomLayoutBuilder();
+    private static final LayoutBuilder       BOTTOM_LAYOUT = new BottomLayoutBuilder();
 
-    private static final LayoutBuilder                   LEFT_LAYOUT              = new LeftLayoutBuilder();
+    private static final LayoutBuilder       LEFT_LAYOUT   = new LeftLayoutBuilder();
 
-    private static final LayoutBuilder                   RIGHT_LAYOUT             = new RightLayoutBuilder();
+    private static final LayoutBuilder       RIGHT_LAYOUT  = new RightLayoutBuilder();
 
-    private final Group                                  group;
+    private final Group                      group;
 
-    private Point2D                                      offset;
+    private Point2D                          offset;
 
-    private double                                       width;
+    private double                           width;
 
-    private double                                       height;
+    private double                           height;
 
-    private final NFastArrayList<ChildEntry>       children;
+    private final NFastArrayList<ChildEntry> children;
 
     public WiresLayoutContainer()
     {
         this.group = new Group().setDraggable(false);
-        this.offset = new Point2D( 0, 0 );
+        this.offset = new Point2D(0, 0);
         this.width = 0;
         this.height = 0;
         this.children = new NFastArrayList<ChildEntry>();
     }
 
     @Override
-    public LayoutContainer setOffset( final Point2D offset ) {
+    public LayoutContainer setOffset(final Point2D offset)
+    {
         this.offset = offset;
         return this;
     }
 
     @Override
-    public WiresLayoutContainer setSize(final double width,
-                                        final double height)
+    public WiresLayoutContainer setSize(final double width, final double height)
     {
         this.width = width;
         this.height = height;
@@ -87,13 +87,14 @@ public class WiresLayoutContainer implements LayoutContainer
     public WiresLayoutContainer add(final IPrimitive<?> child)
     {
 
-        return add( child, null );
+        return add(child, null);
     }
 
     public WiresLayoutContainer add(final IPrimitive<?> child, final LayoutContainer.Layout layout)
     {
-        if ( null == child ) {
-            throw new NullPointerException( "Child cannot be null." );
+        if (null == child)
+        {
+            throw new NullPointerException("Child cannot be null.");
         }
 
         if (null == child.getID())
@@ -103,10 +104,11 @@ public class WiresLayoutContainer implements LayoutContainer
 
         group.add(child);
 
-        if ( null != layout ) {
+        if (null != layout)
+        {
 
-            final ChildEntry entry = new ChildEntry( child.getID(), layout );
-            children.add( entry );
+            final ChildEntry entry = new ChildEntry(child.getID(), layout);
+            children.add(entry);
 
             doPositionChild(child, true);
 
@@ -115,17 +117,18 @@ public class WiresLayoutContainer implements LayoutContainer
         return this;
     }
 
-    public WiresLayoutContainer remove( final IPrimitive<?> child )
+    public WiresLayoutContainer remove(final IPrimitive<?> child)
     {
-        final ChildEntry entry = getChildEntry( child.getID() );
+        final ChildEntry entry = getChildEntry(child.getID());
 
-        if ( null != entry ) {
+        if (null != entry)
+        {
 
-            children.remove( entry );
+            children.remove(entry);
 
         }
 
-        group.remove( child );
+        group.remove(child);
 
         return this;
     }
@@ -137,7 +140,8 @@ public class WiresLayoutContainer implements LayoutContainer
             doPositionChild(child, false);
         }
 
-        if ( null != getGroup().getLayer() ) {
+        if (null != getGroup().getLayer())
+        {
 
             getGroup().getLayer().batch();
 
@@ -146,8 +150,10 @@ public class WiresLayoutContainer implements LayoutContainer
         return this;
     }
 
-    public LayoutContainer refresh() {
-        for ( final ChildEntry entry : children ) {
+    public LayoutContainer refresh()
+    {
+        for (final ChildEntry entry : children)
+        {
             entry.refresh();
         }
         return this;
@@ -159,7 +165,6 @@ public class WiresLayoutContainer implements LayoutContainer
         group.removeAll();
         return this;
     }
-
 
     @Override
     public void destroy()
@@ -173,10 +178,12 @@ public class WiresLayoutContainer implements LayoutContainer
         return group;
     }
 
-    private ChildEntry getChildEntry( final String key)
+    private ChildEntry getChildEntry(final String key)
     {
-        for ( final ChildEntry entry : children ) {
-            if ( entry.uuid.equals( key ) ) {
+        for (final ChildEntry entry : children)
+        {
+            if (entry.uuid.equals(key))
+            {
                 return entry;
             }
         }
@@ -186,9 +193,10 @@ public class WiresLayoutContainer implements LayoutContainer
     private void doPositionChild(final IPrimitive<?> child, final boolean batch)
     {
         final String id = child.getID();
-        final ChildEntry entry = getChildEntry( id );
+        final ChildEntry entry = getChildEntry(id);
 
-        if ( null != entry ) {
+        if (null != entry)
+        {
 
             LayoutBuilder builder = null;
 
@@ -215,16 +223,17 @@ public class WiresLayoutContainer implements LayoutContainer
             if (null != builder)
             {
 
-                final double[] initial = getInitialCoordinates( entry, child );
-                final double c[] = builder.getCoordinates( entry, this );
+                final double[] initial = getInitialCoordinates(entry, child);
+                final double c[] = builder.getCoordinates(entry, this);
                 final double x = c[0] + initial[0] + offset.getX();
                 final double y = c[1] + initial[1] + offset.getY();
 
-                child.setX( x );
-                child.setY( y );
+                child.setX(x);
+                child.setY(y);
                 child.moveToTop();
 
-                if ( batch && null != getGroup().getLayer() ) {
+                if (batch && null != getGroup().getLayer())
+                {
                     getGroup().getLayer().batch();
                 }
 
@@ -240,151 +249,155 @@ public class WiresLayoutContainer implements LayoutContainer
 
     private interface LayoutBuilder
     {
-        double[] getCoordinates( ChildEntry entry, WiresLayoutContainer cont);
+        double[] getCoordinates(ChildEntry entry, WiresLayoutContainer cont);
     }
 
     private static final class CenterLayoutBuilder implements LayoutBuilder
     {
         @Override
-        public double[] getCoordinates(final ChildEntry entry,
-                                       final WiresLayoutContainer cont)
+        public double[] getCoordinates(final ChildEntry entry, final WiresLayoutContainer cont)
         {
             final double x = cont.getWidth() / 2;
             final double y = cont.getHeight() / 2;
-            return new double[] { x , y };
+            return new double[] { x, y };
         }
     }
 
     private static final class TopLayoutBuilder implements LayoutBuilder
     {
         @Override
-        public double[] getCoordinates(final ChildEntry entry,
-                                       final WiresLayoutContainer cont)
+        public double[] getCoordinates(final ChildEntry entry, final WiresLayoutContainer cont)
         {
             final double x = cont.getWidth() / 2;
             final double bbh = entry.initial_size_attr;
             final double y = bbh / 2;
-            return new double[] { x , y };
+            return new double[] { x, y };
         }
     }
 
     private static final class BottomLayoutBuilder implements LayoutBuilder
     {
         @Override
-        public double[] getCoordinates(final ChildEntry entry,
-                                       final WiresLayoutContainer cont)
+        public double[] getCoordinates(final ChildEntry entry, final WiresLayoutContainer cont)
         {
             final double x = cont.getWidth() / 2;
             final double bbh = entry.initial_size_attr;
             final double y = cont.getHeight() - (bbh / 2);
-            return new double[] { x , y };
+            return new double[] { x, y };
         }
     }
 
     private static final class LeftLayoutBuilder implements LayoutBuilder
     {
         @Override
-        public double[] getCoordinates(final ChildEntry entry,
-                                       final WiresLayoutContainer cont)
+        public double[] getCoordinates(final ChildEntry entry, final WiresLayoutContainer cont)
         {
             final double y = cont.getHeight() / 2;
             final double bbw = entry.initial_size_attr;
             final double x = bbw / 2;
-            return new double[] { x , y };
+            return new double[] { x, y };
         }
     }
 
     private static final class RightLayoutBuilder implements LayoutBuilder
     {
         @Override
-        public double[] getCoordinates(final ChildEntry entry,
-                                       final WiresLayoutContainer cont )
+        public double[] getCoordinates(final ChildEntry entry, final WiresLayoutContainer cont)
         {
             final double y = cont.getHeight() / 2;
             final double bbw = entry.initial_size_attr;
             final double x = cont.getWidth() - (bbw / 2);
-            return new double[] { x , y };
+            return new double[] { x, y };
         }
     }
 
-    private double[] getInitialCoordinates( final ChildEntry entry,
-                                            final IPrimitive<?> child ) {
+    private double[] getInitialCoordinates(final ChildEntry entry, final IPrimitive<?> child)
+    {
 
-        if ( !entry.isReady() ) {
-            initializeChild( entry, child );
+        if (!entry.isReady())
+        {
+            initializeChild(entry, child);
         }
 
         return new double[] { entry.initial_coords.getX(), entry.initial_coords.getY() };
 
-
     }
 
-    private void initializeChild( final ChildEntry entry,
-                                      final IPrimitive<?> child ) {
+    private void initializeChild(final ChildEntry entry, final IPrimitive<?> child)
+    {
 
         // Initial coordinates.
         final BoundingBox bb = child.getBoundingBox();
-        final double[] c = getChildRelativeCoordinates( bb );
+        final double[] c = getChildRelativeCoordinates(bb);
 
         // Size relative attribute.
-        final Layout layout =  entry.layout;
+        final Layout layout = entry.layout;
         final double w = bb.getWidth();
         final double h = bb.getHeight();
-        final double cs = ( Layout.TOP.equals( layout )
-                || Layout.BOTTOM.equals( layout ) ) ? h : w;
+        final double cs = (Layout.TOP.equals(layout) || Layout.BOTTOM.equals(layout)) ? h : w;
 
-        entry.initial_coords = new Point2D( c[0], c[1] );
+        entry.initial_coords = new Point2D(c[0], c[1]);
         entry.initial_size_attr = cs;
     }
 
-    private double[] getChildRelativeCoordinates( final BoundingBox bb ) {
+    private double[] getChildRelativeCoordinates(final BoundingBox bb)
+    {
         final double bbx = bb.getX();
         final double bby = bb.getY();
         final double bbw = bb.getWidth();
         final double bbh = bb.getHeight();
 
-        final double x = -bbx - ( bbw / 2);
-        final double y = -bby - ( bbh / 2);
+        final double x = -bbx - (bbw / 2);
+        final double y = -bby - (bbh / 2);
 
         return new double[] { x, y };
     }
 
-    private class ChildEntry {
+    private class ChildEntry
+    {
 
-        private final String uuid;
+        private final String                 uuid;
+
         private final LayoutContainer.Layout layout;
-        private Point2D initial_coords;
-        private Double initial_size_attr;
 
-        private ChildEntry( final String uuid,
-                            final Layout layout ) {
+        private Point2D                      initial_coords;
+
+        private Double                       initial_size_attr;
+
+        private ChildEntry(final String uuid, final Layout layout)
+        {
             this.uuid = uuid;
             this.layout = layout;
             this.initial_coords = null;
             this.initial_size_attr = null;
         }
 
-        private void refresh() {
+        private void refresh()
+        {
             this.initial_coords = null;
             this.initial_size_attr = null;
         }
 
-        private boolean isReady() {
+        private boolean isReady()
+        {
             return null != initial_coords && null != initial_size_attr;
         }
 
         @Override
-        public boolean equals( final Object o ) {
-            if ( this == o ) {
+        public boolean equals(final Object o)
+        {
+            if (this == o)
+            {
                 return true;
             }
-            if ( !( o instanceof ChildEntry ) ) {
+            if (!(o instanceof ChildEntry))
+            {
                 return false;
             }
 
-            ChildEntry that = ( ChildEntry ) o;
+            ChildEntry that = (ChildEntry) o;
 
-            return uuid.equals( that.uuid );
+            return uuid.equals(that.uuid);
         }
     }
 

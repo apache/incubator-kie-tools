@@ -18,18 +18,18 @@ package com.ait.lienzo.client.core.shape.wires;
 
 public class PickerPart
 {
-    private final WiresShape shape;
+    private final WiresShape m_shape;
 
-    private final ShapePart  part;
+    private final ShapePart  m_part;
 
     public WiresShape getShape()
     {
-        return shape;
+        return m_shape;
     }
 
     public ShapePart getShapePart()
     {
-        return part;
+        return m_part;
     }
 
     public enum ShapePart
@@ -39,13 +39,14 @@ public class PickerPart
 
     public PickerPart(WiresShape shape, ShapePart part)
     {
-        this.shape = shape;
-        this.part = part;
+        m_shape = shape;
+        
+        m_part = part;
     }
 
     @Override
     public String toString()
     {
-        return this.part.toString() + " for " + this.shape.toString();
+        return getShapePart().toString() + " for " + getShape().toString();
     }
 }

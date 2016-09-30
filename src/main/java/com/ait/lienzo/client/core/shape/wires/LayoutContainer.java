@@ -27,15 +27,15 @@ public interface LayoutContainer
         CENTER, LEFT, TOP, RIGHT, BOTTOM;
     }
 
-    public LayoutContainer setOffset( Point2D offset );
+    public LayoutContainer setOffset(Point2D offset);
 
-    public LayoutContainer setSize( double width, double height );
+    public LayoutContainer setSize(double width, double height);
 
-    public LayoutContainer add( IPrimitive<?> child );
+    public LayoutContainer add(IPrimitive<?> child);
 
-    public LayoutContainer add( IPrimitive<?> child, Layout layout );
+    public LayoutContainer add(IPrimitive<?> child, Layout layout);
 
-    public LayoutContainer remove( IPrimitive<?> child );
+    public LayoutContainer remove(IPrimitive<?> child);
 
     public LayoutContainer execute();
 
