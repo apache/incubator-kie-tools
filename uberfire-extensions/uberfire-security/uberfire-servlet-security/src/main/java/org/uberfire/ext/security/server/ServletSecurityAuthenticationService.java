@@ -15,21 +15,7 @@
  */
 package org.uberfire.ext.security.server;
 
-import java.security.Principal;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.security.auth.Subject;
-import javax.security.jacc.PolicyContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.Group;
-import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
@@ -38,14 +24,22 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.backend.server.security.adapter.GroupAdapterAuthorizationSource;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.security.auth.Subject;
+import javax.security.jacc.PolicyContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
 @Service
 @ApplicationScoped
 public class ServletSecurityAuthenticationService extends GroupAdapterAuthorizationSource implements AuthenticationService {
 
-    private static final String USER_SESSION_ATTR_NAME = "uf.security.user";
-    private static final String DEFAULT_ROLE_PRINCIPLE_NAME = "Roles";
-
-
+    static final String USER_SESSION_ATTR_NAME = "uf.security.user";
+    static final String DEFAULT_ROLE_PRINCIPLE_NAME = "Roles";
 
     private String[] rolePrincipleNames = new String[]{ DEFAULT_ROLE_PRINCIPLE_NAME };
 
@@ -101,21 +95,23 @@ public class ServletSecurityAuthenticationService extends GroupAdapterAuthorizat
         if ( session != null ) {
             user = (User) session.getAttribute( USER_SESSION_ATTR_NAME );
             if ( user == null ) {
-                final Set<Role> userRoles = new HashSet<Role>();
+                // Use roles present in the registry.
+                final Collection<Role> userRoles = new HashSet<Role>();
                 for ( final Role checkRole : RoleRegistry.get().getRegisteredRoles() ) {
                     if ( request.isUserInRole( checkRole.getName() ) ) {
                         userRoles.add( checkRole );
                     }
                 }
-
+                // Obtain roles and groups from entities present in the javax security Principal instance.
                 final String name = request.getUserPrincipal().getName();
-
-                final Set<Group> userGroups = new HashSet<Group>( loadGroups() );
-                Set<Group> rolesFromAdapters = collectGroups(name);
-                if (rolesFromAdapters != null && !rolesFromAdapters.isEmpty()) {
-                    userGroups.addAll(rolesFromAdapters);
+                Subject subject = getSubjectFromPolicyContext();
+                List<String> principals = loadEntitiesFromSubjectAndAdapters( name, subject, rolePrincipleNames );
+                Collection<Role> roles = getRoles( principals );
+                if( null != roles && !roles.isEmpty() ) {
+                    userRoles.addAll( roles );
                 }
-
+                Collection<org.jboss.errai.security.shared.api.Group> userGroups = getGroups( principals );
+                // Create the user instance.
                 user = new UserImpl( name, userRoles, userGroups );
                 session.setAttribute( USER_SESSION_ATTR_NAME, user );
             }
@@ -124,42 +120,15 @@ public class ServletSecurityAuthenticationService extends GroupAdapterAuthorizat
         return user;
     }
 
-    private Set<Group> loadGroups() {
-
+    Subject getSubjectFromPolicyContext() {
         Subject subject;
         try {
             subject = (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );
         } catch ( final Exception e ) {
             subject = null;
         }
-        if ( subject == null ) {
-            return Collections.emptySet();
-        }
-
-        final Set<Group> result = new HashSet<Group>();
-
-        final Set<java.security.Principal> principals = subject.getPrincipals();
-
-        if ( principals != null && !principals.isEmpty() ) {
-            for ( java.security.Principal p : principals ) {
-                if ( p instanceof java.security.acl.Group ) {
-                    for ( final String rolePrincipleName : rolePrincipleNames ) {
-                        if ( rolePrincipleName.equalsIgnoreCase( p.getName() ) ) {
-                            final Enumeration<? extends Principal> groups = ( (java.security.acl.Group) p ).members();
-
-                            while ( groups.hasMoreElements() ) {
-                                final java.security.Principal groupPrincipal = groups.nextElement();
-                                result.add( new GroupImpl( groupPrincipal.getName() ) );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return result;
+        return subject;
     }
-
     protected static HttpServletRequest getRequestForThread() {
         HttpServletRequest request = SecurityIntegrationFilter.getRequest();
         if ( request == null ) {

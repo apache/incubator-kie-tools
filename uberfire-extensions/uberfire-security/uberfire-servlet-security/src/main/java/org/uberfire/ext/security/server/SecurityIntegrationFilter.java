@@ -34,7 +34,7 @@ public class SecurityIntegrationFilter implements Filter {
 
     public static final String PROBE_ROLES_INIT_PARAM = "probe-for-roles";
 
-    private static final ThreadLocal<HttpServletRequest> requests = new ThreadLocal<HttpServletRequest>();
+    static final ThreadLocal<HttpServletRequest> requests = new ThreadLocal<HttpServletRequest>();
 
     @Override
     public void init( FilterConfig filterConfig ) throws ServletException {

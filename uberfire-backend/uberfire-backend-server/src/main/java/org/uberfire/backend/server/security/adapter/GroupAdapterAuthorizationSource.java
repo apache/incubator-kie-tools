@@ -16,47 +16,160 @@
 
 package org.uberfire.backend.server.security.adapter;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
 
 import javax.security.auth.Subject;
 
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
+import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.security.authz.adapter.GroupsAdapter;
 
 public class GroupAdapterAuthorizationSource {
 
     private final ServiceLoader<GroupsAdapter> groupsAdapterServiceLoader = ServiceLoader.load( GroupsAdapter.class );
 
-    public Set<Group> collectGroups(String name) {
+    protected List<String> loadEntitiesFromSubjectAndAdapters( String username,
+                                                               Subject subject,
+                                                               String[] rolePrincipleNames ) {
+        List<String> roles = new ArrayList<String>();
+        try {
 
-        Set<Group> userGroups = new HashSet<Group>();
-        for ( final GroupsAdapter adapter : groupsAdapterServiceLoader ) {
-            final List<Group> groupRoles = adapter.getGroups( name, null );
-            if ( groupRoles != null ) {
-                userGroups.addAll( groupRoles );
+            List<String> principals = collectEntitiesFromSubject( username, subject, rolePrincipleNames );
+            if ( principals != null && !principals.isEmpty() ) {
+                roles.addAll( principals );
             }
-        }
 
-        return userGroups;
+            List<String> principalsFromAdapters = collectEntitiesFromAdapters( username, subject );
+            if (principalsFromAdapters != null && !principalsFromAdapters.isEmpty()) {
+                roles.addAll( principalsFromAdapters );
+            }
+
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
+        return roles;
     }
 
-    public Set<Role> collectGroupsAsRoles(String name, final Object subject) {
-
-        Set<Role> userGroups = new HashSet<Role>();
+    protected List<String> collectEntitiesFromAdapters( String username,
+                                                        Subject subject ) {
+        Set<String> userGroups = new HashSet<String>();
         for ( final GroupsAdapter adapter : groupsAdapterServiceLoader ) {
-            final List<Group> groupRoles = adapter.getGroups( name, subject );
+            final List<Group> groupRoles = adapter.getGroups( username, subject );
             if ( groupRoles != null ) {
                 for (Group group : groupRoles) {
-                    userGroups.add(new RoleImpl(group.getName()));
+                    userGroups.add( group.getName() );
                 }
             }
         }
 
-        return userGroups;
+        return new LinkedList<String>( userGroups );
     }
+
+    /**
+     * Collects the principals for a given subject.
+     */
+    protected List<String> collectEntitiesFromSubject( String username,
+                                                       Subject subject,
+                                                       String[] rolePrincipleNames ) {
+        if ( null == subject ) {
+            return null;
+        }
+
+        List<String> roles = new ArrayList<String>();
+        try {
+            Set<java.security.Principal> principals = subject.getPrincipals();
+            if ( principals != null ) {
+                for ( java.security.Principal p : principals ) {
+                    if ( p instanceof java.security.acl.Group ) {
+                        for ( final String rolePrincipleName : rolePrincipleNames ) {
+                            if ( rolePrincipleName.equalsIgnoreCase( p.getName() ) ) {
+                                Enumeration<? extends java.security.Principal> groups = ( ( java.security.acl.Group ) p ).members();
+                                while ( groups.hasMoreElements() ) {
+                                    final java.security.Principal groupPrincipal = groups.nextElement();
+                                    roles.add( groupPrincipal.getName() );
+                                }
+                            }
+                        }
+
+                    } else {
+                        roles.add(p.getName() );
+                    }
+                }
+            }
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
+        return roles;
+    }
+
+    /**
+     * For a given collection of principal names, return the Role instances for the ones
+     * that are considered roles, so the ones that exist on the RoleRegistry.
+     */
+    protected List<Role> getRoles( List<String> principals ) {
+
+        if ( null != principals && !principals.isEmpty() ) {
+
+            Set<Role> registeredRoles = RoleRegistry.get().getRegisteredRoles();
+
+            if ( null != registeredRoles && !registeredRoles.isEmpty() ) {
+
+                List<Role> result = new LinkedList<Role>();
+
+                for ( String role : principals ) {
+
+                    if ( null != RoleRegistry.get().getRegisteredRole( role ) ) {
+
+                        result.add( new RoleImpl( role ) );
+
+                    }
+
+                }
+
+                return result;
+
+            }
+
+        }
+
+        return null;
+    }
+
+    /**
+     * For a given collection of principal names, return the Role instances for the ones
+     * that are considered roles, so the ones that exist on the RoleRegistry.
+     */
+    protected List<Group> getGroups( List<String> principals ) {
+
+        if ( null != principals && !principals.isEmpty() ) {
+
+            Set<Role> registeredRoles = RoleRegistry.get().getRegisteredRoles();
+
+            if ( null != registeredRoles && !registeredRoles.isEmpty() ) {
+
+                List<Group> result = new LinkedList<Group>();
+
+                for ( String role : principals ) {
+
+                    if ( null == RoleRegistry.get().getRegisteredRole( role ) ) {
+
+                        result.add( new GroupImpl( role ) );
+
+                    }
+
+                }
+
+                return result;
+
+            }
+
+        }
+
+        return null;
+    }
+
+
 }
