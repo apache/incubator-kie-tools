@@ -16,29 +16,16 @@
 
 package org.uberfire.ext.properties.editor.client;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.HiddenEvent;
 import org.gwtbootstrap3.client.shared.event.HiddenHandler;
 import org.gwtbootstrap3.client.shared.event.ShowEvent;
 import org.gwtbootstrap3.client.shared.event.ShowHandler;
-import org.gwtbootstrap3.client.ui.Anchor;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.Container;
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.Heading;
-import org.gwtbootstrap3.client.ui.InputGroup;
-import org.gwtbootstrap3.client.ui.InputGroupButton;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.PanelGroup;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.Row;
-import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.gwtbootstrap3.client.ui.constants.FormType;
-import org.gwtbootstrap3.client.ui.constants.HeadingSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
+import org.gwtbootstrap3.client.ui.*;
+import org.gwtbootstrap3.client.ui.constants.*;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -51,11 +38,6 @@ import org.uberfire.ext.properties.editor.model.CustomPropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Widget;
 
 public class PropertyEditorHelper {
 
@@ -85,8 +67,8 @@ public class PropertyEditorHelper {
             if ( isAMatchOfFilter( propertyNameFilter, field ) ) {
                 categoryHasActiveChilds = true;
                 form.add( createItemsWidget( field,
-                                                  category,
-                                                  form ) );
+                                             category,
+                                             form ) );
             }
         }
         if ( categoryHasActiveChilds ) {
@@ -119,19 +101,14 @@ public class PropertyEditorHelper {
     static PanelCollapse createPanelCollapse( final PropertyEditorWidget propertyEditorWidget,
                                               final PropertyEditorCategory category ) {
         final PanelCollapse collapse = GWT.create( PanelCollapse.class );
-        collapse.addShowHandler( new ShowHandler() {
-            @Override
-            public void onShow( ShowEvent showEvent ) {
-                propertyEditorWidget.setLastOpenAccordionGroupTitle( category.getName() );
-            }
+        collapse.addShowHandler( showEvent -> propertyEditorWidget.addExpandedCategory( category.getName() ) );
+
+        collapse.addHiddenHandler( hiddenEvent -> {
+            hiddenEvent.stopPropagation();
+            propertyEditorWidget.collapseCategory( category.getName() );
         } );
-        collapse.addHiddenHandler( new HiddenHandler() {
-            @Override
-            public void onHidden( HiddenEvent hiddenEvent ) {
-                hiddenEvent.stopPropagation();
-            }
-        } );
-        if ( propertyEditorWidget.getLastOpenAccordionGroupTitle().equals( category.getName() ) ) {
+
+        if ( propertyEditorWidget.getExpandedCategories().contains( category.getName() ) ) {
             collapse.setIn( true );
         }
 
@@ -189,13 +166,13 @@ public class PropertyEditorHelper {
                                                  PropertyEditorCategory category,
                                                  Form panelBody ) {
         PropertyEditorItemWidget itemWidget = GWT.create( PropertyEditorItemWidget.class );
-        InputGroup content = GWT.create( InputGroup.class);
+        InputGroup content = GWT.create( InputGroup.class );
 
         PropertyEditorFieldType editorFieldType = PropertyEditorFieldType.getFieldTypeFrom( field );
 
         Widget fieldWidget;
         if ( editorFieldType == PropertyEditorFieldType.CUSTOM ) {
-            Class<?> widgetClass = ( (CustomPropertyEditorFieldInfo) field ).getCustomEditorClass();
+            Class<?> widgetClass = ( ( CustomPropertyEditorFieldInfo ) field ).getCustomEditorClass();
             fieldWidget = getWidget( field, widgetClass );
         } else {
             fieldWidget = editorFieldType.widget( field );
@@ -213,9 +190,9 @@ public class PropertyEditorHelper {
     }
 
     private static InputGroupButton createRemoveAddOn( final PropertyEditorFieldInfo field,
-                                                      final PropertyEditorCategory category,
-                                                      final PropertyEditorItemsWidget parent,
-                                                      final Form categoryPanel ) {
+                                                       final PropertyEditorCategory category,
+                                                       final PropertyEditorItemsWidget parent,
+                                                       final Form categoryPanel ) {
         InputGroupButton groupButton = GWT.create( InputGroupButton.class );
         Button button = GWT.create( Button.class );
         button.setIcon( IconType.MINUS );
@@ -234,13 +211,13 @@ public class PropertyEditorHelper {
                                      final Class fieldType ) {
         SyncBeanManager beanManager = IOC.getBeanManager();
         SyncBeanDef<?> iocBeanDef = beanManager.lookupBean( fieldType );
-        AbstractField field = (AbstractField) iocBeanDef.getInstance();
+        AbstractField field = ( AbstractField ) iocBeanDef.getInstance();
         return field.widget( property );
     }
 
     static void createErrorHandlingInfraStructure( final PropertyEditorItemsWidget parent,
                                                    Widget widget ) {
-        AbstractPropertyEditorWidget abstractPropertyEditorWidget = (AbstractPropertyEditorWidget) widget;
+        AbstractPropertyEditorWidget abstractPropertyEditorWidget = ( AbstractPropertyEditorWidget ) widget;
         abstractPropertyEditorWidget.setParent( parent );
     }
 
@@ -268,8 +245,8 @@ public class PropertyEditorHelper {
         public NullEventException() {
         }
 
-        public NullEventException(String message) {
-            super(message);
+        public NullEventException( String message ) {
+            super( message );
         }
     }
 
@@ -278,8 +255,8 @@ public class PropertyEditorHelper {
         public NoPropertiesException() {
         }
 
-        public NoPropertiesException(String message) {
-            super(message);
+        public NoPropertiesException( String message ) {
+            super( message );
         }
     }
 }

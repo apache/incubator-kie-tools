@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.properties.editor.client;
 
-import javax.annotation.PostConstruct;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -33,12 +31,15 @@ import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class PropertyEditorWidget extends Composite {
 
     @UiField
     PanelGroup propertyMenu;
-
-    String lastOpenAccordionGroupTitle = "";
 
     PropertyEditorEvent originalEvent;
 
@@ -50,6 +51,8 @@ public class PropertyEditorWidget extends Composite {
 
     @UiField
     Button reload;
+
+    List<String> expandedCategories = new ArrayList<>();
 
     @PostConstruct
     public void init() {
@@ -64,13 +67,13 @@ public class PropertyEditorWidget extends Composite {
         }
     }
 
-    @UiHandler("reload")
+    @UiHandler( "reload" )
     void onReload( ClickEvent e ) {
         this.filterBox.setText( "" );
         PropertyEditorHelper.extractEditorFrom( this, propertyMenu, originalEvent, "" );
     }
 
-    @UiHandler("filterBox")
+    @UiHandler( "filterBox" )
     public void onKeyUp( KeyUpEvent e ) {
         if ( originalEvent != null ) {
             propertyMenu.clear();
@@ -89,19 +92,45 @@ public class PropertyEditorWidget extends Composite {
 
     private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
 
-    public String getLastOpenAccordionGroupTitle() {
-        return lastOpenAccordionGroupTitle;
-    }
-
-    public void setLastOpenAccordionGroupTitle( String lastOpenAccordionGroupTitle ) {
-        this.lastOpenAccordionGroupTitle = lastOpenAccordionGroupTitle;
-    }
-
     public void setFilterGroupVisible( boolean visible ) {
         filterGroup.setVisible( visible );
     }
 
     public PanelGroup getPropertyMenu() {
         return propertyMenu;
+    }
+
+    /**
+     * Bootstrap nows supports more than
+     * one panel expanded, so this method is
+     * @deprecated replaced by addExpandedCategory( String categoriesToExpand)
+     */
+    @Deprecated
+    public void setLastOpenAccordionGroupTitle( String categoryToExpand ) {
+        this.expandedCategories.add( categoryToExpand );
+    }
+
+    /**
+     * Bootstrap nows supports more than
+     * one panel expanded, so this method is
+     * @deprecated replaced by getExpandedCategories()
+     */
+    public String getLastOpenAccordionGroupTitle() {
+        if ( expandedCategories.isEmpty() ) {
+            return "";
+        }
+        return expandedCategories.get( expandedCategories.size() - 1 );
+    }
+
+    public void addExpandedCategory( String... categoriesToExpand ) {
+        this.expandedCategories.addAll( Arrays.asList( categoriesToExpand ) );
+    }
+
+    public List<String> getExpandedCategories() {
+        return expandedCategories;
+    }
+
+    protected void collapseCategory( String categoryToCollapse ) {
+        this.expandedCategories.remove( categoryToCollapse );
     }
 }
