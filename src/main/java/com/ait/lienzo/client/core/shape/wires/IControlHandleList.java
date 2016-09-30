@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.ContainerNode;
 import com.ait.tooling.common.api.types.IActivatable;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
@@ -36,13 +35,11 @@ public interface IControlHandleList extends IActivatable, Iterable<IControlHandl
 
     public void destroy();
 
-    public void show(ContainerNode<?, ?> containerNode);
-
     public void show();
 
     public void hide();
 
-    public ContainerNode<?, ?> getContainer();
+    public boolean isVisible();
 
     public HandlerRegistrationManager getHandlerRegistrationManager();
 }

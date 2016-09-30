@@ -78,7 +78,7 @@ public class ColorMapBackedPicker
                 drawShape(ctx, m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BORDER), false);
             }
 
-            if (prim.getChildShapes() != null)
+            if (prim.getChildShapes() != null && !prim.getChildShapes().isEmpty())
             {
                 addShapes(ctx, prim.getChildShapes(), shapeToSkip);
             }

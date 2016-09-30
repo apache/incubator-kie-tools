@@ -17,36 +17,13 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.AttributesChangedEvent;
-import com.ait.lienzo.client.core.event.AttributesChangedHandler;
-import com.ait.lienzo.client.core.event.NodeDragEndEvent;
-import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
-import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
-import com.ait.lienzo.client.core.event.NodeDragStartEvent;
-import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.*;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.shape.wires.AbstractControlHandle;
-import com.ait.lienzo.client.core.shape.wires.ControlHandleList;
-import com.ait.lienzo.client.core.shape.wires.IControlHandle;
+import com.ait.lienzo.client.core.shape.wires.*;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
-import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
-import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
-import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.PathPartEntryJSO;
-import com.ait.lienzo.client.core.types.PathPartList;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.types.*;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -55,6 +32,8 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
+
+import java.util.*;
 
 public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPartShape<T>>extends Shape<T>
 {
@@ -298,7 +277,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         public IControlHandleList getPointHandles()
         {
-            ControlHandleList chlist = new ControlHandleList();
+            ControlHandleList chlist = new ControlHandleList( m_shape );
 
             NFastArrayList<Point2DArray> allPoints = new NFastArrayList<Point2DArray>();
 
@@ -331,7 +310,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         {
             // FIXME This isn't quite right yet, do not release  (mdp, um what did I mean here?)
 
-            ControlHandleList chlist = new ControlHandleList();
+            ControlHandleList chlist = new ControlHandleList( shape );
 
             BoundingBox box = shape.getBoundingBox();
 
@@ -742,6 +721,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                     break;
                 }
             }
+
         }
 
         double getLeft(double startTopLeftX, double startTopLeftY, double startW, double startH, double x, double dx)

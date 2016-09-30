@@ -18,6 +18,8 @@ package com.ait.lienzo.client.core.shape.wires;
 
 public interface IDockingAcceptor
 {
+    public static final int HOTSPOT_SIZE = 40;
+
     public static final IDockingAcceptor ALL  = new DefaultDockingAcceptor(true);
 
     public static final IDockingAcceptor NONE = new DefaultDockingAcceptor(false);
@@ -25,6 +27,8 @@ public interface IDockingAcceptor
     public boolean dockingAllowed(WiresContainer parent, WiresShape child);
 
     public boolean acceptDocking(WiresContainer parent, WiresShape child);
+
+    public int getHotspotSize();
 
     public static class DefaultDockingAcceptor implements IDockingAcceptor
     {
@@ -45,6 +49,11 @@ public interface IDockingAcceptor
         public boolean acceptDocking(WiresContainer parent, WiresShape child)
         {
             return m_defaultValue;
+        }
+
+        @Override
+        public int getHotspotSize() {
+            return HOTSPOT_SIZE;
         }
     }
 }

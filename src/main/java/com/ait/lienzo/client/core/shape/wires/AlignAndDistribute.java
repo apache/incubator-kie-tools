@@ -16,39 +16,17 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static com.ait.lienzo.client.core.AttributeOp.any;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.event.AttributesChangedEvent;
-import com.ait.lienzo.client.core.event.AttributesChangedHandler;
-import com.ait.lienzo.client.core.event.NodeDragEndEvent;
-import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.shape.Attributes;
-import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IDrawable;
-import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Line;
-import com.ait.lienzo.client.core.shape.PolyLine;
-import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.AlignAndDistributeControlImpl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.lienzo.client.widget.DragConstraintEnforcer;
-import com.ait.lienzo.client.widget.DragContext;
-import com.ait.tooling.common.api.flow.Flows.BooleanOp;
-import com.ait.tooling.nativetools.client.collection.NFastStringSet;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * This class indexes related classes for alignment and distribution.
@@ -74,17 +52,17 @@ import com.google.gwt.event.shared.HandlerRegistration;
  */
 public class AlignAndDistribute
 {
-    private Map<Double, LinkedList<AlignAndDistributeHandler>> m_leftIndex;
+    private Map<Double, LinkedList<AlignAndDistributeControl>> m_leftIndex;
 
-    private Map<Double, LinkedList<AlignAndDistributeHandler>> m_hCenterIndex;
+    private Map<Double, LinkedList<AlignAndDistributeControl>> m_hCenterIndex;
 
-    private Map<Double, LinkedList<AlignAndDistributeHandler>> m_rightIndex;
+    private Map<Double, LinkedList<AlignAndDistributeControl>> m_rightIndex;
 
-    private Map<Double, LinkedList<AlignAndDistributeHandler>> m_topIndex;
+    private Map<Double, LinkedList<AlignAndDistributeControl>> m_topIndex;
 
-    private Map<Double, LinkedList<AlignAndDistributeHandler>> m_vCenterIndex;
+    private Map<Double, LinkedList<AlignAndDistributeControl>> m_vCenterIndex;
 
-    private Map<Double, LinkedList<AlignAndDistributeHandler>> m_bottomIndex;
+    private Map<Double, LinkedList<AlignAndDistributeControl>> m_bottomIndex;
 
     private Map<Double, LinkedList<DistributionEntry>>         m_leftDistIndex;
 
@@ -100,7 +78,7 @@ public class AlignAndDistribute
 
     private DefaultAlignAndDistributeMatchesCallback           m_alignmentCallback;
 
-    private Map<String, AlignAndDistributeHandler>             m_shapes         = new HashMap<String, AlignAndDistributeHandler>();
+    private Map<String, AlignAndDistributeControl>             m_shapes         = new HashMap<String, AlignAndDistributeControl>();
 
     private int                                                m_circa          = 4;
 
@@ -110,13 +88,13 @@ public class AlignAndDistribute
 
     public AlignAndDistribute(Layer layer)
     {
-        m_leftIndex = new HashMap<Double, LinkedList<AlignAndDistributeHandler>>();
-        m_hCenterIndex = new HashMap<Double, LinkedList<AlignAndDistributeHandler>>();
-        m_rightIndex = new HashMap<Double, LinkedList<AlignAndDistributeHandler>>();
+        m_leftIndex = new HashMap<Double, LinkedList<AlignAndDistributeControl>>();
+        m_hCenterIndex = new HashMap<Double, LinkedList<AlignAndDistributeControl>>();
+        m_rightIndex = new HashMap<Double, LinkedList<AlignAndDistributeControl>>();
 
-        m_topIndex = new HashMap<Double, LinkedList<AlignAndDistributeHandler>>();
-        m_vCenterIndex = new HashMap<Double, LinkedList<AlignAndDistributeHandler>>();
-        m_bottomIndex = new HashMap<Double, LinkedList<AlignAndDistributeHandler>>();
+        m_topIndex = new HashMap<Double, LinkedList<AlignAndDistributeControl>>();
+        m_vCenterIndex = new HashMap<Double, LinkedList<AlignAndDistributeControl>>();
+        m_bottomIndex = new HashMap<Double, LinkedList<AlignAndDistributeControl>>();
 
         m_alignmentCallback = new DefaultAlignAndDistributeMatchesCallback(layer);
 
@@ -199,27 +177,27 @@ public class AlignAndDistribute
         m_drawGuideLines = drawGuideLines;
     }
 
-    public AlignAndDistributeHandler getShapeHandler(IPrimitive<?> prim)
+    public AlignAndDistributeControl getShapeControl(IPrimitive<?> prim)
     {
         return m_shapes.get(prim.uuid());
     }
 
-    public AlignAndDistributeHandler addShape(IDrawable<?> shape)
+    public AlignAndDistributeControl addShape(IDrawable<?> shape)
     {
         final String uuid = shape.uuid();
 
-        AlignAndDistributeHandler handler = m_shapes.get(uuid);
+        AlignAndDistributeControl handler = m_shapes.get(uuid);
 
         if (null == handler)
         {
             // only add if the shape has not already been added
             if (shape instanceof Group)
             {
-                handler = new AlignAndDistributeHandler((IPrimitive<?>) shape, this, m_alignmentCallback, ((Group) shape).getBoundingBoxAttributes());
+                handler = new AlignAndDistributeControlImpl((IPrimitive<?>) shape, this, m_alignmentCallback, ((Group) shape).getBoundingBoxAttributes());
             }
             else
             {
-                handler = new AlignAndDistributeHandler((IPrimitive<?>) shape, this, m_alignmentCallback, ((IPrimitive<?>) shape).getBoundingBoxAttributes());
+                handler = new AlignAndDistributeControlImpl((IPrimitive<?>) shape, this, m_alignmentCallback, ((IPrimitive<?>) shape).getBoundingBoxAttributes());
             }
             m_shapes.put(uuid, handler);
         }
@@ -228,7 +206,7 @@ public class AlignAndDistribute
 
     public void removeShape(IDrawable<?> shape)
     {
-        AlignAndDistributeHandler handler = m_shapes.get(shape.uuid());
+        AlignAndDistributeControl handler = m_shapes.get(shape.uuid());
 
         if (null != handler)
         {
@@ -236,30 +214,34 @@ public class AlignAndDistribute
 
             m_shapes.remove(shape.uuid());
 
-            handler.removeHandlerRegistrations();
+            handler.remove();
         }
     }
 
-    public void addAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeHandler>> index, AlignAndDistributeHandler handler, double pos)
+    public AlignAndDistributeControl getControlForShape( final String uuid ) {
+        return m_shapes.get( uuid );
+    }
+
+    public void addAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeControl>> index, AlignAndDistributeControl handler, double pos)
     {
         double rounded = round(pos);
 
-        LinkedList<AlignAndDistributeHandler> bucket = index.get(rounded);
+        LinkedList<AlignAndDistributeControl> bucket = index.get(rounded);
 
         if (bucket == null)
         {
-            bucket = new LinkedList<AlignAndDistributeHandler>();
+            bucket = new LinkedList<AlignAndDistributeControl>();
 
             index.put(rounded, bucket);
         }
         bucket.add(handler);
     }
 
-    public void removeAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeHandler>> index, AlignAndDistributeHandler handler, double pos)
+    public void removeAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeControl>> index, AlignAndDistributeControl handler, double pos)
     {
         double rounded = round(pos);
 
-        LinkedList<AlignAndDistributeHandler> bucket = index.get(rounded);
+        LinkedList<AlignAndDistributeControl> bucket = index.get(rounded);
 
         bucket.remove(handler);
 
@@ -294,19 +276,19 @@ public class AlignAndDistribute
         }
     }
 
-    public void removeDistIndex(AlignAndDistributeHandler handler)
+    public void removeDistIndex(AlignAndDistributeControl handler)
     {
         removeHorizontalDistIndex(handler);
 
         removeVerticalDistIndex(handler);
     }
 
-    public void removeHorizontalDistIndex(AlignAndDistributeHandler handler)
+    public void removeHorizontalDistIndex(AlignAndDistributeControl handler)
     {
         for (DistributionEntry dist : handler.getHorizontalDistributionEntries())
         {
-            AlignAndDistributeHandler h1 = dist.getShape1();
-            AlignAndDistributeHandler h2 = dist.getShape2();
+            AlignAndDistributeControl h1 = dist.getShape1();
+            AlignAndDistributeControl h2 = dist.getShape2();
 
             // make sure we don't remove from handler, or it will remove from the collection currently being iterated.
             if (handler == h1)
@@ -333,12 +315,12 @@ public class AlignAndDistribute
         handler.getHorizontalDistributionEntries().clear();
     }
 
-    public void removeVerticalDistIndex(AlignAndDistributeHandler handler)
+    public void removeVerticalDistIndex(AlignAndDistributeControl handler)
     {
         for (DistributionEntry dist : handler.getVerticalDistributionEntries())
         {
-            AlignAndDistributeHandler h1 = dist.getShape1();
-            AlignAndDistributeHandler h2 = dist.getShape2();
+            AlignAndDistributeControl h1 = dist.getShape1();
+            AlignAndDistributeControl h2 = dist.getShape2();
 
             // make sure we don't remove from handler, or it will remove from the collection currently being iterated.
             if (handler == h1)
@@ -366,20 +348,20 @@ public class AlignAndDistribute
         handler.getVerticalDistributionEntries().clear();
     }
 
-    public void buildDistIndex(AlignAndDistributeHandler handler)
+    public void buildDistIndex(AlignAndDistributeControl handler)
     {
         buildHorizontalDistIndex(handler);
 
         buildVerticalDistIndex(handler);
     }
 
-    public void buildHorizontalDistIndex(AlignAndDistributeHandler handler)
+    public void buildHorizontalDistIndex(AlignAndDistributeControl handler)
     {
         double left = round(handler.getLeft());
 
         double right = round(handler.getRight());
 
-        for (AlignAndDistributeHandler otherH : m_shapes.values())
+        for (AlignAndDistributeControl otherH : m_shapes.values())
         {
             if (skipShape(handler, otherH))
             {
@@ -422,7 +404,7 @@ public class AlignAndDistribute
         }
     }
 
-    private boolean skipShape(AlignAndDistributeHandler handler, AlignAndDistributeHandler otherH)
+    private boolean skipShape(AlignAndDistributeControl handler, AlignAndDistributeControl otherH)
     {
         if (otherH == handler || !otherH.isIndexed())
         {
@@ -432,12 +414,12 @@ public class AlignAndDistribute
         return false;
     }
 
-    public void buildVerticalDistIndex(AlignAndDistributeHandler handler)
+    public void buildVerticalDistIndex(AlignAndDistributeControl handler)
     {
         double top = round(handler.getTop());
         double bottom = round(handler.getBottom());
 
-        for (AlignAndDistributeHandler otherH : m_shapes.values())
+        for (AlignAndDistributeControl otherH : m_shapes.values())
         {
             if (skipShape(handler, otherH))
             {
@@ -494,15 +476,15 @@ public class AlignAndDistribute
 
         private static final int          BOTTOM_DIST   = 5;
 
-        private AlignAndDistributeHandler m_shape1;
+        private AlignAndDistributeControl m_shape1;
 
-        private AlignAndDistributeHandler m_shape2;
+        private AlignAndDistributeControl m_shape2;
 
         private double                    m_point;
 
         private int                       m_distType;
 
-        public DistributionEntry(AlignAndDistributeHandler shape1, AlignAndDistributeHandler shape2, double point, int distType)
+        public DistributionEntry(AlignAndDistributeControl shape1, AlignAndDistributeControl shape2, double point, int distType)
         {
             m_shape1 = shape1;
             m_shape2 = shape2;
@@ -520,12 +502,12 @@ public class AlignAndDistribute
             }
         }
 
-        public AlignAndDistributeHandler getShape1()
+        public AlignAndDistributeControl getShape1()
         {
             return m_shape1;
         }
 
-        public AlignAndDistributeHandler getShape2()
+        public AlignAndDistributeControl getShape2()
         {
             return m_shape2;
         }
@@ -541,15 +523,15 @@ public class AlignAndDistribute
         }
     }
 
-    public AlignAndDistributeMatches findNearestMatches(AlignAndDistributeHandler handler, double left, double hCenter, double right, double top, double vCenter, double bottom)
+    public AlignAndDistributeMatches findNearestMatches(AlignAndDistributeControl handler, double left, double hCenter, double right, double top, double vCenter, double bottom)
     {
-        LinkedList<AlignAndDistributeHandler> leftList = null;
-        LinkedList<AlignAndDistributeHandler> hCenterList = null;
-        LinkedList<AlignAndDistributeHandler> rightList = null;
+        LinkedList<AlignAndDistributeControl> leftList = null;
+        LinkedList<AlignAndDistributeControl> hCenterList = null;
+        LinkedList<AlignAndDistributeControl> rightList = null;
 
-        LinkedList<AlignAndDistributeHandler> topList = null;
-        LinkedList<AlignAndDistributeHandler> vCenterList = null;
-        LinkedList<AlignAndDistributeHandler> bottomList = null;
+        LinkedList<AlignAndDistributeControl> topList = null;
+        LinkedList<AlignAndDistributeControl> vCenterList = null;
+        LinkedList<AlignAndDistributeControl> bottomList = null;
 
         LinkedList<DistributionEntry> leftDistList = null;
         LinkedList<DistributionEntry> hCenterDistList = null;
@@ -634,7 +616,7 @@ public class AlignAndDistribute
         return matches;
     }
 
-    private boolean matchFound(LinkedList<AlignAndDistributeHandler> l1, LinkedList<AlignAndDistributeHandler> l2, LinkedList<AlignAndDistributeHandler> l3, LinkedList<DistributionEntry> l4, LinkedList<DistributionEntry> l5, LinkedList<DistributionEntry> l6)
+    private boolean matchFound(LinkedList<AlignAndDistributeControl> l1, LinkedList<AlignAndDistributeControl> l2, LinkedList<AlignAndDistributeControl> l3, LinkedList<DistributionEntry> l4, LinkedList<DistributionEntry> l5, LinkedList<DistributionEntry> l6)
     {
         if (l1 != null || l2 != null || l3 != null || l4 != null || l5 != null || l6 != null)
         {
@@ -643,10 +625,10 @@ public class AlignAndDistribute
         return false;
     }
 
-    private static LinkedList<AlignAndDistributeHandler> findNearestAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeHandler>> map, double pos)
+    private static LinkedList<AlignAndDistributeControl> findNearestAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeControl>> map, double pos)
     {
         double rounded = Math.round(pos);
-        LinkedList<AlignAndDistributeHandler> indexEntries = map.get(rounded);
+        LinkedList<AlignAndDistributeControl> indexEntries = map.get(rounded);
         return indexEntries;
     }
 
@@ -659,7 +641,7 @@ public class AlignAndDistribute
 
     private static final EmptyAlignAndDistributeMatches emptyAlignedMatches = new EmptyAlignAndDistributeMatches();
 
-    public static class EmptyAlignAndDistributeMatches extends AlignAndDistributeMatches
+    private static class EmptyAlignAndDistributeMatches extends AlignAndDistributeMatches
     {
         public EmptyAlignAndDistributeMatches()
         {
@@ -667,31 +649,31 @@ public class AlignAndDistribute
         }
     }
 
-    public void indexOff(AlignAndDistributeHandler handler)
+    public void indexOff(AlignAndDistributeControl handler)
     {
         indexOffWithoutChangingStatus(handler);
         handler.setIndexed(false);
     }
 
-    private void indexOffWithoutChangingStatus(AlignAndDistributeHandler handler)
+    public void indexOffWithoutChangingStatus(AlignAndDistributeControl handler)
     {
         removeAlignIndex(handler, handler.getLeft(), handler.getHorizontalCenter(), handler.getRight(), handler.getTop(), handler.getVerticalCenter(), handler.getBottom());
         removeDistIndex(handler);
     }
 
-    public void indexOn(AlignAndDistributeHandler handler)
+    public void indexOn(AlignAndDistributeControl handler)
     {
         indexOnWithoutChangingStatus(handler);
         handler.setIndexed(true);
     }
 
-    private void indexOnWithoutChangingStatus(AlignAndDistributeHandler handler)
+    public void indexOnWithoutChangingStatus(AlignAndDistributeControl handler)
     {
         buildAlignIndex(handler, handler.getLeft(), handler.getHorizontalCenter(), handler.getRight(), handler.getTop(), handler.getVerticalCenter(), handler.getBottom());
         buildDistIndex(handler);
     }
 
-    public void buildAlignIndex(AlignAndDistributeHandler handler, double left, double hCenter, double right, double top, double vCenter, double bottom)
+    private void buildAlignIndex(AlignAndDistributeControl handler, double left, double hCenter, double right, double top, double vCenter, double bottom)
     {
         addAlignIndexEntry(m_leftIndex, handler, left);
         addAlignIndexEntry(m_hCenterIndex, handler, hCenter);
@@ -702,7 +684,7 @@ public class AlignAndDistribute
         addAlignIndexEntry(m_bottomIndex, handler, bottom);
     }
 
-    public void removeAlignIndex(AlignAndDistributeHandler handler, double left, double hCenter, double right, double top, double vCenter, double bottom)
+    private void removeAlignIndex(AlignAndDistributeControl handler, double left, double hCenter, double right, double top, double vCenter, double bottom)
     {
         removeAlignIndexEntry(m_leftIndex, handler, left);
         removeAlignIndexEntry(m_hCenterIndex, handler, hCenter);
@@ -713,93 +695,93 @@ public class AlignAndDistribute
         removeAlignIndexEntry(m_bottomIndex, handler, bottom);
     }
 
-    public void addLeftAlignIndexEntry(AlignAndDistributeHandler shape, double left)
+    public void addLeftAlignIndexEntry(AlignAndDistributeControl shape, double left)
     {
         addAlignIndexEntry(m_leftIndex, shape, left);
     }
 
-    public void addHCenterAlignIndexEntry(AlignAndDistributeHandler shape, double hCenter)
+    public void addHCenterAlignIndexEntry(AlignAndDistributeControl shape, double hCenter)
     {
         addAlignIndexEntry(m_hCenterIndex, shape, hCenter);
     }
 
-    public void addRightAlignIndexEntry(AlignAndDistributeHandler shape, double right)
+    public void addRightAlignIndexEntry(AlignAndDistributeControl shape, double right)
     {
         addAlignIndexEntry(m_rightIndex, shape, right);
     }
 
-    public void addTopAlignIndexEntry(AlignAndDistributeHandler shape, double top)
+    public void addTopAlignIndexEntry(AlignAndDistributeControl shape, double top)
     {
         addAlignIndexEntry(m_topIndex, shape, top);
     }
 
-    public void addVCenterAlignIndexEntry(AlignAndDistributeHandler shape, double vCenter)
+    public void addVCenterAlignIndexEntry(AlignAndDistributeControl shape, double vCenter)
     {
         addAlignIndexEntry(m_vCenterIndex, shape, vCenter);
     }
 
-    public void addBottomAlignIndexEntry(AlignAndDistributeHandler shape, double bottom)
+    public void addBottomAlignIndexEntry(AlignAndDistributeControl shape, double bottom)
     {
         addAlignIndexEntry(m_bottomIndex, shape, bottom);
     }
 
-    public void removeLeftAlignIndexEntry(AlignAndDistributeHandler shape, double left)
+    public void removeLeftAlignIndexEntry(AlignAndDistributeControl shape, double left)
     {
         removeAlignIndexEntry(m_leftIndex, shape, left);
     }
 
-    public void removeHCenterAlignIndexEntry(AlignAndDistributeHandler shape, double hCenter)
+    public void removeHCenterAlignIndexEntry(AlignAndDistributeControl shape, double hCenter)
     {
         removeAlignIndexEntry(m_hCenterIndex, shape, hCenter);
     }
 
-    public void removeRightAlignIndexEntry(AlignAndDistributeHandler shape, double right)
+    public void removeRightAlignIndexEntry(AlignAndDistributeControl shape, double right)
     {
         removeAlignIndexEntry(m_rightIndex, shape, right);
     }
 
-    public void removeTopAlignIndexEntry(AlignAndDistributeHandler shape, double top)
+    public void removeTopAlignIndexEntry(AlignAndDistributeControl shape, double top)
     {
         removeAlignIndexEntry(m_topIndex, shape, top);
     }
 
-    public void removeVCenterAlignIndexEntry(AlignAndDistributeHandler shape, double vCenter)
+    public void removeVCenterAlignIndexEntry(AlignAndDistributeControl shape, double vCenter)
     {
         removeAlignIndexEntry(m_vCenterIndex, shape, vCenter);
     }
 
-    public void removeBottomAlignIndexEntry(AlignAndDistributeHandler shape, double bottom)
+    public void removeBottomAlignIndexEntry(AlignAndDistributeControl shape, double bottom)
     {
         removeAlignIndexEntry(m_bottomIndex, shape, bottom);
     }
 
     public static class AlignAndDistributeMatches
     {
-        private AlignAndDistributeHandler             m_handler;
+        private AlignAndDistributeControl             m_handler;
 
         private double                                m_leftPos;
 
-        private LinkedList<AlignAndDistributeHandler> m_leftList;
+        private LinkedList<AlignAndDistributeControl> m_leftList;
 
         private double                                m_hCenterPos;
 
-        private LinkedList<AlignAndDistributeHandler> m_hCenterList;
+        private LinkedList<AlignAndDistributeControl> m_hCenterList;
 
         private double                                m_rightPos;
 
-        private LinkedList<AlignAndDistributeHandler> m_rightList;
+        private LinkedList<AlignAndDistributeControl> m_rightList;
 
         private double                                m_topPos;
 
-        private LinkedList<AlignAndDistributeHandler> m_topList;
+        private LinkedList<AlignAndDistributeControl> m_topList;
 
         private double                                m_vCenterPos;
 
-        private LinkedList<AlignAndDistributeHandler> m_vCenterList;
+        private LinkedList<AlignAndDistributeControl> m_vCenterList;
 
         private double                                m_bottomPos;
 
-        private LinkedList<AlignAndDistributeHandler> m_bottomList;
+        private LinkedList<AlignAndDistributeControl> m_bottomList;
 
         private LinkedList<DistributionEntry>         m_leftDistList;
 
@@ -819,7 +801,7 @@ public class AlignAndDistribute
         {
         }
 
-        public AlignAndDistributeMatches(AlignAndDistributeHandler handler, double leftPos, LinkedList<AlignAndDistributeHandler> leftList, double hCenterPos, LinkedList<AlignAndDistributeHandler> hCenterList, double rightPos, LinkedList<AlignAndDistributeHandler> rightList, double topPos, LinkedList<AlignAndDistributeHandler> topList, double vCenterPos, LinkedList<AlignAndDistributeHandler> vCenterList, double bottomPos, LinkedList<AlignAndDistributeHandler> bottomList, LinkedList<DistributionEntry> leftDistList, LinkedList<DistributionEntry> hCenterDistList, LinkedList<DistributionEntry> rightDistList, LinkedList<DistributionEntry> topDistList, LinkedList<DistributionEntry> vCenterDistList, LinkedList<DistributionEntry> bottomDistList)
+        public AlignAndDistributeMatches(AlignAndDistributeControl handler, double leftPos, LinkedList<AlignAndDistributeControl> leftList, double hCenterPos, LinkedList<AlignAndDistributeControl> hCenterList, double rightPos, LinkedList<AlignAndDistributeControl> rightList, double topPos, LinkedList<AlignAndDistributeControl> topList, double vCenterPos, LinkedList<AlignAndDistributeControl> vCenterList, double bottomPos, LinkedList<AlignAndDistributeControl> bottomList, LinkedList<DistributionEntry> leftDistList, LinkedList<DistributionEntry> hCenterDistList, LinkedList<DistributionEntry> rightDistList, LinkedList<DistributionEntry> topDistList, LinkedList<DistributionEntry> vCenterDistList, LinkedList<DistributionEntry> bottomDistList)
         {
             m_handler = handler;
             m_leftPos = leftPos;
@@ -846,7 +828,7 @@ public class AlignAndDistribute
             m_hasMatch = true;
         }
 
-        public AlignAndDistributeHandler getHandler()
+        public AlignAndDistributeControl getHandler()
         {
             return m_handler;
         }
@@ -856,32 +838,32 @@ public class AlignAndDistribute
             return m_hasMatch;
         }
 
-        public LinkedList<AlignAndDistributeHandler> getLeftList()
+        public LinkedList<AlignAndDistributeControl> getLeftList()
         {
             return m_leftList;
         }
 
-        public LinkedList<AlignAndDistributeHandler> getHorizontalCenterList()
+        public LinkedList<AlignAndDistributeControl> getHorizontalCenterList()
         {
             return m_hCenterList;
         }
 
-        public LinkedList<AlignAndDistributeHandler> getRightList()
+        public LinkedList<AlignAndDistributeControl> getRightList()
         {
             return m_rightList;
         }
 
-        public LinkedList<AlignAndDistributeHandler> getTopList()
+        public LinkedList<AlignAndDistributeControl> getTopList()
         {
             return m_topList;
         }
 
-        public LinkedList<AlignAndDistributeHandler> getVerticalCenterList()
+        public LinkedList<AlignAndDistributeControl> getVerticalCenterList()
         {
             return m_vCenterList;
         }
 
-        public LinkedList<AlignAndDistributeHandler> getBottomList()
+        public LinkedList<AlignAndDistributeControl> getBottomList()
         {
             return m_bottomList;
         }
@@ -947,687 +929,19 @@ public class AlignAndDistribute
         }
     }
 
-    public static double round(double value)
+    private static double round(double value)
     {
         return Math.round(value);
     }
 
-    public static class AlignAndDistributeHandler implements AttributesChangedHandler, DragConstraintEnforcer, NodeDragEndHandler
-    {
-        protected AlignAndDistribute                m_alignAndDistribute;
-
-        protected IPrimitive<?>                     m_shape;
-
-        protected BoundingBox                       m_box;
-
-        protected boolean                           m_isDraggable;
-
-        protected boolean                           m_isDragging;
-
-        protected HandlerRegistrationManager        m_attrHandlerRegs;
-
-        protected HandlerRegistration               m_dragEndHandlerReg;
-
-        protected AlignAndDistributeMatchesCallback m_alignAndDistributeMatchesCallback;
-
-        protected double                            m_startLeft;
-
-        protected double                            m_startTop;
-
-        protected double                            m_left;
-
-        protected double                            m_hCenter;
-
-        protected double                            m_right;
-
-        protected double                            m_top;
-
-        protected double                            m_vCenter;
-
-        protected double                            m_bottom;
-
-        protected Set<DistributionEntry>            m_horizontalDistEntries;
-
-        protected Set<DistributionEntry>            m_verticalDistEntries;
-
-        private boolean                             indexed;
-
-        private final BooleanOp                     m_bboxOp;
-
-        private final BooleanOp                     m_tranOp;
-
-        private double                              m_leftOffset;
-
-        private double                              m_topOffset;
-
-        public AlignAndDistributeHandler(IPrimitive<?> shape, AlignAndDistribute alignAndDistribute, AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
-        {
-            m_shape = shape;
-
-            m_alignAndDistribute = alignAndDistribute;
-
-            m_alignAndDistributeMatchesCallback = alignAndDistributeMatchesCallback;
-
-            // circles xy are in centre, where as others are top left.
-            // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
-            // use this to determine an offset used for later get x/y
-            m_box = AlignAndDistribute.getBoundingBox(shape);
-            m_leftOffset = shape.getX() - m_box.getX();
-            m_topOffset = shape.getY() - m_box.getY();
-
-            Point2D absLoc = shape.getAbsoluteLocation();
-
-            double left = absLoc.getX() + m_leftOffset;
-            double right = left + m_box.getWidth();
-            double top = absLoc.getY() + m_topOffset;
-            double bottom = top + m_box.getHeight();
-
-            captureHorizontalPositions(left, right);
-            captureVerticalPositions(top, bottom);
-
-            m_alignAndDistribute.indexOn(this);
-
-            if (m_shape.isDraggable())
-            {
-                dragOn();
-            }
-            m_attrHandlerRegs = new HandlerRegistrationManager();
-
-            final ArrayList<Attribute> temp = new ArrayList<Attribute>(attributes);
-
-            temp.add(Attribute.X);
-
-            temp.add(Attribute.Y);
-
-            final NFastStringSet seen = new NFastStringSet();
-
-            final ArrayList<Attribute> list = new ArrayList<Attribute>();
-
-            for (Attribute attribute : temp)
-            {
-                if (null != attribute)
-                {
-                    if (false == seen.contains(attribute.getProperty()))
-                    {
-                        list.add(attribute);
-
-                        seen.add(attribute.getProperty());
-                    }
-                }
-            }
-            m_bboxOp = any(list);
-
-            addHandlers(m_shape, list);
-
-            m_tranOp = any(Attribute.ROTATION, Attribute.SCALE, Attribute.SHEAR);
-        }
-
-        public void addHandlers(IDrawable<?> drawable, ArrayList<Attribute> list)
-        {
-            for (Attribute attribute : list)
-            {
-                m_attrHandlerRegs.register(drawable.addAttributesChangedHandler(attribute, this));
-            }
-            m_attrHandlerRegs.register(drawable.addAttributesChangedHandler(Attribute.ROTATION, this));
-            m_attrHandlerRegs.register(drawable.addAttributesChangedHandler(Attribute.SCALE, this));
-            m_attrHandlerRegs.register(drawable.addAttributesChangedHandler(Attribute.SHEAR, this));
-        }
-
-        public boolean isIndexed()
-        {
-            return indexed;
-        }
-
-        public void setIndexed(boolean indexed)
-        {
-            this.indexed = indexed;
-        }
-
-        public Set<DistributionEntry> getHorizontalDistributionEntries()
-        {
-            if (m_horizontalDistEntries == null)
-            {
-                m_horizontalDistEntries = new HashSet<DistributionEntry>();
-            }
-            return m_horizontalDistEntries;
-        }
-
-        public Set<DistributionEntry> getVerticalDistributionEntries()
-        {
-            if (m_verticalDistEntries == null)
-            {
-                m_verticalDistEntries = new HashSet<DistributionEntry>();
-            }
-            return m_verticalDistEntries;
-        }
-
-        public IPrimitive<?> getShape()
-        {
-            return m_shape;
-        }
-
-        /**
-         * This is a cached BoundingBox
-         * @return
-         */
-        public BoundingBox getBoundingBox()
-        {
-            return m_box;
-        }
-
-        public double getLeft()
-        {
-            return m_left;
-        }
-
-        public double getHorizontalCenter()
-        {
-            return m_hCenter;
-        }
-
-        public double getRight()
-        {
-            return m_right;
-        }
-
-        public double getTop()
-        {
-            return m_top;
-        }
-
-        public double getVerticalCenter()
-        {
-            return m_vCenter;
-        }
-
-        public double getBottom()
-        {
-            return m_bottom;
-        }
-
-        public void capturePositions(double left, double right, double top, double bottom)
-        {
-            if (left != m_left || right != m_right)
-            {
-                captureHorizontalPositions(left, right);
-            }
-
-            if (top != m_top || bottom != m_bottom)
-            {
-                captureVerticalPositions(top, bottom);
-            }
-        }
-
-        public void captureHorizontalPositions(double left, double right)
-        {
-            double width = m_box.getWidth();
-            m_left = left;
-            m_hCenter = m_left + (width / 2);
-            m_right = right;
-        }
-
-        public void captureVerticalPositions(double top, double bottom)
-        {
-            double height = m_box.getHeight();
-            m_top = top;
-            m_vCenter = (m_top + (height / 2));
-            m_bottom = bottom;
-        }
-
-        public void updateIndex()
-        {
-
-            // circles xy are in centre, where as others are top left.
-            // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
-            // However getBoundingBox here is still relative to parent, so must offset against parent absolute xy
-            Point2D absLoc = m_shape.getAbsoluteLocation();
-
-            double left = absLoc.getX() + m_leftOffset;
-            double right = left + m_box.getWidth();
-            double top = absLoc.getY() + m_topOffset;
-            double bottom = top + m_box.getHeight();
-
-            boolean leftChanged = left != m_left;
-            boolean rightChanged = right != m_right;
-            boolean topChanged = top != m_top;
-            boolean bottomChanged = bottom != m_bottom;
-
-            if (!leftChanged && !rightChanged && !topChanged && !bottomChanged)
-            {
-                // this can happen when the event batching triggers after a drag has stopped, but the event change was due to the dragging.
-                // @dean REVIEW
-                return;
-            }
-
-            //BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
-            updateIndex(leftChanged, rightChanged, topChanged, bottomChanged, left, right, top, bottom);
-        }
-
-        public void updateIndex(boolean leftChanged, boolean rightChanged, boolean topChanged, boolean bottomChanged, double left, double right, double top, double bottom)
-        {
-            if (leftChanged || rightChanged)
-            {
-                m_alignAndDistribute.removeHorizontalDistIndex(this);
-
-                boolean hCenterChanged = (left + (m_box.getWidth() / 2) != m_hCenter);
-
-                if (leftChanged)
-                {
-                    m_alignAndDistribute.removeLeftAlignIndexEntry(this, m_left);
-                }
-
-                if (hCenterChanged)
-                {
-                    m_alignAndDistribute.removeHCenterAlignIndexEntry(this, m_hCenter);
-                }
-
-                if (rightChanged)
-                {
-                    m_alignAndDistribute.removeRightAlignIndexEntry(this, m_right);
-                }
-
-                captureHorizontalPositions(left, right);
-                if (leftChanged)
-                {
-                    m_alignAndDistribute.addLeftAlignIndexEntry(this, m_left);
-                }
-
-                if (hCenterChanged)
-                {
-                    m_alignAndDistribute.addHCenterAlignIndexEntry(this, m_hCenter);
-                }
-
-                if (rightChanged)
-                {
-                    m_alignAndDistribute.addRightAlignIndexEntry(this, m_right);
-                }
-
-                m_alignAndDistribute.buildHorizontalDistIndex(this);
-            }
-
-            if (topChanged || bottomChanged)
-            {
-                m_alignAndDistribute.removeVerticalDistIndex(this);
-
-                boolean vCenterChanged = (top + (m_box.getHeight() / 2) != m_vCenter);
-
-                if (topChanged)
-                {
-                    m_alignAndDistribute.removeTopAlignIndexEntry(this, m_top);
-                }
-
-                if (vCenterChanged)
-                {
-                    m_alignAndDistribute.removeVCenterAlignIndexEntry(this, m_vCenter);
-                }
-
-                if (bottomChanged)
-                {
-                    m_alignAndDistribute.removeBottomAlignIndexEntry(this, m_bottom);
-                }
-
-                captureVerticalPositions(top, bottom);
-                if (topChanged)
-                {
-                    m_alignAndDistribute.addTopAlignIndexEntry(this, m_top);
-                }
-
-                if (vCenterChanged)
-                {
-                    m_alignAndDistribute.addVCenterAlignIndexEntry(this, m_vCenter);
-                }
-
-                if (bottomChanged)
-                {
-                    m_alignAndDistribute.addBottomAlignIndexEntry(this, m_bottom);
-                }
-
-                m_alignAndDistribute.buildVerticalDistIndex(this);
-            }
-        }
-
-        public void dragOn()
-        {
-            m_isDraggable = true;
-        }
-
-        public void draggOff()
-        {
-            m_isDraggable = false;
-        }
-
-        public boolean isDraggable()
-        {
-            return m_isDraggable;
-        }
-
-        private final boolean hasComplexTransformAttributes()
-        {
-            final Attributes attr = getAttributes(m_shape);
-
-            if (attr.hasComplexTransformAttributes())
-            {
-                final double r = attr.getRotation();
-
-                if (r != 0)
-                {
-                    return true;
-                }
-                final Point2D scale = attr.getScale();
-
-                if (null != scale)
-                {
-                    if ((scale.getX() != 1) || (scale.getY() != 1))
-                    {
-                        return true;
-                    }
-                }
-                final Point2D shear = attr.getShear();
-
-                if (null != shear)
-                {
-                    if ((shear.getX() != 0) || (shear.getY() != 0))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public void onAttributesChanged(final AttributesChangedEvent event)
-        {
-            if (m_isDragging)
-            {
-                // ignore attribute changes while dragging
-                return;
-            }
-            if (event.evaluate(m_tranOp))
-            {
-                boolean hasTransformations = hasComplexTransformAttributes();
-
-                if (indexed && hasTransformations)
-                {
-                    // Indexing cannot be done on transformed shapes
-                    // it's cheaper to just check if the attributes exist on the shape, than it is to test for attributes on the event
-                    m_alignAndDistribute.indexOff(this);
-                }
-                else if (!indexed && !hasTransformations)
-                {
-                    // Indexing was turned off, but there are no more transformations, so turn it back on again
-                    m_alignAndDistribute.indexOn(this);
-                }
-            }
-            boolean isDraggable = m_shape.isDraggable();
-
-            if (!m_isDraggable && isDraggable)
-            {
-                // was off, now on
-                dragOn();
-            }
-            else if (m_isDraggable && !isDraggable)
-            {
-                // was on, now on off
-                draggOff();
-            }
-            if (indexed && event.evaluate(m_bboxOp))
-            {
-                updateIndex();
-            }
-        }
-
-        @Override
-        public void startDrag(DragContext dragContext)
-        {
-            // shapes being dragged must be removed from the index, so that they don't snap to themselves
-            // Also removes all nested shapes.
-            m_startLeft = m_left;
-            m_startTop = m_top;
-
-            m_isDragging = true;
-            iterateAndRemoveIndex(m_shape);
-        }
-
-        public void iterateAndRemoveIndex(IPrimitive<?> prim)
-        {
-            indexOff(prim);
-            if (prim instanceof Group)
-            {
-                for (IPrimitive<?> child : prim.asGroup().getChildNodes())
-                {
-                    if (child instanceof Group)
-                    {
-                        iterateAndRemoveIndex(child.asGroup());
-                    }
-                    else
-                    {
-                        indexOff(child);
-                    }
-                }
-            }
-        }
-
-        public void indexOff(IPrimitive<?> child)
-        {
-            AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
-            if (handler != null && handler.isIndexed())
-            {
-                m_alignAndDistribute.indexOffWithoutChangingStatus(handler);
-            }
-        }
-
-        public static class ShapePair
-        {
-            private Group             parent;
-
-            private IPrimitive<?>     child;
-
-            AlignAndDistributeHandler handler;
-
-            public ShapePair(Group group, IPrimitive<?> child, AlignAndDistributeHandler handler)
-            {
-                this.parent = group;
-                this.child = child;
-                this.handler = handler;
-            }
-        }
-
-        public void removeChildrenIfIndexed(IPrimitive<?> prim, List<ShapePair> pairs)
-        {
-            for (IPrimitive<?> child : prim.asGroup().getChildNodes())
-            {
-                AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
-                if (handler != null)
-                {
-                    ShapePair pair = new ShapePair(prim.asGroup(), child, handler);
-                    pairs.add(pair);
-                    prim.asGroup().remove(child);
-                }
-                if (child instanceof Group)
-                {
-                    removeChildrenIfIndexed(child.asGroup(), pairs);
-                }
-            }
-        }
-
-        private void indexOn(IPrimitive<?> shape)
-        {
-            AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(shape.uuid());
-            indexOn(handler);
-        }
-
-        private void indexOn(AlignAndDistributeHandler handler)
-        {
-            if (handler != null && handler.isIndexed())
-            {
-                m_alignAndDistribute.indexOnWithoutChangingStatus(handler);
-                handler.updateIndex();
-            }
-        }
-
-        @Override
-        public boolean adjust(Point2D dxy)
-        {
-            if (!indexed)
-            {
-                // ignore adjustment if indexing is off
-                return false;
-            }
-
-            double left = m_startLeft + dxy.getX();
-            double top = m_startTop + dxy.getY();
-            double width = m_box.getWidth();
-            double height = m_box.getHeight();
-            capturePositions(left, left + width, top, top + height);
-
-            AlignAndDistributeMatches matches = m_alignAndDistribute.findNearestMatches(this, m_left, m_hCenter, m_right, m_top, m_vCenter, m_bottom);
-
-            if (m_alignAndDistribute.isSnap())
-            {
-                boolean recapture = false;
-
-                double xOffset = m_startLeft;
-                double yOffset = m_startTop;
-
-                // Adjust horizontal
-                if (matches.getLeftList() != null)
-                {
-                    dxy.setX(matches.getLeftPos() - xOffset);
-                    recapture = true;
-                }
-                else if (matches.getHorizontalCenterList() != null)
-                {
-                    dxy.setX((matches.getHorizontalCenterPos() - (width / 2)) - xOffset);
-                    recapture = true;
-                }
-                else if (matches.getRightList() != null)
-                {
-                    dxy.setX((matches.getRightPos() - width) - xOffset);
-                    recapture = true;
-                }
-
-                // Adjust Vertical
-                if (matches.getTopList() != null)
-                {
-                    dxy.setY(matches.getTopPos() - yOffset);
-                    recapture = true;
-                }
-                else if (matches.getVerticalCenterList() != null)
-                {
-                    dxy.setY((matches.getVerticalCenterPos() - (height / 2)) - yOffset);
-                    recapture = true;
-                }
-                else if (matches.getBottomList() != null)
-                {
-                    dxy.setY((matches.getBottomPos() - height) - yOffset);
-                    recapture = true;
-                }
-
-                // Adjust horizontal distribution
-                if (matches.getLeftDistList() != null)
-                {
-                    dxy.setX(matches.getLeftDistList().getFirst().getPoint() - width - xOffset);
-                    recapture = true;
-                }
-                else if (matches.getRightDistList() != null)
-                {
-                    dxy.setX(matches.getRightDistList().getFirst().getPoint() - xOffset);
-                    recapture = true;
-                }
-                else if (matches.getHorizontalCenterDistList() != null)
-                {
-                    dxy.setX(matches.getHorizontalCenterDistList().getFirst().getPoint() - (width / 2) - xOffset);
-                    recapture = true;
-                }
-
-                // Adjust vertical distribution
-                if (matches.getTopDistList() != null)
-                {
-                    dxy.setY(matches.getTopDistList().getFirst().getPoint() - height - yOffset);
-                    recapture = true;
-                }
-                else if (matches.getBottomDistList() != null)
-                {
-                    dxy.setY(matches.getBottomDistList().getFirst().getPoint() - yOffset);
-                    recapture = true;
-                }
-                else if (matches.getVerticalCenterDistList() != null)
-                {
-                    dxy.setY(matches.getVerticalCenterDistList().getFirst().getPoint() - (height / 2) - yOffset);
-                    recapture = true;
-                }
-
-                // it was adjusted, so recapture points
-                if (recapture)
-                {
-                    // can't use the original left and top vars, as they are before adjustment snap
-                    left = m_startLeft + dxy.getX();
-                    top = m_startTop + dxy.getY();
-                    width = m_box.getWidth();
-                    height = m_box.getHeight();
-                    capturePositions(left, left + width, top, top + height);
-                }
-            }
-
-            if (m_alignAndDistribute.isDrawGuideLines())
-            {
-                m_alignAndDistributeMatchesCallback.call(matches);
-            }
-            return true;
-        }
-
-        public void onNodeDragEnd(NodeDragEndEvent event)
-        {
-            m_isDragging = false;
-
-            m_alignAndDistributeMatchesCallback.dragEnd();
-
-            // We do not want the nested indexed shapes to impact the bounding box
-            // so remove them, they will be added once the index has been made.
-            List<ShapePair> pairs = new ArrayList<ShapePair>();
-            removeChildrenIfIndexed(m_shape, pairs);
-
-            indexOn(m_shape);
-
-            // re-add the children, index before it adds the next nested child
-            for (ShapePair pair : pairs)
-            {
-                pair.parent.add(pair.child);
-                indexOn(pair.handler);
-            }
-        }
-
-        private void removeDragHandlerRegistrations()
-        {
-            if (null != m_dragEndHandlerReg)
-            {
-                m_dragEndHandlerReg.removeHandler();
-
-                m_dragEndHandlerReg = null;
-            }
-        }
-
-        public void removeHandlerRegistrations()
-        {
-            if (null != m_attrHandlerRegs)
-            {
-                m_attrHandlerRegs.destroy();
-
-                m_attrHandlerRegs = null;
-            }
-            removeDragHandlerRegistrations();
-        }
-    }
-
-    public static interface AlignAndDistributeMatchesCallback
+    public interface AlignAndDistributeMatchesCallback
     {
         void call(AlignAndDistributeMatches matches);
 
         void dragEnd();
     }
 
-    public static class DefaultAlignAndDistributeMatchesCallback implements AlignAndDistributeMatchesCallback
+    static class DefaultAlignAndDistributeMatchesCallback implements AlignAndDistributeMatchesCallback
     {
         private final Shape<?>[] m_lines       = new Shape<?>[18];
 
@@ -1713,7 +1027,7 @@ public class AlignAndDistribute
         @Override
         public void call(AlignAndDistributeMatches matches)
         {
-            AlignAndDistributeHandler handler = matches.getHandler();
+            AlignAndDistributeControl handler = matches.getHandler();
 
             drawAlignIfMatches(handler, matches.getLeftList(), matches.getLeftPos(), 0, true);
             drawAlignIfMatches(handler, matches.getHorizontalCenterList(), matches.getHorizontalCenterPos(), 1, true);
@@ -1732,7 +1046,7 @@ public class AlignAndDistribute
             drawDistIfMatches(handler, matches.getBottomDistList(), 16, true);
         }
 
-        private void drawAlignIfMatches(AlignAndDistributeHandler handler, LinkedList<AlignAndDistributeHandler> shapes, double pos, int index, boolean vertical)
+        private void drawAlignIfMatches(AlignAndDistributeControl handler, LinkedList<AlignAndDistributeControl> shapes, double pos, int index, boolean vertical)
         {
             final Layer layer = getOverLayer();
 
@@ -1756,7 +1070,7 @@ public class AlignAndDistribute
             }
         }
 
-        private void drawDistIfMatches(AlignAndDistributeHandler h, LinkedList<DistributionEntry> shapes, int index, boolean vertical)
+        private void drawDistIfMatches(AlignAndDistributeControl h, LinkedList<DistributionEntry> shapes, int index, boolean vertical)
         {
             final Layer layer = getOverLayer();
 
@@ -1764,9 +1078,9 @@ public class AlignAndDistribute
             {
                 for (DistributionEntry dist : shapes)
                 {
-                    AlignAndDistributeHandler h1 = dist.getShape1();
+                    AlignAndDistributeControl h1 = dist.getShape1();
 
-                    AlignAndDistributeHandler h2 = dist.getShape2();
+                    AlignAndDistributeControl h2 = dist.getShape2();
 
                     if (!vertical)
                     {
@@ -1927,12 +1241,12 @@ public class AlignAndDistribute
             }
         }
 
-        private void drawHorizontalLine(AlignAndDistributeHandler handler, double pos, LinkedList<AlignAndDistributeHandler> shapes, int index)
+        private void drawHorizontalLine(AlignAndDistributeControl handler, double pos, LinkedList<AlignAndDistributeControl> shapes, int index)
         {
             double left = handler.getLeft();
             double right = handler.getRight();
 
-            for (AlignAndDistributeHandler otherHandler : shapes)
+            for (AlignAndDistributeControl otherHandler : shapes)
             {
                 double newLeft = otherHandler.getLeft();
                 double newRight = otherHandler.getRight();
@@ -1968,12 +1282,12 @@ public class AlignAndDistribute
             }
         }
 
-        private void drawVerticalLine(AlignAndDistributeHandler handler, double pos, LinkedList<AlignAndDistributeHandler> shapes, int index)
+        private void drawVerticalLine(AlignAndDistributeControl handler, double pos, LinkedList<AlignAndDistributeControl> shapes, int index)
         {
             double top = handler.getTop();
             double bottom = handler.getBottom();
 
-            for (AlignAndDistributeHandler otherHandler : shapes)
+            for (AlignAndDistributeControl otherHandler : shapes)
             {
                 double newTop = otherHandler.getTop();
                 double newBottom = otherHandler.getBottom();

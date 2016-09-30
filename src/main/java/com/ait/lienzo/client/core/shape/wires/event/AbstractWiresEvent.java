@@ -1,28 +1,19 @@
 package com.ait.lienzo.client.core.shape.wires.event;
 
 import com.ait.lienzo.client.core.event.INodeEvent;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-public abstract class AbstractWiresEvent<H extends EventHandler> extends GwtEvent<H> implements INodeEvent  {
+public abstract class AbstractWiresEvent<S, H extends EventHandler> extends GwtEvent<H> implements INodeEvent  {
     
-    public enum Type {
-        START, STEP, END;
-    }
-    
-    public static final GwtEvent.Type<DragHandler> DRAG = new GwtEvent.Type<DragHandler>();
-    public static final GwtEvent.Type<ResizeHandler> RESIZE = new GwtEvent.Type<ResizeHandler>();
-    
-    
-    private final WiresShape shape;
+    private final S shape;
     private boolean m_dead = false;
 
-    public AbstractWiresEvent(WiresShape shape) {
+    public AbstractWiresEvent(S shape) {
         this.shape = shape;
     }
 
-    public WiresShape getShape() {
+    public S getShape() {
         return shape;
     }
 

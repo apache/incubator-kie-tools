@@ -154,7 +154,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
         private IControlHandleList getPointHandles()
         {
-            final ControlHandleList chlist = new ControlHandleList();
+            final ControlHandleList chlist = new ControlHandleList( m_shape );
             
             HandlerRegistrationManager manager = chlist.getHandlerRegistrationManager();
 

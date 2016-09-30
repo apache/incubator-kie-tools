@@ -16,10 +16,10 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
+
 import java.util.List;
 import java.util.Map;
-
-import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 
 public interface IControlHandleFactory
 {
