@@ -18,12 +18,13 @@
 
 package com.ait.lienzo.test.stub.custom;
 
-import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.lienzo.test.annotation.Stubs;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.lienzo.test.annotation.Stubs;
 
 /**
  * Please before reading this, take a look at:
@@ -41,40 +42,40 @@ import org.junit.runner.RunWith;
  * @since 1.0
  *
  */
-@RunWith( LienzoMockitoTestRunner.class )
+@RunWith(LienzoMockitoTestRunner.class)
 @Stubs({ com.ait.lienzo.test.stub.custom.Point2D.class })
-public class StubPointsTest {
-
-    public class MyLienzo {
-
+public class StubPointsTest
+{
+    public class MyLienzo
+    {
         private Point2D p;
 
-        public MyLienzo(Point2D p) {
+        public MyLienzo(Point2D p)
+        {
             this.p = p;
         }
 
-        public Point2D test(Point2D p) {
-            return this.p.add( p );
+        public Point2D test(Point2D p)
+        {
+            return this.p.add(p);
         }
-
     }
 
     private MyLienzo myLienzo;
 
     @Before
-    public void setup() {
-        myLienzo = new MyLienzo( new Point2D( 1, 5 ) );
+    public void setup()
+    {
+        myLienzo = new MyLienzo(new Point2D(1, 5));
     }
 
     @Test
-    public void test() {
-        
-        Point2D p  = myLienzo.test( new Point2D( 2, 3 ) );
-        
-        Assert.assertEquals( 4, p.getX(), 0 );
-        
-        Assert.assertEquals( 7, p.getY(), 0 );
-        
-    }
+    public void test()
+    {
+        Point2D p = myLienzo.test(new Point2D(2, 3));
 
+        Assert.assertEquals(4, p.getX(), 0);
+
+        Assert.assertEquals(7, p.getY(), 0);
+    }
 }

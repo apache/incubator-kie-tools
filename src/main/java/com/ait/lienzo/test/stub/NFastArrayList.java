@@ -1,27 +1,28 @@
 /*
+ * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
  *
- *    Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *  
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.ait.lienzo.test.stub;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import com.ait.lienzo.test.annotation.StubClass;
 import com.ait.lienzo.test.util.LienzoMockitoLogger;
-
-import java.util.*;
 
 /**
  * In-memory array list implementation stub for class <code>com.ait.tooling.nativetools.client.collection.NFastArrayList</code>.
@@ -34,9 +35,9 @@ import java.util.*;
  * 
  */
 @StubClass("com.ait.tooling.nativetools.client.collection.NFastArrayList")
-public class NFastArrayList <M> implements Iterable<M>
+public class NFastArrayList<M> implements Iterable<M>
 {
-    private static final class FastArrayListJSO <M> extends com.ait.tooling.nativetools.client.NArrayBaseJSO<FastArrayListJSO<M>>
+    private static final class FastArrayListJSO<M>extends com.ait.tooling.nativetools.client.NArrayBaseJSO<FastArrayListJSO<M>>
     {
     }
 
@@ -63,6 +64,7 @@ public class NFastArrayList <M> implements Iterable<M>
         }
     }
 
+    @SuppressWarnings("unused")
     private NFastArrayList(final FastArrayListJSO<M> jso)
     {
         this();
@@ -132,9 +134,9 @@ public class NFastArrayList <M> implements Iterable<M>
         if (!list.isEmpty())
         {
             int i = list.indexOf(value);
+
             list.set(i + 1, value);
         }
-
         return this;
     }
 
@@ -143,9 +145,9 @@ public class NFastArrayList <M> implements Iterable<M>
         if (!list.isEmpty())
         {
             int i = list.indexOf(value);
+
             list.set(i > 0 ? i - 1 : 0, value);
         }
-
         return this;
     }
 
@@ -182,10 +184,11 @@ public class NFastArrayList <M> implements Iterable<M>
         if (!list.isEmpty())
         {
             int i = list.size() - 1;
+
             result = (M) list.get(i);
+
             list.remove(i);
         }
-
         return result;
     }
 
@@ -204,6 +207,7 @@ public class NFastArrayList <M> implements Iterable<M>
     public NFastArrayList<M> reverse()
     {
         Collections.reverse(list);
+
         return this;
     }
 
@@ -221,21 +225,23 @@ public class NFastArrayList <M> implements Iterable<M>
 
     public NFastArrayList<M> copy()
     {
-        NFastArrayList result = new NFastArrayList<M>();
+        NFastArrayList<M> result = new NFastArrayList<M>();
+
         result.list.addAll(this.list);
+
         return result;
     }
 
     public NFastArrayList<M> concat(final NFastArrayList<M> value)
     {
-        NFastArrayList result = copy();
+        NFastArrayList<M> result = copy();
 
         if (null != value)
         {
             result.list.addAll(value.list);
+
             return copy();
         }
-
         return result;
     }
 
@@ -270,11 +276,12 @@ public class NFastArrayList <M> implements Iterable<M>
         return toList().iterator();
     }
 
-    @SuppressWarnings("unchecked")
     private M doShift()
     {
         M t = (M) list.get(0);
+
         list.remove(0);
+
         return t;
     }
 
@@ -282,5 +289,4 @@ public class NFastArrayList <M> implements Iterable<M>
     {
         list.add(0, value);
     }
-
 }

@@ -18,12 +18,17 @@
 
 package com.ait.lienzo.test.suite;
 
-import com.ait.lienzo.test.*;
-import com.ait.lienzo.test.stub.custom.StubPointsTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import com.ait.lienzo.test.BasicLienzoMockTest;
+import com.ait.lienzo.test.BasicLienzoStateTest;
+import com.ait.lienzo.test.JSOMockTest;
+import com.ait.lienzo.test.PointsMockTest;
+import com.ait.lienzo.test.PointsTest;
+import com.ait.lienzo.test.stub.custom.StubPointsTest;
 
 /**
  * Lienzo testing suite.
@@ -32,23 +37,17 @@ import org.junit.runners.Suite;
  * @since 1.0
  * 
  */
-@RunWith( Suite.class )
-@Suite.SuiteClasses({
-        BasicLienzoMockTest.class,
-        BasicLienzoStateTest.class,
-        JSOMockTest.class,
-        PointsTest.class,
-        PointsMockTest.class,
-        StubPointsTest.class
-})
-public class TestSuite {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ BasicLienzoMockTest.class, BasicLienzoStateTest.class, JSOMockTest.class, PointsTest.class, PointsMockTest.class, StubPointsTest.class })
+public class TestSuite
+{
+    @BeforeClass
+    public static void setUpClass()
+    {
+    }
 
-        @BeforeClass
-        public static void setUpClass() {
-        }
-
-        @AfterClass
-        public static void tearDownClass() {
-        }
-        
+    @AfterClass
+    public static void tearDownClass()
+    {
+    }
 }

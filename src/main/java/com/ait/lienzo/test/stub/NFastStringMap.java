@@ -1,28 +1,30 @@
 /*
+ * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
  *
- *    Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *  
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.ait.lienzo.test.stub;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ait.lienzo.test.annotation.StubClass;
 import com.ait.lienzo.test.util.LienzoMockitoLogger;
 import com.ait.tooling.nativetools.client.NUtils;
-
-import java.util.*;
 
 /**
  * In-memory Map implementation stub stub for class <code>com.ait.tooling.nativetools.client.collection.NFastStringMap</code>.
@@ -35,7 +37,7 @@ import java.util.*;
  *
  */
 @StubClass("com.ait.tooling.nativetools.client.collection.NFastStringMap")
-public class NFastStringMap <V>
+public class NFastStringMap<V>
 {
     private final Map<String, V> map = new HashMap<String, V>();
 
@@ -93,7 +95,7 @@ public class NFastStringMap <V>
     public Collection<V> values()
     {
         final ArrayList<V> list = new ArrayList<V>(map.values());
-        
+
         return Collections.unmodifiableList(list);
     }
 

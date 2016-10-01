@@ -34,21 +34,17 @@ import org.junit.runners.Suite;
  * @since 1.0.0-RC2
  * 
  */
-@RunWith( Suite.class )
-@Suite.SuiteClasses({
-        WiresContainerTest.class,
-        WiresShapeTest.class,
-        WiresShapeControlHandleListTest.class,
-        WiresManagerTest.class
-})
-public class WiresTestSuite {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ WiresContainerTest.class, WiresShapeTest.class, WiresShapeControlHandleListTest.class, WiresManagerTest.class })
+public class WiresTestSuite
+{
+    @BeforeClass
+    public static void setUpClass()
+    {
+    }
 
-        @BeforeClass
-        public static void setUpClass() {
-        }
-
-        @AfterClass
-        public static void tearDownClass() {
-        }
-        
+    @AfterClass
+    public static void tearDownClass()
+    {
+    }
 }

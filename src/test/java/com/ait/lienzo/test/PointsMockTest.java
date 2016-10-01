@@ -18,14 +18,18 @@
 
 package com.ait.lienzo.test;
 
-import com.ait.lienzo.client.core.types.Point2D;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import com.ait.lienzo.client.core.types.Point2D;
 
 /**
  * Please before reading this: 
@@ -42,55 +46,55 @@ import static org.mockito.Mockito.*;
  * @since 1.0
  * 
  */
-@RunWith( LienzoMockitoTestRunner.class )
-public class PointsMockTest {
-
-    public class MyLienzo {
-
+@RunWith(LienzoMockitoTestRunner.class)
+public class PointsMockTest
+{
+    public class MyLienzo
+    {
         private Point2D p;
 
-        public MyLienzo( Point2D p ) {
+        public MyLienzo(Point2D p)
+        {
             this.p = p;
         }
 
-        public Point2D test( Point2D p ) {
-            return this.p.add( p );
+        public Point2D test(Point2D p)
+        {
+            return this.p.add(p);
         }
 
     }
 
     @Mock
-    Point2D p;
-    
+    Point2D          p;
+
     private MyLienzo myLienzo;
 
     @Before
-    public void setup() {
-        
-        when( p.getX() ).thenReturn( 0d );
-        
-        when( p.getY() ).thenReturn( 0d );
-        
-        myLienzo = new MyLienzo( p );
+    public void setup()
+    {
+        when(p.getX()).thenReturn(0d);
+
+        when(p.getY()).thenReturn(0d);
+
+        myLienzo = new MyLienzo(p);
     }
 
     @Test
-    public void test() {
-        
-        Point2D p2 = mock( Point2D.class );
-        
-        when( p2.toString() ).thenReturn( "This is the point #2" );
-        
-        doReturn( p2 ).when( p ).add( any( Point2D.class ) );
-        
-        when( p.add( any( Point2D.class ) ) ).thenReturn( p2 );
-        
-        Point2D p  = myLienzo.test( new Point2D( 0, 0 ) );
-        
-        assertEquals( p.getX(), 0, 0 );
-        
-        assertEquals( p.getY(), 0, 0 );
-        
-    }
+    public void test()
+    {
+        Point2D p2 = mock(Point2D.class);
 
+        when(p2.toString()).thenReturn("This is the point #2");
+
+        doReturn(p2).when(p).add(any(Point2D.class));
+
+        when(p.add(any(Point2D.class))).thenReturn(p2);
+
+        Point2D p = myLienzo.test(new Point2D(0, 0));
+
+        assertEquals(p.getX(), 0, 0);
+
+        assertEquals(p.getY(), 0, 0);
+    }
 }

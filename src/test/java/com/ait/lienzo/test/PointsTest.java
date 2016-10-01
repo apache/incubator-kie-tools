@@ -18,12 +18,13 @@
 
 package com.ait.lienzo.test;
 
-import com.ait.lienzo.client.core.types.Point2D;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
+import com.ait.lienzo.client.core.types.Point2D;
 
 /**
  * Consider Point2D#toString method stubbed as no-op. So expect an empty js array to string as result, 
@@ -39,39 +40,39 @@ import static org.junit.Assert.assertEquals;
  * @since 1.0
  * 
  */
-@RunWith( LienzoMockitoTestRunner.class )
-public class PointsTest {
-
-    public class MyLienzo {
-
+@RunWith(LienzoMockitoTestRunner.class)
+public class PointsTest
+{
+    public class MyLienzo
+    {
         private Point2D p;
-        
-        public MyLienzo( Point2D p ) {
+
+        public MyLienzo(Point2D p)
+        {
             this.p = p;
         }
 
-        public Point2D test( Point2D p ) {
-            return this.p.add( p );
+        public Point2D test(Point2D p)
+        {
+            return this.p.add(p);
         }
-        
     }
-    
+
     private MyLienzo myLienzo;
-    
+
     @Before
-    public void setup() {
-        myLienzo = new MyLienzo( new Point2D( 0, 0 ) );
+    public void setup()
+    {
+        myLienzo = new MyLienzo(new Point2D(0, 0));
     }
-    
+
     @Test
-    public void test() {
-        
-        Point2D p  = myLienzo.test( new Point2D( 0, 0 ) );
+    public void test()
+    {
+        Point2D p = myLienzo.test(new Point2D(0, 0));
 
-        assertEquals( p.getX(), 0, 0 );
+        assertEquals(p.getX(), 0, 0);
 
-        assertEquals( p.getY(), 0, 0 );
-        
+        assertEquals(p.getY(), 0, 0);
     }
-
 }

@@ -1,19 +1,17 @@
 /*
+ * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
  *
- *    Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *  
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.ait.lienzo.test.stub;
@@ -26,9 +24,30 @@ import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.ImmediateAttributesChangedBatcher;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.types.*;
+import com.ait.lienzo.client.core.types.DashArray;
+import com.ait.lienzo.client.core.types.DragBounds;
+import com.ait.lienzo.client.core.types.FillGradient;
+import com.ait.lienzo.client.core.types.LinearGradient;
+import com.ait.lienzo.client.core.types.PatternGradient;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.types.RadialGradient;
+import com.ait.lienzo.client.core.types.Shadow;
+import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.Geometry;
-import com.ait.lienzo.shared.core.types.*;
+import com.ait.lienzo.shared.core.types.ArrowType;
+import com.ait.lienzo.shared.core.types.Direction;
+import com.ait.lienzo.shared.core.types.DragConstraint;
+import com.ait.lienzo.shared.core.types.DragMode;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import com.ait.lienzo.shared.core.types.ImageSelectionMode;
+import com.ait.lienzo.shared.core.types.ImageSerializationMode;
+import com.ait.lienzo.shared.core.types.LineCap;
+import com.ait.lienzo.shared.core.types.LineJoin;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.shared.core.types.TextUnit;
 import com.ait.lienzo.test.annotation.StubClass;
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.json.JSONType;

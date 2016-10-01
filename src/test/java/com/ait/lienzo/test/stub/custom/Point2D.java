@@ -33,11 +33,11 @@ import com.ait.lienzo.test.annotation.StubClass;
  * @since 1.0
  * 
  */
-@StubClass( "com.ait.lienzo.client.core.types.Point2D" )
+@StubClass("com.ait.lienzo.client.core.types.Point2D")
 public class Point2D
 {
-    
     private double x;
+
     private double y;
 
     /** Stubbed wih custom impl. **/
@@ -48,12 +48,11 @@ public class Point2D
     }
 
     /** Stubbed wih custom impl. **/
-    public  Point2D add(final Point2D p)
+    public Point2D add(final Point2D p)
     {
         return new Point2D(this.x + p.getY(), this.y + p.getX());
     }
-    
-    
+
     public Point2D(final com.ait.lienzo.client.core.types.Point2D.Point2DJSO jso)
     {
         this();
@@ -64,7 +63,6 @@ public class Point2D
      */
     public Point2D()
     {
-        
     }
 
     public final String toJSONString()
@@ -99,7 +97,7 @@ public class Point2D
      * Returns the x coordinate
      * @return double
      */
-    public  double getX()
+    public double getX()
     {
         return x;
     }
@@ -109,9 +107,9 @@ public class Point2D
      * @param x double
      * @return this Point2D
      */
-    public  Point2D setX(final double x)
+    public Point2D setX(final double x)
     {
-       this.x = x;
+        this.x = x;
 
         return this;
     }
@@ -120,7 +118,7 @@ public class Point2D
      * Returns the y coordinate
      * @return double
      */
-    public  double getY()
+    public double getY()
     {
         return y;
     }
@@ -130,7 +128,7 @@ public class Point2D
      * @param y double
      * @return this Point2D
      */
-    public  Point2D setY(final double y)
+    public Point2D setY(final double y)
     {
         this.y = y;
 
@@ -143,7 +141,7 @@ public class Point2D
      * @param p Point2D
      * @return this Point2D
      */
-    public  Point2D set(final Point2D p)
+    public Point2D set(final Point2D p)
     {
         this.x = p.getX();
         this.y = p.getY();
@@ -156,7 +154,7 @@ public class Point2D
      *
      * @return double
      */
-    public  double getLength()
+    public double getLength()
     {
         // TODO
         return 0;
@@ -181,15 +179,15 @@ public class Point2D
      * @param b Point2D
      * @return double
      */
-    public static  double distance(final Point2D a, final Point2D b)
+    public static double distance(final Point2D a, final Point2D b)
     {
         // TODO
         return 0;
     };
 
-    public  Point2D offset(final double x, final double y)
+    public Point2D offset(final double x, final double y)
     {
-       // TODO
+        // TODO
 
         return this;
     }
@@ -285,7 +283,6 @@ public class Point2D
     {
         // TODO
         return this;
-
     }
 
     /**
@@ -297,9 +294,9 @@ public class Point2D
     {
         // TODO
         return this;
-
+    
     }
-
+    
     /**
      * Returns a new Point2D by rotating this Point2D counterclockwise 
      * over the angle (in radians, not degrees!)
@@ -312,7 +309,6 @@ public class Point2D
     {
         // TODO
         return this;
-
     }
 
     /**
@@ -341,7 +337,6 @@ public class Point2D
     {
         // TODO
         return false;
-
     }
 
     /**
@@ -354,14 +349,12 @@ public class Point2D
     {
         // TODO
         return 0;
-
     }
 
     public double thetaTo(final Point2D p)
     {
         // TODO
         return 0;
-
     }
 
     /**
@@ -474,5 +467,4 @@ public class Point2D
     {
         return new Point2D(radius * Math.cos(angle), radius * Math.sin(angle));
     }
-
 }

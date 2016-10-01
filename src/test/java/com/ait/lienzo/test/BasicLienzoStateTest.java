@@ -18,14 +18,15 @@
 
 package com.ait.lienzo.test;
 
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Rectangle;
-import com.ait.lienzo.client.widget.LienzoPanel;
-import com.google.gwt.user.client.ui.FlowPanel;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.widget.LienzoPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * This test checks the layer and rectangle object states.
@@ -46,65 +47,65 @@ import org.junit.runner.RunWith;
  * @since 1.0
  * 
  */
-@RunWith( LienzoMockitoTestRunner.class )
-public class BasicLienzoStateTest {
+@RunWith(LienzoMockitoTestRunner.class)
+public class BasicLienzoStateTest
+{
+    public class MyLienzo
+    {
+        private FlowPanel   mainPanel = new FlowPanel();
 
-    public class MyLienzo {
+        private LienzoPanel panel     = new LienzoPanel(600, 600);
 
-        private FlowPanel mainPanel = new FlowPanel();
-        
-        private LienzoPanel panel = new LienzoPanel( 600, 600 );
-        
-        private Layer layer = new Layer();
-        
-        private Rectangle rectangle = new Rectangle( 50, 50 );
+        private Layer       layer     = new Layer();
 
-        public MyLienzo() {
-            
-            mainPanel.add( panel );
-            
-            panel.add( layer );
-            
-            layer.add( rectangle );
-            
+        private Rectangle   rectangle = new Rectangle(50, 50);
+
+        public MyLienzo()
+        {
+            mainPanel.add(panel);
+
+            panel.add(layer);
+
+            layer.add(rectangle);
+
             layer.draw();
-            
         }
 
-        public void test() {
-            rectangle.setFillColor( "#0000FF" );
+        public void test()
+        {
+            rectangle.setFillColor("#0000FF");
         }
 
-        public LienzoPanel getPanel() {
+        public LienzoPanel getPanel()
+        {
             return panel;
         }
 
-        public Layer getLayer() {
+        public Layer getLayer()
+        {
             return layer;
         }
-
     }
 
     private MyLienzo myLienzo;
 
     @Before
-    public void setup() {
+    public void setup()
+    {
         myLienzo = new MyLienzo();
     }
 
     @Test
-    public void test() {
-        
+    public void test()
+    {
         myLienzo.test();
-        
+
         int size = myLienzo.getLayer().getChildNodes().size();
-        
-        String color1 = ( (Rectangle) myLienzo.getLayer().getChildNodes().get(0) ).getFillColor();
-        
-        Assert.assertEquals( "#0000FF", color1 );
-        
-        Assert.assertEquals( 1, size );
-        
+
+        String color1 = ((Rectangle) myLienzo.getLayer().getChildNodes().get(0)).getFillColor();
+
+        Assert.assertEquals("#0000FF", color1);
+
+        Assert.assertEquals(1, size);
     }
-    
 }

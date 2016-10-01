@@ -18,15 +18,16 @@
 
 package com.ait.lienzo.test;
 
-import com.ait.tooling.nativetools.client.NObjectJSO;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.when;
+import com.ait.tooling.nativetools.client.NObjectJSO;
 
 /**
  * This test just shows how Lienzo's overlay type methods can be mocked by using this library, if you need so.
@@ -35,24 +36,23 @@ import static org.mockito.Mockito.when;
  * @since 1.0
  * 
  */
-@RunWith( LienzoMockitoTestRunner.class )
-public class JSOMockTest {
-    
+@RunWith(LienzoMockitoTestRunner.class)
+public class JSOMockTest
+{
     @Mock
     NObjectJSO objectJSO;
-    
+
     @Before
-    public void setup() {
-        when( objectJSO.getAsString( anyString() ) ).thenReturn( "My Custom #getAsString" );
+    public void setup()
+    {
+        when(objectJSO.getAsString(anyString())).thenReturn("My Custom #getAsString");
     }
-    
+
     @Test
-    public void test() {
-        
-        String s = objectJSO.getAsString( "Lienzo rocks ;)" );
-        
-        Assert.assertEquals( "My Custom #getAsString", s );
-        
+    public void test()
+    {
+        String s = objectJSO.getAsString("Lienzo rocks ;)");
+
+        Assert.assertEquals("My Custom #getAsString", s);
     }
-    
 }

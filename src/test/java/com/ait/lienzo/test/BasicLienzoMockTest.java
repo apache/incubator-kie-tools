@@ -18,15 +18,20 @@
 
 package com.ait.lienzo.test;
 
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Rectangle;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Rectangle;
 
 /**
  * Basic test that asserts the behavior of the <code>Layer</code> instead of its state. 
@@ -44,107 +49,102 @@ import static org.mockito.Mockito.*;
  * @since 1.0
  * 
  */
-@RunWith( LienzoMockitoTestRunner.class )
-public class BasicLienzoMockTest {
+@RunWith(LienzoMockitoTestRunner.class)
+public class BasicLienzoMockTest
+{
+    public class MyLienzo
+    {
+        private Layer           layer;
 
-    public class MyLienzo {
+        private final Rectangle rectangle = new Rectangle(50, 50);
 
-        private Layer layer;
-        private final Rectangle rectangle = new Rectangle( 50, 50 );
-
-        public MyLienzo( Layer layer ) {
+        public MyLienzo(Layer layer)
+        {
             this.layer = layer;
         }
 
-        public void test() {
-            
-            rectangle.setFillColor( "#0000FF" );
-            
-            layer.add( rectangle );
-            
+        public void test()
+        {
+            rectangle.setFillColor("#0000FF");
+
+            layer.add(rectangle);
+
             layer.draw();
-            
         }
 
-        public void test2() {
-            
+        public void test2()
+        {
             final int w = layer.getWidth();
-            
-            rectangle.setX( w + 100 );
-            
+
+            rectangle.setX(w + 100);
         }
 
-        public Rectangle getRectangle() {
+        public Rectangle getRectangle()
+        {
             return rectangle;
         }
     }
 
     @Mock
-    Layer layer;
-    
+    Layer            layer;
+
     private MyLienzo myLienzo;
-    
+
     @Before
-    public void setup() {
-        
-        when( layer.getWidth() ).thenReturn( 300 );
-        
-        myLienzo = new MyLienzo( layer );
-        
+    public void setup()
+    {
+        when(layer.getWidth()).thenReturn(300);
+
+        myLienzo = new MyLienzo(layer);
     }
 
     @Test
-    public void test() {
-        
+    public void test()
+    {
         myLienzo.test();
-        
-        verify( layer, times(1) ).add( any( Rectangle.class ) );
-        
-        verify( layer, times(1) ).draw();
-        
+
+        verify(layer, times(1)).add(any(Rectangle.class));
+
+        verify(layer, times(1)).draw();
+
         String fColor = myLienzo.getRectangle().getFillColor();
-        
-        Assert.assertEquals( "#0000FF", fColor );
-        
+
+        Assert.assertEquals("#0000FF", fColor);
     }
 
     @Test
-    public void test2() {
-        
+    public void test2()
+    {
         myLienzo.test2();
-        
-        verify( layer, times(1) ).getWidth();
-        
-        Assert.assertEquals( 400, myLienzo.getRectangle().getX(), 0 );
-        
+
+        verify(layer, times(1)).getWidth();
+
+        Assert.assertEquals(400, myLienzo.getRectangle().getX(), 0);
     }
 
     /**
      * Method getFillAlpha can be mocked as the final modifier from original class has been removed.
      */
     @Test
-    public void testMockFillAlhpaFinalMethod() {
-        
-        Rectangle rrr = mock( Rectangle.class );
-        
-        when( rrr.getFillAlpha() ).thenReturn( 0.5d );
-        
-        Assert.assertEquals( 0.5, rrr.getFillAlpha(), 0 );
-        
+    public void testMockFillAlhpaFinalMethod()
+    {
+        Rectangle rrr = mock(Rectangle.class);
+
+        when(rrr.getFillAlpha()).thenReturn(0.5d);
+
+        Assert.assertEquals(0.5, rrr.getFillAlpha(), 0);
     }
 
     /**
      * Method uuid can be mocked as the final modifier from original class has been removed.
      */
     @Test
-    public void testMockUUIDFinalMethod() {
-        
-        Rectangle rrr = mock( Rectangle.class );
-        
-        when( rrr.uuid() ).thenReturn( "mockedUUID" );
-        
-        Assert.assertEquals( "mockedUUID", rrr.uuid() );
-        
+    public void testMockUUIDFinalMethod()
+    {
+        Rectangle rrr = mock(Rectangle.class);
+
+        when(rrr.uuid()).thenReturn("mockedUUID");
+
+        Assert.assertEquals("mockedUUID", rrr.uuid());
     }
-    
 }
