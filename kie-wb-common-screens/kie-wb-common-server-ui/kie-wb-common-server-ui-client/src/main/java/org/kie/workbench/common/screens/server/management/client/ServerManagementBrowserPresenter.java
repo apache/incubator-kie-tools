@@ -44,12 +44,15 @@ import org.kie.workbench.common.screens.server.management.client.events.ServerTe
 import org.kie.workbench.common.screens.server.management.client.navigation.ServerNavigationPresenter;
 import org.kie.workbench.common.screens.server.management.client.navigation.template.ServerTemplatePresenter;
 import org.kie.workbench.common.screens.server.management.client.remote.RemotePresenter;
+import org.kie.workbench.common.screens.server.management.client.util.ClientContainerRuntimeOperation;
+import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.slf4j.Logger;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.workbench.events.NotificationEvent;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "ServerManagementBrowser")
@@ -64,6 +67,15 @@ public class ServerManagementBrowserPresenter {
         void setEmptyView( ServerEmptyPresenter.View view );
 
         void setContent( IsWidget view );
+
+        String getSuccessMessage( final ClientContainerRuntimeOperation containerRuntimeOperation,
+                                  final int size );
+
+        String getErrorMessage( final ClientContainerRuntimeOperation containerRuntimeOperation,
+                                final int size );
+
+        String getWarnMessage( final ClientContainerRuntimeOperation containerRuntimeOperation,
+                               final int size );
     }
 
     private final Logger logger;
@@ -86,6 +98,8 @@ public class ServerManagementBrowserPresenter {
 
     private final Event<ServerTemplateSelected> serverTemplateSelectedEvent;
 
+    private final Event<NotificationEvent> notification;
+
     private boolean isEmpty = true;
 
     @Inject
@@ -98,7 +112,8 @@ public class ServerManagementBrowserPresenter {
                                              final ContainerPresenter containerPresenter,
                                              final RemotePresenter remotePresenter,
                                              final Caller<SpecManagementService> specManagementService,
-                                             final Event<ServerTemplateSelected> serverTemplateSelectedEvent ) {
+                                             final Event<ServerTemplateSelected> serverTemplateSelectedEvent,
+                                             final Event<NotificationEvent> notification ) {
         this.logger = logger;
         this.view = view;
         this.navigationPresenter = navigationPresenter;
@@ -109,6 +124,7 @@ public class ServerManagementBrowserPresenter {
         this.remotePresenter = remotePresenter;
         this.specManagementService = specManagementService;
         this.serverTemplateSelectedEvent = serverTemplateSelectedEvent;
+        this.notification = notification;
     }
 
     @PostConstruct
@@ -176,6 +192,42 @@ public class ServerManagementBrowserPresenter {
         }
     }
 
+    public void onContainerUpdate( @Observes final ContainerUpdateEvent containerUpdateEvent ) {
+        if ( containerUpdateEvent != null &&
+                containerUpdateEvent.getContainerRuntimeOperation() != null &&
+                containerUpdateEvent.getContainerRuntimeState() != null &&
+                containerUpdateEvent.getFailedServerInstances().size() > 0 ) {
+            final ClientContainerRuntimeOperation containerRuntimeOperation = ClientContainerRuntimeOperation.convert( containerUpdateEvent.getContainerRuntimeOperation() );
+
+            final String message;
+            final NotificationEvent.NotificationType notificationType;
+
+            switch ( containerUpdateEvent.getContainerRuntimeState() ) {
+                case OFFLINE:
+                    message = view.getErrorMessage( containerRuntimeOperation, containerUpdateEvent.getFailedServerInstances().size() );
+                    notificationType = NotificationEvent.NotificationType.ERROR;
+                    break;
+                case PARTIAL_ONLINE:
+                    message = view.getWarnMessage( containerRuntimeOperation, containerUpdateEvent.getFailedServerInstances().size() );
+                    notificationType = NotificationEvent.NotificationType.WARNING;
+                    break;
+                case ONLINE:
+                    message = view.getSuccessMessage( containerRuntimeOperation, containerUpdateEvent.getFailedServerInstances().size() );
+                    notificationType = NotificationEvent.NotificationType.SUCCESS;
+                    break;
+                default:
+                    message = null;
+                    notificationType = null;
+                    break;
+            }
+            if ( message != null ) {
+                notification.fire( new NotificationEvent( message, notificationType ) );
+            }
+        } else {
+            logger.warn( "Illegal event argument." );
+        }
+    }
+
     public void setup( final Collection<ServerTemplateKey> serverTemplateKeys,
                        final String selectServerTemplateId ) {
         if ( serverTemplateKeys.isEmpty() ) {
@@ -218,7 +270,7 @@ public class ServerManagementBrowserPresenter {
     public void onDelete( @Observes final ServerInstanceDeleted serverInstanceDeleted ) {
         if ( serverInstanceDeleted != null &&
                 serverInstanceDeleted.getServerInstanceId() != null &&
-                serverTemplatePresenter.getCurrentServerTemplate() != null) {
+                serverTemplatePresenter.getCurrentServerTemplate() != null ) {
             final String deletedServerInstanceId = serverInstanceDeleted.getServerInstanceId();
             for ( final ServerInstanceKey serverInstanceKey : serverTemplatePresenter.getCurrentServerTemplate().getServerInstanceKeys() ) {
                 if ( deletedServerInstanceId.equals( serverInstanceKey.getServerInstanceId() ) ) {

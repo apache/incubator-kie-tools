@@ -20,159 +20,186 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public class Constants {
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerProcessConfigView_SaveSuccessMessage = "ContainerProcessConfigView.SaveSuccessMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerProcessConfigView_SaveErrorMessage = "ContainerProcessConfigView.SaveErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerRulesConfigView_StartScannerErrorMessage = "ContainerRulesConfigView.StartScannerErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerRulesConfigView_StopScannerErrorMessage = "ContainerRulesConfigView.StopScannerErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerRulesConfigView_ScanNowErrorMessage = "ContainerRulesConfigView.ScanNowErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerRulesConfigView_UpgradeErrorMessage = "ContainerRulesConfigView.UpgradeErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerView_RemoveContainerSuccessMessage = "ContainerView.RemoveContainerSuccessMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerView_RemoveContainerErrorMessage = "ContainerView.RemoveContainerErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerView_StopContainerErrorMessage = "ContainerView.StopContainerErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerView_StartContainerErrorMessage = "ContainerView.StartContainerErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerView_ConfirmRemovePopupMessage = "ContainerView.ConfirmRemovePopupMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerView_ConfirmRemovePopupTitle = "ContainerView.ConfirmRemovePopupTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String CopyPopupView_TemplateNameLabelText = "CopyPopupView.TemplateNameLabelText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String CopyPopupView_CopyServerTemplatePopupTitle = "CopyPopupView.CopyServerTemplatePopupTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String CopyPopupView_TemplateNameEmptyMessage = "CopyPopupView.TemplateNameEmptyMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ServerTemplateView_CopyTemplateErrorMessage = "ServerTemplateView.CopyTemplateErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ServerTemplateView_RemoveTemplateErrorMessage = "ServerTemplateView.RemoveTemplateErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ServerTemplateView_RuleCheckBoxText = "ServerTemplateView.RuleCheckBoxText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ServerTemplateView_ProcessCheckBoxText = "ServerTemplateView.ProcessCheckBoxText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ServerTemplateView_PlanningCheckBoxText = "ServerTemplateView.PlanningCheckBoxText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ServerTemplateView_TemplateRemovePopupText = "ServerTemplateView.TemplateRemovePopupText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ServerTemplateView_TemplateRemovePopupTitle = "ServerTemplateView.TemplateRemovePopupTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ServerNavigationView_TitleText = "ServerNavigationView.TitleText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ArtifactListWidgetView_SelectColumnLabel = "ArtifactListWidgetView.SelectColumnLabel";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NotificationView_TitleText = "NotificationView.TitleText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ProcessConfigView_ConfigPageTitle = "ProcessConfigView.ConfigPageTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewContainerFormView_InvalidErrorMessage = "NewContainerFormView.InvalidErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewContainerFormView_NewContainerWizardTitle = "NewContainerFormView.NewContainerWizardTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewContainerFormView_NewContainerWizardSaveSuccess = "NewContainerFormView.NewContainerWizardSaveSuccess";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewContainerFormView_NewContainerWizardSaveError = "NewContainerFormView.NewContainerWizardSaveError";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewContainerFormView_TitleText = "NewContainerFormView.TitleText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewTemplateView_InvalidErrorMessage = "NewTemplateView.InvalidErrorMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewTemplateView_NewServerTemplateWizardTitle = "NewTemplateView.NewServerTemplateWizardTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewTemplateView_NewServerTemplateWizardSaveSuccess = "NewTemplateView.NewServerTemplateWizardSaveSuccess";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewTemplateView_NewServerTemplateWizardSaveError = "NewTemplateView.NewServerTemplateWizardSaveError";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewTemplateView_RuleCheckBoxText = "NewTemplateView.RuleCheckBoxText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewTemplateView_ProcessCheckBoxText = "NewTemplateView.ProcessCheckBoxText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewTemplateView_PlanningCheckBoxText = "NewTemplateView.PlanningCheckBoxText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String NewTemplateView_TitleText = "NewTemplateView.TitleText";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerRulesConfigView_VersionTextBoxPlaceholder = "ContainerRulesConfigView.VersionTextBoxPlaceholder";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerRulesConfigView_IntervalTextBoxPlaceholder = "ContainerRulesConfigView.IntervalTextBoxPlaceholder";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ContainerRulesConfigView_IntervalTextBoxDataOriginalTitle = "ContainerRulesConfigView.IntervalTextBoxDataOriginalTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ClientMergeMode_KeepAll = "ClientMergeMode.KeepAll";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ClientMergeMode_OverrideAll = "ClientMergeMode.OverrideAll";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ClientMergeMode_OverrideEmpty = "ClientMergeMode.OverrideEmpty";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ClientMergeMode_MergeCollections = "ClientMergeMode.MergeCollections";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ClientRuntimeStrategy_Singleton = "ClientRuntimeStrategy.Singleton";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ClientRuntimeStrategy_PerRequest = "ClientRuntimeStrategy.PerRequest";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ClientRuntimeStrategy_PerProcessInstance = "ClientRuntimeStrategy.PerProcessInstance";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String ClientRuntimeStrategy_PerCase = "ClientRuntimeStrategy.PerCase";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String RemoteView_RemoteInstanceRemoveSuccess = "RemoteView.RemoteInstanceRemoveSuccess";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     public static final String RemoteView_RemoteInstanceRemoveError = "RemoteView.RemoteInstanceRemoveError";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ClientContainerRuntimeOperation_StartContainer = "ClientContainerRuntimeOperation.StartContainer";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ClientContainerRuntimeOperation_StopContainer = "ClientContainerRuntimeOperation.StopContainer";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ClientContainerRuntimeOperation_UpgradeContainer = "ClientContainerRuntimeOperation.UpgradeContainer";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ClientContainerRuntimeOperation_Scan = "ClientContainerRuntimeOperation.Scan";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ClientContainerRuntimeOperation_StartScanner = "ClientContainerRuntimeOperation.StartScanner";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ClientContainerRuntimeOperation_StopScanner = "ClientContainerRuntimeOperation.StopScanner";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerUpdateEvent_ErrorMessage = "ContainerUpdateEvent.ErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerUpdateEvent_WarnMessage = "ContainerUpdateEvent.WarnMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerUpdateEvent_SuccessMessage = "ContainerUpdateEvent.SuccessMessage";
 }

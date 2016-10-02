@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.server.management.client;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +43,10 @@ import org.kie.workbench.common.screens.server.management.client.events.ServerTe
 import org.kie.workbench.common.screens.server.management.client.navigation.ServerNavigationPresenter;
 import org.kie.workbench.common.screens.server.management.client.navigation.template.ServerTemplatePresenter;
 import org.kie.workbench.common.screens.server.management.client.remote.RemotePresenter;
+import org.kie.workbench.common.screens.server.management.client.util.ClientContainerRuntimeOperation;
+import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation;
+import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeState;
+import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -50,6 +55,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -83,6 +89,9 @@ public class ServerManagementBrowserPresenterTest {
     @Spy
     Event<ServerTemplateSelected> serverTemplateSelectedEvent = new EventSourceMock<ServerTemplateSelected>();
 
+    @Spy
+    Event<NotificationEvent> notification = new EventSourceMock<NotificationEvent>();
+
     @Mock
     ServerManagementBrowserPresenter.View view;
 
@@ -94,7 +103,10 @@ public class ServerManagementBrowserPresenterTest {
     @Before
     public void init() {
         specManagementServiceCaller = new CallerMock<SpecManagementService>( specManagementService );
+
         doNothing().when( serverTemplateSelectedEvent ).fire( any( ServerTemplateSelected.class ) );
+        doNothing().when( notification ).fire( any( NotificationEvent.class ) );
+
         presenter = spy( new ServerManagementBrowserPresenter(
                 logger, view,
                 navigationPresenter,
@@ -104,7 +116,8 @@ public class ServerManagementBrowserPresenterTest {
                 containerPresenter,
                 remotePresenter,
                 specManagementServiceCaller,
-                serverTemplateSelectedEvent ) );
+                serverTemplateSelectedEvent,
+                notification ) );
     }
 
     @Test
@@ -261,6 +274,75 @@ public class ServerManagementBrowserPresenterTest {
         presenter.onDelete( new ServerInstanceDeleted( serverInstanceKey.getServerInstanceId() ) );
 
         verify( specManagementService, never() ).listServerTemplateKeys();
+    }
+
+    @Test
+    public void testOnContainerUpdateSuccess() {
+
+        when( view.getSuccessMessage( ClientContainerRuntimeOperation.START_CONTAINER, 2 ) ).thenReturn( "Success" );
+
+        presenter.onContainerUpdate( new ContainerUpdateEvent( mock( ServerTemplateKey.class ),
+                                                               mock( ContainerSpec.class ),
+                                                               new ArrayList<ServerInstanceKey>() {{
+                                                                   add( mock( ServerInstanceKey.class ) );
+                                                                   add( mock( ServerInstanceKey.class ) );
+                                                               }},
+                                                               ContainerRuntimeState.ONLINE,
+                                                               ContainerRuntimeOperation.START_CONTAINER ) );
+
+        verify( notification ).fire( new NotificationEvent( "Success", NotificationEvent.NotificationType.SUCCESS ) );
+    }
+
+    @Test
+    public void testOnContainerUpdateFailed() {
+
+        when( view.getErrorMessage( ClientContainerRuntimeOperation.START_CONTAINER, 2 ) ).thenReturn( "Error" );
+
+        presenter.onContainerUpdate( new ContainerUpdateEvent( mock( ServerTemplateKey.class ),
+                                                               mock( ContainerSpec.class ),
+                                                               new ArrayList<ServerInstanceKey>() {{
+                                                                   add( mock( ServerInstanceKey.class ) );
+                                                                   add( mock( ServerInstanceKey.class ) );
+                                                               }},
+                                                               ContainerRuntimeState.OFFLINE,
+                                                               ContainerRuntimeOperation.START_CONTAINER ) );
+
+        verify( notification ).fire( new NotificationEvent( "Error", NotificationEvent.NotificationType.ERROR ) );
+    }
+
+    @Test
+    public void testOnContainerUpdateWarn() {
+
+        when( view.getWarnMessage( ClientContainerRuntimeOperation.START_CONTAINER, 2 ) ).thenReturn( "Warn" );
+
+        presenter.onContainerUpdate( new ContainerUpdateEvent( mock( ServerTemplateKey.class ),
+                                                               mock( ContainerSpec.class ),
+                                                               new ArrayList<ServerInstanceKey>() {{
+                                                                   add( mock( ServerInstanceKey.class ) );
+                                                                   add( mock( ServerInstanceKey.class ) );
+                                                               }},
+                                                               ContainerRuntimeState.PARTIAL_ONLINE,
+                                                               ContainerRuntimeOperation.START_CONTAINER ) );
+
+        verify( notification ).fire( new NotificationEvent( "Warn", NotificationEvent.NotificationType.WARNING ) );
+    }
+
+    @Test
+    public void testOnContainerEmptyList() {
+        presenter.onContainerUpdate( new ContainerUpdateEvent( mock( ServerTemplateKey.class ),
+                                                               mock( ContainerSpec.class ),
+                                                               Collections.emptyList(),
+                                                               ContainerRuntimeState.PARTIAL_ONLINE,
+                                                               ContainerRuntimeOperation.START_CONTAINER ) );
+
+        verify( notification, never() ).fire( any() );
+    }
+
+    @Test
+    public void testOnContainerNull() {
+        presenter.onContainerUpdate( new ContainerUpdateEvent() );
+
+        verify( notification, never() ).fire( any() );
     }
 
 }
