@@ -16,31 +16,32 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.selector;
 
-import java.io.IOException;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.ui.ValueListBox;
+import org.gwtbootstrap3.extras.typeahead.client.base.Dataset;
+import org.gwtbootstrap3.extras.typeahead.client.base.SuggestionCallback;
+import org.kie.workbench.common.forms.common.rendering.client.util.masks.ClientMaskInterpreter;
+import org.kie.workbench.common.forms.common.rendering.client.widgets.typeahead.BindableTypeAhead;
+import org.kie.workbench.common.forms.commons.rendering.shared.util.masks.MaskInterpreter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.model.impl.relations.ObjectSelectorFieldDefinition;
 
 @Dependent
 public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFieldDefinition> {
 
-    protected Renderer listBoxRenderer = new Renderer() {
-        @Override
-        public String render( Object o ) {
-            return "";
-        }
+    private MaskInterpreter maskInterpreter;
 
+    @Inject
+    protected BindableTypeAhead widget;
+
+    protected Dataset dataset = new Dataset() {
         @Override
-        public void render( Object o, Appendable appendable ) throws IOException {
-            appendable.append( render( o ) );
+        public void findMatches( String query, SuggestionCallback callback ) {
+
         }
     };
-
-    protected ValueListBox<Object> valueListBox = new ValueListBox<Object>( listBoxRenderer );
 
     @Override
     public String getName() {
@@ -49,12 +50,13 @@ public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFie
 
     @Override
     public void initInputWidget() {
-
+        maskInterpreter = new ClientMaskInterpreter( field.getMask() );
+        widget.init( field.getMask(), dataset );
     }
 
     @Override
     public IsWidget getInputWidget() {
-        return valueListBox;
+        return widget;
     }
 
     @Override

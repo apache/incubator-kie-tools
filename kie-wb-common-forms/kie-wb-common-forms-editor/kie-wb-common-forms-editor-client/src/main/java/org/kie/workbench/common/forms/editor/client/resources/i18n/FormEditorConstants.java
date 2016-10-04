@@ -38,6 +38,12 @@ public interface FormEditorConstants {
     @TranslationKey( defaultValue = "" )
     String FormEditorViewImplPreview = "FormEditorViewImpl.preview";
 
+    @TranslationKey( defaultValue = "")
+    String FormEditorPresenterLayoutTitle = "FormEditorPresenter.layoutTitle";
+
+    @TranslationKey( defaultValue = "")
+    String FormEditorPresenterLayoutSubTitle = "FormEditorPresenter.layoutSubTitle";
+
     @TranslationKey( defaultValue = "" )
     String DataObjectsAdminViewImplDataObjectID = "DataObjectsAdminViewImpl.dataObjectID";
 

@@ -20,7 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.forms.common.client.widgets.picture.PictureInput;
+import org.kie.workbench.common.forms.common.rendering.client.widgets.picture.PictureInput;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.model.impl.basic.image.PictureFieldDefinition;
 

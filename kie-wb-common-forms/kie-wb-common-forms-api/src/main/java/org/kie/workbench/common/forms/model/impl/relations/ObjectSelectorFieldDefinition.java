@@ -35,7 +35,7 @@ public class ObjectSelectorFieldDefinition extends FieldDefinition implements En
     masked it will result on a text like "Shakespeare, William".
      */
     @FieldDef( label = "Value Mask" )
-    protected String mask;
+    protected String mask = "";
 
     public ObjectSelectorFieldDefinition() {
         super( CODE );

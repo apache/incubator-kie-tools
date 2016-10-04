@@ -37,27 +37,28 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
 
     @Override
     public void initInputWidget() {
-        input = getDateWidget();
-    }
-
-    @Override
-    public IsWidget getInputWidget() {
-        return input;
-    }
-
-    protected Widget getDateWidget() {
         if ( field.getShowTime() ) {
             DateTimePicker box = new DateTimePicker();
             box.setPlaceholder( field.getPlaceHolder() );
             box.setEnabled( !field.getReadonly() );
             box.setAutoClose( true );
-            return box;
+            box.setHighlightToday( true );
+            box.setShowTodayButton( true );
+            input = box;
+        } else {
+            DatePicker box = new DatePicker();
+            box.setPlaceholder( field.getPlaceHolder() );
+            box.setEnabled( !field.getReadonly() );
+            box.setAutoClose( true );
+            box.setHighlightToday( true );
+            box.setShowTodayButton( true );
+            input = box;
         }
-        DatePicker box = new DatePicker();
-        box.setPlaceholder( field.getPlaceHolder() );
-        box.setEnabled( !field.getReadonly() );
-        box.setAutoClose( true );
-        return box;
+    }
+
+    @Override
+    public IsWidget getInputWidget() {
+        return input;
     }
 
     @Override

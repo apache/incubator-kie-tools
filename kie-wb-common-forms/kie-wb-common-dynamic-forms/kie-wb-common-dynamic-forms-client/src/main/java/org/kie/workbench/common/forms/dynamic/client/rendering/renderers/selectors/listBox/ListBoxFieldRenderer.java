@@ -21,7 +21,7 @@ import java.util.Set;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.ValueListBox;
-import org.kie.workbench.common.forms.common.client.widgets.util.DefaultValueListBoxRenderer;
+import org.kie.workbench.common.forms.common.rendering.client.widgets.util.DefaultValueListBoxRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
 import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.model.impl.basic.selectors.listBox.ListBoxBase;

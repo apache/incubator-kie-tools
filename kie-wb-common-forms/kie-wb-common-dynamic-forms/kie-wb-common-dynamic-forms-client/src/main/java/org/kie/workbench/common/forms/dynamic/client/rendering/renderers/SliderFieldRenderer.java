@@ -25,7 +25,7 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.kie.workbench.common.forms.common.client.widgets.slider.Slider;
+import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.Slider;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.model.impl.basic.slider.SliderBase;
 

@@ -108,7 +108,12 @@
 
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
-      <artifactId>kie-wb-common-forms-common-widgets</artifactId>
+      <artifactId>kie-wb-common-forms-common-rendering-shared</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.forms</groupId>
+      <artifactId>kie-wb-common-forms-common-rendering-client</artifactId>
     </dependency>
 
     <dependency>

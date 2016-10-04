@@ -161,9 +161,9 @@ public class FormEditorPresenter extends KieEditor {
 
         layoutEditor.init( content.getDefinition().getName(), getLayoutComponent(),
                            translationService
-                                   .getTranslation( FormEditorConstants.FormEditorPresenterTitle ),
+                                   .getTranslation( FormEditorConstants.FormEditorPresenterLayoutTitle ),
                            translationService
-                                   .getTranslation( FormEditorConstants.FormEditorPresenterTitle ) );
+                                   .getTranslation( FormEditorConstants.FormEditorPresenterLayoutSubTitle ) );
 
         if ( content.getDefinition().getLayoutTemplate() == null )
             content.getDefinition().setLayoutTemplate( new LayoutTemplate() );
@@ -281,7 +281,7 @@ public class FormEditorPresenter extends KieEditor {
             String fieldId = event.getComponent().getProperties().get( FieldLayoutComponent.FIELD_ID );
 
             FieldDefinition field = editorContext.getDroppedField( fieldId );
-            if ( field != null ) {
+            if ( field != null && field.getModelName() != null ) {
                 layoutEditor.removeDraggableGroupComponent( field.getModelName(), field.getId() );
             }
         }
