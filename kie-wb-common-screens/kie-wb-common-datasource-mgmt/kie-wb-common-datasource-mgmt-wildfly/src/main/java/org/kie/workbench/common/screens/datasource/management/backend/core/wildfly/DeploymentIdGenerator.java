@@ -16,7 +16,8 @@
 
 package org.kie.workbench.common.screens.datasource.management.backend.core.wildfly;
 
-import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
@@ -27,22 +28,26 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
  */
 public class DeploymentIdGenerator {
 
-    public static String extractUuid( final String deploymentId ) throws Exception {
-        //deployments created by the kie-wb typically starts with "kie-" plus a 36 characters long java UUID in the form
-        // kie-8d568f4b-723a-4708-b0d6-8d76a6b500f4
+    private static final String SEPARATOR = ":";
 
-        if ( deploymentId == null || deploymentId.length() < 40 || ! deploymentId.startsWith( "kie-" ) ) {
-            throw new Exception( "Unknown deployment identifier." + deploymentId );
-        } else {
-            String uuid = deploymentId.substring( 4, 40 );
-            try {
-                UUID.fromString( uuid );
-                return uuid;
-            } catch ( Exception e ) {
-                //the prefix is not a uuid
-                throw new Exception( "Unknown deployment identifier." + deploymentId );
+    private static final Pattern KIE_GENERATED_ID = Pattern.compile( "kie:([^:]+):(.*)" );
+
+    private static final Pattern KIE_ID = Pattern.compile( "kie:([^:]+):" );
+
+    public static String extractUuid( final String deploymentId ) throws Exception {
+        //deployments created by the kie-wb typically has the from "kie:uuid:XXXX", where could XXXX be a string added
+        // by the wildfly server and that we can't manage. For example for the driver deployments.
+
+        if ( deploymentId != null && isKieGenerated( deploymentId ) ) {
+            Matcher matcher = KIE_ID.matcher( deploymentId );
+            if ( matcher.find() ) {
+                String[] parts = matcher.group().split( ":" );
+                if ( parts.length > 1 ) {
+                    return parts[1];
+                }
             }
         }
+        throw new Exception( "Unknown deployment identifier." + deploymentId );
     }
 
     public static String generateDeploymentId( final DriverDef driverDef ) {
@@ -54,6 +59,10 @@ public class DeploymentIdGenerator {
     }
 
     public static String generateDeploymentId( final String uuid ) {
-        return "kie-"+ uuid;
+        return "kie" + SEPARATOR + uuid + SEPARATOR;
+    }
+
+    private static final boolean isKieGenerated( String value ) {
+        return KIE_GENERATED_ID.matcher( value ).matches();
     }
 }

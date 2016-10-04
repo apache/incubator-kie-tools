@@ -36,7 +36,6 @@ import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSource;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceProvider;
-import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceProviderFactory;
 import org.kie.workbench.common.screens.datasource.management.backend.core.impl.AbstractDataSource;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDeploymentInfo;
@@ -57,10 +56,8 @@ public class DBCPDataSourceProvider
 
     private static final Logger logger = LoggerFactory.getLogger( DBCPDataSourceProvider.class );
 
-    @Inject
-    private DataSourceProviderFactory providerFactory;
+    private DBCPDriverProvider driverProvider;
 
-    @Inject
     private MavenArtifactResolver artifactResolver;
 
     private Map<String, DBCPDataSource> deploymentRegistry = new HashMap<>(  );
@@ -69,11 +66,20 @@ public class DBCPDataSourceProvider
 
     private Map<String, DataSourceDef> deployedDataSources = new HashMap<>(  );
 
+    public DBCPDataSourceProvider( ) {
+    }
+
+    @Inject
+    public DBCPDataSourceProvider( DBCPDriverProvider driverProvider, MavenArtifactResolver artifactResolver ) {
+        this.driverProvider = driverProvider;
+        this.artifactResolver = artifactResolver;
+    }
+
     @Override
     public DataSourceDeploymentInfo deploy( DataSourceDef dataSourceDef ) throws Exception {
 
         DriverDef driverDef = null;
-        for ( DriverDef _driverDef : providerFactory.getDriverProvider().getDeployments() ) {
+        for ( DriverDef _driverDef : driverProvider.getDeployments() ) {
             if ( _driverDef.getUuid().equals( dataSourceDef.getDriverUuid() ) ) {
                 driverDef = _driverDef;
                 break;
@@ -81,7 +87,7 @@ public class DBCPDataSourceProvider
         }
 
         if ( driverDef == null ) {
-            throw new Exception( "Required driver: " + dataSourceDef.getUuid() + " is not deployed" );
+            throw new Exception( "Required driver: " + dataSourceDef.getDriverUuid() + " is not deployed" );
         }
 
         final URI uri = artifactResolver.resolve( driverDef.getGroupId(),
@@ -93,9 +99,8 @@ public class DBCPDataSourceProvider
         final Properties properties = new Properties(  );
         properties.setProperty( "user", dataSourceDef.getUser() );
         properties.setProperty( "password", dataSourceDef.getPassword() );
-        final URLConnectionFactory urlConnectionFactory = new URLConnectionFactory( uri.toURL(),
-                driverDef.getDriverClass(),
-                dataSourceDef.getConnectionURL(), properties );
+        final URLConnectionFactory urlConnectionFactory = buildConnectionFactory( uri,
+                driverDef.getDriverClass(), dataSourceDef.getConnectionURL(), properties);
 
         //Connection Factory that the pool will use for creating connections.
         ConnectionFactory connectionFactory = new DBCPConnectionFactory( urlConnectionFactory );
@@ -189,8 +194,18 @@ public class DBCPDataSourceProvider
             }
             return dataSource;
         } else {
-            throw new Exception( "Data source: " + dataSource + " is not deployed in current system." );
+            throw new Exception( "Data source for: " + deploymentInfo + " is not deployed in current system." );
         }
+    }
+
+    /**
+     * facilitates tests programming.
+     */
+    protected URLConnectionFactory buildConnectionFactory( URI uri,
+                                                           String driverClass,
+                                                           String connectionURL,
+                                                           Properties connectionProperties ) throws Exception {
+        return new URLConnectionFactory( uri.toURL(), driverClass, connectionURL, connectionProperties );
     }
 
     private class DBCPConnectionFactory

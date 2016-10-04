@@ -66,13 +66,4 @@ public interface DriverProvider {
      * @throws Exception in cases e.g. when communication with the target system e.g. the Wildlfy server fails.
      */
     List<DriverDeploymentInfo> getDeploymentsInfo() throws Exception;
-
-    /**
-     * Gets the definitions for all the deployed drivers in the target system.
-     *
-     * @return a list with the definitions.
-     *
-     * @throws Exception in cases e.g. when communication with the target system e.g. the Wildlfy server fails..
-     */
-    List<DriverDef> getDeployments() throws Exception;
 }

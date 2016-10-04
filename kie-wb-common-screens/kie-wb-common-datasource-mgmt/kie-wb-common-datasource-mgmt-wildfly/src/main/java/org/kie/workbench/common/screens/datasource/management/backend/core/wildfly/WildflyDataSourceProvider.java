@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Widlfly based implementation of a DataSourceProvider.
+ * Wildly based implementation of a DataSourceProvider.
  */
 @ApplicationScoped
 @Named(value = "WildflyDataSourceProvider" )
@@ -48,7 +48,6 @@ public class WildflyDataSourceProvider
 
     private static final Logger logger = LoggerFactory.getLogger( WildflyDataSourceProvider.class );
 
-    @Inject
     private WildflyDriverProvider driverProvider;
 
     private WildflyDataSourceManagementClient dataSourceMgmtClient = new WildflyDataSourceManagementClient();
@@ -58,6 +57,11 @@ public class WildflyDataSourceProvider
     private Map<String, WildlfyDataSource> unManagedDataSources = new HashMap<>( );
 
     public WildflyDataSourceProvider() {
+    }
+
+    @Inject
+    public WildflyDataSourceProvider( WildflyDriverProvider driverProvider ) {
+        this.driverProvider = driverProvider;
     }
 
     /**
@@ -107,18 +111,24 @@ public class WildflyDataSourceProvider
 
         //This random identifiers calculation should be removed when WF supports deletion
         //of data sources without letting them published on server until next restart.
-        String random = "_" + UUIDGenerator.generateUUID();
+        String random = "_" + generateRandomUUID();
         String deploymentId = DeploymentIdGenerator.generateDeploymentId( dataSourceDef ) + random;
         String kieJndi = JndiNameGenerator.generateJNDIName( dataSourceDef );
         String deploymentJndi = kieJndi + random;
 
         DataSourceDeploymentInfo deploymentInfo = deploy( dataSourceDef, deploymentJndi, deploymentId );
 
-        javax.sql.DataSource dataSource = (javax.sql.DataSource) lookupDataSource( deploymentJndi );
+        javax.sql.DataSource dataSource = (javax.sql.DataSource) jndiLookupDataSource( deploymentJndi );
         WildlfyDataSource wfDataSource = new WildlfyDataSource( dataSource, deploymentJndi );
-        //bindDataSource( kieJndi, dataSource );
         managedDataSources.put( deploymentId, wfDataSource );
         return deploymentInfo;
+    }
+
+    /**
+     * protected for helping tests programming.
+     */
+    protected String generateRandomUUID() {
+        return UUIDGenerator.generateUUID();
     }
 
     /**
@@ -135,42 +145,31 @@ public class WildflyDataSourceProvider
     private DataSourceDeploymentInfo deploy( final DataSourceDef dataSourceDef, final String jndi, String deploymentId ) throws Exception {
         DriverDeploymentInfo driverDeploymentInfo = driverProvider.getDeploymentInfo( dataSourceDef.getDriverUuid() );
         if ( driverDeploymentInfo == null ) {
-            throw new Exception( "Required driver: " + dataSourceDef.getDriverUuid() + " has not been deployed." );
+            throw new Exception( "Required driver: " + dataSourceDef.getDriverUuid() + " is not deployed." );
         }
 
         WildflyDataSourceDef wfDataSourceDef = buildWFDataSource( deploymentId,
-                jndi, dataSourceDef, driverDeploymentInfo.getDeploymentId() );
+                jndi, dataSourceDef, driverDeploymentInfo.getDriverDeploymentId() );
 
         dataSourceMgmtClient.createDataSource( wfDataSourceDef );
         return new DataSourceDeploymentInfo( deploymentId, true, dataSourceDef.getUuid(), jndi, false );
     }
 
     public DataSourceDeploymentInfo resync( DataSourceDef dataSourceDef, DataSourceDeploymentInfo deploymentInfo ) throws Exception {
-        javax.sql.DataSource dataSource = (javax.sql.DataSource) lookupDataSource( deploymentInfo.getJndi() );
+        javax.sql.DataSource dataSource = (javax.sql.DataSource) jndiLookupDataSource( deploymentInfo.getJndi() );
         WildlfyDataSource wfDataSource = new WildlfyDataSource( dataSource, deploymentInfo.getJndi() );
-        //bindDataSource( kieJndi, dataSource );
         managedDataSources.put( deploymentInfo.getDeploymentId(), wfDataSource );
         return deploymentInfo;
     }
 
-    /**
-     * Deletes a data source in the Widlfy server.
-     *
-     * @param uuid Identifier of the data source definition to be deleted.
-     *
-     * @throws Exception exceptions may be thrown if the data source couldn't be deleted.
-     */
-    public void undeploy( final String uuid ) throws Exception {
-        DataSourceDeploymentInfo deploymentInfo = getDeploymentInfo( uuid );
-        if ( deploymentInfo != null ) {
-            dataSourceMgmtClient.deleteDataSource( deploymentInfo.getDeploymentId() );
-        }
-    }
-
     @Override
     public void undeploy( final DataSourceDeploymentInfo deploymentInfo ) throws Exception {
-        dataSourceMgmtClient.deleteDataSource( deploymentInfo.getDeploymentId() );
-        managedDataSources.remove( deploymentInfo.getDeploymentId() );
+        DataSourceDeploymentInfo currentDeploymentInfo = getDeploymentInfo( deploymentInfo.getUuid() );
+        if ( currentDeploymentInfo == null ) {
+            throw new Exception( "DataSource: " + deploymentInfo.getUuid() + " is not deployed" );
+        }
+        dataSourceMgmtClient.deleteDataSource( currentDeploymentInfo.getDeploymentId() );
+        managedDataSources.remove( currentDeploymentInfo.getDeploymentId() );
     }
 
     /**
@@ -237,7 +236,7 @@ public class WildflyDataSourceProvider
         if ( dataSource == null ) {
             DataSourceDeploymentInfo refreshedDeploymentInfo = getDeploymentInfo( deploymentInfo.getUuid() );
             if ( refreshedDeploymentInfo != null && refreshedDeploymentInfo.getJndi() != null ) {
-                javax.sql.DataSource sqlDataSource = (javax.sql.DataSource) lookupDataSource( refreshedDeploymentInfo.getJndi() );
+                javax.sql.DataSource sqlDataSource = (javax.sql.DataSource) jndiLookupDataSource( refreshedDeploymentInfo.getJndi() );
                 if ( sqlDataSource != null) {
                     dataSource = new WildlfyDataSource( sqlDataSource, refreshedDeploymentInfo.getJndi() );
                     unManagedDataSources.put( deploymentInfo.getDeploymentId(), dataSource );
@@ -253,7 +252,7 @@ public class WildflyDataSourceProvider
             }
             return dataSource;
         } else {
-            throw new Exception( "Data source: " + dataSource + " is not deployed in current system." );
+            throw new Exception( "Data source for: " + deploymentInfo + " is not deployed in current system." );
         }
     }
 
@@ -263,24 +262,16 @@ public class WildflyDataSourceProvider
         driverProvider.loadConfig( properties );
     }
 
-    private Object lookupDataSource( String jndi ) {
+    /**
+     * protected for helping tests programming.
+     */
+    protected Object jndiLookupDataSource( String jndi ) {
         try {
             InitialContext context = new InitialContext();
             return context.lookup( jndi );
         } catch ( Exception e ) {
+            logger.warn( "JNDI lookup failed for name: {}", jndi );
             return null;
-        }
-    }
-
-    private void bindDataSource( String jndi, Object object ) {
-        try {
-            InitialContext context = new InitialContext();
-            if ( lookupDataSource( jndi ) != null ) {
-                context.unbind( jndi );
-            }
-            context.bind( jndi, object );
-        } catch ( Exception e ) {
-            logger.error( "an error was produced during object binding, jndi: " + jndi, e );
         }
     }
 
@@ -298,7 +289,6 @@ public class WildflyDataSourceProvider
         return wfDataSourceDef;
     }
 
-
     private boolean wasReferenced( String deploymentId ) {
         WildlfyDataSource dataSource = managedDataSources.get( deploymentId );
         if ( dataSource == null ) {
@@ -308,5 +298,9 @@ public class WildflyDataSourceProvider
             return dataSource.isReferenced();
         }
         return false;
+    }
+
+    public void setDataSourceMgmtClient( WildflyDataSourceManagementClient dataSourceMgmtClient ) {
+        this.dataSourceMgmtClient = dataSourceMgmtClient;
     }
 }

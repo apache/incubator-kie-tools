@@ -41,18 +41,21 @@ import org.uberfire.io.IOService;
 public class DBCPDriverProvider
     implements DriverProvider {
 
-    @Inject
     private MavenArtifactResolver artifactResolver;
-
-    @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
 
     private Map<String, URI> deployedUris = new HashMap<>(  );
 
     private Map<String, DriverDeploymentInfo> deploymentInfos = new HashMap<>(  );
 
     private Map<String, DriverDef> deployedDrivers = new HashMap<>(  );
+
+    public DBCPDriverProvider( ) {
+    }
+
+    @Inject
+    public DBCPDriverProvider( MavenArtifactResolver artifactResolver ) {
+        this.artifactResolver = artifactResolver;
+    }
 
     @Override
     public DriverDeploymentInfo deploy( DriverDef driverDef ) throws Exception {
@@ -62,7 +65,7 @@ public class DBCPDriverProvider
         if ( uri == null ) {
             throw new Exception( "Unable to get driver library artifact for driver: " + driverDef );
         }
-        final DriverDeploymentInfo deploymentInfo = new DriverDeploymentInfo(
+        final DriverDeploymentInfo deploymentInfo = new DriverDeploymentInfo( driverDef.getUuid(),
                 driverDef.getUuid(), true, driverDef.getUuid(), driverDef.getDriverClass() );
         deployedUris.put( driverDef.getUuid(), uri );
         deploymentInfos.put( driverDef.getUuid(), deploymentInfo );
@@ -95,8 +98,7 @@ public class DBCPDriverProvider
         return result;
     }
 
-    @Override
-    public List<DriverDef> getDeployments() throws Exception {
+    public List<DriverDef> getDeployments() {
         List<DriverDef> results = new ArrayList<>(  );
         results.addAll( deployedDrivers.values() );
         return results;

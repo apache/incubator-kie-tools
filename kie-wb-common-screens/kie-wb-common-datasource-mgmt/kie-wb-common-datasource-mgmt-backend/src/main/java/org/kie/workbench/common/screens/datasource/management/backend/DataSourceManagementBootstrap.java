@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceDefDeployer;
+import org.kie.workbench.common.screens.datasource.management.backend.core.DefaultDriverInitializer;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DriverDefDeployer;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
@@ -40,8 +41,12 @@ public class DataSourceManagementBootstrap {
     @Inject
     private DriverDefDeployer driverDefDeployer;
 
+    @Inject
+    private DefaultDriverInitializer driverInitializer;
+
     @PostConstruct
     public void init() {
+        driverInitializer.initializeDefaultDrivers();
         initializeDeployments();
     }
 

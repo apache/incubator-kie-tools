@@ -29,13 +29,17 @@ public class DriverDeploymentInfo
 
     private String driverClass;
 
+    private String driverDeploymentId;
+
     private List<DataSourceDeploymentInfo> dependants = new ArrayList<>(  );
 
     public DriverDeploymentInfo() {
     }
 
-    public DriverDeploymentInfo( String deploymentId, boolean managed, String uuid, String driverClass ) {
+    public DriverDeploymentInfo( String deploymentId,
+            String driverDeploymentId, boolean managed, String uuid, String driverClass ) {
         super( deploymentId, managed );
+        this.driverDeploymentId = driverDeploymentId;
         this.uuid = uuid;
         this.driverClass = driverClass;
     }
@@ -48,12 +52,17 @@ public class DriverDeploymentInfo
         return driverClass;
     }
 
+    public String getDriverDeploymentId() {
+        return driverDeploymentId;
+    }
+
     @Override
     public String toString() {
         return "DriverDeploymentInfo{" +
                 "deploymentId='" + deploymentId + '\'' +
+                ", driverDeploymentId='" + driverDeploymentId + '\'' +
                 ", managed=" + managed +
-                "uuid='" + uuid + '\'' +
+                ", uuid='" + uuid + '\'' +
                 ", driverClass='" + driverClass + '\'' +
                 "} " + super.toString();
     }

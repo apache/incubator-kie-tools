@@ -34,19 +34,26 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDeploy
 import org.kie.workbench.common.screens.datasource.management.util.MavenArtifactResolver;
 
 /**
- * Widlfy based implementation of a DriverProvider.
+ * Wildly based implementation of a DriverProvider.
  */
 @ApplicationScoped
 @Named(value = "WildflyDriverProvider" )
 public class WildflyDriverProvider
         implements DriverProvider {
 
-    @Inject
     private MavenArtifactResolver artifactResolver;
 
     private WildflyDriverManagementClient driverMgmtClient = new WildflyDriverManagementClient();
 
     private Map<String, DriverDeploymentInfo> managedDrivers = new HashMap<>( );
+
+    public WildflyDriverProvider() {
+    }
+
+    @Inject
+    public WildflyDriverProvider( MavenArtifactResolver artifactResolver ) {
+        this.artifactResolver = artifactResolver;
+    }
 
     /**
      * Deploys a driver definition on the Wildfly server.
@@ -55,7 +62,7 @@ public class WildflyDriverProvider
      *
      * @return The deployment information for the just deployed driver.
      *
-     * @throws Exception exceptions may be thrown if was not possible to deployDataSource the driver.
+     * @throws Exception exceptions may be thrown if was not possible to deploy the driver.
      */
     public DriverDeploymentInfo deploy( final DriverDef driverDef ) throws Exception {
 
@@ -67,16 +74,24 @@ public class WildflyDriverProvider
 
         String deploymentId = DeploymentIdGenerator.generateDeploymentId( driverDef );
         driverMgmtClient.deploy( deploymentId, uri );
+
+        DriverDeploymentInfo generatedDeploymentInfo = findDeploymentInfo( deploymentId, driverDef );
+
         DriverDeploymentInfo deploymentInfo = new DriverDeploymentInfo( deploymentId,
-                true, driverDef.getUuid(), driverDef.getDriverClass() );
+                generatedDeploymentInfo.getDeploymentId(), true, driverDef.getUuid(), driverDef.getDriverClass() );
+
         managedDrivers.put( deploymentInfo.getDeploymentId(), deploymentInfo );
         return deploymentInfo;
     }
 
     @Override
     public DriverDeploymentInfo resync( DriverDef driverDef, DriverDeploymentInfo deploymentInfo ) throws Exception {
-        managedDrivers.put( deploymentInfo.getDeploymentId(), deploymentInfo );
-        return deploymentInfo;
+        String deploymentId = DeploymentIdGenerator.generateDeploymentId( driverDef );
+        DriverDeploymentInfo currentDeploymentInfo = findDeploymentInfo( deploymentId, driverDef );
+        DriverDeploymentInfo result = new DriverDeploymentInfo( deploymentId,
+                currentDeploymentInfo.getDriverDeploymentId(), true, driverDef.getUuid(), driverDef.getDriverClass() );
+        managedDrivers.put( result.getDeploymentId(), result );
+        return result;
     }
 
     @Override
@@ -96,12 +111,17 @@ public class WildflyDriverProvider
      */
     @Override
     public DriverDeploymentInfo getDeploymentInfo( final String uuid ) throws Exception {
-        for ( DriverDeploymentInfo deploymentInfo : getDeploymentsInfo() ) {
-            if ( uuid.equals( deploymentInfo.getUuid() ) ) {
-                return deploymentInfo;
+        String deploymentId = DeploymentIdGenerator.generateDeploymentId( uuid );
+        DriverDeploymentInfo result;
+        if ( ( result = managedDrivers.get( deploymentId ) ) == null ) {
+            for ( DriverDeploymentInfo deploymentInfo : getDeploymentsInfo() ) {
+                if ( uuid.equals( deploymentInfo.getUuid() ) ) {
+                    result = deploymentInfo;
+                    break;
+                }
             }
         }
-        return null;
+        return result;
     }
 
     /**
@@ -155,7 +175,7 @@ public class WildflyDriverProvider
             }
             managed = managedDrivers.containsKey( internalDef.getDriverName() );
             deploymentInfo = new DriverDeploymentInfo( internalDef.getDriverName(),
-                    managed, uuid, internalDef.getDriverClass() );
+                    internalDef.getDriverName(), managed, uuid, internalDef.getDriverClass() );
 
             deploymentsInfo.add( deploymentInfo );
         }
@@ -166,5 +186,22 @@ public class WildflyDriverProvider
     @Override
     public void loadConfig( Properties properties ) {
         driverMgmtClient.loadConfig( properties );
+    }
+
+    private DriverDeploymentInfo findDeploymentInfo( String deploymentId, DriverDef driverDef ) throws Exception {
+        for ( DriverDeploymentInfo deploymentInfo : getDeploymentsInfo() ) {
+            if ( deploymentInfo.getDeploymentId().equals( deploymentId ) ||
+                    deploymentInfo.getDeploymentId().startsWith( deploymentId + "_" + driverDef.getDriverClass() ) ) {
+                return deploymentInfo;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Intended for testing purposes.
+     */
+    public void setDriverMgmtClient( WildflyDriverManagementClient driverMgmtClient ) {
+        this.driverMgmtClient = driverMgmtClient;
     }
 }

@@ -48,8 +48,15 @@ public class DataSourceRuntimeManagerImpl
 
     private DriverDeploymentCache driverDeploymentCache = new DriverDeploymentCacheImpl();
 
-    @Inject
     private DataSourceProviderFactory providerFactory;
+
+    public DataSourceRuntimeManagerImpl( ) {
+    }
+
+    @Inject
+    public DataSourceRuntimeManagerImpl( DataSourceProviderFactory providerFactory ) {
+        this.providerFactory = providerFactory;
+    }
 
     @PostConstruct
     protected void init() {
@@ -136,7 +143,8 @@ public class DataSourceRuntimeManagerImpl
             DriverDeploymentInfo deploymentInfo = driverProvider.getDeploymentInfo( uuid );
             if ( deploymentInfo != null && driverDeploymentCache.get( deploymentInfo ) != null ) {
                 DriverDeploymentInfo updatedInfo = new DriverDeploymentInfo( deploymentInfo.getDeploymentId(),
-                        deploymentInfo.isManaged(), deploymentInfo.getUuid(), deploymentInfo.getDriverClass() );
+                        deploymentInfo.getDriverDeploymentId(), deploymentInfo.isManaged(), deploymentInfo.getUuid(),
+                        deploymentInfo.getDriverClass() );
                 updatedInfo.getDependants().addAll( driverDeploymentCache.get( deploymentInfo ).getDependants() );
                 deploymentInfo = updatedInfo;
             }
