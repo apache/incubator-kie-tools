@@ -19,7 +19,7 @@ package org.uberfire.ext.preferences.backend;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
-@WorkbenchPreference
+@WorkbenchPreference(identifier = "InvalidDefaultPreference")
 public class InvalidDefaultPreference implements BasePreference<InvalidDefaultPreference> {
 
     String text;

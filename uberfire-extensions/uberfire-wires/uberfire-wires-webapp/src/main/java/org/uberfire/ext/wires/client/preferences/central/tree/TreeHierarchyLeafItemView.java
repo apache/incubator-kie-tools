@@ -59,7 +59,12 @@ public class TreeHierarchyLeafItemView implements IsElement,
     }
 
     @EventHandler("preference-tree-leaf-item-label")
-    public void contractExpand( final ClickEvent event ) {
+    public void select( final ClickEvent event ) {
+        select();
+    }
+
+    @Override
+    public void select() {
         if ( !label.hasClassName( "selected" ) ) {
             presenter.select();
             label.addClassName( "selected" );

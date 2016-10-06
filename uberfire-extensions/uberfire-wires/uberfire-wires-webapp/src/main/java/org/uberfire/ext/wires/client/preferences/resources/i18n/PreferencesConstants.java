@@ -21,19 +21,19 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public class PreferencesConstants {
 
     @TranslationKey(defaultValue = "")
-    public static final String MyInheritedPreference_Label = "MyInheritedPreference.Label";
+    public static final String MySharedPreference_Label = "MySharedPreference.Label";
 
     @TranslationKey(defaultValue = "")
-    public static final String MyInheritedPreference_Text = "MyInheritedPreference.Text";
+    public static final String MySharedPreference_Text = "MySharedPreference.Text";
 
     @TranslationKey(defaultValue = "")
-    public static final String MyInheritedPreference_MyInnerPreference2 = "MyInheritedPreference.MyInnerPreference2";
+    public static final String MySharedPreference_MyInnerPreference2 = "MySharedPreference.MyInnerPreference2";
 
     @TranslationKey(defaultValue = "")
-    public static final String MyInheritedPreference2_Label = "MyInheritedPreference2.Label";
+    public static final String MySharedPreference2_Label = "MySharedPreference2.Label";
 
     @TranslationKey(defaultValue = "")
-    public static final String MyInheritedPreference2_Text = "MyInheritedPreference2.Text";
+    public static final String MySharedPreference2_Text = "MySharedPreference2.Text";
 
     @TranslationKey(defaultValue = "")
     public static final String MyInnerPreference_Label = "MyInnerPreference.Label";
@@ -48,7 +48,7 @@ public class PreferencesConstants {
     public static final String MyInnerPreference2_Text = "MyInnerPreference2.Text";
 
     @TranslationKey(defaultValue = "")
-    public static final String MyInnerPreference2_MyInheritedPreference2 = "MyInnerPreference2.MyInheritedPreference2";
+    public static final String MyInnerPreference2_MySharedPreference2 = "MyInnerPreference2.MySharedPreference2";
 
     @TranslationKey(defaultValue = "")
     public static final String MyPreference_Label = "MyPreference.Label";
@@ -72,5 +72,5 @@ public class PreferencesConstants {
     public static final String MyPreference_MyInnerPreference = "MyPreference.MyInnerPreference";
 
     @TranslationKey(defaultValue = "")
-    public static final String MyPreference_MyInheritedPreference = "MyPreference.MyInheritedPreference";
+    public static final String MyPreference_MySharedPreference = "MyPreference.MySharedPreference";
 }

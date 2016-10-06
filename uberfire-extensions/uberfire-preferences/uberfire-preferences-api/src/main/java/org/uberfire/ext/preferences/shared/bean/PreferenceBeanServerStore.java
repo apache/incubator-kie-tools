@@ -18,6 +18,7 @@ package org.uberfire.ext.preferences.shared.bean;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 
@@ -59,9 +60,16 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
     void save( Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences );
 
     /**
-     * Builds a tree hierarchy that begins with the root preference beans and grows based on their
-     * sub-preferences.
+     * Builds a map that contains all root preferences for each category.
+     * @return A map containing all root preferences for each category. Empty if none exists.
+     */
+    Map<String, List<PreferenceRootElement>> buildCategoryStructure();
+
+    /**
+     * Builds a tree hierarchy that begins with the root preference bean which identifier was passed and
+     * grows based on their sub-preferences.
+     * @param identifier Root preference identifier. Must not be null.
      * @return A tree hierarchy between all preference beans.
      */
-    List<PreferenceHierarchyElement<?>> buildHierarchyStructure();
+    PreferenceHierarchyElement<?> buildHierarchyStructureForRootPreference( String identifier );
 }

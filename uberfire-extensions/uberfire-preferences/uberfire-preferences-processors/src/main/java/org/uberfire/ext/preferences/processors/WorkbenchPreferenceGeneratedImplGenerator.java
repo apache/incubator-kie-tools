@@ -67,12 +67,15 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
 
         final WorkbenchPreference annotation = element.getAnnotation( WorkbenchPreference.class );
 
-        boolean rootPreference = annotation.root();
-        String preferenceBundleKey = annotation.bundleKey();
         String sourcePackage = packageName;
         String sourceClassName = className;
-        String preferenceKey = packageName + "." + className;
         String targetPackage = packageName;
+
+        String identifier = annotation.identifier();
+        String category = annotation.category();
+        String iconCss = annotation.iconCss();
+        String[] parents = annotation.parents();
+        String bundleKey = annotation.bundleKey();
 
         if ( GeneratorContext.BEAN.equals( generatorContext ) ) {
             targetClassName = className + "BeanGeneratedImpl";
@@ -98,12 +101,12 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
                 .filter( p -> p.isSubPreference() )
                 .collect( Collectors.toList() );
 
-        final List<PropertyData> nonInheritedSubPreferences = subPreferences.stream()
-                .filter( p -> !p.isInherited() )
+        final List<PropertyData> nonSharedSubPreferences = subPreferences.stream()
+                .filter( p -> !p.isShared() )
                 .collect( Collectors.toList() );
 
-        final List<PropertyData> inheritedSubPreferences = subPreferences.stream()
-                .filter( p -> p.isInherited() )
+        final List<PropertyData> sharedSubPreferences = subPreferences.stream()
+                .filter( p -> p.isShared() )
                 .collect( Collectors.toList() );
 
         final List<String> constructorParams = properties.stream()
@@ -116,6 +119,8 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
                 .collect( Collectors.toList() );
         final String propertyFieldsText = String.join( ", ", propertyFields );
 
+        final String parentsIdentifiers = String.join( ", ", parents );
+
         if ( GeneratorUtils.debugLoggingEnabled() ) {
             final List<String> simplePropertiesNames = simpleProperties.stream()
                     .map( PropertyData::getFieldName )
@@ -127,26 +132,29 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
                     .collect( Collectors.toList() );
             final String subPreferencesText = String.join( ", ", subPreferencesNames );
 
-            final List<String> inheritedSubPreferencesNames = inheritedSubPreferences.stream()
+            final List<String> sharedSubPreferencesNames = sharedSubPreferences.stream()
                     .map( PropertyData::getFieldName )
                     .collect( Collectors.toList() );
-            final String inheritedSubPreferencesText = String.join( ", ", inheritedSubPreferencesNames );
+            final String sharedSubPreferencesText = String.join( ", ", sharedSubPreferencesNames );
 
-            final List<String> nonInheritedSubPreferencesNames = nonInheritedSubPreferences.stream()
+            final List<String> nonSharedSubPreferencesNames = nonSharedSubPreferences.stream()
                     .map( PropertyData::getFieldName )
                     .collect( Collectors.toList() );
-            final String nonInheritedSubPreferencesText = String.join( ", ", nonInheritedSubPreferencesNames );
+            final String nonSharedSubPreferencesText = String.join( ", ", nonSharedSubPreferencesNames );
 
             messager.printMessage( Kind.NOTE, "Source package name: " + sourcePackage );
             messager.printMessage( Kind.NOTE, "Source class name: " + sourceClassName );
             messager.printMessage( Kind.NOTE, "Target package name: " + targetPackage );
             messager.printMessage( Kind.NOTE, "Target class name: " + targetClassName );
-            messager.printMessage( Kind.NOTE, "Preference key: " + preferenceKey );
+            messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
+            messager.printMessage( Kind.NOTE, "Category: " + category );
+            messager.printMessage( Kind.NOTE, "Icon css: " + iconCss );
+            messager.printMessage( Kind.NOTE, "Parents: " + parentsIdentifiers );
             messager.printMessage( Kind.NOTE, "Property fields: " + propertyFieldsText );
             messager.printMessage( Kind.NOTE, "Simple properties fields: " + simplePropertiesText );
             messager.printMessage( Kind.NOTE, "Sub-preferences fields: " + subPreferencesText );
-            messager.printMessage( Kind.NOTE, "Inherited subPreferences fields: " + inheritedSubPreferencesText );
-            messager.printMessage( Kind.NOTE, "Non-inherited subPreferences fields: " + nonInheritedSubPreferencesText );
+            messager.printMessage( Kind.NOTE, "Shared subPreferences fields: " + sharedSubPreferencesText );
+            messager.printMessage( Kind.NOTE, "Non-shared subPreferences fields: " + nonSharedSubPreferencesText );
             messager.printMessage( Kind.NOTE, "Constructor parameters: " + constructorParamsText );
         }
 
@@ -159,22 +167,26 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
                   targetPackage );
         root.put( "targetClassName",
                   targetClassName );
-        root.put( "preferenceKey",
-                  preferenceKey );
-        root.put( "rootPreference",
-                  rootPreference );
-        root.put( "preferenceBundleKey",
-                  preferenceBundleKey );
+        root.put( "identifier",
+                  identifier );
+        root.put( "category",
+                  category );
+        root.put( "iconCss",
+                  iconCss );
+        root.put( "parentsIdentifiers",
+                  parentsIdentifiers );
+        root.put( "bundleKey",
+                  bundleKey );
         root.put( "properties",
                   properties );
         root.put( "simpleProperties",
                   simpleProperties );
         root.put( "subPreferences",
                   subPreferences );
-        root.put( "inheritedSubPreferences",
-                  inheritedSubPreferences );
-        root.put( "nonInheritedSubPreferences",
-                  nonInheritedSubPreferences );
+        root.put( "sharedSubPreferences",
+                  sharedSubPreferences );
+        root.put( "nonSharedSubPreferences",
+                  nonSharedSubPreferences );
         root.put( "constructorParamsText",
                   constructorParamsText );
         root.put( "propertyFieldsText",

@@ -35,6 +35,7 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
     public interface View extends HierarchyItemView,
                                   UberElement<TreeHierarchyInternalItemPresenter> {
 
+        void select();
     }
 
     private final View view;
@@ -80,6 +81,11 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
         } );
 
         view.init( this );
+    }
+
+    @Override
+    public void fireSelect() {
+        view.select();
     }
 
     public void select() {

@@ -31,6 +31,7 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
     public interface View extends HierarchyItemView,
                                   UberElement<TreeHierarchyLeafItemPresenter> {
 
+        void select();
     }
 
     private final View view;
@@ -50,6 +51,11 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
     public <T> void init( final PreferenceHierarchyElement<T> preference ) {
         hierarchyElement = preference;
         view.init( this );
+    }
+
+    @Override
+    public void fireSelect() {
+        view.select();
     }
 
     public void select() {

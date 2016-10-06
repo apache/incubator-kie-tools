@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.preferences.backend;
+package org.uberfire.ext.wires.shared.preferences.bean;
 
 import org.uberfire.ext.preferences.shared.annotations.Property;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
-@WorkbenchPreference(root = false, bundleKey = "MyInheritedPreference.Label")
-public class MyInheritedPreference implements BasePreference<MyInheritedPreference> {
+@WorkbenchPreference(identifier = "MySharedPreference2",
+        parents = "MyInnerPreference2",
+        bundleKey = "MySharedPreference2.Label",
+        category = "MyCategory",
+        iconCss = "fa-pie-chart")
+public class MySharedPreference2 implements BasePreference<MySharedPreference2> {
 
-    @Property(bundleKey = "MyInheritedPreference.Text")
+    @Property(bundleKey = "MySharedPreference2.Text")
     String text;
 
-    @Property(bundleKey = "MyInheritedPreference.MyInnerPreference2")
-    MyInnerPreference2 myInnerPreference2;
+    @Override
+    public MySharedPreference2 defaultValue( final MySharedPreference2 defaultValue ) {
+        defaultValue.text = "text";
+
+        return defaultValue;
+    }
 }

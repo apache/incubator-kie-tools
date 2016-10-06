@@ -21,7 +21,10 @@ import org.uberfire.ext.preferences.shared.annotations.Property;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
-@WorkbenchPreference(bundleKey = "MyPreference.Label")
+@WorkbenchPreference(identifier = "MyPreference",
+        category = "MyCategory",
+        bundleKey = "MyPreference.Label",
+        iconCss = "fa-gear")
 public class MyPreference implements BasePreference<MyPreference> {
 
     @Property(bundleKey = "MyPreference.Text")
@@ -42,8 +45,8 @@ public class MyPreference implements BasePreference<MyPreference> {
     @Property(bundleKey = "MyPreference.MyInnerPreference")
     MyInnerPreference myInnerPreference;
 
-    @Property(inherited = true, bundleKey = "MyPreference.MyInheritedPreference")
-    MyInheritedPreference myInheritedPreference;
+    @Property(shared = true, bundleKey = "MyPreference.MySharedPreference")
+    MySharedPreference mySharedPreference;
 
     @Override
     public MyPreference defaultValue( final MyPreference defaultValue ) {
@@ -53,9 +56,8 @@ public class MyPreference implements BasePreference<MyPreference> {
         defaultValue.age = 27;
         defaultValue.password = "password";
         defaultValue.myInnerPreference.text = "text";
-        defaultValue.myInheritedPreference.text = "text";
-        defaultValue.myInheritedPreference.myInnerPreference2.text = "text";
-        defaultValue.myInheritedPreference.myInnerPreference2.myInheritedPreference2.text = "text";
+        defaultValue.mySharedPreference.text = "text";
+        defaultValue.mySharedPreference.myInnerPreference2.text = "text";
 
         return defaultValue;
     }

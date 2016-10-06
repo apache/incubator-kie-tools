@@ -20,7 +20,8 @@ import org.uberfire.ext.preferences.shared.annotations.Property;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
-@WorkbenchPreference(root = false, bundleKey = "MyInnerPreference.Label")
+@WorkbenchPreference(identifier = "MyInnerPreference",
+        bundleKey = "MyInnerPreference.Label")
 public class MyInnerPreference implements BasePreference<MyInnerPreference> {
 
     @Property(bundleKey = "MyInnerPreference.Text")

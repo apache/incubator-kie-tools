@@ -23,5 +23,7 @@ public interface HierarchyItemPresenter {
 
     <T> void init( PreferenceHierarchyElement<T> preference );
 
+    void fireSelect();
+
     HierarchyItemView getView();
 }

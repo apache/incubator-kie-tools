@@ -94,7 +94,7 @@ public class MyInnerPreferenceBeanGeneratedImpl extends MyInnerPreference implem
 
     @Override
     public void saveDefaultValue( final ParameterizedCommand<Throwable> errorCallback ) {
-        saveDefaultValue( null, errorCallback );
+        saveDefaultValue( null, errorCallback);
     }
 
     @Override

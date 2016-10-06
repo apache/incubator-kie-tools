@@ -31,12 +31,12 @@ import org.uberfire.mvp.ParameterizedCommand;
 /*
 * WARNING! This class is generated. Do not modify.
 */
-public class MyInheritedPreference2BeanGeneratedImpl extends MyInheritedPreference2 implements BasePreferenceBean<MyInheritedPreference2> {
+public class MySharedPreference2BeanGeneratedImpl extends MySharedPreference2 implements BasePreferenceBean<MySharedPreference2> {
 
     private PreferenceBeanStore store;
 
     @Inject
-    public MyInheritedPreference2BeanGeneratedImpl( final PreferenceBeanStore store ) {
+    public MySharedPreference2BeanGeneratedImpl( final PreferenceBeanStore store ) {
         this.store = store;
     }
 
@@ -51,14 +51,14 @@ public class MyInheritedPreference2BeanGeneratedImpl extends MyInheritedPreferen
     }
 
     @Override
-    public void load( final ParameterizedCommand<MyInheritedPreference2> successCallback,
+    public void load( final ParameterizedCommand<MySharedPreference2> successCallback,
                       final ParameterizedCommand<Throwable> errorCallback ) {
-        final MyInheritedPreference2BeanGeneratedImpl preferenceBean = this;
+        final MySharedPreference2BeanGeneratedImpl preferenceBean = this;
 
-        store.load( new MyInheritedPreference2PortableGeneratedImpl(), new ParameterizedCommand<BasePreferencePortable<MyInheritedPreference2>>() {
+        store.load( new MySharedPreference2PortableGeneratedImpl(), new ParameterizedCommand<BasePreferencePortable<MySharedPreference2>>() {
             @Override
-            public void execute( final BasePreferencePortable<MyInheritedPreference2> portablePreference ) {
-                copy( (MyInheritedPreference2PortableGeneratedImpl) portablePreference, preferenceBean );
+            public void execute( final BasePreferencePortable<MySharedPreference2> portablePreference ) {
+                copy( (MySharedPreference2PortableGeneratedImpl) portablePreference, preferenceBean );
                 if ( successCallback != null ) {
                     successCallback.execute( preferenceBean );
                 }
@@ -66,8 +66,8 @@ public class MyInheritedPreference2BeanGeneratedImpl extends MyInheritedPreferen
         }, errorCallback );
     }
 
-    private void copy( final MyInheritedPreference2 from,
-                       final MyInheritedPreference2 to ) {
+    private void copy( final MySharedPreference2 from,
+                       final MySharedPreference2 to ) {
         to.text = from.text;
     }
 
@@ -94,25 +94,25 @@ public class MyInheritedPreference2BeanGeneratedImpl extends MyInheritedPreferen
 
     @Override
     public void saveDefaultValue( final ParameterizedCommand<Throwable> errorCallback ) {
-        saveDefaultValue( null, errorCallback );
+        saveDefaultValue( null, errorCallback);
     }
 
     @Override
     public void saveDefaultValue( final Command successCallback,
                                   final ParameterizedCommand<Throwable> errorCallback ) {
-        final MyInheritedPreference2 defaultValue = defaultValue( new MyInheritedPreference2PortableGeneratedImpl() );
+        final MySharedPreference2 defaultValue = defaultValue( new MySharedPreference2PortableGeneratedImpl() );
 
         if ( defaultValue != null ) {
-            if ( defaultValue instanceof MyInheritedPreference2PortableGeneratedImpl ) {
-                store.saveDefaultValue( (MyInheritedPreference2PortableGeneratedImpl) defaultValue, successCallback, errorCallback );
+            if ( defaultValue instanceof MySharedPreference2PortableGeneratedImpl ) {
+                store.saveDefaultValue( (MySharedPreference2PortableGeneratedImpl) defaultValue, successCallback, errorCallback );
             } else {
-                throw new RuntimeException( "Your MyInheritedPreference2.defaultValue( MyInheritedPreference2 emptyPreference ) implementation must return the emptyPreference parameter, only with its attributes modified." );
+                throw new RuntimeException( "Your MySharedPreference2.defaultValue( MySharedPreference2 emptyPreference ) implementation must return the emptyPreference parameter, only with its attributes modified." );
             }
         }
     }
 
-    private BasePreferencePortable<MyInheritedPreference2> createPortableCopy() {
-        MyInheritedPreference2PortableGeneratedImpl portablePreference = new MyInheritedPreference2PortableGeneratedImpl();
+    private BasePreferencePortable<MySharedPreference2> createPortableCopy() {
+        MySharedPreference2PortableGeneratedImpl portablePreference = new MySharedPreference2PortableGeneratedImpl();
 
         copy( this, portablePreference );
 

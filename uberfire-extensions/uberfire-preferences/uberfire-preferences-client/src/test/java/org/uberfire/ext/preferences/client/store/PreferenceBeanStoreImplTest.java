@@ -134,12 +134,27 @@ public class PreferenceBeanStoreImplTest {
         }
 
         @Override
-        public String bundleKey() {
+        public String identifier() {
             return null;
         }
 
         @Override
-        public String key() {
+        public String category() {
+            return null;
+        }
+
+        @Override
+        public String iconCss() {
+            return null;
+        }
+
+        @Override
+        public String[] parents() {
+            return new String[ 0 ];
+        }
+
+        @Override
+        public String bundleKey() {
             return null;
         }
 

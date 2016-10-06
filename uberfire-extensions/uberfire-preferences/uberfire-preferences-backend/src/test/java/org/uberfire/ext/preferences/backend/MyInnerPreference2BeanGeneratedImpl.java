@@ -69,7 +69,6 @@ public class MyInnerPreference2BeanGeneratedImpl extends MyInnerPreference2 impl
     private void copy( final MyInnerPreference2 from,
                        final MyInnerPreference2 to ) {
         to.text = from.text;
-        to.myInheritedPreference2 = from.myInheritedPreference2;
     }
 
     @Override
@@ -95,7 +94,7 @@ public class MyInnerPreference2BeanGeneratedImpl extends MyInnerPreference2 impl
 
     @Override
     public void saveDefaultValue( final ParameterizedCommand<Throwable> errorCallback ) {
-        saveDefaultValue( null, errorCallback );
+        saveDefaultValue( null, errorCallback);
     }
 
     @Override

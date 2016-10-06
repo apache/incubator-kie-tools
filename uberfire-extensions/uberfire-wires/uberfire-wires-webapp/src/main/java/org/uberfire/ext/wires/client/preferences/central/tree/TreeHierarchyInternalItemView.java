@@ -63,7 +63,6 @@ public class TreeHierarchyInternalItemView implements IsElement,
 
         final String preferenceLabel = getPreferenceLabel( presenter.getHierarchyElement().getBundleKey() );
         label.setInnerHTML( preferenceLabel );
-        children.setHidden( true );
 
         presenter.getHierarchyItems().forEach( hierarchyItem -> {
             children.appendChild( hierarchyItem.getView().getElement() );
@@ -86,11 +85,8 @@ public class TreeHierarchyInternalItemView implements IsElement,
     }
 
     @EventHandler("preference-tree-internal-item-label")
-    public void contractExpand( final ClickEvent event ) {
-        if ( !label.hasClassName( "selected" ) ) {
-            presenter.select();
-            label.addClassName( "selected" );
-        }
+    public void select( final ClickEvent event ) {
+        select();
     }
 
     @EventHandler("preference-tree-internal-item-label")
@@ -112,6 +108,14 @@ public class TreeHierarchyInternalItemView implements IsElement,
         expandIcon.removeClassName( "hidden" );
         contractIcon.addClassName( "hidden" );
         children.setHidden( true );
+    }
+
+    @Override
+    public void select() {
+        if ( !label.hasClassName( "selected" ) ) {
+            presenter.select();
+            label.addClassName( "selected" );
+        }
     }
 
     private String getPreferenceLabel( String bundleKey ) {

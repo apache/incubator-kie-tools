@@ -26,7 +26,7 @@ import org.uberfire.ext.preferences.shared.PropertyFormType;
 import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 
-@Portable(mapSuperTypes = true)
+@Portable( mapSuperTypes = true )
 @PortablePreference
 @Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
 /*
@@ -35,13 +35,10 @@ import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 public class MyInnerPreference2PortableGeneratedImpl extends MyInnerPreference2 implements BasePreferencePortable<MyInnerPreference2> {
 
     public MyInnerPreference2PortableGeneratedImpl() {
-        this.myInheritedPreference2 = new org.uberfire.ext.preferences.backend.MyInheritedPreference2PortableGeneratedImpl();
     }
 
-    public MyInnerPreference2PortableGeneratedImpl( @MapsTo("text") String text,
-                                                    @MapsTo("myInheritedPreference2") org.uberfire.ext.preferences.backend.MyInheritedPreference2 myInheritedPreference2 ) {
+    public MyInnerPreference2PortableGeneratedImpl( @MapsTo("text") String text ) {
         this.text = text;
-        this.myInheritedPreference2 = myInheritedPreference2;
     }
 
     @Override
@@ -50,21 +47,36 @@ public class MyInnerPreference2PortableGeneratedImpl extends MyInnerPreference2 
     }
 
     @Override
+    public String identifier() {
+        return "MyInnerPreference2";
+    }
+
+    @Override
+    public String category() {
+        return "";
+    }
+
+    @Override
+    public String iconCss() {
+        return "";
+    }
+
+    @Override
+    public String[] parents() {
+        return new String[] { "" };
+    }
+
+    @Override
     public String bundleKey() {
         return "MyInnerPreference2.Label";
     }
 
     @Override
-    public String key() {
-        return "org.uberfire.ext.preferences.backend.MyInnerPreference2";
-    }
-
-    @Override
-    public void set( String property,
-                     Object value ) {
+    public void set( String property, Object value ) {
         if ( property.equals( "text" ) ) {
             text = (String) value;
-        } else {
+        } else
+        {
             throw new RuntimeException( "Unknown property: " + property );
         }
     }
@@ -73,7 +85,8 @@ public class MyInnerPreference2PortableGeneratedImpl extends MyInnerPreference2 
     public Object get( String property ) {
         if ( property.equals( "text" ) ) {
             return text;
-        } else {
+        } else
+        {
             throw new RuntimeException( "Unknown property: " + property );
         }
     }
@@ -82,7 +95,7 @@ public class MyInnerPreference2PortableGeneratedImpl extends MyInnerPreference2 
     public Map<String, PropertyFormType> getPropertiesTypes() {
         Map<String, PropertyFormType> propertiesTypes = new HashMap<>();
 
-        propertiesTypes.put( "text", PropertyFormType.TEXT );
+        propertiesTypes.put( "text", PropertyFormType.TEXT);
 
         return propertiesTypes;
     }
@@ -101,9 +114,6 @@ public class MyInnerPreference2PortableGeneratedImpl extends MyInnerPreference2 
         if ( text != null ? !text.equals( that.text ) : that.text != null ) {
             return false;
         }
-        if ( myInheritedPreference2 != null ? !myInheritedPreference2.equals( that.myInheritedPreference2 ) : that.myInheritedPreference2 != null ) {
-            return false;
-        }
 
         return true;
     }
@@ -113,8 +123,6 @@ public class MyInnerPreference2PortableGeneratedImpl extends MyInnerPreference2 
         int result = 0;
 
         result = 31 * result + ( text != null ? text.hashCode() : 0 );
-        result = ~~result;
-        result = 31 * result + ( myInheritedPreference2 != null ? myInheritedPreference2.hashCode() : 0 );
         result = ~~result;
 
         return result;

@@ -18,5 +18,7 @@ package org.uberfire.ext.wires.client.preferences.central.hierarchy;
 
 public interface HierarchyStructurePresenter {
 
+    void init( String rootIdentifier );
+
     HierarchyStructureView getView();
 }

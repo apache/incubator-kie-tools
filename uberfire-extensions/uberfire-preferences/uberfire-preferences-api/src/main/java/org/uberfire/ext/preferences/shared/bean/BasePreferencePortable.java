@@ -35,16 +35,38 @@ public interface BasePreferencePortable<T> extends BasePreference<T> {
     Class<T> getPojoClass();
 
     /**
+     * Unique identifier, used by this preference children to determine their parents.
+     * Also used to name the file containing its value.
+     * @return A unique identifier for the preference bean.
+     */
+    String identifier();
+
+    /**
+     * If this is a root preference, this will define inside which category the preference
+     * will be shown.
+     * @return The preference's category.
+     */
+    String category();
+
+    /**
+     * The css class for the icon that represents this preference. This should be filled only for
+     * root preferences (those who belong to a category).
+     * @return The css class for the preference tile.
+     */
+    String iconCss();
+
+    /**
+     * The preferences which will have this preference as their child.
+     * All parents will share the same preference value.
+     * @return The parents of this preference. Empty if there is not one.
+     */
+    String[] parents();
+
+    /**
      * Returns the bundle key registered in the {@link WorkbenchPreference} annotation.
      * @return The preference bundle key.
      */
     String bundleKey();
-
-    /**
-     * Returns the preference key, used to name the file containing its value.
-     * @return The preference key.
-     */
-    String key();
 
     /**
      * Sets a property value by its name.

@@ -20,14 +20,19 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralPreSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
 import org.uberfire.ext.wires.client.preferences.central.hierarchy.HierarchyStructureView;
+import org.uberfire.ext.wires.client.preferences.settings.SettingsPerspective;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.CompassPosition;
 
 @WorkbenchScreen( identifier = PreferencesCentralActionsScreen.IDENTIFIER )
 public class PreferencesCentralActionsScreen {
@@ -41,21 +46,29 @@ public class PreferencesCentralActionsScreen {
 
     private final View view;
 
+    private final PlaceManager placeManager;
+
     private final Event<PreferencesCentralPreSaveEvent> preSaveEvent;
 
     private final Event<PreferencesCentralSaveEvent> saveEvent;
 
     private final Event<PreferencesCentralUndoChangesEvent> undoChangesEvent;
 
+    private final Event<NotificationEvent> notification;
+
     @Inject
     public PreferencesCentralActionsScreen( final View view,
+                                            final PlaceManager placeManager,
                                             final Event<PreferencesCentralPreSaveEvent> preSaveEvent,
                                             final Event<PreferencesCentralSaveEvent> saveEvent,
-                                            final Event<PreferencesCentralUndoChangesEvent> undoChangesEvent ) {
+                                            final Event<PreferencesCentralUndoChangesEvent> undoChangesEvent,
+                                            final Event<NotificationEvent> notification ) {
         this.view = view;
+        this.placeManager = placeManager;
         this.preSaveEvent = preSaveEvent;
         this.saveEvent = saveEvent;
         this.undoChangesEvent = undoChangesEvent;
+        this.notification = notification;
     }
 
     @PostConstruct
@@ -66,10 +79,17 @@ public class PreferencesCentralActionsScreen {
     public void fireSaveEvent() {
         preSaveEvent.fire( new PreferencesCentralPreSaveEvent() );
         saveEvent.fire( new PreferencesCentralSaveEvent() );
+        goBackToHome();
     }
 
-    public void fireUndoChangesEvent() {
+    public void fireCancelEvent() {
         undoChangesEvent.fire( new PreferencesCentralUndoChangesEvent() );
+        notification.fire( new NotificationEvent( "Changes undone successfully!", NotificationEvent.NotificationType.SUCCESS ) );
+        goBackToHome();
+    }
+
+    private void goBackToHome() {
+        placeManager.goTo( SettingsPerspective.IDENTIFIER );
     }
 
     @WorkbenchPartTitle
@@ -80,5 +100,10 @@ public class PreferencesCentralActionsScreen {
     @WorkbenchPartView
     public HierarchyStructureView getView() {
         return view;
+    }
+
+    @DefaultPosition
+    public CompassPosition getDefaultPosition() {
+        return CompassPosition.SOUTH;
     }
 }

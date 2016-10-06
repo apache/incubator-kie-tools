@@ -37,7 +37,7 @@ public class PreferenceHierarchyElement<T> {
 
     private List<PreferenceHierarchyElement<?>> children;
 
-    private boolean inherited;
+    private boolean shared;
 
     private boolean root;
 
@@ -51,24 +51,24 @@ public class PreferenceHierarchyElement<T> {
 
     public PreferenceHierarchyElement( final String id,
                                        final BasePreferencePortable<T> portablePreference,
-                                       final boolean inherited,
+                                       final boolean shared,
                                        final boolean root,
                                        final String bundleKey ) {
 
-        this( id, portablePreference, new ArrayList<>(), inherited, root, bundleKey, new HashMap<>() );
+        this( id, portablePreference, new ArrayList<>(), shared, root, bundleKey, new HashMap<>() );
     }
 
     public PreferenceHierarchyElement( @MapsTo( "id" ) final String id,
                                        @MapsTo( "portablePreference" ) final BasePreferencePortable<T> portablePreference,
                                        @MapsTo( "children" ) final List<PreferenceHierarchyElement<?>> children,
-                                       @MapsTo( "inherited" ) final boolean inherited,
+                                       @MapsTo( "shared" ) final boolean shared,
                                        @MapsTo( "root" ) final boolean root,
                                        @MapsTo( "bundleKey" ) final String bundleKey,
                                        @MapsTo( "bundleKeyByProperty" ) final Map<String, String> bundleKeyByProperty ) {
         this.id = id;
         this.portablePreference = portablePreference;
         this.children = children;
-        this.inherited = inherited;
+        this.shared = shared;
         this.root = root;
         this.bundleKey = bundleKey;
         this.bundleKeyByProperty = bundleKeyByProperty;
@@ -102,12 +102,12 @@ public class PreferenceHierarchyElement<T> {
         this.children = children;
     }
 
-    public boolean isInherited() {
-        return inherited;
+    public boolean isShared() {
+        return shared;
     }
 
-    public void setInherited( final boolean inherited ) {
-        this.inherited = inherited;
+    public void setShared( final boolean shared ) {
+        this.shared = shared;
     }
 
     public boolean isRoot() {
@@ -145,7 +145,7 @@ public class PreferenceHierarchyElement<T> {
 
         final PreferenceHierarchyElement<?> that = (PreferenceHierarchyElement<?>) o;
 
-        if ( inherited != that.inherited ) {
+        if ( shared != that.shared ) {
             return false;
         }
         if ( root != that.root ) {
@@ -175,7 +175,7 @@ public class PreferenceHierarchyElement<T> {
         result = ~~result;
         result = 31 * result + ( children != null ? children.hashCode() : 0 );
         result = ~~result;
-        result = 31 * result + ( inherited ? 1 : 0 );
+        result = 31 * result + ( shared ? 1 : 0 );
         result = ~~result;
         result = 31 * result + ( root ? 1 : 0 );
         result = ~~result;

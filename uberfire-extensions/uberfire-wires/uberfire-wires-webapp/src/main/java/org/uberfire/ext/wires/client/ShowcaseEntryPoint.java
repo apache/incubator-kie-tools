@@ -28,6 +28,8 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.ext.wires.client.preferences.central.PreferencesCentralPerspective;
+import org.uberfire.ext.wires.client.preferences.settings.SettingsPerspective;
+import org.uberfire.ext.wires.client.preferences.settings.home.register.WorkbenchSettings;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuPosition;
@@ -48,12 +50,20 @@ public class ShowcaseEntryPoint {
     private WorkbenchMenuBarPresenter menubar;
 
     @Inject
+    private WorkbenchSettings settings;
+
+    @Inject
     private ActivityManager activityManager;
 
     @AfterInitialization
     public void startApp() {
         setupMenu();
+        setupSettings();
         hideLoadingPopup();
+    }
+
+    private void setupSettings() {
+        settings.addItem( "Apps", "fa-map", "Other", () -> placeManager.goTo( new DefaultPlaceRequest( "AppsPerspective" ) ) );
     }
 
     private void setupMenu() {
@@ -97,10 +107,10 @@ public class ShowcaseEntryPoint {
             public void execute() {
                 placeManager.goTo( new DefaultPlaceRequest( "UFWidgets" ) );
             }
-        } ).endMenu().newTopLevelMenu( "Preferences" ).respondsWith( new Command() {
+        } ).endMenu().newTopLevelMenu( "Settings" ).respondsWith( new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER ) );
+                placeManager.goTo( new DefaultPlaceRequest( SettingsPerspective.IDENTIFIER ) );
             }
         } ).endMenu().newTopLevelMenu( "Logout" ).position( MenuPosition.RIGHT ).respondsWith( new Command() {
             @Override

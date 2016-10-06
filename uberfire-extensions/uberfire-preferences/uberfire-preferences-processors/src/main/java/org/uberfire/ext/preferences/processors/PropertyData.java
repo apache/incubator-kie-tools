@@ -37,7 +37,7 @@ public class PropertyData {
 
     private String typeFullName;
 
-    private boolean inherited;
+    private boolean shared;
 
     private boolean subPreference;
 
@@ -59,7 +59,7 @@ public class PropertyData {
         final String nameWithoutFirstLetter = fieldName.substring( 1 );
         capitalizedFieldName = elementNameCapitalizedFirstLetter + nameWithoutFirstLetter;
 
-        inherited = propertyAnnotation.inherited();
+        shared = propertyAnnotation.shared();
 
         final TypeElement typeElement = elementUtils.getTypeElement( element.asType().toString() );
         subPreference = typeElement != null && typeElement.getAnnotation( WorkbenchPreference.class ) != null;
@@ -83,8 +83,8 @@ public class PropertyData {
         return typeFullName;
     }
 
-    public boolean isInherited() {
-        return inherited;
+    public boolean isShared() {
+        return shared;
     }
 
     public boolean isSubPreference() {

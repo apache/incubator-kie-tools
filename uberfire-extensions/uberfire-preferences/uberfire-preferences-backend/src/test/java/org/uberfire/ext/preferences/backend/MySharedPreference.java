@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.wires.shared.preferences.bean;
+package org.uberfire.ext.preferences.backend;
 
 import org.uberfire.ext.preferences.shared.annotations.Property;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
-@WorkbenchPreference(bundleKey = "MyInheritedPreference2.Label")
-public class MyInheritedPreference2 implements BasePreference<MyInheritedPreference2> {
+@WorkbenchPreference(identifier = "MySharedPreference",
+        bundleKey = "MySharedPreference.Label")
+public class MySharedPreference implements BasePreference<MySharedPreference> {
 
-    @Property(bundleKey = "MyInheritedPreference2.Text")
+    @Property(bundleKey = "MySharedPreference.Text")
     String text;
+
+    @Property(bundleKey = "MySharedPreference.MyInnerPreference2")
+    MyInnerPreference2 myInnerPreference2;
 }

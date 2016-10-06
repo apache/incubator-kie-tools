@@ -16,12 +16,15 @@ To transform a POJO in a preference, you should:
 Each of those annotations have some attributes that can be customized:
 
 * `@WorkbenchPreference`:
-    * `root`: Optional boolean attribute. It defines if a preference is a root preference, which means it will appear in the first level of the hierarchic structure printed in the configuration screen (a future feature).
+    * `identifier`: Unique text identifier, used by its children to determine their parents.
+    * `category`: If this is a root preference, this will define inside which category the preference will be shown.
+    * `iconCss`: The CSS class for the icon that represents this preference. This should be filled only for root preferences (those which have a category defined).
+    * `parents`: The preferences' identifiers which will have this preference as their child. All parents will share the same value for this preference.
     * `bundleKey`: Optional (but recommended to be customized) string attribute. It defines a bundle key that will be used to internationalize the property's label wherever its necessary. It's expected that the Errai's TranslationService will have access to the key translation.
 
 * `@Property`:
     * `formType`: Optional PropertyFormType (an enum) attribute. Defines the type of field to be used in a default provided form. The default is `TEXT`, and the other possible types are `BOOLEAN`, `NATURAL_NUMBER`, `SECRET_TEXT` and `COLOR`. You should only specify this if you are using the default form for preferences edition, otherwise it will have no effect.
-    * `inherited`: Optional boolean attribute. If false, the property will be defined specifically for this preference. If true, it will share its value with another inherited properties of the same type.
+    * `shared`: Optional boolean attribute, defaults to false. If false, the property will be defined specifically for this preference. If true, it will share its value with another shared properties of the same type.
     * `bundleKey`: Optional (but recommended to be customized) string attribute. It defines a bundle key that will be used to internationalize the property's label wherever its necessary. It's expected that the Errai's TranslationService will have access to the key translation.
 
 Observations:
@@ -38,7 +41,10 @@ import org.uberfire.ext.preferences.shared.annotations.Property;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
-@WorkbenchPreference(bundleKey = "MyPreference.Label")
+@WorkbenchPreference(identifier = "MyPreference",
+        category = "MyCategory",
+        bundleKey = "MyPreference.Label",
+        iconCss = "my-icon-css")
 public class MyPreference implements BasePreference<MyPreference> {
 
     @Property(bundleKey = "MyPreference.Text")
@@ -59,7 +65,7 @@ public class MyPreference implements BasePreference<MyPreference> {
     @Property(bundleKey = "MyPreference.MyInnerPreference")
     MyInnerPreference myInnerPreference;
 
-    @Property(inherited = true, bundleKey = "MyPreference.MyInheritedPreference")
+    @Property(shared = true, bundleKey = "MyPreference.MyInheritedPreference")
     MyInheritedPreference myInheritedPreference;
 
     @Override

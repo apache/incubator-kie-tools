@@ -16,25 +16,48 @@
 
 package org.uberfire.ext.wires.client.preferences.central;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
+import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.ext.preferences.shared.bean.PreferenceBeanServerStore;
 import org.uberfire.ext.wires.client.preferences.central.hierarchy.HierarchyStructurePresenter;
 import org.uberfire.ext.wires.client.preferences.central.hierarchy.HierarchyStructureView;
+import org.uberfire.ext.wires.client.preferences.central.tree.TreeHierarchyStructurePresenter;
 import org.uberfire.ext.wires.client.preferences.central.tree.TreeView;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.CompassPosition;
 
 @WorkbenchScreen(identifier = PreferencesCentralNavBarScreen.IDENTIFIER)
 public class PreferencesCentralNavBarScreen {
 
     public static final String IDENTIFIER = "PreferencesCentralNavBarScreen";
 
-    private HierarchyStructurePresenter presenter;
+    private final HierarchyStructurePresenter hierarchyStructurePresenter;
+
+    private final Caller<PreferenceBeanServerStore> preferenceBeanServerStoreCaller;
+
+    private final Event<NotificationEvent> notification;
 
     @Inject
-    public PreferencesCentralNavBarScreen( @TreeView final HierarchyStructurePresenter presenter ) {
-        this.presenter = presenter;
+    public PreferencesCentralNavBarScreen( @TreeView final HierarchyStructurePresenter treePresenter,
+                                           final Caller<PreferenceBeanServerStore> preferenceBeanServerStoreCaller,
+                                           final Event<NotificationEvent> notification ) {
+        this.hierarchyStructurePresenter = treePresenter;
+        this.preferenceBeanServerStoreCaller = preferenceBeanServerStoreCaller;
+        this.notification = notification;
+    }
+
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
+        final String preferenceIdentifier = placeRequest.getParameter( "identifier", null );
+        hierarchyStructurePresenter.init( preferenceIdentifier );
     }
 
     @WorkbenchPartTitle
@@ -44,6 +67,11 @@ public class PreferencesCentralNavBarScreen {
 
     @WorkbenchPartView
     public HierarchyStructureView getView() {
-        return presenter.getView();
+        return hierarchyStructurePresenter.getView();
+    }
+
+    @DefaultPosition
+    public CompassPosition getDefaultPosition() {
+        return CompassPosition.WEST;
     }
 }

@@ -20,6 +20,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
 /**
@@ -31,11 +32,31 @@ import javax.inject.Qualifier;
 public @interface WorkbenchPreference {
 
     /**
-     * Defines if a preference is a root preference, which means it will appear in the first
-     * level of the hierarchic structure printed in the configuration screen.
-     * @return True if it is a root preference, and false otherwise.
+     * A unique identifier used to reference parent nodes (see #parents).
+     * @return A unique identifier for the preference bean.
      */
-    boolean root() default true;
+    String identifier();
+
+    /**
+     * If this is a root preference, this will define inside which category the preference
+     * will be shown.
+     * @return The preference's category.
+     */
+    String category() default "";
+
+    /**
+     * The CSS class for the icon that represents this preference. This should be filled only for
+     * root preferences (those which have a category defined).
+     * @return The css class for the preference tile.
+     */
+    String iconCss() default "";
+
+    /**
+     * The identifiers of all parents of this preference.
+     * @return The parents of this preference. Empty if there is not one.
+     */
+    @Nonbinding
+    String[] parents() default {};
 
     /**
      * Defines a bundle key that will be used to internationalize the property's label wherever

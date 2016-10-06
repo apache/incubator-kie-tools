@@ -26,45 +26,59 @@ import org.uberfire.ext.preferences.shared.PropertyFormType;
 import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 
-@Portable(mapSuperTypes = true)
+@Portable( mapSuperTypes = true )
 @PortablePreference
 @Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
 /*
 * WARNING! This class is generated. Do not modify.
 */
-public class MyInheritedPreferencePortableGeneratedImpl extends MyInheritedPreference implements BasePreferencePortable<MyInheritedPreference> {
+public class MySharedPreferencePortableGeneratedImpl extends MySharedPreference implements BasePreferencePortable<MySharedPreference> {
 
-    public MyInheritedPreferencePortableGeneratedImpl() {
+    public MySharedPreferencePortableGeneratedImpl() {
         this.myInnerPreference2 = new org.uberfire.ext.preferences.backend.MyInnerPreference2PortableGeneratedImpl();
     }
 
-    public MyInheritedPreferencePortableGeneratedImpl( @MapsTo("text") String text,
-                                                       @MapsTo("myInnerPreference2") org.uberfire.ext.preferences.backend.MyInnerPreference2 myInnerPreference2 ) {
+    public MySharedPreferencePortableGeneratedImpl( @MapsTo("text") String text, @MapsTo("myInnerPreference2") org.uberfire.ext.preferences.backend.MyInnerPreference2 myInnerPreference2 ) {
         this.text = text;
         this.myInnerPreference2 = myInnerPreference2;
     }
 
     @Override
-    public Class<MyInheritedPreference> getPojoClass() {
-        return MyInheritedPreference.class;
+    public Class<MySharedPreference> getPojoClass() {
+        return MySharedPreference.class;
+    }
+
+    @Override
+    public String identifier() {
+        return "MySharedPreference";
+    }
+
+    @Override
+    public String category() {
+        return "";
+    }
+
+    @Override
+    public String iconCss() {
+        return "";
+    }
+
+    @Override
+    public String[] parents() {
+        return new String[] { "" };
     }
 
     @Override
     public String bundleKey() {
-        return "MyInheritedPreference.Label";
+        return "MySharedPreference.Label";
     }
 
     @Override
-    public String key() {
-        return "org.uberfire.ext.preferences.backend.MyInheritedPreference";
-    }
-
-    @Override
-    public void set( String property,
-                     Object value ) {
+    public void set( String property, Object value ) {
         if ( property.equals( "text" ) ) {
             text = (String) value;
-        } else {
+        } else
+        {
             throw new RuntimeException( "Unknown property: " + property );
         }
     }
@@ -73,7 +87,8 @@ public class MyInheritedPreferencePortableGeneratedImpl extends MyInheritedPrefe
     public Object get( String property ) {
         if ( property.equals( "text" ) ) {
             return text;
-        } else {
+        } else
+        {
             throw new RuntimeException( "Unknown property: " + property );
         }
     }
@@ -82,7 +97,7 @@ public class MyInheritedPreferencePortableGeneratedImpl extends MyInheritedPrefe
     public Map<String, PropertyFormType> getPropertiesTypes() {
         Map<String, PropertyFormType> propertiesTypes = new HashMap<>();
 
-        propertiesTypes.put( "text", PropertyFormType.TEXT );
+        propertiesTypes.put( "text", PropertyFormType.TEXT);
 
         return propertiesTypes;
     }
@@ -96,7 +111,7 @@ public class MyInheritedPreferencePortableGeneratedImpl extends MyInheritedPrefe
             return false;
         }
 
-        final MyInheritedPreferencePortableGeneratedImpl that = (MyInheritedPreferencePortableGeneratedImpl) o;
+        final MySharedPreferencePortableGeneratedImpl that = (MySharedPreferencePortableGeneratedImpl) o;
 
         if ( text != null ? !text.equals( that.text ) : that.text != null ) {
             return false;

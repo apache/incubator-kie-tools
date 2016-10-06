@@ -41,10 +41,10 @@ public @interface Property {
     PropertyFormType formType() default PropertyFormType.TEXT;
 
     /**
-     * Defines whether or not this property should be inherited by sub types. Defaults to false.
-     * @return The property inheritance strategy.
+     * Defines whether or not this property should be shared by its parents. Defaults to false.
+     * @return The property sharing strategy.
      */
-    boolean inherited() default false;
+    boolean shared() default false;
 
     /**
      * Defines a bundle key that will be used to internationalize the property's label wherever

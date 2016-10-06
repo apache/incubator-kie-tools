@@ -17,6 +17,7 @@
 package org.uberfire.ext.wires.client.preferences.central.tree;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.preferences.client.utils.PreferenceFormBeansInfo;
@@ -44,6 +46,7 @@ import org.uberfire.ext.wires.client.preferences.central.form.DefaultPreferenceF
 import org.uberfire.ext.wires.client.preferences.central.hierarchy.HierarchyItemPresenter;
 import org.uberfire.ext.wires.client.preferences.central.hierarchy.HierarchyStructurePresenter;
 import org.uberfire.ext.wires.client.preferences.central.hierarchy.HierarchyStructureView;
+import org.uberfire.ext.wires.client.preferences.settings.SettingsPerspective;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -54,6 +57,7 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
     public interface View extends HierarchyStructureView,
                                   UberElement<TreeHierarchyStructurePresenter> {
 
+        String getTranslation( String key );
     }
 
     private final View view;
@@ -74,9 +78,9 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
 
     private final PreferenceFormBeansInfo preferenceFormBeansInfo;
 
-    private List<HierarchyItemPresenter> hierarchyItems;
+    private HierarchyItemPresenter hierarchyItem;
 
-    private List<PreferenceHierarchyElement<?>> preferencesElements;
+    private PreferenceHierarchyElement<?> preferenceElement;
 
     @Inject
     public TreeHierarchyStructurePresenter( final View view,
@@ -99,59 +103,64 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
         this.preferenceFormBeansInfo = preferenceFormBeansInfo;
     }
 
-    @PostConstruct
-    public void init() {
+    public void init( final String rootIdentifier ) {
         final TreeHierarchyStructurePresenter presenter = this;
 
-        preferenceBeanServerStoreCaller.call( new RemoteCallback<List<PreferenceHierarchyElement<?>>>() {
+        preferenceBeanServerStoreCaller.call( new RemoteCallback<PreferenceHierarchyElement<?>>() {
             @Override
-            public void callback( final List<PreferenceHierarchyElement<?>> rootPreferences ) {
-                hierarchyItems = new ArrayList<>();
+            public void callback( final PreferenceHierarchyElement<?> rootPreference ) {
+                preferenceElement = rootPreference;
 
-                preferencesElements = rootPreferences;
+                if ( rootPreference.hasChildren() ) {
+                    hierarchyItem = treeHierarchyInternalItemPresenterProvider.get();
+                } else {
+                    hierarchyItem = treeHierarchyLeafItemPresenterProvider.get();
+                }
 
-                rootPreferences.forEach( rootPreference -> {
-                    HierarchyItemPresenter hierarchyItem;
-
-                    if ( rootPreference.hasChildren() ) {
-                        hierarchyItem = treeHierarchyInternalItemPresenterProvider.get();
-                    } else {
-                        hierarchyItem = treeHierarchyLeafItemPresenterProvider.get();
-                    }
-
-                    hierarchyItem.init( rootPreference );
-                    hierarchyItems.add( hierarchyItem );
-                } );
+                hierarchyItem.init( rootPreference );
+                hierarchyItem.fireSelect();
 
                 view.init( presenter );
             }
         }, ( message, throwable ) -> {
             throw new RuntimeException( throwable );
-        } ).buildHierarchyStructure();
+        } ).buildHierarchyStructureForRootPreference( rootIdentifier );
     }
 
     public void hierarchyItemSelectedEvent( @Observes HierarchyItemSelectedEvent hierarchyItemSelectedEvent ) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put( "id", hierarchyItemSelectedEvent.getItemId() );
-        parameters.put( "title", hierarchyItemSelectedEvent.getPreference().key() );
+        parameters.put( "title", view.getTranslation( hierarchyItemSelectedEvent.getPreference().bundleKey() ) );
 
         placeManager.goTo( new DefaultPlaceRequest( getPreferenceFormIdentifier( hierarchyItemSelectedEvent.getPreferenceClass() ), parameters ) );
         final HierarchyItemFormInitializationEvent event = new HierarchyItemFormInitializationEvent( hierarchyItemSelectedEvent.getHierarchyElement() );
         hierarchyItemFormInitializationEvent.fire( event );
     }
 
-    public void itemSelectedEvent( @Observes PreferencesCentralSaveEvent event ) {
-        List<BasePreferencePortable<? extends BasePreference<?>>> preferences = new ArrayList<>();
-        for ( PreferenceHierarchyElement<?> element : preferencesElements ) {
-            preferences.add( (BasePreferencePortable<? extends BasePreference<?>>) element.getPortablePreference() );
-        }
-        store.save( preferences,
-                    () -> notification.fire( new NotificationEvent( "Preferences saved successfully!", NotificationEvent.NotificationType.SUCCESS ) ),
+    public void saveEvent( @Observes PreferencesCentralSaveEvent event ) {
+        Collection<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = getPreferencesToSave( preferenceElement );
+        store.save( preferencesToSave,
+                    () -> notification.fire( new NotificationEvent( "Changes saved successfully!", NotificationEvent.NotificationType.SUCCESS ) ),
                     parameter -> notification.fire( new NotificationEvent( "Unexpected error while saving: " + parameter.getMessage(), NotificationEvent.NotificationType.ERROR ) ) );
+        placeManager.goTo( new DefaultPlaceRequest( SettingsPerspective.IDENTIFIER ) );
     }
 
-    public List<HierarchyItemPresenter> getHierarchyItems() {
-        return hierarchyItems;
+    private Collection<BasePreferencePortable<? extends BasePreference<?>>> getPreferencesToSave( final PreferenceHierarchyElement<?> preferenceElement ) {
+        Collection<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = new ArrayList<>();
+
+        if ( preferenceElement.isRoot() ) {
+            preferencesToSave.add( (BasePreferencePortable<? extends BasePreference<?>>) preferenceElement.getPortablePreference() );
+        }
+
+        preferenceElement.getChildren().forEach( childElement -> {
+            preferencesToSave.addAll( getPreferencesToSave( childElement ) );
+        } );
+
+        return preferencesToSave;
+    }
+
+    public HierarchyItemPresenter getHierarchyItem() {
+        return hierarchyItem;
     }
 
     public String getPreferenceFormIdentifier( Class<?> preferenceClass ) {

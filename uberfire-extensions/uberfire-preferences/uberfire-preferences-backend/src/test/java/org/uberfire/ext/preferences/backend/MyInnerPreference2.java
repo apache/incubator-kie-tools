@@ -20,12 +20,10 @@ import org.uberfire.ext.preferences.shared.annotations.Property;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
-@WorkbenchPreference(root = false, bundleKey = "MyInnerPreference2.Label")
+@WorkbenchPreference(identifier = "MyInnerPreference2",
+        bundleKey = "MyInnerPreference2.Label")
 public class MyInnerPreference2 implements BasePreference<MyInnerPreference2> {
 
     @Property(bundleKey = "MyInnerPreference2.Text")
     String text;
-
-    @Property(inherited = true, bundleKey = "MyInnerPreference2.MyInheritedPreference2")
-    MyInheritedPreference2 myInheritedPreference2;
 }

@@ -41,17 +41,17 @@ public class MyPreferencePortableGeneratedImpl extends MyPreference implements B
 
     public MyPreferencePortableGeneratedImpl() {
         this.myInnerPreference = new org.uberfire.ext.preferences.processors.MyInnerPreferencePortableGeneratedImpl();
-        this.myInheritedPreference = new org.uberfire.ext.preferences.processors.MyInheritedPreferencePortableGeneratedImpl();
+        this.mySharedPreference = new org.uberfire.ext.preferences.processors.MySharedPreferencePortableGeneratedImpl();
     }
 
-    public MyPreferencePortableGeneratedImpl( @MapsTo("text") java.lang.String text, @MapsTo("sendReports") boolean sendReports, @MapsTo("backgroundColor") java.lang.String backgroundColor, @MapsTo("age") int age, @MapsTo("password") java.lang.String password, @MapsTo("myInnerPreference") org.uberfire.ext.preferences.processors.MyInnerPreference myInnerPreference, @MapsTo("myInheritedPreference") org.uberfire.ext.preferences.processors.MyInheritedPreference myInheritedPreference ) {
+    public MyPreferencePortableGeneratedImpl( @MapsTo("text") java.lang.String text, @MapsTo("sendReports") boolean sendReports, @MapsTo("backgroundColor") java.lang.String backgroundColor, @MapsTo("age") int age, @MapsTo("password") java.lang.String password, @MapsTo("myInnerPreference") org.uberfire.ext.preferences.processors.MyInnerPreference myInnerPreference, @MapsTo("mySharedPreference") org.uberfire.ext.preferences.processors.MySharedPreference mySharedPreference ) {
         this.text = text;
         this.sendReports = sendReports;
         this.backgroundColor = backgroundColor;
         this.age = age;
         this.password = password;
         this.myInnerPreference = myInnerPreference;
-        this.myInheritedPreference = myInheritedPreference;
+        this.mySharedPreference = mySharedPreference;
     }
 
     @Override
@@ -60,13 +60,28 @@ public class MyPreferencePortableGeneratedImpl extends MyPreference implements B
     }
 
     @Override
-    public String bundleKey() {
-        return "MyPreference.Label";
+    public String identifier() {
+        return "MyPreference";
     }
 
     @Override
-    public String key() {
-        return "org.uberfire.ext.preferences.processors.MyPreference";
+    public String category() {
+        return "MyCategory";
+    }
+
+    @Override
+    public String iconCss() {
+        return "fa-gear";
+    }
+
+    @Override
+    public String[] parents() {
+        return new String[] { "" };
+    }
+
+    @Override
+    public String bundleKey() {
+        return "MyPreference.Label";
     }
 
     @Override
@@ -155,7 +170,7 @@ public class MyPreferencePortableGeneratedImpl extends MyPreference implements B
         if ( myInnerPreference != null ? !myInnerPreference.equals( that.myInnerPreference ) : that.myInnerPreference != null ) {
             return false;
         }
-        if ( myInheritedPreference != null ? !myInheritedPreference.equals( that.myInheritedPreference ) : that.myInheritedPreference != null ) {
+        if ( mySharedPreference != null ? !mySharedPreference.equals( that.mySharedPreference ) : that.mySharedPreference != null ) {
             return false;
         }
 
@@ -178,7 +193,7 @@ public class MyPreferencePortableGeneratedImpl extends MyPreference implements B
         result = ~~result;
         result = 31 * result + ( myInnerPreference != null ? myInnerPreference.hashCode() : 0 );
         result = ~~result;
-        result = 31 * result + ( myInheritedPreference != null ? myInheritedPreference.hashCode() : 0 );
+        result = 31 * result + ( mySharedPreference != null ? mySharedPreference.hashCode() : 0 );
         result = ~~result;
 
         return result;

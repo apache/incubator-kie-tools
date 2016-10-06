@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
-<#if rootPreference>
+<#if category != "">
 import org.uberfire.ext.preferences.shared.annotations.RootPreference;
 </#if>
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
@@ -34,7 +34,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 @Portable( mapSuperTypes = true )
 @PortablePreference
-<#if rootPreference>
+<#if category != "">
 @RootPreference
 </#if>
 @Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
@@ -69,17 +69,32 @@ public class ${targetClassName} extends ${sourceClassName} implements BasePrefer
     }
 
     @Override
-    public String bundleKey() {
-    <#if preferenceBundleKey == "">
-        return "${sourceClassName}";
-    <#else>
-        return "${preferenceBundleKey}";
-    </#if>
+    public String identifier() {
+        return "${identifier}";
     }
 
     @Override
-    public String key() {
-        return "${preferenceKey}";
+    public String category() {
+        return "${category}";
+    }
+
+    @Override
+    public String iconCss() {
+        return "${iconCss}";
+    }
+
+    @Override
+    public String[] parents() {
+        return new String[] { "${parentsIdentifiers}" };
+    }
+
+    @Override
+    public String bundleKey() {
+    <#if bundleKey == "">
+        return "${identifier}";
+    <#else>
+        return "${bundleKey}";
+    </#if>
     }
 
     @Override

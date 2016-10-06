@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -29,19 +30,29 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class TreeHierarchyStructureView implements IsElement,
                                                    TreeHierarchyStructurePresenter.View {
 
+    private final TranslationService translationService;
+
     private TreeHierarchyStructurePresenter presenter;
 
     @Inject
     @DataField("preference-tree")
     Div tree;
 
+    @Inject
+    public TreeHierarchyStructureView( final TranslationService translationService ) {
+        this.translationService = translationService;
+    }
+
     @Override
     public void init( final TreeHierarchyStructurePresenter presenter ) {
         this.presenter = presenter;
 
         tree.setInnerHTML( "" );
-        presenter.getHierarchyItems().forEach( hierarchyItem -> {
-            tree.appendChild( hierarchyItem.getView().getElement() );
-        } );
+        tree.appendChild( presenter.getHierarchyItem().getView().getElement() );
+    }
+
+    @Override
+    public String getTranslation( final String key ) {
+        return translationService.format( key );
     }
 }

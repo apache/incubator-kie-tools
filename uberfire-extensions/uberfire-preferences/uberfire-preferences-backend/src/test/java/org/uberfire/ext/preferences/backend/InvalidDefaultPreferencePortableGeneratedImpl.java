@@ -54,8 +54,23 @@ public class InvalidDefaultPreferencePortableGeneratedImpl extends InvalidDefaul
     }
 
     @Override
-    public String key() {
-        return "org.uberfire.ext.preferences.backend.InvalidDefaultPreference";
+    public String identifier() {
+        return "InvalidDefaultPreference";
+    }
+
+    @Override
+    public String category() {
+        return null;
+    }
+
+    @Override
+    public String iconCss() {
+        return null;
+    }
+
+    @Override
+    public String[] parents() {
+        return new String[ 0 ];
     }
 
     @Override

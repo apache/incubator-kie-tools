@@ -74,7 +74,7 @@ public class MyPreferenceBeanGeneratedImpl extends MyPreference implements BaseP
         to.age = from.age;
         to.password = from.password;
         to.myInnerPreference = from.myInnerPreference;
-        to.myInheritedPreference = from.myInheritedPreference;
+        to.mySharedPreference = from.mySharedPreference;
     }
 
     @Override

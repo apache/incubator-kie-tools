@@ -26,7 +26,7 @@ import org.uberfire.ext.preferences.shared.PropertyFormType;
 import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 
-@Portable(mapSuperTypes = true)
+@Portable( mapSuperTypes = true )
 @PortablePreference
 @Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
 /*
@@ -47,21 +47,36 @@ public class MyInnerPreferencePortableGeneratedImpl extends MyInnerPreference im
     }
 
     @Override
+    public String identifier() {
+        return "MyInnerPreference";
+    }
+
+    @Override
+    public String category() {
+        return "";
+    }
+
+    @Override
+    public String iconCss() {
+        return "";
+    }
+
+    @Override
+    public String[] parents() {
+        return new String[] { "" };
+    }
+
+    @Override
     public String bundleKey() {
         return "MyInnerPreference.Label";
     }
 
     @Override
-    public String key() {
-        return "org.uberfire.ext.preferences.backend.MyInnerPreference";
-    }
-
-    @Override
-    public void set( String property,
-                     Object value ) {
+    public void set( String property, Object value ) {
         if ( property.equals( "text" ) ) {
             text = (String) value;
-        } else {
+        } else
+        {
             throw new RuntimeException( "Unknown property: " + property );
         }
     }
@@ -70,7 +85,8 @@ public class MyInnerPreferencePortableGeneratedImpl extends MyInnerPreference im
     public Object get( String property ) {
         if ( property.equals( "text" ) ) {
             return text;
-        } else {
+        } else
+        {
             throw new RuntimeException( "Unknown property: " + property );
         }
     }
@@ -79,7 +95,7 @@ public class MyInnerPreferencePortableGeneratedImpl extends MyInnerPreference im
     public Map<String, PropertyFormType> getPropertiesTypes() {
         Map<String, PropertyFormType> propertiesTypes = new HashMap<>();
 
-        propertiesTypes.put( "text", PropertyFormType.TEXT );
+        propertiesTypes.put( "text", PropertyFormType.TEXT);
 
         return propertiesTypes;
     }

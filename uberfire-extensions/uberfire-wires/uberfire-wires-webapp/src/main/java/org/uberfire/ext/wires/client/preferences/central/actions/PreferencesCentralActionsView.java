@@ -38,8 +38,8 @@ public class PreferencesCentralActionsView implements IsElement,
     Button saveButton;
 
     @Inject
-    @DataField( "preference-actions-undo" )
-    Button undoButton;
+    @DataField( "preference-actions-cancel" )
+    Button cancelButton;
 
     @Override
     public void init( final PreferencesCentralActionsScreen presenter ) {
@@ -51,8 +51,8 @@ public class PreferencesCentralActionsView implements IsElement,
         presenter.fireSaveEvent();
     }
 
-    @EventHandler("preference-actions-undo")
+    @EventHandler("preference-actions-cancel")
     public void undo( ClickEvent event ) {
-        presenter.fireUndoChangesEvent();
+        presenter.fireCancelEvent();
     }
 }

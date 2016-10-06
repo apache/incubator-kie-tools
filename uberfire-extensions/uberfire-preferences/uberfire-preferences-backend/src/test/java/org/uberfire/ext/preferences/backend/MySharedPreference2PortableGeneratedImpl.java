@@ -27,43 +27,58 @@ import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
 import org.uberfire.ext.preferences.shared.annotations.RootPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 
-@Portable(mapSuperTypes = true)
+@Portable( mapSuperTypes = true )
 @PortablePreference
 @RootPreference
 @Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
 /*
 * WARNING! This class is generated. Do not modify.
 */
-public class MyInheritedPreference2PortableGeneratedImpl extends MyInheritedPreference2 implements BasePreferencePortable<MyInheritedPreference2> {
+public class MySharedPreference2PortableGeneratedImpl extends MySharedPreference2 implements BasePreferencePortable<MySharedPreference2> {
 
-    public MyInheritedPreference2PortableGeneratedImpl() {
+    public MySharedPreference2PortableGeneratedImpl() {
     }
 
-    public MyInheritedPreference2PortableGeneratedImpl( @MapsTo("text") String text ) {
+    public MySharedPreference2PortableGeneratedImpl( @MapsTo("text") String text ) {
         this.text = text;
     }
 
     @Override
-    public Class<MyInheritedPreference2> getPojoClass() {
-        return MyInheritedPreference2.class;
+    public Class<MySharedPreference2> getPojoClass() {
+        return MySharedPreference2.class;
+    }
+
+    @Override
+    public String identifier() {
+        return "MySharedPreference2";
+    }
+
+    @Override
+    public String category() {
+        return "MyCategory";
+    }
+
+    @Override
+    public String iconCss() {
+        return "fa-pie-chart";
+    }
+
+    @Override
+    public String[] parents() {
+        return new String[] { "MyInnerPreference2" };
     }
 
     @Override
     public String bundleKey() {
-        return "MyInheritedPreference2.Label";
+        return "MySharedPreference2.Label";
     }
 
     @Override
-    public String key() {
-        return "org.uberfire.ext.preferences.backend.MyInheritedPreference2";
-    }
-
-    @Override
-    public void set( String property,
-                     Object value ) {
+    public void set( String property, Object value ) {
         if ( property.equals( "text" ) ) {
             text = (String) value;
-        } else {
+        } else
+        {
             throw new RuntimeException( "Unknown property: " + property );
         }
     }
@@ -72,7 +87,8 @@ public class MyInheritedPreference2PortableGeneratedImpl extends MyInheritedPref
     public Object get( String property ) {
         if ( property.equals( "text" ) ) {
             return text;
-        } else {
+        } else
+        {
             throw new RuntimeException( "Unknown property: " + property );
         }
     }
@@ -81,7 +97,7 @@ public class MyInheritedPreference2PortableGeneratedImpl extends MyInheritedPref
     public Map<String, PropertyFormType> getPropertiesTypes() {
         Map<String, PropertyFormType> propertiesTypes = new HashMap<>();
 
-        propertiesTypes.put( "text", PropertyFormType.TEXT );
+        propertiesTypes.put( "text", PropertyFormType.TEXT);
 
         return propertiesTypes;
     }
@@ -95,7 +111,7 @@ public class MyInheritedPreference2PortableGeneratedImpl extends MyInheritedPref
             return false;
         }
 
-        final MyInheritedPreference2PortableGeneratedImpl that = (MyInheritedPreference2PortableGeneratedImpl) o;
+        final MySharedPreference2PortableGeneratedImpl that = (MySharedPreference2PortableGeneratedImpl) o;
 
         if ( text != null ? !text.equals( that.text ) : that.text != null ) {
             return false;

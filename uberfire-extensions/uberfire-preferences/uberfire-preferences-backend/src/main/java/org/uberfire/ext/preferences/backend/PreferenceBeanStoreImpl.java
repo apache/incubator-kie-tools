@@ -19,8 +19,11 @@ package org.uberfire.ext.preferences.backend;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
@@ -40,6 +43,7 @@ import org.uberfire.ext.preferences.shared.bean.Preference;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanServerStore;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanStore;
 import org.uberfire.ext.preferences.shared.bean.PreferenceHierarchyElement;
+import org.uberfire.ext.preferences.shared.bean.PreferenceRootElement;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -47,6 +51,7 @@ import org.uberfire.mvp.ParameterizedCommand;
  * Backend implementation for {@link PreferenceBeanStore}.
  */
 @Service
+@ApplicationScoped
 public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     private static final AnnotationLiteral<PortablePreference> portablePreferenceAnnotation = new AnnotationLiteral<PortablePreference>() { };
@@ -58,6 +63,8 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     private PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy;
 
     private Instance<Preference> preferences;
+
+    private Map<String, List<BasePreferencePortable>> childrenByParent;
 
     public PreferenceBeanStoreImpl() {
     }
@@ -74,7 +81,7 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     @Override
     public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load( final T emptyPortablePreference ) {
         Class<U> clazz = emptyPortablePreference.getPojoClass();
-        T portablePreference = preferenceStore.get( emptyPortablePreference.key() );
+        T portablePreference = preferenceStore.get( emptyPortablePreference.identifier() );
 
         try {
             return load( clazz, portablePreference );
@@ -103,13 +110,7 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     @Override
     public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference ) {
-        try {
-            Class<U> clazz = portablePreference.getPojoClass();
-            save( clazz, portablePreference );
-            preferenceStore.put( portablePreference.key(), portablePreference );
-        } catch ( IllegalAccessException e ) {
-            throw new RuntimeException( e );
-        }
+        save( portablePreference, defaultScopeResolutionStrategy.getInfo().defaultScope() );
     }
 
     @Override
@@ -135,7 +136,7 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         final int lastIndex = scopeOrder.size() - 1;
         final PreferenceScope lastScope = scopeOrder.get( lastIndex );
 
-        preferenceStore.put( lastScope, defaultValue.key(), defaultValue );
+        save( defaultValue, lastScope );
     }
 
     @Override
@@ -180,22 +181,42 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     }
 
     @Override
-    public List<PreferenceHierarchyElement<?>> buildHierarchyStructure() {
-        List<PreferenceHierarchyElement<?>> hierarchyRoots = new ArrayList<>();
+    public Map<String, List<PreferenceRootElement>> buildCategoryStructure() {
+        final Map<String, List<PreferenceRootElement>> rootPreferencesByCategory = new HashMap<>();
 
-        getRootPortablePreferences().forEach( rootPreference -> {
-            BasePreferencePortable preference = (BasePreferencePortable) rootPreference;
-            preference = load( preference );
+        getRootPortablePreferences().forEach( preference -> {
+            final BasePreferencePortable portablePreference = (BasePreferencePortable) preference;
+            final String category = portablePreference.category();
 
-            final PreferenceHierarchyElement<?> childElement = buildHierarchyElement( preference,
-                                                                                      null,
-                                                                                      false,
-                                                                                      true,
-                                                                                      preference.bundleKey() );
-            hierarchyRoots.add( childElement );
+            PreferenceRootElement element = new PreferenceRootElement( portablePreference.identifier(),
+                                                                       category,
+                                                                       portablePreference.iconCss(),
+                                                                       portablePreference.bundleKey() );
+
+            List<PreferenceRootElement> rootPreferences = rootPreferencesByCategory.get( category );
+            if ( rootPreferences == null ) {
+                rootPreferences = new ArrayList<>();
+                rootPreferencesByCategory.put( category, rootPreferences );
+            }
+
+            rootPreferences.add( element );
         } );
 
-        return hierarchyRoots;
+        return rootPreferencesByCategory;
+    }
+
+    @Override
+    public PreferenceHierarchyElement<?> buildHierarchyStructureForRootPreference( String identifier ) {
+        BasePreferencePortable preference = getRootPortablePreferenceByIdentifier( identifier );
+        preference = load( preference );
+
+        final PreferenceHierarchyElement<?> rootElement = buildHierarchyElement( preference,
+                                                                                 null,
+                                                                                 false,
+                                                                                 true,
+                                                                                 preference.bundleKey() );
+
+        return rootElement;
     }
 
     private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load( final Class<U> clazz,
@@ -209,13 +230,13 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
             if ( propertyAnnotation != null ) {
                 if ( field.getType().isAnnotationPresent( WorkbenchPreference.class ) ) {
                     final Class<? extends BasePreference<?>> propertyType = (Class<? extends BasePreference<?>>) field.getType();
-                    boolean inherited = propertyAnnotation.inherited();
+                    boolean shared = propertyAnnotation.shared();
 
                     field.setAccessible( true );
 
-                    if ( inherited ) {
-                        BasePreferencePortable<?> loadedInheritedProperty = loadInheritedPreference( field );
-                        field.set( portablePreference, loadedInheritedProperty );
+                    if ( shared ) {
+                        BasePreferencePortable<?> loadedSharedProperty = loadSharedPreference( field );
+                        field.set( portablePreference, loadedSharedProperty );
                     } else {
                         final BasePreferencePortable<?> subPreferenceValue = loadSubPreferenceValue( portablePreference, field );
                         field.set( portablePreference, subPreferenceValue );
@@ -227,13 +248,13 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         return portablePreference;
     }
 
-    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T loadInheritedPreference( final Field field ) {
+    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T loadSharedPreference( final Field field ) {
         final Class<U> propertyType = (Class<U>) field.getType();
         T loadedPreference;
 
         try {
             T emptyPortablePreference = lookupPortablePreference( propertyType );
-            T portablePreference = preferenceStore.get( emptyPortablePreference.key() );
+            T portablePreference = preferenceStore.get( emptyPortablePreference.identifier() );
             loadedPreference = load( propertyType, portablePreference );
         } catch ( Exception e ) {
             throw new RuntimeException( e );
@@ -249,60 +270,102 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         return load( propertyType, subPreferenceValue );
     }
 
+    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference,
+                                                                                          final PreferenceScope scope ) {
+        try {
+            Class<U> clazz = portablePreference.getPojoClass();
+            save( clazz, portablePreference, scope );
+            preferenceStore.put( scope, portablePreference.identifier(), portablePreference );
+        } catch ( IllegalAccessException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
     private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final Class<U> clazz,
-                                                                                          final T portablePreference ) throws IllegalAccessException {
+                                                                                          final T portablePreference,
+                                                                                          final PreferenceScope scope ) throws IllegalAccessException {
         for ( Field field : portablePreference.getPojoClass().getDeclaredFields() ) {
             Property propertyAnnotation = field.getAnnotation( Property.class );
             if ( propertyAnnotation != null ) {
                 if ( field.getType().isAnnotationPresent( WorkbenchPreference.class ) ) {
-                    boolean inherited = propertyAnnotation.inherited();
+                    boolean shared = propertyAnnotation.shared();
 
                     field.setAccessible( true );
 
-                    if ( inherited ) {
-                        saveInheritedPreference( portablePreference, field );
+                    if ( shared ) {
+                        saveSharedPreference( portablePreference, field, scope );
                     } else {
-                        saveSubPreference( portablePreference, field );
+                        saveSubPreference( portablePreference, field, scope );
                     }
                 }
             }
         }
     }
 
-    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveInheritedPreference( final Object portablePreference,
-                                                                                                             final Field field ) throws IllegalAccessException {
+    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveSharedPreference( final Object portablePreference,
+                                                                                                          final Field field,
+                                                                                                          final PreferenceScope scope ) throws IllegalAccessException {
         final Class<U> propertyType = (Class<U>) field.getType();
-        final T inheritedPropertyValue = (T) field.get( portablePreference );
-        save( inheritedPropertyValue, null, null );
+        final T sharedPropertyValue = (T) field.get( portablePreference );
+        save( sharedPropertyValue, scope );
     }
 
     private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveSubPreference( final Object portablePreference,
-                                                                                                       final Field field ) throws IllegalAccessException {
+                                                                                                       final Field field,
+                                                                                                       final PreferenceScope scope ) throws IllegalAccessException {
         final Class<U> propertyType = (Class<U>) field.getType();
         final T subPreferenceValue = (T) field.get( portablePreference );
-        save( propertyType, subPreferenceValue );
+        save( propertyType, subPreferenceValue, scope );
     }
 
     private <T extends BasePreference<T>> void saveOne( final BasePreferencePortable<?> portablePreference ) {
         Class<T> clazz = (Class<T>) portablePreference.getPojoClass();
         try {
-            save( clazz, (BasePreferencePortable<T>) portablePreference );
-            preferenceStore.put( portablePreference.key(), portablePreference );
+            save( clazz, (BasePreferencePortable<T>) portablePreference, defaultScopeResolutionStrategy.getInfo().defaultScope() );
+            preferenceStore.put( defaultScopeResolutionStrategy.getInfo().defaultScope(), portablePreference.identifier(), portablePreference );
         } catch ( IllegalAccessException e ) {
             throw new RuntimeException( e );
         }
     }
 
+    private List<BasePreferencePortable> getAnnotatedChildren( String parentIdentifier ) {
+        if ( childrenByParent == null ) {
+            childrenByParent = new HashMap<>();
+
+            final Iterable<Preference> portablePreferences = getPortablePreferences();
+            portablePreferences.forEach( preference -> {
+                final BasePreferencePortable portablePreference = (BasePreferencePortable) preference;
+                final String[] parents = portablePreference.parents();
+
+                for ( String parent : parents ) {
+                    if ( parent != null & !parent.isEmpty() ) {
+                        List<BasePreferencePortable> children = childrenByParent.get( parent );
+                        if ( children == null ) {
+                            children = new ArrayList<>();
+                            childrenByParent.put( parent, children );
+                        }
+
+                        children.add( portablePreference );
+                    }
+                }
+            } );
+        }
+
+        return childrenByParent.get( parentIdentifier );
+    }
+
     private <T> PreferenceHierarchyElement<T> buildHierarchyElement( final BasePreferencePortable<T> portablePreference,
                                                                      final PreferenceHierarchyElement<?> parent,
-                                                                     final boolean inherited,
+                                                                     final boolean shared,
                                                                      final boolean root,
                                                                      final String bundleKey ) {
         PreferenceHierarchyElement<T> hierarchyElement = new PreferenceHierarchyElement<>( UUID.randomUUID().toString(),
                                                                                            portablePreference,
-                                                                                           inherited,
+                                                                                           shared,
                                                                                            root,
                                                                                            bundleKey );
+
+        buildHierarchyElementForAnnotatedChildren( portablePreference, hierarchyElement );
 
         try {
             hierarchyElement.setPortablePreference( portablePreference );
@@ -325,7 +388,7 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
                         final PreferenceHierarchyElement<?> childElement = buildHierarchyElement( fieldValue,
                                                                                                   hierarchyElement,
-                                                                                                  propertyAnnotation.inherited(),
+                                                                                                  propertyAnnotation.shared(),
                                                                                                   false,
                                                                                                   propertyBundleKey );
 
@@ -346,8 +409,41 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         return hierarchyElement;
     }
 
+    private <T> void buildHierarchyElementForAnnotatedChildren( final BasePreferencePortable<T> portablePreference,
+                                                                final PreferenceHierarchyElement<T> hierarchyElement ) {
+        final List<BasePreferencePortable> annotatedChildren = getAnnotatedChildren( portablePreference.identifier() );
+        if ( annotatedChildren != null ) {
+            annotatedChildren.forEach( childPreference -> {
+                final BasePreferencePortable<?> loadedChild = load( childPreference );
+                final PreferenceHierarchyElement<?> childElement = buildHierarchyElement( loadedChild,
+                                                                                          hierarchyElement,
+                                                                                          false,
+                                                                                          true,
+                                                                                          childPreference.bundleKey() );
+
+                hierarchyElement.getChildren().add( childElement );
+            } );
+        }
+    }
+
+    BasePreferencePortable getRootPortablePreferenceByIdentifier( String identifier ) {
+        for ( Preference preference : getRootPortablePreferences() ) {
+            BasePreferencePortable portablePreference = (BasePreferencePortable) preference;
+
+            if ( portablePreference.identifier().equals( identifier ) ) {
+                return portablePreference;
+            }
+        }
+
+        return null;
+    }
+
     Iterable<Preference> getRootPortablePreferences() {
         return preferences.select( rootPreferenceAnnotation );
+    }
+
+    Iterable<Preference> getPortablePreferences() {
+        return preferences.select( portablePreferenceAnnotation );
     }
 
     <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T lookupPortablePreference( final Class<U> clazz ) {
