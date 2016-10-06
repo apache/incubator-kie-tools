@@ -54,6 +54,20 @@
         <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
+    <repository>
+      <id>jboss-public-maven-repository-group</id>
+      <name>JBoss Public Maven Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
@@ -75,23 +89,6 @@
     <module>\${artifactId}-component</module>
     <module>\${artifactId}-showcase</module>
   </modules>
-  
-  <repositories>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
 
   <build>
     <pluginManagement>
