@@ -52,8 +52,9 @@
     <uberfire.version>${project.version}</uberfire.version>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
     <version.com.google.gwt>2.8.0-rc2</version.com.google.gwt>
-    <version.com.ahome-it.lienzo-core>2.0.270-RELEASE</version.com.ahome-it.lienzo-core>
-    <version.com.ahome-it.lienzo-tests>1.0.0-RC1</version.com.ahome-it.lienzo-tests>
+    <!-- when the new jboss-ip-bom 7.0.0.CR5 was released the lienzo versions can be removed -->
+    <version.com.ahome-it.lienzo-core>2.0.277-RELEASE</version.com.ahome-it.lienzo-core>
+    <version.com.ahome-it.lienzo-tests>1.0.0-RC3</version.com.ahome-it.lienzo-tests>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <!-- 19.0.0.jbossorg-2 was created from upstream Guava version 20.0-SNAPSHOT as Errai 4.0/GWT 2.8 needs it. Once the version 20.0 is released, we should upgrade to that. -->
     <version.com.google.guava>19.0.0.jbossorg-2</version.com.google.guava>
@@ -664,6 +665,7 @@
       </dependency>
 
       <!-- Lienzo -->
+      <!-- when the new jboss-ip-bom 7.0.0.CR5 was released the lienzo artifacts can be removed -->
       <dependency>
         <groupId>com.ahome-it</groupId>
         <artifactId>lienzo-core</artifactId>
