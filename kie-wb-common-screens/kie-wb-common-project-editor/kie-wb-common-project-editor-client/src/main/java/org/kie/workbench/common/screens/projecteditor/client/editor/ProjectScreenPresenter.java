@@ -597,6 +597,10 @@ public class ProjectScreenPresenter
                 .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.CREATE )
                 .respondsWith( getCopyCommand() )
                 .endMenu()
+                .newTopLevelMenu( CommonConstants.INSTANCE.Reimport() )
+                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.UPDATE )
+                .respondsWith( getReImportCommand() )
+                .endMenu()
                 .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
                     @Override
                     public void push( MenuFactory.CustomMenuBuilder element ) {
@@ -629,6 +633,24 @@ public class ProjectScreenPresenter
                     }
                 } ).endMenu()
                 .build();
+    }
+
+    protected Command getReImportCommand() {
+        return new Command() {
+            @Override
+            public void execute() {
+                projectScreenService.call(
+                        new RemoteCallback<Void>() {
+
+                            @Override
+                            public void callback( final Void o ) {
+                                busyIndicatorView.hideBusyIndicator();
+                                notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ReimportSuccessful() ) );
+                            }
+                        },
+                        new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).reImport( project.getPomXMLPath() );
+            }
+        };
     }
 
     private Command getDeleteCommand() {

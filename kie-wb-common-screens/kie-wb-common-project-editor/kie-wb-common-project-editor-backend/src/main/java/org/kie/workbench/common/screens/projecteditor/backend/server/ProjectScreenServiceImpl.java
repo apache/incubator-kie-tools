@@ -98,4 +98,9 @@ public class ProjectScreenServiceImpl
                              comment );
     }
 
+    @Override
+    public void reImport( final Path pathToPomXML ) {
+        projectService.reImport( pathToPomXML );
+    }
 }
+

@@ -292,4 +292,7 @@ public interface CommonConstants
     
     String All_Perspectives_View_Mode();
 
+    String Reimport();
+
+    String ReimportSuccessful();
 }

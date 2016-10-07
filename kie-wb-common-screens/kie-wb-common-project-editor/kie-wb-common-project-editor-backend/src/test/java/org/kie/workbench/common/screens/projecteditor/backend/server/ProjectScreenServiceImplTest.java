@@ -735,4 +735,10 @@ public class ProjectScreenServiceImplTest {
                                    eq( comment ) );
     }
 
+    @Test
+    public void testReImport() throws Exception {
+        service.reImport( pathToPom );
+
+        verify( projectService ).reImport( pathToPom );
+    }
 }

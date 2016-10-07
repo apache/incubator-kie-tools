@@ -45,4 +45,5 @@ public interface ProjectScreenService {
                final String newFileName,
                final String commitMessage );
 
+    void reImport( Path pathToPomXML );
 }

@@ -36,7 +36,6 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -53,7 +52,6 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
-import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
@@ -565,6 +563,15 @@ public class ProjectScreenPresenterTest
                 times( 3 ) ).hideBusyIndicator();
     }
 
+    @Test
+    public void testGetReimportCommand() throws Exception {
+        Command reImportCommand = presenter.getReImportCommand();
+
+        reImportCommand.execute();
+
+        verify( projectScreenService, times( 1 ) ).reImport( eq( presenter.pathToPomXML ) );
+    }
+
     private void verifyBusyShowHideAnyString( int show,
                                               int hide ) {
         //Check the "Busy" popup has not been shown again
@@ -587,5 +594,4 @@ public class ProjectScreenPresenterTest
 
         return caller;
     }
-
 }
