@@ -28,6 +28,7 @@
   <source path='base'>
     <include name="**/version/VersionHistory*"/>
     <include name="**/version/VersionRecord*"/>
+    <include name="**/FileDiff*"/>
   </source>
 
   <source path=''>

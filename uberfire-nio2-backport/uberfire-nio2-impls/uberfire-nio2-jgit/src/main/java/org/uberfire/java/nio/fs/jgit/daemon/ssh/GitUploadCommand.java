@@ -21,13 +21,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.pack.PackConfig;
 import org.eclipse.jgit.transport.UploadPack;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
 
@@ -57,9 +56,12 @@ public class GitUploadCommand extends BaseGitCommand {
         config.setCompressionLevel( Deflater.BEST_COMPRESSION );
         up.setPackConfig( config );
 
+        up.setRefFilter( new HiddenBranchRefFilter() );
+
         try {
             up.upload( in, out, err );
         } catch ( IOException e ) {
         }
     }
+
 }

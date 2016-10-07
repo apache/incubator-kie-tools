@@ -43,6 +43,7 @@ import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.transport.resolver.UploadPackFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
+import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
 
 /**
  * Basic daemon for the anonymous <code>git://</code> transport protocol.
@@ -97,7 +98,7 @@ public class Daemon {
                                               ServiceNotAuthorizedException {
                 final UploadPack up = new UploadPack( db );
                 up.setTimeout( getTimeout() );
-
+                up.setRefFilter( new HiddenBranchRefFilter() );
                 final PackConfig config = new PackConfig( db );
                 config.setCompressionLevel( Deflater.BEST_COMPRESSION );
                 up.setPackConfig( config );

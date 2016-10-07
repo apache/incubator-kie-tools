@@ -42,6 +42,7 @@ import org.junit.Test;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.NotImplementedException;
+import org.uberfire.java.nio.base.attributes.HiddenAttributeView;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.options.SquashOption;
 import org.uberfire.java.nio.base.version.VersionRecord;
@@ -1117,6 +1118,20 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         assertThat( attrsRoot.readAttributes().creationTime() ).isNotNull();
         assertThat( attrsRoot.readAttributes().lastModifiedTime() ).isNotNull();
         assertThat( attrsRoot.readAttributes().size() ).isEqualTo( -1L );
+
+
+
+        final Path prRootPath = provider.getPath( URI.create( "git://PR-1-from/develop-master@getfileattriview-test-repo/" ) );
+
+        final HiddenAttributeView extendedAttrs = provider.getFileAttributeView( prRootPath, HiddenAttributeView.class );
+
+        assertThat( extendedAttrs.readAttributes().isDirectory() ).isTrue();
+        assertThat( extendedAttrs.readAttributes().isRegularFile() ).isFalse();
+        assertThat( extendedAttrs.readAttributes().creationTime() ).isNotNull();
+        assertThat( extendedAttrs.readAttributes().lastModifiedTime() ).isNotNull();
+        assertThat( extendedAttrs.readAttributes().size() ).isEqualTo( -1L );
+        assertThat( extendedAttrs.readAttributes().isHidden() ).isEqualTo( true );
+
     }
 
     @Test

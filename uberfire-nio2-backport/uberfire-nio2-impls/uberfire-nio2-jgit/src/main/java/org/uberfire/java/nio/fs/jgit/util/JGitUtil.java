@@ -65,6 +65,7 @@ import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.filter.RevFilter;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
@@ -77,6 +78,8 @@ import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileTimeImpl;
+import org.uberfire.java.nio.base.attributes.HiddenAttributes;
+import org.uberfire.java.nio.base.attributes.HiddenAttributesImpl;
 import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.base.version.VersionHistory;
 import org.uberfire.java.nio.base.version.VersionRecord;
@@ -85,6 +88,8 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.java.nio.fs.jgit.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
+import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
+import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
 import static java.util.Collections.*;
 import static org.apache.commons.io.FileUtils.*;
@@ -1159,6 +1164,7 @@ public final class JGitUtil {
             public Object fileKey() {
                 return pathInfo.getObjectId() == null ? null : pathInfo.getObjectId().toString();
             }
+
         };
     }
 
@@ -1257,6 +1263,7 @@ public final class JGitUtil {
             public Object fileKey() {
                 return pathInfo.getObjectId() == null ? null : pathInfo.getObjectId().toString();
             }
+
         };
     }
 
@@ -1308,6 +1315,37 @@ public final class JGitUtil {
                 }
             }
         } );
+    }
+
+    public static RevCommit getCommonAncestor( Git git,
+                                               ObjectId rightCommit,
+                                               ObjectId leftCommit ) {
+
+        final RevWalk revWalk = new RevWalk( git.getRepository() );
+        try {
+            final RevCommit commitA = revWalk.lookupCommit( rightCommit );
+            final RevCommit commitB = revWalk.lookupCommit( leftCommit );
+
+            revWalk.setRevFilter( RevFilter.MERGE_BASE );
+            revWalk.markStart( commitA );
+            revWalk.markStart( commitB );
+            return revWalk.next();
+        } catch ( Exception e ) {
+            throw new GitException( "Problem when trying to get common ancestor", e );
+        } finally {
+            if ( revWalk != null ) {
+                revWalk.dispose();
+            }
+        }
+    }
+
+    public static HiddenAttributes buildHiddenAttributes( final JGitFileSystem fileSystem,
+                                                          final String branchName,
+                                                          final String path ) {
+
+        final BasicFileAttributes attributes = buildBasicAttributes( fileSystem, branchName, path );
+
+        return new HiddenAttributesImpl( attributes, HiddenBranchRefFilter.isHidden( branchName ) );
     }
 
     public enum PathType {

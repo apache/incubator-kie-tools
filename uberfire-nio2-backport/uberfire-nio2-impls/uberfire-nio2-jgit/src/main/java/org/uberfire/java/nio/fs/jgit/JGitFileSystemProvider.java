@@ -98,12 +98,16 @@ import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
 import org.uberfire.java.nio.base.ExtendedAttributeView;
+import org.uberfire.java.nio.base.FileDiff;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.SeekableByteChannelFileBasedImpl;
 import org.uberfire.java.nio.base.WatchContext;
+import org.uberfire.java.nio.base.attributes.HiddenAttributeView;
+import org.uberfire.java.nio.base.attributes.HiddenAttributes;
 import org.uberfire.java.nio.base.dotfiles.DotFileOption;
 import org.uberfire.java.nio.base.options.CherryPickCopyOption;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.base.options.MergeCopyOption;
 import org.uberfire.java.nio.base.options.SquashOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionAttributes;
@@ -149,7 +153,9 @@ import org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 import org.uberfire.java.nio.fs.jgit.util.MoveCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.ProxyAuthenticator;
 import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
+import org.uberfire.java.nio.fs.jgit.util.commands.DiffBranches;
 import org.uberfire.java.nio.fs.jgit.util.commands.Fork;
+import org.uberfire.java.nio.fs.jgit.util.commands.Merge;
 import org.uberfire.java.nio.fs.jgit.util.commands.Mirror;
 import org.uberfire.java.nio.fs.jgit.util.commands.Squash;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
@@ -1442,7 +1448,12 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final JGitPathImpl gTarget = toPathImpl( target );
         final boolean isBranch = isBranch( gSource ) && isBranch( gTarget );
 
-        if ( options.length == 1 && options[ 0 ] instanceof CherryPickCopyOption ) {
+        if ( options.length == 1 && options[ 0 ] instanceof MergeCopyOption ) {
+            if ( !isBranch ) {
+                throw new IOException( "Merge needs source and target as root." );
+            }
+            this.merge( gSource, gTarget );
+        } else if ( options.length == 1 && options[ 0 ] instanceof CherryPickCopyOption ) {
             if ( !isBranch ) {
                 throw new IOException( "Cherry pick needs source and target as root." );
             }
@@ -1458,6 +1469,19 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             }
             copyAsset( gSource, gTarget, options );
         }
+    }
+
+    private void merge( final JGitPathImpl source,
+                        final JGitPathImpl target ) {
+
+        try {
+            target.getFileSystem().lock();
+            final Git repo = source.getFileSystem().gitRepo();
+            new Merge( source.getFileSystem().gitRepo(), source.getRefTree(), target.getRefTree() ).execute();
+        } finally {
+            target.getFileSystem().unlock();
+        }
+
     }
 
     private void cherryPick( final JGitPathImpl source,
@@ -1857,6 +1881,10 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 final V newView = (V) new JGitBasicAttributeView( gPath );
                 gPath.addAttrView( newView );
                 return newView;
+            } else if ( type == HiddenAttributeView.class || type == JGitHiddenAttributeView.class ) {
+                final V newView = (V) new JGitHiddenAttributeView( gPath );
+                gPath.addAttrView( newView );
+                return newView;
             } else if ( type == VersionAttributeView.class || type == JGitVersionAttributeView.class ) {
                 final V newView = (V) new JGitVersionAttributeView( gPath );
                 gPath.addAttrView( newView );
@@ -1876,6 +1904,10 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
             if ( name.equals( "basic" ) ) {
                 final JGitBasicAttributeView newView = new JGitBasicAttributeView( path );
+                path.addAttrView( newView );
+                return newView;
+            } else if ( name.equals( "extended" ) ) {
+                final JGitHiddenAttributeView newView = new JGitHiddenAttributeView( path );
                 path.addAttrView( newView );
                 return newView;
             } else if ( name.equals( "version" ) ) {
@@ -1905,6 +1937,9 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         if ( type == VersionAttributes.class ) {
             final JGitVersionAttributeView view = getFileAttributeView( path, JGitVersionAttributeView.class, options );
             return (A) view.readAttributes();
+        } else if ( type == HiddenAttributes.class ) {
+            final JGitHiddenAttributeView view = getFileAttributeView( path, JGitHiddenAttributeView.class, options );
+            return (A) view.readAttributes();
         } else if ( type == BasicFileAttributesImpl.class || type == BasicFileAttributes.class ) {
             final JGitBasicAttributeView view = getFileAttributeView( path, JGitBasicAttributeView.class, options );
             return (A) view.readAttributes();
@@ -1926,12 +1961,23 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             throw new IllegalArgumentException( attributes );
         }
 
-        final ExtendedAttributeView view = getFileAttributeView( toPathImpl( path ), s[ 0 ], options );
-        if ( view == null ) {
-            throw new UnsupportedOperationException( "View '" + s[ 0 ] + "' not available" );
-        }
+        if ( s[ 0 ].equals( "diff" ) ) {
+            final Repository repo = ( (JGitPathImpl) path ).getFileSystem().gitRepo().getRepository();
+            final String[] branches = s[ 1 ].split( "," );
+            final String branchA = branches[ 0 ];
+            final String branchB = branches[ 1 ];
+            final List<FileDiff> diffs = new DiffBranches( repo, branchA, branchB ).execute().get();
+            final HashMap<String, Object> map = new HashMap<>();
+            map.put( "diff", diffs );
+            return map;
+        } else {
+            final ExtendedAttributeView view = getFileAttributeView( toPathImpl( path ), s[ 0 ], options );
+            if ( view == null ) {
+                throw new UnsupportedOperationException( "View '" + s[ 0 ] + "' not available" );
+            }
 
-        return view.readAttributes( s[ 1 ].split( "," ) );
+            return view.readAttributes( s[ 1 ].split( "," ) );
+        }
     }
 
     @Override

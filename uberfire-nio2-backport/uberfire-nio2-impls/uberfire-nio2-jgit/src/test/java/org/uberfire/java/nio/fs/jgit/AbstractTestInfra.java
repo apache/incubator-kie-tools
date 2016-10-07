@@ -16,24 +16,23 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.net.ServerSocket;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.PersonIdent;
-import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.util.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -42,7 +41,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.java.nio.file.Path;
+
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 public abstract class AbstractTestInfra {
 
@@ -141,6 +141,19 @@ public abstract class AbstractTestInfra {
         return file;
     }
 
+    public File tempFile( final byte[] content ) throws IOException {
+        final File file = File.createTempFile( "bar", "foo" );
+        final FileOutputStream out = new FileOutputStream( file );
+
+        if ( content != null && content.length > 0 ) {
+            out.write( content );
+            out.flush();
+        }
+
+        out.close();
+        return file;
+    }
+
     public PersonIdent getAuthor() {
         return new PersonIdent( "user", "user@example.com" );
     }
@@ -157,6 +170,13 @@ public abstract class AbstractTestInfra {
         }
         logger.debug( "Found free port " + port );
         return port;
+    }
+
+    protected byte[] loadImage( final String path ) throws IOException {
+        final InputStream stream = this.getClass().getClassLoader().getResourceAsStream( path );
+        StringWriter writer = new StringWriter();
+        IOUtils.copy( stream, writer );
+        return writer.toString().getBytes();
     }
 
 }
