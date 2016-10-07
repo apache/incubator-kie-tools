@@ -2273,60 +2273,62 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                          final CommitContent commitContent ) {
 
         final JGitFileSystem fileSystem = path.getFileSystem();
-        fileSystem.lock();
+        try {
+            fileSystem.lock();
 
-        final Git git = fileSystem.gitRepo();
-        final String branchName = path.getRefTree();
-        final boolean batchState = fileSystem.isOnBatch();
-        final boolean amend = batchState && fileSystem.isHadCommitOnBatchState( path.getRoot() );
+            final Git git = fileSystem.gitRepo();
+            final String branchName = path.getRefTree();
+            final boolean batchState = fileSystem.isOnBatch();
+            final boolean amend = batchState && fileSystem.isHadCommitOnBatchState( path.getRoot() );
 
-        final ObjectId oldHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
+            final ObjectId oldHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
 
-        final boolean hasCommit;
-        if ( batchState && fileSystem.getBatchCommitInfo() != null ) {
-            hasCommit = JGitUtil.commit( git, branchName, fileSystem.getBatchCommitInfo(), amend, commitContent );
-        } else {
-            hasCommit = JGitUtil.commit( git, branchName, commitInfo, amend, commitContent );
-        }
+            final boolean hasCommit;
+            if ( batchState && fileSystem.getBatchCommitInfo() != null ) {
+                hasCommit = JGitUtil.commit( git, branchName, fileSystem.getBatchCommitInfo(), amend, commitContent );
+            } else {
+                hasCommit = JGitUtil.commit( git, branchName, commitInfo, amend, commitContent );
+            }
 
-        if ( !batchState ) {
-            if ( hasCommit ) {
-                int value = fileSystem.incrementAndGetCommitCount();
-                if ( value >= commitLimit ) {
-                    JGitUtil.gc( git );
-                    fileSystem.resetCommitCount();
+            if ( !batchState ) {
+                if ( hasCommit ) {
+                    int value = fileSystem.incrementAndGetCommitCount();
+                    if ( value >= commitLimit ) {
+                        JGitUtil.gc( git );
+                        fileSystem.resetCommitCount();
+                    }
+                }
+
+                final ObjectId newHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
+
+                postCommitHook( git.getRepository() );
+
+                notifyDiffs( path.getFileSystem(), branchName, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage(), oldHead, newHead );
+            } else {
+                synchronized ( oldHeadsOfPendingDiffsLock ) {
+                    if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ||
+                            !oldHeadsOfPendingDiffs.get( path.getFileSystem() ).containsKey( branchName ) ) {
+
+                        if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ) {
+                            oldHeadsOfPendingDiffs.put( path.getFileSystem(), new ConcurrentHashMap<String, NotificationModel>() );
+                        }
+
+                        if ( fileSystem.getBatchCommitInfo() != null ) {
+                            oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, fileSystem.getBatchCommitInfo().getSessionId(), fileSystem.getBatchCommitInfo().getName(), fileSystem.getBatchCommitInfo().getMessage() ) );
+
+                        } else {
+                            oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage() ) );
+                        }
+                    }
                 }
             }
 
-            final ObjectId newHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
-
-            postCommitHook( git.getRepository() );
-
-            notifyDiffs( path.getFileSystem(), branchName, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage(), oldHead, newHead );
-        } else {
-            synchronized ( oldHeadsOfPendingDiffsLock ) {
-                if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ||
-                        !oldHeadsOfPendingDiffs.get( path.getFileSystem() ).containsKey( branchName ) ) {
-
-                    if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ) {
-                        oldHeadsOfPendingDiffs.put( path.getFileSystem(), new ConcurrentHashMap<String, NotificationModel>() );
-                    }
-
-                    if ( fileSystem.getBatchCommitInfo() != null ) {
-                        oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, fileSystem.getBatchCommitInfo().getSessionId(), fileSystem.getBatchCommitInfo().getName(), fileSystem.getBatchCommitInfo().getMessage() ) );
-
-                    } else {
-                        oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage() ) );
-                    }
-                }
+            if ( path.getFileSystem().isOnBatch() && !fileSystem.isHadCommitOnBatchState( path.getRoot() ) ) {
+                fileSystem.setHadCommitOnBatchState( path.getRoot(), hasCommit );
             }
+        } finally {
+            fileSystem.unlock();
         }
-
-        if ( path.getFileSystem().isOnBatch() && !fileSystem.isHadCommitOnBatchState( path.getRoot() ) ) {
-            fileSystem.setHadCommitOnBatchState( path.getRoot(), hasCommit );
-        }
-
-        fileSystem.unlock();
     }
 
     private void postCommitHook( final Repository repository ) {

@@ -18,12 +18,14 @@ package org.uberfire.java.nio.fs.jgit;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -218,6 +220,43 @@ public class JGitFileSystemProviderBytemanTest extends AbstractTestInfra {
         }
 
         assertEquals( 3, getCommitsFromBranch( fs.gitRepo(), "master" ).size() );
+
+    }
+
+    @Test
+    @BMScript(value = "byteman/commit_exception.btm")
+    public void testFileSystemLockOnException() throws IOException, GitAPIException {
+
+        final URI newRepo = URI.create( "git://byteman-exception-commit-repo" );
+        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem( newRepo, EMPTY_ENV );
+
+        final Path path = provider.getPath( URI.create( "git://master@byteman-exception-commit-repo/myfile.txt" ) );
+
+        try {
+            writeFile( fs, path, "master" );
+        } catch ( RuntimeException e ) {
+            // intentional Exception. Ignore
+        }
+
+        // fs must be unlocked
+        Object lock = null;
+        try {
+            Field field = JGitFileSystem.class.getDeclaredField( "lock" );
+            field.setAccessible( true );
+            lock = field.get( fs );
+        } catch ( Exception e ) {
+            fail( e.getMessage() );
+        }
+        Object isLocked = null;
+        try {
+            Field field = lock.getClass().getDeclaredField( "isLocked" );
+            field.setAccessible( true );
+            isLocked = field.get( lock );
+        } catch ( Exception e ) {
+            fail( e.getMessage() );
+        }
+
+        assertFalse( ((AtomicBoolean) isLocked).get() );
 
     }
 
