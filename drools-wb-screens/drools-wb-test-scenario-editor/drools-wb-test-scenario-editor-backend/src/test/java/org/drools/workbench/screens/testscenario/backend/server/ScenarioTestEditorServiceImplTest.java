@@ -16,81 +16,80 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.testscenarios.shared.FactData;
+import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ScenarioTestEditorServiceImplTest {
 
-    private Scenario scenario;
+    @Mock
+    Scenario scenario;
 
-    private ScenarioTestEditorServiceImpl service;
+    @Mock
+    Path path;
 
-    private String[] fullyQualifiedClassNamesUsedByGlobals;
+    @Mock
+    PackageDataModelOracle modelOracle;
 
-    private String[] fullyQualifiedClassNamesUsedByModel;
+    @Mock
+    DataModelService dataModelService;
 
-    private Path path = null;
+    @InjectMocks
+    ScenarioTestEditorServiceImpl testEditorService = new ScenarioTestEditorServiceImpl();
 
-    @Before
-    public void setup() {
-        scenario = new Scenario();
-        service = new ScenarioTestEditorServiceImpl() {
+    @Test
+    public void runScenarioWithoutDependentImports() throws Exception {
+        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
+        when( scenario.getImports() ).thenReturn( new Imports() );
 
-            @Override
-            Collection<String> getFullyQualifiedClassNamesUsedByGlobals( final PackageDataModelOracle dataModelOracle ) {
-                return Arrays.asList( fullyQualifiedClassNamesUsedByGlobals );
-            }
+        testEditorService.addDependentImportsToScenario( scenario, path );
 
-            @Override
-            Set<String> getFullyQualifiedClassNamesUsedByModel( final Scenario scenario ) {
-                return new HashSet<String>() {{
-                    addAll( Arrays.asList( fullyQualifiedClassNamesUsedByModel ) );
-                }};
-            }
-
-            @Override
-            PackageDataModelOracle getDataModel( final Path path ) {
-                return null;
-            }
-        };
+        assertEquals( 0, scenario.getImports().getImports().size() );
     }
 
     @Test
     public void runScenarioWithDependentImports() throws Exception {
-        fullyQualifiedClassNamesUsedByGlobals = new String[]{};
-        fullyQualifiedClassNamesUsedByModel = new String[]{};
+        final ArrayList<Fixture> fixtures = new ArrayList<Fixture>() {{
+            add( factData( "java.sql.ClientInfoStatus" ) );
+        }};
 
-        service.addDependentImportsToScenario( scenario, path );
+        final Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>() {{
+            put( "java.sql.ClientInfoStatus", new ModelField[]{ modelField( "java.sql.JDBCType" ) } );
+        }};
 
-        assertEquals( 0, scenarioImports().size() );
+        when( scenario.getFixtures() ).thenReturn( fixtures );
+        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
+        when( modelOracle.getProjectModelFields() ).thenReturn( modelFields );
+        when( scenario.getImports() ).thenReturn( new Imports() );
+
+        testEditorService.addDependentImportsToScenario( scenario, path );
+
+        assertEquals( 2, scenario.getImports().getImports().size() );
     }
 
-    @Test
-    public void runScenarioWithoutDependentImports() throws Exception {
-        scenarioImports().add( new Import( "org.junit.Test0" ) );
-        scenarioImports().add( new Import( "org.junit.Test1" ) );
-
-        fullyQualifiedClassNamesUsedByGlobals = new String[]{ "org.junit.Test1", "org.junit.Test2", "org.junit.Test3" };
-        fullyQualifiedClassNamesUsedByModel = new String[]{ "org.junit.Test3", "org.junit.Test4", "org.junit.Test5" };
-
-        service.addDependentImportsToScenario( scenario, path );
-
-        assertEquals( 6, scenarioImports().size() );
+    private FactData factData( final String type ) {
+        return new FactData( type, "", true );
     }
 
-    private List<Import> scenarioImports() {
-        return scenario.getImports().getImports();
+    private ModelField modelField( final String className ) {
+        return new ModelField( null, className, null, null, null, null );
     }
 }
