@@ -1,0 +1,1 @@
+CardinalityRuleImpl ${ruleName} = new CardinalityRuleImpl( "${ruleName}", "${ruleRoleId}", ${min}, ${max} );

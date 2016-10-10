@@ -1,0 +1,77 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.workbench.common.stunner.shapes.client.view;
+
+import com.ait.lienzo.client.core.shape.MultiPath;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
+
+public class RectangleView extends BasicShapeView<RectangleView>
+        implements HasSize<RectangleView> {
+
+    // TODO: Arc resize on lienzo is not supported. Cannot use corner radius.
+    private static final double CORNER_RADIUS = 0;
+
+    public RectangleView( final double width,
+                          final double height ) {
+        super( create( new MultiPath(), width, height, CORNER_RADIUS ) );
+    }
+
+    @Override
+    public RectangleView setSize( final double width,
+                                  final double height ) {
+        create( getPath().clear(), width, height, CORNER_RADIUS );
+        updateFillGradient( width, height );
+        refresh();
+        return this;
+
+    }
+
+    /**
+     * Append the path parts for a rectangle.
+     *
+     * @param path The source multipath
+     * @param w    The rectangle width
+     * @param h    The rectangle height
+     * @param r    The rectangle corner radius
+     */
+    private static MultiPath create( final MultiPath path,
+                                     final double w,
+                                     final double h,
+                                     final double r ) {
+        if ( ( w > 0 ) && ( h > 0 ) ) {
+            if ( ( r > 0 ) && ( r < ( w / 2 ) ) && ( r < ( h / 2 ) ) ) {
+                path.M( r, 0 );
+                path.L( w - r, 0 );
+                path.A( w, 0, w, r, r );
+                path.L( w, h - r );
+                path.A( w, h, w - r, h, r );
+                path.L( r, h );
+                path.A( 0, h, 0, h - r, r );
+                path.L( 0, r );
+                path.A( 0, 0, r, 0, r );
+
+            } else {
+                path.rect( 0, 0, w, h );
+
+            }
+            path.Z();
+
+        }
+        return path;
+
+    }
+}
