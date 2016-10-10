@@ -62,6 +62,15 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
     HelpBlock containerIdTextHelpInline;
 
     @UiField
+    FormGroup containerAliasTextGroup;
+
+    @UiField
+    TextBox containerAliasText;
+
+    @UiField
+    HelpBlock containerAliasTextHelpInline;
+
+    @UiField
     FormLabel serverTemplateLabel;
 
     @UiField
@@ -194,6 +203,14 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
 
     public String getContainerId() {
         return this.containerIdText.getText();
+    }
+
+    public void setContainerAlias(final String containerAlias) {
+        this.containerAliasText.setText(containerAlias);
+    }
+
+    public String getContainerAlias() {
+        return this.containerAliasText.getText();
     }
 
     public String getServerTemplate() {

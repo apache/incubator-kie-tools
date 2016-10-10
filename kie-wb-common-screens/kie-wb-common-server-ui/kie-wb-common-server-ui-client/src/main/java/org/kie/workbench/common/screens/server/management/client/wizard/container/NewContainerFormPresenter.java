@@ -66,6 +66,8 @@ public class NewContainerFormPresenter implements WizardPage {
 
         String getContainerName();
 
+        String getContainerAlias();
+
         String getGroupId();
 
         String getArtifactId();
@@ -312,7 +314,7 @@ public class NewContainerFormPresenter implements WizardPage {
     public ContainerSpec buildContainerSpec( final String serverTemplateId,
                                              final Map<Capability, ContainerConfig> configs ) {
         return new ContainerSpec( view.getContainerName(),
-                                  view.getContainerName(),
+                                  view.getContainerAlias(),
                                   new ServerTemplateKey( serverTemplateId, null ),
                                   new ReleaseId( view.getGroupId(), view.getArtifactId(), view.getVersion() ),
                                   KieContainerStatus.STOPPED,

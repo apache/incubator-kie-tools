@@ -275,6 +275,8 @@ public interface ProjectEditorConstants
 
     String ContainerId();
 
+    String ContainerAlias();
+
     String ServerTemplate();
 
     String StartContainer();

@@ -172,7 +172,7 @@ public class ServerTemplateView extends Composite
             return;
         }
 
-        final CustomGroupItem groupItem = new CustomGroupItem( containerName,
+        final CustomGroupItem groupItem = new CustomGroupItem( containerSpecId,
                                                                IconType.FOLDER_O,
                                                                onSelect );
 

@@ -41,6 +41,16 @@
                                 </bootstrap:Column>
                             </bootstrap:FormGroup>
 
+                            <bootstrap:FormGroup ui:field="containerAliasTextGroup">
+                              <bootstrap:FormLabel ui:field="containerAliasLabel" for="containerAliasText" showRequiredIndicator="true" addStyleNames="col-md-4">
+                                <ui:text from="{i18n.ContainerAlias}"/>
+                              </bootstrap:FormLabel>
+                              <bootstrap:Column size="MD_8">
+                                <bootstrap:TextBox bootstrap:id="containerAliasText" ui:field="containerAliasText" placeholder="{i18n.ContainerAlias}"/>
+                                <bootstrap:HelpBlock ui:field="containerAliasTextHelpInline"/>
+                              </bootstrap:Column>
+                            </bootstrap:FormGroup>
+
                             <bootstrap:FormGroup ui:field="serverTemplateGroup" visible="false">
                                 <bootstrap:FormLabel ui:field="serverTemplateLabel" for="serverTemplateDropdown" showRequiredIndicator="true" addStyleNames="col-md-4">
                                     <ui:text from="{i18n.ServerTemplate}"/>

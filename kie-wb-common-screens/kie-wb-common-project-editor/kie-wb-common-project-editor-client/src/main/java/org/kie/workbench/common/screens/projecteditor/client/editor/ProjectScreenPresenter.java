@@ -923,26 +923,29 @@ public class ProjectScreenPresenter
             @Override
             public void callback(final Collection<ServerTemplate> serverTemplates) {
                 //TODO use config for using defaults or not
-                final String defaultContainerId = project.getPom().getGav().getArtifactId();
+                final String defaultContainerId = project.getPom().getGav().getArtifactId() + "_" + project.getPom().getGav().getVersion();
+                final String defaultContainerAlias = project.getPom().getGav().getArtifactId();
                 final boolean defaultStartContainer = true;
                 if(serverTemplates.isEmpty()){
                     getSafeExecutedCommand( getBuildDeployCommand(DeploymentMode.VALIDATED) ).execute();
                 } else if(serverTemplates.size() == 1){
                     final ServerTemplate serverTemplate = serverTemplates.iterator().next();
-                    final Set<String> existingContainers = FluentIterable.from(serverTemplate.getContainersSpec()).transform(s -> s.getContainerName()).toSet();
+                    final Set<String> existingContainers = FluentIterable.from(serverTemplate.getContainersSpec()).transform(s -> s.getId()).toSet();
                     if(existingContainers.contains(defaultContainerId) == false){
-                        getSafeExecutedCommand( getBuildDeployProvisionCommand(DeploymentMode.VALIDATED, defaultContainerId, serverTemplate.getId(), defaultStartContainer) ).execute();
+                        getSafeExecutedCommand( getBuildDeployProvisionCommand(DeploymentMode.VALIDATED, defaultContainerId, defaultContainerAlias, serverTemplate.getId(), defaultStartContainer) ).execute();
                     } else {
                         deploymentScreenPopupView.setValidateExistingContainerCallback(containerName -> existingContainers.contains(containerName));
                         deploymentScreenPopupView.setContainerId(defaultContainerId);
+                        deploymentScreenPopupView.setContainerAlias(defaultContainerAlias);
                         deploymentScreenPopupView.setStartContainer(defaultStartContainer);
                         deploymentScreenPopupView.configure( new com.google.gwt.user.client.Command() {
                             @Override
                             public void execute() {
                                 final String containerId = deploymentScreenPopupView.getContainerId();
+                                final String containerAlias = deploymentScreenPopupView.getContainerAlias();
                                 final boolean startContainer = deploymentScreenPopupView.getStartContainer();
 
-                                getSafeExecutedCommand( getBuildDeployProvisionCommand(DeploymentMode.VALIDATED, containerId, serverTemplate.getId(), startContainer) ).execute();
+                                getSafeExecutedCommand( getBuildDeployProvisionCommand(DeploymentMode.VALIDATED, containerId, containerAlias, serverTemplate.getId(), startContainer) ).execute();
 
                                 deploymentScreenPopupView.hide();
                             }
@@ -957,15 +960,17 @@ public class ProjectScreenPresenter
                     deploymentScreenPopupView.addServerTemplates(FluentIterable.from(serverTemplatesIds.keySet()).toSortedSet(String.CASE_INSENSITIVE_ORDER));
                     deploymentScreenPopupView.setValidateExistingContainerCallback(containerName -> FluentIterable.from(containerNames.get(deploymentScreenPopupView.getServerTemplate())).contains(containerName));
                     deploymentScreenPopupView.setContainerId(defaultContainerId);
+                    deploymentScreenPopupView.setContainerAlias(defaultContainerAlias);
                     deploymentScreenPopupView.setStartContainer(defaultStartContainer);
                     deploymentScreenPopupView.configure( new com.google.gwt.user.client.Command() {
                         @Override
                         public void execute() {
                             final String containerId = deploymentScreenPopupView.getContainerId();
+                            final String containerAlias = deploymentScreenPopupView.getContainerAlias();
                             final String serverTemplate = deploymentScreenPopupView.getServerTemplate();
                             final boolean startContainer = deploymentScreenPopupView.getStartContainer();
 
-                            getSafeExecutedCommand( getBuildDeployProvisionCommand(DeploymentMode.VALIDATED, containerId, serverTemplate, startContainer) ).execute();
+                            getSafeExecutedCommand( getBuildDeployProvisionCommand(DeploymentMode.VALIDATED, containerId, containerAlias, serverTemplate, startContainer) ).execute();
 
                             deploymentScreenPopupView.hide();
                         }
@@ -997,12 +1002,12 @@ public class ProjectScreenPresenter
         };
     }
 
-    private Command getBuildDeployProvisionCommand(final DeploymentMode mode, final String containerId, final String serverTemplate, final boolean startContainer) {
+    private Command getBuildDeployProvisionCommand(final DeploymentMode mode, final String containerId, final String containerAlias, final String serverTemplate, final boolean startContainer) {
         return new Command() {
             @Override
             public void execute() {
                 view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                buildAndDeployAndProvision(mode, containerId, serverTemplate, startContainer);
+                buildAndDeployAndProvision(mode, containerId, containerAlias, serverTemplate, startContainer);
             }
         };
     }
@@ -1020,14 +1025,14 @@ public class ProjectScreenPresenter
                 new BuildFailureErrorCallback( view, onBuildAndDeployGavExistsHandler ) ).buildAndDeploy(project, mode);
     }
 
-    private void buildAndDeployAndProvision( final DeploymentMode mode, final String containerId, final String serverTemplate, final boolean startContainer ) {
+    private void buildAndDeployAndProvision( final DeploymentMode mode, final String containerId, final String containerAlias, final String serverTemplate, final boolean startContainer ) {
 
         building = true;
-        buildServiceCaller.call( getBuildDeployProvisionSuccessCallback(containerId, serverTemplate, startContainer),
-                new BuildFailureErrorCallback( view, getOnBuildAndDeployAndProvisionGavExistsHandler(containerId, serverTemplate, startContainer)) ).buildAndDeploy( project, mode );
+        buildServiceCaller.call( getBuildDeployProvisionSuccessCallback(containerId, containerAlias, serverTemplate, startContainer),
+                new BuildFailureErrorCallback( view, getOnBuildAndDeployAndProvisionGavExistsHandler(containerId, containerAlias, serverTemplate, startContainer)) ).buildAndDeploy( project, mode );
     }
 
-    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> getOnBuildAndDeployAndProvisionGavExistsHandler(final String containerId, final String serverTemplate, final boolean startContainer) {
+    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> getOnBuildAndDeployAndProvisionGavExistsHandler(final String containerId, final String containerAlias, final String serverTemplate, final boolean startContainer) {
         return new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
             put( GAVAlreadyExistsException.class,
                     new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
@@ -1040,7 +1045,7 @@ public class ProjectScreenPresenter
                                         @Override
                                         public void execute() {
                                             conflictingRepositoriesPopup.hide();
-                                            getBuildDeployProvisionCommand(DeploymentMode.FORCED, containerId, serverTemplate, startContainer).execute();
+                                            getBuildDeployProvisionCommand(DeploymentMode.FORCED, containerId, containerAlias, serverTemplate, startContainer).execute();
 
                                         }
                                     } );
@@ -1050,7 +1055,7 @@ public class ProjectScreenPresenter
         }};
     }
 
-    private RemoteCallback getBuildDeployProvisionSuccessCallback(final String containerId, final String serverTemplate, final boolean startContainer) {
+    private RemoteCallback getBuildDeployProvisionSuccessCallback(final String containerId, final String containerAlias, final String serverTemplate, final boolean startContainer) {
         return new RemoteCallback<BuildResults>() {
             @Override
             public void callback( final BuildResults result ) {
@@ -1061,7 +1066,7 @@ public class ProjectScreenPresenter
                         GAV gav = project.getPom().getGav();
                         ReleaseId releaseId = new ReleaseId(gav.getGroupId(), gav.getArtifactId(), gav.getVersion());
                         ContainerSpec containerSpec = new ContainerSpec(containerId,
-                                containerId,
+                                containerAlias,
                                 new ServerTemplateKey(serverTemplate, serverTemplate),
                                 releaseId,
                                 KieContainerStatus.STOPPED,

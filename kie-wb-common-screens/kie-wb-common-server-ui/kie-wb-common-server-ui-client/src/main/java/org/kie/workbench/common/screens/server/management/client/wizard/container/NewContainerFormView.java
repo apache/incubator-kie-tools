@@ -45,6 +45,16 @@ public class NewContainerFormView extends Composite
 
     private TranslationService translationService;
 
+    @DataField("new-container-alias-form")
+    Element containerAliasGroup = DOM.createDiv();
+
+    @Inject
+    @DataField("new-container-alias")
+    TextBox containerAlias;
+
+    @DataField("new-container-alias-help")
+    Element containerAliasHelp = DOM.createSpan();
+
     @DataField("new-container-name-form")
     Element containerNameGroup = DOM.createDiv();
 
@@ -158,6 +168,7 @@ public class NewContainerFormView extends Composite
     @Override
     public void clear() {
         containerName.setText( "" );
+        containerAlias.setText( "" );
         groupId.setText( "" );
         artifactId.setText( "" );
         version.setText( "" );
@@ -217,6 +228,11 @@ public class NewContainerFormView extends Composite
     @Override
     public String getContainerName() {
         return containerName.getText();
+    }
+
+    @Override
+    public String getContainerAlias() {
+        return containerAlias.getText();
     }
 
     @Override

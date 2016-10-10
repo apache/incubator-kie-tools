@@ -227,6 +227,7 @@ public class NewContainerFormPresenterTest {
         final GAV gav = new GAV( path );
         when( m2RepoService.loadGAVFromJar( path ) ).thenReturn( gav );
         when( view.getContainerName() ).thenReturn( "containerName" );
+        when( view.getContainerAlias() ).thenReturn( "containerAlias" );
         when( view.getGroupId() ).thenReturn( gav.getGroupId() );
         when( view.getArtifactId() ).thenReturn( gav.getArtifactId() );
         when( view.getVersion() ).thenReturn( gav.getVersion() );
@@ -245,7 +246,7 @@ public class NewContainerFormPresenterTest {
 
         assertEquals( new ReleaseId( gav.getGroupId(), gav.getArtifactId(), gav.getVersion() ), containerSpec.getReleasedId() );
         assertEquals( KieContainerStatus.STOPPED, containerSpec.getStatus() );
-        assertEquals( "containerName", containerSpec.getContainerName() );
+        assertEquals( "containerAlias", containerSpec.getContainerName() );
         assertEquals( "containerName", containerSpec.getId() );
     }
 }

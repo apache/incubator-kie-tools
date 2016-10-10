@@ -211,15 +211,17 @@ public class ProjectScreenPresenterTest
 
     @Test
     public void testBuildAndDeployCommandSingleServerTemplateContainerExists() {
+        final String containerId = project.getPom().getGav().getArtifactId()+"_"+project.getPom().getGav().getVersion();
         final String containerName = project.getPom().getGav().getArtifactId();
         final ServerTemplate serverTemplate = new ServerTemplate("id", "name");
-        serverTemplate.addContainerSpec(new ContainerSpec(containerName, containerName, null, null, null, null));
+        serverTemplate.addContainerSpec(new ContainerSpec(containerId, containerName, null, null, null, null));
         when(specManagementServiceMock.listServerTemplates()).thenReturn(Collections.singletonList(serverTemplate));
 
         presenter.triggerBuildAndDeploy();
 
         verify(deploymentScreenPopupView).setValidateExistingContainerCallback(any(DeploymentScreenPopupViewImpl.ValidateExistingContainerCallback.class));
-        verify(deploymentScreenPopupView).setContainerId(containerName);
+        verify(deploymentScreenPopupView).setContainerId(containerId);
+        verify(deploymentScreenPopupView).setContainerAlias(containerName);
         verify(deploymentScreenPopupView).setStartContainer(true);
         verify(deploymentScreenPopupView).configure(any(com.google.gwt.user.client.Command.class));
         verify(deploymentScreenPopupView).show();
@@ -228,6 +230,7 @@ public class ProjectScreenPresenterTest
 
     @Test
     public void testBuildAndDeployCommandMultipleServerTemplate() {
+        final String containerId = project.getPom().getGav().getArtifactId()+"_"+project.getPom().getGav().getVersion();
         final String containerName = project.getPom().getGav().getArtifactId();
         final ServerTemplate serverTemplate1 = new ServerTemplate("id1", "name1");
         final ServerTemplate serverTemplate2 = new ServerTemplate("id2", "name2");
@@ -237,7 +240,8 @@ public class ProjectScreenPresenterTest
         presenter.triggerBuildAndDeploy();
 
         verify(deploymentScreenPopupView).setValidateExistingContainerCallback(any(DeploymentScreenPopupViewImpl.ValidateExistingContainerCallback.class));
-        verify(deploymentScreenPopupView).setContainerId(containerName);
+        verify(deploymentScreenPopupView).setContainerId(containerId);
+        verify(deploymentScreenPopupView).setContainerAlias(containerName);
         verify(deploymentScreenPopupView).setStartContainer(true);
         verify(deploymentScreenPopupView).addServerTemplates(eq(Sets.newHashSet("id1", "id2")));
         verify(deploymentScreenPopupView).configure(any(com.google.gwt.user.client.Command.class));
