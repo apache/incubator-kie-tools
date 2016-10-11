@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -59,7 +59,7 @@ public class ReusableSubprocess extends BaseSubprocess {
         @Override
         public ReusableSubprocess build() {
             return new ReusableSubprocess(
-                    new BPMNGeneral( "Subprocess" ),
+                    new BPMNGeneralSet( "Subprocess" ),
                     new ReusableSubprocessTaskExecutionSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
@@ -72,7 +72,7 @@ public class ReusableSubprocess extends BaseSubprocess {
         super();
     }
 
-    public ReusableSubprocess( @MapsTo( "general" ) BPMNGeneral general,
+    public ReusableSubprocess( @MapsTo( "general" ) BPMNGeneralSet general,
                                @MapsTo( "executionSet" ) ReusableSubprocessTaskExecutionSet executionSet,
                                @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                                @MapsTo( "fontSet" ) FontSet fontSet,

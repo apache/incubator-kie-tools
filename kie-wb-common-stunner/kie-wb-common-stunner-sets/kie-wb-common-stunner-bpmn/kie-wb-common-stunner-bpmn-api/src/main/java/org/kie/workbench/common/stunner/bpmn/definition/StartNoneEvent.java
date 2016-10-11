@@ -23,7 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.CatchEventAttributes;
 import org.kie.workbench.common.stunner.bpmn.shape.def.StartNoneEventShapeDef;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -52,7 +52,7 @@ public class StartNoneEvent extends BaseStartEvent {
 
         @Override
         public StartNoneEvent build() {
-            return new StartNoneEvent( new BPMNGeneral( "Start" ),
+            return new StartNoneEvent( new BPMNGeneralSet( "Start" ),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
                     new CatchEventAttributes(),
@@ -64,7 +64,7 @@ public class StartNoneEvent extends BaseStartEvent {
     public StartNoneEvent() {
     }
 
-    public StartNoneEvent( @MapsTo( "general" ) BPMNGeneral general,
+    public StartNoneEvent( @MapsTo( "general" ) BPMNGeneralSet general,
                            @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                            @MapsTo( "fontSet" ) FontSet fontSet,
                            @MapsTo( "catchEventAttributes" ) CatchEventAttributes catchEventAttributes,

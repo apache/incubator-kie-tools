@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -24,7 +26,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
@@ -35,8 +39,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ti
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
-
-import javax.validation.Valid;
 
 @Portable
 @Bindable
@@ -58,7 +60,7 @@ public class BusinessRuleTask extends BaseTask {
 
         @Override
         public BusinessRuleTask build() {
-            return new BusinessRuleTask( new BPMNGeneral( "Task" ),
+            return new BusinessRuleTask( new TaskGeneralSet(new Name("Task"), new Documentation("")),
                     new BusinessRuleTaskExecutionSet(),
                     new DataIOSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
@@ -75,7 +77,7 @@ public class BusinessRuleTask extends BaseTask {
         super( TaskTypes.BUSINESS_RULE );
     }
 
-    public BusinessRuleTask( @MapsTo( "general" ) BPMNGeneral general,
+    public BusinessRuleTask( @MapsTo( "general" ) TaskGeneralSet general,
                              @MapsTo( "executionSet" ) BusinessRuleTaskExecutionSet executionSet,
                              @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
                              @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,

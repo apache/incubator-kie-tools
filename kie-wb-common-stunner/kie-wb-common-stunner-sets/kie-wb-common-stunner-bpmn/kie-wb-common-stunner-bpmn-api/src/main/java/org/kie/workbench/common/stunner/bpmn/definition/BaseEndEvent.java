@@ -21,7 +21,7 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.ThrowEventAttributes;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
@@ -42,7 +42,7 @@ public abstract class BaseEndEvent implements BPMNDefinition {
     @PropertySet
     @FieldDef( label = "General Settings", position = 0 )
     @Valid
-    protected BPMNGeneral general;
+    protected BPMNGeneralSet general;
 
     @PropertySet
     @FieldDef( label = "Background Settings", position = 2 )
@@ -53,7 +53,7 @@ public abstract class BaseEndEvent implements BPMNDefinition {
     protected ThrowEventAttributes throwEventAttributes;
 
     @PropertySet
-    @FieldDef( label = "Font Settings" )
+    //@FieldDef( label = "Font Settings" )
     protected FontSet fontSet;
 
     @PropertySet
@@ -83,7 +83,7 @@ public abstract class BaseEndEvent implements BPMNDefinition {
     public BaseEndEvent() {
     }
 
-    public BaseEndEvent( @MapsTo( "general" ) BPMNGeneral general,
+    public BaseEndEvent( @MapsTo( "general" ) BPMNGeneralSet general,
                          @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                          @MapsTo( "fontSet" ) FontSet fontSet,
                          @MapsTo( "throwEventAttributes" ) ThrowEventAttributes throwEventAttributes,
@@ -103,7 +103,7 @@ public abstract class BaseEndEvent implements BPMNDefinition {
         return labels;
     }
 
-    public BPMNGeneral getGeneral() {
+    public BPMNGeneralSet getGeneral() {
         return general;
     }
 
@@ -119,7 +119,7 @@ public abstract class BaseEndEvent implements BPMNDefinition {
         return throwEventAttributes;
     }
 
-    public void setGeneral( BPMNGeneral general ) {
+    public void setGeneral( BPMNGeneralSet general ) {
         this.general = general;
     }
 

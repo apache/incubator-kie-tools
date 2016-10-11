@@ -25,7 +25,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
@@ -59,7 +61,7 @@ public class ScriptTask extends BaseTask {
 
         @Override
         public ScriptTask build() {
-            return new ScriptTask( new BPMNGeneral( "Task" ),
+            return new ScriptTask( new TaskGeneralSet(new Name( "Task" ), new Documentation( "" )),
                     new ScriptTaskExecutionSet(),
                     new DataIOSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
@@ -75,7 +77,7 @@ public class ScriptTask extends BaseTask {
         super( TaskTypes.SCRIPT );
     }
 
-    public ScriptTask( @MapsTo( "general" ) BPMNGeneral general,
+    public ScriptTask( @MapsTo( "general" ) TaskGeneralSet general,
                        @MapsTo( "executionSet" ) ScriptTaskExecutionSet executionSet,
                        @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
                        @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,

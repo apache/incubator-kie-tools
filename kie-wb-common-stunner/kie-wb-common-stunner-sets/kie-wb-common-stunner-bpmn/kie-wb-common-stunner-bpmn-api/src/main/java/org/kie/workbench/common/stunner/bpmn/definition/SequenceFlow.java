@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.SequenceFlowExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
@@ -60,7 +60,7 @@ public class SequenceFlow extends BaseConnector {
     public static class SequenceFlowBuilder extends BaseConnectorBuilder<SequenceFlow> {
         @Override
         public SequenceFlow build() {
-            return new SequenceFlow( new BPMNGeneral( "Sequence" ),
+            return new SequenceFlow( new BPMNGeneralSet( "Sequence" ),
                     new SequenceFlowExecutionSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet() );
@@ -70,7 +70,7 @@ public class SequenceFlow extends BaseConnector {
     public SequenceFlow() {
     }
 
-    public SequenceFlow( @MapsTo( "general" ) BPMNGeneral general,
+    public SequenceFlow( @MapsTo( "general" ) BPMNGeneralSet general,
                          @MapsTo( "executionSet" ) SequenceFlowExecutionSet executionSet,
                          @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                          @MapsTo( "fontSet" ) FontSet fontSet ) {
@@ -94,7 +94,7 @@ public class SequenceFlow extends BaseConnector {
         return labels;
     }
 
-    public BPMNGeneral getGeneral() {
+    public BPMNGeneralSet getGeneral() {
         return general;
     }
 
@@ -102,7 +102,7 @@ public class SequenceFlow extends BaseConnector {
         return backgroundSet;
     }
 
-    public void setGeneral( BPMNGeneral general ) {
+    public void setGeneral( BPMNGeneralSet general ) {
         this.general = general;
     }
 

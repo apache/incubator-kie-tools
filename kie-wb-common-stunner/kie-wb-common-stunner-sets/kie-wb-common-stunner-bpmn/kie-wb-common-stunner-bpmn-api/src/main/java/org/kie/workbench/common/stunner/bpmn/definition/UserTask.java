@@ -26,7 +26,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
@@ -56,7 +58,7 @@ public class UserTask extends BaseTask {
 
         @Override
         public UserTask build() {
-            return new UserTask( new BPMNGeneral( "Task" ),
+            return new UserTask( new TaskGeneralSet(new Name( "Task" ), new Documentation( "" )),
                     new AssigneeSet(),
                     new DataIOSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
@@ -72,7 +74,7 @@ public class UserTask extends BaseTask {
         super( TaskTypes.USER );
     }
 
-    public UserTask( @MapsTo( "general" ) BPMNGeneral general,
+    public UserTask( @MapsTo( "general" ) TaskGeneralSet general,
                      @MapsTo( "assigneeSet" ) AssigneeSet assigneeSet,
                      @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
                      @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,

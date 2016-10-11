@@ -21,7 +21,7 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -46,7 +46,7 @@ public abstract class BaseConnector implements BPMNDefinition {
     @PropertySet
     @FieldDef( label = "General Settings", position = 0 )
     @Valid
-    protected BPMNGeneral general;
+    protected BPMNGeneralSet general;
 
     @PropertySet
     @FieldDef( label = "Background Settings", position = 2 )
@@ -54,7 +54,7 @@ public abstract class BaseConnector implements BPMNDefinition {
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    @FieldDef( label = "Font Settings", position = 3 )
+    //@FieldDef( label = "Font Settings", position = 3 )
     protected FontSet fontSet;
 
     @NonPortable
@@ -75,7 +75,7 @@ public abstract class BaseConnector implements BPMNDefinition {
     protected BaseConnector() {
     }
 
-    public BaseConnector( @MapsTo( "general" ) BPMNGeneral general,
+    public BaseConnector( @MapsTo( "general" ) BPMNGeneralSet general,
                           @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                           @MapsTo( "fontSet" ) FontSet fontSet
     ) {
@@ -96,11 +96,11 @@ public abstract class BaseConnector implements BPMNDefinition {
         return labels;
     }
 
-    public BPMNGeneral getGeneral() {
+    public BPMNGeneralSet getGeneral() {
         return general;
     }
 
-    public void setGeneral( BPMNGeneral general ) {
+    public void setGeneral( BPMNGeneralSet general ) {
         this.general = general;
     }
 

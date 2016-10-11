@@ -22,7 +22,7 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.CatchEventAttributes;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
@@ -40,23 +40,23 @@ public abstract class BaseStartEvent implements BPMNDefinition {
     public static final transient String category = Categories.EVENTS;
 
     @PropertySet
-    @FieldDef( label = "BPMN General Settings" )
-    protected BPMNGeneral general;
+    @FieldDef( label = "General Settings", position = 1 )
+    protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = "Background Settings" )
+    @FieldDef( label = "Background Settings", position = 2 )
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    @FieldDef( label = "Font Settings" )
+    //@FieldDef( label = "Font Settings" )
     protected FontSet fontSet;
 
     @PropertySet
-    @FieldDef( label = "Catch Event Attributes" )
+    //@FieldDef( label = "Catch Event Attributes" )
     protected CatchEventAttributes catchEventAttributes;
 
     @PropertySet
-    @FieldDef( label = "Shape Dimensions", position = 5 )
+    @FieldDef( label = "Shape Dimensions", position = 3 )
     private CircleDimensionSet dimensionsSet;
 
     @Labels
@@ -84,7 +84,7 @@ public abstract class BaseStartEvent implements BPMNDefinition {
     public BaseStartEvent() {
     }
 
-    public BaseStartEvent( @MapsTo( "general" ) BPMNGeneral general,
+    public BaseStartEvent( @MapsTo( "general" ) BPMNGeneralSet general,
                            @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                            @MapsTo( "fontSet" ) FontSet fontSet,
                            @MapsTo( "catchEventAttributes" ) CatchEventAttributes catchEventAttributes,
@@ -104,7 +104,7 @@ public abstract class BaseStartEvent implements BPMNDefinition {
         return labels;
     }
 
-    public BPMNGeneral getGeneral() {
+    public BPMNGeneralSet getGeneral() {
         return general;
     }
 
@@ -120,7 +120,7 @@ public abstract class BaseStartEvent implements BPMNDefinition {
         return catchEventAttributes;
     }
 
-    public void setGeneral( BPMNGeneral general ) {
+    public void setGeneral( BPMNGeneralSet general ) {
         this.general = general;
     }
 

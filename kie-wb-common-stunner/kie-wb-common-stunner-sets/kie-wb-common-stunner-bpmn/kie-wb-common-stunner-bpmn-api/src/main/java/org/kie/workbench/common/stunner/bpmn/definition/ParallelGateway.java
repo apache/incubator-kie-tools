@@ -23,7 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.shape.def.ParallelGatewayShapeDef;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
@@ -51,7 +51,7 @@ public class ParallelGateway extends BaseGateway {
 
         @Override
         public ParallelGateway build() {
-            return new ParallelGateway( new BPMNGeneral( "gw" ),
+            return new ParallelGateway( new BPMNGeneralSet( "Gateway" ),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
                     new CircleDimensionSet( RADIUS ) );
@@ -62,7 +62,7 @@ public class ParallelGateway extends BaseGateway {
     public ParallelGateway() {
     }
 
-    public ParallelGateway( @MapsTo( "general" ) BPMNGeneral general,
+    public ParallelGateway( @MapsTo( "general" ) BPMNGeneralSet general,
                             @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                             @MapsTo( "fontSet" ) FontSet fontSet,
                             @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {

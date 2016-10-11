@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNDiagramShapeDef;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -63,7 +63,7 @@ public class BPMNDiagram implements BPMNDefinition {
     @PropertySet
     @FieldDef( label = "General Settings", position = 0 )
     @Valid
-    private BPMNGeneral general;
+    private BPMNGeneralSet general;
 
     @PropertySet
     @FieldDef( label = "Process Settings", position = 1 )
@@ -82,7 +82,7 @@ public class BPMNDiagram implements BPMNDefinition {
     private FontSet fontSet;
 
     @PropertySet
-    @FieldDef( label = "Shape Dimensions", position = 5 )
+    //@FieldDef( label = "Shape Dimensions", position = 5 )
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
@@ -102,7 +102,7 @@ public class BPMNDiagram implements BPMNDefinition {
 
         @Override
         public BPMNDiagram build() {
-            return new BPMNDiagram( new BPMNGeneral( "Diagram" ),
+            return new BPMNDiagram( new BPMNGeneralSet( "Diagram" ),
                     new DiagramSet(),
                     new ProcessData(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
@@ -115,7 +115,7 @@ public class BPMNDiagram implements BPMNDefinition {
     public BPMNDiagram() {
     }
 
-    public BPMNDiagram( @MapsTo( "general" ) BPMNGeneral general,
+    public BPMNDiagram( @MapsTo( "general" ) BPMNGeneralSet general,
                         @MapsTo( "diagramSet" ) DiagramSet diagramSet,
                         @MapsTo( "processData" ) ProcessData processData,
                         @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
@@ -149,7 +149,7 @@ public class BPMNDiagram implements BPMNDefinition {
         return diagramSet;
     }
 
-    public BPMNGeneral getGeneral() {
+    public BPMNGeneralSet getGeneral() {
         return general;
     }
 
@@ -173,7 +173,7 @@ public class BPMNDiagram implements BPMNDefinition {
         return fontSet;
     }
 
-    public void setGeneral( BPMNGeneral general ) {
+    public void setGeneral( BPMNGeneralSet general ) {
         this.general = general;
     }
 

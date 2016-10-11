@@ -23,7 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneral;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.ThrowEventAttributes;
 import org.kie.workbench.common.stunner.bpmn.shape.def.EndNoneEventShapeDef;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -52,7 +52,7 @@ public class EndNoneEvent extends BaseEndEvent {
 
         @Override
         public EndNoneEvent build() {
-            return new EndNoneEvent( new BPMNGeneral( "End" ),
+            return new EndNoneEvent( new BPMNGeneralSet( "End" ),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
                     new ThrowEventAttributes(),
@@ -64,7 +64,7 @@ public class EndNoneEvent extends BaseEndEvent {
     public EndNoneEvent() {
     }
 
-    public EndNoneEvent( @MapsTo( "general" ) BPMNGeneral general,
+    public EndNoneEvent( @MapsTo( "general" ) BPMNGeneralSet general,
                          @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                          @MapsTo( "fontSet" ) FontSet fontSet,
                          @MapsTo( "throwEventAttributes" ) ThrowEventAttributes throwEventAttributes,
