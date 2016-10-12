@@ -15,7 +15,6 @@
 
   <dependencies>
 
-    <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-api</artifactId>
@@ -25,10 +24,6 @@
           <artifactId>uberfire-client-api</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.server</groupId>
-      <artifactId>kie-server-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

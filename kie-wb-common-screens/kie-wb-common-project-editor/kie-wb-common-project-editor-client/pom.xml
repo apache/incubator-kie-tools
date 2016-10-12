@@ -155,11 +155,6 @@
 
     <dependency>
       <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-asset-mgmt-api</artifactId>
     </dependency>
 
