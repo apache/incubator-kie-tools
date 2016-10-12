@@ -22,7 +22,7 @@ import java.io.Reader;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerFromFileTest;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 
 import static org.junit.Assert.*;
 

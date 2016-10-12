@@ -19,7 +19,7 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
-  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants"/>
+  <ui:with field="i18n" type="org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants"/>
   <ui:with field="wizardResources" type="org.uberfire.ext.widgets.core.client.resources.WizardResources"/>
 
   <ui:style>

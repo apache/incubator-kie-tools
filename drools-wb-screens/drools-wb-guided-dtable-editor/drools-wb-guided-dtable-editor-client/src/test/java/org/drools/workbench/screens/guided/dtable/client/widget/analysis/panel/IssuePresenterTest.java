@@ -17,10 +17,10 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
+import org.drools.workbench.services.verifier.api.client.reporting.Explanation;
+import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

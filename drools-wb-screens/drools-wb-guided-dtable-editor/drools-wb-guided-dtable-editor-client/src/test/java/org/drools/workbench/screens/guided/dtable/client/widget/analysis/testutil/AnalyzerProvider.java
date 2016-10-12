@@ -22,15 +22,15 @@ import java.util.Map;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalysisReporter;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.CancellableRepeatingCommand;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerBuilder;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.Status;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.UpdateManager;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.DtableRuleInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.DTableUpdateManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
+import org.drools.workbench.services.verifier.api.client.CancellableRepeatingCommand;
+import org.drools.workbench.services.verifier.api.client.Status;
+import org.drools.workbench.services.verifier.api.client.checks.base.CheckRunner;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.mvp.PlaceRequest;
@@ -41,7 +41,7 @@ public class AnalyzerProvider {
 
     private final AsyncPackageDataModelOracle oracle;
     private       AnalysisReport              analysisReport;
-    private       Status                      status;
+    private Status status;
 
     public AnalyzerProvider() {
         this( mock( AsyncPackageDataModelOracle.class ) );
@@ -87,7 +87,7 @@ public class AnalyzerProvider {
         return builder.build();
     }
 
-    public RuleInspectorCache getCache( final GuidedDecisionTable52 table52 ) {
+    public DtableRuleInspectorCache getCache( final GuidedDecisionTable52 table52 ) {
         return getDecisionTableAnalyzerBuilder()
                 .withModel( table52 )
                 .withOracle( oracle )
@@ -95,8 +95,8 @@ public class AnalyzerProvider {
                 .buildCache();
     }
 
-    public UpdateManager getUpdateManager( final CheckRunner checkRunner,
-                                           final GuidedDecisionTable52 table52 ) {
+    public DTableUpdateManager getUpdateManager( final CheckRunner checkRunner,
+                                                 final GuidedDecisionTable52 table52 ) {
         return getDecisionTableAnalyzerBuilder()
                 .withModel( table52 )
                 .withOracle( oracle )

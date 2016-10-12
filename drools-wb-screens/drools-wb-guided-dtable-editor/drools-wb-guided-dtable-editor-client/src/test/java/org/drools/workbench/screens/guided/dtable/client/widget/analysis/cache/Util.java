@@ -15,33 +15,14 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.util.maps.MultiMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
-
-import static org.junit.Assert.*;
+import org.drools.workbench.services.verifier.api.client.index.keys.Key;
+import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 
 public class Util {
 
-    public static <T> void assertMapContent( final MultiMap<Value, T, List<T>> objectMultiMap,
-                                             final Comparable... keyValues ) {
-
-        final Set<Value> keys = objectMultiMap.keySet();
-        assertEquals( new HashSet<>( Arrays.asList( keyValues ) ).size(), keys.size() );
-
-        for ( final Comparable keyValue : keyValues ) {
-            assertTrue( objectMultiMap.containsKey( getValue( keyValue ) ) );
-        }
-    }
-
     public static Value getValue( final Comparable keyValue ) {
         if ( keyValue instanceof Key ) {
-            return (( Key ) keyValue).getSingleValue();
+            return ( (Key) keyValue ).getSingleValue();
         } else {
             return new Value( keyValue );
         }

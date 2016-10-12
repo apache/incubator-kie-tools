@@ -18,7 +18,12 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalyzerConfigurationMock;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.builders.FieldConditionBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.drools.workbench.services.verifier.api.client.index.Column;
+import org.drools.workbench.services.verifier.api.client.index.Field;
+import org.drools.workbench.services.verifier.api.client.index.FieldCondition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +33,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class FieldConditionBuilderTest {
 
     @Mock
@@ -43,16 +48,19 @@ public class FieldConditionBuilderTest {
     private FieldConditionBuilder builder;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws
+                        Exception {
         builder = new FieldConditionBuilder( mock( Field.class ),
                                              utils,
                                              mock( Column.class ),
                                              conditionCol52,
-                                             realCellValue );
+                                             realCellValue,
+                                             new AnalyzerConfigurationMock() );
     }
 
     @Test
-    public void testIn() throws Exception {
+    public void testIn() throws
+                         Exception {
         when( utils.getValueList( conditionCol52 ) ).thenReturn( new String[0] );
         when( utils.getType( conditionCol52 ) ).thenReturn( DataType.TYPE_STRING );
 
@@ -60,16 +68,22 @@ public class FieldConditionBuilderTest {
         when( realCellValue.getStringValue() ).thenReturn( "a, b" );
 
 
-        final FieldCondition condition = ( FieldCondition ) builder.build();
+        final FieldCondition condition = (FieldCondition) builder.build();
 
-        assertEquals( "in", condition.getOperator() );
-        assertEquals( 2, condition.getValues().size() );
-        assertTrue( condition.getValues().contains( "a" ) );
-        assertTrue( condition.getValues().contains( "b" ) );
+        assertEquals( "in",
+                      condition.getOperator() );
+        assertEquals( 2,
+                      condition.getValues()
+                              .size() );
+        assertTrue( condition.getValues()
+                            .contains( "a" ) );
+        assertTrue( condition.getValues()
+                            .contains( "b" ) );
     }
 
     @Test
-    public void testNotIn() throws Exception {
+    public void testNotIn() throws
+                            Exception {
         when( utils.getValueList( conditionCol52 ) ).thenReturn( new String[0] );
         when( utils.getType( conditionCol52 ) ).thenReturn( DataType.TYPE_STRING );
 
@@ -77,11 +91,16 @@ public class FieldConditionBuilderTest {
         when( realCellValue.getStringValue() ).thenReturn( "a, b" );
 
 
-        final FieldCondition condition = ( FieldCondition ) builder.build();
+        final FieldCondition condition = (FieldCondition) builder.build();
 
-        assertEquals( "not in", condition.getOperator() );
-        assertEquals( 2, condition.getValues().size() );
-        assertTrue( condition.getValues().contains( "a" ) );
-        assertTrue( condition.getValues().contains( "b" ) );
+        assertEquals( "not in",
+                      condition.getOperator() );
+        assertEquals( 2,
+                      condition.getValues()
+                              .size() );
+        assertTrue( condition.getValues()
+                            .contains( "a" ) );
+        assertTrue( condition.getValues()
+                            .contains( "b" ) );
     }
 }

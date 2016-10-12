@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Explanation;
+import org.drools.workbench.services.verifier.api.client.reporting.Explanation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

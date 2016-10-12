@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 
 public class IssuePresenter
         implements IsWidget {

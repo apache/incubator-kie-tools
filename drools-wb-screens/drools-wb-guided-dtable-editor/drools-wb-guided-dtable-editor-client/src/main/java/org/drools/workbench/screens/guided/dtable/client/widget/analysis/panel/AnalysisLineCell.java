@@ -24,8 +24,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 
 public class AnalysisLineCell
         extends AbstractCell<Issue> {

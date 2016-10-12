@@ -21,10 +21,10 @@ import java.util.Set;
 
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.Status;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.ExplanationProvider;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
+import org.drools.workbench.services.verifier.api.client.Status;
+import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

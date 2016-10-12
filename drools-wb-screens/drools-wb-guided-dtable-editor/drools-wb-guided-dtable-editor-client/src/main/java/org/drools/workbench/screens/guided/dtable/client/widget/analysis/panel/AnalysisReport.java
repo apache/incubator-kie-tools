@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.uberfire.mvp.PlaceRequest;
 
 public class AnalysisReport {

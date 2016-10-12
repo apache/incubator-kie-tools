@@ -21,12 +21,15 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.condition.StringConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalyzerConfigurationMock;
+import org.drools.workbench.services.verifier.api.client.cache.inspectors.condition.StringConditionInspector;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.index.Column;
+import org.drools.workbench.services.verifier.api.client.index.Field;
+import org.drools.workbench.services.verifier.api.client.index.FieldCondition;
+import org.drools.workbench.services.verifier.api.client.index.ObjectField;
+import org.drools.workbench.services.verifier.api.client.index.keys.Values;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -44,30 +47,7 @@ public class StringConditionInspectorToHumanReadableTest {
 
     private final String operator;
 
-    @Test
-    public void testToHumanReadableString() {
-
-
-        final StringConditionInspector inspector = getStringConditionInspector();
-
-        if ( operator.equals( "!= null" ) ) {
-            assertEquals( format( "%s %s", FIELD_NAME, operator ), inspector.toHumanReadableString() );
-        } else if ( operator.equals( "== null" ) ) {
-            assertEquals( format( "%s %s", FIELD_NAME, operator ), inspector.toHumanReadableString() );
-        } else {
-            assertEquals( format( "%s %s %s", FIELD_NAME, operator, VALUE ), inspector.toHumanReadableString() );
-        }
-    }
-
-    private StringConditionInspector getStringConditionInspector() {
-        if ( operator.equals( "!= null" ) ) {
-            return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", "String", FIELD_NAME ), mock( Column.class ), "!=", Values.nullValue() ) );
-        } else if ( operator.equals( "== null" ) ) {
-            return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", "String", FIELD_NAME ), mock( Column.class ), "==", Values.nullValue() ) );
-        } else {
-            return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", "String", FIELD_NAME ), mock( Column.class ), operator, new Values( VALUE ) ) );
-        }
-    }
+    private AnalyzerConfiguration configuration;
 
     public StringConditionInspectorToHumanReadableTest( String operator ) {
         this.operator = operator;
@@ -80,8 +60,78 @@ public class StringConditionInspectorToHumanReadableTest {
         data.addAll( Arrays.asList( OperatorsOracle.EXPLICIT_LIST_OPERATORS ) );
         Collection<Object[]> data2 = new ArrayList<Object[]>();
         for ( Object operator : data ) {
-            data2.add( new Object[]{ operator } );
+            data2.add( new Object[]{operator} );
         }
         return data2;
+    }
+
+    @Before
+    public void setUp() throws
+                        Exception {
+        configuration = new AnalyzerConfigurationMock();
+
+    }
+
+    @Test
+    public void testToHumanReadableString() {
+
+
+        final StringConditionInspector inspector = getStringConditionInspector();
+
+        if ( operator.equals( "!= null" ) ) {
+            assertEquals( format( "%s %s",
+                                  FIELD_NAME,
+                                  operator ),
+                          inspector.toHumanReadableString() );
+        } else if ( operator.equals( "== null" ) ) {
+            assertEquals( format( "%s %s",
+                                  FIELD_NAME,
+                                  operator ),
+                          inspector.toHumanReadableString() );
+        } else {
+            assertEquals( format( "%s %s %s",
+                                  FIELD_NAME,
+                                  operator,
+                                  VALUE ),
+                          inspector.toHumanReadableString() );
+        }
+    }
+
+    private StringConditionInspector getStringConditionInspector() {
+        if ( operator.equals( "!= null" ) ) {
+            return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ),
+                                                                                  "Test",
+                                                                                  "String",
+                                                                                  FIELD_NAME,
+                                                                                  configuration ),
+                                                                       mock( Column.class ),
+                                                                       "!=",
+                                                                       Values.nullValue(),
+                                                                       configuration
+            ),
+                                                 configuration );
+        } else if ( operator.equals( "== null" ) ) {
+            return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ),
+                                                                                  "Test",
+                                                                                  "String",
+                                                                                  FIELD_NAME,
+                                                                                  configuration ),
+                                                                       mock( Column.class ),
+                                                                       "==",
+                                                                       Values.nullValue(),
+                                                                       configuration ),
+                                                 configuration );
+        } else {
+            return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ),
+                                                                                  "Test",
+                                                                                  "String",
+                                                                                  FIELD_NAME,
+                                                                                  configuration ),
+                                                                       mock( Column.class ),
+                                                                       operator,
+                                                                       new Values( VALUE ),
+                                                                       configuration ),
+                                                 configuration );
+        }
     }
 }

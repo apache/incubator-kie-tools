@@ -17,7 +17,6 @@ package org.drools.workbench.screens.guided.dtable.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import org.drools.workbench.screens.guided.dtable.client.resources.css.AnalysisCssResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.css.CssResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources;
 import org.kie.workbench.common.widgets.client.resources.CollapseExpand;
@@ -41,9 +40,6 @@ public interface GuidedDecisionTableResources
 
     @Source("css/DecisionTable.css")
     CssResources css();
-
-    @Source("css/Analysis.css")
-    AnalysisCssResources analysisCss();
 
     GuidedDecisionTableImageResources images();
 

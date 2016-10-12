@@ -18,8 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.ListDataProvider;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
-import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 
 public interface AnalysisReportScreenView
         extends IsWidget {

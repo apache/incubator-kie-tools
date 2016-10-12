@@ -16,7 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
+
+import org.drools.workbench.services.verifier.api.client.cache.inspectors.RuleInspector;
 
 import static org.mockito.Mockito.*;
 

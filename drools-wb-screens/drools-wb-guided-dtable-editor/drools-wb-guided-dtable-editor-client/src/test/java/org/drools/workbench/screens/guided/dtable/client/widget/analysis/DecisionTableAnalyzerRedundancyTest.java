@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

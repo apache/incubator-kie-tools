@@ -16,24 +16,32 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
+import java.util.Date;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.UpdateManager;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Index;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.IndexBuilder;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.DTableUpdateManager;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.DtableRuleInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.builders.IndexBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.drools.workbench.services.verifier.api.client.checks.base.CheckRunner;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.DateTimeFormatProvider;
+import org.drools.workbench.services.verifier.api.client.index.Index;
+import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.wires.core.api.shapes.UUID;
 import org.uberfire.mvp.PlaceRequest;
 
 public class DecisionTableAnalyzerBuilder {
 
-    protected PlaceRequest                placeRequest;
+    protected PlaceRequest placeRequest;
     protected AsyncPackageDataModelOracle oracle;
-    protected GuidedDecisionTable52       model;
-    protected AnalysisReportScreen        analysisReportScreen;
+    protected GuidedDecisionTable52 model;
+    protected AnalysisReportScreen analysisReportScreen;
 
     public DecisionTableAnalyzerBuilder withPlaceRequest( final PlaceRequest placeRequest ) {
         this.placeRequest = placeRequest;
@@ -56,10 +64,14 @@ public class DecisionTableAnalyzerBuilder {
     }
 
     public DecisionTableAnalyzer build() {
-        PortablePreconditions.checkNotNull( "placeRequest", placeRequest );
-        PortablePreconditions.checkNotNull( "oracle", oracle );
-        PortablePreconditions.checkNotNull( "model", model );
-        PortablePreconditions.checkNotNull( "analysisReportScreen", analysisReportScreen );
+        PortablePreconditions.checkNotNull( "placeRequest",
+                                            placeRequest );
+        PortablePreconditions.checkNotNull( "oracle",
+                                            oracle );
+        PortablePreconditions.checkNotNull( "model",
+                                            model );
+        PortablePreconditions.checkNotNull( "analysisReportScreen",
+                                            analysisReportScreen );
 
         return getInnerBuilder().build();
     }
@@ -77,15 +89,33 @@ public class DecisionTableAnalyzerBuilder {
     }
 
     public class CacheBuilder {
-        private RuleInspectorCache cache;
-        private ColumnUtilities    columnUtilities;
-        private Index              index;
+        private final AnalyzerConfiguration configuration;
+        private DtableRuleInspectorCache cache;
+        private ColumnUtilities columnUtilities;
+        private Index index;
 
-        public RuleInspectorCache buildCache() {
+        public CacheBuilder() {
+            configuration = new AnalyzerConfiguration( new DateTimeFormatProvider() {
+                @Override
+                public String format( final Date dateValue ) {
+                    return DateTimeFormat.getFormat( ApplicationPreferences.getDroolsDateFormat() )
+                            .format( dateValue );
+                }
+            },
+                                                       new UUIDKeyProvider() {
+                                                           @Override
+                                                           protected String newUUID() {
+                                                               return UUID.uuid();
+                                                           }
+                                                       } );
+        }
+
+        public DtableRuleInspectorCache buildCache() {
             if ( cache == null ) {
-                cache = new RuleInspectorCache( getUtils(),
-                                                model,
-                                                getIndex() );
+                cache = new DtableRuleInspectorCache( getUtils(),
+                                                      model,
+                                                      getIndex(),
+                                                      configuration );
             }
             return cache;
         }
@@ -93,7 +123,8 @@ public class DecisionTableAnalyzerBuilder {
         protected Index getIndex() {
             if ( index == null ) {
                 index = new IndexBuilder( model,
-                                          getUtils() ).build();
+                                          getUtils(),
+                                          configuration ).build();
             }
             return index;
         }
@@ -110,20 +141,20 @@ public class DecisionTableAnalyzerBuilder {
     public class UpdateManagerBuilder
             extends CacheBuilder {
 
-        protected final CheckRunner   checkRunner;
-        protected       UpdateManager updateManager;
+        protected final CheckRunner checkRunner;
+        protected DTableUpdateManager updateManager;
 
 
         public UpdateManagerBuilder( final CheckRunner checkRunner ) {
             this.checkRunner = checkRunner;
         }
 
-        public UpdateManager buildUpdateManager() {
+        public DTableUpdateManager buildUpdateManager() {
             if ( updateManager == null ) {
-                updateManager = new UpdateManager( getIndex(),
-                                                   model,
-                                                   buildCache(),
-                                                   checkRunner );
+                updateManager = new DTableUpdateManager( getIndex(),
+                                                         model,
+                                                         buildCache(),
+                                                         checkRunner );
             }
             return updateManager;
         }

@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerControllerImpl;
@@ -39,6 +41,8 @@ import static org.mockito.Mockito.*;
 @RunWith( GwtMockitoTestRunner.class )
 public class DecisionTableAnalyzerProviderTest {
 
+    @GwtMock
+    DateTimeFormat dateTimeFormat;
 
     @Mock
     private AnalysisReportScreen analysisReportScreen;
@@ -46,7 +50,10 @@ public class DecisionTableAnalyzerProviderTest {
     @Test
     public void defaultAnalyserSetting() throws Exception {
 
-        ApplicationPreferences.setUp( Collections.emptyMap() );
+        final Map<String, String> preferences = new HashMap<>();
+        preferences.put( ApplicationPreferences.DATE_FORMAT,
+                         "dd-MMM-yyyy" );
+        ApplicationPreferences.setUp( preferences );
 
         assertTrue( new DecisionTableAnalyzerProvider( analysisReportScreen ).newAnalyzer( mock( PlaceRequest.class ),
                                                                                            mock( AsyncPackageDataModelOracle.class ),
@@ -60,6 +67,8 @@ public class DecisionTableAnalyzerProviderTest {
         final Map<String, String> preferences = new HashMap<String, String>() {{
             put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
                  "true" );
+            put( ApplicationPreferences.DATE_FORMAT,
+                 "dd-MMM-yyyy" );
         }};
 
         ApplicationPreferences.setUp( preferences );
@@ -76,6 +85,8 @@ public class DecisionTableAnalyzerProviderTest {
         final Map<String, String> preferences = new HashMap<String, String>() {{
             put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
                  "false" );
+            put( ApplicationPreferences.DATE_FORMAT,
+                 "dd-MMM-yyyy" );
         }};
 
         ApplicationPreferences.setUp( preferences );

@@ -20,7 +20,8 @@ import java.util.Set;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.Status;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.uberfire.mvp.PlaceRequest;
 
 public class AnalysisReporter {

@@ -20,29 +20,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.user.client.Command;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.inspectors.RuleInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.UpdateManager;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.CheckRunner;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.DtableRuleInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.DTableUpdateManager;
+import org.drools.workbench.services.verifier.api.client.ParameterizedCommand;
+import org.drools.workbench.services.verifier.api.client.Status;
+import org.drools.workbench.services.verifier.api.client.cache.inspectors.RuleInspector;
+import org.drools.workbench.services.verifier.api.client.checks.base.Check;
+import org.drools.workbench.services.verifier.api.client.checks.base.CheckRunner;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 
 public class DecisionTableAnalyzer {
 
-    private final UpdateManager updateManager;
-    private final CheckRunner   checkRunner;
+    private final DTableUpdateManager updateManager;
+    private final CheckRunner checkRunner;
 
     private final AnalysisReporter      reporter;
-    private final RuleInspectorCache    cache;
+    private final DtableRuleInspectorCache cache;
     private final GuidedDecisionTable52 model;
     private final EventManager                 eventManager = new EventManager();
     private final ParameterizedCommand<Status> onStatus     = getOnStatusCommand();
@@ -50,8 +51,8 @@ public class DecisionTableAnalyzer {
 
     public DecisionTableAnalyzer( final AnalysisReporter reporter,
                                   final GuidedDecisionTable52 model,
-                                  final RuleInspectorCache cache,
-                                  final UpdateManager updateManager,
+                                  final DtableRuleInspectorCache cache,
+                                  final DTableUpdateManager updateManager,
                                   final CheckRunner checkRunner ) {
         this.reporter = PortablePreconditions.checkNotNull( "reporter", reporter );
         this.model = PortablePreconditions.checkNotNull( "model", model );
