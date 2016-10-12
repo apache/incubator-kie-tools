@@ -48,7 +48,7 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
         this( new CalledElement() );
     }
 
-    public ReusableSubprocessTaskExecutionSet( @MapsTo( "calledelement" ) CalledElement calledElement ) {
+    public ReusableSubprocessTaskExecutionSet( @MapsTo( "calledElement" ) CalledElement calledElement ) {
         this.calledElement = calledElement;
     }
 

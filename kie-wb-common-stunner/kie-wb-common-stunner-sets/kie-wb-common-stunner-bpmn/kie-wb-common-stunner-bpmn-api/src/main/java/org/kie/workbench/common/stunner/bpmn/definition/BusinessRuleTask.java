@@ -55,6 +55,11 @@ public class BusinessRuleTask extends BaseTask {
     @Valid
     protected BusinessRuleTaskExecutionSet executionSet;
 
+    @PropertySet
+    @FieldDef( label = "Task Data", position = 2)
+    @Valid
+    protected DataIOSet dataIOSet;
+
     @NonPortable
     public static class BusinessRuleTaskBuilder extends BaseTaskBuilder<BusinessRuleTask> {
 
@@ -85,8 +90,9 @@ public class BusinessRuleTask extends BaseTask {
                              @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
                              @MapsTo( "simulationSet" ) SimulationSet simulationSet,
                              @MapsTo( "taskType" ) TaskType taskType ) {
-        super( general, dataIOSet, backgroundSet, fontSet, dimensionsSet, simulationSet, taskType );
+        super( general, backgroundSet, fontSet, dimensionsSet, simulationSet, taskType );
         this.executionSet = executionSet;
+        this.dataIOSet = dataIOSet;
     }
 
     public String getTitle() {
@@ -97,7 +103,15 @@ public class BusinessRuleTask extends BaseTask {
         return executionSet;
     }
 
+    public DataIOSet getDataIOSet() {
+        return dataIOSet;
+    }
+
     public void setExecutionSet( BusinessRuleTaskExecutionSet executionSet ) {
         this.executionSet = executionSet;
+    }
+
+    public void setDataIOSet( DataIOSet dataIOSet ) {
+        this.dataIOSet = dataIOSet;
     }
 }
