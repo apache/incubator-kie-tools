@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
@@ -79,6 +80,27 @@ public class ScenarioTestEditorServiceImplTest {
         when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
         when( modelOracle.getProjectModelFields() ).thenReturn( modelFields );
         when( scenario.getImports() ).thenReturn( new Imports() );
+
+        testEditorService.addDependentImportsToScenario( scenario, path );
+
+        assertEquals( 2, scenario.getImports().getImports().size() );
+    }
+
+    @Test
+    public void runScenarioWithDependentImportsAndWithoutFactData() throws Exception {
+        final ArrayList<Fixture> fixtures = new ArrayList<Fixture>();
+        final Imports imports = new Imports() {{
+            addImport( new Import( "java.sql.ClientInfoStatus" ) );
+        }};
+
+        final Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>() {{
+            put( "java.sql.ClientInfoStatus", new ModelField[]{ modelField( "java.sql.JDBCType" ) } );
+        }};
+
+        when( scenario.getFixtures() ).thenReturn( fixtures );
+        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
+        when( modelOracle.getProjectModelFields() ).thenReturn( modelFields );
+        when( scenario.getImports() ).thenReturn( imports );
 
         testEditorService.addDependentImportsToScenario( scenario, path );
 

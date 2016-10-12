@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -276,11 +277,10 @@ public class ScenarioTestEditorServiceImpl
     }
 
     private Set<String> getFullyQualifiedClassNamesUsedByModel( final Scenario scenario,
-                                                        final PackageDataModelOracle dataModelOracle ) {
-        final TestScenarioModelVisitor visitor = new TestScenarioModelVisitor( scenario );
+                                                                final PackageDataModelOracle dataModelOracle ) {
         final Set<String> fullyQualifiedClassNames = new HashSet<String>();
 
-        for ( String fullyQualifiedClassName : visitor.visit() ) {
+        for ( String fullyQualifiedClassName : getFullyQualifiedClassNameFromScenario( scenario ) ) {
             final ModelField[] modelFields = dataModelOracle.getProjectModelFields().get( fullyQualifiedClassName );
 
             for ( ModelField modelField : modelFields ) {
@@ -291,6 +291,18 @@ public class ScenarioTestEditorServiceImpl
         }
 
         return fullyQualifiedClassNames;
+    }
+
+    private List<String> getFullyQualifiedClassNameFromScenario( final Scenario scenario ) {
+        final TestScenarioModelVisitor testScenarioModelVisitor = new TestScenarioModelVisitor( scenario );
+
+        return new ArrayList<String>() {{
+            addAll( testScenarioModelVisitor.visit() );
+
+            for (Import imp : scenario.getImports().getImports()) {
+                add( imp.getType() );
+            }
+        }};
     }
 
     private Set<String> getUsedFullyQualifiedClassNames( final Scenario scenario,
