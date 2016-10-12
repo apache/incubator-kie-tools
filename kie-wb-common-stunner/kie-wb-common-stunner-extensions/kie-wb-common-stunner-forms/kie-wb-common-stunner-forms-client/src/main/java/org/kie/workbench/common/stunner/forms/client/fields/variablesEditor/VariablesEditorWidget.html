@@ -20,7 +20,7 @@
 
 <body>
 
-<div id="widget" class="input-group">
+<div id="widget" class="input-group" style="width:100%">
     <div>
 
 
@@ -30,30 +30,30 @@
                     <table class="table table-striped table-bordered" data-field="table">
                         <thead>
                         <tr>
-                            <th style="min-width:6em" data-field="nameth">
+                            <th data-field="nameth" style="width:46%">
                                 Name
                             </th>
-                            <th style="min-width:6em" data-field="datatypeth">
+                            <th data-field="datatypeth" style="width:46%">
                                 Data Type
                             </th>
-                            <td>
-                                    <button type="button" class="center-block" data-field="addVarButton"></button>
+                            <td style="width:8%">
+                                <button type="button" class="center-block" data-field="addVarButton"></button>
                             </td>
                         </tr>
                         </thead>
                         <tbody id="variableRows">
                         <tr id="variableRow">
-                            <td>
-                                <input type="text" class="form-control" style="min-width:6em" data-field="name"/>
+                            <td style="width:46%">
+                                <input type="text" class="form-control" data-field="name"/>
                             </td>
-                            <td>
-                                <select data-field="dataType" style="min-width:6em" class="form-control">
+                            <td style="width:46%">
+                                <select data-field="dataType" class="form-control">
                                     <option value="Integer">Integer</option>
                                     <option value="String">String</option>
                                 </select>
-                                <input type="text" class="form-control" style="min-width:6em" data-field="customDataType"/>
+                                <input type="text" class="form-control" data-field="customDataType"/>
                             </td>
-                            <td>
+                            <td style="width:8%">
                                 <button type="button" class="center-block" data-field="deleteButton"></button>
                             </td>
                         </tr>
