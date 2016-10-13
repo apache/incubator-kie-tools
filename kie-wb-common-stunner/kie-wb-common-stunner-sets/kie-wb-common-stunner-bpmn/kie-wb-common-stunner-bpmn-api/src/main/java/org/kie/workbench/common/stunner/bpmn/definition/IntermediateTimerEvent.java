@@ -23,6 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.IntermediateTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.shape.def.IntermediateTimerEventShapeDef;
@@ -61,6 +62,11 @@ public class IntermediateTimerEvent implements BPMNDefinition {
     @FieldDef( label = "General Settings", position = 0 )
     @Valid
     private BPMNGeneralSet general;
+
+    @PropertySet
+    @FieldDef( label = "Implementation/Execution", position = 1)
+    @Valid
+    protected IntermediateTimerEventExecutionSet executionSet;
 
     @PropertySet
     @FieldDef( label = "Background Settings", position = 2 )
@@ -103,6 +109,7 @@ public class IntermediateTimerEvent implements BPMNDefinition {
         @Override
         public IntermediateTimerEvent build() {
             return new IntermediateTimerEvent( new BPMNGeneralSet( "Timer" ),
+                    new IntermediateTimerEventExecutionSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
                     new CircleDimensionSet( RADIUS ) );
@@ -114,6 +121,7 @@ public class IntermediateTimerEvent implements BPMNDefinition {
     }
 
     public IntermediateTimerEvent( @MapsTo( "general" ) BPMNGeneralSet general,
+                                   @MapsTo("executionSet") IntermediateTimerEventExecutionSet executionSet,
                                    @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                                    @MapsTo( "fontSet" ) FontSet fontSet,
                                    @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
@@ -121,6 +129,7 @@ public class IntermediateTimerEvent implements BPMNDefinition {
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+        this.executionSet = executionSet;
     }
 
     public String getCategory() {
@@ -169,5 +178,13 @@ public class IntermediateTimerEvent implements BPMNDefinition {
 
     public void setDimensionsSet( CircleDimensionSet dimensionsSet ) {
         this.dimensionsSet = dimensionsSet;
+    }
+
+    public IntermediateTimerEventExecutionSet getExecutionSet() {
+        return executionSet;
+    }
+
+    public void setExecutionSet(IntermediateTimerEventExecutionSet executionSet) {
+        this.executionSet = executionSet;
     }
 }

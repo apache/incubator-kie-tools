@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:drools="http://www.jboss.org/drools" id="__-n2oYmeEeam0OCiFJGngA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="6.2.0" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+    <bpmn2:process id="Evaluation.aaa" drools:packageName="org.jbpm" drools:version="1.0" name="aaa" isExecutable="true">
+        <bpmn2:intermediateCatchEvent id="_086814D0-48F4-4275-89A7-1203A735D329" drools:selectable="true" drools:boundaryca="true" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="">
+            <bpmn2:extensionElements>
+                <drools:metaData name="elementname">
+                    <drools:metaValue><![CDATA[]]></drools:metaValue>
+                </drools:metaData>
+            </bpmn2:extensionElements>
+            <bpmn2:timerEventDefinition id="__-pEwImeEeam0OCiFJGngA">
+                <bpmn2:timeDate xsi:type="bpmn2:tFormalExpression" id="__-pEwYmeEeam0OCiFJGngA">myTimeDateValue</bpmn2:timeDate>
+                <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="__-pEwomeEeam0OCiFJGngA">MyTimeDurationValue</bpmn2:timeDuration>
+                <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="__-pr0ImeEeam0OCiFJGngA" language="cron">myTimeCycleValue</bpmn2:timeCycle>
+            </bpmn2:timerEventDefinition>
+        </bpmn2:intermediateCatchEvent>
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="__-pr0YmeEeam0OCiFJGngA">
+        <bpmndi:BPMNPlane id="__-pr0omeEeam0OCiFJGngA" bpmnElement="Evaluation.aaa">
+            <bpmndi:BPMNShape id="__-pr04meEeam0OCiFJGngA" bpmnElement="_086814D0-48F4-4275-89A7-1203A735D329">
+                <dc:Bounds height="30.0" width="30.0" x="187.0" y="149.0"/>
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+    <bpmn2:relationship id="__-pr1ImeEeam0OCiFJGngA" type="BPSimData">
+        <bpmn2:extensionElements>
+            <bpsim:BPSimData>
+                <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
+                    <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="min"/>
+                    <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_086814D0-48F4-4275-89A7-1203A735D329" id="__-pr1YmeEeam0OCiFJGngA">
+                        <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+                            <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+                            </bpsim:ProcessingTime>
+                        </bpsim:TimeParameters>
+                        <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+                            <bpsim:Probability xsi:type="bpsim:Parameter">
+                                <bpsim:FloatingParameter value="100.0"/>
+                            </bpsim:Probability>
+                        </bpsim:ControlParameters>
+                    </bpsim:ElementParameters>
+                </bpsim:Scenario>
+            </bpsim:BPSimData>
+        </bpmn2:extensionElements>
+        <bpmn2:source>__-n2oYmeEeam0OCiFJGngA</bpmn2:source>
+        <bpmn2:target>__-n2oYmeEeam0OCiFJGngA</bpmn2:target>
+    </bpmn2:relationship>
+</bpmn2:definitions>

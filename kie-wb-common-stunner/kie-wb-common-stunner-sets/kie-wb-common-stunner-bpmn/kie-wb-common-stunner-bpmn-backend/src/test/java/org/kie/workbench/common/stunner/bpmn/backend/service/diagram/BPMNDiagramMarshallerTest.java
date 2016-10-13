@@ -106,6 +106,7 @@ public class BPMNDiagramMarshallerTest {
     protected static final String BPMN_USERTASKASSIGNEES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignees.bpmn";
     protected static final String BPMN_SEQUENCEFLOW = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/sequenceFlow.bpmn";
     protected static final String BPMN_XORGATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/xorGateway.bpmn";
+    protected static final String BPMN_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/timerEvent.bpmn";
 
     @Mock
     DefinitionManager definitionManager;
@@ -684,6 +685,32 @@ public class BPMNDiagramMarshallerTest {
         String result = tested.marshall( diagram );
         assertDiagram( result, 1, 6, 5 );
         assertTrue( result.contains( "<bpmn2:exclusiveGateway id=\"_877EA035-1A14-42E9-8CAA-43E9BF908C70\" drools:dg=\"under 10 : _5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\" name=\"AgeSplit\" gatewayDirection=\"Diverging\" default=\"_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\">" ) );
+    }
+
+    @Test
+    public void testMarshallIntermediateTimerEvent() throws Exception {
+        Diagram < Graph, Settings > diagram = unmarshall(BPMN_TIMER_EVENT);
+        IntermediateTimerEvent timerEvent = null;
+
+        Iterator < Element > it = diagram.getGraph().nodes().iterator();
+        while (it.hasNext()) {
+            Element element = it.next();
+            if (element.getContent() instanceof View) {
+                Object oDefinition = ((View) element.getContent()).getDefinition();
+                if (oDefinition instanceof IntermediateTimerEvent) {
+                    timerEvent = (IntermediateTimerEvent) oDefinition;
+                    break;
+                }
+            }
+        }
+        assertNotNull(timerEvent);
+        assertNotNull(timerEvent.getGeneral());
+        assertNotNull(timerEvent.getExecutionSet());
+
+        assertEquals("myTimeDateValue", timerEvent.getExecutionSet().getTimeDate().getValue());
+        assertEquals("MyTimeDurationValue", timerEvent.getExecutionSet().getTimeDuration().getValue());
+        assertEquals("myTimeCycleValue", timerEvent.getExecutionSet().getTimeCycle().getValue());
+        assertEquals("cron", timerEvent.getExecutionSet().getTimeCycleLanguage().getValue());
     }
 
     private void assertDiagram( String result, int diagramCount, int nodeCount, int edgeCount ) {
