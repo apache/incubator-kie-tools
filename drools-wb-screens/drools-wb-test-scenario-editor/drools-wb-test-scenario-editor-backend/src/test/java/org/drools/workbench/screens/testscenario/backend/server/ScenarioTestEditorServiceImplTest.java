@@ -30,6 +30,7 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -52,6 +53,12 @@ public class ScenarioTestEditorServiceImplTest {
 
     @Mock
     DataModelService dataModelService;
+
+    @Mock
+    ScenarioRunnerService scenarioRunner;
+
+    @Mock
+    KieProjectService projectService;
 
     @InjectMocks
     ScenarioTestEditorServiceImpl testEditorService = new ScenarioTestEditorServiceImpl();
@@ -105,6 +112,66 @@ public class ScenarioTestEditorServiceImplTest {
         testEditorService.addDependentImportsToScenario( scenario, path );
 
         assertEquals( 2, scenario.getImports().getImports().size() );
+    }
+
+    @Test
+    public void checkDependentImportsWithPrimitiveTypes() throws Exception {
+        final ArrayList<Fixture> fixtures = new ArrayList<>();
+        final Imports imports = new Imports() {{
+            addImport( new Import( "int" ) );
+        }};
+
+        final Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>() {{
+            put( "java.sql.ClientInfoStatus",
+                 new ModelField[]{ modelField( "java.sql.JDBCType" ) } );
+        }};
+
+        when( scenario.getFixtures() ).thenReturn( fixtures );
+        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
+        when( modelOracle.getProjectModelFields() ).thenReturn( modelFields );
+        when( scenario.getImports() ).thenCallRealMethod();
+        doCallRealMethod().when( scenario ).setImports( any( Imports.class ) );
+
+        scenario.setImports( imports );
+
+        testEditorService.addDependentImportsToScenario( scenario,
+                                                         path );
+
+        assertEquals( 1,
+                      scenario.getImports().getImports().size() );
+    }
+
+    @Test
+    public void checkSingleScenarioMultipleExecution() throws Exception {
+        final ArrayList<Fixture> fixtures = new ArrayList<>();
+        final Imports imports = new Imports() {{
+            addImport( new Import( "java.sql.ClientInfoStatus" ) );
+        }};
+
+        final Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>() {{
+            put( "java.sql.ClientInfoStatus",
+                 new ModelField[]{ modelField( "java.sql.JDBCType" ) } );
+        }};
+
+        when( scenario.getFixtures() ).thenReturn( fixtures );
+        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
+        when( modelOracle.getProjectModelFields() ).thenReturn( modelFields );
+        when( scenario.getImports() ).thenCallRealMethod();
+        doCallRealMethod().when( scenario ).setImports( any( Imports.class ) );
+
+        scenario.setImports( imports );
+
+        testEditorService.runScenario( path,
+                                       scenario );
+
+        assertEquals( 1,
+                      scenario.getImports().getImports().size() );
+
+        testEditorService.runScenario( path,
+                                       scenario);
+
+        assertEquals( 1,
+                      scenario.getImports().getImports().size() );
     }
 
     private FactData factData( final String type ) {
