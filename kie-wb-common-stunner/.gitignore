@@ -5,7 +5,6 @@
 /.*
 /**/.*
 !.gitignore
-*dependency-reduced-pom.xml
 /nbproject
 *.ipr
 *.iws
