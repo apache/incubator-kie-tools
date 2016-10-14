@@ -521,21 +521,6 @@
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-rest-backend</artifactId>
     </dependency>
-    <!--<dependency>-->
-    <!--<groupId>org.jboss.resteasy</groupId>-->
-    <!--<artifactId>resteasy-jaxrs</artifactId>-->
-    <!--</dependency>-->
-    <!-- REST exception handling -->
-    <dependency>
-      <groupId>org.kie.remote</groupId>
-      <artifactId>kie-remote-common</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.resteasy</groupId>
-          <artifactId>jaxrs-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
 
     <!-- Uberfire Widget Backend needed -->
     <dependency>
