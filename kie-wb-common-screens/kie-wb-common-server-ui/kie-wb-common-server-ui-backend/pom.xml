@@ -85,7 +85,7 @@
       <artifactId>kie-server-controller-rest</artifactId>
     </dependency>
 
-      <dependency>
+    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
