@@ -101,6 +101,7 @@ public class SimulationSet implements BPMNPropertySet {
         this.standardDeviation = standardDeviation;
         this.distributionType = distributionType;
         this.quantity = quantity;
+        this.workingHours = workingHours;
         this.unitCost = unitCost;
         this.currency = currency;
     }

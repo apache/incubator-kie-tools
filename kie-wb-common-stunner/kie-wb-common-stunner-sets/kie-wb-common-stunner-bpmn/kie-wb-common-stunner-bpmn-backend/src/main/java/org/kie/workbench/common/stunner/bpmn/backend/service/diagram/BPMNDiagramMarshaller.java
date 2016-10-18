@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram;
 
+import bpsim.impl.BpsimPackageImpl;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
@@ -26,9 +27,12 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.jboss.drools.DroolsPackage;
+import org.jboss.drools.impl.DroolsPackageImpl;
 import org.jboss.drools.util.DroolsResourceFactoryImpl;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.profile.impl.DefaultProfileImpl;
+import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceFactoryImpl;
+import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2Marshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2UnMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.BPMNGraphObjectBuilderFactory;
@@ -74,8 +78,6 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Diagram, InputSt
     GraphCommandManager graphCommandManager;
     GraphCommandFactory commandFactory;
 
-    private ResourceSet resourceSet;
-
     @Inject
     public BPMNDiagramMarshaller( BPMNGraphObjectBuilderFactory bpmnGraphBuilderFactory,
                                   DefinitionManager definitionManager,
@@ -91,20 +93,6 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Diagram, InputSt
         this.factoryManager = factoryManager;
         this.graphCommandManager = graphCommandManager;
         this.commandFactory = commandFactory;
-    }
-
-    private void initResourceSet() {
-        resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put
-                ( Resource.Factory.Registry.DEFAULT_EXTENSION,
-                        new DroolsResourceFactoryImpl() );
-        resourceSet.getPackageRegistry().put
-                ( DroolsPackage.eNS_URI,
-                        DroolsPackage.eINSTANCE );
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-                .put( Resource.Factory.Registry.DEFAULT_EXTENSION, new Bpmn2ResourceFactoryImpl() );
-        resourceSet.getPackageRegistry().put( "http://www.omg.org/spec/BPMN/20100524/MODEL", Bpmn2Package.eINSTANCE );
-
     }
 
     @Override
@@ -159,14 +147,26 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Diagram, InputSt
 
     protected Definitions parseDefinitions( final InputStream inputStream ) throws IOException {
         try {
-            initResourceSet();
-            XMLResource outResource = ( XMLResource ) resourceSet.createResource( URI.createURI( "inputStream://dummyUriWithValidSuffix.xml" ) );
-            outResource.getDefaultLoadOptions().put( XMLResource.OPTION_ENCODING, "UTF-8" );
-            outResource.setEncoding( "UTF-8" );
+            DroolsPackageImpl.init();
+            BpsimPackageImpl.init();
+
+            ResourceSet resourceSet = new ResourceSetImpl();
+            resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+                    .put(Resource.Factory.Registry.DEFAULT_EXTENSION, new JBPMBpmn2ResourceFactoryImpl());
+            resourceSet.getPackageRegistry().put("http://www.omg.org/spec/BPMN/20100524/MODEL", Bpmn2Package.eINSTANCE);
+            resourceSet.getPackageRegistry().put("http://www.jboss.org/drools", DroolsPackage.eINSTANCE);
+
+            JBPMBpmn2ResourceImpl resource = (JBPMBpmn2ResourceImpl) resourceSet.createResource( URI.createURI("inputStream://dummyUriWithValidSuffix.xml" ) );
+            resource.getDefaultLoadOptions().put( JBPMBpmn2ResourceImpl.OPTION_ENCODING, "UTF-8" );
+            resource.setEncoding( "UTF-8" );
             Map<String, Object> options = new HashMap<String, Object>();
-            options.put( XMLResource.OPTION_ENCODING, "UTF-8" );
-            outResource.load( inputStream, options );
-            DocumentRoot root = ( DocumentRoot ) outResource.getContents().get( 0 );
+            options.put( JBPMBpmn2ResourceImpl.OPTION_ENCODING, "UTF-8" );
+            options.put( JBPMBpmn2ResourceImpl.OPTION_DEFER_IDREF_RESOLUTION, true );
+            options.put( JBPMBpmn2ResourceImpl.OPTION_DISABLE_NOTIFY, true );
+            options.put( JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF, JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF_RECORD );
+            resource.load( inputStream, options );
+
+            DocumentRoot root = (DocumentRoot) resource.getContents().get( 0 );
             return root.getDefinitions();
 
         } catch ( Exception e ) {
@@ -178,7 +178,6 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Diagram, InputSt
         }
         return null;
     }
-
     @SuppressWarnings( "unchecked" )
     protected Node getFirstDiagramNode( final Graph graph ) {
         if ( null != graph ) {

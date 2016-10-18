@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.Assignme
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
@@ -107,6 +108,7 @@ public class BPMNDiagramMarshallerTest {
     protected static final String BPMN_SEQUENCEFLOW = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/sequenceFlow.bpmn";
     protected static final String BPMN_XORGATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/xorGateway.bpmn";
     protected static final String BPMN_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/timerEvent.bpmn";
+    protected static final String BPMN_SIMULATIONPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/simulationProperties.bpmn";
 
     @Mock
     DefinitionManager definitionManager;
@@ -393,6 +395,34 @@ public class BPMNDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings( "unchecked" )
+    public void testUnmarshallSimulationProperties() throws Exception {
+        Diagram<Graph, Settings> diagram = unmarshall( BPMN_SIMULATIONPROPERTIES );
+        assertDiagram( diagram, 4 );
+        assertEquals( "SimulationProperties", diagram.getSettings().getTitle() );
+
+        SimulationSet simulationSet = null;
+        Iterator<Element> it = diagram.getGraph().nodes().iterator();
+        while(it.hasNext()) {
+            Element element = it.next();
+            if (element.getContent() instanceof View) {
+                Object oDefinition = ((View) element.getContent()).getDefinition();
+                if (oDefinition instanceof UserTask) {
+                    UserTask userTask = (UserTask) oDefinition;
+                    simulationSet = userTask.getSimulationSet();
+                    break;
+                }
+            }
+        }
+
+        assertEquals( Double.valueOf(111),  simulationSet.getQuantity().getValue() );
+        assertEquals( "poisson",  simulationSet.getDistributionType().getValue() );
+        assertEquals( Double.valueOf(123),  simulationSet.getUnitCost().getValue() );
+        assertEquals( Double.valueOf(999),  simulationSet.getWorkingHours().getValue() );
+        assertEquals( Double.valueOf(321),  simulationSet.getMean().getValue() );
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
     public void testUmarshallNotBoundaryEvents() throws Exception {
         Diagram<Graph, Settings> diagram = unmarshall( BPMN_NOT_BOUNDARY_EVENTS );
         assertEquals( "Not Boundary Event", diagram.getSettings().getTitle() );
@@ -560,6 +590,21 @@ public class BPMNDiagramMarshallerTest {
         result = result.replace( '\n', ' ' );
         assertTrue( result.matches( "(.*)<bpmn2:resourceAssignmentExpression(.*)>user</bpmn2:formalExpression>(.*)" ) );
         assertTrue( result.matches( "(.*)<bpmn2:resourceAssignmentExpression(.*)>user1</bpmn2:formalExpression>(.*)" ) );
+    }
+
+    @Test
+    public void testMarshallSimulationProperties() throws Exception {
+        Diagram<Graph, Settings> diagram = unmarshall( BPMN_SIMULATIONPROPERTIES );
+        String result = tested.marshall( diagram );
+        assertDiagram( result, 1, 3, 2 );
+
+        result = result.replaceAll( "\\s+", " " );
+        result = result.replaceAll( "> <", "><" );
+        assertTrue( result.contains( "<bpsim:TimeParameters xsi:type=\"bpsim:TimeParameters\"><bpsim:ProcessingTime xsi:type=\"bpsim:Parameter\"><bpsim:PoissonDistribution mean=\"321.0\"/>" ) );
+        assertTrue( result.contains( "<bpsim:ResourceParameters xsi:type=\"bpsim:ResourceParameters\"><bpsim:Availability xsi:type=\"bpsim:Parameter\"><bpsim:FloatingParameter value=\"999.0\"/>" ) );
+        assertTrue( result.contains( "<bpsim:Quantity xsi:type=\"bpsim:Parameter\"><bpsim:FloatingParameter value=\"111.0\"/></bpsim:Quantity>" ) );
+        assertTrue( result.contains( "<bpsim:CostParameters xsi:type=\"bpsim:CostParameters\"><bpsim:UnitCost xsi:type=\"bpsim:Parameter\"><bpsim:FloatingParameter value=\"123.0\"/>" ) );
+        assertTrue( result.contains( "<bpsim:TimeParameters xsi:type=\"bpsim:TimeParameters\"><bpsim:ProcessingTime xsi:type=\"bpsim:Parameter\"><bpsim:UniformDistribution max=\"10.0\" min=\"5.0\"/>" ) );
     }
 
     @Test
