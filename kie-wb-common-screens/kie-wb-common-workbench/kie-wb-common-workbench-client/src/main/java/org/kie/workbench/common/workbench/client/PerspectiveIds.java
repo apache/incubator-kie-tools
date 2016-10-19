@@ -39,4 +39,5 @@ public interface PerspectiveIds {
     String DATASET_TASKS = "DataSet Tasks";
     String PROCESS_DASHBOARD = "DashboardPerspective";
     String DATASOURCE_MANAGEMENT = "DataSourceManagementPerspective";
+    String ADMIN = "AdminPagePerspective";
 }

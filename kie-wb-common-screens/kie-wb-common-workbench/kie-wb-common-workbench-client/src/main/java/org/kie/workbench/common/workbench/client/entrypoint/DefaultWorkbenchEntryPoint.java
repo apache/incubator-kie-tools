@@ -59,6 +59,12 @@ public abstract class DefaultWorkbenchEntryPoint {
 
     protected abstract void setupMenu();
 
+    /**
+     * Should be overwritten to define settings shortcuts.
+     */
+    protected void setupAdminPage() {
+    }
+
     @AfterInitialization
     public void startDefaultWorkbench() {
         initializeWorkbench();
@@ -79,6 +85,7 @@ public abstract class DefaultWorkbenchEntryPoint {
             public void callback( final Map<String, String> response ) {
                 ApplicationPreferences.setUp( response );
                 setupMenu();
+                setupAdminPage();
             }
         } ).loadPreferences();
     }

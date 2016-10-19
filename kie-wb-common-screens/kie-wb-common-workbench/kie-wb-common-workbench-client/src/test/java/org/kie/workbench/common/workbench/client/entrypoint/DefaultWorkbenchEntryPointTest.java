@@ -85,6 +85,7 @@ public class DefaultWorkbenchEntryPointTest {
         entryPoint.loadPreferences();
 
         verify( entryPoint ).setupMenu();
+        verify( entryPoint ).setupAdminPage();
 
         Assert.assertEquals( "value", ApplicationPreferences.getStringPref( "key" ) );
     }

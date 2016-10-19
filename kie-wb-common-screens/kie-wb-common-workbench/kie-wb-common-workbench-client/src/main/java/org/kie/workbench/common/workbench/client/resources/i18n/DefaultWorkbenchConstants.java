@@ -112,4 +112,8 @@ public interface DefaultWorkbenchConstants
     String ManageDashboardsHelp();
 
     String ResourcePlannerHelp();
+
+    String Admin();
+
+    String Permissions();
 }
