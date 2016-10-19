@@ -21,11 +21,11 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.uberfire.annotations.Customizable;
+import org.uberfire.annotations.FallbackImplementation;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.annotations.Customizable;
-import org.uberfire.annotations.FallbackImplementation;
 import org.uberfire.rpc.SessionInfo;
 
 @Startup(value = StartupType.BOOTSTRAP, priority = -1)

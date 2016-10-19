@@ -23,7 +23,6 @@ import org.uberfire.ext.preferences.client.annotations.PreferenceForm;
 import org.uberfire.ext.preferences.client.event.HierarchyItemFormInitializationEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralPreSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
-import org.uberfire.ext.preferences.shared.bean.BasePreference;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 

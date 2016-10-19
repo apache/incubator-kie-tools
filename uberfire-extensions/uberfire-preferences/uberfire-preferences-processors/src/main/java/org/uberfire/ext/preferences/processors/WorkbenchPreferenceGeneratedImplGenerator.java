@@ -72,8 +72,6 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
         String targetPackage = packageName;
 
         String identifier = annotation.identifier();
-        String category = annotation.category();
-        String iconCss = annotation.iconCss();
         String[] parents = annotation.parents();
         String bundleKey = annotation.bundleKey();
 
@@ -147,8 +145,6 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
             messager.printMessage( Kind.NOTE, "Target package name: " + targetPackage );
             messager.printMessage( Kind.NOTE, "Target class name: " + targetClassName );
             messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
-            messager.printMessage( Kind.NOTE, "Category: " + category );
-            messager.printMessage( Kind.NOTE, "Icon css: " + iconCss );
             messager.printMessage( Kind.NOTE, "Parents: " + parentsIdentifiers );
             messager.printMessage( Kind.NOTE, "Property fields: " + propertyFieldsText );
             messager.printMessage( Kind.NOTE, "Simple properties fields: " + simplePropertiesText );
@@ -169,10 +165,6 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
                   targetClassName );
         root.put( "identifier",
                   identifier );
-        root.put( "category",
-                  category );
-        root.put( "iconCss",
-                  iconCss );
         root.put( "parentsIdentifiers",
                   parentsIdentifiers );
         root.put( "bundleKey",

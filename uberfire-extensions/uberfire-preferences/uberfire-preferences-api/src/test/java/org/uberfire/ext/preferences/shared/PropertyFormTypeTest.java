@@ -18,7 +18,7 @@ package org.uberfire.ext.preferences.shared;
 
 import org.junit.Test;
 
-import static org.jgroups.util.Util.assertEquals;
+import static org.jgroups.util.Util.*;
 
 public class PropertyFormTypeTest {
 

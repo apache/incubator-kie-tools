@@ -33,10 +33,10 @@ public class PreferenceRootElement {
     public PreferenceRootElement() {
     }
 
-    public PreferenceRootElement( @MapsTo( "identifier" ) final String identifier,
-                                  @MapsTo( "category" ) final String category,
-                                  @MapsTo( "iconCss" ) final String iconCss,
-                                  @MapsTo( "bundleKey" ) final String bundleKey ) {
+    public PreferenceRootElement( @MapsTo("identifier") final String identifier,
+                                  @MapsTo("category") final String category,
+                                  @MapsTo("iconCss") final String iconCss,
+                                  @MapsTo("bundleKey") final String bundleKey ) {
         this.identifier = identifier;
         this.category = category;
         this.iconCss = iconCss;

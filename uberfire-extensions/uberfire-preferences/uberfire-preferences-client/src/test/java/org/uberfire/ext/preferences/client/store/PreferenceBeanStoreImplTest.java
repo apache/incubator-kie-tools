@@ -124,6 +124,7 @@ public class PreferenceBeanStoreImplTest {
     }
 
     class MyPreference implements BasePreference<MyPreference> {
+
     }
 
     class MyPreferencePortable extends MyPreference implements BasePreferencePortable<MyPreference> {
@@ -135,16 +136,6 @@ public class PreferenceBeanStoreImplTest {
 
         @Override
         public String identifier() {
-            return null;
-        }
-
-        @Override
-        public String category() {
-            return null;
-        }
-
-        @Override
-        public String iconCss() {
             return null;
         }
 

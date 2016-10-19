@@ -49,7 +49,7 @@ public class PreferenceScopeFactoryImplTest {
         assertEquals( "admin", userScope.key() );
     }
 
-    @Test( expected = InvalidPreferenceScopeException.class )
+    @Test(expected = InvalidPreferenceScopeException.class)
     public void createScopeByTypeWithoutDefaultKeyTest() {
         scopeFactory.createScope( DefaultScopes.COMPONENT.type() );
     }
@@ -61,7 +61,7 @@ public class PreferenceScopeFactoryImplTest {
         assertEquals( "my-component", componentScope.key() );
     }
 
-    @Test( expected = InvalidPreferenceScopeException.class )
+    @Test(expected = InvalidPreferenceScopeException.class)
     public void createScopeByTypeAndKeyWithDefaultKeyTest() {
         scopeFactory.createScope( DefaultScopes.USER.type(), "user" );
     }
@@ -73,7 +73,7 @@ public class PreferenceScopeFactoryImplTest {
         assertEquals( "admin", userScope.key() );
     }
 
-    @Test( expected = InvalidPreferenceScopeException.class )
+    @Test(expected = InvalidPreferenceScopeException.class)
     public void createScopeByTypeAndChildScopeWithoutDefaultKeyTest() {
         scopeFactory.createScope( DefaultScopes.COMPONENT.type(), genericScope );
     }
@@ -85,7 +85,7 @@ public class PreferenceScopeFactoryImplTest {
         assertEquals( "my-component", componentScope.key() );
     }
 
-    @Test( expected = InvalidPreferenceScopeException.class )
+    @Test(expected = InvalidPreferenceScopeException.class)
     public void createScopeByTypeKeyAndChildScopeWithDefaultKeyTest() {
         scopeFactory.createScope( DefaultScopes.USER.type(), "user", genericScope );
     }

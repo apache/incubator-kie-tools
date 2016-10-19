@@ -18,9 +18,6 @@ package org.uberfire.ext.preferences.shared.impl;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeTypes;
-import org.uberfire.ext.preferences.shared.impl.DefaultScopes;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeImpl;
 import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;

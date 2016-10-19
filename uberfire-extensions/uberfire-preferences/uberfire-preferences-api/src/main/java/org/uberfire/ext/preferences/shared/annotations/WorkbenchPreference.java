@@ -38,25 +38,10 @@ public @interface WorkbenchPreference {
     String identifier();
 
     /**
-     * If this is a root preference, this will define inside which category the preference
-     * will be shown.
-     * @return The preference's category.
-     */
-    String category() default "";
-
-    /**
-     * The CSS class for the icon that represents this preference. This should be filled only for
-     * root preferences (those which have a category defined).
-     * @return The css class for the preference tile.
-     */
-    String iconCss() default "";
-
-    /**
      * The identifiers of all parents of this preference.
      * @return The parents of this preference. Empty if there is not one.
      */
-    @Nonbinding
-    String[] parents() default {};
+    @Nonbinding String[] parents() default {};
 
     /**
      * Defines a bundle key that will be used to internationalize the property's label wherever

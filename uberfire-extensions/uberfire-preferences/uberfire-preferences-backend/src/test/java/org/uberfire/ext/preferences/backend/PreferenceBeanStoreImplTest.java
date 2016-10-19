@@ -19,7 +19,6 @@ package org.uberfire.ext.preferences.backend;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,6 @@ import org.uberfire.ext.preferences.shared.bean.BasePreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.ext.preferences.shared.bean.PreferenceHierarchyElement;
 import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
-import org.uberfire.ext.preferences.shared.bean.PreferenceRootElement;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -132,10 +130,9 @@ public class PreferenceBeanStoreImplTest {
         final List<BasePreferencePortable<? extends BasePreference<?>>> rootPreferences = getRootPortablePreferences();
         final MyPreferencePortableGeneratedImpl myPreference = (MyPreferencePortableGeneratedImpl) rootPreferences.get( 0 );
 
-        doReturn( rootPreferences ).when( preferenceBeanStoreImpl ).getRootPortablePreferences();
         doReturn( getPortablePreferences() ).when( preferenceBeanStoreImpl ).getPortablePreferences();
 
-        final PreferenceHierarchyElement<?> preferenceHierarchyElement = preferenceBeanStoreImpl.buildHierarchyStructureForRootPreference( myPreference.identifier() );
+        final PreferenceHierarchyElement<?> preferenceHierarchyElement = preferenceBeanStoreImpl.buildHierarchyStructureForPreference( myPreference.identifier() );
 
         final PreferenceHierarchyElement<?> firstElement = preferenceHierarchyElement;
         assertEquals( myPreference.identifier(), firstElement.getPortablePreference().identifier() );
@@ -144,19 +141,19 @@ public class PreferenceBeanStoreImplTest {
         assertEquals( 2, firstElement.getChildren().size() );
 
         final PreferenceHierarchyElement<?> firstElementFirstChild = firstElement.getChildren().get( 0 );
-        assertEquals( ( ( MyInnerPreferencePortableGeneratedImpl ) myPreference.myInnerPreference ).identifier(), firstElementFirstChild.getPortablePreference().identifier() );
+        assertEquals( ( (MyInnerPreferencePortableGeneratedImpl) myPreference.myInnerPreference ).identifier(), firstElementFirstChild.getPortablePreference().identifier() );
         assertFalse( firstElementFirstChild.isRoot() );
         assertFalse( firstElementFirstChild.isShared() );
         assertEquals( 0, firstElementFirstChild.getChildren().size() );
 
         final PreferenceHierarchyElement<?> firstElementSecondChild = firstElement.getChildren().get( 1 );
-        assertEquals( ( ( MySharedPreferencePortableGeneratedImpl ) myPreference.mySharedPreference ).identifier(), firstElementSecondChild.getPortablePreference().identifier() );
+        assertEquals( ( (MySharedPreferencePortableGeneratedImpl) myPreference.mySharedPreference ).identifier(), firstElementSecondChild.getPortablePreference().identifier() );
         assertFalse( firstElementSecondChild.isRoot() );
         assertTrue( firstElementSecondChild.isShared() );
         assertEquals( 1, firstElementSecondChild.getChildren().size() );
 
         final PreferenceHierarchyElement<?> firstElementSecondChildFirstChild = firstElementSecondChild.getChildren().get( 0 );
-        assertEquals( ( ( MyInnerPreference2PortableGeneratedImpl ) myPreference.mySharedPreference.myInnerPreference2 ).identifier(), firstElementSecondChildFirstChild.getPortablePreference().identifier() );
+        assertEquals( ( (MyInnerPreference2PortableGeneratedImpl) myPreference.mySharedPreference.myInnerPreference2 ).identifier(), firstElementSecondChildFirstChild.getPortablePreference().identifier() );
         assertFalse( firstElementSecondChildFirstChild.isRoot() );
         assertFalse( firstElementSecondChildFirstChild.isShared() );
         assertEquals( 1, firstElementSecondChildFirstChild.getChildren().size() );
@@ -166,25 +163,6 @@ public class PreferenceBeanStoreImplTest {
         assertTrue( firstElementSecondChildFirstChildFirstChild.isRoot() );
         assertFalse( firstElementSecondChildFirstChildFirstChild.isShared() );
         assertEquals( 0, firstElementSecondChildFirstChildFirstChild.getChildren().size() );
-    }
-
-    @Test
-    public void buildCategoryStructureTest() {
-        final List<BasePreferencePortable<? extends BasePreference<?>>> rootPreferences = getRootPortablePreferences();
-        final MyPreferencePortableGeneratedImpl myPreference = (MyPreferencePortableGeneratedImpl) rootPreferences.get( 0 );
-        final MySharedPreference2PortableGeneratedImpl mySharedPreference2 = (MySharedPreference2PortableGeneratedImpl) rootPreferences.get( 1 );
-
-        doReturn( rootPreferences ).when( preferenceBeanStoreImpl ).getRootPortablePreferences();
-
-        final Map<String, List<PreferenceRootElement>> rootPreferencesByCategory = preferenceBeanStoreImpl.buildCategoryStructure();
-
-        assertEquals( 1, rootPreferencesByCategory.size() );
-
-        final List<PreferenceRootElement> myCategoryPreferences = rootPreferencesByCategory.get( "MyCategory" );
-        assertNotNull( myCategoryPreferences );
-
-        assertEquals( myPreference.identifier(), myCategoryPreferences.get( 0 ).getIdentifier() );
-        assertEquals( mySharedPreference2.identifier(), myCategoryPreferences.get( 1 ).getIdentifier() );
     }
 
     private List<BasePreferencePortable<? extends BasePreference<?>>> getRootPortablePreferences() {

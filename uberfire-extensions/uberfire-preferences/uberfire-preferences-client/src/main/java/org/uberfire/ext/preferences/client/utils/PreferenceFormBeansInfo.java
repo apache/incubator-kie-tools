@@ -41,18 +41,18 @@ public class PreferenceFormBeansInfo {
 
     /**
      * Searches for a {@link WorkbenchScreenActivity} that is qualified with {@link PreferenceForm} with the passed
-     * preference bean class as its value.
-     * @param preferenceBeanClass The {@link PreferenceForm} value to be searched.
+     * preference bean identifier as its value.
+     * @param preferenceIdentifier The {@link PreferenceForm} value to be searched.
      * @return The screen bean identifier.
      */
-    public String getPreferenceFormFor( Class<?> preferenceBeanClass ) {
+    public String getPreferenceFormFor( final String preferenceIdentifier ) {
         final Collection<? extends IOCBeanDef<?>> screenBeans = activityBeansInfo.lookupBeans( WorkbenchScreenActivity.class );
 
         for ( final IOCBeanDef<?> beanDef : screenBeans ) {
             for ( final Annotation annotation : beanDef.getQualifiers() ) {
                 if ( annotation instanceof PreferenceForm ) {
                     PreferenceForm preferenceFormQualifier = (PreferenceForm) annotation;
-                    if ( preferenceBeanClass.equals( preferenceFormQualifier.value() ) ) {
+                    if ( preferenceIdentifier.equals( preferenceFormQualifier.value() ) ) {
                         return activityBeansInfo.getId( beanDef );
                     }
                 }

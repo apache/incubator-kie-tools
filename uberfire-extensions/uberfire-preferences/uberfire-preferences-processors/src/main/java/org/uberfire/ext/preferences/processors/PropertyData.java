@@ -106,14 +106,22 @@ public class PropertyData {
     public String getHashCodeFormula() {
         if ( isPrimitive() ) {
             switch ( typeKind ) {
-                case BOOLEAN: return "java.lang.Boolean.hashCode( " + getFieldAccessorCommand() + " )";
-                case BYTE: return "java.lang.Byte.hashCode( " + getFieldAccessorCommand() + " )";
-                case SHORT: return "java.lang.Short.hashCode( " + getFieldAccessorCommand() + " )";
-                case INT: return "java.lang.Integer.hashCode( " + getFieldAccessorCommand() + " )";
-                case LONG: return "java.lang.Long.hashCode( " + getFieldAccessorCommand() + " )";
-                case CHAR: return "java.lang.Character.hashCode( " + getFieldAccessorCommand() + " )";
-                case FLOAT: return "java.lang.Float.hashCode( " + getFieldAccessorCommand() + " )";
-                case DOUBLE: return "java.lang.Double.hashCode( " + getFieldAccessorCommand() + " )";
+                case BOOLEAN:
+                    return "java.lang.Boolean.hashCode( " + getFieldAccessorCommand() + " )";
+                case BYTE:
+                    return "java.lang.Byte.hashCode( " + getFieldAccessorCommand() + " )";
+                case SHORT:
+                    return "java.lang.Short.hashCode( " + getFieldAccessorCommand() + " )";
+                case INT:
+                    return "java.lang.Integer.hashCode( " + getFieldAccessorCommand() + " )";
+                case LONG:
+                    return "java.lang.Long.hashCode( " + getFieldAccessorCommand() + " )";
+                case CHAR:
+                    return "java.lang.Character.hashCode( " + getFieldAccessorCommand() + " )";
+                case FLOAT:
+                    return "java.lang.Float.hashCode( " + getFieldAccessorCommand() + " )";
+                case DOUBLE:
+                    return "java.lang.Double.hashCode( " + getFieldAccessorCommand() + " )";
             }
         }
 

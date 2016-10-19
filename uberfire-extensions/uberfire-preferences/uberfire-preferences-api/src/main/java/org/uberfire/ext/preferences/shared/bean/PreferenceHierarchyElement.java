@@ -58,13 +58,13 @@ public class PreferenceHierarchyElement<T> {
         this( id, portablePreference, new ArrayList<>(), shared, root, bundleKey, new HashMap<>() );
     }
 
-    public PreferenceHierarchyElement( @MapsTo( "id" ) final String id,
-                                       @MapsTo( "portablePreference" ) final BasePreferencePortable<T> portablePreference,
-                                       @MapsTo( "children" ) final List<PreferenceHierarchyElement<?>> children,
-                                       @MapsTo( "shared" ) final boolean shared,
-                                       @MapsTo( "root" ) final boolean root,
-                                       @MapsTo( "bundleKey" ) final String bundleKey,
-                                       @MapsTo( "bundleKeyByProperty" ) final Map<String, String> bundleKeyByProperty ) {
+    public PreferenceHierarchyElement( @MapsTo("id") final String id,
+                                       @MapsTo("portablePreference") final BasePreferencePortable<T> portablePreference,
+                                       @MapsTo("children") final List<PreferenceHierarchyElement<?>> children,
+                                       @MapsTo("shared") final boolean shared,
+                                       @MapsTo("root") final boolean root,
+                                       @MapsTo("bundleKey") final String bundleKey,
+                                       @MapsTo("bundleKeyByProperty") final Map<String, String> bundleKeyByProperty ) {
         this.id = id;
         this.portablePreference = portablePreference;
         this.children = children;
@@ -126,7 +126,8 @@ public class PreferenceHierarchyElement<T> {
         this.bundleKey = bundleKey;
     }
 
-    public void addPropertyBundleKey( final String propertyFieldName, final String bundleKey ) {
+    public void addPropertyBundleKey( final String propertyFieldName,
+                                      final String bundleKey ) {
         bundleKeyByProperty.put( propertyFieldName, bundleKey );
     }
 

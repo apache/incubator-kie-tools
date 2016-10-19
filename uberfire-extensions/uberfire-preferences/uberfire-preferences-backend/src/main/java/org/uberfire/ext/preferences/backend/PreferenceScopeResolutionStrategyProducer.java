@@ -23,16 +23,13 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
-import org.uberfire.commons.services.cdi.Startup;
-import org.uberfire.commons.services.cdi.StartupType;
+import org.uberfire.annotations.Customizable;
 import org.uberfire.ext.preferences.backend.annotations.ComponentKey;
 import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.annotations.Customizable;
 import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
 
-@Startup(value = StartupType.BOOTSTRAP, priority = -1)
 @ApplicationScoped
 public class PreferenceScopeResolutionStrategyProducer {
 

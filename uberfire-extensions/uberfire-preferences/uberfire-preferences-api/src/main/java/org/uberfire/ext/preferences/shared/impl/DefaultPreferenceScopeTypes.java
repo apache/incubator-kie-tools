@@ -19,14 +19,12 @@ package org.uberfire.ext.preferences.shared.impl;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 
-import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
 import org.uberfire.annotations.FallbackImplementation;
+import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
 import org.uberfire.ext.preferences.shared.UsernameProvider;
 import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
-import org.uberfire.rpc.SessionInfo;
 
 /**
  * Default implementation for {@link PreferenceScopeTypes}. To override it, just provide a default

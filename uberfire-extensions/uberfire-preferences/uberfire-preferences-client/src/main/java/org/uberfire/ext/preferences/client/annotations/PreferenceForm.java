@@ -36,8 +36,8 @@ import org.uberfire.ext.preferences.shared.bean.BasePreference;
 public @interface PreferenceForm {
 
     /**
-     * Preference bean class that the form edits.
-     * @return Preference bean class.
+     * Identifier of the preference bean that the form edits.
+     * @return Preference bean identifier (required).
      */
-    Class<? extends BasePreference> value();
+    String value();
 }

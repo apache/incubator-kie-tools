@@ -22,9 +22,7 @@ import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
 @WorkbenchPreference(identifier = "MyPreference",
-        category = "MyCategory",
-        bundleKey = "MyPreference.Label",
-        iconCss = "fa-gear")
+        bundleKey = "MyPreference.Label")
 public class MyPreference implements BasePreference<MyPreference> {
 
     @Property(bundleKey = "MyPreference.Text")

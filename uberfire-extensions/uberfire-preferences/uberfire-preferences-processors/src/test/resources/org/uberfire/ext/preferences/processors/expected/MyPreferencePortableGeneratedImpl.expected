@@ -24,7 +24,6 @@ import javax.annotation.Generated;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
-import org.uberfire.ext.preferences.shared.annotations.RootPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.ext.preferences.shared.PropertyFormType;
 import org.uberfire.mvp.Command;
@@ -32,7 +31,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 @Portable( mapSuperTypes = true )
 @PortablePreference
-@RootPreference
 @Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
 /*
 * WARNING! This class is generated. Do not modify.
@@ -62,16 +60,6 @@ public class MyPreferencePortableGeneratedImpl extends MyPreference implements B
     @Override
     public String identifier() {
         return "MyPreference";
-    }
-
-    @Override
-    public String category() {
-        return "MyCategory";
-    }
-
-    @Override
-    public String iconCss() {
-        return "fa-gear";
     }
 
     @Override

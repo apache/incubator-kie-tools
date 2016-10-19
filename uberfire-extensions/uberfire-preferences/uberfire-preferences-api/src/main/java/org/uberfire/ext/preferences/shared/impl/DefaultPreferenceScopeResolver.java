@@ -46,7 +46,7 @@ public class DefaultPreferenceScopeResolver implements PreferenceScopeResolver {
                 return getScopeFromOrder( scopeTypes );
             }
 
-            String scopeType = scopeTypes[0];
+            String scopeType = scopeTypes[ 0 ];
 
             if ( scopeType.equals( DefaultScopes.USER.type() ) ) {
                 return getScopeFromOrder( DefaultScopes.USER.type(), DefaultScopes.ENTIRE_APPLICATION.type() );

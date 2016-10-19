@@ -21,7 +21,6 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
-import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 
 /**
  * Holds all necessary information to the scope resolution strategy.

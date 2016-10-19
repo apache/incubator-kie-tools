@@ -19,10 +19,10 @@ package org.uberfire.ext.preferences.shared.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.annotations.Customizable;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.annotations.Customizable;
 import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 
 @ApplicationScoped

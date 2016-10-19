@@ -20,6 +20,7 @@
 <module>
 
   <!-- Inherit the core Web Toolkit stuff. -->
+  <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="com.google.gwt.i18n.I18N"/>
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
@@ -29,6 +30,8 @@
   <inherits name="org.uberfire.UberfireWorkbench"/>
 
   <inherits name="org.uberfire.UberfireClientAPI"/>
+
+  <inherits name="org.uberfire.ext.preferences.UberfirePreferencesAPI"/>
 
   <source path='client'/>
 </module>

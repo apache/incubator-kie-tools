@@ -27,9 +27,8 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-import org.uberfire.ext.wires.client.preferences.central.PreferencesCentralPerspective;
-import org.uberfire.ext.wires.client.preferences.settings.SettingsPerspective;
-import org.uberfire.ext.wires.client.preferences.settings.home.register.WorkbenchSettings;
+import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
+import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuPosition;
@@ -50,7 +49,7 @@ public class ShowcaseEntryPoint {
     private WorkbenchMenuBarPresenter menubar;
 
     @Inject
-    private WorkbenchSettings settings;
+    private AdminPage adminPage;
 
     @Inject
     private ActivityManager activityManager;
@@ -63,7 +62,13 @@ public class ShowcaseEntryPoint {
     }
 
     private void setupSettings() {
-        settings.addItem( "Apps", "fa-map", "Other", () -> placeManager.goTo( new DefaultPlaceRequest( "AppsPerspective" ) ) );
+        adminPage.addTool( "Apps",
+                           "fa-map",
+                           "Other",
+                           () -> placeManager.goTo( new DefaultPlaceRequest( "AppsPerspective" ) ),
+                           ( counterCommand ) -> counterCommand.execute( 0 ) );
+        adminPage.addPreference( "MyPreference", "My Preference", "fa-gear", "Preferences" );
+        adminPage.addPreference( "MySharedPreference2", "My Shared Preference 2", "fa-pie-chart", "Preferences" );
     }
 
     private void setupMenu() {
@@ -107,10 +112,10 @@ public class ShowcaseEntryPoint {
             public void execute() {
                 placeManager.goTo( new DefaultPlaceRequest( "UFWidgets" ) );
             }
-        } ).endMenu().newTopLevelMenu( "Settings" ).respondsWith( new Command() {
+        } ).endMenu().newTopLevelMenu( "Admin" ).respondsWith( new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( SettingsPerspective.IDENTIFIER ) );
+                placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER ) );
             }
         } ).endMenu().newTopLevelMenu( "Logout" ).position( MenuPosition.RIGHT ).respondsWith( new Command() {
             @Override

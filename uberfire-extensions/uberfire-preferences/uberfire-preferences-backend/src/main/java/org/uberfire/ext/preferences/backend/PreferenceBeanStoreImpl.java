@@ -35,7 +35,6 @@ import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.PreferenceStore;
 import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
 import org.uberfire.ext.preferences.shared.annotations.Property;
-import org.uberfire.ext.preferences.shared.annotations.RootPreference;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
@@ -43,7 +42,6 @@ import org.uberfire.ext.preferences.shared.bean.Preference;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanServerStore;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanStore;
 import org.uberfire.ext.preferences.shared.bean.PreferenceHierarchyElement;
-import org.uberfire.ext.preferences.shared.bean.PreferenceRootElement;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -54,9 +52,8 @@ import org.uberfire.mvp.ParameterizedCommand;
 @ApplicationScoped
 public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
-    private static final AnnotationLiteral<PortablePreference> portablePreferenceAnnotation = new AnnotationLiteral<PortablePreference>() { };
-
-    private static final AnnotationLiteral<RootPreference> rootPreferenceAnnotation = new AnnotationLiteral<RootPreference>() { };
+    private static final AnnotationLiteral<PortablePreference> portablePreferenceAnnotation = new AnnotationLiteral<PortablePreference>() {
+    };
 
     private PreferenceStore preferenceStore;
 
@@ -181,33 +178,8 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     }
 
     @Override
-    public Map<String, List<PreferenceRootElement>> buildCategoryStructure() {
-        final Map<String, List<PreferenceRootElement>> rootPreferencesByCategory = new HashMap<>();
-
-        getRootPortablePreferences().forEach( preference -> {
-            final BasePreferencePortable portablePreference = (BasePreferencePortable) preference;
-            final String category = portablePreference.category();
-
-            PreferenceRootElement element = new PreferenceRootElement( portablePreference.identifier(),
-                                                                       category,
-                                                                       portablePreference.iconCss(),
-                                                                       portablePreference.bundleKey() );
-
-            List<PreferenceRootElement> rootPreferences = rootPreferencesByCategory.get( category );
-            if ( rootPreferences == null ) {
-                rootPreferences = new ArrayList<>();
-                rootPreferencesByCategory.put( category, rootPreferences );
-            }
-
-            rootPreferences.add( element );
-        } );
-
-        return rootPreferencesByCategory;
-    }
-
-    @Override
-    public PreferenceHierarchyElement<?> buildHierarchyStructureForRootPreference( String identifier ) {
-        BasePreferencePortable preference = getRootPortablePreferenceByIdentifier( identifier );
+    public PreferenceHierarchyElement<?> buildHierarchyStructureForPreference( String identifier ) {
+        BasePreferencePortable preference = getPortablePreferenceByIdentifier( identifier );
         preference = load( preference );
 
         final PreferenceHierarchyElement<?> rootElement = buildHierarchyElement( preference,
@@ -426,8 +398,8 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         }
     }
 
-    BasePreferencePortable getRootPortablePreferenceByIdentifier( String identifier ) {
-        for ( Preference preference : getRootPortablePreferences() ) {
+    BasePreferencePortable getPortablePreferenceByIdentifier( String identifier ) {
+        for ( Preference preference : getPortablePreferences() ) {
             BasePreferencePortable portablePreference = (BasePreferencePortable) preference;
 
             if ( portablePreference.identifier().equals( identifier ) ) {
@@ -436,10 +408,6 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         }
 
         return null;
-    }
-
-    Iterable<Preference> getRootPortablePreferences() {
-        return preferences.select( rootPreferenceAnnotation );
     }
 
     Iterable<Preference> getPortablePreferences() {

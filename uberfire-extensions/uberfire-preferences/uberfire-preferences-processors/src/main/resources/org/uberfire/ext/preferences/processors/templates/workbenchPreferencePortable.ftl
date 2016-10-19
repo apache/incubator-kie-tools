@@ -24,9 +24,6 @@ import javax.annotation.Generated;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.preferences.shared.annotations.PortablePreference;
-<#if category != "">
-import org.uberfire.ext.preferences.shared.annotations.RootPreference;
-</#if>
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.ext.preferences.shared.PropertyFormType;
 import org.uberfire.mvp.Command;
@@ -34,9 +31,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 @Portable( mapSuperTypes = true )
 @PortablePreference
-<#if category != "">
-@RootPreference
-</#if>
 @Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
 /*
 * WARNING! This class is generated. Do not modify.
@@ -71,16 +65,6 @@ public class ${targetClassName} extends ${sourceClassName} implements BasePrefer
     @Override
     public String identifier() {
         return "${identifier}";
-    }
-
-    @Override
-    public String category() {
-        return "${category}";
-    }
-
-    @Override
-    public String iconCss() {
-        return "${iconCss}";
     }
 
     @Override

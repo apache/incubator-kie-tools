@@ -45,17 +45,17 @@ public class DefaultPreferenceScopeResolverTest {
         assertEquals( allUsersEntireApplicationScope, scopeResolver.resolve( allUsersScopeType, entireApplicationScopeType ) );
     }
 
-    @Test( expected = InvalidPreferenceScopeException.class )
+    @Test(expected = InvalidPreferenceScopeException.class)
     public void tryResolveWithInvalidScopeTypeTest() {
         scopeResolver.resolve( "invalidScopeType" );
     }
 
-    @Test( expected = InvalidPreferenceScopeException.class )
+    @Test(expected = InvalidPreferenceScopeException.class)
     public void tryResolveWithNoScopeTypesTest() {
         scopeResolver.resolve();
     }
 
-    @Test( expected = InvalidPreferenceScopeException.class )
+    @Test(expected = InvalidPreferenceScopeException.class)
     public void tryResolveWithThreeScopeTypesTest() {
         scopeResolver.resolve( userScopeType, componentScopeType, entireApplicationScopeType );
     }

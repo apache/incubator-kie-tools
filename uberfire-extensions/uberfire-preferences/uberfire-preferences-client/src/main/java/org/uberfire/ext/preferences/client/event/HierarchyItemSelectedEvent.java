@@ -34,16 +34,12 @@ public class HierarchyItemSelectedEvent extends AbstractHierarchyItemEvent {
     }
 
     public <T extends BasePreferencePortable<?>> T getPreference() {
-        Class<T> preferenceClass = (Class<T>) getPreferenceClass();
+        Class<T> preferenceClass = (Class<T>) hierarchyElement.getPortablePreference().getPojoClass();
         return (T) hierarchyElement.getPortablePreference();
     }
 
-    public Class<?> getPreferenceClass() {
-        return hierarchyElement.getPortablePreference().getPojoClass();
-    }
-
-    public Map<String, String> getBundleKeyByProperty() {
-        return hierarchyElement.getBundleKeyByProperty();
+    public String getPreferenceIdentifier() {
+        return hierarchyElement.getPortablePreference().identifier();
     }
 
     public PreferenceHierarchyElement<?> getHierarchyElement() {

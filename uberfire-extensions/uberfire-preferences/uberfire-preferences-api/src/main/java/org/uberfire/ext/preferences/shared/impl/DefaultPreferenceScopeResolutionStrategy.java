@@ -19,11 +19,11 @@ package org.uberfire.ext.preferences.shared.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.uberfire.annotations.FallbackImplementation;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.PreferenceScopeResolver;
-import org.uberfire.annotations.FallbackImplementation;
 
 /**
  * Default implementation for {@link PreferenceScopeResolutionStrategy}. To override it, just

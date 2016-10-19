@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.annotations.Customizable;
 import org.uberfire.ext.preferences.backend.annotations.ComponentKey;
 import org.uberfire.ext.preferences.shared.PreferenceScope;
 import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
@@ -33,7 +34,6 @@ import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.PreferenceScopeResolver;
 import org.uberfire.ext.preferences.shared.PreferenceStorage;
 import org.uberfire.ext.preferences.shared.PreferenceStore;
-import org.uberfire.annotations.Customizable;
 import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.ext.preferences.shared.impl.PreferenceScopedValue;
@@ -49,7 +49,6 @@ public class PreferenceStoreImpl implements PreferenceStore {
 
     protected PreferenceStoreImpl() {
     }
-
 
     PreferenceStoreImpl( final PreferenceStorage storage,
                          final PreferenceScopeFactory scopeFactory,
@@ -210,7 +209,6 @@ public class PreferenceStoreImpl implements PreferenceStore {
                       final T defaultValue ) {
         return get( defaultScopeResolutionStrategy.getInfo(), key, defaultValue );
     }
-
 
     @Override
     public <T> PreferenceScopedValue<T> getScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,

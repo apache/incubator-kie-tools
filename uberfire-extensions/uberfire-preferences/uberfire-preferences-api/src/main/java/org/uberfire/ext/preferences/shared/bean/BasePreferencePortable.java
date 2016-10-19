@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.uberfire.ext.preferences.shared.bean;
 
 import java.util.Map;
@@ -42,20 +41,6 @@ public interface BasePreferencePortable<T> extends BasePreference<T> {
     String identifier();
 
     /**
-     * If this is a root preference, this will define inside which category the preference
-     * will be shown.
-     * @return The preference's category.
-     */
-    String category();
-
-    /**
-     * The css class for the icon that represents this preference. This should be filled only for
-     * root preferences (those who belong to a category).
-     * @return The css class for the preference tile.
-     */
-    String iconCss();
-
-    /**
      * The preferences which will have this preference as their child.
      * All parents will share the same preference value.
      * @return The parents of this preference. Empty if there is not one.
@@ -73,7 +58,8 @@ public interface BasePreferencePortable<T> extends BasePreference<T> {
      * @param property Name of the property field to be set.
      * @param value New value for the property.
      */
-    void set( String property, Object value );
+    void set( String property,
+              Object value );
 
     /**
      * Returns a property value by its name.

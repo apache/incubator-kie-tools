@@ -78,8 +78,8 @@ public class WorkbenchPreferenceProcessor extends AbstractErrorAbsorbingProcesso
                 try {
                     beanGenerator = new WorkbenchPreferenceGeneratedImplGenerator( GeneratorContext.BEAN );
                     portableGenerator = new WorkbenchPreferenceGeneratedImplGenerator( GeneratorContext.PORTABLE );
-                } catch (Throwable t) {
-                    rememberInitializationError(t);
+                } catch ( Throwable t ) {
+                    rememberInitializationError( t );
                 }
 
                 TypeElement classElement = (TypeElement) element;

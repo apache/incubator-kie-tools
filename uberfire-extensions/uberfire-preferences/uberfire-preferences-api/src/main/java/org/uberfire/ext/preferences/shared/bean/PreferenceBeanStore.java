@@ -18,7 +18,6 @@ package org.uberfire.ext.preferences.shared.bean;
 
 import java.util.Collection;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 

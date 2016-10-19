@@ -22,9 +22,7 @@ import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
 @WorkbenchPreference(identifier = "MySharedPreference2",
         parents = "MyInnerPreference2",
-        bundleKey = "MySharedPreference2.Label",
-        category = "MyCategory",
-        iconCss = "fa-pie-chart")
+        bundleKey = "MySharedPreference2.Label")
 public class MySharedPreference2 implements BasePreference<MySharedPreference2> {
 
     @Property(bundleKey = "MySharedPreference2.Text")

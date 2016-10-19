@@ -28,7 +28,7 @@ import org.uberfire.ext.preferences.client.base.BasePreferenceForm;
 import org.uberfire.ext.wires.shared.preferences.bean.MyInnerPreference;
 
 @Dependent
-@PreferenceForm(MyInnerPreference.class)
+@PreferenceForm("MyInnerPreference")
 @WorkbenchScreen(identifier = MyInnerPreferenceCustomForm.IDENTIFIER)
 public class MyInnerPreferenceCustomForm extends BasePreferenceForm<MyInnerPreference> {
 

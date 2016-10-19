@@ -17,8 +17,6 @@ Each of those annotations have some attributes that can be customized:
 
 * `@WorkbenchPreference`:
     * `identifier`: Unique text identifier, used by its children to determine their parents.
-    * `category`: If this is a root preference, this will define inside which category the preference will be shown.
-    * `iconCss`: The CSS class for the icon that represents this preference. This should be filled only for root preferences (those which have a category defined).
     * `parents`: The preferences' identifiers which will have this preference as their child. All parents will share the same value for this preference.
     * `bundleKey`: Optional (but recommended to be customized) string attribute. It defines a bundle key that will be used to internationalize the property's label wherever its necessary. It's expected that the Errai's TranslationService will have access to the key translation.
 
@@ -42,9 +40,7 @@ import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
 @WorkbenchPreference(identifier = "MyPreference",
-        category = "MyCategory",
-        bundleKey = "MyPreference.Label",
-        iconCss = "my-icon-css")
+        bundleKey = "MyPreference.Label")
 public class MyPreference implements BasePreference<MyPreference> {
 
     @Property(bundleKey = "MyPreference.Text")
