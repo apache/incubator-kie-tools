@@ -26,6 +26,7 @@
 
 	<source path="definition"/>
 	<source path="factory"/>
+	<source path="forms"/>
 	<source path="shape/def"/>
 	<source path="" includes="BPMNDefinitionSet.java"/>
 

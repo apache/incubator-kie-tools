@@ -106,26 +106,6 @@
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
     </dependency>
 
-    <!-- TODO: Jeremy - remove from here and move the concrete forms classees for bpmn
-         into kie-wb-common-stunner-bpmn-client module. -->
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-bpmn-api</artifactId>
-    </dependency>
-
-    <!-- powermock -->
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-module-junit4</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
 </project>
