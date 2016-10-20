@@ -32,7 +32,7 @@ public enum Bpmn20Stencil {
     Task_Custom( Bpmn2Package.eINSTANCE.getTask() ),
     Task_Script( Bpmn2Package.eINSTANCE.getScriptTask() ),
     Task_User( Bpmn2Package.eINSTANCE.getUserTask() ),
-    Task_Business_Rule( Bpmn2Package.eINSTANCE.getBusinessRuleTask() ),
+    Task_Business_rule( Bpmn2Package.eINSTANCE.getBusinessRuleTask() ),
     Task_Manual( Bpmn2Package.eINSTANCE.getManualTask() ),
     Task_Service( Bpmn2Package.eINSTANCE.getServiceTask() ),
     Task_Send( Bpmn2Package.eINSTANCE.getSendTask() ),

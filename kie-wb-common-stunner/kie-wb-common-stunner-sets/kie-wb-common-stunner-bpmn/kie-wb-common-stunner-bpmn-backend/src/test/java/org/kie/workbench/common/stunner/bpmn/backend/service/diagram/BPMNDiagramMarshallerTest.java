@@ -478,6 +478,32 @@ public class BPMNDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings( "unchecked" )
+    public void testUnmarshallBusinessRuleTask() throws Exception {
+        Diagram<Graph, Settings> diagram = unmarshall( BPMN_BUSINESSRULETASKRULEFLOWGROUP );
+        BusinessRuleTask businessRuleTask = null;
+        Iterator<Element> it = diagram.getGraph().nodes().iterator();
+        while ( it.hasNext() ) {
+            Element element = it.next();
+            if ( element.getContent() instanceof View ) {
+                Object oDefinition = ( ( View ) element.getContent() ).getDefinition();
+                if ( oDefinition instanceof BusinessRuleTask ) {
+                    businessRuleTask = ( BusinessRuleTask ) oDefinition;
+                    break;
+                }
+            }
+        }
+        assertNotNull( businessRuleTask );
+        assertNotNull( businessRuleTask.getExecutionSet() );
+        assertNotNull( businessRuleTask.getExecutionSet().getRuleFlowGroup() );
+        assertNotNull( businessRuleTask.getGeneral() );
+        assertNotNull( businessRuleTask.getGeneral().getName() );
+        assertEquals(businessRuleTask.getTaskType().getValue(), TaskTypes.BUSINESS_RULE);
+        assertEquals( "my business rule task", businessRuleTask.getGeneral().getName().getValue() );
+        assertEquals( "my-ruleflow-group", businessRuleTask.getExecutionSet().getRuleFlowGroup().getValue() );
+    }
+    
+    @Test
+    @SuppressWarnings( "unchecked" )
     public void testUnmarshallXorGateway() throws Exception {
         Diagram<Graph, Settings> diagram = unmarshall( BPMN_XORGATEWAY );
         assertDiagram( diagram, 7 );
@@ -618,32 +644,6 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
-    public void testMarshallBusinessRuleTask() throws Exception {
-        Diagram<Graph, Settings> diagram = unmarshall( BPMN_BUSINESSRULETASKRULEFLOWGROUP );
-        BusinessRuleTask businessRuleTask = null;
-        Iterator<Element> it = diagram.getGraph().nodes().iterator();
-        while ( it.hasNext() ) {
-            Element element = it.next();
-            if ( element.getContent() instanceof View ) {
-                Object oDefinition = ( ( View ) element.getContent() ).getDefinition();
-                if ( oDefinition instanceof BusinessRuleTask ) {
-                    businessRuleTask = ( BusinessRuleTask ) oDefinition;
-                    break;
-                }
-            }
-        }
-        assertNotNull( businessRuleTask );
-        assertNotNull( businessRuleTask.getExecutionSet() );
-        assertNotNull( businessRuleTask.getExecutionSet().getRuleFlowGroup() );
-        assertNotNull( businessRuleTask.getGeneral() );
-        assertNotNull( businessRuleTask.getGeneral().getName() );
-        assertEquals(businessRuleTask.getTaskType().getValue(), TaskTypes.BUSINESS_RULE);
-        assertEquals( "my business rule task", businessRuleTask.getGeneral().getName().getValue() );
-        assertEquals( "my-ruleflow-group", businessRuleTask.getExecutionSet().getRuleFlowGroup().getValue() );
-    }
-
-    @Test
     public void testMarshallReusableSubprocess() throws Exception {
         Diagram<Graph, Settings> diagram = unmarshall( BPMN_REUSABLE_SUBPROCESS );
         ReusableSubprocess reusableSubprocess = null;
@@ -722,6 +722,16 @@ public class BPMNDiagramMarshallerTest {
         assertEquals( "java", sequenceFlow.getExecutionSet().getConditionExpressionLanguage().getValue() );
         assertEquals( "1", sequenceFlow.getExecutionSet().getPriority().getValue() );
 
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    public void testMarshallBusinessRuleTask() throws Exception {
+        Diagram<Graph, Settings> diagram = unmarshall( BPMN_BUSINESSRULETASKRULEFLOWGROUP );
+        String result = tested.marshall( diagram );
+        assertDiagram( diagram, 2 );
+
+        assertTrue(result.contains("<bpmn2:businessRuleTask id=\"_16D006B5-3703-4A67-AE44-6483338E86C2\" drools:ruleFlowGroup=\"my-ruleflow-group\" name=\"my business rule task\">"));
     }
 
     @Test
