@@ -42,7 +42,6 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
@@ -61,9 +60,11 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
     void clear();
 
-    void addDecisionTable( final GridWidget gridWidget );
+    void addDecisionTable( final GuidedDecisionTableView gridWidget );
 
-    void removeDecisionTable( final GridWidget gridWidget,
+    void activateDecisionTable( final GuidedDecisionTableView gridWidget );
+
+    void removeDecisionTable( final GuidedDecisionTableView gridWidget,
                               final Command afterRemovalCommand );
 
     void setEnableColumnCreation( final boolean enabled );
@@ -93,16 +94,24 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
         void onClose();
 
+        void releaseDecisionTables();
+
+        void releaseHandlerRegistrations();
+
         GuidedDecisionTableView.Presenter addDecisionTable( final ObservablePath path,
                                                             final PlaceRequest placeRequest,
                                                             final GuidedDecisionTableEditorContent content,
-                                                            final boolean isReadOnly );
+                                                            final boolean isReadOnly,
+                                                            final Double x,
+                                                            final Double y );
 
         GuidedDecisionTableView.Presenter refreshDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter,
                                                                 final ObservablePath path,
                                                                 final PlaceRequest placeRequest,
                                                                 final GuidedDecisionTableEditorContent content,
                                                                 final boolean isReadOnly );
+
+        void activateDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter );
 
         void removeDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter );
 

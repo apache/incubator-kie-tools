@@ -54,13 +54,13 @@ public class ColumnHeaderPopOverHandler implements NodeMouseMoveHandler {
 
             if ( !isMouseOverTableHeader( dtView,
                                           ap.getY() ) ) {
-                return;
+                continue;
             }
 
             final Integer uiColumnIndex = getUiColumn( dtView,
                                                        ap.getX() );
             if ( uiColumnIndex == null ) {
-                return;
+                continue;
             }
 
             columnPopOverPresenter.show( modellerPresenter.getView(),

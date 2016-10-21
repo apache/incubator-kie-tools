@@ -474,11 +474,15 @@ public interface GuidedDecisionTableConstants
     //NewResourceHandler
     String NewGuidedDecisionTableDescription();
 
+    String NewGuidedDecisionTableGraphDescription();
+
     String AllTheRulesInherit();
 
     String GuidedDecisionTableEditorTitle();
 
     String guidedDecisionTableResourceTypeDescription();
+
+    String guidedDecisionTableGraphResourceTypeDescription();
 
     String EditMenuCaption();
 

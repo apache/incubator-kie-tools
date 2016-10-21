@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -116,26 +115,23 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     }
 
     @Override
-    @PreDestroy
     public void onClose() {
         view.clear();
         releaseDecisionTables();
         releaseHandlerRegistrations();
     }
 
-    void releaseDecisionTables() {
+    @Override
+    public void releaseDecisionTables() {
         //Release objects created manually with BeanManager
-        for ( GuidedDecisionTableView.Presenter dtPresenter : availableDecisionTables ) {
-            dtPresenter.onClose();
-        }
+        availableDecisionTables.stream().forEach( GuidedDecisionTableView.Presenter::onClose );
         availableDecisionTables.clear();
     }
 
-    void releaseHandlerRegistrations() {
+    @Override
+    public void releaseHandlerRegistrations() {
         //Release HandlerRegistrations
-        for ( HandlerRegistration registration : handlerRegistrations ) {
-            registration.removeHandler();
-        }
+        handlerRegistrations.stream().forEach( HandlerRegistration::removeHandler );
         handlerRegistrations.clear();
     }
 
@@ -143,7 +139,9 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     public GuidedDecisionTableView.Presenter addDecisionTable( final ObservablePath path,
                                                                final PlaceRequest placeRequest,
                                                                final GuidedDecisionTableEditorContent content,
-                                                               final boolean isReadOnly ) {
+                                                               final boolean isReadOnly,
+                                                               final Double x,
+                                                               final Double y ) {
         //Instantiate a Presenter for the Decision Table
         final GuidedDecisionTableView.Presenter dtPresenter = dtPresenterProvider.get();
 
@@ -155,11 +153,10 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                 isReadOnly );
 
         //Add new view to Modeller
-        //TODO {manstis} Think of an effective way to layout tables..
-        final double x = getDecisionTableX( dtPresenter );
-        final double y = getDecisionTableY( dtPresenter );
-        dtPresenter.getView().setLocation( x,
-                                           y );
+        final double dtViewX = ( x == null ? getDecisionTableX( dtPresenter ) : x );
+        final double dtViewY = ( y == null ? getDecisionTableY( dtPresenter ) : y );
+        dtPresenter.getView().setLocation( dtViewX,
+                                           dtViewY );
 
         availableDecisionTables.add( dtPresenter );
 
@@ -206,10 +203,19 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                       dtPresenter.getView().setLocation( oldLocation );
                                       view.addDecisionTable( dtPresenter.getView() );
 
-                                      doDecisionTableSelected( dtPresenter );
+//                                      doDecisionTableSelected( dtPresenter );
                                   } );
 
         return dtPresenter;
+    }
+
+    @Override
+    public void activateDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter ) {
+        if ( !isDecisionTableAvailable( dtPresenter ) ) {
+            return;
+        }
+        view.activateDecisionTable( dtPresenter.getView() );
+        activeDecisionTable = dtPresenter;
     }
 
     @Override
@@ -364,6 +370,11 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
 
         //Delegate highlighting of selected decision table to ISelectionManager
         view.select( dtPresenter.getView() );
+
+        //If the Layer is "pinned" flip to the selected Decision Table
+        if ( isGridPinned() ) {
+            view.getGridLayerView().flipToGridWidget( dtPresenter.getView() );
+        }
     }
 
     void refreshDefinitionsPanel( final GuidedDecisionTableView.Presenter dtPresenter ) {

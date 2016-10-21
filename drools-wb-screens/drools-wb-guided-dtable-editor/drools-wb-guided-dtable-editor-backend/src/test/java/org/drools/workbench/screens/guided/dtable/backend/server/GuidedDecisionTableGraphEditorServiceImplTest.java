@@ -16,15 +16,19 @@
 
 package org.drools.workbench.screens.guided.dtable.backend.server;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.event.Event;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphContent;
+import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager;
+import org.drools.workbench.screens.guided.dtable.type.GuidedDTableGraphResourceTypeDefinition;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
@@ -35,19 +39,19 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.backend.source.SourceService;
-import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.backend.version.VersionRecordService;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.Paths;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -56,7 +60,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GuidedDecisionTableEditorServiceImplTest {
+public class GuidedDecisionTableGraphEditorServiceImplTest {
 
     @Mock
     private IOService ioService;
@@ -80,6 +84,15 @@ public class GuidedDecisionTableEditorServiceImplTest {
     private KieProjectService projectService;
 
     @Mock
+    private VersionRecordService versionRecordService;
+
+    @Mock
+    private GuidedDecisionTableEditorService dtableService;
+
+    @Mock
+    private GuidedDecisionTableLinkManager dtableLinkManager;
+
+    @Mock
     private Event<ResourceOpenedEvent> resourceOpenedEvent = new EventSourceMock<>();
 
     @Mock
@@ -87,9 +100,6 @@ public class GuidedDecisionTableEditorServiceImplTest {
 
     @Mock
     private CommentedOptionFactory commentedOptionFactory;
-
-    @Mock
-    private SourceServices mockSourceServices;
 
     @Mock
     private MetadataServerSideService mockMetaDataService;
@@ -100,40 +110,45 @@ public class GuidedDecisionTableEditorServiceImplTest {
     @Mock
     private org.guvnor.common.services.project.model.Package pkg;
 
-    private GuidedDTableResourceTypeDefinition type = new GuidedDTableResourceTypeDefinition();
-    private GuidedDecisionTableEditorServiceImpl service;
+    private GuidedDecisionTableGraphEditorServiceImpl service;
+
+    private GuidedDTableResourceTypeDefinition dtResourceType = new GuidedDTableResourceTypeDefinition();
+    private GuidedDTableGraphResourceTypeDefinition dtGraphResourceType = new GuidedDTableGraphResourceTypeDefinition();
+
+    private final List<org.uberfire.java.nio.file.Path> resolvedPaths = new ArrayList<>();
 
     @Before
     public void setup() {
-        service = new GuidedDecisionTableEditorServiceImpl( ioService,
-                                                            copyService,
-                                                            deleteService,
-                                                            renameService,
-                                                            dataModelService,
-                                                            workItemsService,
-                                                            projectService,
-                                                            resourceOpenedEvent,
-                                                            genericValidator,
-                                                            commentedOptionFactory,
-                                                            sessionInfo ) {
+        service = new GuidedDecisionTableGraphEditorServiceImpl( ioService,
+                                                                 copyService,
+                                                                 deleteService,
+                                                                 renameService,
+                                                                 projectService,
+                                                                 versionRecordService,
+                                                                 dtableService,
+                                                                 dtableLinkManager,
+                                                                 resourceOpenedEvent,
+                                                                 commentedOptionFactory,
+                                                                 dtResourceType,
+                                                                 sessionInfo ) {
             {
-                this.sourceServices = mockSourceServices;
                 this.metadataService = mockMetaDataService;
             }
         };
 
         when( projectService.resolvePackage( any( Path.class ) ) ).thenReturn( pkg );
-        when( pkg.getPackageName() ).thenReturn( "mypackage" );
-        when( pkg.getPackageMainResourcesPath() ).thenReturn( PathFactory.newPath( "mypackage",
+        when( pkg.getPackageMainResourcesPath() ).thenReturn( PathFactory.newPath( "project",
                                                                                    "default://project/src/main/resources" ) );
 
+        resolvedPaths.clear();
+        when( ioService.newDirectoryStream( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( new MockDirectoryStream( resolvedPaths ) );
     }
 
     @Test
     public void checkCreate() {
         final Path context = mock( Path.class );
-        final String fileName = "filename." + type.getSuffix();
-        final GuidedDecisionTable52 content = new GuidedDecisionTable52();
+        final String fileName = "filename." + dtGraphResourceType.getSuffix();
+        final GuidedDecisionTableEditorGraphModel content = new GuidedDecisionTableEditorGraphModel();
         final String comment = "comment";
 
         when( context.toURI() ).thenReturn( "default://project/src/main/resources/mypackage" );
@@ -148,19 +163,17 @@ public class GuidedDecisionTableEditorServiceImplTest {
                                     any( String.class ),
                                     any( CommentedOption.class ) );
 
-        assertTrue( p.toURI().contains( "src/main/resources/mypackage/filename." + type.getSuffix() ) );
-        assertEquals( "mypackage",
-                      content.getPackageName() );
+        assertTrue( p.toURI().contains( "src/main/resources/mypackage/filename." + dtGraphResourceType.getSuffix() ) );
     }
 
     @Test
     public void checkLoad() {
         final Path path = mock( Path.class );
-        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage/dtable.gdst" );
+        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage/dtable." + dtGraphResourceType.getSuffix() );
 
         when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "" );
 
-        final GuidedDecisionTable52 model = service.load( path );
+        final GuidedDecisionTableEditorGraphModel model = service.load( path );
 
         verify( ioService,
                 times( 1 ) ).readAllString( any( org.uberfire.java.nio.file.Path.class ) );
@@ -171,21 +184,15 @@ public class GuidedDecisionTableEditorServiceImplTest {
     public void checkConstructContent() {
         final Path path = mock( Path.class );
         final Overview overview = mock( Overview.class );
-        final PackageDataModelOracle oracle = mock( PackageDataModelOracle.class );
-        final Set<PortableWorkDefinition> workItemDefinitions = new HashSet<>();
-        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage/dtable.gdst" );
-        when( dataModelService.getDataModel( eq( path ) ) ).thenReturn( oracle );
-        when( workItemsService.loadWorkItemDefinitions( eq( path ) ) ).thenReturn( workItemDefinitions );
+        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage/dtable." + dtGraphResourceType.getSuffix() );
 
-        final GuidedDecisionTableEditorContent content = service.constructContent( path,
-                                                                                   overview );
+        final GuidedDecisionTableEditorGraphContent content = service.constructContent( path,
+                                                                                        overview );
 
         verify( resourceOpenedEvent,
                 times( 1 ) ).fire( any( ResourceOpenedEvent.class ) );
 
         assertNotNull( content.getModel() );
-        assertNotNull( content.getDataModel() );
-        assertNotNull( content.getWorkItemDefinitions() );
         assertEquals( overview,
                       content.getOverview() );
     }
@@ -194,10 +201,10 @@ public class GuidedDecisionTableEditorServiceImplTest {
     @SuppressWarnings("unchecked")
     public void checkSave() {
         final Path path = mock( Path.class );
-        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        final GuidedDecisionTableEditorGraphModel model = new GuidedDecisionTableEditorGraphModel();
         final Metadata metadata = mock( Metadata.class );
         final String comment = "comment";
-        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage/dtable.gdst" );
+        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage/dtable." + dtGraphResourceType.getSuffix() );
 
         service.save( path,
                       model,
@@ -209,9 +216,6 @@ public class GuidedDecisionTableEditorServiceImplTest {
                                     any( String.class ),
                                     any( Map.class ),
                                     any( CommentedOption.class ) );
-
-        assertEquals( "mypackage",
-                      model.getPackageName() );
     }
 
     @Test
@@ -279,28 +283,30 @@ public class GuidedDecisionTableEditorServiceImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void checkToSource() {
+    public void testListDecisionTablesInPackage() {
         final Path path = mock( Path.class );
-        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final SourceService mockSourceService = mock( SourceService.class );
+        when( path.toURI() ).thenReturn( "default://project/src/main/resources/dtable1.gdst" );
 
-        when( path.toURI() ).thenReturn( "default://project/src/main/resources/mypackage" );
-        when( mockSourceServices.getServiceFor( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( mockSourceService );
+        resolvedPaths.add( makeNioPath( "default://project/src/main/resources/dtable1.gdst" ) );
+        resolvedPaths.add( makeNioPath( "default://project/src/main/resources/dtable2.gdst" ) );
+        resolvedPaths.add( makeNioPath( "default://project/src/main/resources/dtable3.gdst" ) );
+        resolvedPaths.add( makeNioPath( "default://project/src/main/resources/pupa.smurf" ) );
 
-        service.toSource( path,
-                          model );
+        final List<Path> paths = service.listDecisionTablesInPackage( path );
 
-        verify( mockSourceServices,
-                times( 1 ) ).getServiceFor( any( org.uberfire.java.nio.file.Path.class ) );
-        verify( mockSourceService,
-                times( 1 ) ).getSource( any( org.uberfire.java.nio.file.Path.class ),
-                                        eq( model ) );
+        assertNotNull( paths );
+        assertEquals( 3,
+                      paths.size() );
+        final Set<String> fileNames = new HashSet<>();
+        fileNames.addAll( paths.stream().collect( Collectors.mapping( Path::getFileName,
+                                                                      Collectors.toSet() ) ) );
+        assertTrue( fileNames.contains( "dtable1.gdst" ) );
+        assertTrue( fileNames.contains( "dtable2.gdst" ) );
+        assertTrue( fileNames.contains( "dtable3.gdst" ) );
     }
 
-    @Test
-    public void checkValidate() {
-//        service.validate(  )
+    private org.uberfire.java.nio.file.Path makeNioPath( final String uri ) {
+        return Paths.get( uri );
     }
 
 }

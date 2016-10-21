@@ -58,7 +58,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.conv
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.LimitedEntryColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.MetaDataColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.RowNumberColumnConverter;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.linkmanager.GuidedDecisionTableLinkManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionColumnSynchronizer;
@@ -79,6 +78,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.sync
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.RowSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.EnumLoaderUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -266,7 +266,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     private void setupServices() {
         ruleNameServiceCaller = new CallerMock<>( ruleNameService );
         enumDropdownServiceCaller = new CallerMock<>( enumDropdownService );
-        enumLoaderUtilities =new EnumLoaderUtilities( enumDropdownServiceCaller );
+        enumLoaderUtilities = new EnumLoaderUtilities( enumDropdownServiceCaller );
     }
 
     private void setupPresenter() {

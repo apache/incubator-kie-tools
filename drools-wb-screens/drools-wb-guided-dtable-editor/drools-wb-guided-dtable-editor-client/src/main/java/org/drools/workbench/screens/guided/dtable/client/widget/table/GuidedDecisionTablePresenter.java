@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -86,7 +85,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.Guid
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.linkmanager.GuidedDecisionTableLinkManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableRenderer;
@@ -95,6 +93,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.EnumLoaderUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager;
 import org.drools.workbench.screens.guided.rule.client.util.GWTDateConverter;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
@@ -244,7 +243,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                          final ModelSynchronizer synchronizer,
                                          final SyncBeanManager beanManager,
                                          final @GuidedDecisionTable GuidedDecisionTableLockManager lockManager,
-                                         final @GuidedDecisionTable GuidedDecisionTableLinkManager linkManager,
+                                         final GuidedDecisionTableLinkManager linkManager,
                                          final Clipboard clipboard,
                                          final DecisionTableAnalyzerProvider decisionTableAnalyzerProvider,
                                          final EnumLoaderUtilities enumLoaderUtilities ) {
@@ -319,10 +318,11 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                             final boolean isReadOnly ) {
         this.parent = parent;
         this.latestPath = path;
-        refreshContent( path,
-                        placeRequest,
-                        content,
-                        isReadOnly );
+
+        initialiseContent( path,
+                           placeRequest,
+                           content,
+                           isReadOnly );
     }
 
     @Override
@@ -332,6 +332,16 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                 final boolean isReadOnly ) {
         onClose();
 
+        initialiseContent( path,
+                           placeRequest,
+                           content,
+                           isReadOnly );
+    }
+
+    void initialiseContent( final ObservablePath path,
+                            final PlaceRequest placeRequest,
+                            final GuidedDecisionTableEditorContent content,
+                            final boolean isReadOnly ) {
         final GuidedDecisionTable52 model = content.getModel();
         final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
         final Set<PortableWorkDefinition> workItemDefinitions = content.getWorkItemDefinitions();
@@ -494,8 +504,14 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         final Set<GuidedDecisionTableView.Presenter> otherDecisionTables = new HashSet<>();
         otherDecisionTables.addAll( dtPresenters );
         otherDecisionTables.remove( this );
-        linkManager.link( this,
-                          otherDecisionTables );
+        otherDecisionTables.stream().forEach( ( e ) -> linkManager.link( this.getModel(),
+                                                                         e.getModel(),
+                                                                         ( final int sourceColumnIndex,
+                                                                           final int targetColumnIndex ) -> {
+                                                                             final GridData sourceUiModel = GuidedDecisionTablePresenter.this.getView().getModel();
+                                                                             final GridData targetUiModel = e.getView().getModel();
+                                                                             sourceUiModel.getColumns().get( sourceColumnIndex ).setLink( targetUiModel.getColumns().get( targetColumnIndex ) );
+                                                                         } ) );
     }
 
     List<BaseColumnConverter> getConverters() {
@@ -529,9 +545,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    @PreDestroy
     public void onClose() {
         terminateAnalysis();
+
         if ( uiModel != null ) {
             for ( GridColumn<?> column : uiModel.getColumns() ) {
                 if ( column.getColumnRenderer() instanceof HasDOMElementResources ) {
@@ -562,7 +578,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     @SuppressWarnings("unused")
     public void select( final GridWidget selectedGridWidget ) {
         decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( this ) );
-        lockManager.acquireLock();
+        if ( !isReadOnly() ) {
+            lockManager.acquireLock();
+        }
     }
 
     void onUpdatedLockStatusEvent( final @Observes UpdatedLockStatusEvent event ) {
@@ -722,13 +740,13 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                 final DependentEnumsUtilities.Context context,
                                 final Callback<Map<String, String>> callback ) {
         final DropDownData enumDefinition = oracle.getEnums( factType,
-                                                           factField,
-                                                           this.dependentEnumsUtilities.getCurrentValueMap( context ) );
+                                                             factField,
+                                                             this.dependentEnumsUtilities.getCurrentValueMap( context ) );
         enumLoaderUtilities.getEnums( enumDefinition,
-                                callback,
-                                this,
-                                      ()->view.showBusyIndicator( CommonConstants.INSTANCE.RefreshingList() ),
-                                      ()->view.hideBusyIndicator());
+                                      callback,
+                                      this,
+                                      () -> view.showBusyIndicator( CommonConstants.INSTANCE.RefreshingList() ),
+                                      () -> view.hideBusyIndicator() );
     }
 
     @Override

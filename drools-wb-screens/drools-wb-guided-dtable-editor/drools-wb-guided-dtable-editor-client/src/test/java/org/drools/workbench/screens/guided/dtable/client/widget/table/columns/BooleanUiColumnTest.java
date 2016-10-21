@@ -78,7 +78,9 @@ public class BooleanUiColumnTest {
     @Test
     @SuppressWarnings("unchecked")
     public void editTrueToFalse() {
+        when( access.isEditable() ).thenReturn( true );
         final GridCell<Boolean> cell = new BaseGridCell<>( new BaseGridCellValue<>( true ) );
+
         column.edit( cell,
                      context,
                      callback );
@@ -93,7 +95,9 @@ public class BooleanUiColumnTest {
     @Test
     @SuppressWarnings("unchecked")
     public void editFalseToTrue() {
+        when( access.isEditable() ).thenReturn( true );
         final GridCell<Boolean> cell = new BaseGridCell<>( new BaseGridCellValue<>( false ) );
+
         column.edit( cell,
                      context,
                      callback );
@@ -103,6 +107,19 @@ public class BooleanUiColumnTest {
 
         final BaseGridCellValue<Boolean> callbackArgument = callbackArgumentCaptor.getValue();
         assertTrue( callbackArgument.getValue() );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void editReadOnly() {
+        when( access.isEditable() ).thenReturn( false );
+        final GridCell<Boolean> cell = new BaseGridCell<>( new BaseGridCellValue<>( true ) );
+        column.edit( cell,
+                     context,
+                     callback );
+
+        verify( callback,
+                never() ).callback( any( BaseGridCellValue.class ) );
     }
 
 }

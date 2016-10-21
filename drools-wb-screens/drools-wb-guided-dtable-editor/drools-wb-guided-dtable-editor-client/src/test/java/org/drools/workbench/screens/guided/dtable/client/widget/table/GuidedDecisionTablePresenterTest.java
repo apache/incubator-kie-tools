@@ -50,6 +50,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager.LinkFoundCallback;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.junit.Before;
 import org.junit.Test;
@@ -145,22 +146,10 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     public void setContent() {
         //dtPresenter.setContent(...) is called by the base tests @Before method
         verify( dtPresenter,
-                times( 1 ) ).refreshContent( eq( dtPath ),
-                                             eq( dtPlaceRequest ),
-                                             eq( dtContent ),
-                                             eq( false ) );
-    }
-
-    @Test
-    public void refreshContent() {
-        //dtPresenter.setContent(...) is called by the base tests @Before method
-        verify( dtPresenter,
-                times( 1 ) ).terminateAnalysis();
-        verify( lockManager,
-                times( 1 ) ).releaseLock();
-        verify( oracleFactory,
-                times( 1 ) ).destroy( eq( null ) );
-
+                times( 1 ) ).initialiseContent( eq( dtPath ),
+                                                eq( dtPlaceRequest ),
+                                                eq( dtContent ),
+                                                eq( false ) );
         verify( oracleFactory,
                 times( 1 ) ).makeAsyncPackageDataModelOracle( eq( dtPath ),
                                                               any( GuidedDecisionTable52.class ),
@@ -182,29 +171,75 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
+    public void refreshContent() {
+        // dtPresenter.setContent(...) is called by the base tests @Before method so
+        // expect some invocations to have occurred twice: once for setContent(...)
+        // and again for refreshContent(...)
+        dtPresenter.refreshContent( dtPath,
+                                    dtPlaceRequest,
+                                    dtContent,
+                                    false );
+
+        verify( dtPresenter,
+                times( 2 ) ).initialiseContent( eq( dtPath ),
+                                                eq( dtPlaceRequest ),
+                                                eq( dtContent ),
+                                                eq( false ) );
+        verify( oracleFactory,
+                times( 2 ) ).makeAsyncPackageDataModelOracle( eq( dtPath ),
+                                                              any( GuidedDecisionTable52.class ),
+                                                              any( PackageDataModelOracleBaselinePayload.class ) );
+        verify( dtPresenter,
+                times( 2 ) ).makeUiModel();
+        verify( dtPresenter,
+                times( 2 ) ).makeView( any( Set.class ) );
+        verify( dtPresenter,
+                times( 2 ) ).initialiseLockManager();
+        verify( dtPresenter,
+                times( 2 ) ).initialiseUtilities();
+        verify( dtPresenter,
+                times( 2 ) ).initialiseModels();
+        verify( dtPresenter,
+                times( 2 ) ).initialiseValidationAndVerification();
+        verify( dtPresenter,
+                times( 2 ) ).initialiseAuditLog();
+
+        //These invocations are as a result of the previous Presenter being destroyed
+        verify( dtPresenter,
+                times( 1 ) ).terminateAnalysis();
+        verify( lockManager,
+                times( 1 ) ).releaseLock();
+        verify( oracleFactory,
+                times( 1 ) ).destroy( eq( oracle ) );
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void link() {
-        final GuidedDecisionTableView.Presenter dtPresenter1 = mock( GuidedDecisionTableView.Presenter.class );
+        final GuidedDecisionTable52 model1 = new GuidedDecisionTable52();
+        final GuidedDecisionTable52 model2 = new GuidedDecisionTable52();
+        final GuidedDecisionTable52 model3 = new GuidedDecisionTable52();
         final GuidedDecisionTableView.Presenter dtPresenter2 = mock( GuidedDecisionTableView.Presenter.class );
+        final GuidedDecisionTableView.Presenter dtPresenter3 = mock( GuidedDecisionTableView.Presenter.class );
         final Set<GuidedDecisionTableView.Presenter> dtPresenters = new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter1 );
-            add( dtPresenter2 );
             add( dtPresenter );
+            add( dtPresenter2 );
+            add( dtPresenter3 );
         }};
-
-        final ArgumentCaptor<Set> otherDecisionTablesCaptor = ArgumentCaptor.forClass( Set.class );
+        when( dtPresenter.getModel() ).thenReturn( model1 );
+        when( dtPresenter2.getModel() ).thenReturn( model2 );
+        when( dtPresenter3.getModel() ).thenReturn( model3 );
 
         dtPresenter.link( dtPresenters );
 
         verify( linkManager,
-                times( 1 ) ).link( eq( dtPresenter ),
-                                   otherDecisionTablesCaptor.capture() );
-        final Set otherDecisionTables = otherDecisionTablesCaptor.getValue();
-        assertNotNull( otherDecisionTables );
-        assertEquals( 2,
-                      otherDecisionTables.size() );
-        assertTrue( otherDecisionTables.contains( dtPresenter1 ) );
-        assertTrue( otherDecisionTables.contains( dtPresenter2 ) );
+                times( 1 ) ).link( eq( model1 ),
+                                   eq( model2 ),
+                                   any( LinkFoundCallback.class ) );
+        verify( linkManager,
+                times( 1 ) ).link( eq( model1 ),
+                                   eq( model3 ),
+                                   any( LinkFoundCallback.class ) );
     }
 
     @Test

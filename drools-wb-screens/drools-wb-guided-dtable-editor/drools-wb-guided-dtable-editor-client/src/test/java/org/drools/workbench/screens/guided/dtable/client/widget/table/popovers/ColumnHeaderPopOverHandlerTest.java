@@ -57,10 +57,16 @@ public class ColumnHeaderPopOverHandlerTest {
     private DefaultGridLayer layer;
 
     @Mock
-    private GuidedDecisionTableView.Presenter dtPresenter;
+    private GuidedDecisionTableView.Presenter dtPresenter1;
 
     @Mock
-    private GuidedDecisionTableView dtView;
+    private GuidedDecisionTableView.Presenter dtPresenter2;
+
+    @Mock
+    private GuidedDecisionTableView dtView1;
+
+    @Mock
+    private GuidedDecisionTableView dtView2;
 
     @Mock
     private GridData uiModel;
@@ -84,13 +90,6 @@ public class ColumnHeaderPopOverHandlerTest {
 
     @Before
     public void setup() {
-        when( dtView.getViewport() ).thenReturn( viewport );
-        when( dtView.getModel() ).thenReturn( uiModel );
-        when( dtView.getRenderer() ).thenReturn( renderer );
-        when( dtView.getRendererHelper() ).thenReturn( helper );
-        when( dtView.getLayer() ).thenReturn( layer );
-        when( dtView.getHeader() ).thenReturn( header );
-        when( dtView.getWidth() ).thenReturn( 100.0 );
         when( renderer.getHeaderHeight() ).thenReturn( 64.0 );
         when( renderer.getHeaderRowHeight() ).thenReturn( 32.0 );
         when( helper.getColumnInformation( any( Double.class ) ) ).thenReturn( columnInformation );
@@ -101,11 +100,27 @@ public class ColumnHeaderPopOverHandlerTest {
             add( uiColumn );
         }} );
         when( uiColumn.getWidth() ).thenReturn( 100.0 );
-        when( dtPresenter.getView() ).thenReturn( dtView );
-        when( dtView.isVisible() ).thenReturn( true );
+
+        setupDecisionTable( dtPresenter1,
+                            dtView1 );
+        setupDecisionTable( dtPresenter2,
+                            dtView2 );
 
         this.handler = new ColumnHeaderPopOverHandler( modellerPresenter,
                                                        columnPopOverPresenter );
+    }
+
+    private void setupDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter,
+                                     final GuidedDecisionTableView dtView ) {
+        when( dtPresenter.getView() ).thenReturn( dtView );
+        when( dtView.isVisible() ).thenReturn( true );
+        when( dtView.getViewport() ).thenReturn( viewport );
+        when( dtView.getModel() ).thenReturn( uiModel );
+        when( dtView.getRenderer() ).thenReturn( renderer );
+        when( dtView.getRendererHelper() ).thenReturn( helper );
+        when( dtView.getLayer() ).thenReturn( layer );
+        when( dtView.getHeader() ).thenReturn( header );
+        when( dtView.getWidth() ).thenReturn( 100.0 );
     }
 
     @Test
@@ -129,12 +144,12 @@ public class ColumnHeaderPopOverHandlerTest {
     @Test
     public void noPopOverWhenEventNotOverDecisionTableHeader() {
         when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter );
+            add( dtPresenter1 );
         }} );
         when( event.getX() ).thenReturn( 50 );
         when( event.getY() ).thenReturn( 100 );
-        when( dtView.getLocation() ).thenReturn( new Point2D( 0,
-                                                              0 ) );
+        when( dtView1.getLocation() ).thenReturn( new Point2D( 0,
+                                                               0 ) );
 
         handler.onNodeMouseMove( event );
 
@@ -147,12 +162,12 @@ public class ColumnHeaderPopOverHandlerTest {
     @Test
     public void noPopOverWhenEventNotOverDecisionTableColumn() {
         when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter );
+            add( dtPresenter1 );
         }} );
         when( event.getX() ).thenReturn( 150 );
         when( event.getY() ).thenReturn( 50 );
-        when( dtView.getLocation() ).thenReturn( new Point2D( 0,
-                                                              0 ) );
+        when( dtView1.getLocation() ).thenReturn( new Point2D( 0,
+                                                               0 ) );
 
         handler.onNodeMouseMove( event );
 
@@ -165,18 +180,48 @@ public class ColumnHeaderPopOverHandlerTest {
     @Test
     public void popOverWhenEventOverDecisionTableHeaderAndColumn() {
         when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter );
+            add( dtPresenter1 );
         }} );
         when( event.getX() ).thenReturn( 50 );
         when( event.getY() ).thenReturn( 50 );
-        when( dtView.getLocation() ).thenReturn( new Point2D( 0,
-                                                              0 ) );
+        when( dtView1.getLocation() ).thenReturn( new Point2D( 0,
+                                                               0 ) );
 
         handler.onNodeMouseMove( event );
 
         verify( columnPopOverPresenter,
                 times( 1 ) ).show( any( GuidedDecisionTableModellerView.class ),
-                                   eq( dtPresenter ),
+                                   eq( dtPresenter1 ),
+                                   eq( 0 ) );
+    }
+
+    @Test
+    public void popOverWhenEventOverDecisionTableHeaderAndColumnWithMultipleTables() {
+        when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add( dtPresenter1 );
+            add( dtPresenter2 );
+        }} );
+        when( dtView1.getLocation() ).thenReturn( new Point2D( 0,
+                                                               0 ) );
+        when( dtView2.getLocation() ).thenReturn( new Point2D( 200,
+                                                               200 ) );
+
+        when( event.getX() ).thenReturn( 50 );
+        when( event.getY() ).thenReturn( 50 );
+        handler.onNodeMouseMove( event );
+
+        verify( columnPopOverPresenter,
+                times( 1 ) ).show( any( GuidedDecisionTableModellerView.class ),
+                                   eq( dtPresenter1 ),
+                                   eq( 0 ) );
+
+        when( event.getX() ).thenReturn( 250 );
+        when( event.getY() ).thenReturn( 250 );
+        handler.onNodeMouseMove( event );
+
+        verify( columnPopOverPresenter,
+                times( 1 ) ).show( any( GuidedDecisionTableModellerView.class ),
+                                   eq( dtPresenter2 ),
                                    eq( 0 ) );
     }
 

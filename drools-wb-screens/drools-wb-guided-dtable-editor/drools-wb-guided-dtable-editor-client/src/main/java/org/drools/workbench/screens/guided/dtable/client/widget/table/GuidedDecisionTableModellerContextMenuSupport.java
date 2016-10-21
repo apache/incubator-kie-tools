@@ -97,7 +97,7 @@ public class GuidedDecisionTableModellerContextMenuSupport {
                 final Integer uiColumnIndex = CoordinateUtilities.getUiColumnIndex( gridView,
                                                                                     ap.getX() );
                 if ( uiRowIndex == null || uiColumnIndex == null ) {
-                    return;
+                    continue;
                 }
 
                 final GridColumn<?> column = gridModel.getColumns().get( uiColumnIndex );

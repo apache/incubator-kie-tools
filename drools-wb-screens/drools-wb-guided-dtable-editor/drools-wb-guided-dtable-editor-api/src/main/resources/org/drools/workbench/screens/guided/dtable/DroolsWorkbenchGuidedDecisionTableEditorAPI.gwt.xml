@@ -29,6 +29,7 @@
 
   <source path="model"/>
   <source path="service"/>
+  <source path="shared"/>
   <source path="type"/>
 
 </module>

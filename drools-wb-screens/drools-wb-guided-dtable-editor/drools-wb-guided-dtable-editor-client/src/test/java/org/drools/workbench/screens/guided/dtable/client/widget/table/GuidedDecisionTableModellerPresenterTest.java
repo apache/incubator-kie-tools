@@ -180,7 +180,9 @@ public class GuidedDecisionTableModellerPresenterTest {
         presenter.addDecisionTable( path,
                                     placeRequest,
                                     dtContent,
-                                    false );
+                                    false,
+                                    null,
+                                    null );
 
         verify( presenter,
                 times( 1 ) ).updateLinks();
@@ -249,6 +251,39 @@ public class GuidedDecisionTableModellerPresenterTest {
 
         verify( dtView,
                 times( 1 ) ).setLocation( eq( dtLocation ) );
+    }
+
+    @Test
+    public void activateDecisionTableWhenAvailable() {
+        final ObservablePath path = mock( ObservablePath.class );
+        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+
+        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent();
+        final GuidedDecisionTableView.Presenter dtPresenter = presenter.addDecisionTable( path,
+                                                                                          placeRequest,
+                                                                                          dtContent,
+                                                                                          false,
+                                                                                          null,
+                                                                                          null );
+        final GuidedDecisionTableView dtView = dtPresenter.getView();
+
+        presenter.activateDecisionTable( dtPresenter );
+
+        verify( view,
+                times( 1 ) ).activateDecisionTable( eq( dtView ) );
+        assertEquals( dtPresenter,
+                      presenter.getActiveDecisionTable() );
+    }
+
+    @Test
+    public void activateDecisionTableWhenNotAvailable() {
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
+
+        presenter.activateDecisionTable( dtPresenter );
+
+        verify( view,
+                never() ).activateDecisionTable( any( GuidedDecisionTableView.class ) );
+        assertNull( presenter.getActiveDecisionTable() );
     }
 
     @Test
@@ -457,7 +492,49 @@ public class GuidedDecisionTableModellerPresenterTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void onDecisionTableSelected() {
+    public void onDecisionTableSelectedWhenInPinnedMode() {
+        final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable();
+        final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable();
+        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent( dtPresenter1 );
+        final List<String> parentRuleNames = Collections.emptyList();
+
+        when( gridLayer.isGridPinned() ).thenReturn( true );
+
+        when( presenter.isDecisionTableAvailable( eq( dtPresenter1 ) ) ).thenReturn( true );
+        when( presenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add( dtPresenter1 );
+            add( dtPresenter2 );
+        }} );
+
+        final ArgumentCaptor<ParameterizedCommand> parentRuleNamesCommandCaptor = ArgumentCaptor.forClass( ParameterizedCommand.class );
+
+        presenter.onDecisionTableSelected( event );
+
+        verify( dtPresenter1,
+                times( 1 ) ).initialiseAnalysis();
+        verify( dtPresenter2,
+                times( 1 ) ).terminateAnalysis();
+        verify( presenter,
+                times( 1 ) ).refreshDefinitionsPanel( eq( dtPresenter1 ) );
+        verify( view,
+                times( 1 ) ).select( dtPresenter1.getView() );
+
+        verify( dtPresenter1,
+                times( 1 ) ).getPackageParentRuleNames( parentRuleNamesCommandCaptor.capture() );
+        final ParameterizedCommand parentRuleNamesCommand = parentRuleNamesCommandCaptor.getValue();
+        assertNotNull( parentRuleNamesCommand );
+        parentRuleNamesCommand.execute( parentRuleNames );
+
+        verify( view,
+                times( 1 ) ).refreshRuleInheritance( any( String.class ),
+                                                     eq( parentRuleNames ) );
+        verify( gridLayer,
+                times( 1 ) ).flipToGridWidget( eq( dtPresenter1.getView() ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void onDecisionTableSelectedWhenNotInPinnedMode() {
         final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable();
         final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable();
         final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent( dtPresenter1 );
@@ -491,6 +568,8 @@ public class GuidedDecisionTableModellerPresenterTest {
         verify( view,
                 times( 1 ) ).refreshRuleInheritance( any( String.class ),
                                                      eq( parentRuleNames ) );
+        verify( gridLayer,
+                never() ).flipToGridWidget( any( GuidedDecisionTableView.class ) );
     }
 
     @Test

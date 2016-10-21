@@ -34,6 +34,8 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.RowContextM
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -83,15 +85,19 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
     @Mock
     private Layer layer;
 
-    private GridData uiModel;
+    @Mock
+    private GridCell uiCell;
+
+    @Mock
+    private CellSelectionStrategy cellSelectionStrategy;
+
+    @Captor
+    private ArgumentCaptor<GridData> uiModelCaptor;
 
     private GuidedDecisionTableModellerContextMenuSupport contextMenuSupport;
 
     @Before
     public void setup() {
-        this.uiModel = spy( new BaseGridData() );
-        this.uiModel.appendRow( new BaseGridRow() );
-
         this.contextMenuSupport = new GuidedDecisionTableModellerContextMenuSupport( cellContextMenu,
                                                                                      rowContextMenu );
 
@@ -110,10 +116,8 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
         when( nativeEvent.getClientX() ).thenReturn( 50 );
         when( nativeEvent.getClientY() ).thenReturn( 50 );
 
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter );
-        }} );
+        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionStrategy );
+
     }
 
     @Test
@@ -131,11 +135,16 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
     @Test
     @SuppressWarnings("unchecked")
     public void onContextMenu_RowContextMenu() {
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
+        final GridData uiModel = dtPresenter.getView().getModel();
         final GridColumn uiColumn = new RowNumberColumn();
 
         uiModel.appendColumn( uiColumn );
 
         when( columnInformation.getColumn() ).thenReturn( uiColumn );
+        when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add( dtPresenter );
+        }} );
 
         final ContextMenuHandler handler = contextMenuSupport.getContextMenuHandler( modellerPresenter );
 
@@ -152,6 +161,8 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
     @Test
     @SuppressWarnings("unchecked")
     public void onContextMenu_CellContextMenu() {
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
+        final GridData uiModel = dtPresenter.getView().getModel();
         final GridColumn uiColumn = new BaseGridColumn( mock( GridColumn.HeaderMetaData.class ),
                                                         mock( GridColumnRenderer.class ),
                                                         100.0 );
@@ -159,6 +170,9 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
         uiModel.appendColumn( uiColumn );
 
         when( columnInformation.getColumn() ).thenReturn( uiColumn );
+        when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add( dtPresenter );
+        }} );
 
         final ContextMenuHandler handler = contextMenuSupport.getContextMenuHandler( modellerPresenter );
 
@@ -175,16 +189,18 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
     @Test
     @SuppressWarnings("unchecked")
     public void onContextMenuWithCellSelectionManagerWithChangeInSelection() {
-        final GridCell uiCell = mock( GridCell.class );
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
+        final GridData uiModel = dtPresenter.getView().getModel();
         final GridColumn uiColumn = new RowNumberColumn();
-        final CellSelectionStrategy cellSelectionStrategy = mock( CellSelectionStrategy.class );
 
         uiModel.appendColumn( uiColumn );
 
         when( columnInformation.getColumn() ).thenReturn( uiColumn );
+        when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add( dtPresenter );
+        }} );
         when( uiModel.getCell( any( Integer.class ),
                                any( Integer.class ) ) ).thenReturn( uiCell );
-        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionStrategy );
         when( cellSelectionStrategy.handleSelection( any( GridData.class ),
                                                      any( Integer.class ),
                                                      any( Integer.class ),
@@ -208,16 +224,18 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
     @Test
     @SuppressWarnings("unchecked")
     public void onContextMenuWithCellSelectionManagerWithoutChangeInSelection() {
-        final GridCell uiCell = mock( GridCell.class );
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
+        final GridData uiModel = dtPresenter.getView().getModel();
         final GridColumn uiColumn = new RowNumberColumn();
-        final CellSelectionStrategy cellSelectionStrategy = mock( CellSelectionStrategy.class );
 
         uiModel.appendColumn( uiColumn );
 
         when( columnInformation.getColumn() ).thenReturn( uiColumn );
+        when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add( dtPresenter );
+        }} );
         when( uiModel.getCell( any( Integer.class ),
                                any( Integer.class ) ) ).thenReturn( uiCell );
-        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionStrategy );
 
         final ContextMenuHandler handler = contextMenuSupport.getContextMenuHandler( modellerPresenter );
 
@@ -236,10 +254,15 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
     @Test
     @SuppressWarnings("unchecked")
     public void onContextMenuWithoutCellSelectionManager() {
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
+        final GridData uiModel = dtPresenter.getView().getModel();
         final GridColumn uiColumn = new RowNumberColumn();
         uiModel.appendColumn( uiColumn );
 
         when( columnInformation.getColumn() ).thenReturn( uiColumn );
+        when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add( dtPresenter );
+        }} );
 
         final GridCell uiCell = mock( GridCell.class );
         when( uiModel.getCell( any( Integer.class ),
@@ -254,11 +277,80 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
                 never() ).batch();
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void onContextMenuWithMultipleTables() {
+        final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable( 0,
+                                                                                  0 );
+        final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable( 200,
+                                                                                  200 );
+        when( modellerPresenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add( dtPresenter1 );
+            add( dtPresenter2 );
+        }} );
+
+        final GridData uiModel1 = dtPresenter1.getView().getModel();
+        final GridData uiModel2 = dtPresenter2.getView().getModel();
+
+        final GridColumn uiColumn = new BaseGridColumn( mock( GridColumn.HeaderMetaData.class ),
+                                                        mock( GridColumnRenderer.class ),
+                                                        100.0 );
+
+        uiModel1.appendColumn( uiColumn );
+        uiModel2.appendColumn( uiColumn );
+
+        when( uiModel1.getCell( any( Integer.class ),
+                                any( Integer.class ) ) ).thenReturn( uiCell );
+        when( uiModel2.getCell( any( Integer.class ),
+                                any( Integer.class ) ) ).thenReturn( uiCell );
+
+        when( columnInformation.getColumn() ).thenReturn( uiColumn );
+
+        final ContextMenuHandler handler = contextMenuSupport.getContextMenuHandler( modellerPresenter );
+
+        when( nativeEvent.getClientX() ).thenReturn( 50 );
+        when( nativeEvent.getClientY() ).thenReturn( 50 );
+
+        handler.onContextMenu( event );
+
+        verify( cellSelectionStrategy,
+                times( 1 ) ).handleSelection( uiModelCaptor.capture(),
+                                              any( Integer.class ),
+                                              any( Integer.class ),
+                                              any( Boolean.class ),
+                                              any( Boolean.class ) );
+        assertEquals( uiModel1,
+                      uiModelCaptor.getValue() );
+
+        when( nativeEvent.getClientX() ).thenReturn( 250 );
+        when( nativeEvent.getClientY() ).thenReturn( 250 );
+
+        handler.onContextMenu( event );
+
+        verify( cellSelectionStrategy,
+                times( 2 ) ).handleSelection( uiModelCaptor.capture(),
+                                              any( Integer.class ),
+                                              any( Integer.class ),
+                                              any( Boolean.class ),
+                                              any( Boolean.class ) );
+        assertEquals( uiModel2,
+                      uiModelCaptor.getValue() );
+    }
+
     private GuidedDecisionTableView.Presenter makeDecisionTable() {
+        return makeDecisionTable( 0,
+                                  0 );
+    }
+
+    private GuidedDecisionTableView.Presenter makeDecisionTable( final double x,
+                                                                 final double y ) {
+        final GridData uiModel = spy( new BaseGridData() );
         final GuidedDecisionTableView.Presenter dtPresenter = mock( GuidedDecisionTableView.Presenter.class );
         final GuidedDecisionTableView dtView = mock( GuidedDecisionTableView.class );
         final GridRenderer renderer = mock( GridRenderer.class );
         final BaseGridRendererHelper helper = mock( BaseGridRendererHelper.class );
+
+        uiModel.appendRow( new BaseGridRow() );
 
         when( dtPresenter.getView() ).thenReturn( dtView );
         when( dtPresenter.getAccess() ).thenReturn( mock( GuidedDecisionTablePresenter.Access.class ) );
@@ -266,7 +358,7 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
 
         when( dtView.getViewport() ).thenReturn( viewport );
         when( dtView.getLayer() ).thenReturn( layer );
-        when( dtView.getLocation() ).thenReturn( new Point2D( 0, 0 ) );
+        when( dtView.getLocation() ).thenReturn( new Point2D( x, y ) );
         when( dtView.getWidth() ).thenReturn( 50.0 );
         when( dtView.getHeight() ).thenReturn( 52.0 );
         when( dtView.getModel() ).thenReturn( uiModel );

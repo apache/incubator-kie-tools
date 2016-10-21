@@ -41,11 +41,7 @@ public class GuidedDecisionTableOptions extends Composite {
     @UiField
     CheckBox chkUseWizard;
 
-    @UiField
-    CheckBox chkOpenInExistingEditor;
-
     private boolean isUsingWizard = false;
-    private boolean isOpenInExistingEditor = false;
 
     private GuidedDecisionTable52.TableFormat tableFormat = GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
 
@@ -53,21 +49,8 @@ public class GuidedDecisionTableOptions extends Composite {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void enableOpenInExistingEditor( final boolean enabled ) {
-        chkOpenInExistingEditor.setEnabled( enabled );
-    }
-
     public boolean isUsingWizard() {
         return this.isUsingWizard;
-    }
-
-    public boolean isOpenInExistingEditor() {
-        return this.isOpenInExistingEditor;
-    }
-
-    public void setOpenInExistingEditor( final boolean isOpenInExistingEditor ) {
-        this.chkOpenInExistingEditor.setValue( isOpenInExistingEditor );
-        this.isOpenInExistingEditor = isOpenInExistingEditor;
     }
 
     public GuidedDecisionTable52.TableFormat getTableFormat() {
@@ -77,11 +60,6 @@ public class GuidedDecisionTableOptions extends Composite {
     @UiHandler(value = "chkUseWizard")
     void chkUseWizardClick( ClickEvent event ) {
         this.isUsingWizard = chkUseWizard.getValue();
-    }
-
-    @UiHandler(value = "chkOpenInExistingEditor")
-    void chkOpenInExistingEditorClick( ClickEvent event ) {
-        this.isOpenInExistingEditor = chkOpenInExistingEditor.getValue();
     }
 
     @UiHandler(value = "optExtendedEntry")

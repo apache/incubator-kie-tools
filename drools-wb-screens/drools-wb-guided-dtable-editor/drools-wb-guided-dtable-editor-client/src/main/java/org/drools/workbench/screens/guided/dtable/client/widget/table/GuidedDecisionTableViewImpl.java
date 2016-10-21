@@ -201,6 +201,15 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     }
 
     @Override
+    public void activate( final boolean isActive ) {
+        if ( isActive ) {
+            super.select();
+        } else {
+            super.deselect();
+        }
+    }
+
+    @Override
     public void select() {
         presenter.select( this );
         super.select();

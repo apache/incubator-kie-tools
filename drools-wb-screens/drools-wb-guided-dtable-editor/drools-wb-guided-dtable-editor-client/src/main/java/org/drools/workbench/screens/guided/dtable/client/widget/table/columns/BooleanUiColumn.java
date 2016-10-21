@@ -49,6 +49,9 @@ public class BooleanUiColumn extends BaseMultipleDOMElementUiColumn<Boolean, Che
     public void edit( final GridCell<Boolean> cell,
                       final GridBodyCellRenderContext context,
                       final Callback<GridCellValue<Boolean>> callback ) {
+        if ( !isEditable() ) {
+            return;
+        }
         callback.callback( new GuidedDecisionTableUiCell<>( !cell.getValue().getValue() ) );
     }
 

@@ -16,14 +16,11 @@
 
 package org.drools.workbench.screens.guided.dtable.client.handlers;
 
-import java.util.ArrayList;
-
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.AddDecisionTableToEditorEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.project.model.Package;
@@ -39,21 +36,19 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class MakeGuidedDecisionTableHandlerTest {
+public class NewGuidedDecisionTableHandlerTest {
 
     @Mock
     private PlaceManager placeManager;
@@ -72,9 +67,6 @@ public class MakeGuidedDecisionTableHandlerTest {
     private EventSourceMock<NotificationEvent> mockNotificationEvent;
 
     @Mock
-    private EventSourceMock<AddDecisionTableToEditorEvent> addDecisionTableToEditorEvent;
-
-    @Mock
     private AsyncPackageDataModelOracleFactory oracleFactory;
 
     @Mock
@@ -86,12 +78,6 @@ public class MakeGuidedDecisionTableHandlerTest {
     @Mock
     private NewGuidedDecisionTableWizard wizardBean;
 
-    @Mock
-    private SyncBeanDef<ObservablePath> observablePathBeanDef;
-
-    @Mock
-    private ObservablePath observablePath;
-
     @GwtMock
     private GuidedDecisionTableOptions options;
 
@@ -101,9 +87,6 @@ public class MakeGuidedDecisionTableHandlerTest {
     @Captor
     private ArgumentCaptor<String> fileNameCaptor;
 
-    @Captor
-    private ArgumentCaptor<AddDecisionTableToEditorEvent> addDecisionTableToEditorEventCaptor;
-
     private NewGuidedDecisionTableHandler handler;
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType();
 
@@ -112,7 +95,6 @@ public class MakeGuidedDecisionTableHandlerTest {
         serviceCaller = new CallerMock<>( service );
         final NewGuidedDecisionTableHandler wrapped = new NewGuidedDecisionTableHandler( placeManager,
                                                                                          serviceCaller,
-                                                                                         addDecisionTableToEditorEvent,
                                                                                          resourceType,
                                                                                          options,
                                                                                          busyIndicatorView,
@@ -126,10 +108,6 @@ public class MakeGuidedDecisionTableHandlerTest {
 
         when( beanManager.lookupBean( eq( NewGuidedDecisionTableWizard.class ) ) ).thenReturn( wizardBeanDef );
         when( wizardBeanDef.getInstance() ).thenReturn( wizardBean );
-
-        when( placeManager.getActivitiesForResourceType( eq( resourceType ) ) ).thenReturn( new ArrayList<PathPlaceRequest>() {{
-            add( mock( PathPlaceRequest.class ) );
-        }} );
 
         when( service.create( any( Path.class ),
                               any( String.class ),
@@ -192,39 +170,12 @@ public class MakeGuidedDecisionTableHandlerTest {
 
         assertEquals( "default://project/src/main/resources/fileName.gdst",
                       pathCaptor.getValue().toURI() );
-    }
 
-    @Test
-    public void testCreate_OpenInEditor() {
-        final String fileName = "fileName";
-        final Package pkg = mock( Package.class );
-        final Path resourcesPath = PathFactory.newPath( "resources",
-                                                        "default://project/src/main/resources" );
-
-        when( pkg.getPackageMainResourcesPath() ).thenReturn( resourcesPath );
-        when( options.isUsingWizard() ).thenReturn( false );
-        when( options.isOpenInExistingEditor() ).thenReturn( true );
-
-        when( beanManager.lookupBean( ObservablePath.class ) ).thenReturn( observablePathBeanDef );
-        when( observablePathBeanDef.getInstance() ).thenReturn( observablePath );
-        when( observablePath.toURI() ).thenReturn( "default://project/src/main/resources/fileName.gdst" );
-
-        handler.create( pkg,
-                        fileName,
-                        newResourcePresenter );
-
-        verify( busyIndicatorView,
-                times( 1 ) ).hideBusyIndicator();
-        verify( newResourcePresenter,
-                times( 1 ) ).complete();
-        verify( mockNotificationEvent,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
-
-        verify( addDecisionTableToEditorEvent,
-                times( 1 ) ).fire( addDecisionTableToEditorEventCaptor.capture() );
-
-        assertEquals( "default://project/src/main/resources/fileName.gdst",
-                      addDecisionTableToEditorEventCaptor.getValue().getNewDecisionTablePath().toURI() );
+        verify( service,
+                times( 1 ) ).create( eq( resourcesPath ),
+                                     eq( fileName + "." + resourceType.getSuffix() ),
+                                     any( GuidedDecisionTable52.class ),
+                                     any( String.class ) );
     }
 
 }

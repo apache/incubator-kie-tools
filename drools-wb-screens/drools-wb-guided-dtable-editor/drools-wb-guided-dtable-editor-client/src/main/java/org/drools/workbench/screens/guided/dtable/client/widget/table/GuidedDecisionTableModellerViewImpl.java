@@ -304,7 +304,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     @Override
-    public void addDecisionTable( final GridWidget gridWidget ) {
+    public void addDecisionTable( final GuidedDecisionTableView gridWidget ) {
         //Ensure the first Decision Table is visible
         if ( gridLayer.getGridWidgets().isEmpty() ) {
             final Point2D translation = getTranslation( gridWidget );
@@ -316,7 +316,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         gridLayer.batch();
     }
 
-    private Point2D getTranslation( final GridWidget gridWidget ) {
+    private Point2D getTranslation( final GuidedDecisionTableView gridWidget ) {
         final Transform t = gridLayer.getViewport().getTransform();
         final double requiredTranslateX = GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getX();
         final double requiredTranslateY = GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getY();
@@ -329,7 +329,22 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     @Override
-    public void removeDecisionTable( final GridWidget gridWidget,
+    public void activateDecisionTable( final GuidedDecisionTableView gridWidget ) {
+        boolean activationChanged = false;
+        for ( GridWidget g : gridLayer.getGridWidgets() ) {
+            final GuidedDecisionTableView dtView = (GuidedDecisionTableView) g;
+            final boolean isActive = gridWidget.equals( dtView );
+            final boolean isAlreadyActive = dtView.isSelected();
+            activationChanged = activationChanged || ( isActive != isAlreadyActive );
+            dtView.activate( isActive );
+        }
+        if ( activationChanged ) {
+            gridLayer.batch();
+        }
+    }
+
+    @Override
+    public void removeDecisionTable( final GuidedDecisionTableView gridWidget,
                                      final Command afterRemovalCommand ) {
         if ( gridWidget == null ) {
             return;
