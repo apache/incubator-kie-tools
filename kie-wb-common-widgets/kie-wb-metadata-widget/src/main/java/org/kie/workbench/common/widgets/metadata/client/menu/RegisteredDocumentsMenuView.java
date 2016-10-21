@@ -30,8 +30,6 @@ public interface RegisteredDocumentsMenuView extends UberElement<RegisteredDocum
 
         void onOpenDocument();
 
-        void onSaveDocuments();
-
         void registerDocument( final KieDocument document );
 
         void deregisterDocument( final KieDocument document );
@@ -42,13 +40,13 @@ public interface RegisteredDocumentsMenuView extends UberElement<RegisteredDocum
 
         void setOpenDocumentCommand( final Command openDocumentCommand );
 
-        void setSaveDocumentsCommand( final Command saveDocumentsCommand );
-
         void setActivateDocumentCommand( final ParameterizedCommand<KieDocument> activateDocumentCommand );
 
         void setRemoveDocumentCommand( final ParameterizedCommand<KieDocument> removeDocumentCommand );
 
         void activateDocument( final KieDocument document );
+
+        void setReadOnly( final boolean isReadOnly );
 
         void dispose();
 
@@ -66,6 +64,8 @@ public interface RegisteredDocumentsMenuView extends UberElement<RegisteredDocum
 
         void setActive( final boolean isActive );
 
+        void setReadOnly( final boolean isReadOnly );
+
     }
 
     void clear();
@@ -73,5 +73,7 @@ public interface RegisteredDocumentsMenuView extends UberElement<RegisteredDocum
     void addDocument( final DocumentMenuItem document );
 
     void deleteDocument( final DocumentMenuItem document );
+
+    void setReadOnly( final boolean isReadOnly );
 
 }

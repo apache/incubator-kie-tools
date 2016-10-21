@@ -41,16 +41,12 @@ public class RegisteredDocumentsMenuViewImpl implements RegisteredDocumentsMenuV
     Button registeredDocumentsMenuDropdown;
 
     @Inject
-    @DataField("registeredDocuments")
-    Div registeredDocuments;
+    @DataField("registeredDocumentsViewContainer")
+    Div registeredDocumentsViewContainer;
 
     @Inject
     @DataField("openDocumentMenuButton")
     Button openDocumentMenuButton;
-
-    @Inject
-    @DataField("saveDocumentsMenuButton")
-    Button saveDocumentsMenuButton;
 
     protected RegisteredDocumentsMenuBuilder presenter;
 
@@ -76,32 +72,31 @@ public class RegisteredDocumentsMenuViewImpl implements RegisteredDocumentsMenuV
 
     @Override
     public void clear() {
-        final NodeList children = registeredDocuments.getChildNodes();
+        final NodeList children = registeredDocumentsViewContainer.getChildNodes();
         for ( int i = 0; i < children.getLength(); i++ ) {
-            registeredDocuments.removeChild( children.item( i ) );
+            registeredDocumentsViewContainer.removeChild( children.item( i ) );
         }
     }
 
     @Override
     public void addDocument( final DocumentMenuItem document ) {
-        registeredDocuments.appendChild( document.getElement() );
+        registeredDocumentsViewContainer.appendChild( document.getElement() );
     }
 
     @Override
     public void deleteDocument( final DocumentMenuItem document ) {
-        registeredDocuments.removeChild( document.getElement() );
+        registeredDocumentsViewContainer.removeChild( document.getElement() );
+    }
+
+    @Override
+    public void setReadOnly( final boolean isReadOnly ) {
+        openDocumentMenuButton.setDisabled( isReadOnly );
     }
 
     @SuppressWarnings("unused")
     @EventHandler("openDocumentMenuButton")
     public void onClickOpenDocumentButton( final ClickEvent e ) {
         presenter.onOpenDocument();
-    }
-
-    @SuppressWarnings("unused")
-    @EventHandler("saveDocumentsMenuButton")
-    public void onClickSaveDocumentsButton( final ClickEvent e ) {
-        presenter.onSaveDocuments();
     }
 
 }

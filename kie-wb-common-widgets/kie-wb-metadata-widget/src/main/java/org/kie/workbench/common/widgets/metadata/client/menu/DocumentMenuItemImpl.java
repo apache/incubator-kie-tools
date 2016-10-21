@@ -34,6 +34,8 @@ public class DocumentMenuItemImpl implements RegisteredDocumentsMenuView.Documen
 
     private static final String ACTIVE_CSS_CLASS = "kie-document-active";
     private static final String INACTIVE_CSS_CLASS = "kie-document-inactive";
+    private static final String VISIBLE_CSS_CLASS = "kie-close-visible";
+    private static final String HIDDEN_CSS_CLASS = "kie-close-hidden";
 
     private String name;
     private Command activateDocumentCommand;
@@ -91,6 +93,15 @@ public class DocumentMenuItemImpl implements RegisteredDocumentsMenuView.Documen
             kieDocumentRegistration.setClassName( ACTIVE_CSS_CLASS );
         } else {
             kieDocumentRegistration.setClassName( INACTIVE_CSS_CLASS );
+        }
+    }
+
+    @Override
+    public void setReadOnly( final boolean isReadOnly ) {
+        if ( isReadOnly ) {
+            kieDocumentClose.setClassName( HIDDEN_CSS_CLASS );
+        } else {
+            kieDocumentClose.setClassName( VISIBLE_CSS_CLASS );
         }
     }
 

@@ -28,6 +28,14 @@
       background-color: rgb(246, 246, 246);
     }
 
+    .kie-close-visible {
+      visibility: visible;
+    }
+
+    .kie-close-hidden {
+      visibility: hidden;
+    }
+
     .kie-document-base {
       cursor: pointer;
       padding: 2px 2px 2px 2px;
@@ -44,7 +52,9 @@
 
   </style>
 
-  <div id="kie-document-close" class="fa fa-times kie-document-close"></div>
+  <div id="kie-document-close" class="kie-close-visible">
+    <div class="fa fa-times kie-document-close"></div>
+  </div>
   <div id="kie-document-name" class="kie-document-base"></div>
 
 </div>

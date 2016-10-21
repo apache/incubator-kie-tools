@@ -103,25 +103,6 @@ public class RegisteredDocumentsMenuBuilderTest {
     }
 
     @Test
-    public void testOnSaveDocuments_WithCommand() {
-        final Command command = mock( Command.class );
-        builder.setSaveDocumentsCommand( command );
-        builder.onSaveDocuments();
-
-        verify( command,
-                times( 1 ) ).execute();
-    }
-
-    @Test
-    public void testOnSaveDocuments_WithoutCommand() {
-        try {
-            builder.onSaveDocuments();
-        } catch ( NullPointerException npe ) {
-            fail( "Null Commands should be handled." );
-        }
-    }
-
-    @Test
     public void testRegisterDocument() {
         final KieDocument document = makeKieDocument();
         builder.registerDocument( document );
@@ -244,6 +225,54 @@ public class RegisteredDocumentsMenuBuilderTest {
 
         verify( view,
                 times( 1 ) ).clear();
+    }
+
+    @Test
+    public void checkReadOnlyStatusCopiedFromDocument() {
+        final KieDocument documentIsReadOnly = makeKieDocument();
+        final KieDocument documentIsNotReadOnly = makeKieDocument();
+        when( documentIsReadOnly.isReadOnly() ).thenReturn( true );
+        when( documentIsNotReadOnly.isReadOnly() ).thenReturn( false );
+
+        builder.registerDocument( documentIsReadOnly );
+
+        verify( documentMenuItem,
+                times( 1 ) ).setReadOnly( eq( true ) );
+
+        builder.registerDocument( documentIsNotReadOnly );
+
+        verify( documentMenuItem,
+                times( 1 ) ).setReadOnly( eq( false ) );
+    }
+
+    @Test
+    public void checkReadOnlyHidesCloseIcon() {
+        final KieDocument document = makeKieDocument();
+        builder.registerDocument( document );
+
+        builder.setReadOnly( true );
+
+        verify( view,
+                times( 1 ) ).setReadOnly( eq( true ) );
+        verify( documentMenuItem,
+                times( 1 ) ).setReadOnly( eq( true ) );
+    }
+
+    @Test
+    public void checkNotReadOnlyDisplaysCloseIcon() {
+        final KieDocument document = makeKieDocument();
+        builder.registerDocument( document );
+
+        //By default DocumentMenuItems are set to be read-only
+        verify( documentMenuItem,
+                times( 1 ) ).setReadOnly( eq( false ) );
+
+        builder.setReadOnly( false );
+
+        verify( view,
+                times( 1 ) ).setReadOnly( eq( false ) );
+        verify( documentMenuItem,
+                times( 2 ) ).setReadOnly( eq( false ) );
     }
 
 }

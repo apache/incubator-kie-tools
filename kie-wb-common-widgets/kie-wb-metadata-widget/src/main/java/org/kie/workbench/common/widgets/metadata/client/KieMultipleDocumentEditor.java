@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
@@ -38,7 +40,6 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
-import org.kie.workbench.common.widgets.metadata.client.menu.SaveAllMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -73,26 +74,24 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
 public abstract class KieMultipleDocumentEditor<D extends KieDocument> implements KieMultipleDocumentEditorPresenter<D> {
 
     //Injected
-    private KieMultipleDocumentEditorWrapperView kieEditorWrapperView;
-    private OverviewWidgetPresenter overviewWidget;
-    private ImportsWidgetPresenter importsWidget;
-    private Event<NotificationEvent> notificationEvent;
-    private Event<ChangeTitleWidgetEvent> changeTitleEvent;
-    private ProjectContext workbenchContext;
-    private SavePopUpPresenter savePopUpPresenter;
+    protected KieMultipleDocumentEditorWrapperView kieEditorWrapperView;
+    protected OverviewWidgetPresenter overviewWidget;
+    protected ImportsWidgetPresenter importsWidget;
+    protected Event<NotificationEvent> notificationEvent;
+    protected Event<ChangeTitleWidgetEvent> changeTitleEvent;
+    protected ProjectContext workbenchContext;
+    protected SavePopUpPresenter savePopUpPresenter;
 
     protected FileMenuBuilder fileMenuBuilder;
-    protected SaveAllMenuBuilder saveAllMenuBuilder;
     protected VersionRecordManager versionRecordManager;
     protected RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder;
     protected DefaultFileNameValidator fileNameValidator;
 
     //Constructed
-    private BaseEditorView editorView;
+    protected BaseEditorView editorView;
     protected ViewDRLSourceWidget sourceWidget = GWT.create( ViewDRLSourceWidget.class );
 
     private MenuItem saveMenuItem;
-    private MenuItem saveAllMenuItem;
     private MenuItem versionMenuItem;
     private MenuItem registeredDocumentsMenuItem;
 
@@ -110,8 +109,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     //The default implementation delegates to the HashCode comparison in BaseEditor
-    private final MayCloseHandler DEFAULT_MAY_CLOSE_HANDLER = ( originalHashCode, currentHashCode ) -> KieMultipleDocumentEditor.this.doMayClose( originalHashCode,
-                                                                                                                                                  currentHashCode );
+    private final MayCloseHandler DEFAULT_MAY_CLOSE_HANDLER = this::doMayClose;
 
     //This implementation always permits closure as something went wrong loading the Editor's content
     private final MayCloseHandler EXCEPTION_MAY_CLOSE_HANDLER = ( originalHashCode, currentHashCode ) -> true;
@@ -128,50 +126,50 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     @PostConstruct
-    void setupMenuBar() {
+    protected void setupMenuBar() {
         makeMenuBar();
         kieEditorWrapperView.init( this );
     }
 
     @Inject
     @KieMultipleDocumentEditorQualifier
-    void setKieEditorWrapperView( final KieMultipleDocumentEditorWrapperView kieEditorWrapperView ) {
+    protected void setKieEditorWrapperView( final KieMultipleDocumentEditorWrapperView kieEditorWrapperView ) {
         this.kieEditorWrapperView = kieEditorWrapperView;
         this.kieEditorWrapperView.setPresenter( this );
     }
 
     @Inject
-    void setOverviewWidget( final OverviewWidgetPresenter overviewWidget ) {
+    protected void setOverviewWidget( final OverviewWidgetPresenter overviewWidget ) {
         this.overviewWidget = overviewWidget;
     }
 
     @Inject
-    void setSavePopUpPresenter( final SavePopUpPresenter savePopUpPresenter ) {
+    protected void setSavePopUpPresenter( final SavePopUpPresenter savePopUpPresenter ) {
         this.savePopUpPresenter = savePopUpPresenter;
     }
 
     @Inject
-    void setImportsWidget( final ImportsWidgetPresenter importsWidget ) {
+    protected void setImportsWidget( final ImportsWidgetPresenter importsWidget ) {
         this.importsWidget = importsWidget;
     }
 
     @Inject
-    void setNotificationEvent( final Event<NotificationEvent> notificationEvent ) {
+    protected void setNotificationEvent( final Event<NotificationEvent> notificationEvent ) {
         this.notificationEvent = notificationEvent;
     }
 
     @Inject
-    void setChangeTitleEvent( final Event<ChangeTitleWidgetEvent> changeTitleEvent ) {
+    protected void setChangeTitleEvent( final Event<ChangeTitleWidgetEvent> changeTitleEvent ) {
         this.changeTitleEvent = changeTitleEvent;
     }
 
     @Inject
-    void setWorkbenchContext( final ProjectContext workbenchContext ) {
+    protected void setWorkbenchContext( final ProjectContext workbenchContext ) {
         this.workbenchContext = workbenchContext;
     }
 
     @Inject
-    void setVersionRecordManager( final VersionRecordManager versionRecordManager ) {
+    protected void setVersionRecordManager( final VersionRecordManager versionRecordManager ) {
         this.versionRecordManager = versionRecordManager;
         this.versionRecordManager.setShowMoreCommand( () -> {
             kieEditorWrapperView.selectOverviewTab();
@@ -180,22 +178,17 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     @Inject
-    void setFileMenuBuilder( final FileMenuBuilder fileMenuBuilder ) {
+    protected void setFileMenuBuilder( final FileMenuBuilder fileMenuBuilder ) {
         this.fileMenuBuilder = fileMenuBuilder;
     }
 
     @Inject
-    void setSaveAllMenuBuilder( final SaveAllMenuBuilder saveAllMenuBuilder ) {
-        this.saveAllMenuBuilder = saveAllMenuBuilder;
-    }
-
-    @Inject
-    void setRegisteredDocumentsMenuBuilder( final RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder ) {
+    protected void setRegisteredDocumentsMenuBuilder( final RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder ) {
         this.registeredDocumentsMenuBuilder = registeredDocumentsMenuBuilder;
     }
 
     @Inject
-    void setFileNameValidator( final DefaultFileNameValidator fileNameValidator ) {
+    protected void setFileNameValidator( final DefaultFileNameValidator fileNameValidator ) {
         this.fileNameValidator = fileNameValidator;
     }
 
@@ -338,7 +331,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
         return activeDocument;
     }
 
-    void initialiseVersionManager( final D document ) {
+    protected void initialiseVersionManager( final D document ) {
         final String version = document.getVersion();
         final ObservablePath path = document.getLatestPath();
 
@@ -353,22 +346,17 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
                                    } );
     }
 
-    void initialiseKieEditorTabs( final D document,
-                                  final Overview overview,
-                                  final AsyncPackageDataModelOracle dmo,
-                                  final Imports imports,
-                                  final boolean isReadOnly ) {
+    protected void initialiseKieEditorTabs( final D document,
+                                            final Overview overview,
+                                            final AsyncPackageDataModelOracle dmo,
+                                            final Imports imports,
+                                            final boolean isReadOnly ) {
         kieEditorWrapperView.clear();
-
         kieEditorWrapperView.addMainEditorPage( editorView );
-
         kieEditorWrapperView.addOverviewPage( overviewWidget,
                                               () -> overviewWidget.refresh( versionRecordManager.getVersion() ) );
-
         kieEditorWrapperView.addSourcePage( sourceWidget );
-
         kieEditorWrapperView.addImportsTab( importsWidget );
-
         overviewWidget.setContent( overview,
                                    document.getLatestPath() );
         importsWidget.setContent( dmo,
@@ -396,7 +384,10 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     @Override
     public void onClose() {
+        final List<D> documents = new ArrayList<>( this.documents );
+        documents.stream().forEach( this::deregisterDocument );
         this.versionRecordManager.clear();
+        this.activeDocument = null;
     }
 
     @Override
@@ -466,7 +457,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
                             fileNameValidator )
                 .addDelete( () -> getActiveDocument().getLatestPath() )
                 .addValidate( () -> onValidate( getActiveDocument() ) )
-                .addNewTopLevelMenu( getSaveAllMenuItem() )
                 .addNewTopLevelMenu( getRegisteredDocumentsMenuItem() )
                 .addNewTopLevelMenu( getVersionManagerMenuItem() )
                 .build();
@@ -484,25 +474,12 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     /**
-     * Get the MenuItem that should be used for "Save all".
-     * @return
-     */
-    protected MenuItem getSaveAllMenuItem() {
-        if ( saveAllMenuItem == null ) {
-            saveAllMenuItem = saveAllMenuBuilder.build();
-            saveAllMenuBuilder.setSaveAllCommand( this::doSaveAll );
-        }
-        return saveAllMenuItem;
-    }
-
-    /**
      * Get the MenuItem that should be used for listing "(Registered) documents".
      * @return
      */
     protected MenuItem getRegisteredDocumentsMenuItem() {
         if ( registeredDocumentsMenuItem == null ) {
             registeredDocumentsMenuItem = registeredDocumentsMenuBuilder.build();
-            registeredDocumentsMenuBuilder.setSaveDocumentsCommand( this::doSaveAll );
             registeredDocumentsMenuBuilder.setOpenDocumentCommand( this::openDocumentInEditor );
         }
         return registeredDocumentsMenuItem;
@@ -542,19 +519,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
             return;
         }
         doSaveCheckForAndHandleConcurrentUpdate( document );
-    }
-
-    /**
-     * Called by the "Save all" MenuItem to save all active document. If a document
-     * is read-only saving of that particular document is skipped. If a document
-     * is not read-only a check is made for concurrent updates before persisting.
-     */
-    protected void doSaveAll() {
-        for ( D document : documents ) {
-            if ( !( document.isReadOnly() ) ) {
-                doSaveCheckForAndHandleConcurrentUpdate( document );
-            }
-        }
     }
 
     /**

@@ -37,7 +37,6 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
-import org.kie.workbench.common.widgets.metadata.client.menu.SaveAllMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -117,9 +116,6 @@ public class KieMultipleDocumentEditorTest {
     private FileMenuBuilder fileMenuBuilder = getFileMenuBuilder();
 
     @Mock
-    private SaveAllMenuBuilder saveAllMenuBuilder;
-
-    @Mock
     private RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder;
 
     @Mock
@@ -190,7 +186,6 @@ public class KieMultipleDocumentEditorTest {
         wrapped.setVersionRecordManager( versionRecordManager );
         wrapped.setRegisteredDocumentsMenuBuilder( registeredDocumentsMenuBuilder );
         wrapped.setFileMenuBuilder( fileMenuBuilder );
-        wrapped.setSaveAllMenuBuilder( saveAllMenuBuilder );
         wrapped.setFileNameValidator( fileNameValidator );
 
         this.editor = spy( wrapped );
@@ -216,7 +211,7 @@ public class KieMultipleDocumentEditorTest {
         verify( fileMenuBuilder,
                 times( 1 ) ).addValidate( any( Command.class ) );
         verify( fileMenuBuilder,
-                times( 3 ) ).addNewTopLevelMenu( any( MenuItem.class ) );
+                times( 2 ) ).addNewTopLevelMenu( any( MenuItem.class ) );
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -730,10 +725,19 @@ public class KieMultipleDocumentEditorTest {
 
     @Test
     public void testOnClose() {
+        final TestDocument document = createTestDocument();
+
+        registerDocument( document );
+
         editor.onClose();
 
         verify( versionRecordManager,
                 times( 1 ) ).clear();
+        verify( registeredDocumentsMenuBuilder,
+                times( 1 ) ).deregisterDocument( eq( document ) );
+        verify( document.getCurrentPath(),
+                times( 1 ) ).dispose();
+        assertNull( editor.getActiveDocument() );
     }
 
     @Test
@@ -792,112 +796,6 @@ public class KieMultipleDocumentEditorTest {
                 times( 1 ) ).onSave( eq( document ),
                                      eq( "commit" ) );
         verify( document,
-                times( 1 ) ).setConcurrentUpdateSessionInfo( eq( null ) );
-    }
-
-    @Test
-    public void testSaveAll() {
-        final TestDocument document1 = createTestDocument();
-        final TestDocument document2 = createTestDocument();
-        registerDocument( document1 );
-        registerDocument( document2 );
-
-        editor.doSaveAll();
-
-        verify( editorView,
-                times( 2 ) ).showSaving();
-
-        verify( editor,
-                times( 1 ) ).doSave( eq( document1 ) );
-        verify( editor,
-                times( 1 ) ).doSaveCheckForAndHandleConcurrentUpdate( eq( document1 ) );
-        verify( editor,
-                times( 1 ) ).onSave( eq( document1 ),
-                                     any( String.class ) );
-        verify( document1,
-                times( 1 ) ).setConcurrentUpdateSessionInfo( eq( null ) );
-
-        verify( editor,
-                times( 1 ) ).doSave( eq( document2 ) );
-        verify( editor,
-                times( 1 ) ).doSaveCheckForAndHandleConcurrentUpdate( eq( document2 ) );
-        verify( editor,
-                times( 1 ) ).onSave( eq( document2 ),
-                                     any( String.class ) );
-        verify( document2,
-                times( 1 ) ).setConcurrentUpdateSessionInfo( eq( null ) );
-    }
-
-    @Test
-    public void testSaveAllWithOneDocumentReadOnly() {
-        final TestDocument document1 = createTestDocument();
-        final TestDocument document2 = createTestDocument();
-        registerDocument( document1 );
-        registerDocument( document2 );
-
-        when( document1.isReadOnly() ).thenReturn( true );
-        when( document2.isReadOnly() ).thenReturn( false );
-
-        editor.doSaveAll();
-
-        verify( editorView,
-                times( 1 ) ).showSaving();
-
-        verify( editor,
-                never() ).doSave( eq( document1 ) );
-        verify( editor,
-                never() ).doSaveCheckForAndHandleConcurrentUpdate( eq( document1 ) );
-        verify( editor,
-                never() ).onSave( eq( document1 ),
-                                  any( String.class ) );
-        verify( document1,
-                never() ).setConcurrentUpdateSessionInfo( eq( null ) );
-
-        verify( editor,
-                times( 1 ) ).doSave( eq( document2 ) );
-        verify( editor,
-                times( 1 ) ).doSaveCheckForAndHandleConcurrentUpdate( eq( document2 ) );
-        verify( editor,
-                times( 1 ) ).onSave( eq( document2 ),
-                                     any( String.class ) );
-        verify( document2,
-                times( 1 ) ).setConcurrentUpdateSessionInfo( eq( null ) );
-    }
-
-    @Test
-    public void testSaveAllWithOneDocumentConcurrentUpdate() {
-        final TestDocument document1 = createTestDocument();
-        final TestDocument document2 = createTestDocument();
-        registerDocument( document1 );
-        registerDocument( document2 );
-
-        doNothing().when( editor ).showConcurrentUpdatePopup( any( TestDocument.class ) );
-        when( document1.getConcurrentUpdateSessionInfo() ).thenReturn( mock( ObservablePath.OnConcurrentUpdateEvent.class ) );
-        when( document2.getConcurrentUpdateSessionInfo() ).thenReturn( null );
-
-        editor.doSaveAll();
-
-        verify( editorView,
-                times( 1 ) ).showSaving();
-
-        verify( editor,
-                never() ).doSave( eq( document1 ) );
-        verify( editor,
-                times( 1 ) ).doSaveCheckForAndHandleConcurrentUpdate( eq( document1 ) );
-        verify( editor,
-                times( 1 ) ).showConcurrentUpdatePopup( eq( document1 ) );
-        verify( editor,
-                never() ).onSave( eq( document1 ),
-                                  any( String.class ) );
-
-        verify( editor,
-                times( 1 ) ).doSave( eq( document2 ) );
-        verify( editor,
-                times( 1 ) ).doSaveCheckForAndHandleConcurrentUpdate( eq( document2 ) );
-        verify( editor,
-                times( 1 ) ).onSave( eq( document2 ),
-                                     any( String.class ) );
-        verify( document2,
                 times( 1 ) ).setConcurrentUpdateSessionInfo( eq( null ) );
     }
 

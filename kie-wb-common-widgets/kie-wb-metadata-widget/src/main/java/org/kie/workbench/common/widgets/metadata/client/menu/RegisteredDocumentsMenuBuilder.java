@@ -39,7 +39,7 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBuilder,
                                                        RegisteredDocumentsMenuView.Presenter {
 
-    private Command saveDocumentsCommand;
+    private boolean isReadOnly;
     private Command openDocumentCommand;
     private ParameterizedCommand<KieDocument> activateDocumentCommand;
     private ParameterizedCommand<KieDocument> removeDocumentCommand;
@@ -59,6 +59,14 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
     @PostConstruct
     void setup() {
         view.init( this );
+        this.isReadOnly = false;
+    }
+
+    @Override
+    public void setReadOnly( final boolean isReadOnly ) {
+        this.isReadOnly = isReadOnly;
+        this.view.setReadOnly( isReadOnly );
+        this.registeredDocuments.values().stream().forEach( ( e ) -> e.setReadOnly( isReadOnly ) );
     }
 
     @Override
@@ -94,15 +102,11 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
 
     @Override
     public void onOpenDocument() {
+        if ( isReadOnly ) {
+            return;
+        }
         if ( openDocumentCommand != null ) {
             openDocumentCommand.execute();
-        }
-    }
-
-    @Override
-    public void onSaveDocuments() {
-        if ( saveDocumentsCommand != null ) {
-            saveDocumentsCommand.execute();
         }
     }
 
@@ -130,6 +134,9 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
 
     @Override
     public void onRemoveDocument( final KieDocument document ) {
+        if ( isReadOnly ) {
+            return;
+        }
         if ( removeDocumentCommand != null ) {
             removeDocumentCommand.execute( document );
         }
@@ -139,12 +146,6 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
     public void setOpenDocumentCommand( final Command openDocumentCommand ) {
         this.openDocumentCommand = PortablePreconditions.checkNotNull( "openDocumentCommand",
                                                                        openDocumentCommand );
-    }
-
-    @Override
-    public void setSaveDocumentsCommand( final Command saveDocumentsCommand ) {
-        this.saveDocumentsCommand = PortablePreconditions.checkNotNull( "saveDocumentsCommand",
-                                                                        saveDocumentsCommand );
     }
 
     @Override
@@ -171,6 +172,7 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
         documentMenuItem.setName( document.getCurrentPath().getFileName() );
         documentMenuItem.setRemoveDocumentCommand( () -> onRemoveDocument( document ) );
         documentMenuItem.setActivateDocumentCommand( () -> onActivateDocument( document ) );
+        documentMenuItem.setReadOnly( document.isReadOnly() );
         return documentMenuItem;
     }
 
