@@ -182,7 +182,8 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     /**
      * Add a child to this Layer. If the child is a GridWidget then also add
      * a Connector between the Grid Widget and any "linked" GridWidgets.
-     * @param child Primitive to add to the Layer
+     * @param child
+     *         Primitive to add to the Layer
      * @return The Layer
      */
     @Override
@@ -263,8 +264,10 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     /**
      * Add a child and other children to this Layer. If the child or any children is a GridWidget
      * then also add a Connector between the Grid Widget and any "linked" GridWidgets.
-     * @param child Primitive to add to the Layer
-     * @param children Additional primitive(s) to add to the Layer
+     * @param child
+     *         Primitive to add to the Layer
+     * @param children
+     *         Additional primitive(s) to add to the Layer
      * @return The Layer
      */
     @Override
@@ -280,7 +283,8 @@ public class DefaultGridLayer extends Layer implements GridLayer {
      * Remove a child from this Layer. if the child is a GridWidget also remove
      * any Connectors that have been added between the GridWidget being removed
      * and any of GridWidgets.
-     * @param child Primitive to remove from the Layer
+     * @param child
+     *         Primitive to remove from the Layer
      * @return The Layer
      */
     @Override
@@ -357,7 +361,11 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         }
     }
 
-    private void flipToGridWidget( final GridWidget gridWidget ) {
+    @Override
+    public void flipToGridWidget( final GridWidget gridWidget ) {
+        if ( !isGridPinned() ) {
+            return;
+        }
         for ( GridWidget gw : gridWidgets ) {
             gw.setAlpha( gw.equals( gridWidget ) ? 1.0 : 0.0 );
             gw.setVisible( gw.equals( gridWidget ) );
@@ -381,7 +389,11 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         } );
     }
 
-    private void scrollToGridWidget( final GridWidget gridWidget ) {
+    @Override
+    public void scrollToGridWidget( final GridWidget gridWidget ) {
+        if ( isGridPinned() ) {
+            return;
+        }
         final GridWidgetScrollIntoViewAnimation a = new GridWidgetScrollIntoViewAnimation( gridWidget,
                                                                                            new Command() {
                                                                                                @Override

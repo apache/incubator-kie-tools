@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.helper.DeleteHelper;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.restriction.PathOperationRestriction;
 import org.uberfire.ext.editor.commons.service.restrictor.DeleteRestrictor;
@@ -42,23 +43,33 @@ public class DeleteServiceImpl implements DeleteService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( DeleteServiceImpl.class );
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
     private User identity;
-
-    @Inject
     private SessionInfo sessionInfo;
+    private Instance<DeleteHelper> helpers;
+    private Instance<DeleteRestrictor> deleteRestrictorBeans;
+
+    public DeleteServiceImpl() {
+        //CDI proxies
+    }
 
     @Inject
-    private Instance<DeleteRestrictor> deleteRestrictorBeans;
+    public DeleteServiceImpl( final @Named("ioStrategy") IOService ioService,
+                              final User identity,
+                              final SessionInfo sessionInfo,
+                              final Instance<DeleteHelper> helpers,
+                              final Instance<DeleteRestrictor> deleteRestrictorBeans ) {
+        this.ioService = ioService;
+        this.identity = identity;
+        this.sessionInfo = sessionInfo;
+        this.helpers = helpers;
+        this.deleteRestrictorBeans = deleteRestrictorBeans;
+    }
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        
+
         LOGGER.info( "User:" + identity.getIdentifier() + " deleting file [" + path.getFileName() + "]" );
 
         checkRestrictions( path );
@@ -114,11 +125,25 @@ public class DeleteServiceImpl implements DeleteService {
 
     void deletePath( final Path path,
                      final String comment ) {
-        ioService.delete( Paths.convert( path ),
-                          new CommentedOption( sessionInfo != null ? sessionInfo.getId() : "--",
-                                               identity.getIdentifier(),
-                                               null,
-                                               comment ) );
+        final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+
+        try {
+            ioService.startBatch( _path.getFileSystem() );
+
+            ioService.delete( Paths.convert( path ),
+                              new CommentedOption( sessionInfo != null ? sessionInfo.getId() : "--",
+                                                   identity.getIdentifier(),
+                                                   null,
+                                                   comment ) );
+
+            //Delegate additional changes required for a deletion to applicable Helpers
+            notifyDeleteHelpers( path );
+
+        } catch ( final Exception e ) {
+            throw new RuntimeException( e );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     void deletePathIfExists( final Path path,
@@ -130,6 +155,20 @@ public class DeleteServiceImpl implements DeleteService {
                                                        comment ),
                                   StandardDeleteOption.NON_EMPTY_DIRECTORIES
                                 );
+
+        //Delegate additional changes required for a deletion to applicable Helpers
+        notifyDeleteHelpers( path );
+    }
+
+    void notifyDeleteHelpers( final Path path ) {
+        final Iterable<DeleteHelper> helpers = getDeleteHelpers();
+        if ( helpers != null ) {
+            for ( DeleteHelper helper : helpers ) {
+                if ( helper.supports( path ) ) {
+                    helper.postProcess( path );
+                }
+            }
+        }
     }
 
     void startBatch( final Collection<Path> paths ) {
@@ -147,4 +186,9 @@ public class DeleteServiceImpl implements DeleteService {
     Iterable<DeleteRestrictor> getDeleteRestrictors() {
         return deleteRestrictorBeans;
     }
+
+    Iterable<DeleteHelper> getDeleteHelpers() {
+        return helpers;
+    }
+
 }

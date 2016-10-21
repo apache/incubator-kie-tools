@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -33,16 +32,18 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.VFSLockService;
 import org.uberfire.backend.vfs.impl.LockInfo;
+import org.uberfire.ext.editor.commons.backend.service.helper.DeleteHelper;
 import org.uberfire.ext.editor.commons.backend.service.restriction.LockRestrictor;
 import org.uberfire.ext.editor.commons.service.ValidationService;
 import org.uberfire.ext.editor.commons.service.restrictor.DeleteRestrictor;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteServiceImplTest {
@@ -70,18 +71,21 @@ public class DeleteServiceImplTest {
     @InjectMocks
     private LockRestrictor lockRestrictor;
 
+    @Mock
+    private DeleteHelper deleteHelper;
+
     @Before
     public void setup() {
         when( identity.getIdentifier() ).thenReturn( "user" );
 
-        doNothing().when( deleteService ).deletePath( any( Path.class ), any( String.class ) );
-        doNothing().when( deleteService ).deletePathIfExists( any( Path.class ), any( String.class ) );
-        doNothing().when( deleteService ).startBatch( Matchers.<Collection<Path>>any() );
-        doNothing().when( deleteService ).endBatch( Matchers.<Collection<Path>>any() );
-
-        List<DeleteRestrictor> deleteRestrictors = new ArrayList<DeleteRestrictor>();
+        List<DeleteRestrictor> deleteRestrictors = new ArrayList<>();
         deleteRestrictors.add( lockRestrictor );
         when( deleteService.getDeleteRestrictors() ).thenReturn( deleteRestrictors );
+
+        List<DeleteHelper> deleteHelpers = new ArrayList<>();
+        deleteHelpers.add( deleteHelper );
+        when( deleteService.getDeleteHelpers() ).thenReturn( deleteHelpers );
+        when( deleteHelper.supports( any( Path.class ) ) ).thenReturn( true );
     }
 
     @Test
@@ -168,6 +172,33 @@ public class DeleteServiceImplTest {
         thenPathHasDeleteRestrictions( hasRestriction );
     }
 
+    @Test
+    public void deletePathInvokesDeleteHelpers() {
+        final Path path = getPath();
+
+        whenPathIsDeleted( path );
+
+        thenIOServiceBatchStarted();
+        thenDeleteHelperWasInvoked( path );
+        thenIOServiceBatchEnded();
+    }
+
+    @Test
+    public void deletePathsIfExistsInvokesDeleteHelpers() {
+        final List<Path> paths = new ArrayList<Path>();
+        paths.add( getPath( "file0.txt" ) );
+        paths.add( getPath( "file1.txt" ) );
+        paths.add( getPath( "file2.txt" ) );
+
+        whenPathsAreDeletedIfExists( paths );
+
+        thenIOServiceBatchStarted();
+        thenDeleteHelperWasInvoked( paths.get( 0 ) );
+        thenDeleteHelperWasInvoked( paths.get( 1 ) );
+        thenDeleteHelperWasInvoked( paths.get( 2 ) );
+        thenIOServiceBatchEnded();
+    }
+
     private void givenThatPathIsLocked( final Path path ) {
         changeLockInfo( path, true );
     }
@@ -220,6 +251,18 @@ public class DeleteServiceImplTest {
 
     private void thenPathHasDeleteRestrictions( final boolean hasRestriction ) {
         assertTrue( hasRestriction );
+    }
+
+    private void thenIOServiceBatchStarted() {
+        verify( ioService ).startBatch( any( FileSystem.class ) );
+    }
+
+    private void thenIOServiceBatchEnded() {
+        verify( ioService ).endBatch();
+    }
+
+    private void thenDeleteHelperWasInvoked( final Path path ) {
+        verify( deleteHelper ).postProcess( eq( path ) );
     }
 
     private Path getPath() {

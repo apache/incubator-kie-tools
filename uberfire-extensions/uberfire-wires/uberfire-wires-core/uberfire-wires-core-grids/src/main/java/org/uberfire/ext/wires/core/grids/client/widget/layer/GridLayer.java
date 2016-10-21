@@ -58,7 +58,8 @@ public interface GridLayer extends GridSelectionManager,
     /**
      * Set a reference to an AbsolutePanel that overlays the Canvas.
      * This can be used to overlay DOM elements on top of the Canvas.
-     * @param getDomElementContainer The overlay panel
+     * @param getDomElementContainer
+     *         The overlay panel
      */
     void setDomElementContainer( final AbsolutePanel getDomElementContainer );
 
@@ -71,7 +72,8 @@ public interface GridLayer extends GridSelectionManager,
     /**
      * Redraw the Grid. All updates are batched into a single draw on the next animation
      * frame. Execute the provided command after the batch redraw has been scheduled.
-     * @param command The command to execute
+     * @param command
+     *         The command to execute
      * @return
      */
     Layer batch( final GridLayerRedrawManager.PrioritizedCommand command );
@@ -86,5 +88,21 @@ public interface GridLayer extends GridSelectionManager,
      * Refreshes all connectors used to connect all {@link GridWidget} together.
      */
     void refreshGridWidgetConnectors();
+
+    /**
+     * Moves the specified GridWidget into view without scrolling the Canvas.
+     * If the GridLayer is not in "pinned mode" this method has no operation.
+     * @param gridWidget
+     *         The GridWidget to move into view.
+     */
+    void flipToGridWidget( final GridWidget gridWidget );
+
+    /**
+     * Scrolls the specified GridWidget into view.
+     * If the GridLayer is in "pinned mode" this method has no operation.
+     * @param gridWidget
+     *         The GridWidget to scroll into view.
+     */
+    void scrollToGridWidget( final GridWidget gridWidget );
 
 }
