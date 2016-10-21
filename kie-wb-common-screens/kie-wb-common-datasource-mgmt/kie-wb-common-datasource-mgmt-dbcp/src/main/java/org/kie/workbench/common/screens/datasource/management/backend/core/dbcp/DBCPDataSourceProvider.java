@@ -225,8 +225,6 @@ public class DBCPDataSourceProvider
 
     private class DBCPDataSource extends AbstractDataSource {
 
-        PoolingDataSource dataSource;
-
         public DBCPDataSource( PoolingDataSource dataSource ) {
             this.dataSource = dataSource;
         }
@@ -242,7 +240,7 @@ public class DBCPDataSourceProvider
         }
 
         public void close() throws Exception {
-            dataSource.close();
+            ((PoolingDataSource) dataSource).close();
         }
     }
 }

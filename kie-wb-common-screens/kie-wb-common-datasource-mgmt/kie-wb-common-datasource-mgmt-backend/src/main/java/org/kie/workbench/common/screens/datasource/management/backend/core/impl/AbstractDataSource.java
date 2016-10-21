@@ -29,6 +29,8 @@ import org.kie.workbench.common.screens.datasource.management.model.DataSourceSt
 public abstract class AbstractDataSource
         implements DataSource {
 
+    protected javax.sql.DataSource dataSource;
+
     protected DataSourceStatus status = DataSourceStatus.NEW;
 
     protected List<DataSourceListener> listeners = new ArrayList<>( );
@@ -69,5 +71,9 @@ public abstract class AbstractDataSource
         for ( DataSourceListener listener : listeners ) {
             listener.statusChanged( newStatus );
         }
+    }
+
+    public javax.sql.DataSource getInternalDataSource() {
+        return dataSource;
     }
 }

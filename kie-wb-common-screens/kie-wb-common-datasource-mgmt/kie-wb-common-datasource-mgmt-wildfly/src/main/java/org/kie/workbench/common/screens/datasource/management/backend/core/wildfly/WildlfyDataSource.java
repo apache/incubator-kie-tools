@@ -28,9 +28,6 @@ public class WildlfyDataSource
         extends AbstractDataSource
         implements javax.sql.DataSource {
 
-
-    private javax.sql.DataSource dataSource;
-
     private String externalJndi;
 
     public WildlfyDataSource( javax.sql.DataSource dataSource, String externalJndi ) {
