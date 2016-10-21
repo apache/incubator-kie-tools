@@ -52,6 +52,44 @@ public class PreferencesCentralPerspective {
 
     private PerspectiveDefinition perspective;
 
+    public void perspectiveChangeEvent( @Observes UberfireDockReadyEvent dockReadyEvent ) {
+        if ( dockReadyEvent.getCurrentPerspective().equals( IDENTIFIER ) ) {
+            uberfireDocks.expand( dock );
+        }
+    }
+
+    @Perspective
+    public PerspectiveDefinition getPerspective() {
+        if ( perspective == null ) {
+            return createPerspectiveDefinition();
+        }
+
+        return perspective;
+    }
+
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
+        perspective = createPerspectiveDefinition();
+        configurePerspective( placeRequest );
+    }
+
+    PerspectiveDefinition createPerspectiveDefinition() {
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        perspective.setName( "Preferences" );
+        return perspective;
+    }
+
+    void configurePerspective( final PlaceRequest placeRequest ) {
+        final PanelDefinition actionsBar = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        actionsBar.setHeight( 80 );
+        actionsBar.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( PreferencesCentralActionsScreen.IDENTIFIER, placeRequest.getParameters() ) ) );
+
+        perspective.getRoot().insertChild( CompassPosition.SOUTH,
+                                           actionsBar );
+
+        setupNavBarDock( new DefaultPlaceRequest( PreferencesCentralNavBarScreen.IDENTIFIER, placeRequest.getParameters() ) );
+    }
+
     private void setupNavBarDock( final PlaceRequest placeRequest ) {
         final String title = placeRequest.getParameter( "title", null );
 
@@ -67,31 +105,5 @@ public class PreferencesCentralPerspective {
                 .withLabel( title );
 
         uberfireDocks.add( dock );
-    }
-
-    public void perspectiveChangeEvent( @Observes UberfireDockReadyEvent dockReadyEvent ) {
-        if ( dockReadyEvent.getCurrentPerspective().equals( IDENTIFIER ) ) {
-            uberfireDocks.expand( dock );
-        }
-    }
-
-    @Perspective
-    public PerspectiveDefinition getPerspective() {
-        return perspective;
-    }
-
-    @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( "Preferences" );
-
-        final PanelDefinition actionsBar = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
-        actionsBar.setHeight( 80 );
-        actionsBar.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( PreferencesCentralActionsScreen.IDENTIFIER, placeRequest.getParameters() ) ) );
-
-        perspective.getRoot().insertChild( CompassPosition.SOUTH,
-                                           actionsBar );
-
-        setupNavBarDock( new DefaultPlaceRequest( PreferencesCentralNavBarScreen.IDENTIFIER, placeRequest.getParameters() ) );
     }
 }
