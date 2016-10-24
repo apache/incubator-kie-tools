@@ -59,6 +59,7 @@ public class PermissionTreeSetup {
 
     public void configureTree() {
         perspectiveTreeProvider.setPerspectiveName(HOME, i18n.HomePage());
+        perspectiveTreeProvider.setPerspectiveName(ADMIN, i18n.Admin());
         perspectiveTreeProvider.setPerspectiveName(SOCIAL_HOME, i18n.Timeline());
         perspectiveTreeProvider.setPerspectiveName(SOCIAL_USER_HOME, i18n.People());
         perspectiveTreeProvider.setPerspectiveName(SECURITY_MANAGEMENT, i18n.SecurityManagement());

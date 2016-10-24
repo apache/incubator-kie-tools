@@ -35,6 +35,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.widgets.client.menu.AboutMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.ResetPerspectivesMenuBuilder;
+import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.menu.WorkbenchViewModeSwitcherMenuBuilder;
@@ -77,6 +78,9 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     @Inject
     protected UtilityMenuBar utilityMenuBar;
 
+    @Inject
+    protected DefaultAdminPageHelper adminPageHelper;
+
     public List<? extends MenuItem> getHomeViews( final boolean socialEnabled ) {
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
         final List<MenuItem> result = new ArrayList<>( 1 );
@@ -86,8 +90,12 @@ public class DefaultWorkbenchFeaturesMenusHelper {
                             .endMenu()
                             .build().getItems().get( 0 ) );
 
+        result.add( MenuFactory.newSimpleItem( constants.Admin() )
+                            .respondsWith( adminPageHelper.getAdminToolCommand( "root" ) )
+                            .endMenu()
+                            .build().getItems().get( 0 ) );
+
         result.addAll( getSocialViews( socialEnabled ) );
-        result.addAll( getSecurityManagementViews() );
 
         return result;
     }
@@ -101,14 +109,6 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
         result.add( MenuFactory.newSimpleItem( constants.Timeline() ).perspective( SOCIAL_HOME ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.People() ).perspective( SOCIAL_USER_HOME ).endMenu().build().getItems().get( 0 ) );
-
-        return result;
-    }
-
-    protected List<MenuItem> getSecurityManagementViews() {
-        final List<MenuItem> result = new ArrayList<>( 1 );
-
-        result.add( MenuFactory.newSimpleItem( constants.SecurityManagement() ).perspective( SECURITY_MANAGEMENT ).endMenu().build().getItems().get( 0 ) );
 
         return result;
     }

@@ -32,6 +32,7 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -78,6 +79,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     @Mock
     protected PerspectiveManager perspectiveManager;
 
+    @Mock
+    protected DefaultAdminPageHelper adminPageHelper;
+
     @Spy
     @InjectMocks
     private DefaultWorkbenchFeaturesMenusHelper menusHelper;
@@ -89,6 +93,7 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         mockRoles();
         mockGroups();
         mockIocManager();
+        mockAdminPageHelper();
     }
 
     @Test
@@ -99,7 +104,7 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
         assertEquals( 2, homeMenuItems.size() );
         assertEquals( menusHelper.constants.HomePage(), homeMenuItems.get( 0 ).getCaption() );
-        assertEquals( menusHelper.constants.SecurityManagement(), homeMenuItems.get( 1 ).getCaption() );
+        assertEquals( menusHelper.constants.Admin(), homeMenuItems.get( 1 ).getCaption() );
     }
 
     @Test
@@ -110,9 +115,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
         assertEquals( 4, homeMenuItems.size() );
         assertEquals( menusHelper.constants.HomePage(), homeMenuItems.get( 0 ).getCaption() );
-        assertEquals( menusHelper.constants.Timeline(), homeMenuItems.get( 1 ).getCaption() );
-        assertEquals( menusHelper.constants.People(), homeMenuItems.get( 2 ).getCaption() );
-        assertEquals( menusHelper.constants.SecurityManagement(), homeMenuItems.get( 3 ).getCaption() );
+        assertEquals( menusHelper.constants.Admin(), homeMenuItems.get( 1 ).getCaption() );
+        assertEquals( menusHelper.constants.Timeline(), homeMenuItems.get( 2 ).getCaption() );
+        assertEquals( menusHelper.constants.People(), homeMenuItems.get( 3 ).getCaption() );
     }
 
     @Test
@@ -340,6 +345,14 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     private void mockIocManager() {
         doAnswer( invocationOnMock -> createSyncBeanDef( (Class<?>) invocationOnMock.getArguments()[ 0 ] ) )
                 .when( iocManager ).lookupBean( any( Class.class ) );
+    }
+
+    private void mockAdminPageHelper() {
+        doReturn( new Command() {
+            @Override
+            public void execute() {
+            }
+        } ).when( adminPageHelper ).getAdminToolCommand( anyString() );
     }
 
     private <T> SyncBeanDef<T> createSyncBeanDef( Class<T> clazz ) {

@@ -115,5 +115,11 @@ public interface DefaultWorkbenchConstants
 
     String Admin();
 
-    String Permissions();
+    String Settings();
+
+    String Roles();
+
+    String Groups();
+
+    String Users();
 }
