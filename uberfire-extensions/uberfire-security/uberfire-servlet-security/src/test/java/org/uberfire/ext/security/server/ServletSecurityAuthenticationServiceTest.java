@@ -114,6 +114,20 @@ public class ServletSecurityAuthenticationServiceTest {
     }
 
     @Test
+    public void testLoginNoPrincipal() throws Exception {
+
+        Subject subject = new Subject();
+        doReturn( subject ).when( tested ).getSubjectFromPolicyContext();
+
+        User user = tested.login( USERNAME, PASSWORD );
+
+        assertNotNull( user );
+        assertEquals( USERNAME, user.getIdentifier() );
+        assertEquals( 0, user.getRoles().size() );
+        assertEquals( 0, user.getGroups().size() );
+    }
+
+    @Test
     public void testLoginSubjectGroups() throws Exception {
         String username = "user1";
         String password = "password1";

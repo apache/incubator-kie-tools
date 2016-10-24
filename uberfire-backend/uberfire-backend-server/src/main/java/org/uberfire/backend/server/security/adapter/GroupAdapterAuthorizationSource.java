@@ -135,7 +135,7 @@ public class GroupAdapterAuthorizationSource {
 
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -168,7 +168,7 @@ public class GroupAdapterAuthorizationSource {
 
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
 

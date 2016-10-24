@@ -82,6 +82,23 @@ public class JAASAuthenticationServiceTest {
     }
 
     @Test
+    public void testLoginNoPrincipal() throws Exception {
+        String username = "user1";
+        String password = "password1";
+        Subject subject = new Subject();
+        LoginContext loginContext = mock( LoginContext.class );
+        when( loginContext.getSubject() ).thenReturn( subject );
+        doReturn( loginContext ).when( tested ).createLoginContext( anyString(), anyString() );
+
+        User user = tested.login( username, password );
+
+        assertNotNull( user );
+        assertEquals( username, user.getIdentifier() );
+        assertEquals( 0, user.getRoles().size() );
+        assertEquals( 0, user.getGroups().size() );
+    }
+
+    @Test
     public void testLoginSubjectGroups() throws Exception {
         String username = "user1";
         String password = "password1";
