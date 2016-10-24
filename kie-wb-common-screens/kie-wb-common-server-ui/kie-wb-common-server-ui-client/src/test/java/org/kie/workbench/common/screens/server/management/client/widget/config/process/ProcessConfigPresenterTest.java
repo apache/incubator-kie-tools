@@ -82,12 +82,12 @@ public class ProcessConfigPresenterTest {
 
     @Test
     public void testCancel() {
-        final ProcessConfig processConfig = new ProcessConfig( ClientRuntimeStrategy.SINGLETON.toString(), "kBase", "kSession", ClientMergeMode.KEEP_ALL.toString() );
+        final ProcessConfig processConfig = new ProcessConfig( ClientRuntimeStrategy.PER_CASE.toString(), "kBase", "kSession", ClientMergeMode.KEEP_ALL.toString() );
         presenter.setProcessConfig( processConfig );
 
         presenter.cancel();
 
-        verify( view, times( 2 ) ).setContent( ClientRuntimeStrategy.convert( processConfig.getRuntimeStrategy(), translationService ).getValue( translationService ),
+        verify( view, times( 2 ) ).setContent( ClientRuntimeStrategy.PER_CASE.getValue( translationService ),
                                                processConfig.getKBase(),
                                                processConfig.getKSession(),
                                                ClientMergeMode.convert( processConfig.getMergeMode(), translationService ).getValue( translationService ) );
@@ -96,10 +96,10 @@ public class ProcessConfigPresenterTest {
     @Test
     public void testSetup() {
         final ContainerSpecKey containerSpecKey = new ContainerSpecKey();
-        final ProcessConfig processConfig = new ProcessConfig( ClientRuntimeStrategy.SINGLETON.toString(), "kBase", "kSession", ClientMergeMode.KEEP_ALL.toString() );
+        final ProcessConfig processConfig = new ProcessConfig( ClientRuntimeStrategy.PER_CASE.toString(), "kBase", "kSession", ClientMergeMode.KEEP_ALL.toString() );
         presenter.setup( containerSpecKey, processConfig );
 
-        verify( view ).setContent( ClientRuntimeStrategy.convert( processConfig.getRuntimeStrategy(), translationService ).getValue( translationService ),
+        verify( view ).setContent( ClientRuntimeStrategy.PER_CASE.getValue( translationService ),
                                    processConfig.getKBase(),
                                    processConfig.getKSession(),
                                    ClientMergeMode.convert( processConfig.getMergeMode(), translationService ).getValue( translationService ) );

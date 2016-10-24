@@ -158,6 +158,7 @@ public class ProcessConfigView extends Composite
     public void clear() {
         kbase.setText( "" );
         ksession.setText( "" );
+        runtimeStrategy.setText( presenter.getRuntimeStrategies().get( 0 ) );
     }
 
     @Override

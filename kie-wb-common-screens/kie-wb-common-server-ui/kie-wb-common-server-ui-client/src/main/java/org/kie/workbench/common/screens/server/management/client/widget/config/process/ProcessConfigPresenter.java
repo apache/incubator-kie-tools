@@ -102,7 +102,7 @@ public class ProcessConfigPresenter {
     }
 
     private void setupView( final ProcessConfig processConfig ) {
-        this.view.setContent( ClientRuntimeStrategy.convert( processConfig.getRuntimeStrategy(), view.getTranslationService() ).getValue( view.getTranslationService() ),
+        this.view.setContent( ClientRuntimeStrategy.valueOf( processConfig.getRuntimeStrategy() ).getValue( view.getTranslationService() ),
                               processConfig.getKBase(),
                               processConfig.getKSession(),
                               ClientMergeMode.convert( processConfig.getMergeMode(), view.getTranslationService() ).getValue( view.getTranslationService() ) );
