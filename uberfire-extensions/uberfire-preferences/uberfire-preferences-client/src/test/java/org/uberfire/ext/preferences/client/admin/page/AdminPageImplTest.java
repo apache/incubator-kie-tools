@@ -16,53 +16,148 @@
 
 package org.uberfire.ext.preferences.client.admin.page;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
+import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class AdminPageImplTest {
+
+    private PlaceManager placeManager;
 
     private AdminPageImpl adminPage;
 
     @Before
     public void setup() {
-        adminPage = new AdminPageImpl();
+        placeManager = mock( PlaceManager.class );
+        adminPage = new AdminPageImpl( placeManager );
     }
 
     @Test
-    public void addItemTest() {
-        adminPage.addTool( "title1", "iconCss1", "category1", () -> {
-        } );
-        adminPage.addTool( "title2", "iconCss2", "category1", () -> {
-        } );
-        adminPage.addTool( "title3", "iconCss3", "category2", () -> {
-        } );
-
-        final Map<String, List<AdminTool>> toolsByCategory = adminPage.getToolsByCategory();
-
-        assertNotNull( toolsByCategory );
-        assertEquals( 2, toolsByCategory.size() );
-
-        final List<AdminTool> category1Shortcuts = toolsByCategory.get( "category1" );
-        assertEquals( 2, category1Shortcuts.size() );
-        assertEquals( "title1", category1Shortcuts.get( 0 ).getTitle() );
-        assertEquals( "iconCss1", category1Shortcuts.get( 0 ).getIconCss() );
-        assertEquals( "title2", category1Shortcuts.get( 1 ).getTitle() );
-        assertEquals( "iconCss2", category1Shortcuts.get( 1 ).getIconCss() );
-
-        final List<AdminTool> category2Shortcuts = toolsByCategory.get( "category2" );
-        assertEquals( 1, category2Shortcuts.size() );
-        assertEquals( "title3", category2Shortcuts.get( 0 ).getTitle() );
-        assertEquals( "iconCss3", category2Shortcuts.get( 0 ).getIconCss() );
+    public void addValidScreen() {
+        adminPage.addScreen( "screen", "title" );
     }
 
     @Test(expected = RuntimeException.class)
-    public void addItemWithNullCategoryTest() {
-        adminPage.addTool( "title", "iconCss", null, () -> {
+    public void addScreenWithNullIdentifierTest() {
+        adminPage.addScreen( null, "title" );
+    }
+
+    @Test
+    public void addToolTest() {
+        adminPage.addScreen( "screen1", "Screen 1" );
+        adminPage.addScreen( "screen2", "Screen 2" );
+
+        adminPage.addTool( "screen1", "title1", "iconCss1", "category1", () -> {
         } );
+        adminPage.addTool( "screen1", "title2", "iconCss2", "category1", () -> {
+        } );
+        adminPage.addTool( "screen1", "title3", "iconCss3", "category2", () -> {
+        } );
+        adminPage.addTool( "screen2", "title4", "iconCss4", "category3", () -> {
+        } );
+
+        final Map<String, List<AdminTool>> toolsByCategory1 = adminPage.getToolsByCategory( "screen1" );
+
+        assertNotNull( toolsByCategory1 );
+        assertEquals( 2, toolsByCategory1.size() );
+
+        final List<AdminTool> category1Tools = toolsByCategory1.get( "category1" );
+        assertEquals( 2, category1Tools.size() );
+        assertEquals( "title1", category1Tools.get( 0 ).getTitle() );
+        assertEquals( "iconCss1", category1Tools.get( 0 ).getIconCss() );
+        assertEquals( "title2", category1Tools.get( 1 ).getTitle() );
+        assertEquals( "iconCss2", category1Tools.get( 1 ).getIconCss() );
+
+        final List<AdminTool> category2Tools = toolsByCategory1.get( "category2" );
+        assertEquals( 1, category2Tools.size() );
+        assertEquals( "title3", category2Tools.get( 0 ).getTitle() );
+        assertEquals( "iconCss3", category2Tools.get( 0 ).getIconCss() );
+
+        final Map<String, List<AdminTool>> toolsByCategory2 = adminPage.getToolsByCategory( "screen2" );
+
+        assertNotNull( toolsByCategory2 );
+        assertEquals( 1, toolsByCategory2.size() );
+
+        final List<AdminTool> category3Tools = toolsByCategory2.get( "category3" );
+        assertEquals( 1, category3Tools.size() );
+        assertEquals( "title4", category3Tools.get( 0 ).getTitle() );
+        assertEquals( "iconCss4", category3Tools.get( 0 ).getIconCss() );
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void addToolWithNullScreenTest() {
+        adminPage.addTool( null, "title", "iconCss", null, () -> {
+        } );
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void addToolWithNullCategoryTest() {
+        adminPage.addTool( "screen", "title", "iconCss", null, () -> {
+        } );
+    }
+
+    @Test
+    public void addPreferenceTest() {
+
+        adminPage.addScreen( "screen1", "Screen 1" );
+        adminPage.addPreference( "screen1", "MyPreference", "My Preference", "fa-map", "category1", null );
+
+        final Map<String, List<AdminTool>> toolsByCategory1 = adminPage.getToolsByCategory( "screen1" );
+
+        assertNotNull( toolsByCategory1 );
+        assertEquals( 1, toolsByCategory1.size() );
+
+        final List<AdminTool> category1Tools = toolsByCategory1.get( "category1" );
+        assertEquals( 1, category1Tools.size() );
+        assertEquals( "My Preference", category1Tools.get( 0 ).getTitle() );
+        assertEquals( "fa-map", category1Tools.get( 0 ).getIconCss() );
+
+        Map<String, String> params = new HashMap<>();
+        params.put( "identifier", "MyPreference" );
+        params.put( "title", "My Preference" );
+        params.put( "screen", "screen1" );
+
+        category1Tools.get( 0 ).getOnClickCommand().execute();
+
+        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER, params ) ) );
+    }
+
+    @Test
+    public void addPreferenceWithCustomScopeResolutionStrategyParameterTest() {
+        Map<String, String> params = new HashMap<>();
+        params.put( "myParamKey", "myParamValue" );
+
+        adminPage.addScreen( "screen1", "Screen 1" );
+        adminPage.addPreference( "screen1", "MyPreference", "My Preference", "fa-map", "category1", params );
+
+        final Map<String, List<AdminTool>> toolsByCategory1 = adminPage.getToolsByCategory( "screen1" );
+
+        assertNotNull( toolsByCategory1 );
+        assertEquals( 1, toolsByCategory1.size() );
+
+        final List<AdminTool> category1Tools = toolsByCategory1.get( "category1" );
+        assertEquals( 1, category1Tools.size() );
+        assertEquals( "My Preference", category1Tools.get( 0 ).getTitle() );
+        assertEquals( "fa-map", category1Tools.get( 0 ).getIconCss() );
+
+        params.put( "customScopeResolutionStrategy", "true" );
+        params.put( "identifier", "MyPreference" );
+        params.put( "title", "My Preference" );
+        params.put( "screen", "screen1" );
+
+        category1Tools.get( 0 ).getOnClickCommand().execute();
+
+        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER, params ) ) );
     }
 }

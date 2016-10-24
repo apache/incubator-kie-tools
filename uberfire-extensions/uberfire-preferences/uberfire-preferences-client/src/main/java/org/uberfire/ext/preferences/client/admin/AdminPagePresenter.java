@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.preferences.client.admin;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -27,6 +26,8 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.preferences.client.admin.category.AdminPageCategoryPresenter;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @WorkbenchScreen(identifier = AdminPagePresenter.IDENTIFIER)
@@ -49,6 +50,8 @@ public class AdminPagePresenter {
 
     private final Event<NotificationEvent> notification;
 
+    private String screen;
+
     @Inject
     public AdminPagePresenter( final View view,
                                final AdminPage adminPage,
@@ -60,11 +63,17 @@ public class AdminPagePresenter {
         this.notification = notification;
     }
 
-    @PostConstruct
-    public void init() {
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
+        init( placeRequest.getParameter( "screen", null ) );
+    }
+
+    public void init( final String screen ) {
+        this.screen = screen;
+
         view.init( this );
 
-        adminPage.getToolsByCategory().forEach( ( category, adminTools ) -> {
+        adminPage.getToolsByCategory( screen ).forEach( ( category, adminTools ) -> {
             AdminPageCategoryPresenter categoryPresenter = categoryPresenterProvider.get();
             categoryPresenter.setup( adminTools );
             view.add( categoryPresenter.getView() );
@@ -79,5 +88,13 @@ public class AdminPagePresenter {
     @WorkbenchPartView
     public View getView() {
         return view;
+    }
+
+    public AdminPage getAdminPage() {
+        return adminPage;
+    }
+
+    public String getScreen() {
+        return screen;
     }
 }

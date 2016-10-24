@@ -40,6 +40,8 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
 
     private PreferenceHierarchyElement<?> hierarchyElement;
 
+    private int level;
+
     @Inject
     public TreeHierarchyLeafItemPresenter( final View view,
                                            final Event<HierarchyItemSelectedEvent> hierarchyItemSelectedEvent ) {
@@ -48,8 +50,10 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
     }
 
     @Override
-    public <T> void init( final PreferenceHierarchyElement<T> preference ) {
+    public <T> void init( final PreferenceHierarchyElement<T> preference,
+                          final int level ) {
         hierarchyElement = preference;
+        this.level = level;
         view.init( this );
     }
 
@@ -76,5 +80,9 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
 
     public PreferenceHierarchyElement<?> getHierarchyElement() {
         return hierarchyElement;
+    }
+
+    public int getLevel() {
+        return level;
     }
 }

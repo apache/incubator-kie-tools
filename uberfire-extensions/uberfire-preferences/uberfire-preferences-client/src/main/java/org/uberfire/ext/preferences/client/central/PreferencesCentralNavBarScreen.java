@@ -16,10 +16,13 @@
 
 package org.uberfire.ext.preferences.client.central;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.uberfire.annotations.Customizable;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -27,7 +30,9 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyStructurePresenter;
 import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyStructureView;
 import org.uberfire.ext.preferences.client.central.tree.TreeView;
+import org.uberfire.ext.preferences.shared.CustomPreferenceScopeResolutionStrategyInfoFactory;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanServerStore;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -44,19 +49,40 @@ public class PreferencesCentralNavBarScreen {
 
     private final Event<NotificationEvent> notification;
 
+    private final CustomPreferenceScopeResolutionStrategyInfoFactory scopeResolutionStrategyInfoFactory;
+
     @Inject
     public PreferencesCentralNavBarScreen( @TreeView final HierarchyStructurePresenter treePresenter,
                                            final Caller<PreferenceBeanServerStore> preferenceBeanServerStoreCaller,
-                                           final Event<NotificationEvent> notification ) {
+                                           final Event<NotificationEvent> notification,
+                                           @Customizable final CustomPreferenceScopeResolutionStrategyInfoFactory scopeResolutionStrategyInfoFactory ) {
         this.hierarchyStructurePresenter = treePresenter;
         this.preferenceBeanServerStoreCaller = preferenceBeanServerStoreCaller;
         this.notification = notification;
+        this.scopeResolutionStrategyInfoFactory = scopeResolutionStrategyInfoFactory;
     }
 
     @OnStartup
     public void onStartup( final PlaceRequest placeRequest ) {
+
         final String preferenceIdentifier = placeRequest.getParameter( "identifier", null );
-        hierarchyStructurePresenter.init( preferenceIdentifier );
+        final String customScopeResolutionStrategy = placeRequest.getParameter( "customScopeResolutionStrategy", "false" );
+
+        if ( Boolean.valueOf( customScopeResolutionStrategy ) != null ) {
+            final Map<String, String> params = new HashMap<>( placeRequest.getParameters() );
+            cleanParametersToCreateScopeResolutionStrategy( params );
+            final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = scopeResolutionStrategyInfoFactory.create( params );
+            hierarchyStructurePresenter.init( preferenceIdentifier, scopeResolutionStrategyInfo );
+        } else {
+            hierarchyStructurePresenter.init( preferenceIdentifier );
+        }
+    }
+
+    private void cleanParametersToCreateScopeResolutionStrategy( final Map<String, String> params ) {
+        params.remove( "identifier" );
+        params.remove( "title" );
+        params.remove( "screen" );
+        params.remove( "customScopeResolutionStrategy" );
     }
 
     @WorkbenchPartTitle

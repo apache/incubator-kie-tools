@@ -76,6 +76,7 @@ public class PreferencesCentralPerspective {
     PerspectiveDefinition createPerspectiveDefinition() {
         PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         perspective.setName( "Preferences" );
+
         return perspective;
     }
 

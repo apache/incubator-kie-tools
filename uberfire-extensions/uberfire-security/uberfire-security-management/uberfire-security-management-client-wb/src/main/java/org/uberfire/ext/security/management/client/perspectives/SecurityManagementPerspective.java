@@ -24,26 +24,52 @@ import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWorkbenchConstants;
 import org.uberfire.ext.security.management.client.screens.explorer.SecurityExplorerScreen;
 import org.uberfire.ext.security.management.client.screens.home.SecurityManagementHomeScreen;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "SecurityManagementPerspective", isTransient = true)
 public class SecurityManagementPerspective {
 
+    private PerspectiveDefinition perspective;
+
     @Perspective
-    public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        perspective.setName(UsersManagementWorkbenchConstants.INSTANCE.securityManagement());
-        perspective.getRoot().addPart(SecurityManagementHomeScreen.SCREEN_ID);
-        final PanelDefinition west = new PanelDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
-        west.setWidth(400);
-        west.setMinWidth(400);
-        west.addPart(SecurityExplorerScreen.SCREEN_ID);
-        perspective.getRoot().insertChild(CompassPosition.WEST, west);
+    public PerspectiveDefinition getPerspective() {
+        if ( perspective == null ) {
+            return createPerspectiveDefinition();
+        }
+
         return perspective;
+    }
+
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
+        perspective = createPerspectiveDefinition();
+        configurePerspective( placeRequest );
+    }
+
+    PerspectiveDefinition createPerspectiveDefinition() {
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        perspective.setName( UsersManagementWorkbenchConstants.INSTANCE.securityManagement() );
+
+        return perspective;
+    }
+
+    void configurePerspective( final PlaceRequest placeRequest ) {
+        perspective.getRoot().addPart( SecurityManagementHomeScreen.SCREEN_ID );
+
+        final PanelDefinition west = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        west.setWidth( 400 );
+        west.setMinWidth( 400 );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( SecurityExplorerScreen.SCREEN_ID,
+                                                                       placeRequest.getParameters() ) ) );
+        perspective.getRoot().insertChild( CompassPosition.WEST, west );
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
  * Service to manage preference beans.
@@ -38,12 +39,33 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
     <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load( T emptyPortablePreference );
 
     /**
+     * Loads all preference bean properties, following the passed scope resolution strategy.
+     * @param emptyPortablePreference Newly created portable instance for the preference bean.
+     * @param scopeResolutionStrategyInfo Custom scope resolution strategy to follow.
+     * @param <U> Preference bean type.
+     * @param <T> Preference bean generated portable type.
+     * @return A loaded preference bean portable instance.
+     */
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load( T emptyPortablePreference,
+                                                                               PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
+
+    /**
      * Saves all preference data.
      * @param portablePreference Preference instance to be saved.
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
     <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( T portablePreference );
+
+    /**
+     * Saves all preference data, following the passed scope resolution strategy.
+     * @param portablePreference Preference instance to be saved.
+     * @param scopeResolutionStrategyInfo Custom scope resolution strategy to follow.
+     * @param <U> Preference bean type.
+     * @param <T> Preference bean generated portable type.
+     */
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( T portablePreference,
+                                                                                  PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
 
     /**
      * Saves all preference data, in the last scope of the hierarchy.
@@ -58,6 +80,14 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      * @param portablePreferences Preference instances to be saved.
      */
     void save( Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences );
+
+    /**
+     * Saves all preferences passed, following the passed scope resolution strategy.
+     * @param portablePreferences Preference instances to be saved.
+     * @param scopeResolutionStrategyInfo Custom scope resolution strategy to follow.
+     */
+    void save( Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+               PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
 
     /**
      * Builds a tree hierarchy that begins with the root preference bean which identifier was passed and

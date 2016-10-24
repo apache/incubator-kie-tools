@@ -27,6 +27,7 @@ import org.uberfire.ext.preferences.shared.bean.BasePreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanServerStore;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanStore;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -68,6 +69,30 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanStore {
     }
 
     @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void load( final T emptyPortablePreference,
+                                                                                         final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                                                         final ParameterizedCommand<T> successCallback,
+                                                                                         final ParameterizedCommand<Throwable> errorCallback ) {
+        store.call( new RemoteCallback<T>() {
+            @Override
+            public void callback( final T portablePreference ) {
+                if ( successCallback != null ) {
+                    successCallback.execute( portablePreference );
+                }
+            }
+        }, new ErrorCallback<Throwable>() {
+            @Override
+            public boolean error( final Throwable throwable,
+                                  final Throwable throwable2 ) {
+                if ( errorCallback != null ) {
+                    errorCallback.execute( throwable );
+                }
+                return false;
+            }
+        } ).load( emptyPortablePreference, scopeResolutionStrategyInfo );
+    }
+
+    @Override
     public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference,
                                                                                          final Command successCallback,
                                                                                          final ParameterizedCommand<Throwable> errorCallback ) {
@@ -82,6 +107,24 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanStore {
                         }
                         return false;
                     } ).save( portablePreference );
+    }
+
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference,
+                                                                                         final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                                                         final Command successCallback,
+                                                                                         final ParameterizedCommand<Throwable> errorCallback ) {
+        store.call( voidReturn -> {
+                        if ( successCallback != null ) {
+                            successCallback.execute();
+                        }
+                    },
+                    ( message, throwable ) -> {
+                        if ( errorCallback != null ) {
+                            errorCallback.execute( throwable );
+                        }
+                        return false;
+                    } ).save( portablePreference, scopeResolutionStrategyInfo );
     }
 
     @Override
@@ -116,5 +159,23 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanStore {
                         }
                         return false;
                     } ).save( portablePreferences );
+    }
+
+    @Override
+    public void save( final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+                      final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                      final Command successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        store.call( voidReturn -> {
+                        if ( successCallback != null ) {
+                            successCallback.execute();
+                        }
+                    },
+                    ( message, throwable ) -> {
+                        if ( errorCallback != null ) {
+                            errorCallback.execute( throwable );
+                        }
+                        return false;
+                    } ).save( portablePreferences, scopeResolutionStrategyInfo );
     }
 }

@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.wires.client;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.inject.Inject;
 
 import com.google.gwt.animation.client.Animation;
@@ -62,13 +64,25 @@ public class ShowcaseEntryPoint {
     }
 
     private void setupSettings() {
-        adminPage.addTool( "Apps",
+        adminPage.addScreen( "root", "Wires Admin Tools" );
+
+        adminPage.addTool( "root",
+                           "Apps",
                            "fa-map",
-                           "Other",
-                           () -> placeManager.goTo( new DefaultPlaceRequest( "AppsPerspective" ) ),
-                           ( counterCommand ) -> counterCommand.execute( 0 ) );
-        adminPage.addPreference( "MyPreference", "My Preference", "fa-gear", "Preferences" );
-        adminPage.addPreference( "MySharedPreference2", "My Shared Preference 2", "fa-pie-chart", "Preferences" );
+                           "General",
+                           () -> placeManager.goTo( new DefaultPlaceRequest( "AppsPerspective" ) ) );
+
+        adminPage.addPreference( "root",
+                                 "MyPreference",
+                                 "My Preferences",
+                                 "fa-gear",
+                                 "Preferences" );
+
+        adminPage.addPreference( "root",
+                                 "MySharedPreference",
+                                 "Shared Preferences",
+                                 "fa-share-alt",
+                                 "Preferences" );
     }
 
     private void setupMenu() {
@@ -115,7 +129,9 @@ public class ShowcaseEntryPoint {
         } ).endMenu().newTopLevelMenu( "Admin" ).respondsWith( new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER ) );
+                Map<String, String> params = new HashMap<>();
+                params.put( "screen", "root" );
+                placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
             }
         } ).endMenu().newTopLevelMenu( "Logout" ).position( MenuPosition.RIGHT ).respondsWith( new Command() {
             @Override

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-.preference-tree-leaf-item {
-    margin-left: 27px;
-}
-
 .preference-tree-leaf-item label {
-    padding: 1px 4px;
+    padding: 4px;
+    margin: 0;
+    cursor: pointer;
 }
 
-.preference-tree-leaf-item label.selected {
-    padding: 0 3px;
-    border: #777 dotted 1px;
-    background-color: #EEE;
+.preference-tree-leaf-item-node {
+    margin-right: 1px;
+}
+
+.preference-tree-leaf-item .selected {
+    background-color: #1699d3;
+    color: #ffffff;
 }

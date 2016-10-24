@@ -27,6 +27,9 @@ import org.uberfire.mvp.ParameterizedCommand;
  */
 public interface AdminPage {
 
+    void addScreen( String identifier,
+                    String title );
+
     /**
      * Adds a new admin tool to the admin page (with a counter).
      * @param title Title that will be displayed on the tool accessor.
@@ -36,7 +39,8 @@ public interface AdminPage {
      * @param counterCommand {@link ParameterizedCommand} that calls its {@link ParameterizedCommand} parameter
      * passing the counter.
      */
-    void addTool( String title,
+    void addTool( String screen,
+                  String title,
                   String iconCss,
                   String category,
                   Command command,
@@ -49,7 +53,8 @@ public interface AdminPage {
      * @param category Defines the group inside which the shortcut will be.
      * @param command Command to be executed when the shortcut is accessed.
      */
-    void addTool( String title,
+    void addTool( String screen,
+                  String title,
                   String iconCss,
                   String category,
                   Command command );
@@ -60,14 +65,24 @@ public interface AdminPage {
      * @param iconCss CSS class related to the shortcut icon.
      * @param category Defines the group inside which the shortcut will be.
      */
-    void addPreference( final String identifier,
-                        final String title,
-                        final String iconCss,
-                        final String category );
+    void addPreference( String screen,
+                        String identifier,
+                        String title,
+                        String iconCss,
+                        String category );
+
+    void addPreference( String screen,
+                        String identifier,
+                        String title,
+                        String iconCss,
+                        String category,
+                        Map<String, String> customScopeResolutionStrategyParams );
 
     /**
      * Returns all added admin tools, grouped by their category.
      * @return A map containing a list of admin tools by each category.
      */
-    Map<String, List<AdminTool>> getToolsByCategory();
+    Map<String, List<AdminTool>> getToolsByCategory( String screen );
+
+    String getScreenTitle( String screen );
 }

@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
@@ -42,6 +41,7 @@ import org.uberfire.ext.preferences.shared.bean.Preference;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanServerStore;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanStore;
 import org.uberfire.ext.preferences.shared.bean.PreferenceHierarchyElement;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -49,7 +49,6 @@ import org.uberfire.mvp.ParameterizedCommand;
  * Backend implementation for {@link PreferenceBeanStore}.
  */
 @Service
-@ApplicationScoped
 public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     private static final AnnotationLiteral<PortablePreference> portablePreferenceAnnotation = new AnnotationLiteral<PortablePreference>() {
@@ -77,11 +76,18 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     @Override
     public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load( final T emptyPortablePreference ) {
+        return load( emptyPortablePreference, defaultScopeResolutionStrategy.getInfo() );
+    }
+
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load( final T emptyPortablePreference,
+                                                                                      final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
         Class<U> clazz = emptyPortablePreference.getPojoClass();
-        T portablePreference = preferenceStore.get( emptyPortablePreference.identifier() );
+        T portablePreference = preferenceStore.get( scopeResolutionStrategyInfo,
+                                                    emptyPortablePreference.identifier() );
 
         try {
-            return load( clazz, portablePreference );
+            return load( clazz, portablePreference, scopeResolutionStrategyInfo );
         } catch ( IllegalAccessException e ) {
             throw new RuntimeException( e );
         }
@@ -91,9 +97,21 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void load( final T emptyPortablePreference,
                                                                                          final ParameterizedCommand<T> successCallback,
                                                                                          final ParameterizedCommand<Throwable> errorCallback ) {
+        load( emptyPortablePreference,
+              defaultScopeResolutionStrategy.getInfo(),
+              successCallback,
+              errorCallback );
+    }
+
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void load( final T emptyPortablePreference,
+                                                                                         final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                                                         final ParameterizedCommand<T> successCallback,
+                                                                                         final ParameterizedCommand<Throwable> errorCallback ) {
         T loadedPreference = null;
         try {
-            loadedPreference = load( emptyPortablePreference );
+            loadedPreference = load( emptyPortablePreference,
+                                     scopeResolutionStrategyInfo );
         } catch ( Exception e ) {
             if ( errorCallback != null ) {
                 errorCallback.execute( e );
@@ -107,15 +125,87 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     @Override
     public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference ) {
-        save( portablePreference, defaultScopeResolutionStrategy.getInfo().defaultScope() );
+        save( portablePreference, defaultScopeResolutionStrategy.getInfo() );
+    }
+
+    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference,
+                                                                                          final PreferenceScope scope ) {
+        try {
+            Class<U> clazz = portablePreference.getPojoClass();
+            save( clazz, portablePreference, scope );
+            preferenceStore.put( scope, portablePreference.identifier(), portablePreference );
+        } catch ( IllegalAccessException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference,
+                                                                                         final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
+        save( portablePreference, scopeResolutionStrategyInfo.defaultScope() );
     }
 
     @Override
     public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference,
                                                                                          final Command successCallback,
                                                                                          final ParameterizedCommand<Throwable> errorCallback ) {
+        save( portablePreference,
+              defaultScopeResolutionStrategy.getInfo(),
+              successCallback,
+              errorCallback );
+    }
+
+    @Override
+    public <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference,
+                                                                                         final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                                                         final Command successCallback,
+                                                                                         final ParameterizedCommand<Throwable> errorCallback ) {
         try {
-            save( portablePreference );
+            save( portablePreference,
+                  scopeResolutionStrategyInfo );
+        } catch ( Exception e ) {
+            if ( errorCallback != null ) {
+                errorCallback.execute( e );
+            }
+        }
+
+        if ( successCallback != null ) {
+            successCallback.execute();
+        }
+    }
+
+    @Override
+    public void save( final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences ) {
+        save( portablePreferences,
+              defaultScopeResolutionStrategy.getInfo() );
+    }
+
+    @Override
+    public void save( final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+                      final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
+        for ( BasePreferencePortable<? extends BasePreference<?>> portablePreference : portablePreferences ) {
+            saveOne( portablePreference, scopeResolutionStrategyInfo.defaultScope() );
+        }
+    }
+
+    @Override
+    public void save( final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+                      final Command successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        save( portablePreferences,
+              defaultScopeResolutionStrategy.getInfo(),
+              successCallback,
+              errorCallback );
+    }
+
+    @Override
+    public void save( final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+                      final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                      final Command successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        try {
+            save( portablePreferences,
+                  scopeResolutionStrategyInfo );
         } catch ( Exception e ) {
             if ( errorCallback != null ) {
                 errorCallback.execute( e );
@@ -154,30 +244,6 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     }
 
     @Override
-    public void save( final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences ) {
-        for ( BasePreferencePortable<? extends BasePreference<?>> portablePreference : portablePreferences ) {
-            saveOne( portablePreference );
-        }
-    }
-
-    @Override
-    public void save( final Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
-                      final Command successCallback,
-                      final ParameterizedCommand<Throwable> errorCallback ) {
-        try {
-            save( portablePreferences );
-        } catch ( Exception e ) {
-            if ( errorCallback != null ) {
-                errorCallback.execute( e );
-            }
-        }
-
-        if ( successCallback != null ) {
-            successCallback.execute();
-        }
-    }
-
-    @Override
     public PreferenceHierarchyElement<?> buildHierarchyStructureForPreference( String identifier ) {
         BasePreferencePortable preference = getPortablePreferenceByIdentifier( identifier );
         preference = load( preference );
@@ -192,7 +258,8 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     }
 
     private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load( final Class<U> clazz,
-                                                                                       T portablePreference ) throws IllegalAccessException {
+                                                                                       T portablePreference,
+                                                                                       final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) throws IllegalAccessException {
         if ( portablePreference == null ) {
             portablePreference = lookupPortablePreference( clazz );
         }
@@ -207,10 +274,10 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
                     field.setAccessible( true );
 
                     if ( shared ) {
-                        BasePreferencePortable<?> loadedSharedProperty = loadSharedPreference( field );
+                        BasePreferencePortable<?> loadedSharedProperty = loadSharedPreference( field, scopeResolutionStrategyInfo );
                         field.set( portablePreference, loadedSharedProperty );
                     } else {
-                        final BasePreferencePortable<?> subPreferenceValue = loadSubPreferenceValue( portablePreference, field );
+                        final BasePreferencePortable<?> subPreferenceValue = loadSubPreferenceValue( portablePreference, field, scopeResolutionStrategyInfo );
                         field.set( portablePreference, subPreferenceValue );
                     }
                 }
@@ -220,14 +287,16 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         return portablePreference;
     }
 
-    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T loadSharedPreference( final Field field ) {
+    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T loadSharedPreference( final Field field,
+                                                                                                       final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
         final Class<U> propertyType = (Class<U>) field.getType();
         T loadedPreference;
 
         try {
             T emptyPortablePreference = lookupPortablePreference( propertyType );
-            T portablePreference = preferenceStore.get( emptyPortablePreference.identifier() );
-            loadedPreference = load( propertyType, portablePreference );
+            T portablePreference = preferenceStore.get( scopeResolutionStrategyInfo,
+                                                        emptyPortablePreference.identifier() );
+            loadedPreference = load( propertyType, portablePreference, scopeResolutionStrategyInfo );
         } catch ( Exception e ) {
             throw new RuntimeException( e );
         }
@@ -236,21 +305,11 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     }
 
     private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T loadSubPreferenceValue( final Object portablePreference,
-                                                                                                         final Field field ) throws IllegalAccessException {
+                                                                                                         final Field field,
+                                                                                                         final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) throws IllegalAccessException {
         final Class<U> propertyType = (Class<U>) field.getType();
         final T subPreferenceValue = (T) field.get( portablePreference );
-        return load( propertyType, subPreferenceValue );
-    }
-
-    private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final T portablePreference,
-                                                                                          final PreferenceScope scope ) {
-        try {
-            Class<U> clazz = portablePreference.getPojoClass();
-            save( clazz, portablePreference, scope );
-            preferenceStore.put( scope, portablePreference.identifier(), portablePreference );
-        } catch ( IllegalAccessException e ) {
-            throw new RuntimeException( e );
-        }
+        return load( propertyType, subPreferenceValue, scopeResolutionStrategyInfo );
     }
 
     private <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( final Class<U> clazz,
@@ -290,11 +349,12 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         save( propertyType, subPreferenceValue, scope );
     }
 
-    private <T extends BasePreference<T>> void saveOne( final BasePreferencePortable<?> portablePreference ) {
+    private <T extends BasePreference<T>> void saveOne( final BasePreferencePortable<?> portablePreference,
+                                                        final PreferenceScope scope ) {
         Class<T> clazz = (Class<T>) portablePreference.getPojoClass();
         try {
-            save( clazz, (BasePreferencePortable<T>) portablePreference, defaultScopeResolutionStrategy.getInfo().defaultScope() );
-            preferenceStore.put( defaultScopeResolutionStrategy.getInfo().defaultScope(), portablePreference.identifier(), portablePreference );
+            save( clazz, (BasePreferencePortable<T>) portablePreference, scope );
+            preferenceStore.put( scope, portablePreference.identifier(), portablePreference );
         } catch ( IllegalAccessException e ) {
             throw new RuntimeException( e );
         }

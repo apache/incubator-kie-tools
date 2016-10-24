@@ -50,6 +50,8 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
 
     private PreferenceHierarchyElement<?> hierarchyElement;
 
+    private int level;
+
     @Inject
     public TreeHierarchyInternalItemPresenter( final View view,
                                                final ManagedInstance<TreeHierarchyInternalItemPresenter> treeHierarchyInternalItemPresenterProvider,
@@ -62,8 +64,10 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
     }
 
     @Override
-    public <T> void init( final PreferenceHierarchyElement<T> preference ) {
+    public <T> void init( final PreferenceHierarchyElement<T> preference,
+                          final int level ) {
         hierarchyElement = preference;
+        this.level = level;
 
         hierarchyItems = new ArrayList<>();
 
@@ -76,7 +80,7 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
                 hierarchyItem = treeHierarchyLeafItemPresenterProvider.get();
             }
 
-            hierarchyItem.init( child );
+            hierarchyItem.init( child, level + 1 );
             hierarchyItems.add( hierarchyItem );
         } );
 
@@ -110,5 +114,9 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
 
     public List<HierarchyItemPresenter> getHierarchyItems() {
         return hierarchyItems;
+    }
+
+    public int getLevel() {
+        return level;
     }
 }

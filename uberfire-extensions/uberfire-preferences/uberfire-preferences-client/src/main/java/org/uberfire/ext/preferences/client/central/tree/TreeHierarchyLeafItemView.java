@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.DOM;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -38,12 +39,18 @@ public class TreeHierarchyLeafItemView implements IsElement,
     @Inject
     private TranslationService translationService;
 
+    @Inject
+    @DataField("preference-tree-leaf-item-node")
+    Div treeNode;
+
     @DataField("preference-tree-leaf-item-label")
     Element label = DOM.createLabel();
 
     @Override
     public void init( final TreeHierarchyLeafItemPresenter presenter ) {
         this.presenter = presenter;
+
+        treeNode.getStyle().setProperty( "padding-left", presenter.getLevel() * 27 + 24 + "px" );
 
         final String preferenceLabel = getPreferenceLabel( presenter.getHierarchyElement().getBundleKey() );
         label.setInnerHTML( preferenceLabel );
@@ -55,7 +62,7 @@ public class TreeHierarchyLeafItemView implements IsElement,
 
     @Override
     public void deselect() {
-        label.removeClassName( "selected" );
+        treeNode.getClassList().remove( "selected" );
     }
 
     @EventHandler("preference-tree-leaf-item-label")
@@ -67,7 +74,7 @@ public class TreeHierarchyLeafItemView implements IsElement,
     public void select() {
         if ( !label.hasClassName( "selected" ) ) {
             presenter.select();
-            label.addClassName( "selected" );
+            treeNode.getClassList().add( "selected" );
         }
     }
 }

@@ -17,7 +17,7 @@
 package org.uberfire.ext.preferences.backend;
 
 import java.lang.annotation.Annotation;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -30,7 +30,7 @@ import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
 import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
 import org.uberfire.ext.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
 
-@ApplicationScoped
+@Dependent
 public class PreferenceScopeResolutionStrategyProducer {
 
     @Inject

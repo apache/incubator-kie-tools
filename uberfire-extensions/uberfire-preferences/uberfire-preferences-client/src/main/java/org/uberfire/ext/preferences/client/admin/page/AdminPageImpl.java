@@ -18,12 +18,14 @@ package org.uberfire.ext.preferences.client.admin.page;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -33,7 +35,9 @@ public class AdminPageImpl implements AdminPage {
 
     private PlaceManager placeManager;
 
-    private Map<String, List<AdminTool>> toolsByCategory;
+    private Map<String, String> screenTitleByIdentifier;
+
+    private Map<String, Map<String, List<AdminTool>>> toolsByCategoryByScreen;
 
     public AdminPageImpl() {
         this( null );
@@ -42,18 +46,44 @@ public class AdminPageImpl implements AdminPage {
     @Inject
     public AdminPageImpl( final PlaceManager placeManager ) {
         this.placeManager = placeManager;
-
-        this.toolsByCategory = new HashMap<>();
+        this.toolsByCategoryByScreen = new HashMap<>();
+        this.screenTitleByIdentifier = new HashMap<>();
     }
 
     @Override
-    public void addTool( final String title,
+    public void addScreen( final String identifier,
+                           final String title ) {
+        if ( identifier == null || identifier.isEmpty() ) {
+            throw new RuntimeException( "The screen identifier must be not empty." );
+        }
+
+        screenTitleByIdentifier.put( identifier, title );
+    }
+
+    @Override
+    public void addTool( final String screen,
+                         final String title,
                          final String iconCss,
                          final String category,
                          final Command command,
                          final ParameterizedCommand<ParameterizedCommand<Integer>> counterCommand ) {
+        if ( screen == null || screen.isEmpty() ) {
+            throw new RuntimeException( "The screen identifier must be not empty." );
+        }
+
+        if ( screenTitleByIdentifier.get( screen ) == null ) {
+            throw new RuntimeException( "The screen must be added before it is used." );
+        }
+
         if ( category == null || category.isEmpty() ) {
-            throw new RuntimeException( "The category must be not empty." );
+            throw new RuntimeException( "The category identifier must be not empty." );
+        }
+
+        Map<String, List<AdminTool>> toolsByCategory = toolsByCategoryByScreen.get( screen );
+
+        if ( toolsByCategory == null ) {
+            toolsByCategory = new LinkedHashMap<>();
+            toolsByCategoryByScreen.put( screen, toolsByCategory );
         }
 
         List<AdminTool> tools = toolsByCategory.get( category );
@@ -68,35 +98,55 @@ public class AdminPageImpl implements AdminPage {
     }
 
     @Override
-    public void addTool( final String title,
+    public void addTool( final String screen,
+                         final String title,
                          final String iconCss,
                          final String category,
                          final Command command ) {
-        addTool( title, iconCss, category, command, null );
+        addTool( screen, title, iconCss, category, command, null );
     }
 
     @Override
-    public void addPreference( final String identifier,
+    public void addPreference( final String screen,
+                               final String identifier,
                                final String title,
                                final String iconCss,
                                final String category ) {
-        addTool( title,
-                 iconCss,
-                 category,
-                 () -> {
-                     Map<String, String> parameters = new HashMap<>();
-                     parameters.put( "identifier", identifier );
-                     parameters.put( "title", title );
-                     placeManager.goTo( new DefaultPlaceRequest( "PreferencesCentralPerspective", parameters ) );
-                 } );
+        addPreference( screen, identifier, title, iconCss, category, null );
     }
 
     @Override
-    public Map<String, List<AdminTool>> getToolsByCategory() {
-        toolsByCategory.forEach( ( category, tools ) -> {
-            tools.sort( ( o1, o2 ) -> o1.getTitle().compareTo( o2.getTitle() ) );
-        } );
+    public void addPreference( final String screen,
+                               final String identifier,
+                               final String title,
+                               final String iconCss,
+                               final String category,
+                               final Map<String, String> customScopeResolutionStrategyParams ) {
+        Map<String, String> parameters = new HashMap<>();
 
-        return this.toolsByCategory;
+        if ( customScopeResolutionStrategyParams != null && !customScopeResolutionStrategyParams.isEmpty() ) {
+            parameters.putAll( customScopeResolutionStrategyParams );
+            parameters.put( "customScopeResolutionStrategy", "true" );
+        }
+
+        parameters.put( "identifier", identifier );
+        parameters.put( "title", title );
+        parameters.put( "screen", screen );
+
+        addTool( screen,
+                 title,
+                 iconCss,
+                 category,
+                 () -> placeManager.goTo( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER, parameters ) ) );
+    }
+
+    @Override
+    public Map<String, List<AdminTool>> getToolsByCategory( final String screen ) {
+        return toolsByCategoryByScreen.get( screen );
+    }
+
+    @Override
+    public String getScreenTitle( final String screen ) {
+        return screenTitleByIdentifier.get( screen );
     }
 }

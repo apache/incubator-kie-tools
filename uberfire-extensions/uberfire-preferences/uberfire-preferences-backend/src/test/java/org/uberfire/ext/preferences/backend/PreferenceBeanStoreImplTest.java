@@ -75,15 +75,41 @@ public class PreferenceBeanStoreImplTest {
         final MyPreferencePortableGeneratedImpl loadedMyPreference = preferenceBeanStoreImpl.load( new MyPreferencePortableGeneratedImpl() );
         final MySharedPreference2PortableGeneratedImpl loadedMySharedPreference2 = preferenceBeanStoreImpl.load( new MySharedPreference2PortableGeneratedImpl() );
 
-        verify( preferenceStore, times( 3 ) ).get( anyString() );
+        verify( preferenceStore, times( 3 ) ).get( eq( scopeInfo ), anyString() );
 
-        verify( preferenceStore ).get( MyPreference.class.getSimpleName() );
-        verify( preferenceStore ).get( MySharedPreference.class.getSimpleName() );
-        verify( preferenceStore ).get( MySharedPreference2.class.getSimpleName() );
+        verify( preferenceStore ).get( scopeInfo, MyPreference.class.getSimpleName() );
+        verify( preferenceStore ).get( scopeInfo, MySharedPreference.class.getSimpleName() );
+        verify( preferenceStore ).get( scopeInfo, MySharedPreference2.class.getSimpleName() );
 
-        assertSame( myPreference, loadedMyPreference );
-        assertSame( mySharedPreference, loadedMyPreference.mySharedPreference );
-        assertSame( mySharedPreference2, loadedMySharedPreference2 );
+        assertEquals( myPreference, loadedMyPreference );
+        assertEquals( mySharedPreference, loadedMyPreference.mySharedPreference );
+        assertEquals( mySharedPreference2, loadedMySharedPreference2 );
+    }
+
+    @Test
+    public void loadWithCustomResolutionStrategyScopeTest() {
+        MyPreference myPreference = new MyPreferencePortableGeneratedImpl();
+        MySharedPreference mySharedPreference = new MySharedPreferencePortableGeneratedImpl();
+        MySharedPreference2 mySharedPreference2 = new MySharedPreference2PortableGeneratedImpl();
+
+        doReturn( myPreference ).when( preferenceStore ).get( MyPreference.class.getSimpleName() );
+        doReturn( mySharedPreference ).when( preferenceStore ).get( MySharedPreference.class.getSimpleName() );
+        doReturn( mySharedPreference2 ).when( preferenceStore ).get( MySharedPreference2.class.getSimpleName() );
+
+        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = new PreferenceScopeResolutionStrategyInfo( new ArrayList<>(), mock( PreferenceScope.class ) );
+
+        final MyPreferencePortableGeneratedImpl loadedMyPreference = preferenceBeanStoreImpl.load( new MyPreferencePortableGeneratedImpl(), scopeResolutionStrategyInfo );
+        final MySharedPreference2PortableGeneratedImpl loadedMySharedPreference2 = preferenceBeanStoreImpl.load( new MySharedPreference2PortableGeneratedImpl(), scopeResolutionStrategyInfo );
+
+        verify( preferenceStore, times( 3 ) ).get( eq( scopeResolutionStrategyInfo ), anyString() );
+
+        verify( preferenceStore ).get( scopeResolutionStrategyInfo, MyPreference.class.getSimpleName() );
+        verify( preferenceStore ).get( scopeResolutionStrategyInfo, MySharedPreference.class.getSimpleName() );
+        verify( preferenceStore ).get( scopeResolutionStrategyInfo, MySharedPreference2.class.getSimpleName() );
+
+        assertEquals( myPreference, loadedMyPreference );
+        assertEquals( mySharedPreference, loadedMyPreference.mySharedPreference );
+        assertEquals( mySharedPreference2, loadedMySharedPreference2 );
     }
 
     @Test
@@ -99,15 +125,18 @@ public class PreferenceBeanStoreImplTest {
     }
 
     @Test
-    public void saveDefaultValueTest() {
-        final MyPreferencePortableGeneratedImpl myPreference = new MyPreferencePortableGeneratedImpl();
+    public void saveWithCustomResolutionStrategyScopeTest() {
+        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = new PreferenceScopeResolutionStrategyInfo( new ArrayList<>(), mock( PreferenceScope.class ) );
 
-        preferenceBeanStoreImpl.saveDefaultValue( (MyPreferencePortableGeneratedImpl) myPreference.defaultValue( myPreference ) );
+        final MyPreferencePortableGeneratedImpl myPreference = preferenceBeanStoreImpl.load( new MyPreferencePortableGeneratedImpl(),
+                                                                                             scopeResolutionStrategyInfo );
 
-        verify( preferenceStore, times( 2 ) ).put( any( PreferenceScope.class ), anyString(), any( Object.class ) );
+        preferenceBeanStoreImpl.save( myPreference, scopeResolutionStrategyInfo );
 
-        verify( preferenceStore ).put( eq( lastScope ), eq( MyPreference.class.getSimpleName() ), eq( myPreference ) );
-        verify( preferenceStore ).put( eq( lastScope ), eq( MySharedPreference.class.getSimpleName() ), eq( myPreference.mySharedPreference ) );
+        verify( preferenceStore, times( 2 ) ).put( same( scopeResolutionStrategyInfo.defaultScope() ), anyString(), any( Object.class ) );
+
+        verify( preferenceStore ).put( same( scopeResolutionStrategyInfo.defaultScope() ), eq( MyPreference.class.getSimpleName() ), eq( myPreference ) );
+        verify( preferenceStore ).put( same( scopeResolutionStrategyInfo.defaultScope() ), eq( MySharedPreference.class.getSimpleName() ), eq( myPreference.mySharedPreference ) );
     }
 
     @Test
@@ -118,11 +147,40 @@ public class PreferenceBeanStoreImplTest {
 
         preferenceBeanStoreImpl.save( preferencesToSave );
 
-        verify( preferenceStore, times( 3 ) ).put( any( PreferenceScope.class ), anyString(), any( Object.class ) );
+        verify( preferenceStore, times( 3 ) ).put( eq( scopeInfo.defaultScope() ), anyString(), any( Object.class ) );
 
         verify( preferenceStore ).put( scopeInfo.defaultScope(), MyPreference.class.getSimpleName(), myPreference );
         verify( preferenceStore ).put( scopeInfo.defaultScope(), MySharedPreference.class.getSimpleName(), myPreference.mySharedPreference );
         verify( preferenceStore ).put( eq( scopeInfo.defaultScope() ), eq( MySharedPreference2.class.getSimpleName() ), same( mySharedPreference2 ) );
+    }
+
+    @Test
+    public void saveCollectionWithCustomResolutionStrategyScopeTest() {
+        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = new PreferenceScopeResolutionStrategyInfo( new ArrayList<>(), mock( PreferenceScope.class ) );
+
+        final List<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = getRootPortablePreferences();
+        final MyPreference myPreference = (MyPreference) preferencesToSave.get( 0 );
+        final MySharedPreference2 mySharedPreference2 = (MySharedPreference2) preferencesToSave.get( 1 );
+
+        preferenceBeanStoreImpl.save( preferencesToSave, scopeResolutionStrategyInfo );
+
+        verify( preferenceStore, times( 3 ) ).put( eq( scopeResolutionStrategyInfo.defaultScope() ), anyString(), any( Object.class ) );
+
+        verify( preferenceStore ).put( scopeResolutionStrategyInfo.defaultScope(), MyPreference.class.getSimpleName(), myPreference );
+        verify( preferenceStore ).put( scopeResolutionStrategyInfo.defaultScope(), MySharedPreference.class.getSimpleName(), myPreference.mySharedPreference );
+        verify( preferenceStore ).put( eq( scopeResolutionStrategyInfo.defaultScope() ), eq( MySharedPreference2.class.getSimpleName() ), same( mySharedPreference2 ) );
+    }
+
+    @Test
+    public void saveDefaultValueTest() {
+        final MyPreferencePortableGeneratedImpl myPreference = new MyPreferencePortableGeneratedImpl();
+
+        preferenceBeanStoreImpl.saveDefaultValue( (MyPreferencePortableGeneratedImpl) myPreference.defaultValue( myPreference ) );
+
+        verify( preferenceStore, times( 2 ) ).put( any( PreferenceScope.class ), anyString(), any( Object.class ) );
+
+        verify( preferenceStore ).put( eq( lastScope ), eq( MyPreference.class.getSimpleName() ), eq( myPreference ) );
+        verify( preferenceStore ).put( eq( lastScope ), eq( MySharedPreference.class.getSimpleName() ), eq( myPreference.mySharedPreference ) );
     }
 
     @Test

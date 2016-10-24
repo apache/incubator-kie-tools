@@ -17,10 +17,15 @@
 .admin-page {
     background-color: #F5F5F5;
     text-align: center;
-    padding: 50px;
+    padding: 15px 50px;
 }
 
-.admin-page > div {
+.admin-page .admin-page-title-container {
+    text-align: left;
+    padding: 11px;
+}
+
+.admin-page .admin-page-content {
     display: table;
     margin: auto;
 }

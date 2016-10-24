@@ -16,18 +16,19 @@
 
 package org.uberfire.ext.preferences.client.admin;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
-@ApplicationScoped
+@Dependent
 @WorkbenchPerspective(identifier = AdminPagePerspective.IDENTIFIER)
 public class AdminPagePerspective {
 
@@ -37,11 +38,28 @@ public class AdminPagePerspective {
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        perspective = new PerspectiveDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( "Admin" );
-
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( AdminPagePresenter.IDENTIFIER ) ) );
+        if ( perspective == null ) {
+            return createPerspectiveDefinition();
+        }
 
         return perspective;
+    }
+
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
+        perspective = createPerspectiveDefinition();
+        configurePerspective( placeRequest );
+    }
+
+    PerspectiveDefinition createPerspectiveDefinition() {
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        perspective.setName( "Admin" );
+
+        return perspective;
+    }
+
+    void configurePerspective( final PlaceRequest placeRequest ) {
+        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( AdminPagePresenter.IDENTIFIER,
+                                                                                        placeRequest.getParameters() ) ) );
     }
 }

@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-.preference-tree-internal-item {
-    margin-left: 17px;
-}
-
 .preference-tree-internal-item i[data-field="preference-tree-internal-item-expand-icon"] {
-    margin-left: 3px;
+    padding-left: 3px;
 }
 
 .preference-tree-internal-item label {
-    padding: 1px 4px;
+    padding: 4px;
+    margin: 0;
+    cursor: pointer;
 }
 
-.preference-tree-internal-item label.selected {
-    padding: 0 3px;
-    border: #777 dotted 1px;
-    background-color: #EEE;
+.preference-tree-internal-item-node {
+    margin-right: 1px;
+}
+
+.preference-tree-internal-item .selected {
+    background-color: #1699d3;
+    color: #ffffff;
 }

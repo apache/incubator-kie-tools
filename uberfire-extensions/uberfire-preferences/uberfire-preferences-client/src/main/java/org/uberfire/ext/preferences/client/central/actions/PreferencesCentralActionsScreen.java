@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.preferences.client.central.actions;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -31,6 +33,9 @@ import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyStructureV
 import org.uberfire.ext.preferences.client.event.PreferencesCentralPreSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.CompassPosition;
 
@@ -57,6 +62,8 @@ public class PreferencesCentralActionsScreen {
 
     private final Event<NotificationEvent> notification;
 
+    private String adminPageScreenToGoBack;
+
     @Inject
     public PreferencesCentralActionsScreen( final View view,
                                             final PlaceManager placeManager,
@@ -77,6 +84,11 @@ public class PreferencesCentralActionsScreen {
         view.init( this );
     }
 
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
+        adminPageScreenToGoBack = placeRequest.getParameter( "screen", null );
+    }
+
     public void fireSaveEvent() {
         preSaveEvent.fire( new PreferencesCentralPreSaveEvent() );
         saveEvent.fire( new PreferencesCentralSaveEvent() );
@@ -90,7 +102,9 @@ public class PreferencesCentralActionsScreen {
     }
 
     private void goBackToHome() {
-        placeManager.goTo( AdminPagePerspective.IDENTIFIER );
+        Map<String, String> params = new HashMap<>();
+        params.put( "screen", adminPageScreenToGoBack );
+        placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
     }
 
     @WorkbenchPartTitle

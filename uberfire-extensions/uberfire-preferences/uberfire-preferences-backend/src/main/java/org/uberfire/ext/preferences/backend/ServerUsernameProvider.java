@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.preferences.backend;
 
-import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -40,7 +39,7 @@ public class ServerUsernameProvider implements UsernameProvider {
     public String get() {
         try {
             return sessionInfo.getIdentity().getIdentifier();
-        } catch ( ContextNotActiveException e ) {
+        } catch ( Exception e ) {
             return "not-logged-user";
         }
     }

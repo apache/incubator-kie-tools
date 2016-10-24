@@ -18,8 +18,11 @@ package org.uberfire.ext.preferences.client.admin;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Heading;
+import org.jboss.errai.common.client.dom.Label;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -33,8 +36,13 @@ public class AdminPageView implements IsElement,
                                       AdminPagePresenter.View {
 
     @Inject
-    @DataField("content")
+    @DataField("admin-page-content")
     Div content;
+
+    @Inject
+    @Named( "h1" )
+    @DataField("admin-page-title")
+    Heading title;
 
     private AdminPagePresenter presenter;
 
@@ -44,6 +52,7 @@ public class AdminPageView implements IsElement,
     @Override
     public void init( final AdminPagePresenter presenter ) {
         this.presenter = presenter;
+        title.setTextContent( getTitle() );
     }
 
     @Override
@@ -53,6 +62,9 @@ public class AdminPageView implements IsElement,
 
     @Override
     public String getTitle() {
-        return translationService.format( Constants.SettingsPerspective_Title );
+        final String screen = presenter.getScreen();
+        final String title = presenter.getAdminPage().getScreenTitle( screen );
+
+        return title;
     }
 }

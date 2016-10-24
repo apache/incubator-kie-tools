@@ -15,14 +15,15 @@ Using the `MyPreference` bean shown in the previous section, the following comma
 AdminPage adminPage;
 
 private void setupSettings() {
-    adminPage.addPreference( "MyPreference",
+    adminPage.addPreference( "root",
+                             "MyPreference",
                              "My Preferences",
                              "fa-gear",
                              "Preferences" );
 }
 ```
 
-This will insert the admin tool "My Preference" to the Admin Page, and group it together with all tools of the "Preferences" group (in this example, only "Shared Preferences"):
+This will insert the admin tool "My Preference" to the "root" Admin Page, and group it together with all tools of the "Preferences" group (in this example, only "Shared Preferences"):
 
 ![adminPage](adminPage.png)
 

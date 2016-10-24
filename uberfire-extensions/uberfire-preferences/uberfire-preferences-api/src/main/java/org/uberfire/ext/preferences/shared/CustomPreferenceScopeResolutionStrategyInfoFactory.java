@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.preferences.client.central.hierarchy;
+package org.uberfire.ext.preferences.shared;
 
-import org.uberfire.ext.preferences.shared.bean.PreferenceHierarchyElement;
+import java.util.Map;
 
-public interface HierarchyItemPresenter {
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
-    <T> void init( PreferenceHierarchyElement<T> preference,
-                   int level );
+public interface CustomPreferenceScopeResolutionStrategyInfoFactory {
 
-    void fireSelect();
-
-    HierarchyItemView getView();
+    PreferenceScopeResolutionStrategyInfo create( Map<String, String> params );
 }

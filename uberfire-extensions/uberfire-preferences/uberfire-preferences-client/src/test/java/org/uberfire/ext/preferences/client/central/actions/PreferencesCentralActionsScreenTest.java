@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.preferences.client.central.actions;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
@@ -27,6 +29,7 @@ import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralPreSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Mockito.*;
@@ -53,6 +56,8 @@ public class PreferencesCentralActionsScreenTest {
 
     private PreferencesCentralActionsScreen actionsScreen;
 
+    private Map<String, String> params;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks( this );
@@ -63,6 +68,10 @@ public class PreferencesCentralActionsScreenTest {
                                                              saveEvent,
                                                              undoChangesEvent,
                                                              notification );
+
+        params = new HashMap<>();
+        params.put( "screen", "screen" );
+        actionsScreen.onStartup( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
     }
 
     @Test
@@ -71,7 +80,7 @@ public class PreferencesCentralActionsScreenTest {
 
         verify( preSaveEvent ).fire( any( PreferencesCentralPreSaveEvent.class ) );
         verify( saveEvent ).fire( any( PreferencesCentralSaveEvent.class ) );
-        verify( placeManager ).goTo( AdminPagePerspective.IDENTIFIER );
+        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) ) );
     }
 
     @Test
@@ -80,6 +89,6 @@ public class PreferencesCentralActionsScreenTest {
 
         verify( undoChangesEvent ).fire( any( PreferencesCentralUndoChangesEvent.class ) );
         verify( notification ).fire( any( NotificationEvent.class ) );
-        verify( placeManager ).goTo( AdminPagePerspective.IDENTIFIER );
+        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) ) );
     }
 }
