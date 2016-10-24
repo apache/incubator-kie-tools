@@ -2,6 +2,7 @@
 ## Template to generate a pojo.
 ##
 #set($attributes =  $nameTool.sortedProperties($currentDataObject))
+#set($methods =  $currentDataObject.getMethods())
 #set($nestedClasses =  $currentDataObject.getNestedClasses())
 #set($className =   $currentDataObject.name)
 #set($packageName = $currentDataObject.packageName)
@@ -43,6 +44,14 @@ $engine.generateAllConstructorsString($context, $currentDataObject, "    ")
 ##
 #foreach( $attr in $attributes)
 $engine.generateFieldGetterSetterString($context, $attr, "    ")
+
+#end
+
+##
+## Generate methods
+##
+#foreach( $method in $methods)
+    $engine.generateMethodString($context, $method, "    ")
 
 #end
 

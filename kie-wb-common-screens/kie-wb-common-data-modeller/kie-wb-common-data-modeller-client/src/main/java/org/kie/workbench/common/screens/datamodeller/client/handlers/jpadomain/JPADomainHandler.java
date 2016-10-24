@@ -28,8 +28,6 @@ import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.c
 import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.command.JPACommandBuilder;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.options.JPANewResourceOptions;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerValueChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
@@ -85,11 +83,6 @@ public class JPADomainHandler implements DomainHandler {
                     ( (AddPropertyCommand) command ).getProperty() );
             postCommand.execute();
         }
-    }
-
-    @Override
-    public void postEventProcessing( DataModelerEvent event ) {
-        //no post event processing for this domain.
     }
 
     public boolean isOptionEnabled( String option ) {

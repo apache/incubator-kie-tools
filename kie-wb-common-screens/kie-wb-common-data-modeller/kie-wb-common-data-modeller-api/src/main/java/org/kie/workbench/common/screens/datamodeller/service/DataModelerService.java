@@ -22,6 +22,7 @@ import java.util.Map;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSou
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceResponse;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.data.Pair;
 
 @Remote
 public interface DataModelerService {
@@ -75,13 +77,15 @@ public interface DataModelerService {
             final boolean saveCurrentChanges, final String source, final DataObject dataObject,
             final Metadata metadata );
 
-    void delete( final Path path, final DataObject dataObject, final String comment );
+    void delete( final Path path, final String comment );
 
     GenerationResult refactorClass( final Path path, final String newPackageName, final String newClassName );
 
     List<ValidationMessage> validate( String source, final Path path, DataObject dataObject );
 
     TypeInfoResult loadJavaTypeInfo( final String source);
+
+    GenerationResult loadDataObject( final Path projectPath, final String source, final Path sourcePath );
 
     List<PropertyType> getBasePropertyTypes();
 

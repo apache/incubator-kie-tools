@@ -19,6 +19,8 @@ package org.kie.workbench.common.services.datamodeller.driver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,9 +28,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Generated;
+import javax.enterprise.inject.Instance;
 import javax.persistence.Entity;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -39,6 +44,7 @@ import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.Description;
 import org.kie.api.definition.type.Duration;
@@ -61,15 +67,27 @@ import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.JavaClass;
+import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.Parameter;
+import org.kie.workbench.common.services.datamodeller.core.Type;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.JavaClassImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.ParameterImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.TypeImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.UpdateInfo;
 import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
+import org.kie.workbench.common.services.datamodeller.parser.test.TestAnnotation;
+import org.kie.workbench.common.services.datamodeller.parser.test.TestAnnotation1;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
-import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -77,12 +95,22 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
+@RunWith(MockitoJUnitRunner.class)
 public class JavaRoasterModelDriverTest {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaRoasterModelDriverTest.class);
 
-    SimpleFileSystemProvider simpleFileSystemProvider = null;
-    IOService ioService = new MockIOService();
+    @Mock
+    private Instance<SourceFilter> sourceFilterInstance;
+
+    @Mock
+    private Instance<NestedClassFilter> nestedClassFilterInstance;
+
+    @Mock
+    private Instance<MethodFilter> methodFilterInstance;
+
+    private SimpleFileSystemProvider simpleFileSystemProvider = null;
+    private IOService ioService = new MockIOService();
 
     @Before
     public void initTest() throws Exception {
@@ -98,11 +126,18 @@ public class JavaRoasterModelDriverTest {
             final Path rootPath = simpleFileSystemProvider.getPath( uriToRootPath );
 
             final SourceFilter pojo1Filter = javaType -> javaType.getName().equals( "Pojo1" );
+            final NestedClassFilter nestedClassFilter = javaType -> javaType.isClass() && javaType.getAnnotation( Generated.class ) != null;
+            final MethodFilter methodFilter = method -> !method.isConstructor() && method.getAnnotation( Generated.class ) != null;
+
+            FilterHolder filterHolder = mock( FilterHolder.class );
+            when( filterHolder.getSourceFilters() ).thenReturn( Collections.singleton( pojo1Filter ) );
+            when( filterHolder.getNestedClassFilters() ).thenReturn( Collections.singleton( nestedClassFilter ) );
+            when( filterHolder.getMethodFilters() ).thenReturn( Collections.singleton( methodFilter ) );
+
             final JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService,
                                                                                               rootPath,
-                                                                                              true,
                                                                                               getClass().getClassLoader(),
-                                                                                              Collections.singleton( pojo1Filter ) );
+                                                                                              filterHolder );
             ModelDriverResult modelDriverResult = javaRoasterModelDriver.loadModel();
 
             DataModel dataModelOriginal = createModel();
@@ -110,7 +145,7 @@ public class JavaRoasterModelDriverTest {
             assertNotNull( modelDriverResult );
             assertNotNull( modelDriverResult.getDataModel() );
 
-            assertEquals( dataModelOriginal.getDataObjects().size()-1, modelDriverResult.getDataModel().getDataObjects().size() );
+            assertEquals( dataModelOriginal.getDataObjects().size() - 1, modelDriverResult.getDataModel().getDataObjects().size() );
 
             for ( DataObject dataObject : modelDriverResult.getDataModel().getDataObjects() ) {
                 if ( !dataObject.getClassName().endsWith( "Pojo1" ) ) {
@@ -135,11 +170,20 @@ public class JavaRoasterModelDriverTest {
             URI uriToRootPath = URI.create( uriToResource.substring( 0, uriToResource.length() - "projectRoot.txt".length() ) );
             Path rootPath = simpleFileSystemProvider.getPath( uriToRootPath );
 
+            final SourceFilter pojo1Filter = javaType -> false;
+            final NestedClassFilter nestedClassFilter = javaType -> javaType.isClass() && javaType.getAnnotation( Generated.class ) != null;
+            final MethodFilter methodFilter = method -> !method.isConstructor() && method.getAnnotation( Generated.class ) != null;
+
+            FilterHolder filterHolder = mock( FilterHolder.class );
+            when( filterHolder.getSourceFilters() ).thenReturn( Collections.singleton( pojo1Filter ) );
+            when( filterHolder.getNestedClassFilters() ).thenReturn( Collections.singleton( nestedClassFilter ) );
+            when( filterHolder.getMethodFilters() ).thenReturn( Collections.singleton( methodFilter ) );
+
             JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService,
                                                                                         rootPath,
-                                                                                        true,
                                                                                         getClass().getClassLoader(),
-                                                                                        Collections.emptySet() );
+                                                                                        filterHolder );
+
             ModelDriverResult modelDriverResult = javaRoasterModelDriver.loadModel();
 
             DataModel dataModelOriginal = createModel();
@@ -175,11 +219,19 @@ public class JavaRoasterModelDriverTest {
             ClassLoader classLoader = getClass().getClassLoader();
             ClassTypeResolver classTypeResolver = DriverUtils.createClassTypeResolver( annotationsUpdateTestJavaClassSource, classLoader );
 
+            final SourceFilter pojo1Filter = javaType -> false;
+            final NestedClassFilter nestedClassFilter = javaType -> javaType.isClass() && javaType.getAnnotation( Generated.class ) != null;
+            final MethodFilter methodFilter = method -> !method.isConstructor() && method.getAnnotation( Generated.class ) != null;
+
+            FilterHolder filterHolder = mock( FilterHolder.class );
+            when( filterHolder.getSourceFilters() ).thenReturn( Collections.singleton( pojo1Filter ) );
+            when( filterHolder.getNestedClassFilters() ).thenReturn( Collections.singleton( nestedClassFilter ) );
+            when( filterHolder.getMethodFilters() ).thenReturn( Collections.singleton( methodFilter ) );
+
             JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService,
                                                                                         rootPath,
-                                                                                        true,
                                                                                         classLoader,
-                                                                                        Collections.emptySet() );
+                                                                                        filterHolder );
 
             ModelDriverResult result = javaRoasterModelDriver.loadDataObject( source, annotationsUpdateTestFilePath );
 
@@ -322,6 +374,175 @@ public class JavaRoasterModelDriverTest {
 
     }
 
+    @Test
+    public void nestedClassUpdateTest() {
+
+        try {
+            String uriToResource = this.getClass().getResource( "projectRoot.txt" ).toURI().toString();
+            URI uriToRootPath = URI.create( uriToResource.substring( 0, uriToResource.length() - "projectRoot.txt".length() ) );
+            Path rootPath = simpleFileSystemProvider.getPath( uriToRootPath );
+
+            //First read the NestedClassUpdateTest
+            Path nestedClassUpdateTestFilePath =  rootPath.resolve( "package5" ).resolve( "NestedClassUpdateTest.java" );
+            String source = ioService.readAllString( nestedClassUpdateTestFilePath );
+            JavaClassSource nestedClassUpdateTestJavaClassSource = (JavaClassSource)Roaster.parse( source );
+
+            ClassLoader classLoader = getClass().getClassLoader();
+            ClassTypeResolver classTypeResolver = DriverUtils.createClassTypeResolver( nestedClassUpdateTestJavaClassSource, classLoader );
+
+            final SourceFilter pojo1Filter = javaType -> false;
+            final NestedClassFilter nestedClassFilter = javaType -> javaType.isClass() && javaType.getAnnotation( Generated.class ) != null;
+            final MethodFilter methodFilter = method -> !method.isConstructor() && method.getAnnotation( Generated.class ) != null;
+
+            FilterHolder filterHolder = mock( FilterHolder.class );
+            when( filterHolder.getSourceFilters() ).thenReturn( Collections.singleton( pojo1Filter ) );
+            when( filterHolder.getNestedClassFilters() ).thenReturn( Collections.singleton( nestedClassFilter ) );
+            when( filterHolder.getMethodFilters() ).thenReturn( Collections.singleton( methodFilter ) );
+
+            JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService,
+                    rootPath,
+                    classLoader,
+                    filterHolder );
+
+            ModelDriverResult result = javaRoasterModelDriver.loadDataObject( source, nestedClassUpdateTestFilePath );
+
+            //1) read the NestedClassUpdateTest
+            DataObject nestedClassUpdateTest = result.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package5.NestedClassUpdateTest" );
+
+            //2) modify the NestedClassUpdateTest according to the expected result
+            JavaClass nestedClass = nestedClassUpdateTest.getNestedClasses().stream()
+                    .filter( t -> t.getName().equals( "NestedClass" ) )
+                    .findFirst()
+                    .get();
+
+            assertNotNull( nestedClass );
+
+            nestedClass.setName( "UpdatedNestedClass" );
+
+            Method method = nestedClass.getMethod( "method", Collections.EMPTY_LIST );
+
+            assertNotNull( method );
+
+            method.setName( "updatedMethod" );
+
+            nestedClassUpdateTest.setName( "NestedClassUpdateTestResult" );
+
+            //3) compare the modified data object with the expected data object.
+            Path expectedFilePath = rootPath.resolve( "package5" ).resolve( "NestedClassUpdateTestResult.java" );
+            String expectedSource = ioService.readAllString( expectedFilePath );
+            JavaClassSource expectedJavaClassSource = (JavaClassSource)Roaster.parse( expectedSource );
+
+            ModelDriverResult expectedResult = javaRoasterModelDriver.loadDataObject( expectedSource, expectedFilePath );
+            DataObject nestedClassUpdateTestResult = expectedResult.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package5.NestedClassUpdateTestResult" );
+
+            //First check, the modified data object in memory should be the same as the readed from the model.
+            DataModelerAssert.assertEqualsDataObject( nestedClassUpdateTestResult, nestedClassUpdateTest );
+
+            //Second check, update the JavaClassSource corresponding to the NestedClassUpdateTest
+            javaRoasterModelDriver.updateSource( nestedClassUpdateTestJavaClassSource, nestedClassUpdateTest, new UpdateInfo(), classTypeResolver );
+            ModelDriverResult updatedResult = javaRoasterModelDriver.loadDataObject( nestedClassUpdateTestJavaClassSource.toString(), nestedClassUpdateTestFilePath );
+            //and now compare the updatedResult with the expected value.
+            DataModelerAssert.assertEqualsDataObject( nestedClassUpdateTestResult, updatedResult.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package5.NestedClassUpdateTestResult" ) );
+
+            logger.debug( nestedClassUpdateTestJavaClassSource.toString() );
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "Test failed: " + e.getMessage() );
+        }
+
+    }
+
+    @Test
+    public void methodUpdateTest() {
+
+        try {
+            String uriToResource = this.getClass().getResource( "projectRoot.txt" ).toURI().toString();
+            URI uriToRootPath = URI.create( uriToResource.substring( 0, uriToResource.length() - "projectRoot.txt".length() ) );
+            Path rootPath = simpleFileSystemProvider.getPath( uriToRootPath );
+
+            //First read the MethodsUpdateTest
+            Path methodsUpdateTestFilePath =  rootPath.resolve( "package4" ).resolve( "MethodsUpdateTest.java" );
+            String source = ioService.readAllString( methodsUpdateTestFilePath );
+            JavaClassSource methodsUpdateTestJavaClassSource = (JavaClassSource)Roaster.parse( source );
+
+            ClassLoader classLoader = getClass().getClassLoader();
+            ClassTypeResolver classTypeResolver = DriverUtils.createClassTypeResolver( methodsUpdateTestJavaClassSource, classLoader );
+
+            final SourceFilter pojo1Filter = javaType -> false;
+            final NestedClassFilter nestedClassFilter = javaType -> javaType.isClass() && javaType.getAnnotation( Generated.class ) != null;
+            final MethodFilter methodFilter = method -> !method.isConstructor() && method.getAnnotation( Generated.class ) != null;
+
+            FilterHolder filterHolder = mock( FilterHolder.class );
+            when( filterHolder.getSourceFilters() ).thenReturn( Collections.singleton( pojo1Filter ) );
+            when( filterHolder.getNestedClassFilters() ).thenReturn( Collections.singleton( nestedClassFilter ) );
+            when( filterHolder.getMethodFilters() ).thenReturn( Collections.singleton( methodFilter ) );
+
+            JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService,
+                    rootPath,
+                    classLoader,
+                    filterHolder );
+
+            ModelDriverResult result = javaRoasterModelDriver.loadDataObject( source, methodsUpdateTestFilePath );
+
+            //1) read the MethodsUpdateTest
+            DataObject methodsUpdateTest = result.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package4.MethodsUpdateTest" );
+
+            //2) modify the MethodsUpdateTest according to the expected result.
+
+            Method getTestStringMethod = methodsUpdateTest.getMethod( "getTestString", Arrays.asList( List.class.getName() ) );
+
+            Type methodReturnType = new TypeImpl( List.class.getName(), Arrays.asList( new TypeImpl( Integer.class.getName() ) ) );
+            // List<Integer>
+            getTestStringMethod.setReturnType( methodReturnType );
+
+            Type parameterType1 = new TypeImpl( List.class.getName(), Arrays.asList( new TypeImpl( List.class.getName(), Arrays.asList( new TypeImpl( "org.kie.workbench.common.services.datamodeller.driver.package4.MethodsUpdateTestResult" ) ) ) ) );
+            Parameter parameter1 = new ParameterImpl( parameterType1, "methodUpdateTestResultList" );
+            Type parameterType2 = new TypeImpl( int.class.getName() );
+            Parameter parameter2 = new ParameterImpl( parameterType2, "intParameter" );
+
+            getTestStringMethod.getParameters().clear();
+            // ( List<List<MethodsUpdateTestResult>> methodUpdateTestResultList, int intParameter )
+            getTestStringMethod.setParameters( Arrays.asList( parameter1, parameter2 ) );
+            getTestStringMethod.setBody( "return Arrays.asList(1);" );
+
+            Method noOpMethodWithTestAnnotation = methodsUpdateTest.getMethod( "noOpMethodWithTestAnnotation", Collections.EMPTY_LIST );
+            noOpMethodWithTestAnnotation.setName( "noOpMethodWithTestAnnotationUpdated" );
+            noOpMethodWithTestAnnotation.setBody( "return 1;" );
+            noOpMethodWithTestAnnotation.setReturnType( new TypeImpl( Integer.class.getName() ) );
+
+            // @TestAnnotation1("annotationParameterUpdated")
+            Annotation testAnnotation = noOpMethodWithTestAnnotation.getAnnotation( TestAnnotation1.class.getName() );
+            testAnnotation.setValue( "value", "annotationParameterUpdated" );
+
+            methodsUpdateTest.setName( "MethodsUpdateTestResult" );
+
+            //3) compare the modified data object with the expected data object.
+            Path expectedFilePath =  rootPath.resolve( "package4" ).resolve( "MethodsUpdateTestResult.java" );
+            String expectedSource = ioService.readAllString( expectedFilePath );
+            JavaClassSource expectedJavaClassSource = (JavaClassSource)Roaster.parse( expectedSource );
+
+            ModelDriverResult expectedResult = javaRoasterModelDriver.loadDataObject( expectedSource, expectedFilePath );
+            DataObject methodsUpdateTestResult = expectedResult.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package4.MethodsUpdateTestResult" );
+
+            //First check, the modified data object in memory should be the same as the readed from the model.
+            DataModelerAssert.assertEqualsDataObject( methodsUpdateTestResult, methodsUpdateTest );
+
+            //Second check, update the JavaClassSource corresponding to the MethodsUpdateTest
+            javaRoasterModelDriver.updateSource( methodsUpdateTestJavaClassSource, methodsUpdateTest, new UpdateInfo(), classTypeResolver );
+            ModelDriverResult updatedResult = javaRoasterModelDriver.loadDataObject( methodsUpdateTestJavaClassSource.toString(), methodsUpdateTestFilePath );
+            //and now compare the updatedResult with the expected value.
+            DataModelerAssert.assertEqualsDataObject( methodsUpdateTestResult, updatedResult.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package4.MethodsUpdateTestResult" ) );
+
+            logger.debug( methodsUpdateTestJavaClassSource.toString() );
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "Test failed: " + e.getMessage() );
+        }
+
+    }
+
     class MockIOService extends IOServiceMock {
 
         @Override
@@ -343,6 +564,10 @@ public class JavaRoasterModelDriverTest {
         dataModel.addDataObject( createPrimitivesAnnotationTest() );
         dataModel.addDataObject( createAnnotationsUpdateTest() );
         dataModel.addDataObject( createAnnotationsUpdateTestResult() );
+        dataModel.addDataObject( createNestedClassUpdateTest() );
+        dataModel.addDataObject( createNestedClassUpdateTestResult() );
+        dataModel.addDataObject( createMethodsUpdateTest() );
+        dataModel.addDataObject( createMethodsUpdateTestResult() );
 
         return dataModel;
     }
@@ -764,6 +989,105 @@ public class JavaRoasterModelDriverTest {
 
         annotationValuesAnnotation.setValue( "classAnnotationArrayParam", classAnnotationArrayParamValue );
         dataObject.addAnnotation( annotationValuesAnnotation );
+
+        return dataObject;
+    }
+
+    private DataObject createNestedClassUpdateTest() {
+        DataObject dataObject = createDataObject( "org.kie.workbench.common.services.datamodeller.driver.package5", "NestedClassUpdateTest", null );
+
+        JavaClass nestedClass = new JavaClassImpl( "", "NestedClass" );
+
+        Annotation generatedAnnotation = createAnnotation( Generated.class );
+        generatedAnnotation.setValue( "value", "foo.bar.Generator" );
+        nestedClass.addAnnotation( generatedAnnotation );
+
+        MethodImpl method = new MethodImpl( "method", Collections.EMPTY_LIST, "", new TypeImpl( void.class.getName() ), Visibility.PUBLIC );
+
+        generatedAnnotation = createAnnotation( Generated.class );
+        generatedAnnotation.setValue( "value", "foo.bar.Generator" );
+        method.addAnnotation( generatedAnnotation );
+
+        nestedClass.addMethod( method );
+
+        return dataObject;
+    }
+
+    private DataObject createNestedClassUpdateTestResult() {
+        DataObject dataObject = createDataObject( "org.kie.workbench.common.services.datamodeller.driver.package5", "NestedClassUpdateTestResult", null );
+
+        JavaClass nestedClass = new JavaClassImpl( "", "UpdatedNestedClass" );
+
+        Annotation generatedAnnotation = createAnnotation( Generated.class );
+        generatedAnnotation.setValue( "value", "foo.bar.Generator" );
+        nestedClass.addAnnotation( generatedAnnotation );
+
+        MethodImpl method = new MethodImpl( "updatedMethod", Collections.EMPTY_LIST, "", new TypeImpl( void.class.getName() ), Visibility.PUBLIC );
+
+        generatedAnnotation = createAnnotation( Generated.class );
+        generatedAnnotation.setValue( "value", "foo.bar.Generator" );
+        method.addAnnotation( generatedAnnotation );
+
+        nestedClass.addMethod( method );
+
+        return dataObject;
+    }
+
+    private DataObject createMethodsUpdateTest() {
+        DataObject dataObject = createDataObject( "org.kie.workbench.common.services.datamodeller.driver.package4", "MethodsUpdateTest", null );
+
+        Type methodReturnType = new TypeImpl( List.class.getName(), Arrays.asList( new TypeImpl( String.class.getName() ) ) );
+
+        Parameter parameter = new ParameterImpl( new TypeImpl( List.class.getName(), Arrays.asList( new TypeImpl( "org.kie.workbench.common.services.datamodeller.driver.package4.MethodsUpdateTest" ) ) ), "methodUpdateTestList" );
+
+        Method methodImpl = new MethodImpl( "getTestString", Arrays.asList( parameter ), "return Arrays.asList(\"testString\");", methodReturnType, Visibility.PUBLIC );
+        Annotation testAnnotation = createAnnotation( TestAnnotation.class );
+        methodImpl.addAnnotation( testAnnotation );
+
+        dataObject.addMethod( methodImpl );
+
+        methodImpl = new MethodImpl( "noOpMethodWithTestAnnotation", Collections.EMPTY_LIST, "", new TypeImpl( void.class.getName() ), Visibility.PUBLIC );
+
+        Annotation testAnnotation1 = createAnnotation( Generated.class );
+        testAnnotation1.setValue( "value", "foo.bar.Generator" );
+        methodImpl.addAnnotation( testAnnotation1 );
+
+        Annotation testAnnotation2 = createAnnotation( TestAnnotation1.class );
+        testAnnotation2.setValue( "value", "annotationParameter" );
+        methodImpl.addAnnotation( testAnnotation2 );
+
+        dataObject.addMethod( methodImpl );
+
+        return dataObject;
+    }
+
+    private DataObject createMethodsUpdateTestResult() {
+        DataObject dataObject = createDataObject( "org.kie.workbench.common.services.datamodeller.driver.package4", "MethodsUpdateTestResult", null );
+
+        Type methodReturnType = new TypeImpl( List.class.getName(), Arrays.asList( new TypeImpl( Integer.class.getName() ) ) );
+
+        Type parameterType1 = new TypeImpl( List.class.getName(), Arrays.asList( new TypeImpl( List.class.getName(), Arrays.asList( new TypeImpl( "org.kie.workbench.common.services.datamodeller.driver.package4.MethodsUpdateTestResult" ) ) ) ) );
+        Parameter parameter1 = new ParameterImpl( parameterType1, "methodUpdateTestResultList" );
+        Type parameterType2 = new TypeImpl( int.class.getName() );
+        Parameter parameter2 = new ParameterImpl( parameterType2, "intParameter" );
+
+        Method methodImpl = new MethodImpl( "getTestString", Arrays.asList( parameter1, parameter2 ), "return Arrays.asList(1);", methodReturnType, Visibility.PUBLIC );
+        Annotation testAnnotation = createAnnotation( TestAnnotation.class );
+        methodImpl.addAnnotation( testAnnotation );
+
+        dataObject.addMethod( methodImpl );
+
+        methodImpl = new MethodImpl( "noOpMethodWithTestAnnotationUpdated", Collections.EMPTY_LIST, "return 1;", new TypeImpl( Integer.class.getName() ), Visibility.PUBLIC );
+
+        Annotation testAnnotation1 = createAnnotation( Generated.class );
+        testAnnotation1.setValue( "value", "foo.bar.Generator" );
+        methodImpl.addAnnotation( testAnnotation1 );
+
+        Annotation testAnnotation2 = createAnnotation( TestAnnotation1.class );
+        testAnnotation2.setValue( "value", "annotationParameterUpdated" );
+        methodImpl.addAnnotation( testAnnotation2 );
+
+        dataObject.addMethod( methodImpl );
 
         return dataObject;
     }

@@ -19,8 +19,10 @@ package org.kie.workbench.common.screens.datamodeller.events;
 import org.guvnor.common.services.project.model.Project;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -33,6 +35,7 @@ public class DataModelerEventTest {
     public void createEvent() {
         DataObject currentDataObject = new DataObjectImpl();
         ObjectProperty currentField = new ObjectPropertyImpl();
+        Method currentMethod = new MethodImpl();
         Project currentProject = new Project();
         String source = "testSource";
         String contextId = "testContextId";
@@ -42,6 +45,7 @@ public class DataModelerEventTest {
         DataModelerEvent event = new DataModelerEvent()
                 .withCurrentDataObject( currentDataObject )
                 .withCurrentField( currentField )
+                .withCurrentMethod( currentMethod )
                 .withCurrentProject( currentProject )
                 .withSource( source )
                 .withContextId( contextId )
@@ -49,6 +53,7 @@ public class DataModelerEventTest {
 
         assertEquals( currentDataObject, event.getCurrentDataObject() );
         assertEquals( currentField, event.getCurrentField() );
+        assertEquals( currentMethod, event.getCurrentMethod() );
         assertEquals( currentProject, event.getCurrentProject() );
         assertEquals( source, event.getSource() );
         assertEquals( contextId, event.getContextId() );

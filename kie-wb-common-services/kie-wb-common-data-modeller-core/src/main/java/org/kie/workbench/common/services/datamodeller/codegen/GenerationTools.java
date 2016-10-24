@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.datamodeller.codegen;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,9 +30,11 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDe
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.HasAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.JavaClass;
-import org.kie.workbench.common.services.datamodeller.core.JavaType;
 import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.Parameter;
+import org.kie.workbench.common.services.datamodeller.core.Type;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
@@ -334,10 +337,13 @@ public class GenerationTools {
     }
 
     public String resolveImplementedInterfacesType( JavaClass javaClass ) {
-        StringBuffer type = new StringBuffer( "" );
-        type.append( "implements java.io.Serializable" );
+        StringBuilder type = new StringBuilder( "implements " + Serializable.class.getName() );
+
         if ( javaClass.getInterfaces() != null ) {
             for ( String interfaceDefinition : javaClass.getInterfaces() ) {
+                if ( interfaceDefinition.startsWith( Serializable.class.getName() ) ) {
+                    continue;
+                }
                 type.append( ", " )
                     .append( interfaceDefinition );
             }
@@ -385,8 +391,12 @@ public class GenerationTools {
         return propertiesCount( dataObject ) > 0;
     }
 
-    public boolean hasClassAnnotations( DataObject dataObject ) {
-        return dataObject != null && dataObject.getAnnotations() != null && dataObject.getAnnotations().size() > 0;
+    public boolean hasClassAnnotations( JavaClass javaClass ) {
+        return javaClass != null && javaClass.getAnnotations() != null && !javaClass.getAnnotations().isEmpty();
+    }
+
+    public boolean hasMethodAnnotations( Method method ) {
+        return method != null && method.getAnnotations() != null && !method.getAnnotations().isEmpty();
     }
 
     public String resolveMethodParameters( List<String> parameters ) {
@@ -403,6 +413,71 @@ public class GenerationTools {
             i++;
         }
         return builder.toString();
+    }
+
+    public String buildMethodReturnTypeString( Type returnType ) {
+
+        if ( returnType == null ) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append( returnType.getName() );
+
+        buildTypeArgumentsString( returnType.getTypeArguments(), builder );
+
+        return builder.toString();
+    }
+
+
+    public String buildMethodParameterString( List<Parameter> methodParameters ) {
+        if ( methodParameters == null || methodParameters.isEmpty() ) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        Iterator<Parameter> iterator = methodParameters.iterator();
+
+        while ( iterator.hasNext() ) {
+            Parameter parameter = iterator.next();
+
+            Type parameterType = parameter.getType();
+            builder.append( parameterType.getName() );
+            buildTypeArgumentsString( parameter.getType().getTypeArguments(), builder );
+            builder.append( " " );
+            builder.append( parameter.getName() );
+
+            if ( iterator.hasNext() ) {
+                builder.append( "," );
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private void buildTypeArgumentsString( List<Type> typeArguments, StringBuilder builder ) {
+        if ( typeArguments == null || typeArguments.isEmpty() ) {
+            return;
+        }
+        builder.append( "<" );
+
+        java.util.Iterator<Type> iterator = typeArguments.iterator();
+
+        while ( iterator.hasNext() ) {
+            Type argument = iterator.next();
+
+            builder.append( argument.getName() );
+
+            buildTypeArgumentsString( argument.getTypeArguments(), builder );
+
+            if ( iterator.hasNext() ) {
+                builder.append( "," );
+            }
+        }
+
+        builder.append( ">" );
     }
 
     public String resolveEquals( DataObject dataObject, String indent ) {
@@ -543,6 +618,26 @@ public class GenerationTools {
         } else {
             //"result = 31 * result + _propName
             sb.append( "result = 31 * result + " ).append( _propName ).append( ";" );
+        }
+    }
+
+    public String resolveVisibility( Method method ) {
+        Visibility visibility = method.getVisibilty();
+
+        if ( visibility == null ) {
+            return "";
+        }
+        switch ( visibility ) {
+            case PUBLIC:
+                return "public";
+            case PROTECTED:
+                return "protected";
+            case PACKAGE_PRIVATE:
+                return "";
+            case PRIVATE:
+                return "private";
+            default:
+                throw new IllegalArgumentException( "Visibility type '" + visibility + "' is not supported." );
         }
     }
 

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.events;
+package org.kie.workbench.common.services.datamodeller.core;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.uberfire.backend.vfs.Path;
+public interface Parameter extends HasName {
 
-@Portable
-public class DataObjectSavedEvent extends DataModelerEvent {
+    Type getType();
+
+    void setType( Type type );
 
 }

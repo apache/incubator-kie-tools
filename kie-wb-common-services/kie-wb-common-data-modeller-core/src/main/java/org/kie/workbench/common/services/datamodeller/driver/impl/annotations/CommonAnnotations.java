@@ -66,7 +66,6 @@ public class CommonAnnotations {
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Remotable.class ) );
 
         //JPA domain annotations
-
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Entity.class ) );
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Id.class ) );
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( GeneratedValue.class ) );

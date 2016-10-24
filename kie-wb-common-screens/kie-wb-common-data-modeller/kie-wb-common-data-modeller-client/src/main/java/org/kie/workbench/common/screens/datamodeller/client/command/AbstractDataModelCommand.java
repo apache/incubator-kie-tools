@@ -171,7 +171,6 @@ public abstract class AbstractDataModelCommand implements DataModelCommand {
         if ( notifier != null ) {
             notifier.notifyObjectChange( changeType, context, source, dataObject, annotationClassName, memberName, oldValue, newValue );
         }
-
     }
 
     protected void notifyChange( DataModelerEvent event ) {

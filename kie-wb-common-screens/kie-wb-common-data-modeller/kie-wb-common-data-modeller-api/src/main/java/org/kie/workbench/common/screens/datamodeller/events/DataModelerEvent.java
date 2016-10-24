@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.datamodeller.events;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.uberfire.backend.vfs.Path;
 
@@ -28,6 +29,8 @@ public class DataModelerEvent {
     protected DataObject currentDataObject;
 
     protected ObjectProperty currentField;
+
+    protected Method currentMethod;
 
     protected Project currentProject;
 
@@ -102,13 +105,26 @@ public class DataModelerEvent {
         this.currentField = currentField;
     }
 
-    public Project getCurrentProject() {
-        return currentProject;
-    }
-
     public DataModelerEvent withCurrentProject( Project currentProject ) {
         setCurrentProject( currentProject );
         return this;
+    }
+
+    public void setCurrentMethod( Method currentMethod ) {
+        this.currentMethod = currentMethod;
+    }
+
+    public Method getCurrentMethod() {
+        return currentMethod;
+    }
+
+    public DataModelerEvent withCurrentMethod( Method currentMethod ) {
+        setCurrentMethod( currentMethod );
+        return this;
+    }
+
+    public Project getCurrentProject() {
+        return currentProject;
     }
 
     public void setCurrentProject( Project currentProject ) {

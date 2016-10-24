@@ -30,7 +30,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
@@ -90,11 +89,6 @@ public class JPADomainHandler implements DomainHandler {
                 }
             }
         }
-    }
-
-    @Override
-    public void processDataObject( DataObject dataObject, DataModel dataModel ) {
-        // No data object processing for this domain.
     }
 
     @Override

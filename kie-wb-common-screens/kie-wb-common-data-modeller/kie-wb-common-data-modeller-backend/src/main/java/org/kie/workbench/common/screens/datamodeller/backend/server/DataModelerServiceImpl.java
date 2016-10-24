@@ -17,16 +17,11 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
@@ -59,7 +54,7 @@ import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataMod
 import org.kie.workbench.common.screens.datamodeller.backend.server.handler.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSavedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectRenamedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
@@ -79,9 +74,9 @@ import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
+import org.kie.workbench.common.services.datamodeller.driver.FilterHolder;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
-import org.kie.workbench.common.services.datamodeller.driver.SourceFilter;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.ProjectDataModelOracleUtils;
 import org.kie.workbench.common.services.datamodeller.driver.impl.UpdateInfo;
@@ -146,7 +141,7 @@ public class DataModelerServiceImpl
     private Event<DataObjectDeletedEvent> dataObjectDeletedEvent;
 
     @Inject
-    private Event<DataObjectSavedEvent> dataObjectSavedEvent;
+    private Event<DataObjectRenamedEvent> dataObjectRenamedEvent;
 
     @Inject
     private RefactoringQueryService queryService;
@@ -177,25 +172,11 @@ public class DataModelerServiceImpl
     private Instance<DomainHandler> domainHandlers;
 
     @Inject
-    @Any
-    private Instance<SourceFilter> filtersInstance;
-
-    private Collection<SourceFilter> filters;
+    private FilterHolder filterHolder;
 
     private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
 
     public DataModelerServiceImpl() {
-    }
-
-    @PostConstruct
-    private void setup() {
-        filters = StreamSupport.stream( filtersInstance.spliterator(), false ).collect( Collectors.toList() );
-    }
-
-    @PreDestroy
-    private void tearDown() {
-        filters.forEach( filter -> filtersInstance.destroy( filter ) );
-        filters.clear();
     }
 
     @Override
@@ -296,12 +277,6 @@ public class DataModelerServiceImpl
             editorModelContent.setCurrentProjectPackages( serviceHelper.resolvePackages( project ) );
             editorModelContent.setDataModel( resultPair.getK1() );
             editorModelContent.setDataObject( resultPair.getK1().getDataObject( className ) );
-
-            Iterator<DomainHandler> it = domainHandlers != null ? domainHandlers.iterator() : null;
-            while ( it != null && it.hasNext() ) {
-                it.next().processDataObject( resultPair.getK1().getDataObject( className ), resultPair.getK1() );
-            }
-
             editorModelContent.setDataObjectPaths( resultPair.getK2().getClassPaths() );
 
             editorModelContent.setOriginalClassName( className );
@@ -356,9 +331,8 @@ public class DataModelerServiceImpl
 
             ModelDriver modelDriver = new JavaRoasterModelDriver( ioService,
                                                                   Paths.convert( defaultPackage.getPackageMainSrcPath() ),
-                                                                  true,
                                                                   classLoader,
-                                                                  filters );
+                                                                  filterHolder );
             ModelDriverResult result = modelDriver.loadModel();
             dataModel = result.getDataModel();
 
@@ -400,9 +374,9 @@ public class DataModelerServiceImpl
         }
     }
 
-    private Pair<DataObject, List<DataModelerError>> loadDataObject( final Path projectPath,
-                                                                     final String source,
-                                                                     final Path sourcePath ) {
+    public GenerationResult loadDataObject( final Path projectPath,
+                                            final String source,
+                                            final Path sourcePath ) {
 
         if ( logger.isDebugEnabled() ) {
             logger.debug( "Loading data object from projectPath: " + projectPath.toURI() );
@@ -415,20 +389,20 @@ public class DataModelerServiceImpl
 
             project = projectService.resolveProject( projectPath );
             if ( project == null ) {
-                return new Pair<DataObject, List<DataModelerError>>( null, new ArrayList<DataModelerError>() );
+                return new GenerationResult( null, null, new ArrayList<DataModelerError>() );
             }
 
             ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( project );
-            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, null, false, classLoader, filters );
+            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, null, classLoader, filterHolder );
             ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( sourcePath ) );
 
             if ( !driverResult.hasErrors() ) {
                 if ( driverResult.getDataModel().getDataObjects().size() > 0 ) {
                     dataObject = driverResult.getDataModel().getDataObjects().iterator().next();
                 }
-                return new Pair<DataObject, List<DataModelerError>>( dataObject, new ArrayList<DataModelerError>() );
+                return new GenerationResult( source, dataObject, new ArrayList<DataModelerError>() );
             } else {
-                return new Pair<DataObject, List<DataModelerError>>( null, serviceHelper.toDataModelerError( driverResult.getErrors() ) );
+                return new GenerationResult( source, null, serviceHelper.toDataModelerError( driverResult.getErrors() ) );
             }
 
         } catch ( Exception e ) {
@@ -503,7 +477,7 @@ public class DataModelerServiceImpl
             }
 
             ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( project );
-            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), false, classLoader, filters );
+            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), classLoader, filterHolder );
             ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( path ) );
 
             if ( driverResult.hasErrors() ) {
@@ -565,11 +539,6 @@ public class DataModelerServiceImpl
             }
 
             fireMetadataSocialEvents( path, metadataService.getMetadata( path ), metadata );
-
-            DataObjectSavedEvent event = (DataObjectSavedEvent) new DataObjectSavedEvent()
-                    .withCurrentDataObject( dataObject )
-                    .withPath( path );
-            dataObjectSavedEvent.fire( event );
 
             if ( packageChanged ) {
                 targetPath = Paths.convert( targetPackage.getPackageMainSrcPath() ).resolve( targetName );
@@ -643,7 +612,7 @@ public class DataModelerServiceImpl
 
             if ( dataObject == null ) {
                 ClassLoader classLoader = classLoaderHelper.getProjectClassLoader( project );
-                JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), false, classLoader, filters );
+                JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), classLoader, filterHolder );
                 ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( path ) );
 
                 if ( driverResult.hasErrors() ) {
@@ -749,7 +718,9 @@ public class DataModelerServiceImpl
             } else {
                 //I will implement the rename here as a workaround
                 //remove this workaround when we can find the error.
-                return renameWorkaround( path, newName, newContent, comment );
+                Path updatedPath = renameWorkaround( path, newName, newContent, comment );
+                dataObjectRenamedEvent.fire( (DataObjectRenamedEvent) new DataObjectRenamedEvent().withPath( updatedPath ) );
+                return updatedPath;
             }
 
         } finally {
@@ -885,7 +856,6 @@ public class DataModelerServiceImpl
 
     @Override
     public void delete( final Path path,
-                        final DataObject dataObject,
                         final String comment ) {
         try {
             KieProject project = projectService.resolveProject( path );
@@ -894,12 +864,11 @@ public class DataModelerServiceImpl
                 return;
             }
             deleteService.delete( path, comment );
-
-            DataObjectDeletedEvent event = (DataObjectDeletedEvent) new DataObjectDeletedEvent()
-                    .withCurrentProject( project )
-                    .withCurrentDataObject( dataObject )
-                    .withPath( path );
-            dataObjectDeletedEvent.fire( event );
+            String className = calculateClassName( project, path );
+            DataObject dataObject = new DataObjectImpl(
+                    NamingUtils.extractPackageName( className ),
+                    NamingUtils.extractClassName( className ) );
+            dataObjectDeletedEvent.fire( new DataObjectDeletedEvent( project, dataObject ) );
         } catch ( final Exception e ) {
             logger.error( "File: " + path.toURI() + " couldn't be deleted due to the following error. ", e );
             throw new ServiceException( "File: " + path.toURI() + " couldn't be deleted due to the following error. " + e.getMessage() );
@@ -918,10 +887,10 @@ public class DataModelerServiceImpl
                                             final Path path,
                                             final String newPackageName,
                                             final String newClassName ) {
-        Pair<DataObject, List<DataModelerError>> result = loadDataObject( path, source, path );
-        if ( ( result.getK2() == null || result.getK2().isEmpty() ) && result.getK1() != null ) {
+        GenerationResult result = loadDataObject( path, source, path );
+        if ( ( result.getErrors() == null || result.getErrors().isEmpty() ) && result.getDataObject() != null ) {
 
-            final DataObject dataObject = result.getK1();
+            final DataObject dataObject = result.getDataObject();
 
             if ( newPackageName != null ) {
                 dataObject.setPackageName( newPackageName );
@@ -932,7 +901,7 @@ public class DataModelerServiceImpl
 
             return updateSource( source, path, dataObject );
         } else {
-            return new GenerationResult( null, null, result.getK2() );
+            return result;
         }
     }
 
@@ -1053,7 +1022,7 @@ public class DataModelerServiceImpl
             return;
         }
 
-        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
+        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( filterHolder );
         UpdateInfo updateInfo = new UpdateInfo();
 
         //prepare additional update info prior update

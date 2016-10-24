@@ -350,7 +350,6 @@ public class DataModelerScreenPresenter
             public void execute( final String comment ) {
                 view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting() );
                 modelerService.call( getDeleteSuccessCallback(), new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_deleting_error() ) ).delete( path,
-                                                                                                                                                           context.getDataObject(),
                                                                                                                                                            comment );
             }
         } );

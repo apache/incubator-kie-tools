@@ -51,8 +51,4 @@ public class AdvancedDomainHandler implements DomainHandler {
         //no post command processing for this domain.
     }
 
-    @Override
-    public void postEventProcessing( DataModelerEvent event ) {
-        //no post event processing for this domain.
-    }
 }

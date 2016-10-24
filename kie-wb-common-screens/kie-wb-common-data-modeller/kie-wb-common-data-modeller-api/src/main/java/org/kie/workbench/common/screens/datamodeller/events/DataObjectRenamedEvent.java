@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,14 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
+import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
-public enum ChangeType {
+public class DataObjectRenamedEvent extends DataModelerEvent {
 
-    DATA_MODEL_STATUS_CHANGE,
-    OBJECT_NAME_CHANGE,
-    CLASS_NAME_CHANGE,
-    SUPER_CLASS_NAME_CHANGE,
-    PACKAGE_NAME_CHANGE,
-    FIELD_NAME_CHANGE,
-    FIELD_TYPE_CHANGE,
-    FIELD_ANNOTATION_VALUE_CHANGE,
-    FIELD_ANNOTATION_ADD_CHANGE,
-    FIELD_ANNOTATION_REMOVE_CHANGE,
-    TYPE_ANNOTATION_VALUE_CHANGE,
-    TYPE_ANNOTATION_ADD_CHANGE,
-    TYPE_ANNOTATION_REMOVE_CHANGE,
-    METHOD_ADD_CHANGE,
-    METHOD_REMOVE_CHANGE,
-    METHOD_ANNOTATION_ADD_CHANGE,
-    NESTED_CLASS_ADD_CHANGE,
-    NESTED_CLASS_REMOVE_CHANGE;
+    public DataObjectRenamedEvent() {
+    }
+
 }

@@ -24,6 +24,7 @@ import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.JavaClass;
+import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 @ApplicationScoped
@@ -85,6 +86,29 @@ public class DataModelCommandBuilder {
             final boolean doAdd ) {
         return new FieldAddOrRemoveAnnotationCommand( context, source, dataObject, field, annotationClassName, doAdd, notifier );
 
+    }
+
+    public AddMethodCommand buildMethodAddCommand( final DataModelerContext context, final String source,
+                                                                       final DataObject dataObject,
+                                                                       final Method method) {
+
+        return new AddMethodCommand( context, source, dataObject, method, notifier );
+    }
+
+    public RemoveMethodCommand buildMethodRemoveCommand( final DataModelerContext context, final String source,
+                                                   final DataObject dataObject,
+                                                   final Method method) {
+
+        return new RemoveMethodCommand( context, source, dataObject, method, notifier );
+    }
+
+    public MethodAddAnnotationCommand buildMethodAnnotationAddCommand( final DataModelerContext context, final String source,
+                                                                      final DataObject dataObject,
+                                                                      final Method method,
+                                                                      final String annotationClassName, final List<ValuePair> valuePairs ) {
+
+        return new MethodAddAnnotationCommand( context, source, dataObject, method,
+                annotationClassName, valuePairs, notifier );
     }
 
     public DataObjectAddAnnotationCommand buildDataObjectAddAnnotationCommand( final DataModelerContext context, final String source,

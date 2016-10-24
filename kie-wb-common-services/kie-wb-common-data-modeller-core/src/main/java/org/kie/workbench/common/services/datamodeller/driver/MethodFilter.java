@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.datamodeller.core;
+package org.kie.workbench.common.services.datamodeller.driver;
 
-import java.util.List;
+import org.jboss.forge.roaster.model.Method;
 
-public interface Method extends HasAnnotations, HasName, HasParameters, HasVisibility {
+/**
+ * Used for defining methods to be loaded by the DataModelerService. Any CDI beans available at deployment time will be used,
+ * and a method is loaded if any single {@link MethodFilter} accepts it.
+ */
+@FunctionalInterface
+public interface MethodFilter {
 
-    List<Parameter> getParameters();
-
-    void setParameters( List<Parameter> parameters );
-
-    String getBody();
-
-    void setBody( String body );
-
-    Type getReturnType();
-
-    void setReturnType( Type returnType );
-
+    /**
+     * Check if the given method is accepted by this filter.
+     * @param method A Java method that could be loaded.
+     * @return True if this method should be accepted.
+     */
+    boolean accept( Method<?, ?> method );
 }

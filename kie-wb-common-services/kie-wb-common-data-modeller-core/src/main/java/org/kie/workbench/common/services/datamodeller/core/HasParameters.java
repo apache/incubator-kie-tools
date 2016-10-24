@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.backend.server.handler;
+package org.kie.workbench.common.services.datamodeller.core;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
+public interface HasParameters {
 
-public interface DomainHandler {
+    List<Parameter> getParameters();
 
-    void setDefaultValues( DataObject dataObject, Map<String, Object> options );
-
-    List<AnnotationDefinition> getManagedAnnotations();
-
+    void setParameters(List<Parameter> parameters);
 }

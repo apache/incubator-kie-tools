@@ -26,26 +26,15 @@ public class FieldTypeChangeCommand extends AbstractDataModelCommand {
 
     protected ObjectProperty field;
 
-    protected String newType;
-
     protected boolean multiple;
 
     public FieldTypeChangeCommand( DataModelerContext context, String source, DataObject dataObject,
             ObjectProperty field, String newType, boolean multiple, DataModelChangeNotifier notifier ) {
 
-        super( context, source, dataObject, null, null, null, false, notifier );
+        super( context, source, dataObject, null, null, newType, false, notifier );
         this.field = field;
-        this.newType = newType;
         this.multiple = multiple;
 
-    }
-
-    public String getNewType() {
-        return newType;
-    }
-
-    public void setNewType( String newType ) {
-        this.newType = newType;
     }
 
     public boolean isMultiple() {
@@ -69,6 +58,8 @@ public class FieldTypeChangeCommand extends AbstractDataModelCommand {
 
         String oldType = field.getClassName();
 
+        String newType = (String) newValue;
+
         field.setClassName( newType );
         field.setMultiple( multiple );
         if ( multiple && field.getBag() == null ) {
@@ -86,7 +77,7 @@ public class FieldTypeChangeCommand extends AbstractDataModelCommand {
         }
 
         notifyFieldChange( ChangeType.FIELD_TYPE_CHANGE, context, source, dataObject, field, null, null, oldType,
-                newValue );
+                newType );
 
     }
 

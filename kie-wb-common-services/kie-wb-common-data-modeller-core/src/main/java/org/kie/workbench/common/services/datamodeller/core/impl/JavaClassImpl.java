@@ -19,10 +19,13 @@ package org.kie.workbench.common.services.datamodeller.core.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.kie.workbench.common.services.datamodeller.core.JavaClass;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeKind;
 import org.kie.workbench.common.services.datamodeller.core.Method;
+import org.kie.workbench.common.services.datamodeller.core.Parameter;
+import org.kie.workbench.common.services.datamodeller.core.Type;
 import org.kie.workbench.common.services.datamodeller.core.Visibility;
 
 public class JavaClassImpl extends AbstractJavaType implements JavaClass {
@@ -108,17 +111,32 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     }
 
     @Override
-    public Method addMethod(Method method) {
+    public Method addMethod( Method method ) {
         Iterator<Method> iterator = methods.listIterator();
         while ( iterator.hasNext() ) {
             Method existingMethod = iterator.next();
-            if (existingMethod.getName().equals( method.getName() )) {
+            if ( existingMethod.getName().equals( method.getName() ) && existingMethod.getParameters().equals( method.getParameters() ) ) {
                 iterator.remove();
                 break;
             }
         }
         methods.add( method );
+
         return method;
+    }
+
+    @Override
+    public Method getMethod( String name, List<String> parameterTypes ) {
+        for ( Method method : methods ) {
+            if ( method.getName().equals( name ) ) {
+                if ( method.getParameters() == null && parameterTypes == null ) {
+                    return method;
+                } else if ( method.getParameters().stream().map( p -> p.getType().getName() ).collect( Collectors.toList() ).equals( parameterTypes ) ) {
+                    return method;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -175,8 +193,13 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
         if ( superClassName != null ? !superClassName.equals( javaClass.superClassName ) : javaClass.superClassName != null ) {
             return false;
         }
-        return !( interfaces != null ? !interfaces.equals( javaClass.interfaces ) : javaClass.interfaces != null );
-
+        if ( interfaces != null ? !interfaces.equals( javaClass.interfaces ) : javaClass.interfaces != null ) {
+            return false;
+        }
+        if ( nestedClasses != null ? !nestedClasses.equals( javaClass.nestedClasses ) : javaClass.nestedClasses != null ) {
+            return false;
+        }
+        return !( methods != null ? !methods.equals( javaClass.methods) : javaClass.methods != null );
     }
 
     @Override public int hashCode() {
@@ -185,6 +208,10 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
         result = 31 * result + ( superClassName != null ? superClassName.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( interfaces != null ? interfaces.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( nestedClasses != null ? nestedClasses.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( methods != null ? methods.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( _static ? 1 : 0 );
         result = ~~result;

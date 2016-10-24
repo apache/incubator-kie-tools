@@ -240,6 +240,19 @@ public class DriverUtils {
         }
     }
 
+    public static org.jboss.forge.roaster.model.Visibility buildVisibility( Visibility visibility ) {
+        switch ( visibility ) {
+            case PUBLIC:
+                return org.jboss.forge.roaster.model.Visibility.PUBLIC;
+            case PROTECTED:
+                return org.jboss.forge.roaster.model.Visibility.PROTECTED;
+            case PRIVATE:
+                return org.jboss.forge.roaster.model.Visibility.PRIVATE;
+            default:
+                return org.jboss.forge.roaster.model.Visibility.PACKAGE_PRIVATE;
+        }
+    }
+
     public static AnnotationRetention buildRetention( RetentionPolicy retention ) {
         switch ( retention ) {
             case RUNTIME:

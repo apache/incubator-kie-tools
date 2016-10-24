@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.services.datamodeller.driver.package5;
 
-package org.kie.workbench.common.screens.datamodeller.backend.server.handler;
+import javax.annotation.Generated;
 
-import java.util.List;
-import java.util.Map;
+public class NestedClassUpdateTestResult
+{
 
-import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
+    public NestedClassUpdateTestResult()
+    {
+    }
 
-public interface DomainHandler {
+    @Generated("foo.bar.Generator")
+    public static class UpdatedNestedClass
+    {
 
-    void setDefaultValues( DataObject dataObject, Map<String, Object> options );
+        @Generated("foo.bar.Generator")
+        public void updatedMethod()
+        {
+        }
 
-    List<AnnotationDefinition> getManagedAnnotations();
+        public void ignoredMethod()
+        {
+        }
+
+    }
+
+    public static class IgnoredNestedClass
+    {
+    }
 
 }

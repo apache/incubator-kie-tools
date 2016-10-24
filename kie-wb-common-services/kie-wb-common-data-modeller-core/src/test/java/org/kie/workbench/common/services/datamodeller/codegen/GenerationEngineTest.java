@@ -23,6 +23,8 @@ import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.ParameterImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.TypeImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.slf4j.Logger;
@@ -31,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -346,16 +349,21 @@ public class GenerationEngineTest {
     public void testMethodStringGeneration() {
 
         DataModel dataModel = dataModelOracleDriver.createModel();
-        List<String> parameters = Arrays.asList( "com.test.Object1", "com.test.Object1" );
-        Method method = new MethodImpl( "test", parameters, "return o1;", "com.test.Object1" );
 
-        DataObject object = dataModel.addDataObject("com.test.Object1");
+        Parameter parameter1 = new ParameterImpl( new TypeImpl( "com.test.Object1" ), "o1" );
+        Parameter parameter2 = new ParameterImpl( new TypeImpl( "com.test.Object1" ), "o2" );
+
+        Type returnType = new TypeImpl( "com.test.Object1" );
+
+        Method method = new MethodImpl( "test", Arrays.asList( parameter1, parameter2 ), "return o1;", returnType, Visibility.PUBLIC );
+
+        DataObject object = dataModel.addDataObject( "com.test.Object1" );
         object.addMethod( method );
 
         GenerationContext generationContext = new GenerationContext( dataModel );
 
         try {
-            String result = engine.generateMethodString(generationContext, method);
+            String result = engine.generateMethodString( generationContext, method );
             assertEquals( results.getProperty( "testMethodStringGeneration" ), results.getProperty( "testMethodStringGeneration" ), result );
         } catch ( Exception e ) {
             e.printStackTrace();

@@ -2,6 +2,7 @@
 ## Template to generate a pojo.
 ##
 #set($attributes =  $nameTool.sortedProperties($context.currentDataObject))
+#set($methods =  $context.currentDataObject.getMethods())
 #set($nestedClasses =  $context.currentDataObject.getNestedClasses())
 #set($className =   $context.currentDataObject.name)
 #set($packageName = $context.currentDataObject.packageName)
@@ -44,6 +45,14 @@ $engine.generateConstructors($context, "java_constructors")
 #foreach( $attr in $attributes)
     $engine.generateSetterGetter($context, $attr, "java_setter_getter")
 #end
+
+##
+## Generate methods
+##
+#foreach( $method in $methods)
+    $engine.generateMethod($context, $method, "java_method")
+#end
+
 ## Generate equals and hasCode if needed
 #if ($nameTool.hasEquals($context.currentDataObject))
 $engine.generateEquals($context, "java_equals")

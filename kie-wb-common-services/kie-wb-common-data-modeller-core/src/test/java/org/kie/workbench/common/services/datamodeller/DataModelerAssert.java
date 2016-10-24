@@ -24,7 +24,10 @@ import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.Parameter;
+import org.kie.workbench.common.services.datamodeller.core.Type;
 
 import static org.junit.Assert.*;
 
@@ -38,6 +41,7 @@ public class DataModelerAssert {
             assertEquals( obj1.getName(), obj2.getName() );
             assertEqualsAnnotations( obj1.getAnnotations(), obj2.getAnnotations() );
             assertEqualsProperties( obj1.getProperties(), obj2.getProperties() );
+            assertEqualsMethods( obj1.getMethods(), obj2.getMethods() );
 
         } else {
             assertNull( obj2 );
@@ -185,6 +189,75 @@ public class DataModelerAssert {
 
     public static void assertClassName( String className, DataObject dataObject ) {
         assertEquals( className, dataObject.getClassName() );
+    }
+
+    public static void assertEqualsMethods( List<Method> methods1, List<Method> methods2 ) {
+        if ( methods1 != null ) {
+            assertNotNull( methods2 );
+            assertEquals( methods1.size(), methods2.size() );
+
+            Map<String, Method> methodMap = new HashMap<>();
+            for ( Method method : methods2 ) {
+                methodMap.put( method.getName(), method );
+            }
+
+            for ( Method method : methods1 ) {
+                assertEqualsMethod( method, methodMap.get( method.getName() ) );
+            }
+        } else {
+            assertNull( methods2 );
+        }
+    }
+
+    public static void assertEqualsMethod( Method method1, Method method2 ) {
+        if ( method1 != null ) {
+            assertNotNull( method2 );
+
+            assertEquals( method1.getName(), method2.getName() );
+            assertEquals( method1.getBody(), method2.getBody() );
+            assertEquals( method1.getReturnType().getName(), method2.getReturnType().getName() );
+            assertEqualsTypeArguments( method1.getReturnType().getTypeArguments(), method2.getReturnType().getTypeArguments() );
+            assertEqualsParameters( method1.getParameters(), method2.getParameters() );
+        } else {
+            assertNull( method2 );
+        }
+    }
+
+    private static void assertEqualsParameters( List<Parameter> parameters1, List<Parameter> parameters2 ) {
+        if ( parameters1 != null ) {
+            assertNotNull( parameters2 );
+            assertEquals( parameters1.size(), parameters2.size() );
+
+            for ( int i = 0; i < parameters1.size(); i++ ) {
+                Parameter parameter1 = parameters1.get( i );
+                Parameter parameter2 = parameters2.get( i );
+
+                assertEquals( parameter1.getName(), parameter2.getName() );
+                assertEquals( parameter1.getType().getName(), parameter2.getType().getName() );
+                assertEqualsTypeArguments( parameter1.getType().getTypeArguments(), parameter2.getType().getTypeArguments() );
+            }
+        } else {
+            assertNull( parameters2 );
+        }
+
+    }
+
+    private static void assertEqualsTypeArguments( List<Type> typeArguments1, List<Type> typeArguments2 ) {
+        if ( typeArguments1 != null ) {
+            assertNotNull( typeArguments2 );
+            assertEquals( typeArguments1.size(), typeArguments2.size() );
+
+            for ( int i = 0; i < typeArguments1.size(); i++ ) {
+                Type type1 = typeArguments1.get( i );
+                Type type2 = typeArguments2.get( i );
+
+                assertEquals( type1.getName(), type2.getName() );
+                assertEqualsTypeArguments( type1.getTypeArguments(), type2.getTypeArguments() );
+            }
+        } else {
+            assertNull( typeArguments2 );
+        }
+
     }
 
 }

@@ -136,6 +136,11 @@ public abstract class AbstractJavaType extends AbstractHasAnnotations implements
         return visibility;
     }
 
+    @Override
+    public void setVisibility( Visibility visibility ) {
+        this.visibility = visibility;
+    }
+
     @Override public boolean equals( Object o ) {
         if ( this == o ) {
             return true;

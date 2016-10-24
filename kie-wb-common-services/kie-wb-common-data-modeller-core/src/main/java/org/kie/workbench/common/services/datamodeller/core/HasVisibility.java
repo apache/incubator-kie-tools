@@ -28,4 +28,6 @@ public interface HasVisibility {
 
     Visibility getVisibilty();
 
+    void setVisibility( Visibility visibility );
+
 }

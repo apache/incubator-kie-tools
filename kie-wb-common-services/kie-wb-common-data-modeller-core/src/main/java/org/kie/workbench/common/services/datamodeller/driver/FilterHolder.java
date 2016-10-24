@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.backend.server.handler;
+package org.kie.workbench.common.services.datamodeller.driver;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
-import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
+public interface FilterHolder {
 
-public interface DomainHandler {
+    Collection<SourceFilter> getSourceFilters();
 
-    void setDefaultValues( DataObject dataObject, Map<String, Object> options );
+    Collection<NestedClassFilter> getNestedClassFilters();
 
-    List<AnnotationDefinition> getManagedAnnotations();
+    Collection<MethodFilter> getMethodFilters();
 
 }

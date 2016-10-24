@@ -22,7 +22,9 @@ public interface HasMethods {
 
     List<Method> getMethods();
 
-    Method addMethod(Method method);
+    Method addMethod( Method method );
 
-    Method removeMethod(Method method);
+    Method getMethod( String name, List<String> parameters );
+
+    Method removeMethod( Method method );
 }

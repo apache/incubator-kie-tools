@@ -175,6 +175,11 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
         return visibility;
     }
 
+    @Override
+    public void setVisibility( Visibility visibility ) {
+        this.visibility = visibility;
+    }
+
     @Override public void setBaseType( boolean baseType ) {
         //do nothing
     }

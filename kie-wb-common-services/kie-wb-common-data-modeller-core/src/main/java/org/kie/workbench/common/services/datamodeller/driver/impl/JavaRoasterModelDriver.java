@@ -23,12 +23,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.drools.core.base.ClassTypeResolver;
@@ -65,10 +62,10 @@ import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
+import org.kie.workbench.common.services.datamodeller.driver.FilterHolder;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
-import org.kie.workbench.common.services.datamodeller.driver.SourceFilter;
 import org.kie.workbench.common.services.datamodeller.driver.TypeInfoResult;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceRequest;
@@ -91,11 +88,9 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     private static final Logger logger = LoggerFactory.getLogger( JavaRoasterModelDriver.class );
 
-    IOService ioService;
+    private IOService ioService;
 
-    boolean recursiveScan;
-
-    Path javaRootPath;
+    private Path javaRootPath;
 
     private ClassLoader classLoader;
 
@@ -105,7 +100,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     private Map<String, AnnotationDriver> annotationDrivers = new HashMap<String, AnnotationDriver>();
 
-    private Collection<SourceFilter> filters;
+    private FilterHolder filterHolder;
 
     private static final String DATA_OBJECT_LOAD_ERROR = "It was not possible to create or load DataObject: \"{0}\" .";
 
@@ -123,22 +118,22 @@ public class JavaRoasterModelDriver implements ModelDriver {
             annotationDrivers.put( annotationDefinition.getClassName(), new DefaultJavaRoasterModelAnnotationDriver() );
             configuredAnnotationsIndex.put( annotationDefinition.getClassName(), annotationDefinition );
         }
-        if (filters == null) {
-            filters = Collections.emptySet();
-        }
+    }
+
+    public JavaRoasterModelDriver( FilterHolder filterHolder ) {
+        this();
+        this.filterHolder = filterHolder;
     }
 
     public JavaRoasterModelDriver( IOService ioService,
                                    Path javaRootPath,
-                                   boolean recursiveScan,
                                    ClassLoader classLoader,
-                                   Collection<SourceFilter> filters ) {
+                                   FilterHolder filterHolder ) {
         this();
         this.ioService = ioService;
-        this.recursiveScan = recursiveScan;
         this.javaRootPath = javaRootPath;
         this.classLoader = classLoader;
-        this.filters = filters;
+        this.filterHolder = filterHolder;
     }
 
     @Override
@@ -223,7 +218,15 @@ public class JavaRoasterModelDriver implements ModelDriver {
     }
 
     private boolean isVetoed( final JavaType<?> javaType ) {
-        return filters.stream().anyMatch( filter -> filter.veto( javaType ) );
+        return filterHolder.getSourceFilters().stream().anyMatch( filter -> filter.veto( javaType ) );
+    }
+
+    private boolean isAccepted( final JavaType<?> nestedClass ) {
+        return filterHolder.getNestedClassFilters().stream().anyMatch( filter -> filter.accept( nestedClass ) );
+    }
+
+    private boolean isAccepted( final Method<?, ?> method) {
+        return filterHolder.getMethodFilters().stream().anyMatch( filter -> filter.accept( method ) );
     }
 
     public ModelDriverResult loadDataObject( final String source, final Path path ) throws ModelDriverException {
@@ -418,26 +421,43 @@ public class JavaRoasterModelDriver implements ModelDriver {
             List<AnnotationSource<JavaClassSource>> annotations = javaClassSource.getAnnotations();
             if ( annotations != null ) {
                 for ( AnnotationSource annotation : annotations ) {
-                    addDataObjectAnnotation( dataObject, annotation, classTypeResolver );
+                    addJavaClassAnnotation( dataObject, annotation, classTypeResolver );
+                }
+            }
+
+            List<MethodSource<JavaClassSource>> classMethods = javaClassSource.getMethods();
+            if ( classMethods != null ) {
+                for ( MethodSource<JavaClassSource> classMethod : classMethods ) {
+                    if ( isAccepted( classMethod ) ) {
+                        addMethod( dataObject, classMethod, classTypeResolver );
+                    }
                 }
             }
 
             List<JavaSource<?>> nestedTypes = javaClassSource.getNestedTypes();
-            if (nestedTypes != null) {
-                for (JavaSource nestedType : nestedTypes) {
-                    if (nestedType instanceof JavaClassSource) {
-                        JavaClassImpl nestedJavaClass = new JavaClassImpl( "", nestedType.getName(), DriverUtils.buildVisibility( nestedType.getVisibility() ) );
-                        dataObject.addNestedClass( nestedJavaClass );
-                        if (javaClassSource.getInterfaces() != null) {
-                            for (String interfaceDefinition : ( (JavaClassSource) nestedType ).getInterfaces()) {
-                                nestedJavaClass.addInterface( interfaceDefinition );
+            if ( nestedTypes != null ) {
+                for ( JavaSource nestedType : nestedTypes ) {
+                    if ( isAccepted( nestedType ) ) {
+                        if ( nestedType instanceof JavaClassSource ) {
+                            JavaClassImpl nestedJavaClass = new JavaClassImpl( "", nestedType.getName(), DriverUtils.buildVisibility( nestedType.getVisibility() ) );
+                            dataObject.addNestedClass( nestedJavaClass );
+                            if ( javaClassSource.getInterfaces() != null ) {
+                                for ( String interfaceDefinition : ( (JavaClassSource) nestedType ).getInterfaces() ) {
+                                    nestedJavaClass.addInterface( interfaceDefinition );
+                                }
                             }
-                        }
-                        List<MethodSource<JavaClassSource>> nestedClassMethods = ( (JavaClassSource) nestedType ).getMethods();
-                        if (nestedClassMethods != null ) {
-                            for ( Method nestedClassMethod : nestedClassMethods ) {
-                                if ( !nestedClassMethod.isConstructor() ) {
-                                    addMethod( nestedJavaClass, nestedClassMethod, classTypeResolver );
+                            List<AnnotationSource<JavaClassSource>> nestedClassAnnotations = nestedType.getAnnotations();
+                            if ( nestedClassAnnotations != null ) {
+                                for ( AnnotationSource annotation : nestedClassAnnotations ) {
+                                    addJavaClassAnnotation( nestedJavaClass, annotation, classTypeResolver );
+                                }
+                            }
+                            List<MethodSource<JavaClassSource>> nestedClassMethods = ( (JavaClassSource) nestedType ).getMethods();
+                            if ( nestedClassMethods != null ) {
+                                for ( Method nestedClassMethod : nestedClassMethods ) {
+                                    if ( isAccepted( nestedClassMethod ) ) {
+                                        addMethod( nestedJavaClass, nestedClassMethod, classTypeResolver );
+                                    }
                                 }
                             }
                         }
@@ -473,15 +493,60 @@ public class JavaRoasterModelDriver implements ModelDriver {
         return property;
     }
 
-    private void addMethod( org.kie.workbench.common.services.datamodeller.core.JavaClass javaClass, Method method, ClassTypeResolver classTypeResolver ) throws ClassNotFoundException {
-        List<? extends Parameter> parameters = method.getParameters();
-        List<String> methodParameters = null;
-        if ( parameters != null ) {
-            methodParameters = parameters.stream().map( p -> p.getType().getQualifiedName() ).collect( Collectors.toList() );
+    private List<org.kie.workbench.common.services.datamodeller.core.Type> resolveTypeArguments( List<Type> typeArguments ) {
+        List<org.kie.workbench.common.services.datamodeller.core.Type> result = new ArrayList<>();
+        if ( typeArguments != null ) {
+            resolveTypeArguments( typeArguments, result );
         }
-        String nestedClassMethodReturnType = resolveTypeName( classTypeResolver, method.getReturnType().getName() );
+        return result;
+    }
 
-        javaClass.addMethod( new MethodImpl( method.getName(), methodParameters, method.getBody(), nestedClassMethodReturnType ) );
+    private void resolveTypeArguments( List<Type> typeArguments, List<org.kie.workbench.common.services.datamodeller.core.Type> resultTypeArguments ) {
+        if ( typeArguments != null ) {
+            for ( Type typeArgument : typeArguments ) {
+                org.kie.workbench.common.services.datamodeller.core.impl.TypeImpl resultType = new org.kie.workbench.common.services.datamodeller.core.impl.TypeImpl( typeArgument.getQualifiedName(), new ArrayList<>() );
+                resultTypeArguments.add( resultType );
+                resolveTypeArguments( typeArgument.getTypeArguments(), resultType.getTypeArguments() );
+            }
+        }
+    }
+
+    private void addMethod( org.kie.workbench.common.services.datamodeller.core.JavaClass javaClass, Method method, ClassTypeResolver classTypeResolver ) throws ClassNotFoundException, ModelDriverException {
+        List<Parameter> parameters = method.getParameters();
+
+        List<org.kie.workbench.common.services.datamodeller.core.Parameter> modelParameters = new ArrayList<>();
+
+        if ( parameters != null ) {
+            for ( Parameter parameter : parameters ) {
+                modelParameters.add( new org.kie.workbench.common.services.datamodeller.core.impl.ParameterImpl(
+                        new org.kie.workbench.common.services.datamodeller.core.impl.TypeImpl( resolveTypeName( classTypeResolver, parameter.getType().getName() ), resolveTypeArguments( parameter.getType().getTypeArguments() ) ),
+                        parameter.getName() ) );
+            }
+        }
+
+        org.kie.workbench.common.services.datamodeller.core.Type returnType = null;
+
+        if ( method.getReturnType() != null ) {
+            returnType = new org.kie.workbench.common.services.datamodeller.core.impl.TypeImpl(
+                    resolveTypeName( classTypeResolver, method.getReturnType().getName() ), resolveTypeArguments( method.getReturnType().getTypeArguments() ) );
+        }
+
+        Visibility visibility = Visibility.PACKAGE_PRIVATE;
+
+        if ( method.getVisibility() != null ) {
+            visibility = DriverUtils.buildVisibility( method.getVisibility() );
+        }
+
+        MethodImpl dataObjectMethod = new MethodImpl( method.getName(), modelParameters, method.getBody(), returnType, visibility );
+
+        List<AnnotationSource<JavaClassSource>> annotations = method.getAnnotations();
+        if ( annotations != null ) {
+            for ( AnnotationSource annotation : annotations ) {
+                dataObjectMethod.addAnnotation( createAnnotation( annotation, classTypeResolver ) );
+            }
+        }
+
+        javaClass.addMethod( dataObjectMethod );
     }
 
     public ObjectProperty parseProperty( FieldSource<JavaClassSource> field, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
@@ -543,10 +608,10 @@ public class JavaRoasterModelDriver implements ModelDriver {
         return properties;
     }
 
-    private void addDataObjectAnnotation( DataObject dataObject, AnnotationSource annotationSource, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
+    private void addJavaClassAnnotation( org.kie.workbench.common.services.datamodeller.core.JavaClass javaClass, AnnotationSource annotationSource, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
         Annotation annotation = createAnnotation( annotationSource, classTypeResolver );
         if ( annotation != null ) {
-            dataObject.addAnnotation( annotation );
+            javaClass.addAnnotation( annotation );
         }
     }
 
@@ -590,7 +655,11 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     private String resolveTypeName( ClassTypeResolver classTypeResolver, String name ) throws ClassNotFoundException {
         try {
-            if ( NamingUtils.isQualifiedName( name ) ) {
+            if ( name == null ) {
+                return null;
+            } else if ( NamingUtils.isQualifiedName( name ) ) {
+                return name;
+            } else if ( "void".equals( name ) ) {
                 return name;
             } else {
                 return classTypeResolver.getFullTypeName( name );
@@ -650,6 +719,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
         updatePackage( javaClassSource, dataObject.getPackageName() );
         updateImports( javaClassSource, updateInfo.getRenamedClasses(), updateInfo.getDeletedClasses() );
         updateAnnotations( javaClassSource, dataObject.getAnnotations(), classTypeResolver );
+        updateMethods( javaClassSource, dataObject.getMethods(), classTypeResolver );
         updateClassName( javaClassSource, dataObject.getName() );
         updateSuperClassName( javaClassSource, dataObject.getSuperClassName(), classTypeResolver );
 
@@ -705,9 +775,11 @@ public class JavaRoasterModelDriver implements ModelDriver {
         }
         // update nested classes
         List<JavaSource<?>> nestedTypes = javaClassSource.getNestedTypes();
-        if (nestedTypes != null) {
-            for (JavaSource nestedJavaSource : nestedTypes) {
-                javaClassSource.removeNestedType( nestedJavaSource );
+        if ( nestedTypes != null ) {
+            for ( JavaSource nestedJavaSource : nestedTypes ) {
+                if ( isAccepted( nestedJavaSource ) ) {
+                    javaClassSource.removeNestedType( nestedJavaSource );
+                }
             }
         }
         GenerationEngine engine = GenerationEngine.getInstance();
@@ -852,6 +924,108 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 addAnnotationMemberValue( annotationSource, valuePairDefinition, annotation );
             }
         }
+    }
+
+    public void updateMethods( JavaClassSource javaClassSource, List<org.kie.workbench.common.services.datamodeller.core.Method> methods, ClassTypeResolver classTypeResolver ) throws Exception {
+
+        List<MethodSource<JavaClassSource>> currentMethods = javaClassSource.getMethods();
+        if ( currentMethods != null ) {
+            for ( MethodSource<JavaClassSource> currentMethod : currentMethods ) {
+                if ( isAccepted( currentMethod ) ) {
+                    javaClassSource.removeMethod( currentMethod );
+                }
+            }
+        }
+
+        if ( methods != null ) {
+            for ( org.kie.workbench.common.services.datamodeller.core.Method method : methods ) {
+                addMethod( javaClassSource, method, classTypeResolver );
+            }
+        }
+    }
+
+    private void addMethod( JavaClassSource javaClassSource, org.kie.workbench.common.services.datamodeller.core.Method method, ClassTypeResolver classTypeResolver ) throws ClassNotFoundException {
+        MethodSource<JavaClassSource> methodSource = javaClassSource.addMethod();
+        methodSource.setName( method.getName() );
+        methodSource.setReturnType( buildMethodReturnTypeString( method.getReturnType(), classTypeResolver ) );
+        methodSource.setParameters( buildMethodParameterString( method.getParameters(), classTypeResolver ) );
+        methodSource.setBody( method.getBody() );
+        methodSource.setVisibility( buildVisibility( method.getVisibilty() ) );
+
+        for ( Annotation annotation : method.getAnnotations() ) {
+            addAnnotation( methodSource, annotation );
+        }
+    }
+
+    private String buildMethodReturnTypeString( org.kie.workbench.common.services.datamodeller.core.Type methodReturnType, ClassTypeResolver classTypeResolver ) throws ClassNotFoundException {
+        if ( methodReturnType == null ) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append( resolveTypeName( classTypeResolver, methodReturnType.getName() ) );
+
+        buildTypeArgumentsString( methodReturnType.getTypeArguments(), classTypeResolver, builder );
+
+        return builder.toString();
+    }
+
+
+    private String buildMethodParameterString( List<org.kie.workbench.common.services.datamodeller.core.Parameter> methodParameters, ClassTypeResolver classTypeResolver ) throws ClassNotFoundException {
+        if ( methodParameters == null || methodParameters.isEmpty() ) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        java.util.Iterator<org.kie.workbench.common.services.datamodeller.core.Parameter> iterator = methodParameters.iterator();
+
+        while ( iterator.hasNext() ) {
+            org.kie.workbench.common.services.datamodeller.core.Parameter parameter = iterator.next();
+
+            org.kie.workbench.common.services.datamodeller.core.Type parameterType = parameter.getType();
+            builder.append( resolveTypeName( classTypeResolver, parameterType.getName() ) );
+            buildTypeArgumentsString( parameter.getType().getTypeArguments(), classTypeResolver, builder );
+            builder.append( " " );
+            builder.append( parameter.getName() );
+
+            if ( iterator.hasNext() ) {
+                builder.append( "," );
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private org.jboss.forge.roaster.model.Visibility buildVisibility( Visibility visibility ) {
+        if ( visibility == null ) {
+            return org.jboss.forge.roaster.model.Visibility.PACKAGE_PRIVATE;
+        }
+        return DriverUtils.buildVisibility( visibility );
+    }
+
+    private void buildTypeArgumentsString( List<org.kie.workbench.common.services.datamodeller.core.Type> typeArguments, ClassTypeResolver classTypeResolver, StringBuilder builder ) throws ClassNotFoundException {
+        if ( typeArguments == null || typeArguments.isEmpty() ) {
+            return;
+        }
+        builder.append( "<" );
+
+        java.util.Iterator<org.kie.workbench.common.services.datamodeller.core.Type> iterator = typeArguments.iterator();
+
+        while ( iterator.hasNext() ) {
+            org.kie.workbench.common.services.datamodeller.core.Type argument = iterator.next();
+
+            builder.append( resolveTypeName( classTypeResolver, argument.getName() ) );
+
+            buildTypeArgumentsString( argument.getTypeArguments(), classTypeResolver, builder );
+
+            if ( iterator.hasNext() ) {
+                builder.append( "," );
+            }
+        }
+
+        builder.append( ">" );
     }
 
     public void createField( JavaClassSource javaClassSource, ObjectProperty property, ClassTypeResolver classTypeResolver ) throws Exception {

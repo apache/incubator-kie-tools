@@ -31,6 +31,4 @@ public interface DomainHandler {
 
     void postCommandProcessing( DataModelCommand command );
 
-    void postEventProcessing( DataModelerEvent event );
-
 }

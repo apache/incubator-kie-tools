@@ -353,7 +353,7 @@ public class GenerationEngine {
     }
 
     /**
-     * Generate all annotations for a specific element (field or class)
+     * Generate all annotations for a specific element (field, class, or method)
      */
     public String generateAllAnnotationsString(GenerationContext generationContext, HasAnnotations hasAnnotations, String indent) throws Exception {
         VelocityContext vc = buildContext(generationContext);

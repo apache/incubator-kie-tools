@@ -3,6 +3,9 @@
 ##
 #set($methods =  $attr.getMethods())
 #set($className =   $attr.getClassName())
+#if ($nameTool.hasClassAnnotations($attr))
+    $engine.generateAllAnnotationsString($context, $attr)
+#end
 public static class $className $nameTool.resolveSuperClassType($attr) $nameTool.resolveImplementedInterfacesType($attr) {
 
     static final long serialVersionUID = 1L;

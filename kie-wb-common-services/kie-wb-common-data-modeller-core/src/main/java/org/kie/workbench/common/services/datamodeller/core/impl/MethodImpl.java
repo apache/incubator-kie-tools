@@ -20,25 +20,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.workbench.common.services.datamodeller.core.Method;
+import org.kie.workbench.common.services.datamodeller.core.Parameter;
+import org.kie.workbench.common.services.datamodeller.core.Type;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 
-public class MethodImpl implements Method {
+public class MethodImpl extends AbstractHasAnnotations implements Method {
 
     private String name;
 
-    private List<String> parameters = new ArrayList<>( );
+    private List<Parameter> parameters = new ArrayList<>( );
 
     private String body;
 
-    private String returnType;
+    private Type returnType;
+
+    private Visibility visibility = Visibility.PACKAGE_PRIVATE;
 
     public MethodImpl() {
     }
 
-    public MethodImpl( String name, List<String> parameters, String body, String returnType ) {
+    public MethodImpl( String name, List<Parameter> parameters, String body, Type returnType, Visibility visibility ) {
         this.name = name;
         this.parameters = parameters;
         this.body = body;
         this.returnType = returnType;
+        this.visibility = visibility;
     }
 
     @Override
@@ -52,8 +58,13 @@ public class MethodImpl implements Method {
     }
 
     @Override
-    public List<String> getParameters() {
+    public List<Parameter> getParameters() {
         return parameters;
+    }
+
+    @Override
+    public void setParameters( List<Parameter> parameters ) {
+        this.parameters = parameters;
     }
 
     @Override
@@ -62,8 +73,94 @@ public class MethodImpl implements Method {
     }
 
     @Override
-    public String getReturnType() {
+    public void setBody( String body ) {
+        this.body = body;
+    }
+
+    @Override
+    public Type getReturnType() {
         return returnType;
+    }
+
+    @Override
+    public void setReturnType( Type returnType ) {
+        this.returnType = returnType;
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        MethodImpl method = ( MethodImpl ) o;
+
+        if ( name != null ? !name.equals( method.name ) : method.name != null ) {
+            return false;
+        }
+        if ( body != null ? !body.equals( method.body ) : method.body != null ) {
+            return false;
+        }
+        if ( parameters != null ? !parameters.equals( method.parameters ) : method.parameters != null ) {
+            return false;
+        }
+        if ( returnType != null ? !returnType.equals( method.returnType ) : method.returnType != null ) {
+            return false;
+        }
+        return visibility == method.visibility;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( body != null ? body.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( parameters != null ? parameters.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( returnType != null ? returnType.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( visibility != null ? visibility.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
+
+    @Override
+    public boolean isPackagePrivate() {
+        return visibility == Visibility.PACKAGE_PRIVATE;
+    }
+
+    @Override
+    public boolean isPublic() {
+        return visibility == Visibility.PUBLIC;
+    }
+
+    @Override
+    public boolean isPrivate() {
+        return visibility == Visibility.PRIVATE;
+    }
+
+    @Override
+    public boolean isProtected() {
+        return visibility == Visibility.PROTECTED;
+    }
+
+    @Override
+    public Visibility getVisibilty() {
+        return visibility;
+    }
+
+    @Override
+    public void setVisibility( Visibility visibility ) {
+        this.visibility = visibility;
     }
 
 }
