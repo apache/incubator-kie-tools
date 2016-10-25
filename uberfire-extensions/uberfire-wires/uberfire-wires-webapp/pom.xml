@@ -556,8 +556,7 @@
                 <include>src/main/webapp/org.uberfire.ext.wires.WiresShowcase</include>
                 <include>src/main/webapp/WEB-INF/deploy/</include>
                 <include>src/main/webapp/WEB-INF/classes/</include>
-                <include>src/main/webapp/WEB-INF/lib/</include>
-                <include>**/gwt-unitCache/**</include>
+                <include>src/main/webapp/WEB-INF/lib/</include>                
                 <include>.errai/</include>
                 <include>.niogit/**</include>
               </includes>

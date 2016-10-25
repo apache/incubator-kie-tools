@@ -51,13 +51,12 @@
   <properties>
     <uberfire.version>${project.version}</uberfire.version>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
-    <version.com.google.gwt>2.8.0-rc2</version.com.google.gwt>
+    <version.com.google.gwt>2.8.0</version.com.google.gwt>
     <!-- when the new jboss-ip-bom 7.0.0.CR5 was released the lienzo versions can be removed -->
     <version.com.ahome-it.lienzo-core>2.0.277-RELEASE</version.com.ahome-it.lienzo-core>
     <version.com.ahome-it.lienzo-tests>1.0.0-RC3</version.com.ahome-it.lienzo-tests>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
-    <!-- 19.0.0.jbossorg-2 was created from upstream Guava version 20.0-SNAPSHOT as Errai 4.0/GWT 2.8 needs it. Once the version 20.0 is released, we should upgrade to that. -->
-    <version.com.google.guava>19.0.0.jbossorg-2</version.com.google.guava>
+    <version.com.google.guava>20.0-rc1</version.com.google.guava>
     <!-- TODO Remove this when gson version is updated in ip-bom -->
     <version.com.google.code.gson>2.6.2</version.com.google.code.gson>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
@@ -495,8 +494,7 @@
               <includes>
                 <include>src/main/webapp/WEB-INF/deploy/</include>
                 <include>src/main/webapp/WEB-INF/classes/</include>
-                <include>src/main/webapp/WEB-INF/lib/</include>
-                <include>**/gwt-unitCache/**</include>
+                <include>src/main/webapp/WEB-INF/lib/</include>                
                 <include>.errai/</include>
                 <include>.niogit/**</include>
               </includes>
