@@ -110,6 +110,14 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-preferences-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-management-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-management-client</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>javax.inject</groupId>

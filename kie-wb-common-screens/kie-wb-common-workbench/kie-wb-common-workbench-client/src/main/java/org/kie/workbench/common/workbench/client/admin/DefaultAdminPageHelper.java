@@ -20,10 +20,17 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
+import org.uberfire.ext.security.management.api.AbstractEntityManager;
+import org.uberfire.ext.security.management.client.ClientUserSystemManager;
+import org.uberfire.ext.security.management.impl.SearchRequestImpl;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
@@ -39,6 +46,9 @@ public class DefaultAdminPageHelper {
     @Inject
     private PlaceManager placeManager;
 
+    @Inject
+    private ClientUserSystemManager userSystemManager;
+
     public void setup() {
         adminPage.addScreen( "root", constants.Settings() );
 
@@ -50,7 +60,12 @@ public class DefaultAdminPageHelper {
                                Map<String, String> params = new HashMap<>();
                                params.put( "activeTab", "RolesTab" );
                                placeManager.goTo( new DefaultPlaceRequest( SECURITY_MANAGEMENT, params ) );
-                           } );
+                           },
+                           command -> userSystemManager.roles( ( AbstractEntityManager.SearchResponse<Role> response ) -> {
+                               if ( response != null ) {
+                                   command.execute( response.getTotal() );
+                               }
+                           }, ( o, throwable ) -> false ).search( new SearchRequestImpl( "", 1, 1, null ) ) );
 
         adminPage.addTool( "root",
                            constants.Groups(),
@@ -60,7 +75,12 @@ public class DefaultAdminPageHelper {
                                Map<String, String> params = new HashMap<>();
                                params.put( "activeTab", "GroupsTab" );
                                placeManager.goTo( new DefaultPlaceRequest( SECURITY_MANAGEMENT, params ) );
-                           } );
+                           },
+                           command -> userSystemManager.groups( ( AbstractEntityManager.SearchResponse<Group> response ) -> {
+                               if ( response != null ) {
+                                   command.execute( response.getTotal() );
+                               }
+                           }, ( o, throwable ) -> false ).search( new SearchRequestImpl( "", 1, 1, null ) ) );
 
         adminPage.addTool( "root",
                            constants.Users(),
@@ -70,7 +90,12 @@ public class DefaultAdminPageHelper {
                                Map<String, String> params = new HashMap<>();
                                params.put( "activeTab", "UsersTab" );
                                placeManager.goTo( new DefaultPlaceRequest( SECURITY_MANAGEMENT, params ) );
-                           } );
+                           },
+                           command -> userSystemManager.users( ( AbstractEntityManager.SearchResponse<User> response ) -> {
+                               if ( response != null ) {
+                                   command.execute( response.getTotal() );
+                               }
+                           }, ( o, throwable ) -> false ).search( new SearchRequestImpl( "", 1, 1, null ) ) );
     }
 
     public Command getAdminToolCommand( final String screen ) {
