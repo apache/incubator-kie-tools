@@ -58,6 +58,7 @@ public class AdminPageImpl implements AdminPage {
         }
 
         screenTitleByIdentifier.put( identifier, title );
+        toolsByCategoryByScreen.put( identifier, new LinkedHashMap<>() );
     }
 
     @Override
@@ -80,12 +81,6 @@ public class AdminPageImpl implements AdminPage {
         }
 
         Map<String, List<AdminTool>> toolsByCategory = toolsByCategoryByScreen.get( screen );
-
-        if ( toolsByCategory == null ) {
-            toolsByCategory = new LinkedHashMap<>();
-            toolsByCategoryByScreen.put( screen, toolsByCategory );
-        }
-
         List<AdminTool> tools = toolsByCategory.get( category );
 
         if ( tools == null ) {

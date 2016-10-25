@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.preferences.client.admin;
 
+import java.util.List;
+import java.util.Map;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -26,6 +28,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.preferences.client.admin.category.AdminPageCategoryPresenter;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
+import org.uberfire.ext.preferences.client.admin.page.AdminTool;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -40,6 +43,10 @@ public class AdminPagePresenter {
         void add( final AdminPageCategoryPresenter.View categoryView );
 
         String getTitle();
+
+        String getNoScreenParameterError();
+
+        String getNoScreenFoundError( String screen );
     }
 
     private final View view;
@@ -65,19 +72,30 @@ public class AdminPagePresenter {
 
     @OnStartup
     public void onStartup( final PlaceRequest placeRequest ) {
-        init( placeRequest.getParameter( "screen", null ) );
+        final String screen = placeRequest.getParameter( "screen", null );
+        view.init( this );
+
+        if ( screen == null ) {
+            notification.fire( new NotificationEvent( view.getNoScreenParameterError(), NotificationEvent.NotificationType.ERROR ) );
+        } else {
+            init( screen );
+        }
     }
 
     public void init( final String screen ) {
         this.screen = screen;
 
-        view.init( this );
+        final Map<String, List<AdminTool>> toolsByCategory = adminPage.getToolsByCategory( screen );
 
-        adminPage.getToolsByCategory( screen ).forEach( ( category, adminTools ) -> {
-            AdminPageCategoryPresenter categoryPresenter = categoryPresenterProvider.get();
-            categoryPresenter.setup( adminTools );
-            view.add( categoryPresenter.getView() );
-        } );
+        if ( toolsByCategory != null ) {
+            toolsByCategory.forEach( ( category, adminTools ) -> {
+                AdminPageCategoryPresenter categoryPresenter = categoryPresenterProvider.get();
+                categoryPresenter.setup( adminTools );
+                view.add( categoryPresenter.getView() );
+            } );
+        } else {
+            notification.fire( new NotificationEvent( view.getNoScreenFoundError( screen ), NotificationEvent.NotificationType.ERROR ) );
+        }
     }
 
     @WorkbenchPartTitle

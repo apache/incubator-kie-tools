@@ -21,11 +21,14 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public class Constants {
 
     @TranslationKey(defaultValue = "")
-    public static final String SettingsPerspective_Title = "SettingsPerspective.Title";
-
-    @TranslationKey(defaultValue = "")
     public static final String PreferencesCentralActionsView_ChangesUndone = "PreferencesCentralActionsView.ChangesUndone";
 
     @TranslationKey(defaultValue = "")
     public static final String TreeHierarchyStructureView_SaveSuccess = "TreeHierarchyStructureView.SaveSuccess";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AdminPagePresenter_NoScreenParameterError = "AdminPagePresenter.NoScreenParameterError";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AdminPagePresenter_NoScreenFoundError = "AdminPagePresenter.NoScreenFoundError";
 }

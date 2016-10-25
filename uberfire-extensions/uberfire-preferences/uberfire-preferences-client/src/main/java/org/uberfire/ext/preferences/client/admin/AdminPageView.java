@@ -67,4 +67,14 @@ public class AdminPageView implements IsElement,
 
         return title;
     }
+
+    @Override
+    public String getNoScreenParameterError() {
+        return translationService.format( Constants.AdminPagePresenter_NoScreenParameterError );
+    }
+
+    @Override
+    public String getNoScreenFoundError( final String screen ) {
+        return translationService.format( Constants.AdminPagePresenter_NoScreenFoundError, screen );
+    }
 }
