@@ -83,14 +83,18 @@ public class PackageNameWhiteListServiceImpl
             return new WhiteList();
         } else if ( project instanceof KieProject ) {
 
-            WhiteList whiteList = load( (( KieProject ) project).getPackageNamesWhiteListPath() );
+            final WhiteList whiteList = load( ( (KieProject) project ).getPackageNamesWhiteListPath() );
 
-            for ( Package aPackage : projectService.resolvePackages( project ) ) {
-                whiteList.add( aPackage.getPackageName() );
+            if ( whiteList.isEmpty() ) {
+                return new WhiteList( packageNames );
+            } else {
+                for ( Package aPackage : projectService.resolvePackages( project ) ) {
+                    whiteList.add( aPackage.getPackageName() );
+                }
+
+                return new PackageNameWhiteListFilter( packageNames,
+                                                       whiteList ).getFilteredPackageNames();
             }
-
-            return new PackageNameWhiteListFilter( packageNames,
-                                                   whiteList ).getFilteredPackageNames();
         } else {
             return new WhiteList( packageNames );
         }

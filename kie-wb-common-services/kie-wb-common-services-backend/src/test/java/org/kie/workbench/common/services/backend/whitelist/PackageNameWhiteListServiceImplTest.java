@@ -59,6 +59,27 @@ public class PackageNameWhiteListServiceImplTest {
         when( packageNameSearchProvider.newTopLevelPackageNamesSearch( any( POM.class ) ) ).thenReturn( mock( PackageNameSearchProvider.PackageNameSearch.class ) );
     }
 
+
+    @Test
+    public void ifWhiteListIsEmptyWhiteListEverything() throws
+                                                        Exception {
+        final PackageNameWhiteListService packageNameWhiteListService = makeService( "" );
+
+        WhiteList filterPackageNames = packageNameWhiteListService.filterPackageNames( mock( KieProject.class ),
+                                                                                       new ArrayList<String>
+                                                                                               () {{
+                                                                                           add( "a" );
+                                                                                           add( "b" );
+                                                                                           add( "c" );
+                                                                                       }} );
+
+        assertEquals( 3,
+                      filterPackageNames.size() );
+        assertTrue( filterPackageNames.contains( "a" ) );
+        assertTrue( filterPackageNames.contains( "b" ) );
+        assertTrue( filterPackageNames.contains( "c" ) );
+    }
+
     @Test
     public void testWindowsEncoding() {
 

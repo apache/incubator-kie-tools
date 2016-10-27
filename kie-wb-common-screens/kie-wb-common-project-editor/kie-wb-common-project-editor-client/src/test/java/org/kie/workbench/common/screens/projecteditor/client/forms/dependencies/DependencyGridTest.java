@@ -180,13 +180,14 @@ public class DependencyGridTest {
     public void testUpdateViewAfterWhiteListChange() throws Exception {
         grid.setDependencies( new POM(),
                               new WhiteList() );
-        grid.onTogglePackagesToWhiteList( new HashSet<>() );
+        grid.onAddAll( new HashSet<>() );
 
         verify( view ).redraw();
     }
 
     @Test
-    public void testTogglePackagesToWhiteList() throws Exception {
+    public void testAddPackagesToWhiteList() throws
+                                             Exception {
 
         final WhiteList whiteList = new WhiteList();
 
@@ -199,13 +200,32 @@ public class DependencyGridTest {
 
         assertEquals( 0, whiteList.size() );
 
-        grid.onTogglePackagesToWhiteList( packages );
+        grid.onAddAll( packages );
 
-        assertTrue( whiteList.containsAll( packages ) );
         assertEquals( 2, whiteList.size() );
+    }
 
-        grid.onTogglePackagesToWhiteList( packages );
+    @Test
+    public void testRemovePackagesFromWhiteList() throws
+                                                  Exception {
 
-        assertEquals( 0, whiteList.size() );
+        final WhiteList whiteList = new WhiteList();
+        whiteList.add( "org.drools" );
+        whiteList.add( "org.guvnor" );
+
+        grid.setDependencies( new POM(),
+                              whiteList );
+
+        final HashSet<String> packages = new HashSet<String>();
+        packages.add( "org.drools" );
+        packages.add( "org.guvnor" );
+
+        assertEquals( 2,
+                      whiteList.size() );
+
+        grid.onRemoveAll( packages );
+
+        assertEquals( 0,
+                      whiteList.size() );
     }
 }

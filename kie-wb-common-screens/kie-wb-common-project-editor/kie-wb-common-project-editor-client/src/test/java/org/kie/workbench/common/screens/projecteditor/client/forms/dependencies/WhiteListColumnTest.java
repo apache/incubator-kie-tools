@@ -63,12 +63,29 @@ public class WhiteListColumnTest {
     }
 
     @Test
-    public void testEmpty() throws Exception {
-        assertEquals( "PackagesNotIncluded", whiteListColumn.getValue( getDependency() ) );
+    public void testEmptyWhiteListEmptyDependency() throws Exception {
+        assertEquals( "AllPackagesIncluded",
+                      whiteListColumn.getValue( getDependency() ) );
+    }
+
+    @Test
+    public void testEmptyDependency() throws Exception {
+        whiteList.add( "org.hello" );
+        assertEquals( "PackagesNotIncluded",
+                      whiteListColumn.getValue( getDependency() ) );
+    }
+
+    @Test
+    public void testWhiteListEmpty() throws
+                                     Exception {
+        assertEquals( "AllPackagesIncluded",
+                      whiteListColumn.getValue( getDependency( "org.hello" ) ) );
     }
 
     @Test
     public void testNotWhiteListed() throws Exception {
+        whiteList.add( "org.something.else" );
+
         assertEquals( "PackagesNotIncluded", whiteListColumn.getValue( getDependency( "org.hello" ) ) );
     }
 
@@ -88,15 +105,27 @@ public class WhiteListColumnTest {
     }
 
     @Test
-    public void testOnToggleTOGGLE() throws Exception {
+    public void testOnAddAll() throws Exception {
         final EnhancedDependency dependency = getDependency( "org.test" );
         dependency.getDependency().setGroupId( "groupId" );
         dependency.getDependency().setArtifactId( "artifactId" );
         dependency.getDependency().setVersion( "1.0" );
 
-        whiteListColumn.getFieldUpdater().update( 1, dependency, WhiteListCell.TOGGLE );
+        whiteListColumn.getFieldUpdater().update( 1, dependency, WhiteListCell.ADD_ALL );
 
-        verify( grid ).onTogglePackagesToWhiteList( dependency.getPackages() );
+        verify( grid ).onAddAll( dependency.getPackages() );
+    }
+
+    @Test
+    public void testOnRemoveAll() throws Exception {
+        final EnhancedDependency dependency = getDependency( "org.test" );
+        dependency.getDependency().setGroupId( "groupId" );
+        dependency.getDependency().setArtifactId( "artifactId" );
+        dependency.getDependency().setVersion( "1.0" );
+
+        whiteListColumn.getFieldUpdater().update( 1, dependency, WhiteListCell.ADD_NONE );
+
+        verify( grid ).onRemoveAll( dependency.getPackages() );
     }
 
     @Test
@@ -107,7 +136,7 @@ public class WhiteListColumnTest {
 
         assertEquals( "DependencyIsMissingAGroupId", shownMessage );
 
-        verify( grid, never() ).onTogglePackagesToWhiteList( anySet() );
+        verify( grid, never() ).onAddAll( anySet() );
     }
 
     private EnhancedDependency getDependency( final String... packages ) {

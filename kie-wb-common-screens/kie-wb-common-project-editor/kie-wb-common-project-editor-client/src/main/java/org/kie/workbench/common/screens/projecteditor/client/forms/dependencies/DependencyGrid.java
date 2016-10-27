@@ -117,14 +117,15 @@ public class DependencyGrid
         enhancedDependenciesManager.update();
     }
 
-    public void onTogglePackagesToWhiteList( final Set<String> packages ) {
+    public void onAddAll( final Set<String> packages ) {
 
-        if ( whiteList.containsAll( packages ) ) {
-            whiteList.removeAll( packages );
-        } else {
-            whiteList.addAll( packages );
-        }
+        whiteList.addAll( packages );
+        view.redraw();
+    }
 
+    public void onRemoveAll( final Set<String> packages ) {
+
+        whiteList.removeAll( packages );
         view.redraw();
     }
 }

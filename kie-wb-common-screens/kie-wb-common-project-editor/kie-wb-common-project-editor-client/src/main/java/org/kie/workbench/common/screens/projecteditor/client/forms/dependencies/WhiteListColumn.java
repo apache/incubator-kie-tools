@@ -43,8 +43,10 @@ public class WhiteListColumn
                 final DependencyValidator dependencyValidator = new DependencyValidator( dependency.getDependency() );
 
                 if ( dependencyValidator.validate() ) {
-                    if ( WhiteListCell.TOGGLE.equals( value ) ) {
-                        presenter.onTogglePackagesToWhiteList( dependency.getPackages() );
+                    if ( WhiteListCell.ADD_ALL.equals( value ) ) {
+                        presenter.onAddAll( dependency.getPackages() );
+                    } else if ( WhiteListCell.ADD_NONE.equals( value ) ) {
+                        presenter.onRemoveAll( dependency.getPackages() );
                     }
                 } else {
                     showMessage( dependencyValidator.getMessage() );
@@ -59,6 +61,11 @@ public class WhiteListColumn
 
     @Override
     public String getValue( final EnhancedDependency enhancedDependency ) {
+
+        if ( whiteList.isEmpty() ) {
+            return ProjectEditorResources.CONSTANTS.AllPackagesIncluded();
+        }
+
         final Set<String> packages = enhancedDependency.getPackages();
         if ( packages.isEmpty() ) {
             return ProjectEditorResources.CONSTANTS.PackagesNotIncluded();
