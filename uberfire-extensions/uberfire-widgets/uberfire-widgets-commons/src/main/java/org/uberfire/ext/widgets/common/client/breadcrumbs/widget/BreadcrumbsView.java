@@ -16,15 +16,14 @@
 
 package org.uberfire.ext.widgets.common.client.breadcrumbs.widget;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
-
-import javax.enterprise.context.Dependent;
 
 @Templated
 public class BreadcrumbsView implements UberElement<BreadcrumbsPresenter>,
