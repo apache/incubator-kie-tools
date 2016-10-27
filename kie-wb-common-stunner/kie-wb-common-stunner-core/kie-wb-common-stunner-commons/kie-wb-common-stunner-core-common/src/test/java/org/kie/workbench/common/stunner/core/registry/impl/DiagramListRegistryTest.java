@@ -43,8 +43,8 @@ public class DiagramListRegistryTest {
     @Before
     public void setup() {
         registry = new DiagramListRegistry();
-        when( diagram1.getUUID() ).thenReturn( DIAGRAM_1_UUID );
-        when( diagram2.getUUID() ).thenReturn( DIAGRAM_2_UUID );
+        when( diagram1.getName() ).thenReturn( DIAGRAM_1_UUID );
+        when( diagram2.getName() ).thenReturn( DIAGRAM_2_UUID );
     }
 
     @Test

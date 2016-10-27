@@ -48,11 +48,15 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
 
     private static Logger LOGGER = Logger.getLogger( EdgeBuilderControlImpl.class.getName() );
 
-    ClientDefinitionManager clientDefinitionManager;
-    ShapeManager shapeManager;
-    CanvasCommandFactory commandFactory;
-    CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
-    EdgeMagnetsHelper magnetsHelper;
+    private final ClientDefinitionManager clientDefinitionManager;
+    private final ShapeManager shapeManager;
+    private final CanvasCommandFactory commandFactory;
+    private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    private final EdgeMagnetsHelper magnetsHelper;
+
+    protected EdgeBuilderControlImpl() {
+        this( null, null, null, null, null );
+    }
 
     @Inject
     public EdgeBuilderControlImpl( final ClientDefinitionManager clientDefinitionManager,

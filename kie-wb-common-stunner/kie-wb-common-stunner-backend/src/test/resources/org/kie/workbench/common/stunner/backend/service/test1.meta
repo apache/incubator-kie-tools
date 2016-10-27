@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.8.0_91" class="java.beans.XMLDecoder">
+ <object class="org.kie.workbench.common.stunner.core.diagram.MetadataImpl">
+  <void property="canvasRootUUID">
+   <string>root1</string>
+  </void>
+  <void property="definitionSetId">
+   <string>defSet1</string>
+  </void>
+  <void property="shapeSetId">
+   <string>ss1</string>
+  </void>
+  <void property="thumbData">
+   <string>thumbData1</string>
+  </void>
+  <void property="title">
+   <string>title1</string>
+  </void>
+ </object>
+</java>

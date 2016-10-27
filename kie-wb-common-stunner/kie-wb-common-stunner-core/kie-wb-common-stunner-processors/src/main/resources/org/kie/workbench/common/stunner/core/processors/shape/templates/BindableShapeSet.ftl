@@ -27,30 +27,23 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 @Generated( "${generatedByClassName}" )
 @ApplicationScoped
 public class ${className} extends ${parentClassName} {
-    
-    public static final String ID = "${className}";
 
-    protected ${className}() {
-    }
+protected ${className}() {
+}
 
-    @Inject
-    public ${className}( final DefinitionManager definitionManager) {
-        super( definitionManager );
-    }
+@Inject
+public ${className}( final DefinitionManager definitionManager) {
+super( definitionManager );
+}
 
-    @PostConstruct
-    public void init() {
-        super.doInit();
-    }
-    
-    @Override
-    public String getId() {
-        return ID;
-    }
-    
-    @Override
-    protected Class<?> getDefinitionSetClass() {
-        return ${defSetClass}.class;
-    }
+@PostConstruct
+public void init() {
+super.doInit();
+}
+
+@Override
+protected Class<?> getDefinitionSetClass() {
+return ${defSetClass}.class;
+}
 
 }

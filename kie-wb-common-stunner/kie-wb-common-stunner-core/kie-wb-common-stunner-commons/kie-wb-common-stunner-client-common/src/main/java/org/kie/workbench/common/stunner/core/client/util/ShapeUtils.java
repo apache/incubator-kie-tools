@@ -71,18 +71,6 @@ public class ShapeUtils {
         return mutationContext != null && MutationContext.Type.ANIMATION.equals( mutationContext.getType() );
     }
 
-    public static ShapeSet getShapeSet( final Collection<ShapeSet> shapeSets, final String id ) {
-        if ( null != id && null != shapeSets ) {
-            for ( final ShapeSet shapeSet : shapeSets ) {
-                if ( id.equals( shapeSet.getId() ) ) {
-                    return shapeSet;
-                }
-            }
-
-        }
-        return null;
-    }
-
     public static double[] getContainerXY( final Shape shape ) {
         return new double[]{ shape.getShapeView().getShapeX(),
                 shape.getShapeView().getShapeY() };

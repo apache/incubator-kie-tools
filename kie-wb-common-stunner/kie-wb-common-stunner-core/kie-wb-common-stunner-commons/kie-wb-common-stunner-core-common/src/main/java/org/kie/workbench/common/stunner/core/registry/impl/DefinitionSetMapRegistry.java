@@ -42,7 +42,7 @@ class DefinitionSetMapRegistry<T> extends AbstractDynamicRegistryWrapper<T, MapR
     }
 
     @Override
-    public T getDefinitionSetByType( final Class<T> type ) {
+    public T getDefinitionSetByType( final Class<?> type ) {
         final String id = BindableAdapterUtils.getDefinitionSetId( type, adapterManager.registry() );
         return getDefinitionSetById( id );
     }
@@ -53,8 +53,8 @@ class DefinitionSetMapRegistry<T> extends AbstractDynamicRegistryWrapper<T, MapR
     }
 
     @Override
-    public Collection<T> getItems() {
-        return super.getItems();
+    public Collection<T> getAllDefinitionSets() {
+        return getWrapped().getItems();
     }
 
 }

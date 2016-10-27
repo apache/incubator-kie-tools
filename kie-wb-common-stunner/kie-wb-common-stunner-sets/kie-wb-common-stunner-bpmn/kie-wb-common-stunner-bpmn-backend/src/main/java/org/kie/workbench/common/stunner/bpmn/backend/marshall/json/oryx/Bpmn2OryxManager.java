@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx;
 
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.Bpmn2OryxPropertyManager;
-import org.kie.workbench.common.stunner.core.backend.utils.BackendBindableDefinitionUtils;
+import org.kie.workbench.common.stunner.core.backend.util.BackendBindableDefinitionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

@@ -19,23 +19,30 @@ package org.kie.workbench.common.stunner.client.widgets.event;
 import org.uberfire.workbench.events.UberFireEvent;
 
 /**
- * <p>CDI event when a load diagram operation is requested.</p>
+ * <p>Event when a load diagram operation is requested.</p>
  */
-public class LoadDiagramEvent implements UberFireEvent {
+public final class LoadDiagramEvent implements UberFireEvent {
 
-    private String uuid;
+    private final String uri;
+    private final String name;
 
-    public LoadDiagramEvent( final String uuid ) {
-        this.uuid = uuid;
+    public LoadDiagramEvent( final String uri,
+                             final String name ) {
+        this.name = name;
+        this.uri = uri;
     }
 
-    public String getUUID() {
-        return uuid;
+    public String getURI() {
+        return uri;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
     public String toString() {
-        return "LoadDiagramEvent [uuid=" + uuid + "]";
+        return "LoadDiagramEvent [name=" + name + ", uri=" + uri + "]";
     }
 
 }

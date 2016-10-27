@@ -62,12 +62,7 @@ public class AbstractDynamicRegistryWrapperTest {
         verify( registry, times( 1 ) ).remove( eq( s1 ) );
     }
 
-    @Test
-    @SuppressWarnings( "unchecked" )
-    public void testClear() {
-        tested.clear();
-        verify( registry, times( 1 ) ).clear();
-    }
+
 
     @Test
     @SuppressWarnings( "unchecked" )
@@ -78,22 +73,6 @@ public class AbstractDynamicRegistryWrapperTest {
         assertTrue( tested.contains( s1 ) );
         assertTrue( tested.contains( s2 ) );
         assertFalse( tested.contains( "" ) );
-    }
-
-    @Test
-    @SuppressWarnings( "unchecked" )
-    public void testGetItems() {
-        when( registry.getItems() ).thenReturn( new ArrayList<Object>( 2 ) {{
-            add( s1 );
-            add( s2 );
-        }} );
-        Collection<Object> items = tested.getItems();
-        assertNotNull( items );
-        assertEquals( 2, items.size() );
-        Iterator<Object> it = items.iterator();
-        assertEquals( s1, it.next() );
-        assertEquals( s2, it.next() );
-
     }
 
 }

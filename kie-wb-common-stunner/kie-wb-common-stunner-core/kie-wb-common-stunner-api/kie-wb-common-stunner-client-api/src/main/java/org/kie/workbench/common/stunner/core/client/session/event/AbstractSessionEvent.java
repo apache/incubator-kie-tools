@@ -16,18 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.client.session.event;
 
-import org.kie.workbench.common.stunner.core.client.session.CanvasSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.workbench.events.UberFireEvent;
 
 public abstract class AbstractSessionEvent implements UberFireEvent {
 
-    protected final CanvasSession session;
+    protected final ClientSession session;
 
-    public AbstractSessionEvent( final CanvasSession session ) {
+    public AbstractSessionEvent( final ClientSession session ) {
         this.session = session;
     }
 
-    public CanvasSession getSession() {
+    public ClientSession getSession() {
         return session;
     }
 

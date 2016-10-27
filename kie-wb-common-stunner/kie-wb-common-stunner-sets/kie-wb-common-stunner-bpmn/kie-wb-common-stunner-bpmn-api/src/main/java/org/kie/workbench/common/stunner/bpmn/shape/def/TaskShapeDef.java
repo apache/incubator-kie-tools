@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: I18n.
 public final class TaskShapeDef
         extends AbstractShapeDef<BaseTask>
         implements RectangleShapeDef<BaseTask>, HasChildShapeDefs<BaseTask> {

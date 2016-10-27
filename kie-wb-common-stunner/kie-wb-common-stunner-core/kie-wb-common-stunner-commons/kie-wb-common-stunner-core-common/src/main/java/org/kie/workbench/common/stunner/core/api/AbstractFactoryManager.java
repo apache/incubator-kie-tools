@@ -19,9 +19,10 @@ package org.kie.workbench.common.stunner.core.api;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
-import org.kie.workbench.common.stunner.core.diagram.Settings;
-import org.kie.workbench.common.stunner.core.diagram.SettingsImpl;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
+import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -30,45 +31,46 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
+import org.kie.workbench.common.stunner.core.util.UUID;
 
 import java.util.Iterator;
 
-public abstract class AbstractFactoryManager implements FactoryManager {
+public abstract class AbstractFactoryManager {
 
     private final FactoryRegistry factoryRegistry;
     private final DefinitionManager definitionManager;
+    private final DiagramFactory diagramFactory;
 
     protected AbstractFactoryManager() {
         this.factoryRegistry = null;
         this.definitionManager = null;
+        this.diagramFactory = null;
     }
 
     public AbstractFactoryManager( final RegistryFactory registryFactory,
-                                   final DefinitionManager definitionManager ) {
+                                   final DefinitionManager definitionManager,
+                                   final DiagramFactory diagramFactory ) {
         this.factoryRegistry = registryFactory.newFactoryRegistry();
         this.definitionManager = definitionManager;
+        this.diagramFactory = diagramFactory;
     }
 
-    @Override
     @SuppressWarnings( "unchecked" )
     public <T> T newDefinition( final String id ) {
         final DefinitionFactory<T> factory = factoryRegistry.getDefinitionFactory( id );
         return factory.build( id );
     }
 
-    @Override
     public <T> T newDefinition( final Class<T> type ) {
         final String id = BindableAdapterUtils.getDefinitionId( type, definitionManager.adapters().registry() );
         return newDefinition( id );
     }
 
-    @Override
     public Element newElement( final String uuid,
                                final String id ) {
         return doBuild( uuid, id );
     }
 
-    @Override
     public Element newElement( final String uuid,
                                final Class<?> type ) {
         final String id = BindableAdapterUtils.getGenericClassName( type );
@@ -79,31 +81,37 @@ public abstract class AbstractFactoryManager implements FactoryManager {
         return definitionManager.definitionSets().getDefinitionSetById( id );
     }
 
-    @Override
     @SuppressWarnings( "unchecked" )
-    public <D extends Diagram> D newDiagram( final String uuid,
+    public <D extends Diagram> D newDiagram( final String name,
                                              final String id ) {
-        final Graph graph = ( Graph ) newElement( uuid, id );
-        final Settings diagramSettings = new SettingsImpl( id );
+        final Graph graph = ( Graph ) newElement( UUID.uuid(), id );
+        final Metadata metadata = buildMetadata( id, name );
         final String rootId = getCanvasRoot( graph );
         if ( null != rootId ) {
-            diagramSettings.setCanvasRootUUID( rootId );
+            metadata.setCanvasRootUUID( rootId );
 
         }
-        Diagram diagram = new DiagramImpl( uuid, graph, diagramSettings );
-        return ( D ) diagram;
+        return ( D ) diagramFactory.build( name, metadata, graph );
     }
 
-    @Override
     public <D extends Diagram> D newDiagram( final String uuid,
                                              final Class<?> type ) {
         final String id = BindableAdapterUtils.getDefinitionSetId( type, definitionManager.adapters().registry() );
         return newDiagram( uuid, id );
     }
 
-    @Override
     public FactoryRegistry registry() {
         return factoryRegistry;
+    }
+
+    protected Metadata buildMetadata( final String defSetId, final String title ) {
+        return new MetadataImpl.MetadataImplBuilder( defSetId, definitionManager )
+                .setTitle( title )
+                .build();
+    }
+
+    protected DefinitionManager getDefinitionManager() {
+        return definitionManager;
     }
 
     @SuppressWarnings( "unchecked" )

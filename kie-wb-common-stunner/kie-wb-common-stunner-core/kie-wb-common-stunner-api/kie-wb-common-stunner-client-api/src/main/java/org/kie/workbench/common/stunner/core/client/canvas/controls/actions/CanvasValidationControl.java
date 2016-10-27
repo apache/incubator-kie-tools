@@ -25,6 +25,8 @@ import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasVali
  */
 public interface CanvasValidationControl<C extends CanvasHandler> extends CanvasControl<C> {
 
+    void validate();
+
     void validate( CanvasValidatorCallback validatorCallback );
 
 }

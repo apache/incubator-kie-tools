@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Abs
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
@@ -45,7 +45,7 @@ public class DefinitionSetPaletteBuilderImpl
         implements DefinitionSetPaletteBuilder {
 
     DefinitionUtils definitionUtils;
-    ClientFactoryServices clientFactoryServices;
+    ClientFactoryService clientFactoryServices;
 
     private PaletteCategoryProvider paletteCategoryProvider;
     private PaletteMorphGroupProvider paletteMorphGroupProvider;
@@ -56,7 +56,7 @@ public class DefinitionSetPaletteBuilderImpl
 
     @Inject
     public DefinitionSetPaletteBuilderImpl( final DefinitionUtils definitionUtils,
-                                            final ClientFactoryServices clientFactoryServices ) {
+                                            final ClientFactoryService clientFactoryServices ) {
         this.definitionUtils = definitionUtils;
         this.clientFactoryServices = clientFactoryServices;
         this.paletteCategoryProvider = CATEGORY_PROVIDER;

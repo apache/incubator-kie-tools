@@ -67,22 +67,22 @@ public interface FactoryManager {
     /**
      * Creates a new diagram for the given Definition Set identifier.
      *
-     * @param uuid The unique diagram's identifier.
+     * @param name The unique diagram's name.
      * @param id   The definition set identifier.
      * @param <D>  The diagram type.
      * @return A new diagram instance.
      */
-    <D extends Diagram> D newDiagram( String uuid, String id );
+    <D extends Diagram> D newDiagram( String name, String id );
 
     /**
      * Creates a new diagram for the given Definition Set type.
      *
-     * @param uuid The unique diagram's identifier.
+     * @param name The unique diagram's name.
      * @param type The definition set type.
      * @param <D>  The diagram type.
      * @return A new diagram instance.
      */
-    <D extends Diagram> D newDiagram( String uuid, Class<?> type );
+    <D extends Diagram> D newDiagram( String name, Class<?> type );
 
     /**
      * The registry that handles all different factories.

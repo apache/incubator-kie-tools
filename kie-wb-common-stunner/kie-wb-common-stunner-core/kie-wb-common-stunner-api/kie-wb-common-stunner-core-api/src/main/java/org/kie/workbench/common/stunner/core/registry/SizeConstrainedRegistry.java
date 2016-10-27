@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.registry;
 
+/**
+ * Registry types that are size constrained must implement this type.
+ */
 public interface SizeConstrainedRegistry {
 
     void setMaxSize( int size );

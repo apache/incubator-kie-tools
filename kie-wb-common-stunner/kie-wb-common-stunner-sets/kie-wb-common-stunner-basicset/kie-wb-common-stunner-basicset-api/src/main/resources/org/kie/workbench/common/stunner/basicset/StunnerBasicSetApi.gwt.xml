@@ -26,5 +26,6 @@
 	<source path="definition"/>
 	<source path="shape/def"/>
 	<source path="" includes="BasicSet.java"/>
+	<source path="" includes="BasicSetResourceType.java"/>
 
 </module>

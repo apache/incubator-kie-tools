@@ -125,7 +125,7 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         if ( clearSelection ) {
             clearSelection();
         }
-        final String canvasRootUUID = canvasHandler.getDiagram().getSettings().getCanvasRootUUID();
+        final String canvasRootUUID = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
         if ( null != canvasRootUUID ) {
             elementSelectedEventEvent.fire( new CanvasElementSelectedEvent( canvasHandler, canvasRootUUID ) );
 

@@ -21,6 +21,7 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequestBuilder;
+import org.uberfire.backend.vfs.Path;
 
 @Portable
 public final class DiagramLookupRequestImpl extends AbstractLookupRequest implements DiagramLookupRequest {
@@ -31,12 +32,23 @@ public final class DiagramLookupRequestImpl extends AbstractLookupRequest implem
         super( criteria, page, pageSize );
     }
 
-    // TODO: Add more lookup criteria here.
     @NonPortable
     public static class Builder extends AbstractLookupRequestBuilder<Builder> {
 
+        private final StringBuilder criteria = new StringBuilder();
+
+        public Builder withName( final String name ) {
+            criteria.append( "name=" ).append( name ).append( ";" );
+            return this;
+        }
+
+        public Builder forPath( final Path path ) {
+            criteria.append( "path=" ).append( path.toURI() ).append( ";" );
+            return this;
+        }
+
         public DiagramLookupRequest build() {
-            return new DiagramLookupRequestImpl( "", page, pageSize );
+            return new DiagramLookupRequestImpl( criteria.toString(), page, pageSize );
         }
 
     }

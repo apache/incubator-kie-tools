@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGridImpl;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -46,7 +46,7 @@ public class LienzoCanvasPaletteControl extends AbstractCanvasPaletteControl {
     @Inject
     public LienzoCanvasPaletteControl( final LienzoDefinitionSetPaletteFactory paletteFactory,
                                        final @Element ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl,
-                                       final ClientFactoryServices factoryServices,
+                                       final ClientFactoryService factoryServices,
                                        final ShapeManager shapeManager,
                                        final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
         super( paletteFactory, elementBuilderControl, factoryServices, shapeManager );

@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtil
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -53,18 +53,18 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
 
     private static Logger LOGGER = Logger.getLogger( AbstractElementBuilderControl.class.getName() );
 
-    ClientDefinitionManager clientDefinitionManager;
-    ClientFactoryServices clientFactoryServices;
-    CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
-    CanvasCommandFactory canvasCommandFactory;
-    GraphUtils graphUtils;
-    ModelContainmentRuleManager modelContainmentRuleManager;
-    ModelCardinalityRuleManager modelCardinalityRuleManager;
-    GraphBoundsIndexer graphBoundsIndexer;
-    CanvasLayoutUtils canvasLayoutUtils;
+    private final ClientDefinitionManager clientDefinitionManager;
+    private final ClientFactoryService clientFactoryServices;
+    private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    private final CanvasCommandFactory canvasCommandFactory;
+    private final GraphUtils graphUtils;
+    private final ModelContainmentRuleManager modelContainmentRuleManager;
+    private final ModelCardinalityRuleManager modelCardinalityRuleManager;
+    private final GraphBoundsIndexer graphBoundsIndexer;
+    private final CanvasLayoutUtils canvasLayoutUtils;
 
     public AbstractElementBuilderControl( final ClientDefinitionManager clientDefinitionManager,
-                                          final ClientFactoryServices clientFactoryServices,
+                                          final ClientFactoryService clientFactoryServices,
                                           final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                           final GraphUtils graphUtils,
                                           final ModelContainmentRuleManager modelContainmentRuleManager,
@@ -157,16 +157,8 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     @Override
     protected void doDisable() {
         graphBoundsIndexer.destroy();
-        graphBoundsIndexer = null;
-        clientDefinitionManager = null;
-        clientFactoryServices = null;
-        canvasCommandManager = null;
-        canvasCommandFactory = null;
-        graphUtils = null;
         modelContainmentRuleManager.clearRules();
         modelCardinalityRuleManager.clearRules();
-        modelContainmentRuleManager = null;
-        modelCardinalityRuleManager = null;
     }
 
     public interface CommandsCallback {
@@ -252,7 +244,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     public Node<View<?>, Edge> getParent( final double _x,
                                           final double _y ) {
         if ( _x > -1 && _y > -1 ) {
-            final String rootUUID = canvasHandler.getDiagram().getSettings().getCanvasRootUUID();
+            final String rootUUID = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
             graphBoundsIndexer.setRootUUID( rootUUID ).build( canvasHandler.getDiagram().getGraph() );
             final Node<View<?>, Edge> r = graphBoundsIndexer.getAt( _x, _y );
             return r;

@@ -57,11 +57,6 @@ public class CommandRegistryImplTest {
         tested.contains( command );
     }
 
-    @Test( expected = UnsupportedOperationException.class )
-    public void testGetItems() {
-        tested.getItems();
-    }
-
     @Test
     public void testRegisterCommand() {
         tested.register( command );

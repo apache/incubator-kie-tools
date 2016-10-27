@@ -41,6 +41,169 @@
         <module>kie-wb-common-stunner-showcase</module>
     </modules>
 
+    <build>
+
+        <pluginManagement>
+
+            <plugins>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+
+                <!-- Packaging -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <executions>
+                        <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has already added them -->
+                        <execution>
+                            <id>attach-test-jar</id>
+                            <goals>
+                                <goal>test-jar</goal>
+                            </goals>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/logback-test.xml</exclude>
+                                    <exclude>**/jndi.properties</exclude>
+                                </excludes>
+                                <archive>
+                                    <manifestEntries>
+                                        <Bundle-SymbolicName>${project.artifactId}.tests</Bundle-SymbolicName>
+                                        <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                                        <Bundle-Name>${project.name}</Bundle-Name>
+                                        <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                                    </manifestEntries>
+                                </archive>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                            <configuration>
+                                <archive>
+                                    <manifestEntries>
+                                        <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                                        <Bundle-SymbolicName>${project.artifactId}.source</Bundle-SymbolicName>
+                                        <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                                        <Bundle-Name>${project.name}</Bundle-Name>
+                                        <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                                        <Eclipse-SourceBundle>${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                                    </manifestEntries>
+                                </archive>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>attach-test-sources</id>
+                            <goals>
+                                <goal>test-jar-no-fork</goal>
+                            </goals>
+                            <configuration>
+                                <archive>
+                                    <manifestEntries>
+                                        <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                                        <Bundle-SymbolicName>${project.artifactId}.tests.source</Bundle-SymbolicName>
+                                        <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                                        <Bundle-Name>${project.name}</Bundle-Name>
+                                        <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                                        <Eclipse-SourceBundle>${project.artifactId}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                                    </manifestEntries>
+                                </archive>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+
+        </pluginManagement>
+
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${basedir}</directory>
+                            <includes>
+                                <include>www-test/**</include>
+                                <include>**/gwt-unitCache/**</include>
+                                <include>.gwt/**</include>
+                                <include>.errai/</include>
+                                <include>.security/</include>
+                                <include>.niogit/**</include>
+                                <include>.index/**</include>
+                                <include>**/*.JUnit/**</include>
+                                <include>repositories/</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- Entry needed to provide parsed version properties -->
+                <!-- Additionally it adds allows generated sources goes into -sources artifact -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/generated-sources/annotations/</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <!-- Entry needed to create test-jars even for packaging types war, bundle, ... -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <!-- Entry needed to create, install and deploy sources jars -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
     <profiles>
         <profile>
             <id>fullProfile</id>
@@ -49,9 +212,6 @@
                     <name>full</name>
                 </property>
             </activation>
-            <modules>
-                <module>kie-wb-common-stunner-distros</module>
-            </modules>
         </profile>
     </profiles>
 

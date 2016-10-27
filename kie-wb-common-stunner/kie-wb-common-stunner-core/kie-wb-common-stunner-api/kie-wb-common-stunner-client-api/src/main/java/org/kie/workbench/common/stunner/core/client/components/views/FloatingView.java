@@ -20,6 +20,10 @@ public interface FloatingView<V> {
 
     void add( V item );
 
+    FloatingView<V> setOffsetX( double ox );
+
+    FloatingView<V> setOffsetY( double oy );
+
     FloatingView<V> setX( double x );
 
     FloatingView<V> setY( double y );

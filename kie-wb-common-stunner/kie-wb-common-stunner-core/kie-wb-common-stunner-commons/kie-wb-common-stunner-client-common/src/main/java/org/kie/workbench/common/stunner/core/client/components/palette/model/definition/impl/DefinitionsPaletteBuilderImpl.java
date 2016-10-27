@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Abs
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
@@ -41,7 +41,7 @@ public class DefinitionsPaletteBuilderImpl
         implements DefinitionsPaletteBuilder {
 
     DefinitionUtils definitionUtils;
-    ClientFactoryServices clientFactoryServices;
+    ClientFactoryService clientFactoryServices;
 
     protected DefinitionsPaletteBuilderImpl() {
         this( null, null );
@@ -49,7 +49,7 @@ public class DefinitionsPaletteBuilderImpl
 
     @Inject
     public DefinitionsPaletteBuilderImpl( final DefinitionUtils definitionUtils,
-                                          final ClientFactoryServices clientFactoryServices ) {
+                                          final ClientFactoryService clientFactoryServices ) {
         this.definitionUtils = definitionUtils;
         this.clientFactoryServices = clientFactoryServices;
     }

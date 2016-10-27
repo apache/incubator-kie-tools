@@ -23,6 +23,8 @@
 	<inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnApi"/>
 	<inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesClient"/>
 	<inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
+	<!-- For now BPMN depends on the BasicSet as it's using some icons.-->
+	<inherits name="org.kie.workbench.common.stunner.basicset.StunnerBasicSetClient"/>
 
 	<source path="client"/>
 

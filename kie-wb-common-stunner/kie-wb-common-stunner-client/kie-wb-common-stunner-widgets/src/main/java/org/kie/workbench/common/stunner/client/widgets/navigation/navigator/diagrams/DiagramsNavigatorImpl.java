@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.Navigator;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.NavigatorItem;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.NavigatorView;
-import org.kie.workbench.common.stunner.core.client.service.ClientDiagramServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
@@ -45,7 +45,7 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     private static Logger LOGGER = Logger.getLogger( DiagramsNavigatorImpl.class.getName() );
 
-    ClientDiagramServices clientDiagramServices;
+    ClientDiagramService clientDiagramServices;
     Instance<DiagramNavigatorItem> navigatorItemInstances;
     Event<LoadDiagramEvent> loadDiagramEventEvent;
     NavigatorView<?> view;
@@ -55,7 +55,7 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
     private int height;
 
     @Inject
-    public DiagramsNavigatorImpl( final ClientDiagramServices clientDiagramServices,
+    public DiagramsNavigatorImpl( final ClientDiagramService clientDiagramServices,
                                   final Instance<DiagramNavigatorItem> navigatorItemInstances,
                                   final Event<LoadDiagramEvent> loadDiagramEventEvent,
                                   final NavigatorView<?> view ) {
@@ -132,13 +132,14 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
                 width,
                 height,
                 () -> {
-                    final String itemUUID = diagramRepresentation.getUUID();
-                    fireLoadDiagram( itemUUID );
+                    fireLoadDiagram( diagramRepresentation );
                 } );
     }
 
-    private void fireLoadDiagram( final String uuid ) {
-        loadDiagramEventEvent.fire( new LoadDiagramEvent( uuid ) );
+    private void fireLoadDiagram( final DiagramRepresentation diagramRepresentation ) {
+        final String name = diagramRepresentation.getName();
+        final String path = diagramRepresentation.getPath().toURI();
+        loadDiagramEventEvent.fire( new LoadDiagramEvent( path, name ) );
     }
 
     private void fireProcessingStarted() {

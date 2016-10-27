@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import javax.enterprise.context.Dependent;
 import java.util.Iterator;
 
-// TODO: This has to be refactored by the use of a good canvas layout API.
+// TODO: This has to be refactored by the use of a good impl for dynamic layouts.
 @Dependent
 public class CanvasLayoutUtils {
 
@@ -48,23 +48,22 @@ public class CanvasLayoutUtils {
 
     public static boolean isCanvasRoot( final Diagram diagram,
                                         final String pUUID ) {
-        final String canvasRoot = diagram.getSettings().getCanvasRootUUID();
+        final String canvasRoot = diagram.getMetadata().getCanvasRootUUID();
         return ( null != canvasRoot && null != pUUID && canvasRoot.equals( pUUID ) );
     }
 
     public double[] getNextLayoutPosition( final CanvasHandler canvasHandler, final Element<View<?>> source ) {
-        final Double[] pos = GraphUtils.getPosition( source.getContent() );
-        final double[] next = new double[]{ pos[ 0 ], pos[ 1 ] };
-        return checkNextLayoutPosition( next[ 0 ], next[ 1 ], canvasHandler );
+        final double[] pos = getBoundCoordinates( source.getContent(), 0, 0 );
+        return checkNextLayoutPosition( pos[ 0 ] + PADDING, pos[ 1 ] + PADDING, canvasHandler );
     }
 
     public double[] getNextLayoutPosition( final CanvasHandler canvasHandler ) {
-        final String ruuid = canvasHandler.getDiagram().getSettings().getCanvasRootUUID();
+        final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
         final double[] next = getNextLayoutPosition( canvasHandler, ruuid );
         return checkNextLayoutPosition( next[ 0 ], next[ 1 ], canvasHandler );
     }
 
-    // Check that "next" cartesian coordinates are not bigger than current graph bounds.
+    // Check that "next" coordinates on both cartesian axis do not exceed than graph bounds.
     @SuppressWarnings( "unchecked" )
     private double[] checkNextLayoutPosition( final double x,
                                               final double y,
@@ -96,12 +95,12 @@ public class CanvasLayoutUtils {
     @SuppressWarnings( "unchecked" )
     private double[] getNextLayoutPosition( final CanvasHandler canvasHandler, final String rootUUID ) {
         final Graph graph = canvasHandler.getDiagram().getGraph();
-        final double[] result = new double[ 2 ];
-        result[ 0 ] = 0;
-        result[ 1 ] = 0;
+        final double[] currentCandidateCoords = new double[] { 0, 0 };
+
         new ChildrenTraverseProcessorImpl( new TreeWalkTraverseProcessorImpl() )
                 .setRootUUID( rootUUID )
                 .traverse( graph, new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
+
 
                     @Override
                     public void startNodeTraversal( final Node<View, Edge> node ) {
@@ -133,49 +132,39 @@ public class CanvasLayoutUtils {
                                 }
 
                             }
-                            final double[] coordinates = getNodeCoordinates( node, parentX, parentY );
-                            if ( coordinates[ 0 ] > getCurrentMaxX() ) {
-                                result[ 0 ] = coordinates[ 0 ];
-
-                            }
-                            if ( coordinates[ 1 ] > getCurrentMaxY() ) {
-                                result[ 1 ] = coordinates[ 1 ];
-
-                            }
-
+                            tryThisCandidate( node, parentX, parentY );
                         } else if ( null != node ) {
-                            final Double[] nodeCoords = GraphUtils.getPosition( node.getContent() );
-                            final Double[] nodeSize = GraphUtils.getSize( node.getContent() );
-                            if ( nodeCoords[ 0 ] > getCurrentMaxX() ) {
-                                result[ 0 ] = nodeCoords[ 0 ] + nodeSize[ 0 ] + PADDING;
-
-                            }
-                            if ( nodeCoords[ 1 ] > getCurrentMaxY() ) {
-                                result[ 1 ] = nodeCoords[ 1 ] + nodeSize[ 1 ] + PADDING;
-
-                            }
-
+                            tryThisCandidate( node, 0, 0 );
                         }
+                    }
 
+                    private void tryThisCandidate( final Node<View, Edge> node,
+                                                   final double parentX,
+                                                   final double parentY ){
+                        final double[] coordinates = getBoundCoordinates( node.getContent(), parentX, parentY );
+                        if ( coordinates[ 0 ] > getCurrentMaxX() && coordinates[ 1 ] > getCurrentMaxY() ) {
+                            currentCandidateCoords[ 0 ] = coordinates[ 0 ];
+                            currentCandidateCoords[ 1 ] = coordinates[ 1 ];
+                        }
                     }
 
                     private double getCurrentMaxX() {
-                        return result[ 0 ];
+                        return currentCandidateCoords[ 0 ];
                     }
 
                     private double getCurrentMaxY() {
-                        return result[ 1 ];
+                        return currentCandidateCoords[ 1 ];
                     }
 
                 } );
-        return result;
+
+        return new double[] { currentCandidateCoords[0] + PADDING, currentCandidateCoords[1] + PADDING };
     }
 
-    private double[] getNodeCoordinates( final Node node,
+    private double[] getBoundCoordinates( final View view,
                                          final double parentX,
                                          final double parentY ) {
-        final View content = ( View ) node.getContent();
-        final Bounds bounds = content.getBounds();
+        final Bounds bounds = view.getBounds();
         final Bounds.Bound lrBound = bounds.getLowerRight();
         final double lrX = lrBound.getX() + parentX;
         final double lrY = lrBound.getY() + parentY;

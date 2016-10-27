@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
@@ -55,7 +55,7 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
     public AbstractPaletteMorphCommand( final DefinitionUtils definitionUtils,
                                         final CanvasCommandFactory commandFactory,
                                         final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                        final ClientFactoryServices clientFactoryServices,
+                                        final ClientFactoryService clientFactoryServices,
                                         final CommonLookups commonLookups,
                                         final ShapeManager shapeManager,
                                         final DefinitionsPaletteBuilder definitionsPaletteBuilder,

@@ -19,7 +19,6 @@
 
 <module>
 
-	<inherits name='com.google.gwt.user.User' />
 	<inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
 	
 	<source path="client"/>

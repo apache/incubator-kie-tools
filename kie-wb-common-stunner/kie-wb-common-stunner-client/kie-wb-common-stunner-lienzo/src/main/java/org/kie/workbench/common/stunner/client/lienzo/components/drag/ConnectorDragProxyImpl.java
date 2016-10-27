@@ -60,7 +60,7 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
     public DragProxy<AbstractCanvasHandler, Item, DragProxyCallback> proxyFor( final AbstractCanvasHandler context ) {
         this.canvasHandler = context;
         this.shapeViewDragProxyFactory.proxyFor( context.getCanvas() );
-        this.graphBoundsIndexer.setRootUUID( context.getDiagram().getSettings().getCanvasRootUUID() );
+        this.graphBoundsIndexer.setRootUUID( context.getDiagram().getMetadata().getCanvasRootUUID() );
         return this;
     }
 

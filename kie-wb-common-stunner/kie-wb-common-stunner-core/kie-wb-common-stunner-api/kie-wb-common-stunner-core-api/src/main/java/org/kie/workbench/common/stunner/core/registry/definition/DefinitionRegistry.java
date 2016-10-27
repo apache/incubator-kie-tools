@@ -18,8 +18,17 @@ package org.kie.workbench.common.stunner.core.registry.definition;
 
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 
+/**
+ * Base registry type for Definitions.
+ * @param <D> The type of the Definition.
+ */
 public interface DefinitionRegistry<D> extends DynamicRegistry<D> {
 
+    /**
+     * Lookup the Definition of type <code>D</code> by its identifier.
+     * @param id The Definition's identifier criteria.
+     * @return The Definition of type <code>D</code> that this registry contains, <code>null</code> otherwise.
+     */
     D getDefinitionById( String id );
 
 }

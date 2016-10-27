@@ -26,18 +26,39 @@ import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionS
 import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 
+/**
+ * Factory for the different Stunner's registry types available.
+ */
 public interface RegistryFactory {
 
+    /**
+     * Creates a new registry instance for definition adapters.
+     */
     AdapterRegistry newAdapterRegistry();
 
+    /**
+     * Creates a new registry instance for definition sets.
+     */
     <T> TypeDefinitionSetRegistry<T> newDefinitionSetRegistry();
 
+    /**
+     * Creates a new registry instance for definitions.
+     */
     <T> TypeDefinitionRegistry<T> newDefinitionRegistry();
 
+    /**
+     * Creates a new registry instance for commands.
+     */
     <C extends Command> CommandRegistry<C> newCommandRegistry();
 
+    /**
+     * Creates a new registry instance for model domain factories.
+     */
     <T extends Factory<?, ?>> FactoryRegistry<T> newFactoryRegistry();
 
+    /**
+     * Creates a new registry instance for diagrams.
+     */
     <T extends Diagram> DiagramRegistry<T> newDiagramRegistry();
 
 }

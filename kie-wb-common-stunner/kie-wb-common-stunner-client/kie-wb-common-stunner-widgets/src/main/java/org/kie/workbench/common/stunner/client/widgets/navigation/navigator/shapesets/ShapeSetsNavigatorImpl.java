@@ -78,7 +78,7 @@ public class ShapeSetsNavigatorImpl implements ShapeSetsNavigator {
 
     @SuppressWarnings( "unchecked" )
     public ShapeSetsNavigatorImpl show() {
-        final Collection<ShapeSet> shapeSets = shapeManager.getShapeSets();
+        final Collection<ShapeSet<?>> shapeSets = shapeManager.getShapeSets();
         if ( shapeSets != null && !shapeSets.isEmpty() ) {
             for ( final ShapeSet shapeSet : shapeSets ) {
                 final String id = shapeSet.getId();

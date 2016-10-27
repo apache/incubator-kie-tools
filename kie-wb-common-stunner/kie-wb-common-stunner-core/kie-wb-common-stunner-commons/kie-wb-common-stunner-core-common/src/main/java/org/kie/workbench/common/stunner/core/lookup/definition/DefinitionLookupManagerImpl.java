@@ -22,7 +22,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapte
 import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
-import org.kie.workbench.common.stunner.core.lookup.criteria.Criteria;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.DefinitionRegistry;
 
@@ -33,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
-@Criteria
 public class DefinitionLookupManagerImpl
         extends AbstractCriteriaLookupManager<String, DefinitionRepresentation, DefinitionLookupRequest>
         implements DefinitionLookupManager {

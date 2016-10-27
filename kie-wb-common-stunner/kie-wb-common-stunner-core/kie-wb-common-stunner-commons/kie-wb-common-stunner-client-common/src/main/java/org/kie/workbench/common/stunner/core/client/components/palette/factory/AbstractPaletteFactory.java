@@ -75,6 +75,11 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
         }
         return defaultPaletteDefinitionFactoryInstance.get();
     }
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public P newPalette( final String shapeSetId ) {
+        return newPalette( shapeSetId, null );
+    }
 
     @Override
     @SuppressWarnings( "unchecked" )

@@ -21,23 +21,31 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.AbstractToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
-public abstract class RemoveToolboxCommand<I> extends AbstractToolboxCommand<I> {
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-    CanvasCommandFactory commandFactory;
-    CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+@Dependent
+public class RemoveToolboxCommand<I> extends AbstractToolboxCommand<I> {
 
-    private final I icon;
+    private final CanvasCommandFactory commandFactory;
+    private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    private I icon;
 
+    @Inject
     public RemoveToolboxCommand( final CanvasCommandFactory commandFactory,
-                                 final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                 final I icon ) {
+                         final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
         this.commandFactory = commandFactory;
         this.canvasCommandManager = canvasCommandManager;
+    }
+
+    public RemoveToolboxCommand<I> setIcon( final I icon ) {
         this.icon = icon;
+        return this;
     }
 
     @Override
@@ -53,7 +61,7 @@ public abstract class RemoveToolboxCommand<I> extends AbstractToolboxCommand<I> 
     @Override
     public void click( final Context<AbstractCanvasHandler> context,
                        final Element element ) {
-        // TODO: Remove use of hardcoded confirm box here.
+        // TODO: Remove use of hardcoded confirm box here & I18n.
         if ( Window.confirm( "Are you sure?" ) ) {
             canvasCommandManager.execute( context.getCanvasHandler(), commandFactory.DELETE_NODE( ( Node ) element ) );
         }
@@ -62,8 +70,6 @@ public abstract class RemoveToolboxCommand<I> extends AbstractToolboxCommand<I> 
 
     @Override
     public void destroy() {
-        this.commandFactory = null;
-        this.canvasCommandManager = null;
     }
 
 }

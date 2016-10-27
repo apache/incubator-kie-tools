@@ -198,28 +198,6 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
 
     }
 
-    @Override
-    public Collection<Adapter> getItems() {
-        return new LinkedList<Adapter>() {{
-            addAll( definitionSetAdapters );
-            addAll( definitionSetRuleAdapters );
-            addAll( definitionAdapters );
-            addAll( propertySetAdapters );
-            addAll( propertyAdapters );
-            addAll( morphAdapters );
-        }};
-    }
-
-    @Override
-    public void clear() {
-        definitionSetAdapters.clear();
-        definitionSetRuleAdapters.clear();
-        definitionAdapters.clear();
-        propertySetAdapters.clear();
-        propertyAdapters.clear();
-        morphAdapters.clear();
-    }
-
     private static <T extends PriorityAdapter> void sortAdapters( List<T> adapters ) {
         Collections.sort( adapters, ( o1, o2 ) -> o1.getPriority() - o2.getPriority() );
     }

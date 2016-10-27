@@ -38,6 +38,7 @@ import org.jboss.errai.ui.shared.api.annotations.Bound;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.client.StunnerSpecific;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
@@ -71,6 +72,7 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     @Inject
     @Bound
     @DataField
+    @StunnerSpecific
     protected VariableNameTextBox name;
 
     private boolean allowDuplicateNames = false;

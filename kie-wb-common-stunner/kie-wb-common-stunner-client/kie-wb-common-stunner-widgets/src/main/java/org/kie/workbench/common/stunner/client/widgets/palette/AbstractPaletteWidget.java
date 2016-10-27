@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
@@ -28,14 +28,14 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
         extends AbstractPalette<D>
         implements PaletteWidget<D, V> {
 
-    protected final ClientFactoryServices clientFactoryServices;
+    protected final ClientFactoryService clientFactoryServices;
     protected ItemDropCallback itemDropCallback;
     protected V view;
     protected int maxWidth;
     protected int maxHeight;
 
     public AbstractPaletteWidget( final ShapeManager shapeManager,
-                                  final ClientFactoryServices clientFactoryServices,
+                                  final ClientFactoryService clientFactoryServices,
                                   final V view ) {
         super( shapeManager );
         this.clientFactoryServices = clientFactoryServices;

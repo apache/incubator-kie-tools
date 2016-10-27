@@ -18,17 +18,18 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
 /**
  * A canvas control.
- * It can implement <code>IsWidget</code> if the control have to include views outside the canvas.
+ * It can implement <code>IsWidget</code> if the control have to include views outside the canvas itself,
+ * such as floating widgets.
  */
 public interface CanvasControl<C> {
 
     /**
-     * This method is called when the control is enabled on a canvas.
+     * This method is called when the control is enabled for a canvas.
      */
     void enable( C context );
 
     /**
-     * This method is called when the control is disabled on a canvas.
+     * This method is called when the control is disabled for a canvas.
      */
     void disable();
 

@@ -30,7 +30,7 @@ public interface NavigatorItem<T> {
      */
     void show( T item, int width, int height, Command callback );
 
-    String getUUID();
+    String getName();
 
     NavigatorItemView getView();
 

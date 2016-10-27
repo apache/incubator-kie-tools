@@ -83,7 +83,7 @@ public class ShapeSetNavigatorItemImpl implements IsWidget, ShapeSetNavigatorIte
     }
 
     @Override
-    public String getUUID() {
+    public String getName() {
         return uuid;
     }
 

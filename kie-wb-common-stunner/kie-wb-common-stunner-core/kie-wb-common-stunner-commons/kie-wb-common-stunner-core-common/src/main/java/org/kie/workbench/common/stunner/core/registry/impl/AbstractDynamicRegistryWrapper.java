@@ -36,9 +36,4 @@ public abstract class AbstractDynamicRegistryWrapper<T, R extends DynamicRegistr
         return getWrapped().remove( item );
     }
 
-    @Override
-    public void clear() {
-        getWrapped().clear();
-    }
-
 }

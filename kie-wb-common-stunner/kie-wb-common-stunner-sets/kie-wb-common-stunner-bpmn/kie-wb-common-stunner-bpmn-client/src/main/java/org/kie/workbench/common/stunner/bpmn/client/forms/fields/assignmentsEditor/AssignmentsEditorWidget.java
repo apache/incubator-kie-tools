@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
-import org.kie.workbench.common.stunner.core.client.session.CanvasSessionManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -60,7 +60,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     private ActivityDataIOEditor activityDataIOEditor;
 
     @Inject
-    CanvasSessionManager canvasSessionManager;
+    ClientSessionManager canvasSessionManager;
 
     private UserTask userTask;
 

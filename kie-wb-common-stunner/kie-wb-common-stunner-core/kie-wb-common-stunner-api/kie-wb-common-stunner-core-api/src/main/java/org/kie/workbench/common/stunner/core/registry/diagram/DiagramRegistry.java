@@ -19,10 +19,21 @@ package org.kie.workbench.common.stunner.core.registry.diagram;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 
+/**
+ * Base registry type for Diagrams.
+ * @param <D> The type of the Diagram.
+ */
 public interface DiagramRegistry<D extends Diagram> extends DynamicRegistry<D> {
 
+    /**
+     * Returns the Diagram of type <code>D</code> that matches the UUID.
+     * @param uuid The uuid for Diagram.
+     */
     D getDiagramByUUID( String uuid );
 
+    /**
+     * Updates the diagram on this registry.
+     */
     void update( D diagram );
 
 }

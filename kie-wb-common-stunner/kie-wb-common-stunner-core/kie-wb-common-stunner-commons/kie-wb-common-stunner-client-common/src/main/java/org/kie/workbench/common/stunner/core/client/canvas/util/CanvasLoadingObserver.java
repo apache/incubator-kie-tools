@@ -49,7 +49,9 @@ public class CanvasLoadingObserver {
     }
 
     public void loadingStarted() {
-        if ( null != callback ) {
+        if ( null != callback
+                && null != timeout
+                && !timeout.isRunning() ) {
             callback.onLoadingStarted();
             log( "Starting timeout..." );
             this.timeout = new Timer() {

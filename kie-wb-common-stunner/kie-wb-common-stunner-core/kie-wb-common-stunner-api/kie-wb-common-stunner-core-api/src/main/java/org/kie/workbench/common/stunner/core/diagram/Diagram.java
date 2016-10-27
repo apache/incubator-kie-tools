@@ -18,12 +18,12 @@ package org.kie.workbench.common.stunner.core.diagram;
 
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-public interface Diagram<G extends Graph, S extends Settings> {
+public interface Diagram<G extends Graph, S extends Metadata> {
 
-    String getUUID();
+    String getName();
 
     G getGraph();
 
-    S getSettings();
+    S getMetadata();
 
 }

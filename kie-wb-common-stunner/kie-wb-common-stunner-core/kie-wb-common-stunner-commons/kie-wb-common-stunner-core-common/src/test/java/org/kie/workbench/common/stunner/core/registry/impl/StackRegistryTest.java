@@ -85,32 +85,10 @@ public class StackRegistryTest {
     }
 
     @Test
-    public void testClear() {
-        tested.clear();
-        verify( stack, times( 1 ) ).clear();
-    }
-
-    @Test
     public void testIndexOf() {
         final String s = "an string";
         tested.indexOf( s );
         verify( stack, times( 1 ) ).indexOf( s );
-    }
-
-    @Test
-    public void testGetItems() {
-        final String s1 = "an string 1";
-        final String s2 = "an string 2";
-        tested = new StackRegistry<>( keyProvider, new Stack<Object>() {{
-            push( s1 );
-            push( s2 );
-        }} );
-        Collection<Object> items = tested.getItems();
-        assertNotNull( items );
-        assertEquals( 2, items.size() );
-        Iterator<Object> it = items.iterator();
-        assertEquals( s1, it.next() );
-        assertEquals( s2, it.next() );
     }
 
     @Test

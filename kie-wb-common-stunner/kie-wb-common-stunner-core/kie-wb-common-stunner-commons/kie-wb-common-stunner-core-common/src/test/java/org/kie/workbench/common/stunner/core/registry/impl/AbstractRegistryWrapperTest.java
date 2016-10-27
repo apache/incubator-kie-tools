@@ -47,10 +47,6 @@ public class AbstractRegistryWrapperTest {
         when( registry.contains( anyObject() ) ).thenReturn( false );
         when( registry.contains( eq( s1 ) ) ).thenReturn( true );
         when( registry.contains( eq( s2 ) ) ).thenReturn( true );
-        when( registry.getItems() ).thenReturn( new ArrayList<Object>( 2 ) {{
-            add( s1 );
-            add( s2 );
-        }} );
         tested = new AbstractRegistryWrapper<Object, Registry<Object>>( registry ) {
         };
     }
@@ -61,18 +57,6 @@ public class AbstractRegistryWrapperTest {
         assertTrue( tested.contains( s1 ) );
         assertTrue( tested.contains( s2 ) );
         assertFalse( tested.contains( "" ) );
-    }
-
-    @Test
-    @SuppressWarnings( "unchecked" )
-    public void testGetItems() {
-        Collection<Object> items = tested.getItems();
-        assertNotNull( items );
-        assertEquals( 2, items.size() );
-        Iterator<Object> it = items.iterator();
-        assertEquals( s1, it.next() );
-        assertEquals( s2, it.next() );
-
     }
 
 }

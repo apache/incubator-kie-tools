@@ -16,14 +16,17 @@
 
 package org.kie.workbench.common.stunner.backend;
 
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.stunner.core.api.AbstractFactoryManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.backend.annotation.Application;
+import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
+import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
+import org.kie.workbench.common.stunner.core.service.FactoryService;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -31,8 +34,8 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 @ApplicationScoped
-@Application
-public class ApplicationFactoryManager extends AbstractFactoryManager {
+@Service
+public class ApplicationFactoryManager extends AbstractFactoryManager implements FactoryService, FactoryManager {
 
     private Instance<DefinitionFactory<?>> definitionFactoryInstances;
     private Instance<GraphFactory<?>> graphFactoryInstances;
@@ -49,8 +52,9 @@ public class ApplicationFactoryManager extends AbstractFactoryManager {
                                       final Instance<DefinitionFactory<?>> definitionFactoryInstances,
                                       final Instance<GraphFactory<?>> graphFactoryInstances,
                                       final Instance<NodeFactory<?>> nodeFactoryInstances,
-                                      final Instance<EdgeFactory<?>> edgeFactoryInstances ) {
-        super( registryFactory, definitionManager );
+                                      final Instance<EdgeFactory<?>> edgeFactoryInstances,
+                                      final DiagramFactory diagramFactory ) {
+        super( registryFactory, definitionManager, diagramFactory );
         this.definitionFactoryInstances = definitionFactoryInstances;
         this.graphFactoryInstances = graphFactoryInstances;
         this.nodeFactoryInstances = nodeFactoryInstances;

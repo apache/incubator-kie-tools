@@ -34,7 +34,7 @@ public class ShapeManagerImpl implements ShapeManager {
 
     protected SyncBeanManager beanManager;
     protected DefinitionManager definitionManager;
-    private final List<ShapeSet> shapeSets = new LinkedList<>();
+    private final List<ShapeSet<?>> shapeSets = new LinkedList<>();
     private final List<ShapeFactory> shapeFactories = new LinkedList<>();
     private final List<ShapeSetThumbProvider> thumbProviders = new LinkedList<>();
 
@@ -86,8 +86,34 @@ public class ShapeManagerImpl implements ShapeManager {
     }
 
     @Override
-    public Collection<ShapeSet> getShapeSets() {
+    public Collection<ShapeSet<?>> getShapeSets() {
         return shapeSets;
+    }
+
+    @Override
+    public ShapeSet<?> getShapeSet( final String id ) {
+        if ( null != id && !shapeSets.isEmpty() ) {
+            for ( final ShapeSet<?> shapeSet : shapeSets ) {
+                if ( id.equals( shapeSet.getId() ) ) {
+                    return shapeSet;
+                }
+            }
+
+        }
+        return null;
+    }
+
+    @Override
+    public ShapeSet<?> getDefaultShapeSet( final String defSetId ) {
+        if ( null != defSetId && !shapeSets.isEmpty() ) {
+            for ( final ShapeSet<?> shapeSet : shapeSets ) {
+                if ( defSetId.equals( shapeSet.getDefinitionSetId() ) ) {
+                    return shapeSet;
+                }
+            }
+
+        }
+        return null;
     }
 
     @Override

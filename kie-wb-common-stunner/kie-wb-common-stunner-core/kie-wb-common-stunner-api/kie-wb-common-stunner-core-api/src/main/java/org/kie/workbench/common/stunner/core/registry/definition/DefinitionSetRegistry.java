@@ -18,8 +18,24 @@ package org.kie.workbench.common.stunner.core.registry.definition;
 
 import org.kie.workbench.common.stunner.core.registry.Registry;
 
+import java.util.Collection;
+
+/**
+ * Base registry type for Definition Sets.
+ * @param <T> The type of the Definition Set.
+ */
 public interface DefinitionSetRegistry<T> extends Registry<T> {
 
+    /**
+     * Lookup the Definition Set of type <code>T</code> by its identifier.
+     * @param id The Definition Set's identifier criteria.
+     * @return The Defintiion Set of type <code>T</code> that this registry contains, <code>null</code> ortherwise.
+     */
     T getDefinitionSetById( String id );
+
+    /**
+     * Retun a collection of all Definition Set's present on this registry.
+     */
+    Collection<T> getAllDefinitionSets();
 
 }

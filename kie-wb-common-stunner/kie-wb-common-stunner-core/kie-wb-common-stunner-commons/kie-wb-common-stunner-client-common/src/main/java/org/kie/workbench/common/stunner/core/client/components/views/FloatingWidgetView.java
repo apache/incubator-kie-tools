@@ -31,22 +31,39 @@ import javax.enterprise.context.Dependent;
  * Floating view implementation for generic GWT Widgets.
  */
 @Dependent
-public class FloatingWidgetView extends FlowPanel implements FloatingView<IsWidget> {
+public class FloatingWidgetView implements FloatingView<IsWidget> {
 
+    private double ox;
+    private double oy;
     private double x;
     private double y;
     private boolean attached;
     private Timer timer;
     private int timeout = 800;
+    private final FlowPanel panel = new FlowPanel();
     private final HandlerRegistrationImpl handlerRegistrationManager = new HandlerRegistrationImpl();
 
     public FloatingWidgetView() {
         this.attached = false;
+        this.ox = 0;
+        this.oy = 0;
     }
 
     @Override
-    public void destroy() {
-        detach();
+    public void add( final IsWidget item ) {
+        panel.add( item );
+    }
+
+    @Override
+    public FloatingView<IsWidget> setOffsetX( final double ox ) {
+        this.ox = ox;
+        return this;
+    }
+
+    @Override
+    public FloatingView<IsWidget> setOffsetY( final double oy ) {
+        this.oy = oy;
+        return this;
     }
 
     @Override
@@ -74,12 +91,17 @@ public class FloatingWidgetView extends FlowPanel implements FloatingView<IsWidg
     }
 
     @Override
+    public void clear() {
+        panel.clear();
+    }
+
+    @Override
     public FloatingWidgetView show() {
         attach();
         startTimeout();
-        this.getElement().getStyle().setLeft( x, Style.Unit.PX );
-        this.getElement().getStyle().setTop( y, Style.Unit.PX );
-        this.getElement().getStyle().setDisplay( Style.Display.INLINE );
+        panel.getElement().getStyle().setLeft( ox + x, Style.Unit.PX );
+        panel.getElement().getStyle().setTop( oy + y, Style.Unit.PX );
+        panel.getElement().getStyle().setDisplay( Style.Display.INLINE );
         return this;
     }
 
@@ -91,15 +113,15 @@ public class FloatingWidgetView extends FlowPanel implements FloatingView<IsWidg
     }
 
     private void doHide() {
-        this.getElement().getStyle().setDisplay( Style.Display.NONE );
+        panel.getElement().getStyle().setDisplay( Style.Display.NONE );
     }
 
     private void attach() {
         if ( !attached ) {
-            RootPanel.get().add( this );
+            RootPanel.get().add( panel );
             registerHoverEventHandlers();
-            this.getElement().getStyle().setPosition( Style.Position.FIXED );
-            this.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+            panel.getElement().getStyle().setPosition( Style.Position.FIXED );
+            panel.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
             doHide();
             attached = true;
 
@@ -107,10 +129,15 @@ public class FloatingWidgetView extends FlowPanel implements FloatingView<IsWidg
 
     }
 
+    @Override
+    public void destroy() {
+        detach();
+    }
+
     private void detach() {
         if ( attached ) {
             handlerRegistrationManager.removeHandler();
-            RootPanel.get().remove( this );
+            RootPanel.get().remove( panel );
             attached = false;
         }
 
@@ -140,10 +167,10 @@ public class FloatingWidgetView extends FlowPanel implements FloatingView<IsWidg
 
     private void registerHoverEventHandlers() {
         handlerRegistrationManager.register(
-                this.addDomHandler( mouseOverEvent -> stopTimeout(), MouseOverEvent.getType() )
+                panel.addDomHandler( mouseOverEvent -> stopTimeout(), MouseOverEvent.getType() )
         );
         handlerRegistrationManager.register(
-                this.addDomHandler( mouseOutEvent -> startTimeout(), MouseOutEvent.getType() )
+                panel.addDomHandler( mouseOutEvent -> startTimeout(), MouseOutEvent.getType() )
         );
 
     }

@@ -50,7 +50,6 @@ class ListRegistry<T> implements DynamicRegistry<T> {
         return items.contains( item );
     }
 
-    @Override
     public Collection<T> getItems() {
         return Collections.unmodifiableList( items );
     }
@@ -67,7 +66,6 @@ class ListRegistry<T> implements DynamicRegistry<T> {
         return null;
     }
 
-    @Override
     public void clear() {
         items.clear();
     }

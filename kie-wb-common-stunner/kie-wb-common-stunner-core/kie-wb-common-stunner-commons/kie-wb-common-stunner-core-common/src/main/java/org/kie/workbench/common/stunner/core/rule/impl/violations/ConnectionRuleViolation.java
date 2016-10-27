@@ -22,6 +22,7 @@ import org.uberfire.commons.data.Pair;
 
 import java.util.Set;
 
+// TODO: I18n.
 @Portable
 public class ConnectionRuleViolation extends AbstractRuleViolation {
 

@@ -49,7 +49,7 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
         return false;
     }
 
-    protected Map<String, String> parseCriteria( final String criteria ) {
+    public static Map<String, String> parseCriteria( final String criteria ) {
         if ( null != criteria ) {
             final Map<String, String> result = new HashMap<>( criteria.length() );
             final String[] criterias = criteria.split( CRITERIA_SEPARATOR );
@@ -64,7 +64,7 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
         return null;
     }
 
-    protected String[] parseCriteriaPair( final String criteria ) {
+    public static String[] parseCriteriaPair( final String criteria ) {
         if ( null != criteria ) {
             final String[] s = criteria.split( VALUE_SEPARATOR );
             if ( s.length == 0 ) {

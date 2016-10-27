@@ -257,8 +257,8 @@ public class Notifications implements IsWidget {
         if ( null != validationEvent ) {
             final CanvasHandler canvasHandler = validationEvent.getEntity();
             final Diagram diagram = canvasHandler.getDiagram();
-            final String diagramUUID = diagram.getUUID();
-            final String title = diagram.getSettings().getTitle();
+            final String diagramUUID = diagram.getName();
+            final String title = diagram.getMetadata().getTitle();
             final CanvasNotificationContext context =
                     new CanvasNotificationContext( canvasHandler.toString(), diagramUUID, title );
             if ( validationEvent instanceof AbstractValidationFailEvent ) {

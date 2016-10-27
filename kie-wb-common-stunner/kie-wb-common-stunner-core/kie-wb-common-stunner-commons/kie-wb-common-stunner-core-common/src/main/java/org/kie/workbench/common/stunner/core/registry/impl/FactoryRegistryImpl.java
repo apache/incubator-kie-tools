@@ -100,7 +100,7 @@ class FactoryRegistryImpl<T extends Factory<?, ?>> implements TypeFactoryRegistr
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public Collection<T> getItems() {
+    public Collection<T> getAllFactories() {
         return new LinkedList<T>() {{
             addAll( ( Collection<? extends T> ) definitionFactories );
             addAll( ( Collection<? extends T> ) graphFactories.values() );

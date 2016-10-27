@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.BPMN2J
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.ParsingContext;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Settings;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
@@ -48,7 +48,7 @@ public class Bpmn2Marshaller extends Bpmn2JsonUnmarshaller {
         this.oryxManager = oryxManager;
     }
 
-    public String marshall( Diagram<Graph, Settings> diagram ) throws IOException {
+    public String marshall( Diagram<Graph, Metadata> diagram ) throws IOException {
         DroolsFactoryImpl.init();
         BpsimFactoryImpl.init();
         BPMN2JsonParser parser = createParser( diagram );
@@ -58,7 +58,7 @@ public class Bpmn2Marshaller extends Bpmn2JsonUnmarshaller {
         return StringEscapeUtils.unescapeHtml4( outputStream.toString( "UTF-8" ) );
     }
 
-    private BPMN2JsonParser createParser( Diagram<Graph, Settings> diagram ) {
+    private BPMN2JsonParser createParser( Diagram<Graph, Metadata> diagram ) {
         return new BPMN2JsonParser( diagram, new ParsingContext( definitionManager, graphUtils, oryxManager ) );
     }
 }

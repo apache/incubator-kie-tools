@@ -34,7 +34,7 @@ public final class WiresUtils {
             return canvasHandler.getGraphIndex().getNode( view.getUUID() );
 
         } else if ( shape instanceof WiresLayer ) {
-            final String canvasRoot = canvasHandler.getDiagram().getSettings().getCanvasRootUUID();
+            final String canvasRoot = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
             if ( null != canvasRoot ) {
                 return canvasHandler.getGraphIndex().getNode( canvasRoot );
 

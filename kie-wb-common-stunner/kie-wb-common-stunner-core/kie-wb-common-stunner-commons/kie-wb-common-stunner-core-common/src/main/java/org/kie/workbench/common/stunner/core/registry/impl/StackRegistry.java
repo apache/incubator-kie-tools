@@ -54,11 +54,6 @@ class StackRegistry<T> implements DynamicRegistry<T> {
         return items.contains( item );
     }
 
-    @Override
-    public Collection<T> getItems() {
-        return Collections.unmodifiableList( items );
-    }
-
     public T getItemByKey( final String id ) {
         if ( null != id ) {
             for ( final T item : items ) {
@@ -69,11 +64,6 @@ class StackRegistry<T> implements DynamicRegistry<T> {
             }
         }
         return null;
-    }
-
-    @Override
-    public void clear() {
-        items.clear();
     }
 
     public int indexOf( final T item ) {

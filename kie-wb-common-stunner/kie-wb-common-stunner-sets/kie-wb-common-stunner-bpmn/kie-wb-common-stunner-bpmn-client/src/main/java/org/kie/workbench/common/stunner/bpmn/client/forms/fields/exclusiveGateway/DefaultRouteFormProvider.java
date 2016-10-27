@@ -29,7 +29,7 @@ import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ContextUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
-import org.kie.workbench.common.stunner.core.client.session.CanvasSessionManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 public class DefaultRouteFormProvider implements SelectorDataProvider {
 
     @Inject
-    CanvasSessionManager canvasSessionManager;
+    ClientSessionManager canvasSessionManager;
 
     @Override
     public String getProviderName() {

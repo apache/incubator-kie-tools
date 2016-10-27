@@ -48,6 +48,47 @@
         </dependency>
 
         <!-- Uberfire & Errai. -->
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-commons</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-nio2-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-nio2-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-backend-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-backend-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.errai</groupId>
+            <artifactId>errai-marshalling</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-bus</artifactId>
@@ -69,8 +110,19 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -80,14 +132,24 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Test scope. -->
+
         <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-api</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-commons</artifactId>
+            <artifactId>uberfire-testing-utils</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

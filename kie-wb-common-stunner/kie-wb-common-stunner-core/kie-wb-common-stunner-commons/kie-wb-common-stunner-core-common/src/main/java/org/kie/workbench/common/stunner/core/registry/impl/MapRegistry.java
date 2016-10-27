@@ -48,12 +48,10 @@ class MapRegistry<T> implements DynamicRegistry<T> {
         return items.containsValue( item );
     }
 
-    @Override
     public Collection<T> getItems() {
         return Collections.unmodifiableList( new ArrayList<T>( items.values() ) );
     }
 
-    @Override
     public void clear() {
         items.clear();
     }

@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtil
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
@@ -56,7 +56,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
 
     @Inject
     public ObserverBuilderControl( final ClientDefinitionManager clientDefinitionManager,
-                                   final ClientFactoryServices clientFactoryServices,
+                                   final ClientFactoryService clientFactoryServices,
                                    final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                    final GraphUtils graphUtils,
                                    final ModelContainmentRuleManager modelContainmentRuleManager,

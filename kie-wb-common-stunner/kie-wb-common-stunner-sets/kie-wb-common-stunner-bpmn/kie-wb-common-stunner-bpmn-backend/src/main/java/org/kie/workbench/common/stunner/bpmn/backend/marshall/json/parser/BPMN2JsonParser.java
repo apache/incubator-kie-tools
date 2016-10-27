@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser;
 import org.codehaus.jackson.*;
 import org.codehaus.jackson.impl.JsonParserMinimalBase;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Settings;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -39,14 +39,14 @@ import java.util.*;
 
 public class BPMN2JsonParser extends JsonParserMinimalBase {
 
-    private Diagram<Graph, Settings> diagram;
+    private Diagram<Graph, Metadata> diagram;
     private NodeParser rootParser;
 
-    public BPMN2JsonParser( Diagram<Graph, Settings> diagram, ContextualParser.Context parsingContext ) {
+    public BPMN2JsonParser( Diagram<Graph, Metadata> diagram, ContextualParser.Context parsingContext ) {
         this.diagram = diagram;
         initialize( parsingContext );
     }
-    
+
     /*
         ****************************************************************
         *               Custom Stunner logic
@@ -134,8 +134,8 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
         System.out.println( "End of children and view traverse" );
 
     }
-    
-    
+
+
     /*
         ****************************************************************
         *               JsonParser interface methods

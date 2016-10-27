@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElemen
 import org.kie.workbench.common.stunner.core.client.canvas.listener.HasCanvasListeners;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.shape.GraphShape;
@@ -65,7 +65,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     private static Logger LOGGER = Logger.getLogger( AbstractCanvasHandler.class.getName() );
 
     protected ClientDefinitionManager clientDefinitionManager;
-    protected ClientFactoryServices clientFactoryServices;
+    protected ClientFactoryService clientFactoryServices;
     protected GraphRulesManager rulesManager;
     protected GraphUtils graphUtils;
     protected IndexBuilder<Graph<?, Node>, Node, Edge, Index<Node, Edge>> indexBuilder;
@@ -84,7 +84,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
 
     @Inject
     public AbstractCanvasHandler( final ClientDefinitionManager clientDefinitionManager,
-                                  final ClientFactoryServices clientFactoryServices,
+                                  final ClientFactoryService clientFactoryServices,
                                   final GraphRulesManager rulesManager,
                                   final GraphUtils graphUtils,
                                   final IncrementalIndexBuilder indexBuilder,
@@ -137,7 +137,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
 
     protected void doLoadRules() {
         // Load the rules that apply for the diagram.
-        final String defSetId = getDiagram().getSettings().getDefinitionSetId();
+        final String defSetId = getDiagram().getMetadata().getDefinitionSetId();
         clientFactoryServices.newDefinition( defSetId, new ServiceCallback<Object>() {
             @Override
             public void onSuccess( Object definitionSet ) {
@@ -491,7 +491,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         return clientDefinitionManager;
     }
 
-    public ClientFactoryServices getClientFactoryServices() {
+    public ClientFactoryService getClientFactoryServices() {
         return clientFactoryServices;
     }
 

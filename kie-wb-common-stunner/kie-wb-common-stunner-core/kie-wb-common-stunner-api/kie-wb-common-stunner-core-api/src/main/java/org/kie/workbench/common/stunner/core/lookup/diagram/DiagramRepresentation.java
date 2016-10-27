@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.lookup.diagram;
 
+import org.uberfire.backend.vfs.Path;
+
 public interface DiagramRepresentation {
 
-    String getUUID();
-
-    String getGraphUUID();
+    String getName();
 
     String getTitle();
 
@@ -28,7 +28,7 @@ public interface DiagramRepresentation {
 
     String getShapeSetId();
 
-    String getVFSPath();
+    Path getPath();
 
     String getThumbImageData();
 

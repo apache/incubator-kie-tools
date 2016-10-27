@@ -30,8 +30,9 @@ import org.kie.workbench.common.stunner.core.client.components.palette.ClientPal
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
+import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingWidgetView;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -67,7 +68,7 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
 
     @Inject
     public BS3PaletteWidgetImpl( final ShapeManager shapeManager,
-                                 final ClientFactoryServices clientFactoryServices,
+                                 final ClientFactoryService clientFactoryServices,
                                  final BS3PaletteWidgetView view,
                                  final BS3PaletteCategories paletteCategories,
                                  final BS3PaletteCategory paletteCategory,
@@ -107,6 +108,11 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     public BS3PaletteWidget setViewFactory( final BS3PaletteViewFactory viewFactory ) {
         this.viewFactory = viewFactory;
         return this;
+    }
+
+    @Override
+    public FloatingView<IsWidget> getFloatingView() {
+        return floatingView;
     }
 
     @Override
@@ -154,10 +160,11 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
             paletteCategory.bind( item );
             final int[] mainPaletteSize = getMainPaletteSize();
             final double pX = mainPaletteSize[ 0 ];
-            final double pY = getViewAbsoluteTop();
             floatingView
+                    .setOffsetX( getViewAbsoluteLeft() )
+                    .setOffsetY( getViewAbsoluteTop() )
                     .setX( pX )
-                    .setY( pY );
+                    .setY( 0 );
             paletteCategory.onItemMouseDown( ( id1, mouseX, mouseY, itemX1, itemY1 ) -> {
                 view.showDragProxy( id1, mouseX, mouseY );
                 floatingView.hide();
@@ -229,6 +236,10 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
 
     private double getViewAbsoluteTop() {
         return view.getAbsoluteTop();
+    }
+
+    private double getViewAbsoluteLeft() {
+        return view.getAbsoluteLeft();
     }
 
     @Override

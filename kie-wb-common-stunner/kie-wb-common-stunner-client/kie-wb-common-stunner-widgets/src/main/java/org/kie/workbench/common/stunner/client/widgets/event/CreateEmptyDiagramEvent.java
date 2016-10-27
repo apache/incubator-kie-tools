@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.event;
 import org.uberfire.workbench.events.UberFireEvent;
 
 /**
- * <p>CDI event when a shape set in wizard is selected and a new empty diagram for it must be created and set active.</p>
+ * <p>Event when a shape set in wizard is selected and a new empty diagram for it must be created and set active.</p>
  */
 public class CreateEmptyDiagramEvent implements UberFireEvent {
 

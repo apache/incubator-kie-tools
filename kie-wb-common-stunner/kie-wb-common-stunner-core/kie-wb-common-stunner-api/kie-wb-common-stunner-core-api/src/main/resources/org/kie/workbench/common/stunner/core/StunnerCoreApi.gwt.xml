@@ -19,7 +19,6 @@
 
 <module>
 
-	<inherits name='com.google.gwt.user.User' />
 	<inherits name="org.uberfire.UberfireAPI"/>
 	<inherits name="org.jboss.errai.bus.ErraiBus"/>
 	<inherits name="org.jboss.errai.common.ErraiCommon"/>
@@ -33,7 +32,6 @@
 	<source path="factory"/>
 	<source path="lookup"/>
 	<source path="registry"/>
-	<source path="remote"/>
 	<source path="rule"/>
 	<source path="validation"/>
 	<source path="util"/>

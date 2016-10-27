@@ -58,6 +58,7 @@ public class StunnerLogger {
         }
     }
 
+    @SuppressWarnings( "unchecked" )
     public static void logCommandResult( final CommandResult result ) {
         String message = result.getMessage();
         CommandResult.Type type = result.getType();
@@ -171,6 +172,7 @@ public class StunnerLogger {
 
             };
 
+    @SuppressWarnings( "unchecked" )
     private static Node getParent( final Node node ) {
         List<Edge> inEdges = node.getInEdges();
         if ( null != inEdges && !inEdges.isEmpty() ) {
@@ -183,11 +185,15 @@ public class StunnerLogger {
         return null;
     }
 
+    @SuppressWarnings( "unchecked" )
     public static void log( final Graph graph ) {
-        new FullContentTraverseProcessorImpl( new TreeWalkTraverseProcessorImpl() )
-                .traverse( graph, TREE_TRAVERSE_CALLBACK );
+        if ( null != graph ) {
+            new FullContentTraverseProcessorImpl( new TreeWalkTraverseProcessorImpl() )
+                    .traverse( graph, TREE_TRAVERSE_CALLBACK );
+        }
     }
 
+    @SuppressWarnings( "unchecked" )
     public static void log( final Node<View, Edge> node ) {
         if ( null == node ) {
             log( "Node is null" );

@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.DefaultToolboxCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewNodeCommand;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButtonGrid;
@@ -47,9 +47,9 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
 
     private static Logger LOGGER = Logger.getLogger( FlowActionsToolboxControlProvider.class.getName() );
 
-    DefinitionUtils definitionUtils;
-    CommonLookups commonLookups;
-    DefaultToolboxCommandFactory defaultToolboxCommandFactory;
+    private final DefinitionUtils definitionUtils;
+    private final CommonLookups commonLookups;
+    private final ToolboxCommandFactory defaultToolboxCommandFactory;
 
     protected FlowActionsToolboxControlProvider() {
         this( null, null, null, null );
@@ -58,7 +58,7 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
     @Inject
     public FlowActionsToolboxControlProvider( final ToolboxFactory toolboxFactory,
                                               final DefinitionUtils definitionUtils,
-                                              final DefaultToolboxCommandFactory defaultToolboxCommandFactory,
+                                              final ToolboxCommandFactory defaultToolboxCommandFactory,
                                               final CommonLookups commonLookups ) {
         super( toolboxFactory );
         this.definitionUtils = definitionUtils;
@@ -98,7 +98,7 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
     public List<ToolboxCommand<?, ?>> getCommands( final AbstractCanvasHandler context,
                                                    final Element item ) {
         final Diagram diagram = context.getDiagram();
-        final String defSetId = diagram.getSettings().getDefinitionSetId();
+        final String defSetId = diagram.getMetadata().getDefinitionSetId();
         if ( item.getContent() instanceof Definition ) {
             final Definition definitionContent = ( Definition ) item.getContent();
             final List<ToolboxCommand<?, ?>> commands = new LinkedList<>();

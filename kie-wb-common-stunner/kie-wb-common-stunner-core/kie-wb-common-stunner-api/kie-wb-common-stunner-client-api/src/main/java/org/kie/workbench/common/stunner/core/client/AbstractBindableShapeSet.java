@@ -43,6 +43,11 @@ public abstract class AbstractBindableShapeSet implements ShapeSet<ShapeFactory<
     }
 
     @Override
+    public String getId() {
+        return BindableAdapterUtils.getShapeSetId( getClass() );
+    }
+
+    @Override
     public String getName() {
         return this.description;
     }

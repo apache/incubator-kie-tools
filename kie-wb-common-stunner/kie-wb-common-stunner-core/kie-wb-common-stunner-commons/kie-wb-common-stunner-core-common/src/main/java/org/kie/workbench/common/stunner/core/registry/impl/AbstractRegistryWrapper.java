@@ -33,11 +33,6 @@ public abstract class AbstractRegistryWrapper<T, R extends Registry<T>> implemen
         return wrapped.contains( item );
     }
 
-    @Override
-    public Collection<T> getItems() {
-        return wrapped.getItems();
-    }
-
     protected R getWrapped() {
         return wrapped;
     }

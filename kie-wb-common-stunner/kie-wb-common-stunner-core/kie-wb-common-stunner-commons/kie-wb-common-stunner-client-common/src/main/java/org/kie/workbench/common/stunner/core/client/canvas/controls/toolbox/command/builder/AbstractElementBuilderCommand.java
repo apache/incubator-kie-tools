@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder;
 
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyDownEvent;
@@ -25,7 +24,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.Keyboa
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -38,22 +37,17 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 
 public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCommand<I> {
 
-    protected ShapeManager shapeManager;
-    protected DefinitionGlyphTooltip<?> glyphTooltip;
-    protected I iconView;
-    protected ShapeFactory factory;
-
-    protected AbstractElementBuilderCommand() {
-        this( null, null, null, null, null );
-    }
+    private final ShapeManager shapeManager;
+    private final DefinitionGlyphTooltip<?> glyphTooltip;
+    private I iconView;
+    private ShapeFactory factory;
 
     @Inject
-    public AbstractElementBuilderCommand( final ClientDefinitionManager clientDefinitionManager,
-                                          final ClientFactoryServices clientFactoryServices,
+    public AbstractElementBuilderCommand( final ClientFactoryService clientFactoryServices,
                                           final ShapeManager shapeManager,
                                           final DefinitionGlyphTooltip<?> glyphTooltip,
                                           final GraphBoundsIndexer graphBoundsIndexer ) {
-        super( clientDefinitionManager, clientFactoryServices, graphBoundsIndexer );
+        super( clientFactoryServices, graphBoundsIndexer );
         this.shapeManager = shapeManager;
         this.glyphTooltip = glyphTooltip;
     }
@@ -63,8 +57,6 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
     @Override
     public void destroy() {
         super.destroy();
-        this.shapeManager = null;
-        this.glyphTooltip = null;
         this.factory = null;
         this.iconView = null;
 
@@ -147,6 +139,14 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
     protected void clearDragProxy() {
         getDragProxyFactory().clear();
 
+    }
+
+    ShapeManager getShapeManager() {
+        return shapeManager;
+    }
+
+    DefinitionGlyphTooltip<?> getGlyphTooltip() {
+        return glyphTooltip;
     }
 
     void onKeyDownEvent( @Observes KeyDownEvent keyDownEvent ) {

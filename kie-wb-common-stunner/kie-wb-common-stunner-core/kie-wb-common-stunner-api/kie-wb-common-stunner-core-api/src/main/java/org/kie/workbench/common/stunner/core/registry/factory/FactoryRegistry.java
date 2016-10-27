@@ -21,10 +21,34 @@ import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactor
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 
+import java.util.Collection;
+
+/**
+ * Base registry type for different domain model object's factories.
+ * @param <F> The type of the factory.
+ */
 public interface FactoryRegistry<F extends Factory<?, ?>> extends DynamicRegistry<F> {
 
+    /**
+     * Return the factory for the Definition with <code>id</code> as identifier.
+     * @param id The identifier for the Definition.
+     */
     DefinitionFactory<?> getDefinitionFactory( String id );
 
+    /**
+     * Returns the factory for the type of the graph element.
+     * @param type The graph element type, such as Nodes, Edges.
+     */
     ElementFactory<?, ?> getGraphFactory( Class<? extends ElementFactory> type );
+
+    /**
+     * Return all registered factories.
+     */
+    Collection<F> getAllFactories();
+
+    /**
+     * Clears this factory.
+     */
+    void clear();
 
 }

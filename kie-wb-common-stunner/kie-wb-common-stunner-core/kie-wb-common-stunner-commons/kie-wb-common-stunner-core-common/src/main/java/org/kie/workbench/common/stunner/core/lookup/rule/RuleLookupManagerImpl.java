@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.lookup.rule;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
-import org.kie.workbench.common.stunner.core.lookup.criteria.Criteria;
 import org.kie.workbench.common.stunner.core.rule.*;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -26,7 +25,6 @@ import javax.inject.Inject;
 import java.util.*;
 
 @ApplicationScoped
-@Criteria
 public class RuleLookupManagerImpl
         extends AbstractCriteriaLookupManager<Rule, Rule, RuleLookupRequest>
         implements RuleLookupManager {

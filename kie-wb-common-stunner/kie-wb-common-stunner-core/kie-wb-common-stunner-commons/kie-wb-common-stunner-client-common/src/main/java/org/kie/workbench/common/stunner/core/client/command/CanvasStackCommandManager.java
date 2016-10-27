@@ -103,4 +103,8 @@ public class CanvasStackCommandManager implements CanvasCommandManager<AbstractC
         return stackCommandManager.undo( context );
     }
 
+    @Override
+    public String toString() {
+        return "[" + super.toString() + "]";
+    }
 }

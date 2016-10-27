@@ -17,12 +17,12 @@
 package org.kie.workbench.common.stunner.core.client.session.event;
 
 import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.kie.workbench.common.stunner.core.client.session.CanvasSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 @NonPortable
 public class SessionResumedEvent extends AbstractSessionEvent {
 
-    public SessionResumedEvent( final CanvasSession session ) {
+    public SessionResumedEvent( final ClientSession session ) {
         super( session );
     }
 }

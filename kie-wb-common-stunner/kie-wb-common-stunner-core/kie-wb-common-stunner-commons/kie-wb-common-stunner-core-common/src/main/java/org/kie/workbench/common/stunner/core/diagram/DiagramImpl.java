@@ -21,12 +21,11 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
 @Portable
-public final class DiagramImpl extends AbstractDiagram<Graph, Settings> {
+public final class DiagramImpl extends AbstractDiagram<Graph, Metadata> {
 
-    public DiagramImpl( @MapsTo( "uuid" ) String uuid,
-                        @MapsTo( "graph" ) Graph graph,
-                        @MapsTo( "settings" ) Settings settings ) {
-        super( uuid, graph, settings );
+    public DiagramImpl( @MapsTo( "name" ) String name,
+                        @MapsTo( "metadata" ) Metadata metadata ) {
+        super( name, metadata );
     }
 
 }

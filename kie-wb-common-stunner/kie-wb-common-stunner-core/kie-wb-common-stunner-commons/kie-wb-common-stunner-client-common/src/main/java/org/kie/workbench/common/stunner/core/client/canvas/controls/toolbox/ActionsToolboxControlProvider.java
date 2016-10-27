@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.RemoveToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButtonGrid;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxFactory;
@@ -33,7 +34,7 @@ import java.util.List;
 @Dependent
 public class ActionsToolboxControlProvider extends AbstractToolboxControlProvider {
 
-    RemoveToolboxCommand removeToolboxCommand;
+    private RemoveToolboxCommand removeToolboxCommand;
 
     protected ActionsToolboxControlProvider() {
         this( null, null );
@@ -41,9 +42,9 @@ public class ActionsToolboxControlProvider extends AbstractToolboxControlProvide
 
     @Inject
     public ActionsToolboxControlProvider( final ToolboxFactory toolboxFactory,
-                                          final RemoveToolboxCommand removeToolboxCommand ) {
+                                          final ToolboxCommandFactory toolboxCommandFactory ) {
         super( toolboxFactory );
-        this.removeToolboxCommand = removeToolboxCommand;
+        this.removeToolboxCommand = toolboxCommandFactory.newRemoveToolboxCommand();
     }
 
     @Override

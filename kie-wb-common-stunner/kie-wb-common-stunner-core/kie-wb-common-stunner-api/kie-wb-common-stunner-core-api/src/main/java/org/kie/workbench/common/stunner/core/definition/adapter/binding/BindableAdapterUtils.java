@@ -86,10 +86,8 @@ public class BindableAdapterUtils {
         return getPropertyId( type, null );
     }
 
-    public static String getShapeSetId( final Class<?> defSetClass ) {
-        final String id = getGenericClassId( defSetClass );
-        return id + SHAPE_SET_SUFFIX;
-
+    public static String getShapeSetId( final Class<?> shapeSetClass ) {
+        return getGenericClassName( shapeSetClass );
     }
 
     public static String getGenericClassName( final Class<?> type ) {

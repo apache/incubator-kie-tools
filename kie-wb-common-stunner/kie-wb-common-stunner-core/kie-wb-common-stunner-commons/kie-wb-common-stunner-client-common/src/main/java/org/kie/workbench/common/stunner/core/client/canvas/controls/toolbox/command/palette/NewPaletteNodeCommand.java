@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -50,7 +50,7 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
 
     private static Logger LOGGER = Logger.getLogger( NewPaletteNodeCommand.class.getName() );
 
-    public NewPaletteNodeCommand( final ClientFactoryServices clientFactoryServices,
+    public NewPaletteNodeCommand( final ClientFactoryService clientFactoryServices,
                                   final CommonLookups commonLookups,
                                   final ShapeManager shapeManager,
                                   final DefinitionsPaletteBuilder definitionsPaletteBuilder,

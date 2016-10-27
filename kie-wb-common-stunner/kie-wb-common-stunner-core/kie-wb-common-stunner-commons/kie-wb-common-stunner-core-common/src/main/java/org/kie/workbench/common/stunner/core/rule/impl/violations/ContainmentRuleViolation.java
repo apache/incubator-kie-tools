@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.rule.impl.violations;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+// TODO: I18n.
 @Portable
 public class ContainmentRuleViolation extends AbstractRuleViolation {
 

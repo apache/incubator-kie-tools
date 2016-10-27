@@ -156,4 +156,9 @@ class BatchCommandManagerImpl<T, V> implements BatchCommandManager<T, V>, HasCom
         this.listener = listener;
     }
 
+    @Override
+    public String toString() {
+        return "[" + super.toString() + "]";
+    }
+
 }

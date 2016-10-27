@@ -19,6 +19,10 @@ package org.kie.workbench.common.stunner.core.client.canvas.event;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 
+/**
+ * Event that is fired after a canvas has been drawn.
+ * Be careful with the use of this event as can be fired several times.
+ */
 @NonPortable
 public final class CanvasDrawnEvent extends AbstractCanvasEvent {
 

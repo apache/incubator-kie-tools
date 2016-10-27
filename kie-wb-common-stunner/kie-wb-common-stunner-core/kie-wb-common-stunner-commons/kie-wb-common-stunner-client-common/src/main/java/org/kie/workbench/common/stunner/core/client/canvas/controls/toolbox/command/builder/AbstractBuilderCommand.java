@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder;
 
-import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
+import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuilderControl;
@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.comm
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -41,20 +41,13 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
 
     private static Logger LOGGER = Logger.getLogger( AbstractBuilderCommand.class.getName() );
 
-    protected ClientDefinitionManager clientDefinitionManager;
-    protected ClientFactoryServices clientFactoryServices;
-    protected GraphBoundsIndexer graphBoundsIndexer;
+    private final ClientFactoryService clientFactoryServices;
+    private final GraphBoundsIndexer graphBoundsIndexer;
 
-    protected CanvasHighlight canvasHighlight;
+    private CanvasHighlight canvasHighlight;
 
-    protected AbstractBuilderCommand() {
-        this( null, null, null );
-    }
-
-    public AbstractBuilderCommand( final ClientDefinitionManager clientDefinitionManager,
-                                   final ClientFactoryServices clientFactoryServices,
+    public AbstractBuilderCommand( final ClientFactoryService clientFactoryServices,
                                    final GraphBoundsIndexer graphBoundsIndexer ) {
-        this.clientDefinitionManager = clientDefinitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.graphBoundsIndexer = graphBoundsIndexer;
     }
@@ -101,7 +94,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
         final AbstractCanvasHandler canvasHandler = context.getCanvasHandler();
         final double x = context.getX();
         final double y = context.getY();
-        graphBoundsIndexer.setRootUUID( canvasHandler.getDiagram().getSettings().getCanvasRootUUID() );
+        graphBoundsIndexer.setRootUUID( canvasHandler.getDiagram().getMetadata().getCanvasRootUUID() );
         clientFactoryServices.newElement( UUID.uuid(), getDefinitionIdentifier( context ), new ServiceCallback<Element>() {
 
             @Override
@@ -168,12 +161,15 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
                                final int y1 ) {
         fireLoadingStarted( context );
         final Node targetNode = graphBoundsIndexer.getAt( x1, y1 );
+        log( Level.INFO, "Completing element creation - Creating node for parent ["
+            + ( null != targetNode ? targetNode.getUUID() : "null") );
         if ( null != targetNode ) {
             final BuildRequest buildRequest = createBuildRequest( x1, y1, element, item, targetNode );
             getBuilderControl().build( buildRequest, new BuilderControl.BuildCallback() {
 
                 @Override
                 public void onSuccess( final String uuid ) {
+                    log( Level.INFO, "Item build with UUID [" + uuid + "]" );
                     onItemBuilt( context, uuid );
 
                 }
@@ -217,10 +213,20 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
             this.canvasHighlight = null;
 
         }
-        this.clientDefinitionManager = null;
-        this.clientFactoryServices = null;
-        this.graphBoundsIndexer = null;
+    }
 
+    protected ClientFactoryService getClientFactoryServices() {
+        return clientFactoryServices;
+    }
+
+    protected GraphBoundsIndexer getGraphBoundsIndexer() {
+        return graphBoundsIndexer;
+    }
+
+    private void log( final Level level, final String message ) {
+        if ( LogConfiguration.loggingIsEnabled() ) {
+            LOGGER.log( level, message );
+        }
     }
 
 }

@@ -93,10 +93,12 @@ public class TreeExplorer implements IsWidget {
         view.init( this );
     }
 
+    @SuppressWarnings( "unchecked" )
     public void show( final CanvasHandler canvasHandler ) {
         this.canvasHandler = canvasHandler;
-        assert canvasHandler != null;
-        doShow( canvasHandler.getDiagram().getGraph() );
+        if ( null != canvasHandler && null != canvasHandler.getDiagram() ) {
+            doShow( canvasHandler.getDiagram().getGraph() );
+        }
     }
 
     private void doShow( final Graph<org.kie.workbench.common.stunner.core.graph.content.view.View, Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> graph ) {
@@ -254,6 +256,10 @@ public class TreeExplorer implements IsWidget {
     @Override
     public Widget asWidget() {
         return view.asWidget();
+    }
+
+    public CanvasHandler getCanvasHandler() {
+        return canvasHandler;
     }
 
 }

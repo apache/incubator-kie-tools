@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.registry;
 
-import java.util.Collection;
-
+/**
+ * Base type for any of Stunner's registry implementations.
+ * @param <T> The type for the items that the registry handles.
+ */
 public interface Registry<T> {
 
     boolean contains( T item );
-
-    Collection<T> getItems();
 
 }

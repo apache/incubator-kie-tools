@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.registry;
 
+/**
+ * Mutable registry that can add or remove items at runtime.
+ * @param <T> The type of the item.
+ */
 public interface DynamicRegistry<T> extends Registry<T> {
 
     void register( T item );
 
     boolean remove( T item );
 
-    void clear();
 
 }

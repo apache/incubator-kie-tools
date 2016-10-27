@@ -126,7 +126,7 @@ public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView
 
     @Override
     public void destroy() {
-        mainPanel.removeFromParent();
+        mainPanel.clear();
     }
 
 }

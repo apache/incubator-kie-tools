@@ -37,6 +37,7 @@
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
     </dependency>
 
+    <!-- TODO: Should not be present here. -->
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
@@ -92,6 +93,11 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
 
     <!-- Test scope. -->

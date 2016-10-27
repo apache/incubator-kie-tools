@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.factory.P
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDouble
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDoubleClickHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 public abstract class AbstractCanvasPaletteControl
         extends AbstractCanvasHandlerControl
@@ -45,7 +46,7 @@ public abstract class AbstractCanvasPaletteControl
 
     protected PaletteFactory<DefinitionSetPalette, ? extends Palette<DefinitionSetPalette>> paletteFactory;
     protected ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl;
-    protected ClientFactoryServices factoryServices;
+    protected ClientFactoryService factoryServices;
     protected ShapeManager shapeManager;
 
     protected ViewHandler<?> layerClickHandler;
@@ -54,7 +55,7 @@ public abstract class AbstractCanvasPaletteControl
 
     public AbstractCanvasPaletteControl( final PaletteFactory<DefinitionSetPalette, ? extends Palette<DefinitionSetPalette>> paletteFactory,
                                          final ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl,
-                                         final ClientFactoryServices factoryServices,
+                                         final ClientFactoryService factoryServices,
                                          final ShapeManager shapeManager ) {
         this.paletteFactory = paletteFactory;
         this.elementBuilderControl = elementBuilderControl;
@@ -114,7 +115,7 @@ public abstract class AbstractCanvasPaletteControl
 
     private void initializePalette() {
         if ( null == palette ) {
-            final String ssid = canvasHandler.getDiagram().getSettings().getShapeSetId();
+            final String ssid = getShapeSetId( canvasHandler.getDiagram().getMetadata() );
             this.palette = paletteFactory.newPalette( ssid, getGrid() );
             this.palette.onItemClick( AbstractCanvasPaletteControl.this::_onItemClick );
             this.palette.onClose( () -> {
@@ -126,6 +127,14 @@ public abstract class AbstractCanvasPaletteControl
 
         }
 
+    }
+
+    private String getShapeSetId( final Metadata metadata ) {
+        final String ssid = metadata.getShapeSetId();
+        if ( null == ssid ) {
+            return shapeManager.getDefaultShapeSet( metadata.getDefinitionSetId() ).getId();
+        }
+        return ssid;
     }
 
     @Override

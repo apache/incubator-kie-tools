@@ -1,12 +1,11 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -75,13 +74,12 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     @Override
     public Object getNameProperty( T pojo ) {
         Set<?> properties = getProperties( pojo );
-        if ( null != properties && !properties.isEmpty() ) {
-            for ( Object property : properties ) {
-                final Annotation annotation = getClassAnnotation( property.getClass(), NameProperty.class );
-                if ( null != annotation ) {
-                    return property;
-                }
-            }
+        if ( null != properties ) {
+            return properties
+                    .stream()
+                    .filter( property -> null != getClassAnnotation( property.getClass(), NameProperty.class ) )
+                    .findFirst()
+                    .orElse( null );
         }
         return null;
     }
@@ -131,9 +129,9 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     @Override
     public Set<?> getPropertySets( final T definition ) {
         Collection<Field> fields = getFieldAnnotations( definition.getClass(), PropertySet.class );
-        if ( null != fields && !fields.isEmpty() ) {
+        if ( null != fields ) {
             Set<Object> result = new LinkedHashSet<>();
-            for ( Field field : fields ) {
+            fields.forEach( field -> {
                 try {
                     Object v = _getValue( field, PropertySet.class, definition );
                     result.add( v );
@@ -142,44 +140,35 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
                     LOG.error( "Error obtaining annotated property sets for Definition with id " + getId( definition ) );
 
                 }
-
-            }
+            } );
             return result;
-
         }
         return null;
     }
 
     @Override
     public Set<?> getProperties( final T definition ) {
-        Set<Object> result = null;
         if ( null != definition ) {
-            result = new HashSet<>();
+            final Set<Object> result = new HashSet<>();
             // Obtain all properties from property sets.
             Set<?> propertySetProperties = definitionUtils.getPropertiesFromPropertySets( definition );
             if ( null != propertySetProperties ) {
                 result.addAll( propertySetProperties );
-
             }
             Collection<Field> fields = getFieldAnnotations( definition.getClass(), Property.class );
-            if ( null != fields && !fields.isEmpty() ) {
-                for ( Field field : fields ) {
+            if ( null != fields ) {
+                fields.forEach( field -> {
                     try {
                         Object v = _getValue( field, Property.class, definition );
                         result.add( v );
-
                     } catch ( Exception e ) {
                         LOG.error( "Error obtaining annotated properties for Definition with id " + getId( definition ) );
-
                     }
-
-                }
+                } );
                 return result;
-
             }
-
         }
-        return result;
+        return null;
     }
 
     @SuppressWarnings( "unchecked" )

@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.comm
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
 
@@ -38,7 +38,7 @@ import javax.annotation.PostConstruct;
 /// Abstract for not being discovered by the CDI environment, for now...
 public abstract class LienzoNewPaletteNodeToolboxCommand extends NewPaletteNodeCommand<Shape<?>> {
 
-    public LienzoNewPaletteNodeToolboxCommand( final ClientFactoryServices clientFactoryServices,
+    public LienzoNewPaletteNodeToolboxCommand( final ClientFactoryService clientFactoryServices,
                                                final CommonLookups commonLookups,
                                                final ShapeManager shapeManager,
                                                final DefinitionsPaletteBuilder definitionsPaletteBuilder,

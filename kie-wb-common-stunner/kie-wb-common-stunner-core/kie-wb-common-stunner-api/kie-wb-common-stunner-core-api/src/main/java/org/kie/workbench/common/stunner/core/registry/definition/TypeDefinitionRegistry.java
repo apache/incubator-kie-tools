@@ -16,8 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.registry.definition;
 
+/**
+ * Registry for Definitions that are based on a specific domain models.
+ * @param <D> The type for the definition.
+ */
 public interface TypeDefinitionRegistry<D> extends DefinitionRegistry<D> {
 
+    /**
+     * Lookup the Definition instance of type <code>D</code>.
+     * @param type The Definition's type criteria.
+     * @return The Definition of type <code>D</code> that this registry contains, <code>null</code> otherwise.
+     */
     D getDefinitionByType( Class<D> type );
 
 }

@@ -52,6 +52,11 @@ public class CanvasValidationControlImpl
     }
 
     @Override
+    public void validate() {
+        this.validate( null );
+    }
+
+    @Override
     public void validate( final CanvasValidatorCallback validatorCallback ) {
         if ( null != canvasHandler ) {
             final GraphRulesManager rulesManager = canvasHandler.getRuleManager();
@@ -61,13 +66,17 @@ public class CanvasValidationControlImpl
 
                         @Override
                         public void onSuccess() {
-                            validatorCallback.onSuccess();
+                            if ( null != validatorCallback ) {
+                                validatorCallback.onSuccess();
+                            }
                             validationSuccessEvent.fire( new CanvasValidationSuccessEvent( canvasHandler ) );
                         }
 
                         @Override
                         public void onFail( final Iterable<CanvasValidationViolation> violations ) {
-                            validatorCallback.onFail( violations );
+                            if ( null != validatorCallback ) {
+                                validatorCallback.onFail( violations );
+                            }
                             validationFailEvent.fire( new CanvasValidationFailEvent( canvasHandler, violations ) );
                         }
 

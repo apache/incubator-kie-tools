@@ -145,7 +145,7 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
         if ( null != edge ) {
             final Node sourceNode = edge.getSourceNode();
             if ( null != sourceNode ) {
-                final String parentUUID = null != parent ? parent.getUUID() : canvasHandler.getDiagram().getSettings().getCanvasRootUUID();
+                final String parentUUID = null != parent ? parent.getUUID() : canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
                 return null != parentUUID && sourceNode.getUUID().equals( parentUUID );
 
             }

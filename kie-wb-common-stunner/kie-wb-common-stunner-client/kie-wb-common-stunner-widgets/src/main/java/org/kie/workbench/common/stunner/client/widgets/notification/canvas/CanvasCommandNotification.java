@@ -86,8 +86,8 @@ public final class CanvasCommandNotification
             final String resultMsg = getResultMessage( result );
             final CanvasCommandNotificationSource source = new CanvasCommandNotificationSource( builder.toString(), resultMsg );
             final Diagram diagram = canvasHander.getDiagram();
-            final String diagramUUID = diagram.getUUID();
-            final String title = diagram.getSettings().getTitle();
+            final String diagramUUID = diagram.getName();
+            final String title = diagram.getMetadata().getTitle();
             final CanvasNotificationContext context =
                     new CanvasNotificationContext( canvasHander.toString(), diagramUUID, title );
             final Notification.Type type = getNotificationType( result );
@@ -100,6 +100,7 @@ public final class CanvasCommandNotification
                     ? Notification.Type.ERROR : Notification.Type.INFO;
         }
 
+        // TODO: I18n.
         @SuppressWarnings( "unchecked" )
         private String getResultMessage( final CommandResult<CanvasViolation> result ) {
             if ( null != result && result instanceof BatchCommandResult ) {

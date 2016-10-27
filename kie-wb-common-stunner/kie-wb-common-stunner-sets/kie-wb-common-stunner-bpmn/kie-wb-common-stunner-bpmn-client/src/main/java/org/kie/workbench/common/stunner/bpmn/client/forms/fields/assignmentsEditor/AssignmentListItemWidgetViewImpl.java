@@ -40,6 +40,7 @@ import org.jboss.errai.ui.shared.api.annotations.Bound;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.client.StunnerSpecific;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
@@ -74,6 +75,7 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     @Inject
     @Bound
     @DataField
+    @StunnerSpecific
     protected VariableNameTextBox name;
 
     private boolean allowDuplicateNames = true;

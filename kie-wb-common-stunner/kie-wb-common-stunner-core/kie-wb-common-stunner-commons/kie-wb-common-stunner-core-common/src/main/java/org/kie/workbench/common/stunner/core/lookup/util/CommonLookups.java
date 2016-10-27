@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
-import org.kie.workbench.common.stunner.core.lookup.criteria.Criteria;
 import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionLookupRequestImpl;
@@ -68,8 +67,8 @@ public class CommonLookups {
     @Inject
     public CommonLookups( final DefinitionUtils definitionUtils,
                           final GraphUtils graphUtils,
-                          final @Criteria DefinitionLookupManager definitionLookupManager,
-                          final @Criteria RuleLookupManager ruleLookupManager,
+                          final DefinitionLookupManager definitionLookupManager,
+                          final RuleLookupManager ruleLookupManager,
                           final FactoryManager factoryManager ) {
         this.definitionUtils = definitionUtils;
         this.graphUtils = graphUtils;

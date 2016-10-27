@@ -19,6 +19,10 @@ package org.kie.workbench.common.stunner.core.registry.definition;
 import org.kie.workbench.common.stunner.core.definition.adapter.*;
 import org.kie.workbench.common.stunner.core.registry.Registry;
 
+/**
+ * The registry for the adapters of type <code>org.kie.workbench.common.stunner.core.definition.adapter.Adapter</code>.
+ * It provides some lookup specific methods for different adapter types.
+ */
 public interface AdapterRegistry extends Registry<Adapter> {
 
     /**

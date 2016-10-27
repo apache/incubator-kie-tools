@@ -23,15 +23,12 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.NavigatorItem;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.NavigatorItemView;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.ShapeSet;
-import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
 import org.uberfire.mvp.Command;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +40,7 @@ public class DiagramNavigatorItemImpl implements IsWidget, DiagramNavigatorItem 
     ShapeManager shapeManager;
     NavigatorItemView<NavigatorItem> view;
 
-    private String uuid;
+    private String name;
     private Command callback;
 
     @Inject
@@ -68,15 +65,13 @@ public class DiagramNavigatorItemImpl implements IsWidget, DiagramNavigatorItem 
                       final int heightInPx,
                       final Command callback ) {
         this.callback = callback;
-        this.uuid = diagramRepresentation.getUUID();
+        this.name = diagramRepresentation.getName();
         view
-                .setUUID( uuid )
+                .setUUID( name )
                 .setItemTitle( diagramRepresentation.getTitle() );
         final String thumbData = diagramRepresentation.getThumbImageData();
         if ( isEmpty( thumbData ) ) {
-            final Collection<ShapeSet> shapeSets = shapeManager.getShapeSets();
-            final ShapeSet shapeSet = ShapeUtils.getShapeSet( shapeSets, diagramRepresentation.getShapeSetId() );
-            final String defSetId = shapeSet.getDefinitionSetId();
+            final String defSetId = diagramRepresentation.getDefinitionSetId();
             final SafeUri thumbUri = shapeManager.getThumbnail( defSetId );
             view.setThumbUri( thumbUri );
 
@@ -88,8 +83,8 @@ public class DiagramNavigatorItemImpl implements IsWidget, DiagramNavigatorItem 
     }
 
     @Override
-    public String getUUID() {
-        return uuid;
+    public String getName() {
+        return name;
     }
 
     @Override

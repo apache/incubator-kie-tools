@@ -74,7 +74,7 @@ public class FactoryRegistryImplTest {
     public void testGetItems() {
         factory.register( elementFactory );
         factory.register( definitionFactory );
-        assertArrayEquals( new Object[]{ definitionFactory, elementFactory }, factory.getItems().toArray() );
+        assertArrayEquals( new Object[]{ definitionFactory, elementFactory }, factory.getAllFactories().toArray() );
     }
 
     @Test
@@ -96,7 +96,7 @@ public class FactoryRegistryImplTest {
         factory.register( definitionFactory );
         factory.register( missingFactory );
         factory.clear();
-        assertArrayEquals( new Object[ 0 ], factory.getItems().toArray() );
+        assertArrayEquals( new Object[ 0 ], factory.getAllFactories().toArray() );
     }
 
     @Test
@@ -113,6 +113,6 @@ public class FactoryRegistryImplTest {
         assertTrue( factory.contains( definitionFactory ) );
         assertTrue( factory.remove( definitionFactory ) );
         assertFalse( factory.contains( definitionFactory ) );
-        assertArrayEquals( new Object[ 0 ], factory.getItems().toArray() );
+        assertArrayEquals( new Object[ 0 ], factory.getAllFactories().toArray() );
     }
 }

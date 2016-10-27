@@ -20,42 +20,35 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.uberfire.backend.vfs.Path;
 
 @Portable
 public final class DiagramRepresentationImpl implements DiagramRepresentation {
 
-    private final String uuid;
-    private final String graphUUID;
+    private final String name;
     private final String title;
     private final String defSetId;
     private final String shapeSetId;
-    private final String vfsPath;
+    private final Path path;
     private final String thumbImageData;
 
-    public DiagramRepresentationImpl( @MapsTo( "uuid" ) String uuid,
-                                      @MapsTo( "graphUUID" ) String graphUUID,
-                                      @MapsTo( "title" ) String title,
-                                      @MapsTo( "defSetId" ) String defSetId,
-                                      @MapsTo( "shapeSetId" ) String shapeSetId,
-                                      @MapsTo( "vfsPath" ) String vfsPath,
-                                      @MapsTo( "thumbImageData" ) String thumbImageData ) {
-        this.uuid = uuid;
-        this.graphUUID = graphUUID;
+    DiagramRepresentationImpl( @MapsTo( "name" ) String name,
+                               @MapsTo( "title" ) String title,
+                               @MapsTo( "defSetId" ) String defSetId,
+                               @MapsTo( "shapeSetId" ) String shapeSetId,
+                               @MapsTo( "path" ) Path path,
+                               @MapsTo( "thumbImageData" ) String thumbImageData ) {
+        this.name = name;
         this.title = title;
         this.defSetId = defSetId;
         this.shapeSetId = shapeSetId;
-        this.vfsPath = vfsPath;
+        this.path = path;
         this.thumbImageData = thumbImageData;
     }
 
     @Override
-    public String getUUID() {
-        return uuid;
-    }
-
-    @Override
-    public String getGraphUUID() {
-        return graphUUID;
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -74,8 +67,8 @@ public final class DiagramRepresentationImpl implements DiagramRepresentation {
     }
 
     @Override
-    public String getVFSPath() {
-        return vfsPath;
+    public Path getPath() {
+        return path;
     }
 
     @Override
@@ -87,18 +80,39 @@ public final class DiagramRepresentationImpl implements DiagramRepresentation {
     public static final class DiagramRepresentationBuilder {
 
         private final Diagram diagram;
+        private final DiagramRepresentation representation;
+        private String shapeSetId;
 
         public DiagramRepresentationBuilder( final Diagram diagram ) {
             this.diagram = diagram;
+            this.representation = null;
+        }
+
+        public DiagramRepresentationBuilder( final DiagramRepresentation representation ) {
+            this.representation = representation;
+            this.diagram = null;
+        }
+
+        public DiagramRepresentationBuilder setShapeSetId( final String shapeSetId ) {
+            this.shapeSetId = shapeSetId;
+            return this;
         }
 
         public DiagramRepresentation build() {
-            return new DiagramRepresentationImpl( diagram.getUUID(),
-                    diagram.getGraph().getUUID(), diagram.getSettings().getTitle(),
-                    diagram.getSettings().getDefinitionSetId(),
-                    diagram.getSettings().getShapeSetId(),
-                    diagram.getSettings().getVFSPath(),
-                    diagram.getSettings().getThumbData() );
+            if ( null != diagram ) {
+                return new DiagramRepresentationImpl( diagram.getName(),
+                        diagram.getMetadata().getTitle(),
+                        diagram.getMetadata().getDefinitionSetId(),
+                        null != shapeSetId ? shapeSetId : diagram.getMetadata().getShapeSetId(),
+                        diagram.getMetadata().getPath(),
+                        diagram.getMetadata().getThumbData() );
+            }
+            return new DiagramRepresentationImpl( representation.getName(),
+                    representation.getTitle(),
+                    representation.getDefinitionSetId(),
+                    null != shapeSetId ? shapeSetId : representation.getShapeSetId(),
+                    representation.getPath(),
+                    representation.getThumbImageData());
         }
 
     }

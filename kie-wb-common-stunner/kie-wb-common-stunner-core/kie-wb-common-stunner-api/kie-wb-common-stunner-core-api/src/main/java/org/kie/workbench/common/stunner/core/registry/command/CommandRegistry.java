@@ -22,16 +22,40 @@ import org.kie.workbench.common.stunner.core.registry.SizeConstrainedRegistry;
 
 import java.util.Collection;
 
+/**
+ * Base registry type for Commands.
+ * @param <C> The type of the Command.
+ */
 public interface CommandRegistry<C extends Command> extends DynamicRegistry<C>, SizeConstrainedRegistry {
 
+    /**
+     * Registers a command.
+     */
     void register( Collection<C> command );
 
+    /**
+     * Returns the registered commands, can be composed collections if they're batched.
+     */
     Iterable<Iterable<C>> getCommandHistory();
 
+    /**
+     * Peek the command from the registry.
+     */
     Iterable<C> peek();
 
+    /**
+     * Peek and remove the command from the registry.
+     */
     Iterable<C> pop();
 
+    /**
+     * Returns the size for this regsitry.
+     */
     int getCommandHistorySize();
+
+    /**
+     * Clears the registry.
+     */
+    void clear();
 
 }

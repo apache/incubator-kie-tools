@@ -44,12 +44,12 @@
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-backend-common</artifactId>
+      <artifactId>kie-wb-common-stunner-core-common</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-core-common</artifactId>
+      <artifactId>kie-wb-common-stunner-backend-common</artifactId>
     </dependency>
 
     <dependency>
@@ -161,10 +161,23 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
-    <!-- Testing scope. -->
+    <!-- Test scope. -->
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
       <scope>test</scope>
     </dependency>
 

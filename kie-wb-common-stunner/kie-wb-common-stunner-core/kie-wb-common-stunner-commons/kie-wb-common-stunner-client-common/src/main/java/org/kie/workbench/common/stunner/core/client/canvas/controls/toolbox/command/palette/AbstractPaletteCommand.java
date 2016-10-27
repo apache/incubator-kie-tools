@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButton;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -52,7 +52,7 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
 
     private final I icon;
 
-    protected ClientFactoryServices clientFactoryServices;
+    protected ClientFactoryService clientFactoryServices;
     protected CommonLookups commonLookups;
     protected ShapeManager shapeManager;
     protected DefinitionsPaletteBuilder definitionsPaletteBuilder;
@@ -71,7 +71,7 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
         this( null, null, null, null, null, null, null, null, null );
     }
 
-    public AbstractPaletteCommand( final ClientFactoryServices clientFactoryServices,
+    public AbstractPaletteCommand( final ClientFactoryService clientFactoryServices,
                                    final CommonLookups commonLookups,
                                    final ShapeManager shapeManager,
                                    final DefinitionsPaletteBuilder definitionsPaletteBuilder,
@@ -104,6 +104,7 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
         return icon;
     }
 
+    // TODO: I18n.
     @Override
     public String getTitle() {
         return "Creates a new node";
@@ -143,7 +144,7 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
         this.paletteVisible = true;
         this.canvasHandler = context.getCanvasHandler();
         this.sourceNode = ( Node<? extends Definition<Object>, ? extends Edge> ) element;
-        this.graphBoundsIndexer.setRootUUID( canvasHandler.getDiagram().getSettings().getCanvasRootUUID() );
+        this.graphBoundsIndexer.setRootUUID( canvasHandler.getDiagram().getMetadata().getCanvasRootUUID() );
         final Set<String> allowedDefinitions = getDefinitions();
         log( Level.FINE, "Allowed Definitions -> " + allowedDefinitions );
         if ( null != allowedDefinitions && !allowedDefinitions.isEmpty() ) {

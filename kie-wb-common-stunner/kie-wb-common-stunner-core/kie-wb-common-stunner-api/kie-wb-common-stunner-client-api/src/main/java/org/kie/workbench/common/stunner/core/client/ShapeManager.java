@@ -23,7 +23,11 @@ import java.util.Collection;
 
 public interface ShapeManager {
 
-    Collection<ShapeSet> getShapeSets();
+    Collection<ShapeSet<?>> getShapeSets();
+
+    ShapeSet<?> getShapeSet( String id );
+
+    ShapeSet<?> getDefaultShapeSet( String definitionSetId );
 
     ShapeFactory getFactory( String definitionId );
 

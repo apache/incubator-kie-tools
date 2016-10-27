@@ -83,11 +83,6 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
         return commands.size();
     }
 
-    @Override
-    public Collection<C> getItems() {
-        throw new UnsupportedOperationException( "getItems not implemented yet. Use getCommandHistory() for now." );
-    }
-
     private void addIntoStack( final C command ) {
         if ( null != command ) {
             if ( ( commands.size() + 1 ) > maxStackSize ) {

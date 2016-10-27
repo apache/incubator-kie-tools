@@ -32,6 +32,7 @@
 
   <modules>
     <module>kie-wb-common-stunner-basicset-api</module>
+    <module>kie-wb-common-stunner-basicset-backend</module>
     <module>kie-wb-common-stunner-basicset-client</module>
   </modules>
 

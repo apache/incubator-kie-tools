@@ -22,8 +22,9 @@
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="com.google.gwt.logging.Logging"/>
 	<inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
+	<inherits name="org.kie.workbench.common.stunner.core.StunnerBackendApi"/>
 	<inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
-	
+
 	<source path="client"/>
 
 </module>

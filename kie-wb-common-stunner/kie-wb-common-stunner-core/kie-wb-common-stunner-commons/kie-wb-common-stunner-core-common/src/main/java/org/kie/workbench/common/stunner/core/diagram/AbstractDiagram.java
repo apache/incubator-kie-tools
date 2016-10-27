@@ -19,23 +19,33 @@ package org.kie.workbench.common.stunner.core.diagram;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-public abstract class AbstractDiagram<G extends Graph, S extends Settings> implements Diagram<G, S> {
+public abstract class AbstractDiagram<G extends Graph, S extends Metadata> implements Diagram<G, S> {
 
-    private final String uuid;
-    private final G graph;
-    private final S settings;
+    private final String name;
+    private final S metadata;
+    private G graph;
 
-    public AbstractDiagram( @MapsTo( "uuid" ) String uuid,
+    public AbstractDiagram( @MapsTo( "name" ) String name,
+                            @MapsTo( "metadata" ) S metadata ) {
+        this.name = name;
+        this.metadata = metadata;
+    }
+
+    public AbstractDiagram( @MapsTo( "name" ) String name,
                             @MapsTo( "graph" ) G graph,
-                            @MapsTo( "settings" ) S settings ) {
-        this.uuid = uuid;
+                            @MapsTo( "metadata" ) S metadata ) {
+        this.name = name;
+        this.metadata = metadata;
         this.graph = graph;
-        this.settings = settings;
+    }
+
+    public void setGraph( G graph ) {
+        this.graph = graph;
     }
 
     @Override
-    public String getUUID() {
-        return uuid;
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -44,8 +54,8 @@ public abstract class AbstractDiagram<G extends Graph, S extends Settings> imple
     }
 
     @Override
-    public S getSettings() {
-        return settings;
+    public S getMetadata() {
+        return metadata;
     }
 
     @Override
@@ -57,7 +67,7 @@ public abstract class AbstractDiagram<G extends Graph, S extends Settings> imple
             return false;
         }
         Diagram that = ( Diagram ) o;
-        return uuid.equals( that.getUUID() );
+        return name.equals( that.getName() );
 
     }
 

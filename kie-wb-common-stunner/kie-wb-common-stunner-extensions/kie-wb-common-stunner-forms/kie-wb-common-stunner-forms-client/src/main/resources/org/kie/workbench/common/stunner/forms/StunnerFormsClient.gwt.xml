@@ -20,6 +20,7 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsAPI"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
   <inherits name="org.gwtbootstrap3.extras.slider.Slider"/>

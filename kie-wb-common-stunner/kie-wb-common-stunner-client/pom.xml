@@ -34,7 +34,6 @@
     <module>kie-wb-common-stunner-shapes</module>
     <module>kie-wb-common-stunner-lienzo</module>
     <module>kie-wb-common-stunner-widgets</module>
-    <module>kie-wb-common-stunner-workbench</module>
   </modules>
 
 </project>

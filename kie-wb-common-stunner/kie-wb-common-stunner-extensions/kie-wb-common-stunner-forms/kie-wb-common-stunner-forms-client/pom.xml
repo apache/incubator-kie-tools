@@ -68,6 +68,11 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
 
@@ -98,12 +103,23 @@
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-forms-api</artifactId>
+      <artifactId>kie-wb-common-stunner-client-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-client-api</artifactId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-forms-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.forms</groupId>
+      <artifactId>kie-wb-common-forms-processing-engine</artifactId>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>

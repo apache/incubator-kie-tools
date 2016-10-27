@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.command.factory.CanvasComman
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryServices;
+import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
@@ -50,7 +50,7 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
     public LienzoPaletteMorphToolboxCommand( final DefinitionUtils definitionUtils,
                                              final CanvasCommandFactory commandFactory,
                                              final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                             final ClientFactoryServices clientFactoryServices,
+                                             final ClientFactoryService clientFactoryServices,
                                              final CommonLookups commonLookups,
                                              final ShapeManager shapeManager,
                                              final DefinitionsPaletteBuilder definitionsPaletteBuilder,
