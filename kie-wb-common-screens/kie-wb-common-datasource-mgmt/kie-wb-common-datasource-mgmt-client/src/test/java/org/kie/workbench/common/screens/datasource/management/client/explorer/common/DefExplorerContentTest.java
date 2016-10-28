@@ -131,7 +131,7 @@ public class DefExplorerContentTest {
 
         PathPlaceRequestMock placeRequest = new PathPlaceRequestMock( dataSource1.getPath() );
 
-        when( view.createPlaceRequest( dataSource1.getPath() ) ).thenReturn( placeRequest );
+        when( view.createEditorPlaceRequest( dataSource1.getPath() ) ).thenReturn( placeRequest );
 
         explorerContent.onDataSourceItemClick( dataSource1 );
 
@@ -146,7 +146,7 @@ public class DefExplorerContentTest {
 
         PathPlaceRequestMock placeRequest = new PathPlaceRequestMock( driver1.getPath() );
 
-        when( view.createPlaceRequest( driver1.getPath() ) ).thenReturn( placeRequest );
+        when( view.createEditorPlaceRequest( driver1.getPath() ) ).thenReturn( placeRequest );
 
         explorerContent.onDriverItemClick( driver1 );
 

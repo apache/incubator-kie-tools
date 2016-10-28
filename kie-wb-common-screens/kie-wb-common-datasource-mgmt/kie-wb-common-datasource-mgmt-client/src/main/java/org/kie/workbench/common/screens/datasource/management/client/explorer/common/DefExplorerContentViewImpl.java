@@ -31,6 +31,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
 @Dependent
@@ -130,8 +132,13 @@ public class DefExplorerContentViewImpl
     }
 
     @Override
-    public PathPlaceRequest createPlaceRequest( Path path ) {
+    public PlaceRequest createEditorPlaceRequest( Path path ) {
         return new PathPlaceRequest( path );
+    }
+
+    @Override
+    public PlaceRequest createScreenPlaceRequest( String identifier ) {
+        return new DefaultPlaceRequest( identifier );
     }
 
     @EventHandler( "add-new-datasource" )

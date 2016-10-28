@@ -19,20 +19,21 @@ package org.kie.workbench.common.screens.datasource.management.client.editor.dri
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
+import org.kie.workbench.common.screens.datasource.management.client.editor.common.DefEditorBaseViewImpl;
 
 @Dependent
 @Templated
 public class DriverDefEditorViewImpl
-        extends BaseEditorViewImpl
+        extends DefEditorBaseViewImpl
         implements DriverDefEditorView {
 
     @Inject
-    @DataField ( "main-panel-container" )
-    FlowPanel mainPanelContainer;
+    @DataField ( "content-panel" )
+    private FlowPanel contentPanel;
 
     private Presenter presenter;
 
@@ -42,10 +43,11 @@ public class DriverDefEditorViewImpl
     @Override
     public void init( final Presenter presenter ) {
         this.presenter = presenter;
+        super.init( presenter );
     }
 
     @Override
-    public void setMainPanel( DriverDefMainPanel mainPanel ) {
-        mainPanelContainer.add( mainPanel );
+    public void setContent( IsWidget content ) {
+        contentPanel.add( content );
     }
 }

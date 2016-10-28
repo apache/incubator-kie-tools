@@ -23,7 +23,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.datasource.management.client.resources.i18n.DataSourceManagementConstants;
 import org.kie.workbench.common.screens.datasource.management.client.type.DriverDefType;
 import org.kie.workbench.common.screens.datasource.management.client.util.ClientValidationServiceMock;
 import org.kie.workbench.common.screens.datasource.management.client.util.DataSourceManagementTestConstants;
@@ -35,6 +34,7 @@ import org.kie.workbench.common.screens.datasource.management.service.DataSource
 import org.kie.workbench.common.screens.datasource.management.service.DriverDefEditorService;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
@@ -99,6 +99,9 @@ public class DriverDefEditorTest
     @GwtMock
     private PopupsUtil popupsUtil;
 
+    @GwtMock
+    private PlaceManager placeManager;
+
     private DriverDefEditorContent content;
 
     @Before
@@ -111,7 +114,7 @@ public class DriverDefEditorTest
         dataSourceManagerClientCaller = new CallerMock<>( dataSourceManagerClient );
 
         editor = new DriverDefEditor( view,
-                mainPanel, editorHelper, popupsUtil, type, savePopupPresenter, deletePopUpPresenter,
+                mainPanel, editorHelper, popupsUtil, placeManager, type, savePopupPresenter, deletePopUpPresenter,
                 editorServiceCaller, dataSourceManagerClientCaller ) {
             {
                 this.versionRecordManager = DriverDefEditorTest.this.versionRecordManager;
@@ -119,12 +122,8 @@ public class DriverDefEditorTest
             }
         };
 
-        //auxiliary for the test menu caption.
-        when( editorHelper.getMessage( DataSourceManagementConstants.DriverDefEditor_CheckStatusMenu ) )
-                .thenReturn( "TestMenuCaption" );
-
         verify( view, times( 1 ) ).init( editor );
-        verify( view, times( 1 ) ).setMainPanel( mainPanel );
+        verify( view, times( 1 ) ).setContent( mainPanel );
     }
 
     private void prepareLoadFileSuccessful() {
@@ -177,6 +176,13 @@ public class DriverDefEditorTest
         assertEquals( ARTIFACT_ID_2, editor.getContent().getDef().getArtifactId() );
         assertEquals( VERSION_2, editor.getContent().getDef().getVersion() );
         assertEquals( DRIVER_CLASS_2, editor.getContent().getDef().getDriverClass() );
+    }
+
+    @Test
+    public void testCancel() {
+        prepareLoadFileSuccessful();
+        editor.onCancel();
+        verify( placeManager, times( 1 ) ).closePlace( placeRequest );
     }
 
     private DriverDefEditorContent createContent() {

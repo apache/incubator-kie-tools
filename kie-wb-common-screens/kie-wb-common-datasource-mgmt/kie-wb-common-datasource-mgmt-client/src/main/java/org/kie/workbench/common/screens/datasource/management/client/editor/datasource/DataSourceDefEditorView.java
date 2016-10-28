@@ -16,17 +16,33 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.editor.datasource;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.screens.datasource.management.client.editor.common.DefEditorActionsPanelView;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 
 public interface DataSourceDefEditorView
-        extends UberView<DataSourceDefEditorView.Presenter>,
-                BaseEditorView {
+        extends UberView< DataSourceDefEditorView.Presenter >, BaseEditorView {
 
-    interface Presenter {
+    String COL_MD_8 = "col-md-8";
 
+    String COL_MD_12 = "col-md-12";
+
+    interface Presenter extends DefEditorActionsPanelView.Presenter {
+
+        void onShowContent( );
     }
 
-    void setMainPanel( final DataSourceDefMainPanel mainPanel );
+    void setDataSourceName( String dataSourceName );
+
+    void clearContent( );
+
+    void setContent( IsWidget content );
+
+    void setContentWidth( String width );
+
+    void showHeaderPanel( boolean show );
+
+    void showActionsPanel( boolean show );
 
 }

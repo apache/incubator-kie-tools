@@ -10,6 +10,8 @@
   <inherits name="org.guvnor.structure.GuvnorStructureAPI"/>
   <inherits name="org.guvnor.common.services.GuvnorServicesAPI"/>
 
+  <inherits name="org.dashbuilder.DisplayerAPI" />
+
   <source path="management"/>
 
 </module>

@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datasource.management.client.perspectiv
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.kie.workbench.common.screens.datasource.management.client.explorer.DataSourceDefExplorerScreen;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
@@ -30,8 +31,10 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
-@WorkbenchPerspective( identifier = "DataSourceManagementPerspective" )
+@WorkbenchPerspective( identifier = DataSourceManagementPerspective.PERSPECTIVE_ID )
 public class DataSourceManagementPerspective {
+
+    public static final String PERSPECTIVE_ID = "DataSourceManagementPerspective";
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
@@ -42,7 +45,7 @@ public class DataSourceManagementPerspective {
         final PanelDefinition west = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         west.setWidth( 400 );
         west.setMinWidth( 300 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "DataSourceDefExplorer" ) ) );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( DataSourceDefExplorerScreen.SCREEN_ID ) ) );
         perspective.getRoot().insertChild( CompassPosition.WEST, west );
         return perspective;
     }

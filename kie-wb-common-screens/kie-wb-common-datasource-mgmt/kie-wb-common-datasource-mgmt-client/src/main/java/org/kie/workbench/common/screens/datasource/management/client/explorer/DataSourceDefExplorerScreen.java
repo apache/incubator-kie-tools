@@ -36,9 +36,11 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
-@WorkbenchScreen( identifier = "DataSourceDefExplorer" )
+@WorkbenchScreen( identifier = DataSourceDefExplorerScreen.SCREEN_ID )
 public class DataSourceDefExplorerScreen
         implements DataSourceDefExplorerScreenView.Presenter {
+
+    public static final String SCREEN_ID = "DataSourceDefExplorerScreen";
 
     private DataSourceDefExplorerScreenView view;
 

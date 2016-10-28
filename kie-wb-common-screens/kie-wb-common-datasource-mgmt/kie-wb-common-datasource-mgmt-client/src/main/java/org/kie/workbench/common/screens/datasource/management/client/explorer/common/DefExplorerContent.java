@@ -24,9 +24,11 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.screens.datasource.management.client.dbexplorer.DatabaseStructureExplorerScreen;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDefInfo;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDefInfo;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 public class DefExplorerContent
@@ -136,13 +138,19 @@ public class DefExplorerContent
     }
 
     protected void onDataSourceItemClick( DataSourceDefInfo dataSourceDefInfo ) {
+        PlaceRequest placeRequest;
         if ( dataSourceDefInfo.isManaged() ) {
-            placeManager.goTo( view.createPlaceRequest( dataSourceDefInfo.getPath() ) );
+            placeRequest = view.createEditorPlaceRequest( dataSourceDefInfo.getPath() );
+        } else {
+            placeRequest = view.createScreenPlaceRequest( DatabaseStructureExplorerScreen.SCREEN_ID );
+            placeRequest.addParameter( DatabaseStructureExplorerScreen.DATASOURCE_UUID_PARAM, dataSourceDefInfo.getUuid() );
+            placeRequest.addParameter( DatabaseStructureExplorerScreen.DATASOURCE_NAME_PARAM, dataSourceDefInfo.getName() );
         }
+        placeManager.goTo( placeRequest );
     }
 
     protected void onDriverItemClick( DriverDefInfo driverDefInfo ) {
-        placeManager.goTo( view.createPlaceRequest( driverDefInfo.getPath() ) );
+        placeManager.goTo( view.createEditorPlaceRequest( driverDefInfo.getPath() ) );
     }
 
     protected DefItem createItem() {

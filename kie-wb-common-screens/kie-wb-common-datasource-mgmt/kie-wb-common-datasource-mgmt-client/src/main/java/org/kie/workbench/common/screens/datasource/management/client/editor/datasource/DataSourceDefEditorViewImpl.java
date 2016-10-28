@@ -19,34 +19,87 @@ package org.kie.workbench.common.screens.datasource.management.client.editor.dat
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Label;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
+import org.kie.workbench.common.screens.datasource.management.client.editor.common.DefEditorBaseViewImpl;
 
 @Dependent
 @Templated
 public class DataSourceDefEditorViewImpl
-        extends BaseEditorViewImpl
+        extends DefEditorBaseViewImpl
         implements DataSourceDefEditorView {
 
     @Inject
-    @DataField ( "main-panel-container" )
-    private FlowPanel mainPanelContainer;
+    @DataField( "header-panel" )
+    private Div headerPanel;
+
+    @Inject
+    @DataField( "datasource-name-label" )
+    private Label dataSourceNameLabel;
+
+    @Inject
+    @DataField( "browse-content-button" )
+    private Button browserContentButton;
+
+    @Inject
+    @DataField( "content-panel-column" )
+    private Div contentPanelColumn;
+
+    @Inject
+    @DataField( "content-panel" )
+    private FlowPanel contentPanel;
 
     private Presenter presenter;
 
-    public DataSourceDefEditorViewImpl() {
+    public DataSourceDefEditorViewImpl( ) {
     }
 
     @Override
     public void init( Presenter presenter ) {
         this.presenter = presenter;
+        super.init( presenter );
     }
 
     @Override
-    public void setMainPanel( final DataSourceDefMainPanel mainPanel ) {
-        mainPanelContainer.add( mainPanel );
+    public void setDataSourceName( String dataSourceName ) {
+        dataSourceNameLabel.setTextContent( dataSourceName );
+    }
+
+    @Override
+    public void clearContent() {
+        contentPanel.clear();
+    }
+
+    @Override
+    public void setContent( IsWidget content ) {
+        contentPanel.add( content );
+    }
+
+    @Override
+    public void setContentWidth( String width ) {
+        contentPanelColumn.setClassName( width );
+    }
+
+    @Override
+    public void showHeaderPanel( boolean show ) {
+        headerPanel.setHidden( !show );
+    }
+
+    @Override
+    public void showActionsPanel( boolean show ) {
+        actionsPanel.getElement().setHidden( !show );
+    }
+
+    @EventHandler( "browse-content-button" )
+    private void onBrowseButtonClick( ClickEvent event ) {
+        presenter.onShowContent( );
     }
 
 }

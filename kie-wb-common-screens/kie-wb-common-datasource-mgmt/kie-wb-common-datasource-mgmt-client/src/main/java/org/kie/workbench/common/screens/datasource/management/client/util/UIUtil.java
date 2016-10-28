@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.util;
 
+import java.util.List;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.StyleHelper;
-import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
-import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
-import org.uberfire.mvp.Command;
 
 public class UIUtil {
 
@@ -39,5 +40,25 @@ public class UIUtil {
     public static void clearSpanMessage( final Element span ) {
         span.getStyle().setVisibility( Style.Visibility.HIDDEN );
         span.setInnerHTML( "" );
+    }
+
+    public static void loadOptions( ListBox listBox, List< Pair< String, String > > options ) {
+        loadOptions( listBox, options, null );
+    }
+
+    public static void loadOptions( ListBox listBox, List< Pair< String, String > > options, String selectedOption ) {
+        Pair< String, String > option;
+        int selectedIndex = -1;
+        listBox.clear( );
+        for ( int i = 0; i < options.size( ); i++ ) {
+            option = options.get( i );
+            listBox.addItem( option.getK1( ), option.getK2( ) );
+            if ( selectedIndex < 0 && selectedOption != null && selectedOption.equals( option.getK2( ) ) ) {
+                selectedIndex = i;
+            }
+        }
+        if ( selectedIndex >= 0 ) {
+            listBox.setSelectedIndex( selectedIndex );
+        }
     }
 }

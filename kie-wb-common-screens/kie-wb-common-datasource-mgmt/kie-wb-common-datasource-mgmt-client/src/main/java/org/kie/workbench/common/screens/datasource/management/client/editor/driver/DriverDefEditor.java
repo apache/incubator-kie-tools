@@ -16,12 +16,10 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.editor.driver;
 
-import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -34,14 +32,13 @@ import org.kie.workbench.common.screens.datasource.management.service.DataSource
 import org.kie.workbench.common.screens.datasource.management.service.DriverDefEditorService;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnMayClose;
@@ -50,10 +47,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.Menus;
-
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 
 @Dependent
 @WorkbenchEditor( identifier = "DriverDefEditor",
@@ -70,11 +63,13 @@ public class DriverDefEditor
 
     private PopupsUtil popupsUtil;
 
+    private PlaceManager placeManager;
+
     private DriverDefType type;
 
-    private Caller<DriverDefEditorService> editorService;
+    private Caller< DriverDefEditorService > editorService;
 
-    private Caller<DataSourceRuntimeManagerClientService> dataSourceManagerClient;
+    private Caller< DataSourceRuntimeManagerClientService > dataSourceManagerClient;
 
     private DriverDefEditorContent editorContent;
 
@@ -84,26 +79,28 @@ public class DriverDefEditor
 
     @Inject
     public DriverDefEditor( final DriverDefEditorView view,
-            final DriverDefMainPanel mainPanel,
-            final DriverDefEditorHelper editorHelper,
-            final PopupsUtil popupsUtil,
-            final DriverDefType type,
-            final SavePopUpPresenter savePopUpPresenter,
-            final DeletePopUpPresenter deletePopUpPresenter,
-            final Caller<DriverDefEditorService> editorService,
-            final Caller<DataSourceRuntimeManagerClientService> dataSourceManagerClient ) {
+                            final DriverDefMainPanel mainPanel,
+                            final DriverDefEditorHelper editorHelper,
+                            final PopupsUtil popupsUtil,
+                            final PlaceManager placeManager,
+                            final DriverDefType type,
+                            final SavePopUpPresenter savePopUpPresenter,
+                            final DeletePopUpPresenter deletePopUpPresenter,
+                            final Caller< DriverDefEditorService > editorService,
+                            final Caller< DataSourceRuntimeManagerClientService > dataSourceManagerClient ) {
         super( view );
         this.view = view;
         this.mainPanel = mainPanel;
         this.editorHelper = editorHelper;
         this.popupsUtil = popupsUtil;
+        this.placeManager = placeManager;
         this.type = type;
         this.savePopUpPresenter = savePopUpPresenter;
         this.deletePopUpPresenter = deletePopUpPresenter;
         this.editorService = editorService;
         this.dataSourceManagerClient = dataSourceManagerClient;
         view.init( this );
-        view.setMainPanel( mainPanel );
+        view.setContent( mainPanel );
         editorHelper.init( mainPanel );
     }
 
@@ -113,40 +110,34 @@ public class DriverDefEditor
                 place,
                 type,
                 true,
-                false,
-                SAVE );
+                false );
     }
 
     @WorkbenchPartTitleDecoration
-    public IsWidget getTitle() {
-        return super.getTitle();
+    public IsWidget getTitle( ) {
+        return super.getTitle( );
     }
 
     @WorkbenchPartTitle
-    public String getTitleText() {
-        return super.getTitleText();
-    }
-
-    @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public String getTitleText( ) {
+        return super.getTitleText( );
     }
 
     @WorkbenchPartView
-    public IsWidget getWidget() {
-        return view.asWidget();
+    public IsWidget getWidget( ) {
+        return view.asWidget( );
     }
 
     @OnMayClose
-    public boolean onMayClose() {
-        return super.mayClose( getContent().hashCode() );
+    public boolean onMayClose( ) {
+        return super.mayClose( getContent( ).hashCode( ) );
     }
 
     @Override
-    protected void loadContent() {
-        editorService.call( getLoadContentSuccessCallback(),
+    protected void loadContent( ) {
+        editorService.call( getLoadContentSuccessCallback( ),
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent(
-                versionRecordManager.getCurrentPath() );
+                versionRecordManager.getCurrentPath( ) );
     }
 
     @Override
@@ -155,39 +146,45 @@ public class DriverDefEditor
     }
 
     @Override
-    protected void makeMenuBar() {
-        super.makeMenuBar();
-        menuBuilder.addDelete( onDelete( versionRecordManager.getCurrentPath() ) );
-        menuBuilder.addValidate( onValidate() );
-        addTestStatusMenu();
+    public void onSave( ) {
+        save( );
     }
 
-    /**
-     * Save method initially executed by the save menu entry.
-     */
     @Override
-    protected void save() {
-        safeSave();
+    public void onCancel( ) {
+        placeManager.closePlace( place );
+    }
+
+    @Override
+    public void onDelete( ) {
+        safeDelete( versionRecordManager.getCurrentPath( ) );
+    }
+
+    protected void save( ) {
+        safeSave( );
     }
 
     /**
      * Executes a safe saving of the driver by checking if there are dependant data sources that may be affected by
      * the change.
      */
-    protected void safeSave() {
+    protected void safeSave( ) {
         executeSafeUpdateCommand( DataSourceManagementConstants.DriverDefEditor_DriverHasDependantsForSaveMessage,
-                new Command() {
-                    @Override public void execute() {
+                new Command( ) {
+                    @Override
+                    public void execute( ) {
                         _save( );
                     }
                 },
-                new Command() {
-                    @Override public void execute() {
+                new Command( ) {
+                    @Override
+                    public void execute( ) {
                         _save( );
                     }
                 },
-                new Command() {
-                    @Override public void execute() {
+                new Command( ) {
+                    @Override
+                    public void execute( ) {
                         //do nothing;
                     }
                 } );
@@ -197,13 +194,13 @@ public class DriverDefEditor
      * Performs the formal save of the driver.
      */
     protected void _save( ) {
-        savePopUpPresenter.show( versionRecordManager.getCurrentPath(),
-                new ParameterizedCommand<String>() {
+        savePopUpPresenter.show( versionRecordManager.getCurrentPath( ),
+                new ParameterizedCommand< String >( ) {
                     @Override
                     public void execute( final String commitMessage ) {
-                        editorService.call( getSaveSuccessCallback( getContent().hashCode() ),
-                                new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                getContent(),
+                        editorService.call( getSaveSuccessCallback( getContent( ).hashCode( ) ),
+                                new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath( ),
+                                getContent( ),
                                 commitMessage );
                     }
                 }
@@ -215,37 +212,25 @@ public class DriverDefEditor
      * Checks if current driver has dependant data sources prior to execute an update operation.
      */
     protected void executeSafeUpdateCommand( String onDependantsMessageKey,
-            Command defaultCommand, Command yesCommand, Command noCommand ) {
-        dataSourceManagerClient.call( new RemoteCallback<DriverDeploymentInfo>() {
+                                             Command defaultCommand, Command yesCommand, Command noCommand ) {
+        dataSourceManagerClient.call( new RemoteCallback< DriverDeploymentInfo >( ) {
             @Override
             public void callback( DriverDeploymentInfo deploymentInfo ) {
 
-                if ( deploymentInfo != null && deploymentInfo.hasDependants() ) {
-                    popupsUtil.showYesNoPopup( CommonConstants.INSTANCE.Warning(),
+                if ( deploymentInfo != null && deploymentInfo.hasDependants( ) ) {
+                    popupsUtil.showYesNoPopup( CommonConstants.INSTANCE.Warning( ),
                             editorHelper.getMessage( onDependantsMessageKey ),
                             yesCommand,
-                            CommonConstants.INSTANCE.YES(),
+                            CommonConstants.INSTANCE.YES( ),
                             ButtonType.WARNING,
                             noCommand,
-                            CommonConstants.INSTANCE.NO(),
+                            CommonConstants.INSTANCE.NO( ),
                             ButtonType.DEFAULT );
                 } else {
-                    defaultCommand.execute();
+                    defaultCommand.execute( );
                 }
             }
-        } ).getDriverDeploymentInfo( getContent().getDef().getUuid() );
-    }
-
-    /**
-     * Creates the deletion command to be invoked by the delete menu entry.
-     */
-    protected Command onDelete( ObservablePath currentPath ) {
-        return new Command() {
-            @Override
-            public void execute() {
-                safeDelete( currentPath );
-            }
-        };
+        } ).getDriverDeploymentInfo( getContent( ).getDef( ).getUuid( ) );
     }
 
     /**
@@ -254,18 +239,21 @@ public class DriverDefEditor
      */
     protected void safeDelete( ObservablePath currentPath ) {
         executeSafeUpdateCommand( DataSourceManagementConstants.DriverDefEditor_DriverHasDependantsForDeleteMessage,
-                new Command() {
-                    @Override public void execute() {
+                new Command( ) {
+                    @Override
+                    public void execute( ) {
                         delete( currentPath );
                     }
                 },
-                new Command() {
-                    @Override public void execute() {
+                new Command( ) {
+                    @Override
+                    public void execute( ) {
                         delete( currentPath );
                     }
                 },
-                new Command() {
-                    @Override public void execute() {
+                new Command( ) {
+                    @Override
+                    public void execute( ) {
                         //do nothing.
                     }
                 }
@@ -277,44 +265,27 @@ public class DriverDefEditor
      */
     protected void delete( ObservablePath currentPath ) {
 
-        deletePopUpPresenter.show( new ParameterizedCommand<String>() {
+        deletePopUpPresenter.show( new ParameterizedCommand< String >( ) {
             @Override
             public void execute( final String comment ) {
-                view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting() );
-                editorService.call( new RemoteCallback<Void>() {
-                    @Override public void callback( Void aVoid ) {
-                        view.hideBusyIndicator();
-                        notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully(),
+                view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting( ) );
+                editorService.call( new RemoteCallback< Void >( ) {
+                    @Override
+                    public void callback( Void aVoid ) {
+                        view.hideBusyIndicator( );
+                        notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully( ),
                                 NotificationEvent.NotificationType.SUCCESS ) );
                     }
-                } , new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( currentPath, comment );
+                }, new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( currentPath, comment );
             }
         } );
     }
 
-    /**
-     * Validate command executed by the validate menu entry.
-     */
-    @Override
-    protected Command onValidate() {
-        return new Command() {
-            @Override
-            public void execute() {
-                validate();
-            }
-        };
-    }
-
-    protected void validate() {
-        editorService.call(
-                getValidationSuccessCallback(), new DefaultErrorCallback() ).validate( getContent().getDef() );
-    }
-
-    private RemoteCallback<DriverDefEditorContent> getLoadContentSuccessCallback() {
-        return new RemoteCallback<DriverDefEditorContent>() {
+    private RemoteCallback< DriverDefEditorContent > getLoadContentSuccessCallback( ) {
+        return new RemoteCallback< DriverDefEditorContent >( ) {
             @Override
             public void callback( DriverDefEditorContent editorContent ) {
-                view.hideBusyIndicator();
+                view.hideBusyIndicator( );
                 onContentLoaded( editorContent );
             }
         };
@@ -322,72 +293,20 @@ public class DriverDefEditor
 
     protected void onContentLoaded( final DriverDefEditorContent editorContent ) {
         //Path is set to null when the Editor is closed (which can happen before async calls complete).
-        if ( versionRecordManager.getCurrentPath() == null ) {
+        if ( versionRecordManager.getCurrentPath( ) == null ) {
             return;
         }
         setContent( editorContent );
-        setOriginalHash( editorContent.hashCode() );
+        setOriginalHash( editorContent.hashCode( ) );
     }
 
-    protected DriverDefEditorContent getContent() {
+    protected DriverDefEditorContent getContent( ) {
         return editorContent;
     }
 
     protected void setContent( final DriverDefEditorContent editorContent ) {
         this.editorContent = editorContent;
-        this.editorHelper.setDriverDef( editorContent.getDef() );
+        this.editorHelper.setDriverDef( editorContent.getDef( ) );
         editorHelper.setValid( true );
-    }
-
-    private RemoteCallback<List<ValidationMessage>> getValidationSuccessCallback() {
-        return new RemoteCallback<List<ValidationMessage>>() {
-            @Override
-            public void callback( List<ValidationMessage> messages ) {
-
-                if ( messages == null || messages.isEmpty() ) {
-                    notification.fire( new NotificationEvent(
-                            org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                            NotificationEvent.NotificationType.SUCCESS ) );
-                } else {
-                    popupsUtil.showValidationMessages( messages );
-                }
-            }
-        };
-    }
-
-    //Check if we want to keep this check status option in the future.
-    private void addTestStatusMenu() {
-        menuBuilder.addNewTopLevelMenu( MenuFactory.newTopLevelMenu(
-                editorHelper.getMessage( DataSourceManagementConstants.DriverDefEditor_CheckStatusMenu ) )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        onCheckStatus();
-                    }
-                } )
-                .endMenu()
-                .build().getItems().get( 0 ) );
-    }
-
-    private void onCheckStatus() {
-        dataSourceManagerClient.call( new RemoteCallback<DriverDeploymentInfo>() {
-            @Override
-            public void callback( DriverDeploymentInfo deploymentInfo ) {
-                StringBuilder builder = new StringBuilder();
-                if ( deploymentInfo == null ) {
-                    builder.append( editorHelper.getMessage(
-                            DataSourceManagementConstants.DriverDefEditor_DriverNotRegisteredMessage,
-                            getContent().getDef().getUuid() ) );
-                } else if ( !deploymentInfo.hasDependants() ) {
-                    builder.append( editorHelper.getMessage(
-                            DataSourceManagementConstants.DriverDefEditor_DriverHasNoDependantsMessage ) );
-                } else {
-                    builder.append( editorHelper.getMessage(
-                            DataSourceManagementConstants.DriverDefEditor_DriverHasDependantsMessage,
-                            deploymentInfo.getDependants().size() ) );
-                }
-                popupsUtil.showInformationPopup( builder.toString() );
-            }
-        } ).getDriverDeploymentInfo( getContent().getDef().getUuid() );
     }
 }

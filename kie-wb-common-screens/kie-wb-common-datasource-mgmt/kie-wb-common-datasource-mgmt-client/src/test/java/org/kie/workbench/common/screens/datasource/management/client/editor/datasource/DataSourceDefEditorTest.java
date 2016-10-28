@@ -26,10 +26,12 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.datasource.management.client.dbexplorer.DatabaseStructureExplorer;
 import org.kie.workbench.common.screens.datasource.management.client.resources.i18n.DataSourceManagementConstants;
 import org.kie.workbench.common.screens.datasource.management.client.type.DataSourceDefType;
 import org.kie.workbench.common.screens.datasource.management.client.util.ClientValidationServiceMock;
 import org.kie.workbench.common.screens.datasource.management.client.util.DataSourceManagementTestConstants;
+import org.kie.workbench.common.screens.datasource.management.client.util.InitializeCallback;
 import org.kie.workbench.common.screens.datasource.management.client.util.PopupsUtil;
 import org.kie.workbench.common.screens.datasource.management.client.validation.ClientValidationService;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
@@ -38,8 +40,10 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDefInf
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefEditorService;
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefQueryService;
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceRuntimeManagerClientService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -62,6 +66,9 @@ public class DataSourceDefEditorTest
     private DataSourceDefMainPanelView mainPanelView;
 
     private DataSourceDefMainPanel mainPanel;
+
+    @Mock
+    private DatabaseStructureExplorer dbStructureExplorer;
 
     private DataSourceDefEditorHelper editorHelper;
 
@@ -102,6 +109,9 @@ public class DataSourceDefEditorTest
 
     @Mock
     private PlaceRequest placeRequest;
+
+    @Mock
+    private PlaceManager placeManager;
 
     @GwtMock
     private PopupsUtil popupsUtil;
@@ -145,20 +155,17 @@ public class DataSourceDefEditorTest
                 editorServiceCaller, queryServiceCaller, clientValidationService, popupsUtil );
 
         editor = new DataSourceDefEditor( view,
-                mainPanel, editorHelper, popupsUtil, type, savePopupPresenter, deletePopUpPresenter,
+                mainPanel, editorHelper, dbStructureExplorer, popupsUtil, placeManager, type, savePopupPresenter, deletePopUpPresenter,
                 editorServiceCaller, dataSourceManagerClientCaller ) {
             {
                 this.versionRecordManager = DataSourceDefEditorTest.this.versionRecordManager;
                 this.menuBuilder = mock( BasicFileMenuBuilder.class );
             }
         };
+        editor.init();
 
-        //auxiliary for the test menu caption.
-        when( editorHelper.getMessage( DataSourceManagementConstants.DataSourceDefEditor_TestDataSourceMenu ) )
-                .thenReturn( "TestMenuCaption" );
-
-                        verify( view, times( 1 ) ).init( editor );
-        verify( view, times( 1 ) ).setMainPanel( mainPanel );
+        verify( view, times( 1 ) ).init( editor );
+        verify( view, times( 1 ) ).setContent( mainPanel );
     }
 
     private void prepareLoadFileSuccessful() {
@@ -217,6 +224,30 @@ public class DataSourceDefEditorTest
         assertEquals( DRIVER_UUID_2, content.getDef().getDriverUuid() );
     }
 
+    @Test
+    public void testOnBrowseDatabase() {
+
+        //open the editor with a valid content
+        prepareLoadFileSuccessful();
+
+        //emulates the selection of the show content action from the UI
+        editor.onShowContent();
+
+        DatabaseStructureExplorer.Settings expectedSettings = new DatabaseStructureExplorer.Settings( );
+        expectedSettings.dataSourceUuid( content.getDef().getUuid() );
+        expectedSettings.dataSourceName( content.getDef().getName() );
+
+        //dbStructureExplorer should have been initialized with the proper datasource parameters.
+        verify( dbStructureExplorer, times( 1 ) ).initialize( eq( expectedSettings ), any( InitializeCallback.class ) );
+    }
+
+    @Test
+    public void testCancel() {
+        prepareLoadFileSuccessful();
+        editor.onCancel();
+        verify( placeManager, times( 1 ) ).closePlace( placeRequest );
+    }
+
     private DataSourceDefEditorContent createContent() {
         DataSourceDefEditorContent content = new DataSourceDefEditorContent();
         content.setDef( new DataSourceDef() );
@@ -227,5 +258,4 @@ public class DataSourceDefEditorTest
         content.getDef().setPassword( PASSWORD );
         return content;
     }
-
 }

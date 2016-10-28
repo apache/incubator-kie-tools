@@ -21,13 +21,7 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public interface DataSourceManagementConstants {
 
     @TranslationKey( defaultValue = "" )
-    String DataSourceDefEditor_TestDataSourceMenu = "DataSourceDefEditor.TestDataSourceMenu";
-
-    @TranslationKey( defaultValue = "" )
     String DataSourceDefEditor_InvalidNameMessage = "DataSourceDefEditor.InvalidNameMessage";
-
-    @TranslationKey( defaultValue = "" )
-    String DataSourceDefEditor_InvalidJndiMessage = "DataSourceDefEditor.InvalidJndiMessage";
 
     @TranslationKey( defaultValue = "" )
     String DataSourceDefEditor_InvalidConnectionURLMessage = "DataSourceDefEditor.InvalidConnectionURLMessage";
@@ -78,9 +72,6 @@ public interface DataSourceManagementConstants {
     String DataSourceDefPage_pagetTitle = "DataSourceDefPageViewImpl.pageTitle";
 
     @TranslationKey( defaultValue = "" )
-    String DriverDefEditor_CheckStatusMenu = "DriverDefEditor.CheckStatusMenu";
-
-    @TranslationKey( defaultValue = "" )
     String DriverDefEditor_InvalidNameMessage = "DriverDefEditor.InvalidNameMessage";
 
     @TranslationKey( defaultValue = "" )
@@ -100,15 +91,6 @@ public interface DataSourceManagementConstants {
 
     @TranslationKey( defaultValue = "" )
     String DriverDefEditor_DriverHasDependantsForDeleteMessage = "DriverDefEditor.DriverHasDependantsForDeleteMessage";
-
-    @TranslationKey( defaultValue = "" )
-    String DriverDefEditor_DriverNotRegisteredMessage = "DriverDefEditor.DriverNotRegisteredMessage";
-
-    @TranslationKey( defaultValue = "" )
-    String DriverDefEditor_DriverHasNoDependantsMessage="DriverDefEditor.DriverHasNoDependantsMessage";
-
-    @TranslationKey( defaultValue = "" )
-    String DriverDefEditor_DriverHasDependantsMessage="DriverDefEditor.DriverHasDependantsMessage";
 
     @TranslationKey( defaultValue = "" )
     String NewDriverDefWizard_title = "NewDriverDefWizard.title";
@@ -142,4 +124,55 @@ public interface DataSourceManagementConstants {
 
     @TranslationKey( defaultValue = "" )
     String DataSourceDefExplorerScreen_Refresh = "DataSourceDefExplorerScreen.Refresh";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseStructureExplorerViewImpl_schemasTitle = "DatabaseStructureExplorerViewImpl.schemasTitle";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseStructureExplorerViewImpl_defaultSchema = "DatabaseStructureExplorerViewImpl.defaultSchema";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseStructureExplorerViewImpl_dataSourceTitle = "DatabaseStructureExplorerViewImpl.dataSourceTitle";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseSchemaExplorerViewImpl_loadingDbSchemas = "DatabaseSchemaExplorerViewImpl.loadingDbSchemas";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseSchemaExplorerViewImpl_schemasListEmpty = "DatabaseSchemaExplorerViewImpl.schemasListEmpty";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseSchemaExplorerViewImpl_schemaNameColumn = "DatabaseSchemaExplorerViewImpl.schemaNameColumn";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseSchemaExplorerViewImpl_actionColumn = "DatabaseSchemaExplorerViewImpl.actionColumn";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseSchemaExplorerViewImpl_schemaOpenAction = "DatabaseSchemaExplorerViewImpl.schemaOpenAction";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseObjectExplorerViewImpl_loadingDbObjects = "DatabaseObjectExplorerViewImpl.loadingDbObjects";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseObjectExplorerViewImpl_loadingDbSchemas = "DatabaseObjectExplorerViewImpl.loadingDbSchemas";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseObjectExplorerViewImpl_namePatternHelp = "DatabaseObjectExplorerViewImpl.namePatternHelp";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseObjectExplorerViewImpl_dbObjectNameColumn = "DatabaseObjectExplorerViewImpl.dbObjectNameColumn";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseObjectExplorerViewImpl_dbObjectsListEmpty = "DatabaseObjectExplorerViewImpl.dbObjectsListEmpty";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseObjectExplorerViewImpl_dbObjectTypeColumn = "DatabaseObjectExplorerViewImpl.dbObjectTypeColumn";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseObjectExplorerViewImpl_dbObjectOpen = "DatabaseObjectExplorerViewImpl.dbObjectOpen";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseObjectExplorerViewImpl_dbObjectActionColumn = "DatabaseObjectExplorerViewImpl.dbObjectActionColumn";
+
+    @TranslationKey( defaultValue = "" )
+    String DatabaseStructureExplorerScreen_title = "DatabaseStructureExplorerScreen.title";
 }

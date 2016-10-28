@@ -34,6 +34,8 @@
 
   <inherits name="org.kie.workbench.common.screens.datasource.KieWorkbenchDataSourceAPI" />
 
+  <inherits name="org.dashbuilder.DisplayerAPI" />
+
   <source path="management"/>
 
 </module>

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.editor.driver;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.screens.datasource.management.client.editor.common.DefEditorActionsPanelView;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 
@@ -23,9 +25,9 @@ public interface DriverDefEditorView
         extends UberView<DriverDefEditorView.Presenter>,
         BaseEditorView {
 
-    interface Presenter {
+    interface Presenter extends DefEditorActionsPanelView.Presenter {
 
     }
 
-    void setMainPanel( final DriverDefMainPanel mainPanel );
+    void setContent( final IsWidget content );
 }
