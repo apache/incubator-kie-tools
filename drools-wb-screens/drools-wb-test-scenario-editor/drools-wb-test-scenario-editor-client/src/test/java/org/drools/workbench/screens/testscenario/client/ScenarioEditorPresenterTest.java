@@ -41,6 +41,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -167,8 +168,15 @@ public class ScenarioEditorPresenterTest {
 
         presenter.onRunScenario();
 
-        verify(view).initKSessionSelector(eq(path), any(Scenario.class));
-        verify(view).showAuditView(anySet());
+        InOrder inOrder = inOrder( view );
+        inOrder.verify( view )
+                .showResults();
+        inOrder.verify( view )
+                .showAuditView( anySet() );
+        inOrder.verify( view )
+                .initKSessionSelector( eq( path ),
+                                       any( Scenario.class ) );
+
     }
 
     class ScenarioTestEditorServiceCallerMock

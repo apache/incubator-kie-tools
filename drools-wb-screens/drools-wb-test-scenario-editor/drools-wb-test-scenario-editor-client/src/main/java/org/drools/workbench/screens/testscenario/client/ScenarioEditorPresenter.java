@@ -134,11 +134,11 @@ public class ScenarioEditorPresenter
 
                 scenario = result.getScenario();
 
-                redraw();
-
                 view.showResults();
 
                 view.showAuditView(result.getLog());
+
+                redraw();
 
             }
         }, new HasBusyIndicatorDefaultErrorCallback(view)).runScenario(versionRecordManager.getCurrentPath(),
