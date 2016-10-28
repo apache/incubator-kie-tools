@@ -39,4 +39,5 @@ public interface KSessionSelectorView
 
     String getSelectedKSessionName();
 
+    void clear();
 }

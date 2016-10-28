@@ -95,6 +95,8 @@ public class KSessionSelector
     }
 
     private void initKBases( final String currentKSession ) {
+        view.clear();
+
         if ( kmodule.getKBases().isEmpty() ) {
             addMockKBaseModel( DEFAULT_KIE_BASE, DEFAULT_KIE_SESSION );
             view.addKBase( DEFAULT_KIE_BASE );

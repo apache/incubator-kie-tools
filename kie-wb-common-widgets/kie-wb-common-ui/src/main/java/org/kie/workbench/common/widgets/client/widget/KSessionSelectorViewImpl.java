@@ -91,6 +91,12 @@ public class KSessionSelectorViewImpl
     }
 
     @Override
+    public void clear() {
+        kbases.clear();
+        ksessions.clear();
+    }
+
+    @Override
     public String getSelectedKSessionName() {
         return ksessions.getItemText( ksessions.getSelectedIndex() );
     }

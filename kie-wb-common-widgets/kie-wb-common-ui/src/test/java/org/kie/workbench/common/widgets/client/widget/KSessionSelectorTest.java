@@ -89,6 +89,19 @@ public class KSessionSelectorTest {
     }
 
     @Test
+    public void clearPreviousSetUp() throws
+                                     Exception {
+        selector.init( path,
+                       "first" );
+        verify( view ).clear();
+
+        selector.init( path,
+                       "second" );
+        verify( view,
+                times( 2 ) ).clear();
+    }
+
+    @Test
     public void testSetKBaseAndKSession() throws Exception {
 
         selector.init( path,
