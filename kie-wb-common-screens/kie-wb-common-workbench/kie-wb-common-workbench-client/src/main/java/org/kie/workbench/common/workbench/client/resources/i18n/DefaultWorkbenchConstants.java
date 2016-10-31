@@ -55,6 +55,8 @@ public interface DefaultWorkbenchConstants
 
     String DataSets();
 
+    String DataSources();
+
     String ProcessDefinitions();
 
     String ProcessInstances();

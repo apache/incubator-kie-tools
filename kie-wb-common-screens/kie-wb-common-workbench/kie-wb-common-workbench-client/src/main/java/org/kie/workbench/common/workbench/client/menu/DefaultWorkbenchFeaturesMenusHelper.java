@@ -139,6 +139,7 @@ public class DefaultWorkbenchFeaturesMenusHelper {
         result.add( MenuFactory.newSimpleItem( constants.Plugins() ).perspective( PLUGIN_AUTHORING ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.Apps() ).perspective( APPS ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.DataSets() ).perspective( DATASET_AUTHORING ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.DataSources() ).perspective( DATASOURCE_MANAGEMENT ).endMenu().build().getItems().get( 0 ) );
 
         return result;
     }

@@ -144,10 +144,11 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     public void getExtensionsViewsTest() {
         List<? extends MenuItem> extensionsMenuItems = menusHelper.getExtensionsViews();
 
-        assertEquals( 3, extensionsMenuItems.size() );
+        assertEquals( 4, extensionsMenuItems.size() );
         assertEquals( menusHelper.constants.Plugins(), extensionsMenuItems.get( 0 ).getCaption() );
         assertEquals( menusHelper.constants.Apps(), extensionsMenuItems.get( 1 ).getCaption() );
         assertEquals( menusHelper.constants.DataSets(), extensionsMenuItems.get( 2 ).getCaption() );
+        assertEquals( menusHelper.constants.DataSources(), extensionsMenuItems.get( 3 ).getCaption() );
     }
 
     @Test
