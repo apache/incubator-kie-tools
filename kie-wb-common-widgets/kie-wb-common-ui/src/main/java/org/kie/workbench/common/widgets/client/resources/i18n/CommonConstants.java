@@ -260,15 +260,11 @@ public interface CommonConstants
 
     String ChineseSimplified();
 
-    String ChineseTraditional();
-
     String Spanish();
 
     String Portuguese();
 
     String English();
-
-    String Russian();
 
     String ResetPerspectivesTooltip();
 

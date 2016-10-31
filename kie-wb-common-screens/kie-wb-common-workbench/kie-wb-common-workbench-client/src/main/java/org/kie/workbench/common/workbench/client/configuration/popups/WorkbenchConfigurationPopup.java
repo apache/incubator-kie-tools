@@ -124,10 +124,6 @@ public class WorkbenchConfigurationPopup extends BaseModal {
                          constants.Japanese() );
         languageMap.put( "pt_BR",
                          constants.Portuguese() );
-        languageMap.put( "zh_TW",
-                         constants.ChineseTraditional() );
-        languageMap.put( "ru",
-                         constants.Russian() );
 
         viewModeMap.put( ADVANCED_MODE,
                          constants.Advanced() );
