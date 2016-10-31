@@ -22,6 +22,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 
 import javax.enterprise.context.Dependent;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 @Dependent
 public class SwitchGridSessionCommand extends AbstractClientSessionCommand<AbstractClientReadOnlySession> {
 
@@ -32,7 +34,7 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
     }
 
     @Override
-    public SwitchGridSessionCommand bind( AbstractClientReadOnlySession session ) {
+    public SwitchGridSessionCommand bind( final AbstractClientReadOnlySession session ) {
         super.bind( session );
         showGrid();
         return this;
@@ -40,28 +42,29 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
 
     @Override
     public <T> void execute( Callback<T> callback ) {
+        checkNotNull( "callback", callback );
+
         if ( isGridVisible() ) {
             hideGrid();
         } else {
             showGrid();
         }
+        // Run the callback.
+        callback.onSuccess( null );
     }
 
     private void showGrid() {
         this.grid = DefaultCanvasGrid.INSTANCE;
         getSession().getCanvas().setGrid( this.grid );
-
     }
 
     private void hideGrid() {
         this.grid = null;
         getSession().getCanvas().setGrid( this.grid );
-
     }
 
     private boolean isGridVisible() {
         return null != grid;
-
     }
 
 }

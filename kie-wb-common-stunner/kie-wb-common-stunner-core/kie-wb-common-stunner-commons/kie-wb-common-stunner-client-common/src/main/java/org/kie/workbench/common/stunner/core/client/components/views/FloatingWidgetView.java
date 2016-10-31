@@ -40,6 +40,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     private boolean attached;
     private Timer timer;
     private int timeout = 800;
+    private boolean visible;
     private final FlowPanel panel = new FlowPanel();
     private final HandlerRegistrationImpl handlerRegistrationManager = new HandlerRegistrationImpl();
 
@@ -47,6 +48,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
         this.attached = false;
         this.ox = 0;
         this.oy = 0;
+        this.visible = false;
     }
 
     @Override
@@ -97,22 +99,32 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public FloatingWidgetView show() {
-        attach();
-        startTimeout();
-        panel.getElement().getStyle().setLeft( ox + x, Style.Unit.PX );
-        panel.getElement().getStyle().setTop( oy + y, Style.Unit.PX );
-        panel.getElement().getStyle().setDisplay( Style.Display.INLINE );
+        if ( !visible )  {
+            visible = true;
+            attach();
+            startTimeout();
+            panel.getElement().getStyle().setLeft( ox + x, Style.Unit.PX );
+            panel.getElement().getStyle().setTop( oy + y, Style.Unit.PX );
+            doShow();
+        }
         return this;
     }
 
     @Override
     public FloatingWidgetView hide() {
-        stopTimeout();
-        doHide();
+        if ( visible ) {
+            this.visible = false;
+            stopTimeout();
+            doHide();
+        }
         return this;
     }
 
-    private void doHide() {
+    protected void doShow() {
+        panel.getElement().getStyle().setDisplay( Style.Display.INLINE );
+    }
+
+    protected void doHide() {
         panel.getElement().getStyle().setDisplay( Style.Display.NONE );
     }
 
@@ -163,6 +175,10 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
             timer.cancel();
         }
 
+    }
+
+    protected FlowPanel getPanel() {
+        return panel;
     }
 
     private void registerHoverEventHandlers() {

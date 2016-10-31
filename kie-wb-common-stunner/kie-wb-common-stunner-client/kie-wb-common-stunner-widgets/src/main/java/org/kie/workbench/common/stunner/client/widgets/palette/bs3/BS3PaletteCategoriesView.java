@@ -48,7 +48,8 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
 
     private BS3PaletteCategories presenter;
     private final List<HandlerRegistration> handlerRegistrationList = new LinkedList<>();
-    private int iconSize = 25;
+    private int iconWidth = 25;
+    private int iconHeight = 25;
     private int padding = 50;
 
     @UiField
@@ -67,8 +68,14 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
     }
 
     @Override
-    public BS3PaletteCategories.View setIconSize( final int iconSize ) {
-        this.iconSize = iconSize;
+    public BS3PaletteCategories.View setIconWidth( final int iconSize ) {
+        this.iconWidth = iconSize;
+        return this;
+    }
+
+    @Override
+    public BS3PaletteCategories.View setIconHeight( final int iconSize ) {
+        this.iconHeight = iconSize;
         return this;
     }
 
@@ -88,7 +95,7 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
         if ( null != view ) {
             if ( view instanceof Icon ) {
                 final Icon icon = ( Icon ) view;
-                item.setIconSize( IconSize.TIMES3 );
+                item.setIconSize( IconSize.LARGE );
                 final IconType type = icon.getType();
                 item.setIcon( type );
                 final IconRotate rotate = icon.getRotate();
@@ -105,8 +112,8 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
             item.setText( categoryTitle );
         }
         // Styling.
-        final double w = iconSize + padding;
-        final double h = iconSize + padding;
+        final double w = iconWidth + padding;
+        final double h = iconHeight + padding;
         item.getElement().getStyle().setWidth( w, Style.Unit.PX );
         item.getElement().getStyle().setHeight( h, Style.Unit.PX );
         item.getElement().getStyle().setTextAlign( Style.TextAlign.CENTER );

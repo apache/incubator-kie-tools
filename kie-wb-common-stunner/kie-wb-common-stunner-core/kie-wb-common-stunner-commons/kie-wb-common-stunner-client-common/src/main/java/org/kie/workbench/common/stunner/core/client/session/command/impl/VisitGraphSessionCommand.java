@@ -21,6 +21,8 @@ import org.kie.workbench.common.stunner.core.client.util.CanvasHighlightVisitor;
 
 import javax.enterprise.context.Dependent;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 @Dependent
 public class VisitGraphSessionCommand extends AbstractClientSessionCommand<AbstractClientReadOnlySession> {
 
@@ -30,11 +32,11 @@ public class VisitGraphSessionCommand extends AbstractClientSessionCommand<Abstr
 
     @Override
     public <T> void execute( final Callback<T> callback ) {
+        checkNotNull( "callback", callback );
+
         new CanvasHighlightVisitor()
                 .run( getSession().getCanvasHandler(), () -> {
-                    if ( null != callback ) {
-                        callback.onSuccess( null );
-                    }
+                    callback.onSuccess( null );
                 } );
     }
 

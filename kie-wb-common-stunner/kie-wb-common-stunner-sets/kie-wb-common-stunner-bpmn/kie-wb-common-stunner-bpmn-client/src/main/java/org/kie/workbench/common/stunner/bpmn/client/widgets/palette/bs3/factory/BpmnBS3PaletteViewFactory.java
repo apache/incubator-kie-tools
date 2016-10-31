@@ -34,8 +34,8 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
 
     private final static Map<String, Icon> CATEGORY_VIEWS = new HashMap<String, Icon>() {{
         put( Categories.ACTIVITIES, getIcon( IconType.SQUARE ) );
-        put( Categories.LANES, getIcon( IconType.COLUMNS ) );
-        put( Categories.GATEWAYS, getIcon( IconType.RANDOM ) );
+        put( Categories.LANES, getIcon( IconType.CLONE ) );
+        put( Categories.GATEWAYS, getIcon( IconType.ASTERISK ) );
         put( Categories.EVENTS, getIcon( IconType.CIRCLE ) );
         put( Categories.CONNECTING_OBJECTS, getIcon( IconType.LONG_ARROW_RIGHT ) );
     }};
@@ -86,7 +86,7 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
     protected Icon resize( final Icon widget,
                            final int width,
                            final int height ) {
-        widget.setSize( IconSize.TIMES2 );
+        widget.setSize( IconSize.LARGE );
         return widget;
     }
 

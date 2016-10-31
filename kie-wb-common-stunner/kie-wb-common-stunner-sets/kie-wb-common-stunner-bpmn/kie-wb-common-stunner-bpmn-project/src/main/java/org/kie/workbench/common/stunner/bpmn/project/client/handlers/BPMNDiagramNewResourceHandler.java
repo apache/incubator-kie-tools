@@ -53,12 +53,16 @@ public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewReso
 
     @Override
     public String getDescription() {
-        return BPMNDefinitionSetResourceType.NAME;
+        return getBPMNDiagramResourceType().getDescription();
     }
 
     @Override
     public IsWidget getIcon() {
-        return null;
+        return getBPMNDiagramResourceType().getIcon();
+    }
+
+    private BPMNDiagramResourceType getBPMNDiagramResourceType() {
+        return ( BPMNDiagramResourceType ) super.getResourceType();
     }
 
 }

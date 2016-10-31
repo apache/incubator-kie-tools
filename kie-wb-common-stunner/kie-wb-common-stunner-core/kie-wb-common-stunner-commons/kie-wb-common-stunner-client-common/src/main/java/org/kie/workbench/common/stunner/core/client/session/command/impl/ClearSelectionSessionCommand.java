@@ -20,6 +20,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 
 import javax.enterprise.context.Dependent;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 @Dependent
 public class ClearSelectionSessionCommand extends AbstractClientSessionCommand<AbstractClientReadOnlySession> {
 
@@ -29,12 +31,10 @@ public class ClearSelectionSessionCommand extends AbstractClientSessionCommand<A
 
     @Override
     public <T> void execute( final Callback<T> callback ) {
+        checkNotNull( "callback", callback );
         if ( null != getSession().getSelectionControl() ) {
             getSession().getSelectionControl().clearSelection();
-            if ( null != callback ) {
-                callback.onSuccess( null );
-            }
-
+            callback.onSuccess( null );
         }
     }
 

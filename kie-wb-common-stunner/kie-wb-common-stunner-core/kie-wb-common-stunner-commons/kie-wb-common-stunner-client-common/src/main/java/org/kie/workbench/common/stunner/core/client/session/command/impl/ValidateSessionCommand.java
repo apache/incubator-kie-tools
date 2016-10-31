@@ -22,6 +22,8 @@ import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasVali
 
 import javax.enterprise.context.Dependent;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 @Dependent
 public class ValidateSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
 
@@ -32,21 +34,19 @@ public class ValidateSessionCommand extends AbstractClientSessionCommand<Abstrac
     @Override
     @SuppressWarnings( "unchecked" )
     public <T> void execute( final Callback<T> callback ) {
+        checkNotNull( "callback", callback );
+
         getSession().getCanvasValidationControl().validate( new CanvasValidatorCallback() {
 
             @Override
             public void onSuccess() {
-                // TODO: Review this...
                 callback.onSuccess( null );
             }
 
             @Override
             public void onFail( final Iterable<CanvasValidationViolation> violations ) {
-                // TODO: Review this...
                 callback.onSuccess( ( T ) violations );
-
             }
-
         } );
     }
 

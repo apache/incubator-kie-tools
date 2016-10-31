@@ -40,7 +40,9 @@ public class BS3PaletteCategories
 
         View setPadding( int padding );
 
-        View setIconSize( int iconSize );
+        View setIconWidth( int iconSize );
+
+        View setIconHeight( int iconSize );
 
         View setBackgroundColor( String color );
 
@@ -74,8 +76,13 @@ public class BS3PaletteCategories
         return this;
     }
 
-    public BS3PaletteCategories setIconSize( final int iconSize ) {
-        view.setIconSize( iconSize );
+    public BS3PaletteCategories setIconWidth( final int iconSize ) {
+        view.setIconWidth( iconSize );
+        return this;
+    }
+
+    public BS3PaletteCategories setIconHeight( final int iconSize ) {
+        view.setIconHeight( iconSize );
         return this;
     }
 

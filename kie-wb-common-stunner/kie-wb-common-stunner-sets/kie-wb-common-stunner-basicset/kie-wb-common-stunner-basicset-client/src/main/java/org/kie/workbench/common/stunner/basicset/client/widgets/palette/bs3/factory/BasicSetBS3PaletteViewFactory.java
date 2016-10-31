@@ -67,7 +67,7 @@ public class BasicSetBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFa
     protected Icon resize( final Icon widget,
                            final int width,
                            final int height ) {
-        widget.setSize( IconSize.TIMES2 );
+        widget.setSize( IconSize.LARGE );
         return widget;
     }
 

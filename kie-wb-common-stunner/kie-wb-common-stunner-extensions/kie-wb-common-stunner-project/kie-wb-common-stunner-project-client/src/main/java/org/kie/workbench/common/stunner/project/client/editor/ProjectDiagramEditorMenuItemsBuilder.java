@@ -24,6 +24,8 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommandCallback;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -40,7 +42,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     private IsWidget buildClearSelectionItem( final Command command ) {
         return new Button() {{
-            setIconSize( IconSize.NONE );
+            setSize( ButtonSize.SMALL );
             setIcon( IconType.BAN );
             setTitle( "Clear selection" );
             addClickHandler( clickEvent -> command.execute() );
@@ -53,7 +55,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     private IsWidget buildVisitGraphItem( final Command command ) {
         return new Button() {{
-            setIconSize( IconSize.NONE );
+            setSize( ButtonSize.SMALL );
             setIcon( IconType.AUTOMOBILE );
             setTitle( "Visit graph" );
             addClickHandler( clickEvent -> command.execute() );
@@ -66,7 +68,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     private IsWidget buildSwitchGridItem( final Command command ) {
         return new Button() {{
-            setIconSize( IconSize.NONE );
+            setSize( ButtonSize.SMALL );
             setIcon( IconType.TH );
             setTitle( "Switch grid" );
             addClickHandler( clickEvent -> command.execute() );
@@ -79,10 +81,10 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     private IsWidget buildClearItem( final Command command ) {
         return new Button() {{
-            setIconSize( IconSize.NONE );
+            setSize( ButtonSize.SMALL );
             setIcon( IconType.ERASER );
             setTitle( "Clear" );
-            addClickHandler( clickEvent -> command.execute() );
+            addClickHandler( clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command ) );
         }};
     }
 
@@ -92,10 +94,10 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     private IsWidget buildDeleteSelectionItem( final Command command ) {
         return new Button() {{
-            setIconSize( IconSize.NONE );
+            setSize( ButtonSize.SMALL );
             setIcon( IconType.TRASH_O );
             setTitle( "Delete selected" );
-            addClickHandler( clickEvent -> command.execute() );
+            addClickHandler( clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command ) );
         }};
     }
 
@@ -105,7 +107,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     private IsWidget buildUndoItem( final Command command ) {
         return new Button() {{
-            setIconSize( IconSize.NONE );
+            setSize( ButtonSize.SMALL );
             setIcon( IconType.UNDO );
             setTitle( "Undo" );
             addClickHandler( clickEvent -> command.execute() );
@@ -118,7 +120,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     private IsWidget buildValidateItem( final Command command ) {
         return new Button() {{
-            setIconSize( IconSize.NONE );
+            setSize( ButtonSize.SMALL );
             setIcon( IconType.CHECK );
             setTitle( "Validate" );
             addClickHandler( clickEvent -> command.execute() );
@@ -150,7 +152,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
             addClickHandler( event -> logGraphCommand.execute() );
         }};
         final AnchorListItem logCommandHistoryItem = new AnchorListItem( "Log Command History" ) {{
-            setIcon( IconType.HISTORY );
+            setIcon( IconType.PRINT );
             addClickHandler( event -> logCommandHistoryCommand.execute() );
         }};
         return new ButtonGroup() {{
@@ -169,6 +171,21 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 add( logCommandHistoryItem );
             }} );
         }};
+    }
+
+    private  void executeWithConfirm( final Command command ) {
+        final Command yesCommand = command::execute;
+        final Command noCommand = () -> {
+        };
+        final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup( getConfirmMessage(),
+                null, yesCommand, noCommand, noCommand );
+        popup.show();
+
+    }
+
+    // TODO: I18n.
+    private String getConfirmMessage() {
+        return "Are you sure?";
     }
 
     private MenuItem buildItem( final IsWidget widget ) {

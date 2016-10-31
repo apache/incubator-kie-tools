@@ -121,21 +121,25 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionValidateCommand = sessionCommandFactory.newValidateCommand();
     }
 
+    protected abstract int getCanvasWidth();
+
+    protected abstract int getCanvasHeight();
+
     @SuppressWarnings( "unchecked" )
     public void init() {
         getView().init( this );
         // Create a new full control session.
         session = ( AbstractClientFullSession ) clientSessionManager.newFullSession();
         // Initialize the session presenter.
-        clientSessionPresenter.initialize( session, 1400, 650 );
+        clientSessionPresenter.initialize( session, getCanvasWidth(), getCanvasHeight() );
         // Use the session presenter's view.
         getView().setWidget( clientSessionPresenter.getView() );
         // Initialize toolbar's commands.
         bindCommands();
     }
 
-    protected void _onStartup( final ObservablePath path,
-                               final PlaceRequest place ) {
+    protected void doStartUp( final ObservablePath path,
+                              final PlaceRequest place ) {
         init( path, place, resourceType );
     }
 
@@ -215,25 +219,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @Override
     protected void makeMenuBar() {
-        menus = buildMenuItems( menuBuilder )
-                // Project editor menus.
-                .addSave( versionRecordManager.newSaveMenuItem( () -> onSave() ) )
-                .addCopy( versionRecordManager.getCurrentPath(), fileNameValidator )
-                .addRename( versionRecordManager.getPathToLatest(), fileNameValidator )
-                .addDelete( versionRecordManager.getPathToLatest() )
-                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
-                // ** For dev purposes. **
-                .addNewTopLevelMenu( menuItemsBuilder.newDevItems(
-                        AbstractProjectDiagramEditor.this::menu_switchLogLevel,
-                        AbstractProjectDiagramEditor.this::menu_logGraph,
-                        AbstractProjectDiagramEditor.this::menu_logCommandHistory,
-                        AbstractProjectDiagramEditor.this::menu_logSession
-                ) )
-                .build();
-    }
-
-    // TODO: fix - menu items not getting disabled/enabled?
-    private FileMenuBuilder buildMenuItems( final FileMenuBuilder menuBuilder ) {
+        // TODO: fix - menu items not getting disabled/enabled?
         final MenuItem clearItem = menuItemsBuilder.newClearItem( AbstractProjectDiagramEditor.this::menu_clear );
         sessionClearCommand.listen( () -> clearItem.setEnabled( sessionClearCommand.isEnabled() ) );
         final MenuItem clearSelectionItem = menuItemsBuilder.newClearSelectionItem( AbstractProjectDiagramEditor.this::menu_clearSelection );
@@ -248,14 +234,30 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionUndoCommand.listen( () -> undoItem.setEnabled( sessionUndoCommand.isEnabled() ) );
         final MenuItem validateItem = menuItemsBuilder.newValidateItem( AbstractProjectDiagramEditor.this::menu_validate );
         sessionValidateCommand.listen( () -> validateItem.setEnabled( sessionValidateCommand.isEnabled() ) );
-        return menuBuilder
+        menus = menuBuilder
+                // Specific Stunner toolbar items.
                 .addNewTopLevelMenu( clearItem )
                 .addNewTopLevelMenu( clearSelectionItem )
                 .addNewTopLevelMenu( visitGraphItem )
                 .addNewTopLevelMenu( switchGridItem )
                 .addNewTopLevelMenu( deleteSelectionItem )
                 .addNewTopLevelMenu( undoItem )
-                .addNewTopLevelMenu( validateItem );
+                .addNewTopLevelMenu( validateItem )
+                // ** For dev purposes. **
+                .addNewTopLevelMenu( menuItemsBuilder.newDevItems(
+                        AbstractProjectDiagramEditor.this::menu_switchLogLevel,
+                        AbstractProjectDiagramEditor.this::menu_logGraph,
+                        AbstractProjectDiagramEditor.this::menu_logCommandHistory,
+                        AbstractProjectDiagramEditor.this::menu_logSession
+                ) )
+                // Project editor menus.
+                .addSave( versionRecordManager.newSaveMenuItem( () -> onSave() ) )
+                .addCopy( versionRecordManager.getCurrentPath(), fileNameValidator )
+                .addRename( versionRecordManager.getPathToLatest(), fileNameValidator )
+                .addDelete( versionRecordManager.getPathToLatest() )
+                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
+                // Build the menu.
+                .build();
     }
 
     private void menu_switchLogLevel() {
@@ -302,28 +304,28 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionValidateCommand.execute();
     }
 
-    protected void _onOpen() {
+    protected void doOpen() {
         if ( null != session && session.isOpened() ) {
             clientSessionManager.resume( session );
         }
     }
 
-    protected void _onClose() {
+    protected void doClose() {
         disposeSession();
     }
 
-    protected void _onFocus() {
+    protected void doFocus() {
     }
 
-    protected void _onLostFocus() {
-        paletteWidget.getFloatingView().hide();
+    protected void doLostFocus() {
+        hidePaletteFloatingView();
     }
 
-    protected String _getTitleText() {
+    public String getTitleText() {
         return title;
     }
 
-    protected Menus _getMenus() {
+    protected Menus getMenus() {
         if ( menus == null ) {
             makeMenuBar();
         }
@@ -389,6 +391,12 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         // Change editor's title.
         this.title = title;
         changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( this.place, this.title ) );
+    }
+
+    private void hidePaletteFloatingView() {
+        if ( null != paletteWidget ) {
+            paletteWidget.getFloatingView().hide();
+        }
     }
 
     private void showError( final ClientRuntimeError error ) {

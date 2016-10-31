@@ -53,13 +53,12 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<AbstractCl
 
     @Override
     public <T> void execute( final Callback<T> callback ) {
+        checkNotNull( "callback", callback );
         final CommandResult<CanvasViolation> result =
                 getSession().getCanvasCommandManager()
                         .execute( getSession().getCanvasHandler(),
                                 canvasCommandFactory.CLEAR_CANVAS() );
-        if ( null != callback ) {
-            callback.onSuccess( ( T ) result );
-        }
+        callback.onSuccess( ( T ) result );
     }
 
     void onCommandExecuted( @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {

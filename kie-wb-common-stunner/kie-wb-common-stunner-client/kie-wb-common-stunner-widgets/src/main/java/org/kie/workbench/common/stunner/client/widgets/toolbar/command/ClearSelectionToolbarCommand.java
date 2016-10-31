@@ -50,7 +50,7 @@ public class ClearSelectionToolbarCommand extends AbstractToolbarSessionCommand<
 
     @Override
     protected boolean requiresConfirm() {
-        return true;
+        return false;
     }
 
 }

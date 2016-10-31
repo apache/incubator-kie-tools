@@ -27,8 +27,8 @@ import javax.enterprise.context.ApplicationScoped;
 public class BPMNDefinitionSetResourceType extends AbstractDefinitionSetResourceType {
 
     public static final String BPMN_EXTENSION = "bpmn";
-    public static final String NAME = "Business Process (Preview)";
-    public static final String DESCRIPTION = "Business Process (Preview)";
+    private static final String NAME = "Business Process (Preview)";
+    private static final String DESCRIPTION = "Business Process (Preview)";
 
     @Override
     public String getShortName() {

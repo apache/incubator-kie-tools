@@ -132,7 +132,7 @@ public class ProjectDiagramPropertiesScreen {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        // TODO: return view;
+        // TODO: return view.asWidget() - See ProjectScreenViewImpl TODO;
         return formPropertiesWidget.asWidget();
     }
 

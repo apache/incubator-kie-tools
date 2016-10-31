@@ -49,4 +49,14 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
                 paletteFactory, sessionUtils, sessionCommandFactory, menuItemsBuilder );
     }
 
+    @Override
+    protected int getCanvasWidth() {
+        return 100;
+    }
+
+    @Override
+    protected int getCanvasHeight() {
+        return 100;
+    }
+
 }

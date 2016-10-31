@@ -39,14 +39,12 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<AbstractCli
     @Override
     @SuppressWarnings( "unchecked" )
     public <T> void execute( final Callback<T> callback ) {
+        checkNotNull( "callback", callback );
         final StackCommandManager<AbstractCanvasHandler, CanvasViolation> scm = getStackCommandManager();
         if ( null != scm ) {
-            final CommandResult<CanvasViolation> result =
-                    getStackCommandManager().undo( getSession().getCanvasHandler() );
-            if ( null != callback ) {
-                callback.onSuccess( ( T ) result );
-            }
+            final CommandResult<CanvasViolation> result = getStackCommandManager().undo( getSession().getCanvasHandler() );
             checkState();
+            callback.onSuccess( ( T ) result );
         }
     }
 

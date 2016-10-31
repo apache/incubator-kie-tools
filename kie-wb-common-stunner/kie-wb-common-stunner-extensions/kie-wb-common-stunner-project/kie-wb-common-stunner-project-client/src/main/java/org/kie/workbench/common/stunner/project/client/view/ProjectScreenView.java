@@ -17,10 +17,14 @@ package org.kie.workbench.common.stunner.project.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface ProjectScreenView extends IsWidget {
+public interface ProjectScreenView {
+
     ProjectScreenView setWidget( IsWidget widget );
 
     ProjectScreenView showLoading();
 
     ProjectScreenView hideLoading();
+
+    IsWidget asWidget();
+
 }

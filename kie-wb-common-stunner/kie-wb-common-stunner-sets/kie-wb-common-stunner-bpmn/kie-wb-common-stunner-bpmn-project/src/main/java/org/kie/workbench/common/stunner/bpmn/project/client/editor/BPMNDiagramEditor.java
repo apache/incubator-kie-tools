@@ -74,27 +74,37 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        super._onStartup( path, place );
+        super.doStartUp( path, place );
+    }
+
+    @Override
+    protected int getCanvasWidth() {
+        return 1400;
+    }
+
+    @Override
+    protected int getCanvasHeight() {
+        return 600;
     }
 
     @OnOpen
     public void onOpen() {
-        super._onOpen();
+        super.doOpen();
     }
 
     @OnClose
     public void onClose() {
-        super._onClose();
+        super.doClose();
     }
 
     @OnFocus
     public void onFocus() {
-        super._onFocus();
+        super.doFocus();
     }
 
     @OnLostFocus
     public void onLostFocus() {
-        super._onLostFocus();
+        super.doLostFocus();
     }
 
     @WorkbenchPartTitleDecoration
@@ -104,12 +114,12 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     @WorkbenchPartTitle
     public String getTitleText() {
-        return super._getTitleText();
+        return super.getTitleText();
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
-        return super._getMenus();
+        return super.getMenus();
     }
 
     @WorkbenchPartView

@@ -15,7 +15,6 @@
 
 package org.kie.workbench.common.stunner.project.client.view;
 
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -24,9 +23,10 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+// TODO: Review this - Does not work. Results in the mainPanel div empty. Once done enable its usage on classes that uses this view.
 @Dependent
 @Templated
-public class ProjectScreenViewImpl extends Composite implements ProjectScreenView {
+public class ProjectScreenViewImpl implements ProjectScreenView {
 
     private FlowPanel mainPanel;
     private FlowPanel loadingPanel;
@@ -60,5 +60,10 @@ public class ProjectScreenViewImpl extends Composite implements ProjectScreenVie
         loadingPanel.setVisible( false );
         widgetPanel.setVisible( true );
         return this;
+    }
+
+    @Override
+    public IsWidget asWidget() {
+        return mainPanel;
     }
 }

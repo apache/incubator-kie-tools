@@ -48,7 +48,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 
-// TODO: Metadata handling.
 @Service
 public class DiagramServiceImpl
         extends AbstractVFSDiagramService<Diagram>

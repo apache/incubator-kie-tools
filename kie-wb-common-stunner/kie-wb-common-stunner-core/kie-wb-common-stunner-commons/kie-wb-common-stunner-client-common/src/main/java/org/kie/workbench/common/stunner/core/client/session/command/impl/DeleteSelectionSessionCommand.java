@@ -32,6 +32,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 @Dependent
 public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
 
@@ -47,6 +49,8 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
 
     @Override
     public <T> void execute( Callback<T> callback ) {
+        checkNotNull( "callback", callback );
+
         if ( null != getSession().getSelectionControl() ) {
             final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
             final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager = getSession().getCanvasCommandManager();
@@ -74,9 +78,8 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
                 log( Level.FINE, "Cannot delete element, no element selected on canvas." );
 
             }
-            if ( null != callback ) {
-                callback.onSuccess( null );
-            }
+            // Run the callback.
+            callback.onSuccess( null );
         }
     }
 

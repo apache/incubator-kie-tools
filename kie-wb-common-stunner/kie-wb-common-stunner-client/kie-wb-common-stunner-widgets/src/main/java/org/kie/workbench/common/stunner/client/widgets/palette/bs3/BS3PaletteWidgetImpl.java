@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Gly
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
-import org.kie.workbench.common.stunner.core.client.components.views.FloatingWidgetView;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 
 import javax.annotation.PostConstruct;
@@ -52,17 +51,18 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     public static final String BG_COLOR = "#D3D3D3";
     public static final String HOVER_BG_COLOR = "#f2f2f2";
 
+    private static final int CATEGORIES_ICON_WIDTH = 30;
+    private static final int CATEGORIES_ICON_HEIGHT = 20;
     private static final int GLYPH_ICON_SIZE = 30;
-    private static final int CATEGORY_ICON_SIZE = 100;
     private static final int CATEGORY_VIEW_WIDTH = 300;
     private static final int CATEGORY_VIEW_HEIGHT = 600;
-    private static final int PADDING = 30;
+    private static final int PADDING = 10;
     private static final int FLOATING_VIEW_TIMEOUT = 1500;
 
-    BS3PaletteCategories paletteCategories;
-    BS3PaletteCategory paletteCategory;
-    FloatingWidgetView floatingView;
-    ShapeGlyphDragHandler<Group> shapeGlyphDragHandler;
+    private final BS3PaletteCategories paletteCategories;
+    private final BS3PaletteCategory paletteCategory;
+    private final FloatingView<IsWidget> floatingView;
+    private final ShapeGlyphDragHandler<Group> shapeGlyphDragHandler;
 
     private BS3PaletteViewFactory viewFactory;
 
@@ -72,7 +72,7 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
                                  final BS3PaletteWidgetView view,
                                  final BS3PaletteCategories paletteCategories,
                                  final BS3PaletteCategory paletteCategory,
-                                 final FloatingWidgetView floatingView,
+                                 final FloatingView<IsWidget> floatingView,
                                  final ShapeGlyphDragHandler<Group> shapeGlyphDragHandler ) {
         super( shapeManager, clientFactoryServices, view );
         this.paletteCategories = paletteCategories;
@@ -92,7 +92,8 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
         paletteCategories.bs3PaletteWidget = this;
         paletteCategory.bs3PaletteWidget = this;
         paletteCategories.setPadding( getPadding() );
-        paletteCategories.setIconSize( ( int ) getIconSize() );
+        paletteCategories.setIconWidth( CATEGORIES_ICON_WIDTH );
+        paletteCategories.setIconHeight( CATEGORIES_ICON_HEIGHT );
         paletteCategory.setWidth( CATEGORY_VIEW_WIDTH );
         paletteCategory.setHeight( CATEGORY_VIEW_HEIGHT );
         floatingView.setTimeOut( FLOATING_VIEW_TIMEOUT );
@@ -267,8 +268,9 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     }
 
     IsWidget getCategoryView( final String id ) {
-        return viewFactory.getCategoryView( id, CATEGORY_ICON_SIZE, CATEGORY_ICON_SIZE );
+        return viewFactory.getCategoryView( id, CATEGORIES_ICON_WIDTH, CATEGORIES_ICON_HEIGHT );
     }
+
 
     IsWidget getDefinitionView( final String id ) {
         return viewFactory.getDefinitionView( id, ( int ) getIconSize(), ( int ) getIconSize() );
@@ -280,10 +282,6 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
         paletteCategory.destroy();
         floatingView.destroy();
         super.doDestroy();
-        this.paletteCategories = null;
-        this.paletteCategory = null;
-        this.floatingView = null;
-
     }
 
     @Override
