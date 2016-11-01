@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
@@ -23,27 +24,44 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 
 public class FormLabelHelp extends Composite implements HasText {
 
+    private final FormLabel formLabel;
+    private final FlowPanel panel;
+
     private HelpIcon helpIcon;
-    private final FormLabel formLabel = new FormLabel();
-    private final FlowPanel panel = new FlowPanel();
 
     public FormLabelHelp() {
+        this( new FormLabel(), new FlowPanel() );
+    }
+
+    // Defined for testing purposes
+    FormLabelHelp( FormLabel formLabel, FlowPanel panel ) {
+        this.formLabel = formLabel;
+        this.panel = panel;
+
+        init();
+    }
+
+    private void init() {
         initWidget( panel );
         addStyleName( "uf-form-label" );
         panel.add( formLabel );
     }
 
     public void setHelpTitle( final String title ) {
-        getHelpIcon().setHelpTitle( title );
+        if ( title != null ) {
+            getHelpIcon().setHelpTitle( title );
+        }
     }
 
     public void setHelpContent( final String content ) {
-        getHelpIcon().setHelpContent( content );
+        if ( content != null ) {
+            getHelpIcon().setHelpContent( content );
+        }
     }
 
     private HelpIcon getHelpIcon() {
         if ( helpIcon == null ) {
-            helpIcon = new HelpIcon();
+            helpIcon = GWT.create( HelpIcon.class );
             panel.add( helpIcon );
         }
         return helpIcon;
@@ -63,7 +81,7 @@ public class FormLabelHelp extends Composite implements HasText {
         formLabel.setFor( forValue );
     }
 
-    public void setShowRequiredIndicator( final boolean required ){
+    public void setShowRequiredIndicator( final boolean required ) {
         formLabel.setShowRequiredIndicator( required );
     }
 }

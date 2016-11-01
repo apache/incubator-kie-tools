@@ -25,46 +25,45 @@ import org.gwtbootstrap3.client.ui.constants.Placement;
 
 public class HelpIcon extends Composite {
 
-    private final Icon icon = new Icon( IconType.INFO_CIRCLE );
-    private final SimplePanel panel = new SimplePanel();
-    private String title;
-    private String content;
-
+    private Icon icon;
+    private SimplePanel panel;
     private Popover popover;
 
     public HelpIcon() {
-        initWidget( panel );
-        addStyleName( "uf-help-icon" );
+        this( new Icon(), new SimplePanel(), new Popover() );
     }
 
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        if ( title != null || content != null ) {
-            this.popover = new Popover( icon );
-            popover.setContent( content );
-            popover.setTitle( title );
-            popover.setContainer( "body" );
-            popover.setIsHtml( true );
-            popover.setPlacement( Placement.AUTO );
-            panel.setWidget( popover );
-        }
+    // Defined for testing purposes
+    HelpIcon( Icon icon, SimplePanel panel, Popover popover ) {
+        this.icon = icon;
+        this.popover = popover;
+        this.panel = panel;
+
+        init();
+    }
+
+    private void init() {
+        initWidget( panel );
+        addStyleName( "uf-help-icon" );
+
+        icon.setType( IconType.INFO_CIRCLE );
+
+        popover.setWidget( icon );
+        popover.setContainer( "body" );
+        popover.setIsHtml( true );
+        popover.setPlacement( Placement.AUTO );
+
+        panel.setWidget( popover );
     }
 
     public void setHelpTitle( final String title ) {
-        this.title = title;
-        if (popover != null) {
-            popover.setTitle( title );
-            popover.reconfigure();
-        }
+        popover.setTitle( title );
+        popover.reconfigure();
     }
 
     public void setHelpContent( final String content ) {
-        this.content = content;
-        if (popover != null) {
-            popover.setContent( content );
-            popover.reconfigure();
-        }
+        popover.setContent( content );
+        popover.reconfigure();
     }
 
 }
