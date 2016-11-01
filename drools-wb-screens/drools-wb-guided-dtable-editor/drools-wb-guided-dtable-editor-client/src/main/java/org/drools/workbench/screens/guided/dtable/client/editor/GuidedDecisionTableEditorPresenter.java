@@ -31,6 +31,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBu
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.jboss.errai.common.client.api.Caller;
@@ -133,6 +134,12 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     @Override
     protected void onDecisionTableSelected( final @Observes DecisionTableSelectedEvent event ) {
         super.onDecisionTableSelected( event );
+    }
+
+    @Override
+    protected void activateDocument( final GuidedDecisionTableView.Presenter dtPresenter ) {
+        super.activateDocument( dtPresenter );
+        dtPresenter.initialiseAnalysis();
     }
 
     @Override

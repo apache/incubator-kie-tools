@@ -202,8 +202,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                       //Add new view to Modeller and ensure selection
                                       dtPresenter.getView().setLocation( oldLocation );
                                       view.addDecisionTable( dtPresenter.getView() );
-
-//                                      doDecisionTableSelected( dtPresenter );
                                   } );
 
         return dtPresenter;

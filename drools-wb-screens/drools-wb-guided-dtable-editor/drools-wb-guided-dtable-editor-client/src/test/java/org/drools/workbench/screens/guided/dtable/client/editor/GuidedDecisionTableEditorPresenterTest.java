@@ -19,12 +19,21 @@ package org.drools.workbench.screens.guided.dtable.client.editor;
 import java.util.Collections;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.*;
@@ -75,6 +84,21 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                 times( 1 ) ).addNewTopLevelMenu( eq( radarMenuItem ) );
         verify( fileMenuBuilder,
                 times( 1 ) ).addNewTopLevelMenu( eq( versionManagerMenuItem ) );
+    }
+
+    @Test
+    public void startUpStartsVerification() {
+        final ObservablePath path = mock( ObservablePath.class );
+        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 placeRequest,
+                                                                                 content );
+
+        presenter.onStartup( path,
+                             placeRequest );
+
+        verify( dtPresenter ).initialiseAnalysis();
     }
 
     @Test
