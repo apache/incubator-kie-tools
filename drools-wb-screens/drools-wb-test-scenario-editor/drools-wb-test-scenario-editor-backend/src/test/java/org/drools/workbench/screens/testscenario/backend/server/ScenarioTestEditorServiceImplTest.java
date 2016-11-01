@@ -27,6 +27,7 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.guvnor.common.services.project.model.Package;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -172,6 +173,33 @@ public class ScenarioTestEditorServiceImplTest {
 
         assertEquals( 1,
                       scenario.getImports().getImports().size() );
+    }
+
+    @Test
+    public void loadBrokenScenario() throws
+                                     Exception {
+        final Package pgk = mock( Package.class );
+        when( pgk.getPackageName() ).thenReturn( "org.test" );
+        when( projectService.resolvePackage( path ) ).thenReturn( pgk );
+
+        final Scenario load = testEditorService.load( path );
+
+        assertNotNull( load );
+        assertEquals( "org.test",
+                      load.getPackageName() );
+        assertNotNull( load.getImports() );
+    }
+
+    @Test
+    public void loadBrokenScenarioNullPackage() throws
+                                                Exception {
+        when( projectService.resolvePackage( path ) ).thenReturn( null );
+
+        final Scenario load = testEditorService.load( path );
+
+        assertNotNull( load );
+        assertNull( load.getPackageName() );
+        assertNotNull( load.getImports() );
     }
 
     private FactData factData( final String type ) {
