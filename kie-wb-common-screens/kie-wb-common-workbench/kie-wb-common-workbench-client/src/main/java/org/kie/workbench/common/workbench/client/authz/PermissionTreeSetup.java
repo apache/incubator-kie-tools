@@ -74,6 +74,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(PLUGIN_AUTHORING, i18n.Plugins());
         perspectiveTreeProvider.setPerspectiveName(APPS, i18n.Apps());
         perspectiveTreeProvider.setPerspectiveName(DATASET_AUTHORING, i18n.DataSets());
+        perspectiveTreeProvider.setPerspectiveName(DATASOURCE_MANAGEMENT, i18n.DataSources());
         perspectiveTreeProvider.setPerspectiveName(DEPLOYMENTS, i18n.Process_Deployments());
         perspectiveTreeProvider.setPerspectiveName(SERVER_MANAGEMENT, i18n.Rule_Deployments());
         perspectiveTreeProvider.setPerspectiveName(JOBS, i18n.Jobs());
