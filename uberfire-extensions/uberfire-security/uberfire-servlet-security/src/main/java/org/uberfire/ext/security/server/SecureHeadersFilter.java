@@ -39,7 +39,7 @@ public class SecureHeadersFilter implements Filter {
     public static final String X_FRAME_OPTIONS = "X-FRAME-OPTIONS";
     public static final String X_XSS_OPTIONS = "X-XSS-Protection";
 
-    private SecureHeadersConfig config;
+    private static SecureHeadersConfig config;
 
     @Override
     public void init( final FilterConfig filterConfig ) throws ServletException {
@@ -58,40 +58,51 @@ public class SecureHeadersFilter implements Filter {
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        addLocation( response );
-        addFrameOptions( response );
-        addXSSOptions( response );
-
-        if ( request.getScheme().equals( "https" ) ) {
-            addStrictTransportSecurity( response );
-        }
+        applyHeaders( request, response );
 
         chain.doFilter( request, response );
     }
 
-    private void addStrictTransportSecurity( HttpServletResponse response ) {
-        if ( config.hasMaxAge() ) {
+    public static void applyHeaders( final ServletRequest request,
+                                     final HttpServletResponse response ) {
+        if ( config != null ) {
+            addLocation( response );
+            addFrameOptions( response );
+            addXSSOptions( response );
+
+            if ( request.getScheme().equals( "https" ) ) {
+                addStrictTransportSecurity( response );
+            }
+        }
+    }
+
+    private static void addStrictTransportSecurity( HttpServletResponse response ) {
+        if ( config.hasMaxAge() && empty( response.getHeader( STRICT_TRANSPORT_SECURITY ) ) ) {
             response.addHeader( STRICT_TRANSPORT_SECURITY, config.getMaxAge() );
         }
     }
 
-    private void addFrameOptions( HttpServletResponse response ) {
-        if ( config.hasFrameOptions() ) {
+    private static void addFrameOptions( HttpServletResponse response ) {
+        if ( config.hasFrameOptions() && empty( response.getHeader( X_FRAME_OPTIONS ) ) ) {
             response.addHeader( X_FRAME_OPTIONS, config.getFrameOptions() );
         }
     }
 
-    private void addLocation( HttpServletResponse response ) {
-        if ( config.hasLocation() ) {
+    private static void addLocation( HttpServletResponse response ) {
+        if ( config.hasLocation() && empty( response.getHeader( LOCATION ) ) ) {
             response.addHeader( LOCATION, config.getLocation() );
             response.setStatus( HttpServletResponse.SC_MOVED_PERMANENTLY );
         }
     }
 
-    private void addXSSOptions( HttpServletResponse response ) {
-        if ( config.hasXSSOptions() ) {
+    private static void addXSSOptions( HttpServletResponse response ) {
+        if ( config.hasXSSOptions() && empty( response.getHeader( X_XSS_OPTIONS ) ) ) {
             response.addHeader( X_XSS_OPTIONS, config.getXssOptions() );
         }
+    }
+
+    private static boolean empty( final String content ) {
+        return content == null || content.trim().isEmpty();
     }
 
 }
