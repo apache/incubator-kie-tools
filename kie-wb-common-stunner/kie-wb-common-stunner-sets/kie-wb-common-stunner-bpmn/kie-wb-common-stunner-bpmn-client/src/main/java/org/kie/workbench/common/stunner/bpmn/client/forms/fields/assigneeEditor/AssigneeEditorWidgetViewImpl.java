@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -31,10 +32,16 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.widget.ListWidget;
 import org.jboss.errai.ui.client.widget.Table;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -42,6 +49,10 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssigneeRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
+import org.uberfire.ext.security.management.api.AbstractEntityManager;
+import org.uberfire.ext.security.management.client.ClientUserSystemManager;
+import org.uberfire.ext.security.management.impl.SearchRequestImpl;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -52,7 +63,7 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
 
     private String sAssignees;
 
-    private Presenter presenter;
+    protected Presenter presenter;
 
     @Inject
     @DataField
@@ -65,6 +76,11 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
     protected TableCellElement nameth = Document.get().createTHElement();
 
     List<String> names;
+
+    @Inject
+    protected ClientUserSystemManager userSystemManager;
+
+    protected final static int MAX_SEARCH_RESULTS = 1000;
 
     /**
      * The list of assigneeRows that currently exist.
@@ -91,10 +107,8 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
     public void setValue( String value, boolean fireEvents ) {
         String oldValue = sAssignees;
         sAssignees = value;
-        // TODO: get names from server
         if ( names == null ) {
-            names = new ArrayList<String>( Arrays.asList( "user1", "user2", "user3", "user4", "user5" ) );
-            presenter.setNames( names );
+            getNames();
         }
         initView();
         if ( fireEvents ) {
@@ -181,4 +195,52 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
     public void handleAddButton( ClickEvent e ) {
         presenter.addAssignee();
     }
+
+    protected void getNames() {
+        RemoteCallback<AbstractEntityManager.SearchResponse<?>> searchResponseRemoteCallback =
+                new RemoteCallback<AbstractEntityManager.SearchResponse<?>>() {
+                    @Override
+                    public void callback( final AbstractEntityManager.SearchResponse<?> response ) {
+                        names = new ArrayList<String>();
+                        if ( response != null ) {
+                            List<?> items = response.getResults();
+                            if ( items != null ) {
+                                for ( Object item : items ) {
+                                    addItemToNames( item );
+                                }
+                            }
+                        }
+                        Collections.sort( names );
+                        presenter.setNames( names );
+                    }
+                };
+
+        ErrorCallback<Message> searchErrorCallback =
+                new ErrorCallback<Message>() {
+                    @Override
+                    public boolean error( final Message message, final Throwable throwable ) {
+                        names = new ArrayList<String>();
+                        presenter.setNames( names );
+                        return false;
+                    }
+                };
+
+        // Call backend service.
+        if (presenter.getType() == AssigneeType.USER) {
+            userSystemManager.users( searchResponseRemoteCallback, searchErrorCallback ).
+                    search( new SearchRequestImpl( "", 1, MAX_SEARCH_RESULTS ) );
+        } else {
+            userSystemManager.groups( searchResponseRemoteCallback, searchErrorCallback ).
+                    search( new SearchRequestImpl( "", 1, MAX_SEARCH_RESULTS ));
+        }
+    }
+
+    protected <T> void addItemToNames( T item ) {
+        if ( item instanceof User ) {
+            names.add( ( ( User ) item ).getIdentifier() );
+        } else if ( item instanceof Group ) {
+            names.add( ( ( Group ) item ).getName() );
+        }
+    }
+
 }

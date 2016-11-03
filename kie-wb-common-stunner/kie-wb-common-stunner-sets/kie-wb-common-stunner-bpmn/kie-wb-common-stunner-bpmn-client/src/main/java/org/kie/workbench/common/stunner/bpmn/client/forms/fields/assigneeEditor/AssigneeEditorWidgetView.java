@@ -20,10 +20,13 @@ import java.util.List;
 
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssigneeRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 
 public interface AssigneeEditorWidgetView {
 
     interface Presenter {
+
+        AssigneeType getType();
 
         void doSave();
 

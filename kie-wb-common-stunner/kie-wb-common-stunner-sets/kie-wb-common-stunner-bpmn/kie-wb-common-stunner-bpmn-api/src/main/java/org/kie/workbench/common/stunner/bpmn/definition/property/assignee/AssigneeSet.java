@@ -22,6 +22,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssigneeEditor;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -37,13 +38,13 @@ public class AssigneeSet implements BPMNPropertySet {
 
     @Property
     @FieldDef( label = "Actors", property = "value" )
-    @AssigneeEditor
+    @AssigneeEditor( type = AssigneeType.USER)
     @Valid
     private Actors actors;
 
     @Property
     @FieldDef( label = "Groups", property = "value" )
-    @AssigneeEditor
+    @AssigneeEditor( type = AssigneeType.GROUP)
     @Valid
     private Groupid groupid;
 

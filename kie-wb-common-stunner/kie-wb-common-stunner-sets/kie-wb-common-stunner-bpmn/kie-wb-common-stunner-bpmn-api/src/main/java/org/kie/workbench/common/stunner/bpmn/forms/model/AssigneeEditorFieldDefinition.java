@@ -32,6 +32,10 @@ public class AssigneeEditorFieldDefinition extends FieldDefinition {
     @AssigneeEditor
     private String defaultValue;
 
+    @FieldDef( label = "type" )
+    @AssigneeEditor
+    private AssigneeType type;
+
     public AssigneeEditorFieldDefinition() {
         super( CODE );
     }
@@ -44,10 +48,19 @@ public class AssigneeEditorFieldDefinition extends FieldDefinition {
         this.defaultValue = defaultValue;
     }
 
+    public AssigneeType getType() {
+        return type;
+    }
+
+    public void setType( AssigneeType type ) {
+        this.type = type;
+    }
+
     @Override
     protected void doCopyFrom( FieldDefinition other ) {
         if ( other instanceof AssigneeEditorFieldDefinition ) {
             this.setDefaultValue( ( ( AssigneeEditorFieldDefinition ) other ).getDefaultValue() );
+            this.setType( ( ( AssigneeEditorFieldDefinition ) other ).getType() );
         }
     }
 }

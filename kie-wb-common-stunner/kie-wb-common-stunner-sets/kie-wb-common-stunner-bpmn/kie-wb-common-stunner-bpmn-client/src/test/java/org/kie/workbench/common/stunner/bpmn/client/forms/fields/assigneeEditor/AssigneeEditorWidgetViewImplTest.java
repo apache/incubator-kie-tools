@@ -27,15 +27,28 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.ui.client.widget.ListWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssigneeRow;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
+import org.uberfire.ext.security.management.api.AbstractEntityManager;
+import org.uberfire.ext.security.management.api.service.GroupManagerService;
+import org.uberfire.ext.security.management.api.service.UserManagerService;
+import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -69,10 +82,21 @@ public class AssigneeEditorWidgetViewImplTest {
 
     protected Event<NotificationEvent> notification = mock( EventSourceMock.class );
 
+    @Mock
+    private ClientUserSystemManager userSystemManager;
+
+    @Mock
+    private UserManagerService userManagerService;
+
+    @Mock
+    private GroupManagerService groupManagerService;
+
     @Before
     public void setUp() {
         GwtMockito.initMocks( this );
         view = GWT.create( AssigneeEditorWidgetViewImpl.class );
+        view.presenter = presenter;
+        view.userSystemManager = userSystemManager;
         view.assigneeRows = assigneeRows;
         view.addButton = button;
         view.nameth = nameth;
@@ -83,6 +107,8 @@ public class AssigneeEditorWidgetViewImplTest {
         doCallRealMethod().when( view ).getAssigneeRows();
         doCallRealMethod().when( view ).getAssigneeWidget( anyInt() );
         doCallRealMethod().when( view ).getAssigneeRowsCount();
+        doCallRealMethod().when( view ).getNames();
+        doCallRealMethod().when( view ).addItemToNames( anyObject() );
         rows = new ArrayList<AssigneeRow>();
         rows.add( new AssigneeRow( "user4", null ) );
         rows.add( new AssigneeRow( "user1", null ) );
@@ -129,5 +155,63 @@ public class AssigneeEditorWidgetViewImplTest {
     public void testGetAssigneeWidget2() {
         view.getAssigneeWidget( 123 );
         verify( assigneeRows ).getComponent( 123 );
+    }
+
+    @Test
+    public void testGetNamesUsers() {
+        // Make view type USER
+        when(presenter.getType()).thenReturn( AssigneeType.USER);
+
+        List<User> users = new ArrayList<User>();
+        users.add(new UserImpl( "Jane" ) );
+        users.add(new UserImpl( "Andrew" ) );
+        users.add(new UserImpl( "Mary" ) );
+        AbstractEntityManager.SearchResponse<User> response = mock(AbstractEntityManager.SearchResponse.class);
+        when(response.getResults()).thenReturn(users);
+        when(userSystemManager.users(any(RemoteCallback.class), any(ErrorCallback.class))).thenAnswer( new Answer<UserManagerService>() {
+            @Override
+            public UserManagerService answer( InvocationOnMock invocationOnMock ) throws Throwable {
+                Object[] args = invocationOnMock.getArguments();
+                RemoteCallback<AbstractEntityManager.SearchResponse<?>> callback = (RemoteCallback<AbstractEntityManager.SearchResponse<?>>) args[0];
+                callback.callback( response );
+                return userManagerService;
+            }
+        });
+        when(userManagerService.search(any(AbstractEntityManager.SearchRequest.class))).thenReturn( response );
+
+        view.getNames();
+
+        verify(userSystemManager, times(1)).users(any(RemoteCallback.class), any(ErrorCallback.class));
+        verify(userManagerService, times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+        assertArrayEquals( new String[] {"Andrew", "Jane", "Mary"}, view.names.toArray() );
+    }
+
+    @Test
+    public void testGetNamesGroups() {
+        // Make view type GROUP
+        when(presenter.getType()).thenReturn( AssigneeType.GROUP);
+
+        List<Group> groups = new ArrayList<Group>();
+        groups.add(new GroupImpl( "marketing" ) );
+        groups.add(new GroupImpl( "admin" ) );
+        groups.add(new GroupImpl( "engineering" ) );
+        AbstractEntityManager.SearchResponse<Group> response = mock(AbstractEntityManager.SearchResponse.class);
+        when(response.getResults()).thenReturn(groups);
+        when(userSystemManager.groups(any(RemoteCallback.class), any(ErrorCallback.class))).thenAnswer( new Answer<GroupManagerService>() {
+            @Override
+            public GroupManagerService answer( InvocationOnMock invocationOnMock ) throws Throwable {
+                Object[] args = invocationOnMock.getArguments();
+                RemoteCallback<AbstractEntityManager.SearchResponse<?>> callback = (RemoteCallback<AbstractEntityManager.SearchResponse<?>>) args[0];
+                callback.callback( response );
+                return groupManagerService;
+            }
+        });
+        when(groupManagerService.search(any(AbstractEntityManager.SearchRequest.class))).thenReturn( response );
+
+        view.getNames();
+
+        verify(userSystemManager, times(1)).groups(any(RemoteCallback.class), any(ErrorCallback.class));
+        verify(groupManagerService, times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+        assertArrayEquals( new String[] {"admin", "engineering", "marketing"}, view.names.toArray() );
     }
 }

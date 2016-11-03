@@ -24,6 +24,7 @@ import org.kie.workbench.common.forms.dynamic.backend.server.impl.FieldSetting;
 import org.kie.workbench.common.forms.dynamic.backend.server.impl.processors.AbstractFieldAnnotationProcessor;
 import org.kie.workbench.common.forms.dynamic.service.TransformerContext;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssigneeEditor;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.AssigneeEditorFieldProvider;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefinition;
 
@@ -41,6 +42,7 @@ public class AssigneeEditorAnnotationProcessor extends AbstractFieldAnnotationPr
                               FieldSetting fieldSetting,
                               TransformerContext context ) {
         field.setDefaultValue( ( String ) annotation.getParameters().get( "defaultValue" ) );
+        field.setType( AssigneeType.valueOf( ( String ) annotation.getParameters().get( "type" )) );
     }
 
     @Override

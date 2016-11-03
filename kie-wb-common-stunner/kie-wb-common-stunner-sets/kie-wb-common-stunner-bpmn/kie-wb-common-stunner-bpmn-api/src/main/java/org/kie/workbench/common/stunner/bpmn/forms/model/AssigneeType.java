@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.forms.meta.definition;
+package org.kie.workbench.common.stunner.bpmn.forms.model;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.RetentionPolicy;
-
-import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
-
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
-@java.lang.annotation.Target( { ElementType.TYPE, ElementType.FIELD } )
-public @interface AssigneeEditor {
-    String defaultValue() default "";
-    AssigneeType type() default AssigneeType.USER;
+public enum AssigneeType {
+    USER,
+    GROUP
 }

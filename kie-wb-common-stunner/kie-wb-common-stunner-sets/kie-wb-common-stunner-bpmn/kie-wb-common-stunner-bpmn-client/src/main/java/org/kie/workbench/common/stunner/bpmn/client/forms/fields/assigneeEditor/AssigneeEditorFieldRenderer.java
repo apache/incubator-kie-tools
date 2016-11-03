@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssigneeR
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 
 @Dependent
 public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFieldDefinition>
@@ -47,6 +48,11 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     @Override
     public String getName() {
         return AssigneeEditorFieldDefinition.CODE;
+    }
+
+    @Override
+    public AssigneeType getType() {
+        return getField().getType();
     }
 
     @Override
