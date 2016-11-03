@@ -17,6 +17,7 @@ package org.kie.workbench.common.widgets.client.ruleselector;
 
 import java.util.Collection;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -24,6 +25,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -36,13 +38,11 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 public class RuleSelectorDropdown
         extends Composite
         implements IsWidget,
-                   HasValueChangeHandlers<String> {
+                   HasValueChangeHandlers<String>,
+                   HasEnabled {
 
     private DropDown dropdown = new DropDown();
-    private Button dropdownButton = new Button() {{
-        setDataToggle( Toggle.DROPDOWN );
-        setToggleCaret( true );
-    }};
+    private Button dropdownButton = GWT.create( Button.class );
 
     private DropDownMenu dropdownMenu = new DropDownMenu();
 
@@ -51,6 +51,8 @@ public class RuleSelectorDropdown
         initWidget( dropdown );
         dropdown.add( dropdownButton );
         dropdown.add( dropdownMenu );
+        dropdownButton.setDataToggle( Toggle.DROPDOWN );
+        dropdownButton.setToggleCaret( true );
     }
 
     private void addNoneSelectionToDropDown() {
@@ -73,7 +75,8 @@ public class RuleSelectorDropdown
     }
 
     private AnchorListItem makeNoneLabel() {
-        final AnchorListItem label = new AnchorListItem( CommonConstants.INSTANCE.LineNoneLine() );
+        final AnchorListItem label = GWT.create( AnchorListItem.class );
+        label.setText( CommonConstants.INSTANCE.LineNoneLine() );
         label.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -95,6 +98,16 @@ public class RuleSelectorDropdown
     public HandlerRegistration addValueChangeHandler( final ValueChangeHandler<String> handler ) {
         return addHandler( handler,
                            ValueChangeEvent.getType() );
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return dropdownButton.isEnabled();
+    }
+
+    @Override
+    public void setEnabled( final boolean enabled ) {
+        dropdownButton.setEnabled( enabled );
     }
 
 }

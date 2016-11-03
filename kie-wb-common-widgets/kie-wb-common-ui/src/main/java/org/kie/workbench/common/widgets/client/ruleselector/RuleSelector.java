@@ -18,22 +18,25 @@ package org.kie.workbench.common.widgets.client.ruleselector;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class RuleSelector
         extends Composite
-        implements HasValueChangeHandlers<String> {
+        implements HasValueChangeHandlers<String>,
+                   HasEnabled {
 
     private final HorizontalPanel panel = new HorizontalPanel();
     private final InlineLabel ruleNamePanel = new InlineLabel();
-    private final RuleSelectorDropdown ruleSelectorDropdown = new RuleSelectorDropdown();
+    private final RuleSelectorDropdown ruleSelectorDropdown = GWT.create( RuleSelectorDropdown.class );
 
     private final static String NONE_SELECTED = CommonConstants.INSTANCE.NoneSelected();
 
@@ -100,5 +103,16 @@ public class RuleSelector
     public HandlerRegistration addValueChangeHandler( final ValueChangeHandler<String> handler ) {
         return addHandler( handler,
                            ValueChangeEvent.getType() );
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return ruleSelectorDropdown.isEnabled();
+    }
+
+    @Override
+    public void setEnabled( final boolean enabled ) {
+        ruleSelectorDropdown.setEnabled( enabled );
+
     }
 }
