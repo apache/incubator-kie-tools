@@ -51,6 +51,7 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -65,6 +66,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.SaveInProgressEvent;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -94,10 +96,125 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
     private Integer originalGraphHash;
     private GuidedDecisionTableEditorGraphContent content;
+    private LoadGraphLatch loadGraphLatch = null;
     private SaveGraphLatch saveGraphLatch = null;
 
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
     protected Access access = new Access();
+
+    private class LoadGraphLatch {
+
+        private int dtGraphElementCount;
+        private Path dtToSelectPath;
+
+        private LoadGraphLatch( final int dtGraphElementCount,
+                                final Path dtToSelectPath ) {
+            this.dtGraphElementCount = dtGraphElementCount;
+            this.dtToSelectPath = dtToSelectPath;
+        }
+
+        private void fireDecisionTableSelectedEvent( final GuidedDecisionTableView.Presenter dtPresenter ) {
+            if ( dtPresenter.getCurrentPath().getOriginal().equals( dtToSelectPath ) ) {
+                decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( dtPresenter,
+                                                                                 false ) );
+            }
+        }
+
+        private void hideLoadingIndicator() {
+            dtGraphElementCount--;
+            if ( dtGraphElementCount == 0 ) {
+                view.hideBusyIndicator();
+            }
+        }
+
+        private void loadDocumentGraphEntry( final GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry entry ) {
+            final PathPlaceRequest placeRequest = getPathPlaceRequest( entry.getPathHead() );
+            final ObservablePath pathHead = placeRequest.getPath();
+            final Path pathVersion = entry.getPathVersion();
+            final Double x = entry.getX();
+            final Double y = entry.getY();
+
+            if ( isReadOnly() ) {
+                placeRequest.addParameter( "readOnly", "" );
+            }
+
+            service.call( getLoadDocumentGraphEntryContentSuccessCallback( pathHead,
+                                                                           placeRequest,
+                                                                           x,
+                                                                           y ),
+                          getLoadErrorCallback() ).loadContent( pathVersion );
+        }
+
+        private RemoteCallback<GuidedDecisionTableEditorContent> getLoadDocumentGraphEntryContentSuccessCallback( final ObservablePath path,
+                                                                                                                  final PlaceRequest placeRequest,
+                                                                                                                  final Double x,
+                                                                                                                  final Double y ) {
+            return ( content ) -> {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( path == null ) {
+                    return;
+                }
+
+                //Add Decision Table to modeller
+                final GuidedDecisionTableView.Presenter dtPresenter = modeller.addDecisionTable( path,
+                                                                                                 placeRequest,
+                                                                                                 content,
+                                                                                                 placeRequest.getParameter( "readOnly", null ) != null,
+                                                                                                 x,
+                                                                                                 y );
+                registerDocument( dtPresenter );
+
+                fireDecisionTableSelectedEvent( dtPresenter );
+
+                hideLoadingIndicator();
+            };
+        }
+
+        private void loadDocument( final ObservablePath path,
+                                   final PlaceRequest placeRequest ) {
+            service.call( getLoadContentSuccessCallback( path,
+                                                         placeRequest ),
+                          getLoadErrorCallback() ).loadContent( path );
+        }
+
+        private RemoteCallback<GuidedDecisionTableEditorContent> getLoadContentSuccessCallback( final ObservablePath path,
+                                                                                                final PlaceRequest placeRequest ) {
+            return ( content ) -> {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( path == null ) {
+                    return;
+                }
+
+                //Add Decision Table to modeller
+                final GuidedDecisionTableView.Presenter dtPresenter = modeller.addDecisionTable( path,
+                                                                                                 placeRequest,
+                                                                                                 content,
+                                                                                                 placeRequest.getParameter( "readOnly", null ) != null,
+                                                                                                 null,
+                                                                                                 null );
+                registerDocument( dtPresenter );
+
+                fireDecisionTableSelectedEvent( dtPresenter );
+
+                hideLoadingIndicator();
+            };
+        }
+
+        private DefaultErrorCallback getLoadErrorCallback() {
+            final CommandDrivenErrorCallback wrapped = getNoSuchFileExceptionErrorCallback();
+            final DefaultErrorCallback callback = new DefaultErrorCallback() {
+                @Override
+                public boolean error( final Message message,
+                                      final Throwable throwable ) {
+                    hideLoadingIndicator();
+                    return wrapped.error( message,
+                                          throwable );
+                }
+            };
+            return callback;
+        }
+
+    }
 
     private class SaveGraphLatch {
 
@@ -225,19 +342,27 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest placeRequest ) {
+        super.onStartup( path,
+                         placeRequest );
+
         initialiseEditor( path,
                           placeRequest );
-        initialiseLockManager();
-        addFileChangeListeners( path );
+    }
+
+    @Override
+    public void loadDocument( final ObservablePath path,
+                              final PlaceRequest placeRequest ) {
+        throw new UnsupportedOperationException();
     }
 
     void initialiseEditor( final ObservablePath path,
                            final PlaceRequest placeRequest ) {
-        this.editorPath = path;
-        this.editorPlaceRequest = placeRequest;
         this.access.setReadOnly( placeRequest.getParameter( "readOnly", null ) != null );
 
+        initialiseLockManager();
         initialiseVersionManager();
+        addFileChangeListeners( path );
+
         loadDocumentGraph( path );
     }
 
@@ -253,6 +378,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     }
 
     void loadDocumentGraph( final ObservablePath path ) {
+        view.showLoading();
         view.refreshTitle( getTitleText() );
         graphService.call( getLoadGraphContentSuccessCallback(),
                            getNoSuchFileExceptionErrorCallback() ).loadContent( path );
@@ -264,56 +390,23 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
             this.originalGraphHash = content.getModel().hashCode();
             this.concurrentUpdateSessionInfo = null;
             final GuidedDecisionTableEditorGraphModel model = content.getModel();
-            model.getEntries().stream().forEach( this::loadDocumentGraphEntry );
+            final Set<GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry> modelEntries = model.getEntries();
+
+            initialiseEditorTabsWhenNoDocuments();
+
+            if ( modelEntries == null || modelEntries.isEmpty() ) {
+                view.hideBusyIndicator();
+                return;
+            }
+
+            loadGraphLatch = new LoadGraphLatch( modelEntries.size(),
+                                                 modelEntries.iterator().next().getPathHead() );
+            modelEntries.stream().forEach( loadGraphLatch::loadDocumentGraphEntry );
         };
-    }
-
-    void loadDocumentGraphEntry( final GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry entry ) {
-        view.showLoading();
-
-        final PathPlaceRequest placeRequest = getPathPlaceRequest( entry.getPathHead() );
-        final ObservablePath pathHead = placeRequest.getPath();
-        final Path pathVersion = entry.getPathVersion();
-        final Double x = entry.getX();
-        final Double y = entry.getY();
-
-        if ( isReadOnly() ) {
-            placeRequest.addParameter( "readOnly", "" );
-        }
-
-        service.call( getLoadDocumentGraphEntryContentSuccessCallback( pathHead,
-                                                                       placeRequest,
-                                                                       x,
-                                                                       y ),
-                      getNoSuchFileExceptionErrorCallback() ).loadContent( pathVersion );
     }
 
     PathPlaceRequest getPathPlaceRequest( final Path path ) {
         return new PathPlaceRequest( path );
-    }
-
-    private RemoteCallback<GuidedDecisionTableEditorContent> getLoadDocumentGraphEntryContentSuccessCallback( final ObservablePath path,
-                                                                                                              final PlaceRequest placeRequest,
-                                                                                                              final Double x,
-                                                                                                              final Double y ) {
-        return ( content ) -> {
-            //Path is set to null when the Editor is closed (which can happen before async calls complete).
-            if ( path == null ) {
-                return;
-            }
-
-            //Add Decision Table to modeller
-            final GuidedDecisionTableView.Presenter dtPresenter = modeller.addDecisionTable( path,
-                                                                                             placeRequest,
-                                                                                             content,
-                                                                                             placeRequest.getParameter( "readOnly", null ) != null,
-                                                                                             x,
-                                                                                             y );
-            registerDocument( dtPresenter );
-            activateDocument( dtPresenter );
-
-            view.hideBusyIndicator();
-        };
     }
 
     void initialiseLockManager() {
@@ -373,8 +466,10 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     protected void onDecisionTableSelected( final @Observes DecisionTableSelectedEvent event ) {
         super.onDecisionTableSelected( event );
 
-        if ( !isReadOnly() ) {
-            lockManager.acquireLock();
+        if ( event.isLockRequired() ) {
+            if ( !isReadOnly() ) {
+                lockManager.acquireLock();
+            }
         }
     }
 
@@ -418,11 +513,18 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
     @Override
     public void onOpenDocumentsInEditor( final List<Path> selectedDocumentPaths ) {
-        for ( Path path : selectedDocumentPaths ) {
-            final PathPlaceRequest placeRequest = getPathPlaceRequest( path );
-            loadDocument( placeRequest.getPath(),
-                          placeRequest );
+        if ( selectedDocumentPaths == null || selectedDocumentPaths.isEmpty() ) {
+            return;
         }
+
+        view.showLoading();
+        loadGraphLatch = new LoadGraphLatch( selectedDocumentPaths.size(),
+                                             selectedDocumentPaths.get( 0 ) );
+        selectedDocumentPaths.stream().forEach( ( p ) -> {
+            final PathPlaceRequest placeRequest = getPathPlaceRequest( p );
+            loadGraphLatch.loadDocument( placeRequest.getPath(),
+                                         placeRequest );
+        } );
     }
 
     @Override
@@ -500,6 +602,22 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
         importsWidget.setContent( dmo,
                                   imports,
                                   isReadOnly );
+    }
+
+    void initialiseEditorTabsWhenNoDocuments() {
+        getEditMenuItem().setEnabled( false );
+        getViewMenuItem().setEnabled( false );
+        getInsertMenuItem().setEnabled( false );
+        getRadarMenuItem().setEnabled( false );
+        enableMenuItem( false,
+                        MenuItems.VALIDATE );
+
+        kieEditorWrapperView.clear();
+        kieEditorWrapperView.addMainEditorPage( editorView );
+        kieEditorWrapperView.addOverviewPage( overviewWidget,
+                                              () -> overviewWidget.refresh( versionRecordManager.getVersion() ) );
+        overviewWidget.setContent( content.getOverview(),
+                                   versionRecordManager.getPathToLatest() );
     }
 
     void addFileChangeListeners( final ObservablePath path ) {

@@ -201,21 +201,6 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     }
 
     @Override
-    public void activate( final boolean isActive ) {
-        if ( isActive ) {
-            super.select();
-        } else {
-            super.deselect();
-        }
-    }
-
-    @Override
-    public void select() {
-        presenter.select( this );
-        super.select();
-    }
-
-    @Override
     public void newAttributeOrMetaDataColumn() {
         new GuidedDecisionTableAttributeSelectorPopup( presenter.getExistingAttributeNames().toArray( new String[ 0 ] ),
                                                        presenter ).show();

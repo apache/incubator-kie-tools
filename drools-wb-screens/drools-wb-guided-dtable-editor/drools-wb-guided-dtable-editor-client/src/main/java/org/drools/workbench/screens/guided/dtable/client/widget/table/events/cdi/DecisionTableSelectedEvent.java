@@ -21,13 +21,25 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class DecisionTableSelectedEvent {
 
     private final GuidedDecisionTableView.Presenter dtPresenter;
+    private final boolean isLockRequired;
 
     public DecisionTableSelectedEvent( final GuidedDecisionTableView.Presenter dtPresenter ) {
+        this( dtPresenter,
+              true );
+    }
+
+    public DecisionTableSelectedEvent( final GuidedDecisionTableView.Presenter dtPresenter,
+                                       final boolean isLockRequired ) {
         this.dtPresenter = PortablePreconditions.checkNotNull( "dtPresenter", dtPresenter );
+        this.isLockRequired = isLockRequired;
     }
 
     public GuidedDecisionTableView.Presenter getPresenter() {
         return dtPresenter;
+    }
+
+    public boolean isLockRequired() {
+        return isLockRequired;
     }
 
 }

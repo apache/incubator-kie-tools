@@ -62,8 +62,6 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
     void addDecisionTable( final GuidedDecisionTableView gridWidget );
 
-    void activateDecisionTable( final GuidedDecisionTableView gridWidget );
-
     void removeDecisionTable( final GuidedDecisionTableView gridWidget,
                               final Command afterRemovalCommand );
 
@@ -110,8 +108,6 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
                                                                 final PlaceRequest placeRequest,
                                                                 final GuidedDecisionTableEditorContent content,
                                                                 final boolean isReadOnly );
-
-        void activateDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter );
 
         void removeDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter );
 

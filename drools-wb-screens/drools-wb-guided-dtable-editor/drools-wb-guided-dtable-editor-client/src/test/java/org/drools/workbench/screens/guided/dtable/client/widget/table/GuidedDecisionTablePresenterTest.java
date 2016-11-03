@@ -47,7 +47,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager.LinkFoundCallback;
@@ -171,6 +170,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void refreshContent() {
         // dtPresenter.setContent(...) is called by the base tests @Before method so
         // expect some invocations to have occurred twice: once for setContent(...)
@@ -1426,7 +1426,6 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         final ArgumentCaptor<Integer> columnIndexCaptor = ArgumentCaptor.forClass( Integer.class );
         final ArgumentCaptor<GridData.Range> rowRangeCaptor = ArgumentCaptor.forClass( GridData.Range.class );
-        final ArgumentCaptor<GuidedDecisionTableUiCell> cellValueCaptor = ArgumentCaptor.forClass( GuidedDecisionTableUiCell.class );
 
         dtPresenter.onDeleteSelectedCells();
 

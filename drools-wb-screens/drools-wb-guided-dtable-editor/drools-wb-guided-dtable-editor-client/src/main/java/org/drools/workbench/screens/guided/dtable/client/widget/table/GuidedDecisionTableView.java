@@ -58,8 +58,6 @@ import org.uberfire.mvp.PlaceRequest;
 public interface GuidedDecisionTableView extends GridWidget,
                                                  HasBusyIndicator {
 
-    void activate( final boolean isActive );
-
     void setLocation( final double x,
                       final double y );
 

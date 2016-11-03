@@ -98,6 +98,9 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     private ArgumentCaptor<DecisionTableSelectedEvent> dtSelectedEventCaptor;
 
     @Captor
+    private ArgumentCaptor<Path> dtPathCaptor;
+
+    @Captor
     private ArgumentCaptor<ObservablePath> dtObservablePathCaptor;
 
     @Captor
@@ -291,7 +294,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
         final Path dtPath = mock( Path.class );
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent();
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtGraphPath,
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
+                                                                                 dtGraphPath,
                                                                                  dtGraphPlaceRequest,
                                                                                  dtContent );
 
@@ -321,8 +325,6 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         verify( presenter,
                 times( 1 ) ).loadDocumentGraph( eq( dtGraphPath ) );
 
-        verify( presenter,
-                times( 1 ) ).loadDocumentGraphEntry( eq( dtGraphEntry ) );
         verify( dtService,
                 times( 1 ) ).loadContent( eq( dtPath ) );
         verify( modeller,
@@ -343,12 +345,19 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
         verify( presenter,
                 times( 1 ) ).registerDocument( eq( dtPresenter ) );
-        verify( presenter,
-                times( 1 ) ).activateDocument( eq( dtPresenter ) );
-        verify( modeller,
-                times( 1 ) ).activateDecisionTable( eq( dtPresenter ) );
         verify( view,
                 times( 1 ) ).hideBusyIndicator();
+
+        verify( decisionTableSelectedEvent,
+                times( 1 ) ).fire( dtSelectedEventCaptor.capture() );
+        final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
+        assertNotNull( dtSelectedEvent );
+        assertNotNull( dtSelectedEvent.getPresenter() );
+        assertEquals( dtPresenter,
+                      dtSelectedEvent.getPresenter() );
+
+        verify( lockManager,
+                never() ).acquireLock();
     }
 
     @Test
@@ -404,6 +413,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
+                                                                                 dtPath,
                                                                                  dtPlaceRequest,
                                                                                  dtContent );
 
@@ -443,6 +453,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         final PlaceRequest dtPlaceRequest1 = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent dtContent1 = makeDecisionTableContent( 0 );
         final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable( dtPath1,
+                                                                                  dtPath1,
                                                                                   dtPlaceRequest1,
                                                                                   dtContent1 );
 
@@ -450,6 +461,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         final PlaceRequest dtPlaceRequest2 = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent dtContent2 = makeDecisionTableContent( 0 );
         final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable( dtPath2,
+                                                                                  dtPath2,
                                                                                   dtPlaceRequest2,
                                                                                   dtContent2 );
 
@@ -521,6 +533,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
+                                                                                 dtPath,
                                                                                  dtPlaceRequest,
                                                                                  dtContent );
 
@@ -624,26 +637,37 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
             add( dtPath2 );
         }};
 
-        doNothing().when( presenter ).loadDocument( any( ObservablePath.class ),
-                                                    any( PlaceRequest.class ) );
+        final ObservablePath dtPath = mock( ObservablePath.class );
+        final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
+        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
+                                                                                 dtPath,
+                                                                                 dtPlaceRequest,
+                                                                                 dtContent );
+
+        when( modeller.addDecisionTable( any( ObservablePath.class ),
+                                         any( PlaceRequest.class ),
+                                         any( GuidedDecisionTableEditorContent.class ),
+                                         any( Boolean.class ),
+                                         any( Double.class ),
+                                         any( Double.class ) ) ).thenReturn( dtPresenter );
 
         presenter.onOpenDocumentsInEditor( dtPaths );
 
-        verify( presenter,
-                times( 2 ) ).loadDocument( dtObservablePathCaptor.capture(),
-                                           any( PlaceRequest.class ) );
+        verify( dtService,
+                times( 2 ) ).loadContent( dtPathCaptor.capture() );
 
-        final List<ObservablePath> dtObservablePaths = dtObservablePathCaptor.getAllValues();
-        assertNotNull( dtObservablePaths );
+        final List<Path> dtLoadedPaths = dtPathCaptor.getAllValues();
+        assertNotNull( dtLoadedPaths );
         assertEquals( 2,
-                      dtObservablePaths.size() );
-        assertContains( dtObservablePaths,
+                      dtLoadedPaths.size() );
+        assertContains( dtLoadedPaths,
                         dtPath1 );
-        assertContains( dtObservablePaths,
+        assertContains( dtLoadedPaths,
                         dtPath2 );
     }
 
-    private void assertContains( final List<ObservablePath> paths,
+    private void assertContains( final List<Path> paths,
                                  final Path path ) {
         if ( paths.stream().filter( ( p ) -> p.toURI().equals( path.toURI() ) ).collect( Collectors.toList() ).isEmpty() ) {
             fail( "Document for path [" + path.toURI() + "] not loaded by GuidedDecisionTableGraphEditorPresenter.loadDocument()." );
@@ -736,6 +760,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
+                                                                                 dtPath,
                                                                                  dtPlaceRequest,
                                                                                  dtContent );
 
@@ -813,12 +838,14 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         final PlaceRequest dtPlaceRequest1 = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent dtContent1 = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable( dtPath1,
+                                                                                  dtPath1,
                                                                                   dtPlaceRequest1,
                                                                                   dtContent1 );
         final ObservablePath dtPath2 = mock( ObservablePath.class );
         final PlaceRequest dtPlaceRequest2 = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent dtContent2 = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable( dtPath2,
+                                                                                  dtPath2,
                                                                                   dtPlaceRequest2,
                                                                                   dtContent2 );
 
@@ -935,6 +962,9 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         presenter.onStartup( dtGraphPath,
                              dtGraphPlaceRequest );
 
+        verify( kieEditorWrapperView,
+                times( 1 ) ).clear();
+
         final GuidedDecisionTableView.Presenter document = mock( GuidedDecisionTableView.Presenter.class );
         final AsyncPackageDataModelOracle dmo = mock( AsyncPackageDataModelOracle.class );
         final Imports imports = mock( Imports.class );
@@ -949,19 +979,20 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                            isReadOnly );
 
         verify( kieEditorWrapperView,
-                times( 1 ) ).clear();
+                times( 2 ) ).clear();
         verify( kieEditorWrapperView,
-                times( 1 ) ).addMainEditorPage( view );
+                times( 2 ) ).addMainEditorPage( view );
         verify( kieEditorWrapperView,
-                times( 1 ) ).addOverviewPage( eq( overviewWidget ),
+                times( 2 ) ).addOverviewPage( eq( overviewWidget ),
                                               onFocusCommandCaptor.capture() );
+        verify( overviewWidget,
+                times( 2 ) ).setContent( eq( dtGraphContent.getOverview() ),
+                                         any( ObservablePath.class ) );
+
         verify( kieEditorWrapperView,
                 times( 1 ) ).addSourcePage( any( ViewDRLSourceWidget.class ) );
         verify( kieEditorWrapperView,
                 times( 1 ) ).addImportsTab( eq( importsWidget ) );
-        verify( overviewWidget,
-                times( 1 ) ).setContent( eq( dtGraphContent.getOverview() ),
-                                         any( ObservablePath.class ) );
         verify( importsWidget,
                 times( 1 ) ).setContent( eq( dmo ),
                                          eq( imports ),
@@ -1018,6 +1049,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
+                                                                                 dtPath,
                                                                                  dtPlaceRequest,
                                                                                  dtContent );
 

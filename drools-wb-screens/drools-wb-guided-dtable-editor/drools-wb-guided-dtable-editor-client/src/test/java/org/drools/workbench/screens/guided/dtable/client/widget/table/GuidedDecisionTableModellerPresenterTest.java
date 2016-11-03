@@ -254,39 +254,6 @@ public class GuidedDecisionTableModellerPresenterTest {
     }
 
     @Test
-    public void activateDecisionTableWhenAvailable() {
-        final ObservablePath path = mock( ObservablePath.class );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
-
-        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent();
-        final GuidedDecisionTableView.Presenter dtPresenter = presenter.addDecisionTable( path,
-                                                                                          placeRequest,
-                                                                                          dtContent,
-                                                                                          false,
-                                                                                          null,
-                                                                                          null );
-        final GuidedDecisionTableView dtView = dtPresenter.getView();
-
-        presenter.activateDecisionTable( dtPresenter );
-
-        verify( view,
-                times( 1 ) ).activateDecisionTable( eq( dtView ) );
-        assertEquals( dtPresenter,
-                      presenter.getActiveDecisionTable() );
-    }
-
-    @Test
-    public void activateDecisionTableWhenNotAvailable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-
-        presenter.activateDecisionTable( dtPresenter );
-
-        verify( view,
-                never() ).activateDecisionTable( any( GuidedDecisionTableView.class ) );
-        assertNull( presenter.getActiveDecisionTable() );
-    }
-
-    @Test
     public void removeDecisionTable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
 

@@ -206,9 +206,6 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                               final PlaceRequest placeRequest ) {
         this.editorPath = path;
         this.editorPlaceRequest = placeRequest;
-
-        loadDocument( path,
-                      placeRequest );
     }
 
     protected String getTitleText() {
@@ -242,37 +239,6 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         modeller.onClose();
     }
 
-    @Override
-    public void loadDocument( final ObservablePath path,
-                              final PlaceRequest placeRequest ) {
-        view.showLoading();
-        service.call( getLoadContentSuccessCallback( path,
-                                                     placeRequest ),
-                      getNoSuchFileExceptionErrorCallback() ).loadContent( path );
-    }
-
-    private RemoteCallback<GuidedDecisionTableEditorContent> getLoadContentSuccessCallback( final ObservablePath path,
-                                                                                            final PlaceRequest placeRequest ) {
-        return ( content ) -> {
-            //Path is set to null when the Editor is closed (which can happen before async calls complete).
-            if ( path == null ) {
-                return;
-            }
-
-            //Add Decision Table to modeller
-            final GuidedDecisionTableView.Presenter dtPresenter = modeller.addDecisionTable( path,
-                                                                                             placeRequest,
-                                                                                             content,
-                                                                                             placeRequest.getParameter( "readOnly", null ) != null,
-                                                                                             null,
-                                                                                             null );
-            registerDocument( dtPresenter );
-            activateDocument( dtPresenter );
-
-            view.hideBusyIndicator();
-        };
-    }
-
     protected void onDecisionTableSelected( final DecisionTableSelectedEvent event ) {
         final GuidedDecisionTableView.Presenter dtPresenter = event.getPresenter();
         if ( dtPresenter == null ) {
@@ -297,8 +263,6 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                           dtPresenter.getDataModelOracle(),
                           dtPresenter.getModel().getImports(),
                           !dtPresenter.getAccess().isEditable() );
-
-        modeller.activateDecisionTable( dtPresenter );
     }
 
     @Override
@@ -366,7 +330,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                       model );
     }
 
-    void showValidationPopup(final List<ValidationMessage> results ) {
+    void showValidationPopup( final List<ValidationMessage> results ) {
         ValidationPopup.showMessages( results );
     }
 

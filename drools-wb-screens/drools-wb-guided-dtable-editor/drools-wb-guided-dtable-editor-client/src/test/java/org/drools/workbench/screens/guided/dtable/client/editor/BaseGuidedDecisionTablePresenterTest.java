@@ -48,9 +48,12 @@ import org.kie.workbench.common.widgets.configresource.client.widget.bound.Impor
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
@@ -203,6 +206,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     @Mock
     protected PlaceManager placeManager;
 
+    @Captor
+    protected ArgumentCaptor<DecisionTableSelectedEvent> dtSelectedEventCaptor;
+
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
@@ -244,7 +250,8 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
 
     protected abstract P getPresenter();
 
-    protected GuidedDecisionTableView.Presenter makeDecisionTable( final ObservablePath path,
+    protected GuidedDecisionTableView.Presenter makeDecisionTable( final Path originalPath,
+                                                                   final ObservablePath path,
                                                                    final PlaceRequest placeRequest,
                                                                    final GuidedDecisionTableEditorContent content ) {
         final GuidedDecisionTableView.Presenter dtPresenter = mock( GuidedDecisionTableView.Presenter.class );
@@ -259,6 +266,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
                                          any( Boolean.class ),
                                          any( Double.class ),
                                          any( Double.class ) ) ).thenReturn( dtPresenter );
+        when( path.getOriginal() ).thenReturn( originalPath );
         when( dtPresenter.getLatestPath() ).thenReturn( path );
         when( dtPresenter.getCurrentPath() ).thenReturn( path );
         when( dtPresenter.getPlaceRequest() ).thenReturn( placeRequest );
@@ -283,9 +291,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
                 return hashCode;
             }
         };
-        final Overview overview = mock(Overview.class);
-        final Metadata metadata = mock(Metadata.class);
-        when(overview.getMetadata()).thenReturn( metadata );
+        final Overview overview = mock( Overview.class );
+        final Metadata metadata = mock( Metadata.class );
+        when( overview.getMetadata() ).thenReturn( metadata );
         return new GuidedDecisionTableEditorContent( model,
                                                      Collections.<PortableWorkDefinition>emptySet(),
                                                      overview,

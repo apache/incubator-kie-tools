@@ -33,8 +33,10 @@ import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResour
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -99,6 +101,41 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                            final PlaceRequest placeRequest ) {
         super.onStartup( path,
                          placeRequest );
+
+        loadDocument( path,
+                      placeRequest );
+    }
+
+    @Override
+    public void loadDocument( final ObservablePath path,
+                              final PlaceRequest placeRequest ) {
+        view.showLoading();
+        service.call( getLoadContentSuccessCallback( path,
+                                                     placeRequest ),
+                      getNoSuchFileExceptionErrorCallback() ).loadContent( path );
+    }
+
+    protected RemoteCallback<GuidedDecisionTableEditorContent> getLoadContentSuccessCallback( final ObservablePath path,
+                                                                                              final PlaceRequest placeRequest ) {
+        return ( content ) -> {
+            //Path is set to null when the Editor is closed (which can happen before async calls complete).
+            if ( path == null ) {
+                return;
+            }
+
+            //Add Decision Table to modeller
+            final GuidedDecisionTableView.Presenter dtPresenter = modeller.addDecisionTable( path,
+                                                                                             placeRequest,
+                                                                                             content,
+                                                                                             placeRequest.getParameter( "readOnly", null ) != null,
+                                                                                             null,
+                                                                                             null );
+            registerDocument( dtPresenter );
+
+            decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( dtPresenter ) );
+
+            view.hideBusyIndicator();
+        };
     }
 
     @Override
@@ -134,12 +171,6 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     @Override
     protected void onDecisionTableSelected( final @Observes DecisionTableSelectedEvent event ) {
         super.onDecisionTableSelected( event );
-    }
-
-    @Override
-    protected void activateDocument( final GuidedDecisionTableView.Presenter dtPresenter ) {
-        super.activateDocument( dtPresenter );
-        dtPresenter.initialiseAnalysis();
     }
 
     @Override

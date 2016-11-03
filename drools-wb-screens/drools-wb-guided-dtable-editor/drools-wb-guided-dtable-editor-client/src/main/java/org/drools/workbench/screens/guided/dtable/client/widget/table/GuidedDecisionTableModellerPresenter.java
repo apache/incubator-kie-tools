@@ -208,15 +208,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     }
 
     @Override
-    public void activateDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter ) {
-        if ( !isDecisionTableAvailable( dtPresenter ) ) {
-            return;
-        }
-        view.activateDecisionTable( dtPresenter.getView() );
-        activeDecisionTable = dtPresenter;
-    }
-
-    @Override
     public void removeDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter ) {
         final Command afterRemovalCommand = () -> {
             view.setEnableColumnCreation( false );

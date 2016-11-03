@@ -81,6 +81,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
 
@@ -108,12 +109,16 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                eq( null ) );
         verify( presenter,
                 times( 1 ) ).registerDocument( eq( dtPresenter ) );
-        verify( presenter,
-                times( 1 ) ).activateDocument( eq( dtPresenter ) );
-        verify( modeller,
-                times( 1 ) ).activateDecisionTable( eq( dtPresenter ) );
+        verify( decisionTableSelectedEvent,
+                times( 1 ) ).fire( dtSelectedEventCaptor.capture() );
         verify( view,
                 times( 1 ) ).hideBusyIndicator();
+
+        final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
+        assertNotNull( dtSelectedEvent );
+        assertNotNull( dtSelectedEvent.getPresenter() );
+        assertEquals( dtPresenter,
+                      dtSelectedEvent.getPresenter() );
     }
 
     @Test
@@ -127,6 +132,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
         when( dtPresenter.getOriginalHashCode() ).thenReturn( 0 );
@@ -143,6 +149,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
         when( dtPresenter.getOriginalHashCode() ).thenReturn( 10 );
@@ -167,6 +174,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
         final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent( dtPresenter );
@@ -186,6 +194,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
         final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent( dtPresenter );
@@ -196,13 +205,10 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         presenter.onStartup( path,
                              placeRequest );
 
-        verify( presenter,
-                times( 1 ) ).activateDocument( any( GuidedDecisionTableView.Presenter.class ) );
-
         presenter.onDecisionTableSelected( event );
 
         verify( presenter,
-                times( 2 ) ).activateDocument( any( GuidedDecisionTableView.Presenter.class ) );
+                times( 1 ) ).activateDocument( any( GuidedDecisionTableView.Presenter.class ) );
     }
 
     @Test
@@ -211,6 +217,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
         final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent( dtPresenter );
@@ -229,6 +236,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
 
@@ -239,10 +247,16 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                 times( 1 ) ).showLoading();
         verify( dtService,
                 times( 1 ) ).loadContent( eq( path ) );
-        verify( presenter,
-                times( 1 ) ).activateDocument( eq( dtPresenter ) );
+        verify( decisionTableSelectedEvent,
+                times( 1 ) ).fire( dtSelectedEventCaptor.capture() );
         verify( view,
                 times( 1 ) ).hideBusyIndicator();
+
+        final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
+        assertNotNull( dtSelectedEvent );
+        assertNotNull( dtSelectedEvent.getPresenter() );
+        assertEquals( dtPresenter,
+                      dtSelectedEvent.getPresenter() );
 
         when( dtPresenter.getCurrentPath() ).thenReturn( path );
 
@@ -259,7 +273,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                    eq( content ),
                                                    any( Boolean.class ) );
         verify( presenter,
-                times( 2 ) ).activateDocument( eq( dtPresenter ) );
+                times( 1 ) ).activateDocument( eq( dtPresenter ) );
         verify( view,
                 times( 2 ) ).hideBusyIndicator();
     }
@@ -270,6 +284,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
 
@@ -324,6 +339,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
         final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>() {{
@@ -356,6 +372,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
 
@@ -383,6 +400,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
 
@@ -412,6 +430,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
 

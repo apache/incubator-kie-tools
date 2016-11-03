@@ -286,6 +286,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     private Widget getRuleInheritanceWidget() {
+        ruleSelector.setEnabled( false );
         final HorizontalPanel result = new HorizontalPanel();
         result.add( new Label( GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit() ) );
         ruleSelector.addValueChangeHandler( new ValueChangeHandler<String>() {
@@ -326,21 +327,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         final double dy = requiredTranslateY - actualTranslateY;
         return new Point2D( dx,
                             dy );
-    }
-
-    @Override
-    public void activateDecisionTable( final GuidedDecisionTableView gridWidget ) {
-        boolean activationChanged = false;
-        for ( GridWidget g : gridLayer.getGridWidgets() ) {
-            final GuidedDecisionTableView dtView = (GuidedDecisionTableView) g;
-            final boolean isActive = gridWidget.equals( dtView );
-            final boolean isAlreadyActive = dtView.isSelected();
-            activationChanged = activationChanged || ( isActive != isAlreadyActive );
-            dtView.activate( isActive );
-        }
-        if ( activationChanged ) {
-            gridLayer.batch();
-        }
     }
 
     @Override
@@ -1013,6 +999,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public void select( final GridWidget selectedGridWidget ) {
+        ruleSelector.setEnabled( true );
         gridLayer.select( selectedGridWidget );
     }
 

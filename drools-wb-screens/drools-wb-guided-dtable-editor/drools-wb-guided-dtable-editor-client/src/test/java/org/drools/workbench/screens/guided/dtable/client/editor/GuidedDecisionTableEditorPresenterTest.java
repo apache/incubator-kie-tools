@@ -19,14 +19,10 @@ package org.drools.workbench.screens.guided.dtable.client.editor;
 import java.util.Collections;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
-import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -87,18 +83,26 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
     }
 
     @Test
-    public void startUpStartsVerification() {
+    public void startUpSelectsDecisionTable() {
         final ObservablePath path = mock( ObservablePath.class );
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( path,
+                                                                                 path,
                                                                                  placeRequest,
                                                                                  content );
 
         presenter.onStartup( path,
                              placeRequest );
 
-        verify( dtPresenter ).initialiseAnalysis();
+        verify( decisionTableSelectedEvent,
+                times( 1 ) ).fire( dtSelectedEventCaptor.capture() );
+
+        final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
+        assertNotNull( dtSelectedEvent );
+        assertNotNull( dtSelectedEvent.getPresenter() );
+        assertEquals( dtPresenter,
+                      dtSelectedEvent.getPresenter() );
     }
 
     @Test
