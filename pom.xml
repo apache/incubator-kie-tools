@@ -56,7 +56,7 @@
     <version.com.ahome-it.lienzo-core>2.0.277-RELEASE</version.com.ahome-it.lienzo-core>
     <version.com.ahome-it.lienzo-tests>1.0.0-RC3</version.com.ahome-it.lienzo-tests>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
-    <version.com.google.guava>20.0-rc1</version.com.google.guava>
+    <version.com.google.guava>20.0</version.com.google.guava>
     <!-- TODO Remove this when gson version is updated in ip-bom -->
     <version.com.google.code.gson>2.6.2</version.com.google.code.gson>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
