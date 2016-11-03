@@ -1,6 +1,9 @@
 package org.uberfire.ext.layout.editor.client.components.rows;
 
-import com.google.inject.Inject;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Heading;
 import org.jboss.errai.common.client.dom.Span;
@@ -8,9 +11,6 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Named;
 
 import static org.uberfire.ext.layout.editor.client.infra.CSSClassNameHelper.*;
 import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
