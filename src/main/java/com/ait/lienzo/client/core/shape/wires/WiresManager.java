@@ -59,9 +59,9 @@ public final class WiresManager
 
     private IDockingAcceptor                                 m_dockingAcceptor     = IDockingAcceptor.NONE;
 
-    public static final WiresManager get(final Layer layer)
+    public static final WiresManager get(Layer layer)
     {
-        final String uuid = layer.uuid();
+        String uuid = layer.uuid();
 
         WiresManager manager = MANAGER_MAP.get(uuid);
 
@@ -157,15 +157,15 @@ public final class WiresManager
 
         shape.setDockingAcceptor(m_dockingAcceptor);
 
-        final WiresShape.WiresShapeHandler handler = new WiresShape.WiresShapeHandler(shape, this);
+        WiresShape.WiresShapeHandler handler = new WiresShape.WiresShapeHandler(shape, this);
 
-        final HandlerRegistrationManager m_registrationManager = createHandlerRegistrationManager();
+        HandlerRegistrationManager registrationManager = createHandlerRegistrationManager();
 
-        m_registrationManager.register(group.addNodeMouseDownHandler(handler));
+        registrationManager.register(group.addNodeMouseDownHandler(handler));
 
-        m_registrationManager.register(group.addNodeMouseUpHandler(handler));
+        registrationManager.register(group.addNodeMouseUpHandler(handler));
 
-        m_registrationManager.register(group.addNodeDragEndHandler(handler));
+        registrationManager.register(group.addNodeDragEndHandler(handler));
 
         group.setDragConstraints(handler);
 
@@ -186,7 +186,7 @@ public final class WiresManager
 
         final String uuid = getShapeUUID(shape);
         m_shapesMap.put(uuid, shape);
-        m_shapeHandlersMap.put(uuid, m_registrationManager);
+        m_shapeHandlersMap.put(uuid, registrationManager);
 
         return handler.getControl();
     }

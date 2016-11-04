@@ -17,13 +17,36 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.shape.wires.*;
+import com.ait.lienzo.client.core.shape.wires.AbstractControlHandle;
+import com.ait.lienzo.client.core.shape.wires.ControlHandleList;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
-import com.ait.lienzo.client.core.types.*;
+import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
+import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartEntryJSO;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -33,11 +56,9 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 
-import java.util.*;
-
 public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPartShape<T>>extends Shape<T>
 {
-    private final NFastArrayList<PathPartList> m_list = new NFastArrayList<PathPartList>();
+    private final NFastArrayList<PathPartList> pathPoints = new NFastArrayList<>();
 
     protected AbstractMultiPathPartShape(final ShapeType type)
     {
@@ -52,17 +73,15 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     @Override
     public BoundingBox getBoundingBox()
     {
-        final int size = m_list.size();
-
-        if (size < 1)
+        if (pathPoints.size() < 1)
         {
             return new BoundingBox(0, 0, 0, 0);
         }
-        final BoundingBox bbox = new BoundingBox();
+        BoundingBox bbox = new BoundingBox();
 
-        for (int i = 0; i < size; i++)
+        for (PathPartList point : pathPoints)
         {
-            bbox.add(m_list.get(i).getBoundingBox());
+            bbox.add(point.getBoundingBox());
         }
         return bbox;
     }
@@ -75,25 +94,23 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     public T clear()
     {
-        final int size = m_list.size();
-
-        for (int i = 0; i < size; i++)
+        for (PathPartList point : pathPoints)
         {
-            m_list.get(i).clear();
+            point.clear();
         }
-        m_list.clear();
+        pathPoints.clear();
 
         return cast();
     }
 
     protected final void add(PathPartList list)
     {
-        m_list.add(list);
+        pathPoints.add(list);
     }
 
     public final NFastArrayList<PathPartList> getPathPartListArray()
     {
-        return m_list;
+        return pathPoints;
     }
 
     @Override
@@ -109,7 +126,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
         if (prepare(context, attr, alpha))
         {
-            final int size = m_list.size();
+            final int size = pathPoints.size();
 
             if (size < 1)
             {
@@ -119,7 +136,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             {
                 setAppliedShadow(false);
 
-                final PathPartList list = m_list.get(i);
+                final PathPartList list = pathPoints.get(i);
 
                 if (list.size() > 1)
                 {
@@ -144,7 +161,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         {
             return factory;
         }
-        return new DefaultMultiPathShapeHandleFactory(m_list, this);
+        return new DefaultMultiPathShapeHandleFactory(pathPoints, this);
     }
 
     public static class OnDragMoveIControlHandleList implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler

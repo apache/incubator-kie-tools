@@ -244,7 +244,7 @@ public class WiresLayoutContainer implements LayoutContainer
     }
 
     /* *******************************************************************
-                                LAYOUTS 
+                                LAYOUTS
      ******************************************************************* */
 
     private interface LayoutBuilder
