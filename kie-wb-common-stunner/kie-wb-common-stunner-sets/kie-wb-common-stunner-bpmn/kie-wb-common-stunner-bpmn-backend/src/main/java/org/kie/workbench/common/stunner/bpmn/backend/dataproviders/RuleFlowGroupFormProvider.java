@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.stunner.bpmn.backend.dataproviders;
 
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRuleFlowNamesQuery;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 
-import java.util.Map;
-import java.util.TreeMap;
+import javax.inject.Inject;
+import java.util.*;
 
 public class RuleFlowGroupFormProvider implements SelectorDataProvider {
-    // NOTE - this provides dummy data for now until integration with
-    // workbench is complete
+    @Inject
+    protected RefactoringQueryService queryService;
 
     @Override
     public String getProviderName() {
@@ -33,11 +40,23 @@ public class RuleFlowGroupFormProvider implements SelectorDataProvider {
 
     @Override
     public SelectorData getSelectorData( FormRenderingContext context ) {
-        // Map<Object, String> -- object is the value - string is text shown
-        Map<Object, String> values = new TreeMap<>();
-        values.put( "sampleruleflow1", "sampleruleflow1" );
-        values.put( "sampleruleflow2", "sampleruleflow2" );
-        values.put( "sampleruleflow3", "sampleruleflow3" );
-        return new SelectorData( values, null );
+        return new SelectorData( getRuleFlowGroupNames(), null );
+    }
+
+    private Map<Object, String> getRuleFlowGroupNames() {
+        List<RefactoringPageRow> results = queryService.query(
+                FindRuleFlowNamesQuery.NAME,
+                new HashSet<ValueIndexTerm>() {{
+                    add(new ValueSharedPartIndexTerm("*", PartType.RULEFLOW_GROUP, ValueIndexTerm.TermSearchType.WILDCARD));
+                }});
+
+        Map<Object, String> ruleFlowGroupNames = new TreeMap<Object, String>();
+
+        for ( RefactoringPageRow row : results ) {
+            ruleFlowGroupNames.put(((Map<String, String>) row.getValue()).get("name"),
+                    ((Map<String, String>) row.getValue()).get("name"));
+        }
+
+        return ruleFlowGroupNames;
     }
 }
