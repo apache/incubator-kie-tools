@@ -13,27 +13,30 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *  
+ *
  */
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.CONNECTOR;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.RESIZE;
+import static com.ait.lienzo.shared.core.types.EventPropagationMode.FIRST_ANCESTOR;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.shape.Group;
@@ -50,31 +53,43 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeTest
 {
-    private WiresShape         tested;
+    private WiresShape tested;
 
-    private MultiPath          path;
-
-    @Mock
-    LayoutContainer            layoutContainer;
+    private MultiPath path;
 
     @Mock
-    HandlerRegistrationManager handlerRegistrationManager;
+    private LayoutContainer layoutContainer;
 
     @Mock
-    IAttributesChangedBatcher  attributesChangedBatcher;
+    private HandlerRegistrationManager handlerRegistrationManager;
 
     @Mock
-    HandlerManager             handlerManager;
+    private IAttributesChangedBatcher attributesChangedBatcher;
+
+    @Mock
+    private HandlerManager handlerManager;
+
+    @Mock
+    private WiresContainer parent;
+
+    @Mock
+    private MagnetManager.Magnets magnets;
+
+    private Group group;
 
     @Before
     public void setup()
     {
-        path = new MultiPath().rect(0, 0, 100, 100);
-        Group group = new Group();
+        path = new MultiPath().rect(3, 7, 100, 100);
+        group = spy(new Group());
         when(layoutContainer.getGroup()).thenReturn(group);
         when(layoutContainer.setOffset(any(Point2D.class))).thenReturn(layoutContainer);
         when(layoutContainer.setSize(anyDouble(), anyDouble())).thenReturn(layoutContainer);
@@ -92,10 +107,14 @@ public class WiresShapeTest
         assertEquals(IDockingAcceptor.ALL, tested.getDockingAcceptor());
         assertEquals(path, tested.getPath());
         assertEquals(0, tested.getChildShapes().size());
-        verify(layoutContainer, times(1)).setOffset(any(Point2D.class));
-        verify(layoutContainer, times(1)).setSize(anyDouble(), anyDouble());
-        verify(layoutContainer, times(1)).execute();
-        verify(layoutContainer, times(0)).refresh();
+        // TODO: review com.ait.lienzo.client.core.types.BoundingBoxJSO is it possible to rewrite to plan Java?
+        verify(layoutContainer).setOffset(any(Point2D.class));
+        verify(layoutContainer).setSize(anyDouble(), anyDouble());
+        verify(layoutContainer).execute();
+        verify(layoutContainer, never()).refresh();
+        verify(layoutContainer).add(path);
+
+        verify(group).setEventPropagationMode(FIRST_ANCESTOR);
     }
 
     @Test
@@ -103,6 +122,26 @@ public class WiresShapeTest
     {
         tested.setX(100);
         assertEquals(100, tested.getGroup().getX(), 0);
+    }
+
+    @Test
+    public void testSetDraggable()
+    {
+        tested.setDraggable(false);
+        assertFalse(tested.getGroup().isDraggable());
+
+        tested.setDraggable(true);
+        assertTrue(tested.getGroup().isDraggable());
+    }
+
+    @Test
+    public void testSetResizable()
+    {
+        tested.setResizable(false);
+        assertFalse(tested.isResizable());
+
+        tested.setResizable(true);
+        assertTrue(tested.isResizable());
     }
 
     @Test
@@ -117,10 +156,12 @@ public class WiresShapeTest
     {
         IPrimitive<?> child = new Rectangle(10, 10);
         tested.addChild(child);
-        verify(layoutContainer, times(1)).add(eq(child));
+
+        verify(layoutContainer).add(child);
+        // Initial MultiPath + new child
         verify(layoutContainer, times(2)).add(any(IPrimitive.class));
-        verify(layoutContainer, times(0)).remove(any(IPrimitive.class));
-        verify(layoutContainer, times(0)).add(eq(child), any(LayoutContainer.Layout.class));
+        verify(layoutContainer, never()).remove(any(IPrimitive.class));
+        verify(layoutContainer, never()).add(eq(child), any(LayoutContainer.Layout.class));
     }
 
     @Test
@@ -129,9 +170,11 @@ public class WiresShapeTest
         IPrimitive<?> child = new Rectangle(10, 10);
         LayoutContainer.Layout layout = LayoutContainer.Layout.CENTER;
         tested.addChild(child, layout);
-        verify(layoutContainer, times(1)).add(eq(child), eq(layout));
-        verify(layoutContainer, times(1)).add(any(IPrimitive.class));
-        verify(layoutContainer, times(0)).remove(any(IPrimitive.class));
+
+        verify(layoutContainer).add(child, layout);
+        // Initial MultiPath
+        verify(layoutContainer).add(any(IPrimitive.class));
+        verify(layoutContainer, never()).remove(any(IPrimitive.class));
     }
 
     @Test
@@ -139,11 +182,11 @@ public class WiresShapeTest
     {
         IPrimitive<?> child = new Rectangle(10, 10);
         tested.removeChild(child);
-        verify(layoutContainer, times(0)).add(eq(child));
-        verify(layoutContainer, times(1)).add(any(IPrimitive.class));
-        verify(layoutContainer, times(1)).remove(eq(child));
-        verify(layoutContainer, times(1)).remove(any(IPrimitive.class));
-        verify(layoutContainer, times(0)).add(eq(child), any(LayoutContainer.Layout.class));
+        verify(layoutContainer, never()).add(child);
+        verify(layoutContainer).add(any(IPrimitive.class));
+        verify(layoutContainer).remove(child);
+        verify(layoutContainer).remove(any(IPrimitive.class));
+        verify(layoutContainer, never()).add(eq(child), any(LayoutContainer.Layout.class));
     }
 
     @Test
@@ -155,20 +198,76 @@ public class WiresShapeTest
         tested.addWiresResizeStartHandler(startHandler);
         tested.addWiresResizeStepHandler(stepHandler);
         tested.addWiresResizeEndHandler(endHandler);
-        verify(handlerManager, times(1)).addHandler(WiresResizeStartEvent.TYPE, startHandler);
-        verify(handlerManager, times(1)).addHandler(WiresResizeStepEvent.TYPE, stepHandler);
-        verify(handlerManager, times(1)).addHandler(WiresResizeEndEvent.TYPE, endHandler);
+
+        verify(handlerManager).addHandler(WiresResizeStartEvent.TYPE, startHandler);
+        verify(handlerManager).addHandler(WiresResizeStepEvent.TYPE, stepHandler);
+        verify(handlerManager).addHandler(WiresResizeEndEvent.TYPE, endHandler);
     }
 
     @Test
     public void testDestroy()
     {
-        WiresShapeControlHandleList m_ctrls = mock(WiresShapeControlHandleList.class);
+        WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
         WiresShape shape = spy(new WiresShape(path, layoutContainer));
-        doReturn(m_ctrls).when(shape).getControls();
+        doReturn(controls).when(shape).getControls();
         shape.destroy();
-        verify(layoutContainer, times(1)).destroy();
-        verify(m_ctrls, times(1)).destroy();
-        verify(shape, times(1)).removeFromParent();
+
+        verify(layoutContainer).destroy();
+        verify(controls).destroy();
+        verify(shape).removeFromParent();
+    }
+
+    @Test
+    public void testRemoveFromParent()
+    {
+        WiresShape shape = spy(new WiresShape(path, layoutContainer));
+
+        // No null pointer expected
+        shape.removeFromParent();
+
+        shape.setParent(parent);
+        shape.removeFromParent();
+
+        verify(parent).remove(shape);
+    }
+
+    @Test
+    public void testLoadControls()
+    {
+        assertNull(tested.getControls());
+
+        assertNotNull(tested.loadControls(RESIZE));
+        assertNotNull(tested.getControls());
+
+        assertNull(tested.loadControls(CONNECTOR));
+        assertNull(tested.getControls());
+
+        assertNotNull(tested.loadControls(POINT));
+        assertNotNull(tested.getControls());
+
+        assertNull(tested.loadControls(null));
+        assertNull(tested.getControls());
+    }
+
+    @Test
+    public void testSetMagnets()
+    {
+        assertNull(tested.getMagnets());
+
+        tested.setMagnets(magnets);
+        assertNotNull(tested.getMagnets());
+    }
+
+    @Test
+    public void testRefresh()
+    {
+        tested = spy(tested);
+
+        WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
+        doReturn(controls).when(tested).createControlHandles(eq(RESIZE), any(ControlHandleList.class));
+
+        tested.refresh();
+
+        verify(controls).refresh();
     }
 }
