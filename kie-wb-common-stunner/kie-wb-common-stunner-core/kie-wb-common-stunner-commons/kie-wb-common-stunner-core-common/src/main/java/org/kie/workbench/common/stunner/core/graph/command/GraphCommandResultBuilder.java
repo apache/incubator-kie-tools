@@ -28,11 +28,18 @@ import java.util.LinkedList;
 @NonPortable
 public class GraphCommandResultBuilder extends CommandResultBuilder<RuleViolation> {
 
-    public static final CommandResult<RuleViolation> RESULT_OK = new CommandResultImpl<>(
+    public static final CommandResult<RuleViolation> SUCCESS = new CommandResultImpl<>(
             CommandResult.Type.INFO,
             RESULT_SUCCESS,
             new LinkedList<>()
     );
+
+    public static final CommandResult<RuleViolation> FAILED = new CommandResultImpl<>(
+            CommandResult.Type.ERROR,
+            RESULT_FAILED,
+            new LinkedList<>()
+    );
+
 
     public GraphCommandResultBuilder() {
     }

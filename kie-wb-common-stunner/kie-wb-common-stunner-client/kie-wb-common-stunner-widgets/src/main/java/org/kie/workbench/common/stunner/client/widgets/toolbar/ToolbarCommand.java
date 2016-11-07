@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar;
 
+import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 public interface ToolbarCommand<S extends ClientSession> {
 
     IconType getIcon();
+
+    IconRotate getIconRotate();
 
     String getCaption();
 

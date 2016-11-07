@@ -20,7 +20,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
@@ -36,26 +36,22 @@ import java.util.LinkedList;
  * given parent.
  */
 @Portable
-public final class AddChildNodeCommand extends AbstractGraphCompositeCommand {
+public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
 
-    private Graph target;
-    private Node parent;
-    private Node candidate;
+    private final String parentUUID;
+    private final Node candidate;
 
-    public AddChildNodeCommand( @MapsTo( "target" ) Graph target,
-                                @MapsTo( "parent" ) Node parent,
+    public AddChildNodeCommand( @MapsTo( "parentUUID" ) String parentUUID,
                                 @MapsTo( "candidate" ) Node candidate ) {
-        this.target = PortablePreconditions.checkNotNull( "target",
-                target );
-        this.parent = PortablePreconditions.checkNotNull( "parent",
-                parent );
+        this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
+                parentUUID );
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
                 candidate );
     }
 
     protected void initialize( final GraphCommandExecutionContext context ) {
-        this.addCommand( new AddNodeCommand( target, candidate ) )
-                .addCommand( new AddChildEdgeCommand( parent, candidate ) );
+        this.addCommand( new AddNodeCommand( candidate ) )
+            .addCommand( new AddChildEdgeCommand( parentUUID, candidate.getUUID() ) );
     }
 
     @Override
@@ -65,10 +61,11 @@ public final class AddChildNodeCommand extends AbstractGraphCompositeCommand {
 
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+        final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
         final Collection<RuleViolation> containmentRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( parent, candidate ).violations();
         final Collection<RuleViolation> cardinalityRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager().cardinality().evaluate( target, candidate, RuleManager.Operation.ADD ).violations();
+                ( Collection<RuleViolation> ) context.getRulesManager().cardinality().evaluate( getGraph( context ), candidate, RuleManager.Operation.ADD ).violations();
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
         violations.addAll( containmentRuleViolations );
         violations.addAll( cardinalityRuleViolations );
@@ -77,7 +74,7 @@ public final class AddChildNodeCommand extends AbstractGraphCompositeCommand {
 
     @Override
     public String toString() {
-        return "AddChildNodeCommand [parent=" + parent.getUUID() + ", candidate=" + candidate.getUUID() + "]";
+        return "AddChildNodeCommand [parent=" + parentUUID + ", candidate=" + candidate.getUUID() + "]";
     }
 
 }

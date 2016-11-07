@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.item;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
@@ -38,6 +39,8 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
     public interface View extends UberView<AbstractToolbarItem> {
 
         View setIcon( IconType icon );
+
+        View setIconRotate( IconRotate rotate );
 
         View setIconSize( IconSize size );
 
@@ -89,6 +92,7 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
         final String caption = command.getCaption();
         if ( icon != null ) {
             view.setIcon( command.getIcon() );
+            view.setIconRotate( command.getIconRotate() );
         } else {
             view.setCaption( caption );
         }

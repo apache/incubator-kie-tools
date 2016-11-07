@@ -173,6 +173,16 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
     }
 
     @Override
+    public boolean isEmpty() {
+        return definitionSetAdapters.isEmpty() &&
+                definitionSetRuleAdapters.isEmpty() &&
+                definitionAdapters.isEmpty() &&
+                propertySetAdapters.isEmpty() &&
+                propertyAdapters.isEmpty() &&
+                morphAdapters.isEmpty();
+    }
+
+    @Override
     @SuppressWarnings( "unchecked" )
     public boolean remove( final Adapter item ) {
         if ( item instanceof DefinitionSetAdapter ) {

@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.standalone.client.screens;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommandCallback;
@@ -29,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
-import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationViolation;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -39,7 +39,6 @@ import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequestImpl;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
-import org.kie.workbench.common.stunner.core.util.StunnerLogger;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.*;
@@ -74,6 +73,7 @@ public class DiagramScreen {
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final ToolbarFactory toolbars;
     private final ClientSessionUtils sessionUtils;
+    private final MenuDevCommandsBuilder menuDevCommandsBuilder;
 
     private PlaceRequest placeRequest;
     private String title = "Diagram Screen";
@@ -89,7 +89,8 @@ public class DiagramScreen {
                           final PlaceManager placeManager,
                           final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                           final ToolbarFactory toolbars,
-                          final ClientSessionUtils sessionUtils ) {
+                          final ClientSessionUtils sessionUtils,
+                          final MenuDevCommandsBuilder menuDevCommandsBuilder ) {
         this.clientFactoryServices = clientFactoryServices;
         this.clientDiagramServices = clientDiagramServices;
         this.canvasSessionManager = canvasSessionManager;
@@ -98,9 +99,11 @@ public class DiagramScreen {
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
         this.toolbars = toolbars;
         this.sessionUtils = sessionUtils;
+        this.menuDevCommandsBuilder = menuDevCommandsBuilder;
     }
 
     @PostConstruct
+    @SuppressWarnings( "unchecked" )
     public void init() {
         // Create a new full control session.
         session = ( AbstractClientFullSession ) canvasSessionManager.newFullSession();
@@ -129,7 +132,9 @@ public class DiagramScreen {
                 .withDeleteSelectedElementsCommand()
                 .withSwitchGridCommand()
                 .withUndoCommand()
+                .withReddoCommand()
                 .withValidateCommand()
+                .withRefreshCommand()
                 .build();
     }
 
@@ -164,44 +169,19 @@ public class DiagramScreen {
     }
 
     private Menus makeMenuBar() {
-        return MenuFactory
+        final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> m =
+                MenuFactory
                 .newTopLevelMenu( "Save" )
                 .respondsWith( getSaveCommand() )
-                .endMenu()
-                // **** For dev. purposes. **********
-                .newTopLevelMenu( "Switch log level" )
-                .respondsWith( getSwitchLogLevelCommand() )
-                .endMenu()
-                .newTopLevelMenu( "Log session" )
-                .respondsWith( getLogSessionCommand() )
-                .endMenu()
-                .newTopLevelMenu( "Log graph" )
-                .respondsWith( getLogGraphCommand() )
-                .endMenu()
-                .newTopLevelMenu( "Log command history" )
-                .respondsWith( getLogCommandHistoryCommand() )
-                .endMenu()
-                .build();
+                .endMenu();
+        if ( menuDevCommandsBuilder.isEnabled() ) {
+            m.newTopLevelMenu( menuDevCommandsBuilder.build() ).endMenu();
+        }
+        return m.build();
     }
 
     private Command getSaveCommand() {
         return this::save;
-    }
-
-    private Command getSwitchLogLevelCommand() {
-        return StunnerClientLogger::switchLogLevel;
-    }
-
-    private Command getLogGraphCommand() {
-        return () -> StunnerLogger.log( getGraph() );
-    }
-
-    private Command getLogCommandHistoryCommand() {
-        return () -> StunnerClientLogger.logCommandHistory( session );
-    }
-
-    private Command getLogSessionCommand() {
-        return () -> StunnerClientLogger.logSessionInfo( session );
     }
 
     private Diagram getDiagram() {

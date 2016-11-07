@@ -67,7 +67,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManagerImpl;
 import org.kie.workbench.common.stunner.core.graph.command.factory.GraphCommandFactory;
-import org.kie.workbench.common.stunner.core.graph.command.factory.GraphCommandFactoryImpl;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
@@ -76,6 +75,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
+import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.mockito.Mock;
@@ -149,6 +150,7 @@ public class BPMNDiagramMarshallerTest {
     private BPMNDiagramMarshaller tested;
 
     @Before
+    @SuppressWarnings( "unchecked" )
     public void setup() throws Exception {
         // Graph utils.
         when( definitionManager.adapters() ).thenReturn( adapterManager );
@@ -171,7 +173,7 @@ public class BPMNDiagramMarshallerTest {
         when( adapterRegistry.getPropertyAdapter( any( Class.class ) ) ).thenReturn( propertyAdapter );
         CommandManagerFactory commandManagerFactory = new CommandManagerFactoryImpl( null );
         commandManager = new GraphCommandManagerImpl( commandManagerFactory, null, null, null );
-        commandFactory = new GraphCommandFactoryImpl();
+        commandFactory = new GraphCommandFactory();
         connectionEdgeFactory = new EdgeFactoryImpl( definitionManager );
         viewNodeFactory = new NodeFactoryImpl( definitionManager );
         bpmnGraphFactory = new GraphFactoryImpl( definitionManager );
@@ -262,9 +264,11 @@ public class BPMNDiagramMarshallerTest {
         when( adapterRegistry.getMorphAdapter( eq( NoneTask.class ) ) ).thenReturn( morphAdapter );
         when( adapterRegistry.getMorphAdapter( eq( ScriptTask.class ) ) ).thenReturn( morphAdapter );
         when( adapterRegistry.getMorphAdapter( eq( BusinessRuleTask.class ) ) ).thenReturn( morphAdapter );
+        GraphIndexBuilder<?> indexBuilder = new MapIndexBuilder();
         // The tested BPMN marshaller.
-        tested = new BPMNDiagramMarshaller( new XMLEncoderDiagramMetadataMarshaller(),objectBuilderFactory, definitionManager, graphUtils,
-                oryxManager, applicationFactoryManager, commandManager, commandFactory );
+        tested = new BPMNDiagramMarshaller( new XMLEncoderDiagramMetadataMarshaller(),objectBuilderFactory,
+                definitionManager, graphUtils, indexBuilder, oryxManager, applicationFactoryManager,
+                commandManager, commandFactory );
     }
 
     // 4 nodes expected: BPMNDiagram, StartNode, Task and EndNode
@@ -280,7 +284,7 @@ public class BPMNDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings( "unchecked" )
-    public void testUmarshallEvaluation() throws Exception {
+    public void testUnmarshallEvaluation() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall( BPMN_EVALUATION );
         assertDiagram( diagram, 8 );
         assertEquals( "Evaluation", diagram.getMetadata().getTitle() );
@@ -427,7 +431,7 @@ public class BPMNDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings( "unchecked" )
-    public void testUmarshallNotBoundaryEvents() throws Exception {
+    public void testUnmarshallNotBoundaryEvents() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall( BPMN_NOT_BOUNDARY_EVENTS );
         assertEquals( "Not Boundary Event", diagram.getMetadata().getTitle() );
         assertDiagram( diagram, 6 );
@@ -454,7 +458,7 @@ public class BPMNDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings( "unchecked" )
-    public void testUmarshallBoundaryEvents() throws Exception {
+    public void testUnmarshallBoundaryEvents() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall( BPMN_BOUNDARY_EVENTS );
         // Basic assertions.
         assertEquals( "Boundary Event", diagram.getMetadata().getTitle() );

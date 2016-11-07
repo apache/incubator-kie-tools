@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.factory.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,17 +64,18 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Graph, Metadata,
 
     private static final Logger LOG = LoggerFactory.getLogger( BPMNDiagramMarshaller.class );
 
-    private XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
-    private BPMNGraphObjectBuilderFactory bpmnGraphBuilderFactory;
-    private DefinitionManager definitionManager;
-    private GraphUtils graphUtils;
-    private Bpmn2OryxManager oryxManager;
-    private FactoryManager factoryManager;
-    private GraphCommandManager graphCommandManager;
-    private GraphCommandFactory commandFactory;
+    private final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
+    private final BPMNGraphObjectBuilderFactory bpmnGraphBuilderFactory;
+    private final DefinitionManager definitionManager;
+    private final GraphUtils graphUtils;
+    private final GraphIndexBuilder<?> indexBuilder;
+    private final Bpmn2OryxManager oryxManager;
+    private final FactoryManager factoryManager;
+    private final GraphCommandManager graphCommandManager;
+    private final GraphCommandFactory commandFactory;
 
     protected BPMNDiagramMarshaller() {
-        this( null, null, null, null, null, null, null, null );
+        this( null, null, null, null, null, null, null, null, null );
     }
 
     @Inject
@@ -81,6 +83,7 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Graph, Metadata,
                                   BPMNGraphObjectBuilderFactory bpmnGraphBuilderFactory,
                                   DefinitionManager definitionManager,
                                   GraphUtils graphUtils,
+                                  GraphIndexBuilder<?> indexBuilder,
                                   Bpmn2OryxManager oryxManager,
                                   FactoryManager factoryManager,
                                   GraphCommandManager graphCommandManager,
@@ -89,6 +92,7 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Graph, Metadata,
         this.bpmnGraphBuilderFactory = bpmnGraphBuilderFactory;
         this.definitionManager = definitionManager;
         this.graphUtils = graphUtils;
+        this.indexBuilder = indexBuilder;
         this.oryxManager = oryxManager;
         this.factoryManager = factoryManager;
         this.graphCommandManager = graphCommandManager;
@@ -126,7 +130,8 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Graph, Metadata,
                     graphUtils,
                     oryxManager,
                     graphCommandManager,
-                    commandFactory );
+                    commandFactory,
+                    indexBuilder );
             parser.setProfile( new DefaultProfileImpl() );
             Graph result = parser.unmarshall( definitions, null );
             updateRootUUID( metadata, result );

@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
@@ -73,8 +74,13 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
         setProperties( context, ( BPMNDefinition ) result.getContent().getDefinition() );
         // View Bounds.
         setBounds( context, result );
-        // Post processing.
-        afterNodeBuild( context, result );
+        AddNodeCommand addNodeCommand = context.getCommandFactory().ADD_NODE( result );
+        if ( doExecuteCommand( context, addNodeCommand ) ) {
+            // Post processing.
+            afterNodeBuild( context, result );
+        } else {
+            // TODO: throw an exception and handle the error.
+        }
         return result;
     }
 
@@ -149,7 +155,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                 if ( outgoingBuilder instanceof AbstractNodeBuilder ) {
                     // Command - Create the docked node.
                     Node docked = ( Node ) outgoingBuilder.build( context );
-                    commands.add( context.getCommandFactory().ADD_DOCKED_NODE( context.getGraph(), node, docked ) );
+                    commands.add( context.getCommandFactory().ADD_DOCKED_NODE( node, docked ) );
                     // Obtain docked position and use those for the docked node.
                     final List<Double[]> dockers = ( ( AbstractNodeBuilder ) outgoingBuilder ).dockers;
                     if ( !dockers.isEmpty() ) {
@@ -192,7 +198,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                 if ( childNodeBuilder instanceof NodeObjectBuilder ) {
                     // Command - Create the child node and the parent-child relationship.
                     Node childNode = ( Node ) childNodeBuilder.build( context );
-                    command = context.getCommandFactory().ADD_CHILD_NODE( context.getGraph(), node, childNode );
+                    command = context.getCommandFactory().ADD_CHILD_NODE( node, childNode );
 
                 }
                 if ( null != command ) {

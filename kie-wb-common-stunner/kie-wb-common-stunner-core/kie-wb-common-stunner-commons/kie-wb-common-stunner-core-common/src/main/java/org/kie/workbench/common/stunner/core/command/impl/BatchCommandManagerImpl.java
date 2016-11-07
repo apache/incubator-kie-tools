@@ -23,8 +23,12 @@ import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class BatchCommandManagerImpl<T, V> implements BatchCommandManager<T, V>, HasCommandManagerListener<BatchCommandManagerListener<T, V>> {
+
+    private static Logger LOGGER = Logger.getLogger( BatchCommandManagerImpl.class.getName() );
 
     private final CommandManager<T, V> commandManager;
     private final List<Command<T, V>> commands;
@@ -39,11 +43,14 @@ class BatchCommandManagerImpl<T, V> implements BatchCommandManager<T, V>, HasCom
     @Override
     public CommandResult<V> allow( final T context,
                                    final Command<T, V> command ) {
+        LOGGER.log( Level.FINE, "Evaluating (allow) command [" + command + "]..." );
         final CommandResult<V> result = commandManager.allow( context, command );
         if ( null != listener ) {
             listener.onAllow( context, command, result );
 
         }
+        LOGGER.log( Level.FINE, "Evaluation (allow) of command [" + command + "] finished - "
+                + "Result [" + result + "]");
         return result;
     }
 
@@ -53,17 +60,21 @@ class BatchCommandManagerImpl<T, V> implements BatchCommandManager<T, V>, HasCom
             throw new IllegalStateException( " Cannot execute a command while " +
                     "there exist batch commands already queued." );
         }
+        LOGGER.log( Level.FINE, "Executing command [" + command + "]..." );
         final CommandResult<V> result = commandManager.execute( context, command );
         if ( null != listener ) {
             listener.onExecute( context, command, result );
 
         }
+        LOGGER.log( Level.FINE, "Execution of command [" + command + "] finished - "
+                + "Result [" + result + "]");
         return result;
     }
 
     @Override
     public BatchCommandManager<T, V> batch( final Command<T, V> command ) {
         PortablePreconditions.checkNotNull( "command", command );
+        LOGGER.log( Level.FINE, "Added command into batch [" + command + "]" );
         this.commands.add( command );
         return this;
     }
@@ -71,11 +82,14 @@ class BatchCommandManagerImpl<T, V> implements BatchCommandManager<T, V>, HasCom
     @Override
     public BatchCommandResult<V> executeBatch( final T context ) {
         if ( !commands.isEmpty() ) {
+            LOGGER.log( Level.FINE, "Starting batch execution..." );
             final BatchCommandResultBuilder<V> builder = new BatchCommandResultBuilder<V>();
             final Stack<Command<T, V>> executedCommands = new Stack<>();
             for ( final Command<T, V> command : commands ) {
                 // Execute command.
+                LOGGER.log( Level.FINE, "Executing batch command [" + command + "]..." );
                 final CommandResult<V> result = commandManager.execute( context, command );
+                LOGGER.log( Level.FINE, " -- Result [" + result + "]");
                 builder.add( result );
                 // Check results.
                 if ( CommandResult.Type.ERROR.equals( result.getType() ) ) {
@@ -86,11 +100,12 @@ class BatchCommandManagerImpl<T, V> implements BatchCommandManager<T, V>, HasCom
                     if ( null != listener ) {
                         listener.onExecuteBatch( context, new ArrayList<Command<T, V>>( commands ), r );
                     }
+                    LOGGER.log( Level.WARNING, "Batch execute FAILED for command [" + command + "] - "
+                            + "Result [" + result + "]");
                     return r;
 
                 } else {
                     executedCommands.push( command );
-
                 }
             }
             final BatchCommandResult<V> result = builder.build();
@@ -98,6 +113,7 @@ class BatchCommandManagerImpl<T, V> implements BatchCommandManager<T, V>, HasCom
                 listener.onExecuteBatch( context, new ArrayList<Command<T, V>>( commands ), result );
             }
             clear();
+            LOGGER.log( Level.FINE, "Batch execute finished - Result [" + result + "]");
             return result;
 
         }
@@ -108,21 +124,24 @@ class BatchCommandManagerImpl<T, V> implements BatchCommandManager<T, V>, HasCom
     @Override
     public CommandResult<V> undo( final T context,
                                   final Command<T, V> command ) {
+        LOGGER.log( Level.FINE, "Undoing command [" + command + "]..." );
         CommandResult<V> result = commandManager.undo( context, command );
         if ( null != listener ) {
             listener.onUndo( context, command, result );
-
         }
+        LOGGER.log( Level.FINE, "Undo of command [" + command + "] finished - "
+                + "Result [" + result + "]");
         return result;
     }
 
     // TODO: Handle errors while undoing.
     @Override
     public BatchCommandResult<V> undoBatch( final T context ) {
+        LOGGER.log( Level.FINE, "Executing batch undo..." );
         final BatchCommandResult<V> result = _undoMultipleCommands( context, commands );
+        LOGGER.log( Level.FINE, "Batch Undo exeuction finished - Result [" + result + "]");
         if ( null != listener ) {
             listener.onUndoBatch( context, new ArrayList<Command<T, V>>( commands ), result );
-
         }
         clear();
         return result;

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.command.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
@@ -29,8 +30,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public final class AddCanvasParentEdgeCommand extends AbstractCanvasGraphCommand {
 
-    protected Node parent;
-    protected Node candidate;
+    private final Node parent;
+    private final Node candidate;
 
     public AddCanvasParentEdgeCommand( final Node parent,
                                        final Node candidate ) {
@@ -39,21 +40,20 @@ public final class AddCanvasParentEdgeCommand extends AbstractCanvasGraphCommand
     }
 
     @Override
-    public CommandResult<CanvasViolation> doExecute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> doCanvasExecute( final AbstractCanvasHandler context ) {
         context.addChild( parent, candidate );
         context.applyElementMutation( candidate, MutationContext.STATIC );
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> doUndo( final AbstractCanvasHandler context ) {
-        final DeleteCanvasParentEdgeCommand command = new DeleteCanvasParentEdgeCommand( parent, candidate );
-        return command.execute( context );
+    protected AbstractCanvasCommand buildUndoCommand( final AbstractCanvasHandler context ) {
+        return new DeleteCanvasParentEdgeCommand( parent, candidate );
     }
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new AddParentEdgeCommand( parent, candidate );
+        return new AddParentEdgeCommand( parent.getUUID(), candidate.getUUID() );
     }
 
 }

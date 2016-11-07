@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.graph.processing.index.map;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.IndexBuilder;
 
 import javax.enterprise.context.Dependent;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @Dependent
-public class MapIndexBuilder implements IndexBuilder<Graph<?, Node>, Node, Edge, MapIndex> {
+public class MapIndexBuilder implements GraphIndexBuilder<MapIndex> {
 
     @Override
     public MapIndex build( final Graph<?, Node> graph ) {
@@ -52,7 +53,7 @@ public class MapIndexBuilder implements IndexBuilder<Graph<?, Node>, Node, Edge,
         }
         if ( null == current ) {
             // Requesting a new index.
-            return new MapIndex( nodes, edges );
+            return new MapIndex( graph, nodes, edges );
         } else {
             // Updating an existing index.
             current.nodes.clear();

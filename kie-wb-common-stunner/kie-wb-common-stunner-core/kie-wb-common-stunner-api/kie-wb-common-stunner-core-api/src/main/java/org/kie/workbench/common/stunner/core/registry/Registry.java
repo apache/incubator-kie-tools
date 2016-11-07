@@ -24,4 +24,6 @@ public interface Registry<T> {
 
     boolean contains( T item );
 
+    boolean isEmpty();
+
 }

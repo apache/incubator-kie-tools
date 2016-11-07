@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.command.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -28,13 +29,13 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public final class ClearCanvasCommand extends AbstractCanvasGraphCommand {
 
     @Override
-    protected CommandResult<CanvasViolation> doExecute( final AbstractCanvasHandler context ) {
+    protected CommandResult<CanvasViolation> doCanvasExecute( final AbstractCanvasHandler context ) {
         context.clearCanvas();
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> doUndo( final AbstractCanvasHandler context ) {
+    protected AbstractCanvasCommand buildUndoCommand( final AbstractCanvasHandler context ) {
         // TODO: Return to previous snapshot?
         return null;
     }
@@ -42,7 +43,7 @@ public final class ClearCanvasCommand extends AbstractCanvasGraphCommand {
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
         final String rootUUID = context.getDiagram().getMetadata().getCanvasRootUUID();
-        return new ClearGraphCommand( context.getDiagram().getGraph(), rootUUID );
+        return new ClearGraphCommand( rootUUID );
 
     }
 

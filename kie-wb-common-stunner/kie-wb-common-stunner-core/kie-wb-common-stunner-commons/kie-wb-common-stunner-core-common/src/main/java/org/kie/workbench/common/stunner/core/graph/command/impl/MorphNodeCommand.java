@@ -98,7 +98,7 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
         // TODO: check rules before morphing?
-        return GraphCommandResultBuilder.RESULT_OK;
+        return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override

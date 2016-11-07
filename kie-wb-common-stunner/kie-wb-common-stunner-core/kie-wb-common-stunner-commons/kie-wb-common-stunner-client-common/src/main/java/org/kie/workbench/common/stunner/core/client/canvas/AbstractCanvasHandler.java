@@ -45,9 +45,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.processing.index.IncrementalIndexBuilder;
-import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.core.graph.processing.index.IndexBuilder;
+import org.kie.workbench.common.stunner.core.graph.processing.index.*;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.Rule;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
@@ -68,7 +66,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     protected ClientFactoryService clientFactoryServices;
     protected GraphRulesManager rulesManager;
     protected GraphUtils graphUtils;
-    protected IndexBuilder<Graph<?, Node>, Node, Edge, Index<Node, Edge>> indexBuilder;
+    protected GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder;
     protected ShapeManager shapeManager;
     protected Event<CanvasElementAddedEvent> canvasElementAddedEvent;
     protected Event<CanvasElementRemovedEvent> canvasElementRemovedEvent;
@@ -79,7 +77,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     private final String uuid;
     protected C canvas;
     protected D diagram;
-    protected Index<?, ?> graphIndex;
+    protected MutableIndex<?, ?> graphIndex;
     protected final List<CanvasElementListener> listeners = new LinkedList<>();
 
     @Inject
@@ -87,7 +85,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
                                   final ClientFactoryService clientFactoryServices,
                                   final GraphRulesManager rulesManager,
                                   final GraphUtils graphUtils,
-                                  final IncrementalIndexBuilder indexBuilder,
+                                  final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
                                   final ShapeManager shapeManager,
                                   final Event<CanvasElementAddedEvent> canvasElementAddedEvent,
                                   final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
@@ -98,7 +96,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         this.clientFactoryServices = clientFactoryServices;
         this.rulesManager = rulesManager;
         this.graphUtils = graphUtils;
-        this.indexBuilder = ( IndexBuilder<Graph<?, Node>, Node, Edge, Index<Node, Edge>> ) indexBuilder;
+        this.indexBuilder = indexBuilder;
         this.shapeManager = shapeManager;
         this.canvasElementAddedEvent = canvasElementAddedEvent;
         this.canvasElementRemovedEvent = canvasElementRemovedEvent;
@@ -115,6 +113,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public AbstractCanvasHandler<D, C> draw( final D diagram ) {
         this.diagram = diagram;
         // Initialize the graph handler that provides processing and querying operations over the graph.
@@ -383,6 +382,15 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     }
 
     @Override
+    public CanvasHandler<D, C> clear() {
+        canvas.clear();
+        graphIndex.clear();;
+        graphIndex = null;
+        diagram = null;
+        return this;
+    }
+
+    @Override
     public void destroy() {
         canvas.destroy();
         graphIndex.clear();
@@ -507,7 +515,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         return graphIndex;
     }
 
-    public IndexBuilder<Graph<?, Node>, Node, Edge, Index<Node, Edge>> getIndexBuilder() {
+    public GraphIndexBuilder<?> getIndexBuilder() {
         return indexBuilder;
     }
 

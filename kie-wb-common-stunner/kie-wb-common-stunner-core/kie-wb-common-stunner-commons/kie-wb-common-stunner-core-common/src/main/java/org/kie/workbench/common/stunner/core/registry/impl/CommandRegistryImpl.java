@@ -64,6 +64,11 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
     }
 
     @Override
+    public boolean isEmpty() {
+        return commands.isEmpty();
+    }
+
+    @Override
     public Iterable<Iterable<C>> getCommandHistory() {
         return commands;
     }

@@ -48,6 +48,11 @@ class MapRegistry<T> implements DynamicRegistry<T> {
         return items.containsValue( item );
     }
 
+    @Override
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
     public Collection<T> getItems() {
         return Collections.unmodifiableList( new ArrayList<T>( items.values() ) );
     }

@@ -33,17 +33,17 @@ import java.util.List;
  * Deletes a dock edge ( the outgoing edge from the candidate that targets the parent ).
  */
 @Portable
-public final class DeleteDockEdgeCommand extends AbstractGraphCommand {
+public class DeleteDockEdgeCommand extends AbstractGraphCommand {
 
-    private Node parent;
-    private Node candidate;
+    private final String parentUUID;
+    private final String candidateUUID;
 
-    public DeleteDockEdgeCommand( @MapsTo( "parent" ) Node parent,
-                                  @MapsTo( "candidate" ) Node candidate ) {
-        this.parent = PortablePreconditions.checkNotNull( "parent",
-                parent );
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                candidate );
+    public DeleteDockEdgeCommand( @MapsTo( "parentUUID" ) String parentUUID,
+                                   @MapsTo( "candidateUUID" ) String candidateUUID ) {
+        this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
+                parentUUID );
+        this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
+                candidateUUID );
     }
 
     @Override
@@ -55,20 +55,24 @@ public final class DeleteDockEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Edge<Dock, Node> edge = getEdgeForTarget();
+            final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
+            final Node<?, Edge> candidate = checkNodeNotNull( context, candidateUUID );
+            final Edge<Dock, Node> edge = getEdgeForTarget( parent, candidate );
             if ( null != edge ) {
                 edge.setSourceNode( null );
                 edge.setTargetNode( null );
                 parent.getInEdges().remove( edge );
                 candidate.getOutEdges().remove( edge );
+                getMutableIndex( context ).removeEdge( edge );
             }
         }
         return results;
     }
 
     @SuppressWarnings( "unchecked" )
-    private Edge<Dock, Node> getEdgeForTarget() {
-        final List<Edge<?, Node>> outEdges = parent.getInEdges();
+    private Edge<Dock, Node> getEdgeForTarget( final Node<?, Edge> parent,
+                                               final Node<?, Edge> candidate ) {
+        final List<Edge> outEdges = parent.getInEdges();
         if ( null != outEdges && !outEdges.isEmpty() ) {
             for ( Edge<?, Node> outEdge : outEdges ) {
                 if ( outEdge.getContent() instanceof Dock ) {
@@ -83,17 +87,19 @@ public final class DeleteDockEdgeCommand extends AbstractGraphCommand {
     }
 
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        return GraphCommandResultBuilder.RESULT_OK;
+        checkNodeNotNull( context, parentUUID );
+        checkNodeNotNull( context, candidateUUID );
+        return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final AddDockEdgeCommand undoCommand = new AddDockEdgeCommand( parent, candidate );
+        final AddDockEdgeCommand undoCommand = new AddDockEdgeCommand( parentUUID, candidateUUID );
         return undoCommand.execute( context );
     }
 
     @Override
     public String toString() {
-        return "DeleteDockEdgeCommand [parent=" + parent.getUUID() + ", candidate=" + candidate.getUUID() + "]";
+        return "DeleteDockEdgeCommand [parent=" + parentUUID + ", candidate=" + candidateUUID + "]";
     }
 }

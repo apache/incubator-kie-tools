@@ -39,20 +39,19 @@ public final class DeleteCanvasChildEdgeCommand extends AbstractCanvasGraphComma
     }
 
     @Override
-    public CommandResult<CanvasViolation> doExecute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> doCanvasExecute( final AbstractCanvasHandler context ) {
         context.removeChild( parent.getUUID(), child.getUUID() );
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> doUndo( final AbstractCanvasHandler context ) {
-        AbstractCanvasCommand command = new AddCanvasChildEdgeCommand( parent, child );
-        return command.execute( context );
+    protected AbstractCanvasCommand buildUndoCommand( final AbstractCanvasHandler context ) {
+        return new AddCanvasChildEdgeCommand( parent, child );
     }
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new DeleteChildEdgeCommand( parent, child );
+        return new DeleteChildEdgeCommand( parent.getUUID(), child.getUUID() );
     }
 
 }

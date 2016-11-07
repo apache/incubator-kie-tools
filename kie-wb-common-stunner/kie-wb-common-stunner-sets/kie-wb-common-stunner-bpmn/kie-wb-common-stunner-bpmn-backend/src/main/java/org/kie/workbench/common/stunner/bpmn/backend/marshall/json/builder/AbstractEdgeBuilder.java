@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 // TODO: Improve error handling.
@@ -48,6 +49,7 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
         String definitionId = context.getOryxManager().getMappingsManager().getDefinitionId( definitionClass );
         T result = ( T ) factoryManager.newElement( this.nodeId, definitionId );
         setProperties( context, ( BPMNDefinition ) result.getContent().getDefinition() );
+        addEdgeIntoIndex( context, result );
         afterEdgeBuild( context, result );
         return result;
     }
@@ -63,7 +65,7 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
                 }
                 Node node = ( Node ) outgoingNodeBuilder.build( context );
                 // Command - Add the node into the graph store.
-                AddNodeCommand addNodeCommand = context.getCommandFactory().ADD_NODE( context.getGraph(), node );
+                AddNodeCommand addNodeCommand = context.getCommandFactory().ADD_NODE( node );
                 // Command - Set the edge connection's target node.
                 int magnetIdx = ( ( AbstractNodeBuilder ) outgoingNodeBuilder ).getTargetConnectionMagnetIndex( context, node, edge );
                 SetConnectionTargetNodeCommand setTargetNodeCommand = context.getCommandFactory().SET_TARGET_NODE( node, edge, magnetIdx );
@@ -78,6 +80,12 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
             }
         }
 
+    }
+
+    @SuppressWarnings( "unchecked" )
+    protected void addEdgeIntoIndex( BuilderContext context, T edge ) {
+        MutableIndex<Node, Edge> index = (MutableIndex<Node, Edge>) context.getIndex();
+        index.addEdge( edge );
     }
 
     @Override

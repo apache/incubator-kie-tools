@@ -50,6 +50,11 @@ class ListRegistry<T> implements DynamicRegistry<T> {
         return items.contains( item );
     }
 
+    @Override
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
     public Collection<T> getItems() {
         return Collections.unmodifiableList( items );
     }

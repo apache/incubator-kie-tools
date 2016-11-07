@@ -42,7 +42,7 @@ public abstract class DeleteCanvasElementCommand<E extends Element> extends Abst
     }
 
     @Override
-    public CommandResult<CanvasViolation> doExecute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> doCanvasExecute( final AbstractCanvasHandler context ) {
         this.factory = ShapeUtils.getDefaultShapeFactory( context, candidate );
         doDeregister( context );
         return buildResult();

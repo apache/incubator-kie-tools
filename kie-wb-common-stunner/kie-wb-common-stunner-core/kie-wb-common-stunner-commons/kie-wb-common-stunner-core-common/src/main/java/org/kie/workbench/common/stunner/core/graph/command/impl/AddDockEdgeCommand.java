@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -38,15 +39,15 @@ import java.util.LinkedList;
 @Portable
 public final class AddDockEdgeCommand extends AbstractGraphCommand {
 
-    private Node parent;
-    private Node candidate;
+    private String parentUUID;
+    private String candidateUUID;
 
-    public AddDockEdgeCommand( @MapsTo( "parent" ) Node parent,
-                               @MapsTo( "candidate" ) Node candidate ) {
-        this.parent = PortablePreconditions.checkNotNull( "parent",
-                parent );
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                candidate );
+    public AddDockEdgeCommand( @MapsTo( "parentUUID" ) String parentUUID,
+                               @MapsTo( "candidate" ) String candidateUUID ) {
+        this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
+                parentUUID );
+        this.candidateUUID = PortablePreconditions.checkNotNull( "candidate",
+                candidateUUID );
     }
 
     @Override
@@ -59,6 +60,8 @@ public final class AddDockEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
+            final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
+            final Node<?, Edge> candidate = checkNodeNotNull( context, candidateUUID );
             // TODO: Create a DockEdgeFactory iface extending EdgeFactory using as content generics type Relationship
             final String uuid = UUID.uuid();
             final Edge<Dock, Node> edge = new EdgeImpl<>( uuid );
@@ -67,6 +70,7 @@ public final class AddDockEdgeCommand extends AbstractGraphCommand {
             edge.setTargetNode( candidate );
             parent.getOutEdges().add( edge );
             candidate.getInEdges().add( edge );
+            getMutableIndex( context ).addEdge( edge );
 
         }
         return results;
@@ -74,6 +78,8 @@ public final class AddDockEdgeCommand extends AbstractGraphCommand {
 
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+        final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
+        final Node<Definition<?>, Edge> candidate = ( Node<Definition<?>, Edge> ) checkNodeNotNull( context, candidateUUID );
         final Collection<RuleViolation> dockingRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager().docking().evaluate( parent, candidate ).violations();
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
@@ -83,12 +89,12 @@ public final class AddDockEdgeCommand extends AbstractGraphCommand {
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final DeleteDockEdgeCommand undoCommand = new DeleteDockEdgeCommand( parent, candidate );
+        final DeleteDockEdgeCommand undoCommand = new DeleteDockEdgeCommand( parentUUID, candidateUUID );
         return undoCommand.execute( context );
     }
 
     @Override
     public String toString() {
-        return "AddDockEdgeCommand [parent=" + parent.getUUID() + ", candidate=" + candidate.getUUID() + "]";
+        return "AddDockEdgeCommand [parent=" + parentUUID + ", candidate=" + candidateUUID + "]";
     }
 }

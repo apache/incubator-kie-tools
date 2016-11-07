@@ -27,10 +27,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class ListRegistryTest {
@@ -73,6 +71,20 @@ public class ListRegistryTest {
         final String s = "an string";
         tested.contains( s );
         verify( list, times( 1 ) ).contains( s );
+    }
+
+    @Test
+    public void testEmpty() {
+        when( list.isEmpty() ).thenReturn( true );
+        boolean empty = tested.isEmpty();
+        assertTrue( empty );
+    }
+
+    @Test
+    public void testNotEmpty() {
+        when( list.isEmpty() ).thenReturn( false );
+        boolean empty = tested.isEmpty();
+        assertFalse( empty );
     }
 
     @Test

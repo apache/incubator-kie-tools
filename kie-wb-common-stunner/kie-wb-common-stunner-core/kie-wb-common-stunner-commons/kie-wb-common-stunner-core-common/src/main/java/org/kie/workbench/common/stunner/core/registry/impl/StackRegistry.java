@@ -54,6 +54,11 @@ class StackRegistry<T> implements DynamicRegistry<T> {
         return items.contains( item );
     }
 
+    @Override
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
     public T getItemByKey( final String id ) {
         if ( null != id ) {
             for ( final T item : items ) {

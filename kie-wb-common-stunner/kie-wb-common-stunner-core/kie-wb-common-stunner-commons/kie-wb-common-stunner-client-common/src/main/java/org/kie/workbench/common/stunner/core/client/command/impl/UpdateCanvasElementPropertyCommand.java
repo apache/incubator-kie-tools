@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.command.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
@@ -29,9 +30,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public final class UpdateCanvasElementPropertyCommand extends AbstractCanvasGraphCommand {
 
-    protected Element element;
-    protected String propertyId;
-    protected Object value;
+    private final Element element;
+    private final String propertyId;
+    private final Object value;
 
     public UpdateCanvasElementPropertyCommand( final Element element,
                                                final String propertyId,
@@ -42,19 +43,19 @@ public final class UpdateCanvasElementPropertyCommand extends AbstractCanvasGrap
     }
 
     @Override
-    public CommandResult<CanvasViolation> doExecute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> doCanvasExecute( final AbstractCanvasHandler context ) {
         context.updateElementProperties( element, MutationContext.STATIC );
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> doUndo( final AbstractCanvasHandler context ) {
-        return doExecute( context );
+    protected AbstractCanvasCommand buildUndoCommand( final AbstractCanvasHandler context ) {
+        return null;
     }
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new UpdateElementPropertyValueCommand( element, propertyId, value );
+        return new UpdateElementPropertyValueCommand( element.getUUID(), propertyId, value );
     }
 
 }

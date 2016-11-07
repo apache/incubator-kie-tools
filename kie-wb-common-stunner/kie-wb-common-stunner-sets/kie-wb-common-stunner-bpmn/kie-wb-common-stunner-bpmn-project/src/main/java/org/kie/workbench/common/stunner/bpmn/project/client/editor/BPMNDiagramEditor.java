@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
@@ -66,11 +67,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                 paletteFactory, sessionUtils, sessionCommandFactory, menuItemsBuilder );
     }
 
-    @PostConstruct
-    public void init() {
-        super.init();
-    }
-
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
@@ -79,12 +75,12 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     @Override
     protected int getCanvasWidth() {
-        return 1400;
+        return (int) BPMNGraphFactory.GRAPH_DEFAULT_WIDTH;
     }
 
     @Override
     protected int getCanvasHeight() {
-        return 600;
+        return (int) BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT;
     }
 
     @OnOpen

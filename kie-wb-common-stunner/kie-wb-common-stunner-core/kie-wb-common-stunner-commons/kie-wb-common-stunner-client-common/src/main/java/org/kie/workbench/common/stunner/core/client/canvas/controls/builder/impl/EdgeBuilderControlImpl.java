@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.util.EdgeMagnetsHelper;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.CommandUtils;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -81,12 +81,14 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
         final Node<View<?>, Edge> outNode = request.getOutNode();
         boolean allowsSourceConn = true;
         if ( null != inNode ) {
-            final CommandResult<CanvasViolation> cr1 = canvasCommandManager.allow( wch, commandFactory.SET_SOURCE_NODE( ( Node<? extends View<?>, Edge> ) inNode, edge, 0 ) );
+            final CommandResult<CanvasViolation> cr1 = canvasCommandManager.allow( wch,
+                    commandFactory.SET_SOURCE_NODE( inNode, edge, 0 ) );
             allowsSourceConn = isAllowed( cr1 );
         }
         boolean allowsTargetConn = true;
         if ( null != outNode ) {
-            final CommandResult<CanvasViolation> cr2 = canvasCommandManager.allow( wch, commandFactory.SET_TARGET_NODE( ( Node<? extends View<?>, Edge> ) outNode, edge, 0 ) );
+            final CommandResult<CanvasViolation> cr2 = canvasCommandManager.allow( wch,
+                    commandFactory.SET_TARGET_NODE( outNode, edge, 0 ) );
             allowsTargetConn = isAllowed( cr2 );
         }
         return allowsSourceConn & allowsTargetConn;

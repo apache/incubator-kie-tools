@@ -28,10 +28,12 @@ public class SessionCommandFactory {
     private final Instance<ClearSessionCommand> clearCommand;
     private final Instance<DeleteSelectionSessionCommand> deleteSelectionCommand;
     private final Instance<UndoSessionCommand> undoCommand;
+    private final Instance<RedoSessionCommand> redoCommand;
     private final Instance<ValidateSessionCommand> validateCommand;
+    private final Instance<RefreshSessionCommand> refreshSessionCommand;
 
     protected SessionCommandFactory() {
-        this( null, null, null, null, null, null, null );
+        this( null, null, null, null, null, null, null, null, null );
     }
 
     @Inject
@@ -41,14 +43,18 @@ public class SessionCommandFactory {
                                   final Instance<ClearSessionCommand> clearCommand,
                                   final Instance<DeleteSelectionSessionCommand> deleteSelectionCommand,
                                   final Instance<UndoSessionCommand> undoCommand,
-                                  final Instance<ValidateSessionCommand> validateCommand ) {
+                                  final Instance<RedoSessionCommand> redoCommand,
+                                  final Instance<ValidateSessionCommand> validateCommand,
+                                  final Instance<RefreshSessionCommand> refreshSessionCommand ) {
         this.clearSelectionCommand = clearSelectionCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;
         this.clearCommand = clearCommand;
         this.deleteSelectionCommand = deleteSelectionCommand;
         this.undoCommand = undoCommand;
+        this.redoCommand = redoCommand;
         this.validateCommand = validateCommand;
+        this.refreshSessionCommand = refreshSessionCommand;
     }
 
     public ClearSelectionSessionCommand newClearSelectionCommand() {
@@ -75,8 +81,16 @@ public class SessionCommandFactory {
         return undoCommand.get();
     }
 
+    public RedoSessionCommand newRedoCommand() {
+        return redoCommand.get();
+    }
+
     public ValidateSessionCommand newValidateCommand() {
         return validateCommand.get();
+    }
+
+    public RefreshSessionCommand newRefreshSessionCommand() {
+        return refreshSessionCommand.get();
     }
 
 }

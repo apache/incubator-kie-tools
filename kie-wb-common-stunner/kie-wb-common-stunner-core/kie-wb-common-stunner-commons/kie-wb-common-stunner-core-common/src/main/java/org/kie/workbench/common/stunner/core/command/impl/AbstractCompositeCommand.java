@@ -18,13 +18,17 @@ package org.kie.workbench.common.stunner.core.command.impl;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.CommandUtils;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.command.CompositeCommand;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand<T, V> {
+
+    private static Logger LOGGER = Logger.getLogger( AbstractCompositeCommand.class.getName() );
 
     protected final List<Command<T, V>> commands = new LinkedList<>();
     private boolean initialized = false;
@@ -49,7 +53,10 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
         checkInitialized( context );
         final List<CommandResult<V>> results = new LinkedList<>();
         for ( final Command<T, V> command : commands ) {
+            LOGGER.log( Level.FINE, "Evaluating (allow) command [" + command + "]..." );
             final CommandResult<V> violations = doAllow( context, command );
+            LOGGER.log( Level.FINE, "Evaluation (allow) of command [" + command + "] finished - "
+            + "Violations [" + violations + "]");
             results.add( violations );
         }
         return buildResult( results );
@@ -61,7 +68,10 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
         if ( !CommandUtils.isError( allowResult ) ) {
             final List<CommandResult<V>> results = new LinkedList<>();
             for ( final Command<T, V> command : commands ) {
+                LOGGER.log( Level.FINE, "Checking executi for command [" + command + "]" );
                 final CommandResult<V> violations = doExecute( context, command );
+                LOGGER.log( Level.FINE, "Execution of command [" + command + "] finished - "
+                        + "Violations [" + violations + "]");
                 results.add( violations );
             }
             return buildResult( results );
@@ -72,8 +82,13 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
     @Override
     public CommandResult<V> undo( final T context ) {
         final List<CommandResult<V>> results = new LinkedList<>();
-        for ( final Command<T, V> command : commands ) {
+        final int cs = commands.size();
+        for ( int x = 0; x < cs; x++ ) {
+            final Command<T, V> command = commands.get( cs - ( x + 1 ) );
+            LOGGER.log( Level.FINE, "Undoing command [" + command + "]" );
             final CommandResult<V> violations = doUndo( context, command );
+            LOGGER.log( Level.FINE, "Undo of command [" + command + "] finished - "
+                    + "Violations [" + violations + "]");
             results.add( violations );
         }
         return buildResult( results );
@@ -84,6 +99,10 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
             initialize( context );
             this.initialized = true;
         }
+    }
+
+    public List<Command<T, V>> getCommands() {
+        return commands;
     }
 
 }

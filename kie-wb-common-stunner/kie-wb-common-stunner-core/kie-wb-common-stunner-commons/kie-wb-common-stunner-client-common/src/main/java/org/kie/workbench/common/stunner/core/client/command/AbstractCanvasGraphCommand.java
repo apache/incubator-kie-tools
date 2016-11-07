@@ -19,7 +19,9 @@ package org.kie.workbench.common.stunner.core.client.command;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.CommandUtils;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContextImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -31,11 +33,11 @@ public abstract class AbstractCanvasGraphCommand extends AbstractCanvasCommand i
     public AbstractCanvasGraphCommand() {
     }
 
-    protected abstract Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context );
+    protected abstract Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( AbstractCanvasHandler context );
 
-    protected abstract CommandResult<CanvasViolation> doExecute( final AbstractCanvasHandler context );
+    protected abstract AbstractCanvasCommand buildUndoCommand( AbstractCanvasHandler context );
 
-    protected abstract CommandResult<CanvasViolation> doUndo( final AbstractCanvasHandler context );
+    protected abstract CommandResult<CanvasViolation> doCanvasExecute( AbstractCanvasHandler context );
 
     @Override
     public Command<GraphCommandExecutionContext, RuleViolation> getGraphCommand( final AbstractCanvasHandler context ) {
@@ -59,7 +61,7 @@ public abstract class AbstractCanvasGraphCommand extends AbstractCanvasCommand i
     public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
         CommandResult<CanvasViolation> canvasResult = performOperation( context, 2 );
         if ( null == canvasResult ) {
-            canvasResult = doExecute( context );
+            canvasResult = doCanvasExecute( context );
 
         }
         return canvasResult;
@@ -69,10 +71,22 @@ public abstract class AbstractCanvasGraphCommand extends AbstractCanvasCommand i
     public CommandResult<CanvasViolation> undo( AbstractCanvasHandler context ) {
         CommandResult<CanvasViolation> canvasResult = performOperation( context, 3 );
         if ( null == canvasResult ) {
-            canvasResult = doUndo( context );
-
+            final AbstractCanvasCommand undoCommand = buildUndoCommand( context );
+            final boolean isGraphCommand = null != undoCommand && undoCommand instanceof AbstractCanvasGraphCommand;
+            if ( isGraphCommand ) {
+                canvasResult = ( ( AbstractCanvasGraphCommand ) undoCommand ).doCanvasExecute( context );
+            } else if ( null != undoCommand ){
+                canvasResult = undoCommand.execute( context );
+            } else {
+                canvasResult = this.doCanvasExecute( context );
+            }
         }
         return canvasResult;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    protected Node<?, Edge> getNode( final AbstractCanvasHandler context, final String uuid ) {
+        return context.getGraphIndex().getNode( uuid );
     }
 
     /**
@@ -89,17 +103,13 @@ public abstract class AbstractCanvasGraphCommand extends AbstractCanvasCommand i
         CommandResult<RuleViolation> graphResult = null;
         if ( 1 == op ) {
             graphResult = graphCommand.allow( graphContext );
-
         } else if ( 2 == op ) {
             graphResult = graphCommand.execute( graphContext );
-
         } else {
             graphResult = graphCommand.undo( graphContext );
-
         }
         if ( CommandUtils.isError( graphResult ) ) {
             canvasResult = new CanvasCommandResultBuilder( graphResult ).build();
-
         }
         return canvasResult;
 
@@ -107,7 +117,8 @@ public abstract class AbstractCanvasGraphCommand extends AbstractCanvasCommand i
 
     private GraphCommandExecutionContext getGraphCommandExecutionContext( final AbstractCanvasHandler context ) {
         return new GraphCommandExecutionContextImpl( context.getClientDefinitionManager(),
-                context.getClientFactoryServices().getClientFactoryManager(), context.getRuleManager(), context.getGraphUtils() );
+                context.getClientFactoryServices().getClientFactoryManager(), context.getRuleManager(),
+                context.getGraphIndex(), context.getGraphUtils() );
     }
 
     @Override

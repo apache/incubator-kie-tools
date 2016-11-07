@@ -20,7 +20,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
@@ -35,35 +35,32 @@ import java.util.LinkedList;
  * given parent.
  */
 @Portable
-public final class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
+public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
 
-    private Graph target;
-    private Node parent;
-    private Node candidate;
+    private final String parentUUID;
+    private final Node candidate;
 
-    public AddDockedNodeCommand( @MapsTo( "target" ) Graph target,
-                                 @MapsTo( "parent" ) Node parent,
+    public AddDockedNodeCommand( @MapsTo( "parentUUID" ) String parentUUID,
                                  @MapsTo( "candidate" ) Node candidate ) {
-        this.target = PortablePreconditions.checkNotNull( "target",
-                target );
-        this.parent = PortablePreconditions.checkNotNull( "parent",
-                parent );
+        this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
+                parentUUID );
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
                 candidate );
     }
 
     protected void initialize( final GraphCommandExecutionContext context ) {
-        this.addCommand( new AddNodeCommand( target, candidate ) )
-                .addCommand( new AddDockEdgeCommand( parent, candidate ) );
+        this.addCommand( new AddNodeCommand( candidate ) )
+                .addCommand( new AddDockEdgeCommand( parentUUID, candidate.getUUID() ) );
     }
 
     @Override
     protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        return check( context );
+        return command.allow( context );
     }
 
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+        final Node<?, Edge> parent = getNode( context, parentUUID );
         final Collection<RuleViolation> dockingRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager().docking().evaluate( parent, candidate ).violations();
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
@@ -73,7 +70,7 @@ public final class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
 
     @Override
     public String toString() {
-        return "AddDockedNodeCommand [parent=" + parent.getUUID() + ", candidate=" + candidate.getUUID() + "]";
+        return "AddDockedNodeCommand [parent=" + parentUUID + ", candidate=" + candidate.getUUID() + "]";
     }
 
 }

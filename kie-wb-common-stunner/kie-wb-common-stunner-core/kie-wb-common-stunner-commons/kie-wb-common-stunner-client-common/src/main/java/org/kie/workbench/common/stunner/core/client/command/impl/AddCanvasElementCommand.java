@@ -26,8 +26,8 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class AddCanvasElementCommand<E extends Element> extends AbstractCanvasGraphCommand {
 
-    protected E candidate;
-    protected ShapeFactory factory;
+    protected final E candidate;
+    protected final ShapeFactory factory;
 
     public AddCanvasElementCommand( final E candidate, final ShapeFactory factory ) {
         this.candidate = candidate;
@@ -35,7 +35,7 @@ public abstract class AddCanvasElementCommand<E extends Element> extends Abstrac
     }
 
     @Override
-    public CommandResult<CanvasViolation> doExecute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> doCanvasExecute( final AbstractCanvasHandler context ) {
         doRegister( context );
         doMutate( context );
         return buildResult();

@@ -99,6 +99,11 @@ class FactoryRegistryImpl<T extends Factory<?, ?>> implements TypeFactoryRegistr
     }
 
     @Override
+    public boolean isEmpty() {
+        return definitionFactories.isEmpty() && graphFactories.isEmpty();
+    }
+
+    @Override
     @SuppressWarnings( "unchecked" )
     public Collection<T> getAllFactories() {
         return new LinkedList<T>() {{

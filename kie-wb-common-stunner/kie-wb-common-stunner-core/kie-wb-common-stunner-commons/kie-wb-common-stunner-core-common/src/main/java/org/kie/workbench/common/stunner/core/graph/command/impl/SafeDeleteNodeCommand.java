@@ -20,6 +20,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -43,27 +44,24 @@ import java.util.List;
 @Portable
 public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
-    private Graph target;
-    private Node candidate;
+    private String candidateUUID;
 
-    public SafeDeleteNodeCommand( @MapsTo( "target" ) Graph target,
-                                  @MapsTo( "candidate" ) Node candidate ) {
-        this.target = PortablePreconditions.checkNotNull( "target",
-                target );
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                candidate );
+    public SafeDeleteNodeCommand( @MapsTo( "candidateUUID" ) String candidateUUID ) {
+        this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
+                candidateUUID );
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     protected void initialize( final GraphCommandExecutionContext context ) {
-        final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = new LinkedList<>();
+        final Node<Definition<?>, Edge> candidate = ( Node<Definition<?>, Edge> ) getNode( context, candidateUUID );
         // Delete & set incoming & outgoing edges for the node being deleted.
-        new SafeDeleteNodeProcessor( candidate ).run( new SafeDeleteNodeProcessor.DeleteNodeCallback() {
+        final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = new LinkedList<>();
+        new SafeDeleteNodeProcessor( candidate ).run( new SafeDeleteNodeProcessor.Callback() {
 
             @Override
             public void deleteChildNode( final Node<Definition<?>, Edge> node ) {
-                commands.add( new SafeDeleteNodeCommand( target, node ) );
+                commands.add( new SafeDeleteNodeCommand( node.getUUID() ) );
             }
 
             @Override
@@ -75,18 +73,18 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
             @Override
             public void deleteInChildEdge( final Node parent,
                                            final Edge<Child, Node> edge ) {
-                commands.add( new DeleteChildEdgeCommand( parent, candidate ) );
+                commands.add( new DeleteChildEdgeCommand( parent.getUUID(), candidate.getUUID() ) );
             }
 
             @Override
             public void deleteOutEdge( final Edge<? extends View<?>, Node> edge ) {
-                commands.add( new SetConnectionSourceNodeCommand( null, edge, 0 ) );
+                commands.add( new DeleteEdgeCommand( edge.getUUID() ) );
 
             }
 
             @Override
             public void deleteNode( final Node<Definition<?>, Edge> node ) {
-                commands.add( new DeleteNodeCommand( target, candidate ) );
+                commands.add( new DeleteNodeCommand( candidate.getUUID() ) );
             }
 
         } );
@@ -99,12 +97,16 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
     @Override
     protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
+        checkNodeNotNull( context, candidateUUID );
         return check( context );
     }
 
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        // Check node exist on the store.
+        final Graph<?, Node> target = getGraph( context );
+        final Node<View<?>, Edge> candidate = ( Node<View<?>, Edge> ) getNode( context, candidateUUID );
+
+        // Check node exist on the storage.
         boolean isNodeInGraph = false;
         for ( Object node : target.nodes() ) {
             if ( node.equals( candidate ) ) {
@@ -112,8 +114,8 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                 break;
             }
         }
-        final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
         if ( isNodeInGraph ) {
+            final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
             final Collection<RuleViolation> cardinalityRuleViolations =
                     ( Collection<RuleViolation> ) context.getRulesManager()
                             .cardinality().evaluate( target, candidate, RuleManager.Operation.DELETE ).violations();
@@ -123,28 +125,16 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                     return builder.build();
                 }
             }
-            // Check nodes has no children.
-            final List<Edge> outEdges = candidate.getOutEdges();
-            if ( null != outEdges && !outEdges.isEmpty() ) {
-                for ( final Edge outEdge : outEdges ) {
-                    if ( outEdge.getContent() instanceof Child ) {
-                        builder.setType( CommandResult.Type.ERROR );
-                        builder.setMessage( "Node contains children nodes. It cannot be removed using this command [DeleteNodeCommand]." );
-                    }
-                }
-            }
-
-        } else {
-            builder.setType( CommandResult.Type.ERROR );
-            builder.setMessage( "Node was not present in Graph and hence was not deleted" );
+            return builder.build();
 
         }
-        return builder.build();
+
+        throw new BadCommandArgumentsException( this, candidateUUID, "No node found for UUID" );
     }
 
     @Override
     public String toString() {
-        return "SafeDeleteNodeCommand [target=" + target.getUUID() + ", candidate=" + candidate.getUUID() + "]";
+        return "SafeDeleteNodeCommand [candidate=" + candidateUUID + "]";
     }
 
 }

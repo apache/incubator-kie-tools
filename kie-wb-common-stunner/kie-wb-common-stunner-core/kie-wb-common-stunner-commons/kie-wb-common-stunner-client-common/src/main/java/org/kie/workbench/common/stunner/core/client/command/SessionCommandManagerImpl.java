@@ -18,19 +18,23 @@ package org.kie.workbench.common.stunner.core.client.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
+import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
 import org.kie.workbench.common.stunner.core.command.delegate.BatchDelegateCommandManager;
+import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 /**
  * Command manager used in a client session context. It delegates to each session's command manager in order to keep
@@ -41,6 +45,8 @@ import java.util.Collection;
 public class SessionCommandManagerImpl extends BatchDelegateCommandManager<AbstractCanvasHandler, CanvasViolation>
         implements SessionCommandManager<AbstractCanvasHandler> {
 
+    private static Logger LOGGER = Logger.getLogger( SessionCommandManagerImpl.class.getName() );
+
     private final AbstractClientSessionManager clientSessionManager;
 
     protected SessionCommandManagerImpl() {
@@ -50,6 +56,30 @@ public class SessionCommandManagerImpl extends BatchDelegateCommandManager<Abstr
     @Inject
     public SessionCommandManagerImpl( final AbstractClientSessionManager clientSessionManager ) {
         this.clientSessionManager = clientSessionManager;
+    }
+
+    @Override
+    public BatchCommandResult<CanvasViolation> executeBatch( AbstractCanvasHandler context ) {
+        try {
+            return super.executeBatch( context );
+        } catch ( final CommandException ce ) {
+            clientSessionManager.handleCommandError( ce );
+        } catch ( final RuntimeException e ) {
+            clientSessionManager.handleClientError( new ClientRuntimeError( e ) );
+        }
+        return CanvasCommandResultBuilder.FAILED;
+    }
+
+    @Override
+    public CommandResult<CanvasViolation> execute( AbstractCanvasHandler context, Command<AbstractCanvasHandler, CanvasViolation> command ) {
+        try {
+            return super.execute( context, command );
+        } catch ( final CommandException ce ) {
+            clientSessionManager.handleCommandError( ce );
+        } catch ( final RuntimeException e ) {
+            clientSessionManager.handleClientError( new ClientRuntimeError( e ) );
+        }
+        return CanvasCommandResultBuilder.FAILED;
     }
 
     @Override

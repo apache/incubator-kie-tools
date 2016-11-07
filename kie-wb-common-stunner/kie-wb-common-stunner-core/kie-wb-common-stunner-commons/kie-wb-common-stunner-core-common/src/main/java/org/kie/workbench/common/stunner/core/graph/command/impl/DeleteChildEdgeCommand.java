@@ -34,17 +34,17 @@ import java.util.List;
  * Deletes a child edge ( the outgoing edge from the parent that targets the given candidate ).
  */
 @Portable
-public final class DeleteChildEdgeCommand extends AbstractGraphCommand {
+public class DeleteChildEdgeCommand extends AbstractGraphCommand {
 
-    private Node parent;
-    private Node candidate;
+    private final String parentUUID;
+    private final String candidateUUID;
 
-    public DeleteChildEdgeCommand( @MapsTo( "parent" ) Node parent,
-                                   @MapsTo( "candidate" ) Node candidate ) {
-        this.parent = PortablePreconditions.checkNotNull( "parent",
-                parent );
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                candidate );
+    public DeleteChildEdgeCommand( @MapsTo( "parentUUID" ) String parentUUID,
+                                   @MapsTo( "candidateUUID" ) String candidateUUID ) {
+        this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
+                parentUUID );
+        this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
+                candidateUUID );
     }
 
     @Override
@@ -56,20 +56,24 @@ public final class DeleteChildEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Edge<Parent, Node> edge = getEdgeForTarget();
+            final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
+            final Node<?, Edge> candidate = checkNodeNotNull( context, candidateUUID );
+            final Edge<Parent, Node> edge = getEdgeForTarget( parent, candidate );
             if ( null != edge ) {
                 edge.setSourceNode( null );
                 edge.setTargetNode( null );
                 parent.getOutEdges().remove( edge );
                 candidate.getInEdges().remove( edge );
+                getMutableIndex( context ).removeEdge( edge );
             }
         }
         return results;
     }
 
     @SuppressWarnings( "unchecked" )
-    private Edge<Parent, Node> getEdgeForTarget() {
-        final List<Edge<?, Node>> outEdges = parent.getOutEdges();
+    private Edge<Parent, Node> getEdgeForTarget( final Node<?, Edge> parent,
+                                                 final Node<?, Edge> candidate ) {
+        final List<Edge> outEdges = parent.getOutEdges();
         if ( null != outEdges && !outEdges.isEmpty() ) {
             for ( Edge<?, Node> outEdge : outEdges ) {
                 if ( outEdge.getContent() instanceof Child ) {
@@ -84,17 +88,19 @@ public final class DeleteChildEdgeCommand extends AbstractGraphCommand {
     }
 
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        return GraphCommandResultBuilder.RESULT_OK;
+        checkNodeNotNull( context, parentUUID );
+        checkNodeNotNull( context, candidateUUID );
+        return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final AddChildEdgeCommand undoCommand = new AddChildEdgeCommand( parent, candidate );
+        final AddChildEdgeCommand undoCommand = new AddChildEdgeCommand( parentUUID, candidateUUID );
         return undoCommand.execute( context );
     }
 
     @Override
     public String toString() {
-        return "DeleteChildEdgeCommand [parent=" + parent.getUUID() + ", candidate=" + candidate.getUUID() + "]";
+        return "DeleteChildEdgeCommand [parent=" + parentUUID + ", candidate=" + candidateUUID + "]";
     }
 }

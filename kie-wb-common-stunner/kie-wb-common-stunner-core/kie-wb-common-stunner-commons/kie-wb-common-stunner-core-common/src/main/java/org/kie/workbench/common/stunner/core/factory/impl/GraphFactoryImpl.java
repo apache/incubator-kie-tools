@@ -23,6 +23,8 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSetImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 
@@ -60,6 +62,10 @@ public class GraphFactoryImpl extends AbstractElementFactory<Object, Graph<Objec
         final GraphImpl graph = new GraphImpl<>( uuid, new GraphNodeStoreImpl() );
         final String id = getId( definitionSet );
         final DefinitionSet content = new DefinitionSetImpl( id );
+        content.setBounds( new BoundsImpl(
+                new BoundImpl( 0d, 0d ),
+                new BoundImpl( DEFAULT_WIDTH, DEFAULT_HEIGHT )
+        ) );
         graph.setContent( content );
         return graph;
     }

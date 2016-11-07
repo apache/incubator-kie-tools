@@ -23,19 +23,18 @@ import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.Ab
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.*;
+import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
-import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationViolation;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.util.StunnerLogger;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -45,15 +44,20 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// TODO: i18n.
 public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor {
 
     private static Logger LOGGER = Logger.getLogger( AbstractProjectDiagramEditor.class.getName() );
@@ -81,12 +85,15 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final ClearSessionCommand sessionClearCommand;
     private final DeleteSelectionSessionCommand sessionDeleteSelectionCommand;
     private final UndoSessionCommand sessionUndoCommand;
+    private final RedoSessionCommand sessionRedoCommand;
     private final ValidateSessionCommand sessionValidateCommand;
+    private final RefreshSessionCommand sessionRefreshCommand;
 
     private AbstractClientFullSession session;
     private BS3PaletteWidget paletteWidget;
     private String title = "Project Diagram Editor";
 
+    @Inject
     public AbstractProjectDiagramEditor( final View view,
                                          final PlaceManager placeManager,
                                          final ErrorPopupPresenter errorPopupPresenter,
@@ -118,13 +125,16 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionClearCommand = sessionCommandFactory.newClearCommand();
         this.sessionDeleteSelectionCommand = sessionCommandFactory.newDeleteSelectedElementsCommand();
         this.sessionUndoCommand = sessionCommandFactory.newUndoCommand();
+        this.sessionRedoCommand = sessionCommandFactory.newRedoCommand();
         this.sessionValidateCommand = sessionCommandFactory.newValidateCommand();
+        this.sessionRefreshCommand = sessionCommandFactory.newRefreshSessionCommand();
     }
 
     protected abstract int getCanvasWidth();
 
     protected abstract int getCanvasHeight();
 
+    @PostConstruct
     @SuppressWarnings( "unchecked" )
     public void init() {
         getView().init( this );
@@ -160,24 +170,28 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     protected void open( final ProjectDiagram diagram ) {
+        showLoadingViews();
         final Command callback = () -> {
+            hideLoadingViews();
         };
         this.paletteWidget = buildPalette( diagram );
         clientSessionPresenter.getView().setPalette( this.paletteWidget.getView() );
         clientSessionPresenter.open( diagram, callback );
         updateTitle( diagram.getMetadata().getTitle() );
-        getView().hideBusyIndicator();
     }
 
     @Override
     protected Command onValidate() {
+        showLoadingViews();
         return () -> {
             session.getCanvasValidationControl().validate();
+            hideLoadingViews();
         };
     }
 
     @Override
     protected void save( final String commitMessage ) {
+        showLoadingViews();
         session.getCanvasValidationControl().validate( new CanvasValidatorCallback() {
             @Override
             public void onSuccess() {
@@ -187,6 +201,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             @Override
             public void onFail( Iterable<CanvasValidationViolation> violations ) {
                 log( Level.WARNING, "Validation failed [violations=" + violations.toString() + "]." );
+                hideLoadingViews();
             }
         } );
     }
@@ -207,7 +222,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                     @Override
                     public void onSuccess( ProjectDiagram item ) {
                         getSaveSuccessCallback( item.hashCode() );
-                        getView().hideBusyIndicator();
+                        hideLoadingViews();
                     }
 
                     @Override
@@ -232,9 +247,14 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionDeleteSelectionCommand.listen( () -> deleteSelectionItem.setEnabled( sessionDeleteSelectionCommand.isEnabled() ) );
         final MenuItem undoItem = menuItemsBuilder.newUndoItem( AbstractProjectDiagramEditor.this::menu_undo );
         sessionUndoCommand.listen( () -> undoItem.setEnabled( sessionUndoCommand.isEnabled() ) );
+        final MenuItem redoItem = menuItemsBuilder.newRedoItem( AbstractProjectDiagramEditor.this::menu_redo );
+        sessionRedoCommand.listen( () -> redoItem.setEnabled( sessionRedoCommand.isEnabled() ) );
         final MenuItem validateItem = menuItemsBuilder.newValidateItem( AbstractProjectDiagramEditor.this::menu_validate );
         sessionValidateCommand.listen( () -> validateItem.setEnabled( sessionValidateCommand.isEnabled() ) );
-        menus = menuBuilder
+        final MenuItem refreshItem = menuItemsBuilder.newRefreshItem( AbstractProjectDiagramEditor.this::menu_refresh );
+        sessionRefreshCommand.listen( () -> refreshItem.setEnabled( sessionRefreshCommand.isEnabled() ) );
+        // Build the menu.
+        menuBuilder
                 // Specific Stunner toolbar items.
                 .addNewTopLevelMenu( clearItem )
                 .addNewTopLevelMenu( clearSelectionItem )
@@ -242,14 +262,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addNewTopLevelMenu( switchGridItem )
                 .addNewTopLevelMenu( deleteSelectionItem )
                 .addNewTopLevelMenu( undoItem )
+                .addNewTopLevelMenu( redoItem )
                 .addNewTopLevelMenu( validateItem )
-                // ** For dev purposes. **
-                .addNewTopLevelMenu( menuItemsBuilder.newDevItems(
-                        AbstractProjectDiagramEditor.this::menu_switchLogLevel,
-                        AbstractProjectDiagramEditor.this::menu_logGraph,
-                        AbstractProjectDiagramEditor.this::menu_logCommandHistory,
-                        AbstractProjectDiagramEditor.this::menu_logSession
-                ) )
+                .addNewTopLevelMenu( refreshItem );
+        if ( menuItemsBuilder.isDevItemsEnabled() ) {
+            menuBuilder.addNewTopLevelMenu( menuItemsBuilder.newDevItems() );
+        }
+        menus = menuBuilder
                 // Project editor menus.
                 .addSave( versionRecordManager.newSaveMenuItem( () -> onSave() ) )
                 .addCopy( versionRecordManager.getCurrentPath(), fileNameValidator )
@@ -258,22 +277,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addNewTopLevelMenu( versionRecordManager.buildMenu() )
                 // Build the menu.
                 .build();
-    }
-
-    private void menu_switchLogLevel() {
-        StunnerClientLogger.switchLogLevel();
-    }
-
-    private void menu_logSession() {
-        StunnerClientLogger.logSessionInfo( session );
-    }
-
-    private void menu_logGraph() {
-        StunnerLogger.log( getGraph() );
-    }
-
-    private void menu_logCommandHistory() {
-        StunnerClientLogger.logCommandHistory( session );
     }
 
     private void menu_clear() {
@@ -300,14 +303,45 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionUndoCommand.execute();
     }
 
+    private void menu_redo() {
+        sessionRedoCommand.execute();
+    }
+
     private void menu_validate() {
         sessionValidateCommand.execute();
+    }
+
+    private void menu_refresh() {
+        showLoadingViews();
+
+        sessionRefreshCommand.execute( new ClientSessionCommand.Callback<Diagram>() {
+            @Override
+            public void onSuccess( final Diagram result ) {
+                log( Level.FINE, "Diagram refresh successful." );
+                hideLoadingViews();
+            }
+
+            @Override
+            public void onError( final ClientRuntimeError error ) {
+                showError( error );
+            }
+        } );
     }
 
     protected void doOpen() {
         if ( null != session && session.isOpened() ) {
             clientSessionManager.resume( session );
         }
+    }
+
+    protected void showLoadingViews() {
+        getView().showLoading();
+        clientSessionPresenter.getView().setLoading( true );
+    }
+
+    protected void hideLoadingViews() {
+        getView().hideBusyIndicator();
+        clientSessionPresenter.getView().setLoading( false );
     }
 
     protected void doClose() {
@@ -319,6 +353,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected void doLostFocus() {
         hidePaletteFloatingView();
+    }
+
+    void onSessionErrorEvent( @Observes OnSessionErrorEvent errorEvent ) {
+        if ( null != session && session.equals( errorEvent.getSession() ) ) {
+            executeWithConfirm( "An error happened [" + errorEvent.getError() + "]. Do you want" +
+                    "to refresh the diagram (Last changes can be lost)? ", this::menu_refresh );
+        }
     }
 
     public String getTitleText() {
@@ -343,7 +384,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionClearCommand.bind( session );
         this.sessionDeleteSelectionCommand.bind( session );
         this.sessionUndoCommand.bind( session );
+        this.sessionRedoCommand.bind( session );
         this.sessionValidateCommand.bind( session );
+        this.sessionRefreshCommand.bind( session );
     }
 
     private void unbindCommands() {
@@ -353,7 +396,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionClearCommand.unbind();
         this.sessionDeleteSelectionCommand.unbind();
         this.sessionUndoCommand.unbind();
+        this.sessionRedoCommand.unbind();
         this.sessionValidateCommand.unbind();
+        this.sessionRefreshCommand.unbind();
     }
 
     private void resume() {
@@ -401,7 +446,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private void showError( final ClientRuntimeError error ) {
         errorPopupPresenter.showMessage( error.toString() );
-        getView().hideBusyIndicator();
+        hideLoadingViews();
     }
 
     protected int getCurrentDiagramHash() {
@@ -415,6 +460,15 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private Graph getGraph() {
         return null != getDiagram() ? getDiagram().getGraph() : null;
+    }
+
+    private  void executeWithConfirm( final String message, final Command command ) {
+        final Command yesCommand = command::execute;
+        final Command noCommand = () -> {
+        };
+        final YesNoCancelPopup popup =
+                YesNoCancelPopup.newYesNoCancelPopup( message, null, yesCommand, noCommand, noCommand );
+        popup.show();
     }
 
     protected View getView() {

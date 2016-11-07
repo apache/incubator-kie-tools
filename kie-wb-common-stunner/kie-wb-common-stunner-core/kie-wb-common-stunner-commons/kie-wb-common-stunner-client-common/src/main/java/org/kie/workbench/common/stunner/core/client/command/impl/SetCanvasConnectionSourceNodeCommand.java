@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.command.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
@@ -32,9 +33,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public final class SetCanvasConnectionSourceNodeCommand extends AbstractCanvasGraphCommand {
 
-    Node<? extends View<?>, Edge> node;
-    Edge<? extends View<?>, Node> edge;
-    int magnetIndex;
+    private final Node<? extends View<?>, Edge> node;
+    private final Edge<? extends View<?>, Node> edge;
+    private final int magnetIndex;
 
     public SetCanvasConnectionSourceNodeCommand( final Node<? extends View<?>, Edge> node,
                                                  final Edge<? extends View<?>, Node> edge,
@@ -46,17 +47,18 @@ public final class SetCanvasConnectionSourceNodeCommand extends AbstractCanvasGr
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new SetConnectionSourceNodeCommand( node, edge, magnetIndex );
+        return new SetConnectionSourceNodeCommand( null != node ? node.getUUID() : null, edge, magnetIndex );
     }
 
     @Override
-    public CommandResult<CanvasViolation> doExecute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> doCanvasExecute( final AbstractCanvasHandler context ) {
         ShapeUtils.applyConnections( edge, context, MutationContext.STATIC );
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> doUndo( final AbstractCanvasHandler context ) {
-        return doExecute( context );
+    protected AbstractCanvasCommand buildUndoCommand( final AbstractCanvasHandler context ) {
+        return null;
     }
+
 }

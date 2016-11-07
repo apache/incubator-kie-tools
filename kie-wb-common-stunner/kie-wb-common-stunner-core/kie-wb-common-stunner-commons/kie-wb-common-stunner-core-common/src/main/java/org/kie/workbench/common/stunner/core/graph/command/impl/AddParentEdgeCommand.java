@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Parent;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -30,9 +31,7 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 /**
  * Creates a parent connection to the target node from the child node.
@@ -40,15 +39,15 @@ import java.util.Set;
 @Portable
 public final class AddParentEdgeCommand extends AbstractGraphCommand {
 
-    private Node parent;
-    private Node candidate;
+    private final String parentUUID;
+    private final String candidateUUID;
 
-    public AddParentEdgeCommand( @MapsTo( "parent" ) Node parent,
-                                 @MapsTo( "candidate" ) Node candidate ) {
-        this.parent = PortablePreconditions.checkNotNull( "parent",
-                parent );
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                candidate );
+    public AddParentEdgeCommand( @MapsTo( "parentUUID" ) String parentUUID,
+                                 @MapsTo( "candidateUUID" ) String candidateUUID ) {
+        this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
+                parentUUID );
+        this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
+                candidateUUID );
     }
 
     @Override
@@ -61,15 +60,17 @@ public final class AddParentEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
+            final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
+            final Node<?, Edge> candidate = checkNodeNotNull( context, candidateUUID );
             // TODO: Create a ParentEdgeFactory iface extending EdgeFactory using as content generics type Relationship
             final String uuid = UUID.uuid();
-            final Set<String> labels = new HashSet<>( 1 );
             final Edge<Parent, Node> edge = new EdgeImpl<>( uuid );
             edge.setContent( new Parent() );
             edge.setSourceNode( parent );
             edge.setTargetNode( candidate );
             parent.getOutEdges().add( edge );
             candidate.getInEdges().add( edge );
+            getMutableIndex( context ).addEdge( edge );
 
         }
         return results;
@@ -77,6 +78,8 @@ public final class AddParentEdgeCommand extends AbstractGraphCommand {
 
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+        final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
+        final Node<Definition<?>, Edge> candidate = ( Node<Definition<?>, Edge> ) checkNodeNotNull( context, candidateUUID );
         final Collection<RuleViolation> containmentRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( parent, candidate ).violations();
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
@@ -86,12 +89,12 @@ public final class AddParentEdgeCommand extends AbstractGraphCommand {
 
     @Override
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final DeleteParentEdgeCommand undoCommand = new DeleteParentEdgeCommand( parent, candidate );
+        final DeleteParentEdgeCommand undoCommand = new DeleteParentEdgeCommand( parentUUID, candidateUUID );
         return undoCommand.execute( context );
     }
 
     @Override
     public String toString() {
-        return "AddParentEdgeCommand [parent=" + parent.getUUID() + ", candidate=" + candidate.getUUID() + "]";
+        return "AddParentEdgeCommand [parent=" + parentUUID + ", candidate=" + candidateUUID + "]";
     }
 }

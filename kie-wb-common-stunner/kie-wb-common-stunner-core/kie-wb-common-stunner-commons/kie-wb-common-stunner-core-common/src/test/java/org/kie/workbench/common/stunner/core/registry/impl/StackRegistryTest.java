@@ -22,14 +22,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Stack;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class StackRegistryTest {
@@ -105,6 +101,21 @@ public class StackRegistryTest {
         assertEquals( s2, o2 );
         assertEquals( null, tested.getItemByKey( null ) );
         assertEquals( null, tested.getItemByKey( "unregistered string" ) );
+    }
+
+
+    @Test
+    public void testEmpty() {
+        when( stack.isEmpty() ).thenReturn( true );
+        boolean empty = tested.isEmpty();
+        assertTrue( empty );
+    }
+
+    @Test
+    public void testNotEmpty() {
+        when( stack.isEmpty() ).thenReturn( false );
+        boolean empty = tested.isEmpty();
+        assertFalse( empty );
     }
 
 }

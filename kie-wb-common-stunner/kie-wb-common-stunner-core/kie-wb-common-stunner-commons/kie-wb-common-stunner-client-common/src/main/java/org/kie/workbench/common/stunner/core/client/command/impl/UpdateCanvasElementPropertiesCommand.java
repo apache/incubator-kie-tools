@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 public final class UpdateCanvasElementPropertiesCommand extends AbstractCanvasCommand {
 
-    protected Element element;
+    private final Element element;
 
     public UpdateCanvasElementPropertiesCommand( final Element element ) {
         this.element = element;

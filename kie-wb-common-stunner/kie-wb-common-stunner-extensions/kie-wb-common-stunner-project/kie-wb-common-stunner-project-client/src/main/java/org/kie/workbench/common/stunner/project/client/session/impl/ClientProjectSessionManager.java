@@ -17,10 +17,7 @@ package org.kie.workbench.common.stunner.project.client.session.impl;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.api.platform.PlatformManager;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.*;
 import org.kie.workbench.common.stunner.core.client.session.impl.ClientSessionManagerImpl;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramWorkbenchDocks;
 
@@ -39,7 +36,7 @@ public class ClientProjectSessionManager extends ClientSessionManagerImpl {
     private final ProjectDiagramWorkbenchDocks editorDocks;
 
     protected ClientProjectSessionManager() {
-        this( null, null, null, null, null, null );
+        this( null, null, null, null, null, null, null );
     }
 
     @Inject
@@ -48,8 +45,10 @@ public class ClientProjectSessionManager extends ClientSessionManagerImpl {
                                         final Event<SessionOpenedEvent> sessionOpenedEvent,
                                         final Event<SessionDisposedEvent> sessionDisposedEvent,
                                         final Event<SessionPausedEvent> sessionPausedEvent,
-                                        final Event<SessionResumedEvent> sessionResumedEvent ) {
-        super( platformManager, sessionOpenedEvent, sessionDisposedEvent, sessionPausedEvent, sessionResumedEvent );
+                                        final Event<SessionResumedEvent> sessionResumedEvent,
+                                        final Event<OnSessionErrorEvent> sessionErrorEvent ) {
+        super( platformManager, sessionOpenedEvent, sessionDisposedEvent, sessionPausedEvent,
+                sessionResumedEvent, sessionErrorEvent );
         this.editorDocks = editorDocks;
     }
 

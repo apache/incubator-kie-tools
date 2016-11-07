@@ -82,6 +82,19 @@ public class CommandRegistryImplTest {
     }
 
     @Test
+    public void testEmpty() {
+        boolean empty = tested.isEmpty();
+        assertTrue( empty );
+    }
+
+    @Test
+    public void testNotEmpty() {
+        tested.register( command );
+        boolean empty = tested.isEmpty();
+        assertFalse( empty );
+    }
+
+    @Test
     public void testClear() {
         Collection<Command> commands = new ArrayList<Command>( 2 ) {{
             add( command );

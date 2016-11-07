@@ -52,4 +52,12 @@ public final class CommandResultImpl<V> implements CommandResult<V> {
         return violations;
     }
 
+    @Override
+    public String toString() {
+        return "[Class=" + super.getClass().getSimpleName() + ", "
+                + "Type=" + type.name() + ", "
+                + "Message=" + message + ", "
+                + "Violations=" + violations + "]";
+    }
+
 }

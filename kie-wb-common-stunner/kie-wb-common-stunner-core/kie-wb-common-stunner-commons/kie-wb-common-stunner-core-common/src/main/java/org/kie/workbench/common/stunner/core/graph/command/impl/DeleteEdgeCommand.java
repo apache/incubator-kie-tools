@@ -35,13 +35,13 @@ import java.util.Collection;
 @Portable
 public final class DeleteEdgeCommand extends AbstractGraphCommand {
 
-    private Edge<? extends View, Node> edge;
-    private Node parent;
+    private final String edgeUUID;
+    private transient Edge<? extends View, Node> edge;
+    private transient String parentUUID;
 
-    public DeleteEdgeCommand( @MapsTo( "edge" ) Edge<? extends View, Node> edge ) {
-        this.edge = PortablePreconditions.checkNotNull( "edge",
-                edge );
-        ;
+    public DeleteEdgeCommand( @MapsTo( "edge" ) String edgeUUID ) {
+        this.edgeUUID = PortablePreconditions.checkNotNull( "edgeUUID",
+                edgeUUID );
     }
 
     @Override
@@ -53,15 +53,17 @@ public final class DeleteEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
+            this.edge = getViewEdge( context, edgeUUID );
             final Node outNode = edge.getTargetNode();
             final Node inNode = edge.getSourceNode();
-            this.parent = inNode;
             if ( null != outNode ) {
                 outNode.getInEdges().remove( edge );
             }
             if ( null != inNode ) {
+                this.parentUUID = inNode.getUUID();
                 inNode.getOutEdges().remove( edge );
             }
+            getMutableIndex( context ).removeEdge( edge );
 
         }
         return results;
@@ -69,6 +71,7 @@ public final class DeleteEdgeCommand extends AbstractGraphCommand {
 
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+        final Edge<? extends View, Node> edge = getViewEdge( context, edgeUUID );
         final Collection<RuleViolation> cardinalityRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager()
                         .edgeCardinality()
@@ -84,12 +87,12 @@ public final class DeleteEdgeCommand extends AbstractGraphCommand {
 
     @Override
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final AddEdgeCommand undoCommand = new AddEdgeCommand( parent, edge );
+        final AddEdgeCommand undoCommand = new AddEdgeCommand( parentUUID, edge );
         return undoCommand.execute( context );
     }
 
     @Override
     public String toString() {
-        return "DeleteEdgeCommand [edge=" + edge.getUUID() + "]";
+        return "DeleteEdgeCommand [edge=" + edgeUUID + "]";
     }
 }

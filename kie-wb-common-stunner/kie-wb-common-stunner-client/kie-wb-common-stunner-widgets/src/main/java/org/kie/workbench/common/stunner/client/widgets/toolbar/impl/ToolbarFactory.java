@@ -84,8 +84,20 @@ public class ToolbarFactory {
     }
 
     @SuppressWarnings( "unchecked" )
+    public ToolbarFactory withReddoCommand() {
+        getCurrent().addCommand( commandFactory.newRedoCommand() );
+        return this;
+    }
+
+    @SuppressWarnings( "unchecked" )
     public ToolbarFactory withValidateCommand() {
         getCurrent().addCommand( commandFactory.newValidateCommand() );
+        return this;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public ToolbarFactory withRefreshCommand() {
+        getCurrent().addCommand( commandFactory.newRefreshCommand() );
         return this;
     }
 

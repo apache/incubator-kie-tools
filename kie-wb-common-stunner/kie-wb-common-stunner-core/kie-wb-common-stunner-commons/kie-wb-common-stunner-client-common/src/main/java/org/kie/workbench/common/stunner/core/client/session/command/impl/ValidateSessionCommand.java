@@ -45,7 +45,7 @@ public class ValidateSessionCommand extends AbstractClientSessionCommand<Abstrac
 
             @Override
             public void onFail( final Iterable<CanvasValidationViolation> violations ) {
-                callback.onSuccess( ( T ) violations );
+                    callback.onSuccess( ( T ) violations );
             }
         } );
     }

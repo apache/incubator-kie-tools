@@ -18,8 +18,15 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public abstract class AbstractGraphCommand implements Command<GraphCommandExecutionContext, RuleViolation> {
@@ -29,9 +36,42 @@ public abstract class AbstractGraphCommand implements Command<GraphCommandExecut
     protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
         // Check if rules are present.
         if ( null == context.getRulesManager() ) {
-            return GraphCommandResultBuilder.RESULT_OK;
+            return GraphCommandResultBuilder.SUCCESS;
         }
         return doCheck( context );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    protected MutableIndex<Node, Edge> getMutableIndex( final GraphCommandExecutionContext context ) {
+        return ( MutableIndex<Node, Edge> ) context.getGraphIndex();
+    }
+
+    protected static Graph<?, Node> getGraph( final GraphCommandExecutionContext context ) {
+        return GraphUtils.getGraph( context );
+    }
+
+    protected static Node<?, Edge> getNode( final GraphCommandExecutionContext context, final String uuid ) {
+        return GraphUtils.getNode( context, uuid );
+    }
+
+    protected static Edge<? extends View, Node> getViewEdge( final GraphCommandExecutionContext context, final String uuid ) {
+        return GraphUtils.getViewEdge( context, uuid );
+    }
+
+    protected Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context, final String uuid ) {
+        final  Node<?, Edge> e = getNode( context, uuid );
+        if ( null == e ) {
+            throw new BadCommandArgumentsException( this, uuid, "Node not found for [" + uuid + "]." );
+        }
+        return e;
+    }
+
+    protected Edge<? extends View, Node> checkViewEdgeNotNull( final GraphCommandExecutionContext context, final String uuid ) {
+        final Edge<? extends View, Node> e = getViewEdge( context, uuid );
+        if ( null == e ) {
+            throw new BadCommandArgumentsException( this, uuid, "Edge (view) not found for [" + uuid + "]." );
+        }
+        return e;
     }
 
 }

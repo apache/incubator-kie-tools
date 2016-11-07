@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.factory.GraphCommandFactory;
+import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -73,14 +74,16 @@ public class Bpmn2UnMarshaller extends Bpmn2JsonMarshaller {
                               final GraphUtils graphUtils,
                               final Bpmn2OryxManager oryxManager,
                               final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager,
-                              final GraphCommandFactory commandFactory ) {
+                              final GraphCommandFactory commandFactory,
+                              final GraphIndexBuilder<?> indexBuilder ) {
         this.bpmnGraphGenerator = new BPMNGraphGenerator( elementBuilderFactory,
                 definitionManager,
                 factoryManager,
                 graphUtils,
                 oryxManager,
                 commandManager,
-                commandFactory );
+                commandFactory,
+                indexBuilder );
     }
 
     public Graph unmarshall( String content ) throws IOException {

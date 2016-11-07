@@ -23,11 +23,8 @@ import org.kie.workbench.common.stunner.core.registry.Registry;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -47,6 +44,7 @@ public class AbstractRegistryWrapperTest {
         when( registry.contains( anyObject() ) ).thenReturn( false );
         when( registry.contains( eq( s1 ) ) ).thenReturn( true );
         when( registry.contains( eq( s2 ) ) ).thenReturn( true );
+        when( registry.isEmpty() ).thenReturn( false );
         tested = new AbstractRegistryWrapper<Object, Registry<Object>>( registry ) {
         };
     }
@@ -57,6 +55,19 @@ public class AbstractRegistryWrapperTest {
         assertTrue( tested.contains( s1 ) );
         assertTrue( tested.contains( s2 ) );
         assertFalse( tested.contains( "" ) );
+    }
+
+    @Test
+    public void testEmpty() {
+        when( registry.isEmpty() ).thenReturn( true );
+        boolean empty = tested.isEmpty();
+        assertTrue( empty );
+    }
+
+    @Test
+    public void testNotEmpty() {
+        boolean empty = registry.isEmpty();
+        assertFalse( empty );
     }
 
 }

@@ -18,12 +18,18 @@ package org.kie.workbench.common.stunner.core.graph.processing.index;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 /**
  * <p>A generic graph index based on element's identifiers. Allows performing fast look-ups over the graph elements.</p>
  */
 public interface Index<N extends Node, E extends Edge> {
+
+    /**
+     * Return the graph instance which has been indexed by this index.
+     */
+    Graph<?, N> getGraph();
 
     /**
      * Returns the element (node or edge) with the given uuid.
@@ -40,9 +46,5 @@ public interface Index<N extends Node, E extends Edge> {
      */
     E getEdge( String uuid );
 
-    /**
-     * Clears the index.
-     */
-    void clear();
 
 }

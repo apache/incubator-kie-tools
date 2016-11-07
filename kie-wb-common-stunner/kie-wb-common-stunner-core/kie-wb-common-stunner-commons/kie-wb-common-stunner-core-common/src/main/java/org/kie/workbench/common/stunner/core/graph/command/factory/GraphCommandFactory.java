@@ -19,78 +19,108 @@ package org.kie.workbench.common.stunner.core.graph.command.factory;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.*;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public interface GraphCommandFactory {
+import javax.enterprise.context.ApplicationScoped;
 
-    AddNodeCommand ADD_NODE( Graph target,
-                             Node candidate );
+@ApplicationScoped
+public class GraphCommandFactory {
 
-    AddChildNodeCommand ADD_CHILD_NODE( Graph target,
-                                        Node parent,
-                                        Node candidate );
+    public AddChildNodeCommand ADD_CHILD_NODE( final Node parent,
+                                               final Node candidate ) {
+        return new AddChildNodeCommand( parent.getUUID(), candidate );
+    }
 
-    AddDockedNodeCommand ADD_DOCKED_NODE( Graph target,
-                                          Node parent,
-                                          Node candidate );
+    public AddDockedNodeCommand ADD_DOCKED_NODE( final Node parent,
+                                                 final Node candidate ) {
+        return new AddDockedNodeCommand( parent.getUUID(), candidate );
+    }
 
-    AddEdgeCommand ADD_EDGE( Node target,
-                             Edge edge );
+    public SafeDeleteNodeCommand SAFE_DELETE_NODE( final Node candidate ) {
+        return new SafeDeleteNodeCommand( candidate.getUUID() );
+    }
 
-    SafeDeleteNodeCommand SAFE_DELETE_NODE( Graph target,
-                                            Node candidate );
+    public AddEdgeCommand ADD_EDGE( final Node target, final Edge edge ) {
+        return new AddEdgeCommand( target.getUUID(), edge );
+    }
 
-    DeleteNodeCommand DELETE_NODE( Graph target,
-                                   Node candidate );
+    public AddNodeCommand ADD_NODE( final Node candidate ) {
+        return new AddNodeCommand( candidate );
+    }
 
-    DeleteEdgeCommand DELETE_EDGE( Edge<? extends View,
-            Node> edge );
+    public ClearGraphCommand CLEAR_GRAPH() {
+        return new ClearGraphCommand( "" );
+    }
 
-    ClearGraphCommand CLEAR_GRAPH( Graph target );
+    public ClearGraphCommand CLEAR_GRAPH( final String rootUUID ) {
+        return new ClearGraphCommand( rootUUID );
+    }
 
-    ClearGraphCommand CLEAR_GRAPH( Graph target,
-                                   String rootUUID );
+    public AddChildEdgeCommand ADD_CHILD_EDGE( final Node parent, final Node candidate ) {
+        return new AddChildEdgeCommand( parent.getUUID(), candidate.getUUID() );
+    }
 
-    AddChildEdgeCommand ADD_CHILD_EDGE( Node parent,
-                                        Node candidate );
+    public AddParentEdgeCommand ADD_PARENT_EDGE( final Node parent, final Node candidate ) {
+        return new AddParentEdgeCommand( parent.getUUID(), candidate.getUUID() );
+    }
 
-    AddParentEdgeCommand ADD_PARENT_EDGE( Node parent,
-                                          Node candidate );
+    public DeleteChildEdgeCommand DELETE_CHILD_EDGE( final Node parent, final Node candidate ) {
+        return new DeleteChildEdgeCommand( parent.getUUID(), candidate.getUUID() );
+    }
 
-    DeleteChildEdgeCommand DELETE_CHILD_EDGE( Node parent,
-                                              Node candidate );
+    public DeleteParentEdgeCommand DELETE_PARENT_EDGE( final Node parent, final Node candidate ) {
+        return new DeleteParentEdgeCommand( parent.getUUID(), candidate.getUUID() );
+    }
 
-    DeleteParentEdgeCommand DELETE_PARENT_EDGE( Node parent,
-                                                Node candidate );
+    public AddDockEdgeCommand ADD_DOCK_EDGE( final Node parent, final Node candidate ) {
+        return new AddDockEdgeCommand( parent.getUUID(), candidate.getUUID() );
+    }
 
-    AddDockEdgeCommand ADD_DOCK_EDGE( Node parent,
-                                      Node candidate );
+    public DeleteDockEdgeCommand DELETE_DOCK_EDGE( final Node parent, final Node candidate ) {
+        return new DeleteDockEdgeCommand( parent.getUUID(), candidate.getUUID() );
+    }
 
-    DeleteDockEdgeCommand DELETE_DOCK_EDGE( Node parent,
-                                            Node candidate );
+    public DeleteEdgeCommand DELETE_EDGE( final Edge<? extends View, Node> edge ) {
+        return new DeleteEdgeCommand( edge.getUUID() );
+    }
 
-    SetConnectionSourceNodeCommand SET_SOURCE_NODE( Node<? extends View<?>, Edge> sourceNode,
-                                                    Edge<? extends View<?>, Node> edge,
-                                                    int magnetIndex );
+    public DeleteNodeCommand DELETE_NODE( final Node candidate ) {
+        return new DeleteNodeCommand( candidate.getUUID() );
+    }
 
-    SetConnectionTargetNodeCommand SET_TARGET_NODE( Node<? extends View<?>, Edge> targetNode,
-                                                    Edge<? extends View<?>, Node> edge,
-                                                    int magnetIndex );
+    public SetConnectionSourceNodeCommand SET_SOURCE_NODE( final Node<? extends View<?>, Edge> sourceNode,
+                                                           final Edge<? extends View<?>, Node> edge,
+                                                           final int magnetIndex ) {
+        return new SetConnectionSourceNodeCommand( null != sourceNode ? sourceNode.getUUID() : null,
+                edge, magnetIndex );
+    }
 
-    UpdateElementPositionCommand UPDATE_POSITION( Element element,
-                                                  Double x,
-                                                  Double y );
+    public SetConnectionTargetNodeCommand SET_TARGET_NODE( final Node<? extends View<?>, Edge> targetNode,
+                                                           final Edge<? extends View<?>, Node> edge,
+                                                           final int magnetIndex ) {
+        return new SetConnectionTargetNodeCommand( null != targetNode ? targetNode.getUUID() : null,
+                edge, magnetIndex );
+    }
 
-    UpdateElementPropertyValueCommand UPDATE_PROPERTY_VALUE( Element element,
-                                                             String propertyId,
-                                                             Object value );
+    public UpdateElementPositionCommand UPDATE_POSITION( final Element<?> element,
+                                                         final Double x,
+                                                         final Double y ) {
+        return new UpdateElementPositionCommand( element.getUUID(), x, y );
+    }
 
-    MorphNodeCommand MORPH_NODE( Node<Definition, Edge> candidate,
-                                 MorphDefinition morphDefinition,
-                                 String morphTarget );
+    public UpdateElementPropertyValueCommand UPDATE_PROPERTY_VALUE( final Element element,
+                                                                    final String propertyId,
+                                                                    final Object value ) {
+        return new UpdateElementPropertyValueCommand( element.getUUID(), propertyId, value );
+    }
+
+    public MorphNodeCommand MORPH_NODE( final Node<Definition, Edge> candidate,
+                                        final MorphDefinition morphDefinition,
+                                        final String morphTarget ) {
+        return new MorphNodeCommand( candidate, morphDefinition, morphTarget );
+    }
 
 }

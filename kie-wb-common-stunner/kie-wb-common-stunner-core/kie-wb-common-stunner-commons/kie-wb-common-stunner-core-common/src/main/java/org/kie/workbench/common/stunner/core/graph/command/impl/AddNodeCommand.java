@@ -35,13 +35,9 @@ import java.util.LinkedList;
 @Portable
 public final class AddNodeCommand extends AbstractGraphCommand {
 
-    private Graph target;
-    private Node candidate;
+    private final Node candidate;
 
-    public AddNodeCommand( @MapsTo( "target" ) Graph target,
-                           @MapsTo( "candidate" ) Node candidate ) {
-        this.target = PortablePreconditions.checkNotNull( "target",
-                target );
+    public AddNodeCommand( @MapsTo( "candidate" ) Node candidate ) {
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
                 candidate );
     }
@@ -56,17 +52,20 @@ public final class AddNodeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            target.addNode( candidate );
+            final Graph<?, Node> graph = getGraph( context );
+            graph.addNode( candidate );
+            getMutableIndex( context ).addNode( candidate );
         }
         return results;
     }
 
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+        final Graph<?, Node> graph = getGraph( context );
         final Collection<RuleViolation> containmentRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( target, candidate ).violations();
+                ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( graph, candidate ).violations();
         final Collection<RuleViolation> cardinalityRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager().cardinality().evaluate( target, candidate, RuleManager.Operation.ADD ).violations();
+                ( Collection<RuleViolation> ) context.getRulesManager().cardinality().evaluate( graph, candidate, RuleManager.Operation.ADD ).violations();
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
         violations.addAll( containmentRuleViolations );
         violations.addAll( cardinalityRuleViolations );
@@ -75,12 +74,12 @@ public final class AddNodeCommand extends AbstractGraphCommand {
 
     @Override
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final DeleteNodeCommand undoCommand = new DeleteNodeCommand( target, candidate );
+        final SafeDeleteNodeCommand undoCommand = new SafeDeleteNodeCommand( candidate.getUUID() );
         return undoCommand.execute( context );
     }
 
     @Override
     public String toString() {
-        return "AddNodeCommand [target=" + target.getUUID() + ", candidate=" + candidate.getUUID() + "]";
+        return "AddNodeCommand [candidate=" + candidate.getUUID() + "]";
     }
 }

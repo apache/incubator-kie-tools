@@ -23,7 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * This content has no view representation on the canvas.
  */
 @Portable
-public final class Dock implements Relationship {
+public class Dock implements Relationship {
 
     private static final transient String RELATIONSHIP = "dock";
 

@@ -19,24 +19,34 @@ import org.guvnor.common.services.shared.config.AppConfigService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
+import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.workbench.client.entrypoint.DefaultWorkbenchEntryPoint;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.uberfire.client.mvp.ActivityBeansCache;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 @EntryPoint
 public class ShowcaseEntryPoint extends DefaultWorkbenchEntryPoint {
 
+    private MenuDevCommandsBuilder menuDevCommandsBuilder;
     protected DefaultWorkbenchFeaturesMenusHelper menusHelper;
 
     @Inject
     public ShowcaseEntryPoint( final Caller<AppConfigService> appConfigService,
                                final Caller<PlaceManagerActivityService> pmas,
                                final ActivityBeansCache activityBeansCache,
-                               final DefaultWorkbenchFeaturesMenusHelper menusHelper ) {
+                               final DefaultWorkbenchFeaturesMenusHelper menusHelper,
+                               final MenuDevCommandsBuilder menuDevCommandsBuilder ) {
         super( appConfigService, pmas, activityBeansCache );
         this.menusHelper = menusHelper;
+        this.menuDevCommandsBuilder = menuDevCommandsBuilder;
+    }
+
+    @PostConstruct
+    public void init() {
+        menuDevCommandsBuilder.enable();
     }
 
     @Override

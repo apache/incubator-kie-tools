@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -69,4 +69,18 @@ public class DiagramListRegistryTest {
         registry.register( diagram1 );
         registry.update( diagram2 );
     }
+
+    @Test
+    public void testEmpty() {
+        boolean empty = registry.isEmpty();
+        assertTrue( empty );
+    }
+
+    @Test
+    public void testNotEmpty() {
+        registry.register( diagram1 );
+        boolean empty = registry.isEmpty();
+        assertFalse( empty );
+    }
+
 }

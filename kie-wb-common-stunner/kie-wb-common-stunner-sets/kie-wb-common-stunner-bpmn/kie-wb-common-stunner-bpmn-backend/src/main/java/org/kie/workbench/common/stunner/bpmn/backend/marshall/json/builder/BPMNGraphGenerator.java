@@ -20,6 +20,7 @@ import org.codehaus.jackson.*;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -32,7 +33,11 @@ import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExec
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.factory.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -50,16 +55,17 @@ import java.util.Stack;
  */
 public class BPMNGraphGenerator extends JsonGenerator {
 
-    BPMNGraphObjectBuilderFactory bpmnGraphBuilderFactory;
-    DefinitionManager definitionManager;
-    FactoryManager factoryManager;
-    GraphUtils graphUtils;
-    Bpmn2OryxManager oryxManager;
-    CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager;
-    GraphCommandFactory commandFactory;
-    Stack<GraphObjectBuilder> nodeBuilders = new Stack<>();
-    Stack<GraphObjectParser> parsers = new Stack<GraphObjectParser>();
-    Collection<GraphObjectBuilder<?, ?>> builders = new LinkedList<GraphObjectBuilder<?, ?>>();
+    private final BPMNGraphObjectBuilderFactory bpmnGraphBuilderFactory;
+    private final DefinitionManager definitionManager;
+    private final FactoryManager factoryManager;
+    private final GraphUtils graphUtils;
+    private final Bpmn2OryxManager oryxManager;
+    private final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager;
+    private final GraphCommandFactory commandFactory;
+    private final GraphIndexBuilder<?> indexBuilder;
+    private final Stack<GraphObjectBuilder> nodeBuilders = new Stack<>();
+    private final Stack<GraphObjectParser> parsers = new Stack<GraphObjectParser>();
+    private final Collection<GraphObjectBuilder<?, ?>> builders = new LinkedList<GraphObjectBuilder<?, ?>>();
     Graph<DefinitionSet, Node> graph;
     boolean isClosed;
 
@@ -69,7 +75,8 @@ public class BPMNGraphGenerator extends JsonGenerator {
                                final GraphUtils graphUtils,
                                final Bpmn2OryxManager oryxManager,
                                final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager,
-                               final GraphCommandFactory commandFactory ) {
+                               final GraphCommandFactory commandFactory,
+                               final GraphIndexBuilder<?> indexBuilder ) {
         this.bpmnGraphBuilderFactory = bpmnGraphBuilderFactory;
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
@@ -77,6 +84,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
         this.oryxManager = oryxManager;
         this.commandManager = commandManager;
         this.commandFactory = commandFactory;
+        this.indexBuilder = indexBuilder;
         this.parsers.push( new RootObjectParser( null ) );
         this.isClosed = false;
     }
@@ -121,7 +129,13 @@ public class BPMNGraphGenerator extends JsonGenerator {
     public void close() throws IOException {
         logBuilders();
         this.graph = ( Graph<DefinitionSet, Node> ) factoryManager.newElement( UUID.uuid(), BPMNDefinitionSet.class );
-        ;
+        // TODO: Where are the bpmn diagram bounds in the oryx json strcuture?
+        if ( null == graph.getContent().getBounds() ) {
+            graph.getContent().setBounds( new BoundsImpl(
+                    new BoundImpl( 0d, 0d ),
+                    new BoundImpl( BPMNGraphFactory.GRAPH_DEFAULT_WIDTH, BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT )
+            ) );
+        }
         // TODO: Improve this - Remove the default diagram built by the bpmn graph factory.
         Iterator<Node> nodes = this.graph.nodes().iterator();
         while ( nodes.hasNext() ) {
@@ -165,15 +179,17 @@ public class BPMNGraphGenerator extends JsonGenerator {
     final GraphObjectBuilder.BuilderContext builderContext = new GraphObjectBuilder.BuilderContext() {
 
         Graph<DefinitionSet, Node> graph;
+        Index<?, ?> index;
 
         @Override
         public void init( final Graph<DefinitionSet, Node> graph ) {
             this.graph = graph;
+            this.index = indexBuilder.build( graph );
         }
 
         @Override
-        public Graph<DefinitionSet, Node> getGraph() {
-            return graph;
+        public Index<?, ?> getIndex() {
+            return index;
         }
 
         @Override
@@ -204,7 +220,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
         @SuppressWarnings( "unchecked" )
         public CommandResult<RuleViolation> execute( Command<GraphCommandExecutionContext, RuleViolation> command ) {
             GraphCommandExecutionContext executionContext =
-                    new EmptyRulesCommandExecutionContext( definitionManager, factoryManager );
+                    new EmptyRulesCommandExecutionContext( definitionManager, factoryManager, index );
             return commandManager.execute( executionContext, command );
         }
 

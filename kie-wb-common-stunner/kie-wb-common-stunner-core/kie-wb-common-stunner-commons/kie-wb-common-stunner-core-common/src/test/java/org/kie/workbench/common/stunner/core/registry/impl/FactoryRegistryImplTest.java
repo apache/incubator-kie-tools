@@ -99,6 +99,20 @@ public class FactoryRegistryImplTest {
         assertArrayEquals( new Object[ 0 ], factory.getAllFactories().toArray() );
     }
 
+
+    @Test
+    public void testEmpty() {
+        boolean empty = factory.isEmpty();
+        assertTrue( empty );
+    }
+
+    @Test
+    public void testNotEmpty() {
+        factory.register( definitionFactory );
+        boolean empty = factory.isEmpty();
+        assertFalse( empty );
+    }
+
     @Test
     public void testRemove() {
         factory.register( elementFactory );

@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
@@ -45,6 +46,19 @@ public class GraphUtils {
     @SuppressWarnings( "all" )
     public GraphUtils( final DefinitionManager definitionManager ) {
         this.definitionManager = definitionManager;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public static Graph<?, Node> getGraph( final GraphCommandExecutionContext context ) {
+        return ( Graph<?, Node> ) context.getGraphIndex().getGraph();
+    }
+
+    public static Node<?, Edge> getNode( final GraphCommandExecutionContext context, final String uuid ) {
+        return context.getGraphIndex().getNode( uuid );
+    }
+
+    public static Edge<? extends View, Node> getViewEdge( final GraphCommandExecutionContext context, final String uuid ) {
+        return context.getGraphIndex().getEdge( uuid );
     }
 
     public Object getProperty( final Element<? extends Definition> element, final String id ) {

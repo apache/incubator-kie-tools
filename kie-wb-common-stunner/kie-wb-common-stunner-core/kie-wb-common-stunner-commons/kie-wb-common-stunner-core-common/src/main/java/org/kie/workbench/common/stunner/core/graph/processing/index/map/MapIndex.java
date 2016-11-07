@@ -18,20 +18,30 @@ package org.kie.workbench.common.stunner.core.graph.processing.index.map;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 
 import java.util.Map;
 
-public class MapIndex implements Index<Node, Edge> {
+public class MapIndex implements MutableIndex<Node, Edge> {
 
+    final Graph<?, Node> graph;
     final Map<String, Node> nodes;
     final Map<String, Edge> edges;
 
-    public MapIndex( final Map<String, Node> nodes,
+    public MapIndex( final Graph<?, Node> graph,
+                     final Map<String, Node> nodes,
                      final Map<String, Edge> edges ) {
+        this.graph = graph;
         this.nodes = nodes;
         this.edges = edges;
+    }
+
+    @Override
+    public Graph<?, Node> getGraph() {
+        return graph;
     }
 
     @Override
@@ -51,6 +61,30 @@ public class MapIndex implements Index<Node, Edge> {
     @Override
     public Edge getEdge( final String uuid ) {
         return edges.get( uuid );
+    }
+
+    @Override
+    public MutableIndex<Node, Edge> addNode( final Node node ) {
+        nodes.put( node.getUUID(), node );
+        return this;
+    }
+
+    @Override
+    public MutableIndex<Node, Edge> removeNode( final Node node ) {
+        nodes.remove( node.getUUID() );
+        return this;
+    }
+
+    @Override
+    public MutableIndex<Node, Edge> addEdge( final Edge edge ) {
+        edges.put( edge.getUUID(), edge );
+        return this;
+    }
+
+    @Override
+    public MutableIndex<Node, Edge> removeEdge( final Edge edge ) {
+        edges.remove( edge.getUUID() );
+        return this;
     }
 
     @Override

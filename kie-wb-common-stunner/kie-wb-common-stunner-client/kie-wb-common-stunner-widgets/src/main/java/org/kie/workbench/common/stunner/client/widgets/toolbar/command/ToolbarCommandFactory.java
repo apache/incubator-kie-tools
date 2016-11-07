@@ -28,10 +28,12 @@ public class ToolbarCommandFactory {
     private final Instance<ClearToolbarCommand> clearCommand;
     private final Instance<DeleteSelectionToolbarCommand> deleteSelectionCommand;
     private final Instance<UndoToolbarCommand> undoCommand;
+    private final Instance<RedoToolbarCommand> redoCommand;
     private final Instance<ValidateToolbarCommand> validateCommand;
+    private final Instance<RefreshToolbarCommand> refreshCommand;
 
     protected ToolbarCommandFactory() {
-        this( null, null, null, null, null, null, null );
+        this( null, null, null, null, null, null, null, null, null );
     }
 
     @Inject
@@ -41,14 +43,18 @@ public class ToolbarCommandFactory {
                                   final Instance<ClearToolbarCommand> clearCommand,
                                   final Instance<DeleteSelectionToolbarCommand> deleteSelectionCommand,
                                   final Instance<UndoToolbarCommand> undoCommand,
-                                  final Instance<ValidateToolbarCommand> validateCommand) {
+                                  final Instance<RedoToolbarCommand> redoCommand,
+                                  final Instance<ValidateToolbarCommand> validateCommand,
+                                  final Instance<RefreshToolbarCommand> refreshCommand ) {
         this.clearSelectionCommand = clearSelectionCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;
         this.clearCommand = clearCommand;
         this.deleteSelectionCommand = deleteSelectionCommand;
         this.undoCommand = undoCommand;
+        this.redoCommand = redoCommand;
         this.validateCommand = validateCommand;
+        this.refreshCommand = refreshCommand;
     }
 
     public ClearSelectionToolbarCommand newClearSelectionCommand() {
@@ -75,8 +81,16 @@ public class ToolbarCommandFactory {
         return undoCommand.get();
     }
 
+    public RedoToolbarCommand newRedoCommand() {
+        return redoCommand.get();
+    }
+
     public ValidateToolbarCommand newValidateCommand() {
         return validateCommand.get();
+    }
+
+    public RefreshToolbarCommand newRefreshCommand() {
+        return refreshCommand.get();
     }
 
 }

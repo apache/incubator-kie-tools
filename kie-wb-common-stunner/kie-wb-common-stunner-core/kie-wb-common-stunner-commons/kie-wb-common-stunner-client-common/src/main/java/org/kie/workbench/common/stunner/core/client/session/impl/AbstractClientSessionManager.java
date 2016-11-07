@@ -18,7 +18,9 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
+import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -93,9 +95,23 @@ public abstract class AbstractClientSessionManager implements ClientSessionManag
         }
     }
 
+    public void handleCommandError( final CommandException ce ) {
+        log( Level.SEVERE, "Command execution failed", ce );
+    }
+
+    public void handleClientError( final ClientRuntimeError error ) {
+        log( Level.SEVERE, "An error on client side happened", error.getThrowable() );
+    }
+
     private void log( final Level level, final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
             LOGGER.log( level, message );
+        }
+    }
+
+    private void log( final Level level, final String message, final Throwable t ) {
+        if ( LogConfiguration.loggingIsEnabled() ) {
+            LOGGER.log( level, message, t );
         }
     }
 

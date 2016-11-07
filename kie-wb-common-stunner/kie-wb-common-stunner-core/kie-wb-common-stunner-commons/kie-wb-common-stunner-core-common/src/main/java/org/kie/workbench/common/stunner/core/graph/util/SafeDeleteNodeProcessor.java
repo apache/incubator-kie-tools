@@ -21,14 +21,14 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Parent;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class SafeDeleteNodeProcessor {
 
-    public interface DeleteNodeCallback {
+    public interface Callback {
 
         void deleteChildNode( final Node<Definition<?>, Edge> node );
 
@@ -49,46 +49,38 @@ public class SafeDeleteNodeProcessor {
     }
 
     @SuppressWarnings( "unchecked" )
-    public void run( final DeleteNodeCallback callback ) {
-        // Check node's children, if any.
-        final List<Node> children = getChildNodes( candidate );
-        for ( Node child : children ) {
-            callback.deleteChildNode( child );
-
-        }
-        // Check if is a child node, so if exists an ingoing child edge ( from parent node ).
+    public void run( final Callback callback ) {
+        // Check incoming edges.
         final List<Edge> inEdges = candidate.getInEdges();
         if ( null != inEdges && !inEdges.isEmpty() ) {
             for ( final Edge inEdge : inEdges ) {
                 if ( inEdge.getContent() instanceof Child ) {
                     final Node parent = inEdge.getSourceNode();
                     callback.deleteInChildEdge( parent, inEdge );
-
                 } else if ( inEdge.getContent() instanceof View ) {
                     callback.deleteInViewEdge( inEdge );
-
                 }
-
             }
-
         }
+        // Check outgoing edges.
         final List<Edge> outEdges = candidate.getOutEdges();
         if ( null != outEdges && !outEdges.isEmpty() ) {
             for ( final Edge outEdge : outEdges ) {
-                if ( outEdge.getContent() instanceof View ) {
+                if ( outEdge.getContent() instanceof View || outEdge.getContent() instanceof Parent) {
                     callback.deleteOutEdge( outEdge );
-
+                } else if ( outEdge.getContent() instanceof Child ) {
+                    final Node target = outEdge.getTargetNode();
+                    callback.deleteOutEdge( outEdge );
+                    callback.deleteChildNode( target );
                 }
-
             }
-
         }
+        // Finally delete this node in a safe way.
         callback.deleteNode( candidate );
-
     }
 
     public void run( final Graph<?, Node> graph ) {
-        this.run( new DeleteNodeCallback() {
+        this.run( new Callback() {
 
             @Override
             public void deleteChildNode( final Node<Definition<?>, Edge> node ) {
@@ -117,21 +109,6 @@ public class SafeDeleteNodeProcessor {
 
         } );
 
-    }
-
-    @SuppressWarnings( "unchecked" )
-    private List<Node> getChildNodes( final Node node ) {
-        final List<Node> nodesToRemove = new LinkedList<>();
-        final List<Edge<?, Node>> outEdges = node.getOutEdges();
-        if ( null != outEdges && !outEdges.isEmpty() ) {
-            for ( Edge<?, Node> outEdge : outEdges ) {
-                if ( outEdge.getContent() instanceof Child ) {
-                    final Node target = outEdge.getTargetNode();
-                    nodesToRemove.add( target );
-                }
-            }
-        }
-        return nodesToRemove;
     }
 
 }

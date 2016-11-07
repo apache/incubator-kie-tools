@@ -21,12 +21,11 @@ import org.kie.workbench.common.stunner.core.client.api.platform.ClientPlatform;
 import org.kie.workbench.common.stunner.core.client.api.platform.PlatformManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.*;
+import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -39,13 +38,15 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
 
     private static Logger LOGGER = Logger.getLogger( ClientSessionManagerImpl.class.getName() );
 
-    PlatformManager platformManager;
-    Event<SessionOpenedEvent> sessionOpenedEvent;
-    Event<SessionPausedEvent> sessionPausedEvent;
-    Event<SessionResumedEvent> sessionResumedEvent;
-    Event<SessionDisposedEvent> sessionDisposedEvent;
+    private final PlatformManager platformManager;
+    private final Event<SessionOpenedEvent> sessionOpenedEvent;
+    private final Event<SessionPausedEvent> sessionPausedEvent;
+    private final Event<SessionResumedEvent> sessionResumedEvent;
+    private final Event<SessionDisposedEvent> sessionDisposedEvent;
+    private final Event<OnSessionErrorEvent> sessionErrorEvent;
 
     protected ClientSessionManagerImpl() {
+        this( null, null, null, null, null, null );
     }
 
     @Inject
@@ -53,12 +54,14 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
                                      final Event<SessionOpenedEvent> sessionOpenedEvent,
                                      final Event<SessionDisposedEvent> sessionDisposedEvent,
                                      final Event<SessionPausedEvent> sessionPausedEvent,
-                                     final Event<SessionResumedEvent> sessionResumedEvent ) {
+                                     final Event<SessionResumedEvent> sessionResumedEvent,
+                                     final Event<OnSessionErrorEvent> sessionErrorEvent ) {
         this.platformManager = platformManager;
         this.sessionOpenedEvent = sessionOpenedEvent;
         this.sessionPausedEvent = sessionPausedEvent;
         this.sessionResumedEvent = sessionResumedEvent;
         this.sessionDisposedEvent = sessionDisposedEvent;
+        this.sessionErrorEvent = sessionErrorEvent;
     }
 
     protected void postOpen() {
@@ -101,6 +104,19 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
 
         }
         return session;
+    }
+
+    @Override
+    public void handleCommandError( final CommandException ce ) {
+        super.handleCommandError( ce );
+        sessionErrorEvent.fire( new OnSessionErrorEvent( current,
+                new ClientRuntimeError( "Error while executing command.", ce ) ) );
+    }
+
+    @Override
+    public void handleClientError( final ClientRuntimeError error ) {
+        super.handleClientError( error );
+        sessionErrorEvent.fire( new OnSessionErrorEvent( current, error ) );
     }
 
     protected ClientPlatform getPlatform() {

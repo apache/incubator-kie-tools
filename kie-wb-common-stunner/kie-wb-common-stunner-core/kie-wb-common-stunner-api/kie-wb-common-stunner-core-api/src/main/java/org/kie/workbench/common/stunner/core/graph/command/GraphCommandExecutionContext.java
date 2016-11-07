@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.command;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 
 /**
@@ -30,5 +31,7 @@ public interface GraphCommandExecutionContext {
     FactoryManager getFactoryManager();
 
     GraphRulesManager getRulesManager();
+
+    Index<?, ?> getGraphIndex();
 
 }

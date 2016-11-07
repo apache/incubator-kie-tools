@@ -61,4 +61,14 @@ public final class BatchCommandResultImpl<V> implements BatchCommandResult<V> {
     public Iterable<V> getViolations() {
         return violations;
     }
+
+    @Override
+    public String toString() {
+        return "[Class=" + super.getClass().getSimpleName() + ", "
+                + "Type=" + type.name() + ", "
+                + "Message=" + message + ", "
+                + "Results=" + results + ", "
+                + "Violations=" + violations + "]";
+    }
+
 }

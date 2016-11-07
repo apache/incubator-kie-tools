@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.mvp.Command;
@@ -50,6 +51,12 @@ public class ToolbarItemView extends Composite implements ToolbarItem.View {
     @Override
     public ToolbarItem.View setIcon( final IconType icon ) {
         button.setIcon( icon );
+        return this;
+    }
+
+    @Override
+    public AbstractToolbarItem.View setIconRotate( final IconRotate rotate ) {
+        button.setIconRotate( rotate );
         return this;
     }
 

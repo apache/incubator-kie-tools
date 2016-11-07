@@ -31,14 +31,13 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Portable
 public final class AddEdgeCommand extends AbstractGraphCommand {
 
-    private Node target;
-    private Edge edge;
+    private final String nodeUUID;
+    private final Edge edge;
 
-    public AddEdgeCommand( @MapsTo( "target" ) Node target,
+    public AddEdgeCommand( @MapsTo( "nodeUUID" ) String nodeUUID,
                            @MapsTo( "edge" ) Edge edge ) {
-        this.target = PortablePreconditions.checkNotNull( "target",
-                target );
-        ;
+        this.nodeUUID = PortablePreconditions.checkNotNull( "nodeUUID",
+                nodeUUID );
         this.edge = PortablePreconditions.checkNotNull( "edge",
                 edge );
         ;
@@ -54,24 +53,27 @@ public final class AddEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
+            final Node<?, Edge> target = checkNodeNotNull( context, nodeUUID );
             target.getOutEdges().add( edge );
+            getMutableIndex( context ).addEdge( edge );
         }
         return results;
     }
 
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        return GraphCommandResultBuilder.RESULT_OK;
+        checkNodeNotNull( context, nodeUUID );
+        return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final DeleteEdgeCommand undoCommand = new DeleteEdgeCommand( edge );
+        final DeleteEdgeCommand undoCommand = new DeleteEdgeCommand( edge.getUUID() );
         return undoCommand.execute( context );
     }
 
     @Override
     public String toString() {
-        return "AddEdgeCommand [target=" + target.getUUID() + ", edge=" + edge.getUUID() + "]";
+        return "AddEdgeCommand [target=" + nodeUUID + ", edge=" + edge.getUUID() + "]";
     }
 }

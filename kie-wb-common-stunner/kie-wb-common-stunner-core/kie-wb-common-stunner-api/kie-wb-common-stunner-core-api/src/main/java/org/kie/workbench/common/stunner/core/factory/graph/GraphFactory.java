@@ -21,4 +21,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 
 public interface GraphFactory<C> extends ElementFactory<C, Graph<C, Node>> {
 
+    double DEFAULT_WIDTH = 1400d;
+    double DEFAULT_HEIGHT = 600d;
+
 }

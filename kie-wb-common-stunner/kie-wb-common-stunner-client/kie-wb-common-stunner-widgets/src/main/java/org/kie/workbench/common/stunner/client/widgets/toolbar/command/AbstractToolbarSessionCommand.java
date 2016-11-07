@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
+import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommandCallback;
@@ -139,6 +140,11 @@ public abstract class AbstractToolbarSessionCommand<S extends ClientSession, C e
 
     public String getUuid() {
         return uuid;
+    }
+
+    @Override
+    public IconRotate getIconRotate() {
+        return IconRotate.NONE;
     }
 
     @Override

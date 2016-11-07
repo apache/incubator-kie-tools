@@ -101,7 +101,11 @@ public class ProjectDiagramEditorTest {
     @Mock
     UndoSessionCommand sessionUndoCommand;
     @Mock
+    RedoSessionCommand sessionRedoCommand;
+    @Mock
     ValidateSessionCommand sessionValidateCommand;
+    @Mock
+    RefreshSessionCommand sessionRefreshCommand;
 
     @Mock
     AbstractClientFullSession fullSession;
@@ -121,7 +125,9 @@ public class ProjectDiagramEditorTest {
         when( sessionCommandFactory.newSwitchGridCommand() ).thenReturn( sessionSwitchGridCommand );
         when( sessionCommandFactory.newDeleteSelectedElementsCommand() ).thenReturn( sessionDeleteSelectionCommand );
         when( sessionCommandFactory.newUndoCommand() ).thenReturn( sessionUndoCommand );
+        when( sessionCommandFactory.newRedoCommand() ).thenReturn( sessionRedoCommand );
         when( sessionCommandFactory.newValidateCommand() ).thenReturn( sessionValidateCommand );
+        when( sessionCommandFactory.newRefreshSessionCommand() ).thenReturn( sessionRefreshCommand );
         when( clientSessionManager.newFullSession() ).thenReturn( fullSession );
         when( clientSessionPresenter.getView() ).thenReturn( clientSessionPresenterView );
         this.tested = new ProjectDiagramEditorStub( view, placeManager, errorPopupPresenter,
@@ -143,7 +149,9 @@ public class ProjectDiagramEditorTest {
         verify( sessionClearCommand, times( 1 ) ).bind( eq( fullSession ) );
         verify( sessionDeleteSelectionCommand, times( 1 ) ).bind( eq( fullSession ) );
         verify( sessionUndoCommand, times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionRedoCommand, times( 1 ) ).bind( eq( fullSession ) );
         verify( sessionValidateCommand, times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionRefreshCommand, times( 1 ) ).bind( eq( fullSession ) );
     }
 
     // TODO: @Test - versionRecordManager is not being set.

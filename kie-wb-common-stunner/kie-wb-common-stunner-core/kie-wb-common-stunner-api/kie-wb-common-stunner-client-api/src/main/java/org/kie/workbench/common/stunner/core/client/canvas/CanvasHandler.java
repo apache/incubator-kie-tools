@@ -41,7 +41,13 @@ public interface CanvasHandler<D extends Diagram, C extends Canvas> {
     C getCanvas();
 
     /**
-     * Destroy whatever canvas handler state present, it will be no longer used.
+     * Clears the canvas and the the diagram's state, but does not destroy this handler instance.
+     * It can further be re-initialized in order to handle other canvas/diagram instances.
+     */
+    CanvasHandler<D, C> clear();
+
+    /**
+     * Destroys whatever canvas handler state is present and all its members' states, it will be no longer used.
      */
     void destroy();
 

@@ -21,10 +21,10 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommandCallback;
+import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -32,9 +32,22 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+// TODO: I18n.
 @ApplicationScoped
 public class ProjectDiagramEditorMenuItemsBuilder {
+
+    private final MenuDevCommandsBuilder menuDevCommandsBuilder;
+
+    protected ProjectDiagramEditorMenuItemsBuilder() {
+        this( null );
+    }
+
+    @Inject
+    public ProjectDiagramEditorMenuItemsBuilder( final MenuDevCommandsBuilder menuDevCommandsBuilder ) {
+        this.menuDevCommandsBuilder = menuDevCommandsBuilder;
+    }
 
     public MenuItem newClearSelectionItem( final Command command ) {
         return buildItem( buildClearSelectionItem( command ) );
@@ -114,6 +127,33 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         }};
     }
 
+    public MenuItem newRedoItem( final Command command ) {
+        return buildItem( buildRedoItem( command ) );
+    }
+
+    private IsWidget buildRedoItem( final Command command ) {
+        return new Button() {{
+            setSize( ButtonSize.SMALL );
+            setIcon( IconType.UNDO );
+            setIconRotate( IconRotate.ROTATE_180 );
+            setTitle( "Redo" );
+            addClickHandler( clickEvent -> command.execute() );
+        }};
+    }
+
+    public MenuItem newRefreshItem( final Command command ) {
+        return buildItem( buildRefreshItem( command ) );
+    }
+
+    private IsWidget buildRefreshItem( final Command command ) {
+        return new Button() {{
+            setSize( ButtonSize.SMALL );
+            setIcon( IconType.REFRESH );
+            setTitle( "Refresh" );
+            addClickHandler( clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command ) );
+        }};
+    }
+
     public MenuItem newValidateItem( final Command command ) {
         return buildItem( buildValidateItem( command ) );
     }
@@ -127,12 +167,12 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         }};
     }
 
-    public MenuItem newDevItems( final Command switchLogLevelCommand,
-                                 final Command logGraphCommand,
-                                 final Command logCommandHistoryCommand,
-                                 final Command logSessionCommand ) {
-        return buildItem( buildDevItems( switchLogLevelCommand, logGraphCommand,
-                logCommandHistoryCommand, logSessionCommand ) );
+    public boolean isDevItemsEnabled() {
+        return menuDevCommandsBuilder.isEnabled();
+    }
+
+    public MenuItem newDevItems() {
+        return menuDevCommandsBuilder.build();
     }
 
     private IsWidget buildDevItems( final Command switchLogLevelCommand,

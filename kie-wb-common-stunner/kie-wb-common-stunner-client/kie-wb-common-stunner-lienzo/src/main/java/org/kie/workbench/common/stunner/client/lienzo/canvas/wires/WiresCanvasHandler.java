@@ -26,7 +26,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.processing.index.IncrementalIndexBuilder;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
+import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 
@@ -42,7 +45,7 @@ public class WiresCanvasHandler<D extends Diagram, C extends WiresCanvas> extend
                                final ClientFactoryService clientFactoryServices,
                                final GraphRulesManager rulesManager,
                                final GraphUtils graphUtils,
-                               final IncrementalIndexBuilder indexBuilder,
+                               final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
                                final ShapeManager shapeManager,
                                final Event<CanvasElementAddedEvent> canvasElementAddedEvent,
                                final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,

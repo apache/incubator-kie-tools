@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.command.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
@@ -59,7 +60,7 @@ public final class MorphCanvasNodeCommand extends AbstractCanvasGraphCommand {
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public CommandResult<CanvasViolation> doExecute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> doCanvasExecute( final AbstractCanvasHandler context ) {
         // Keep undo metadata.
         final Object definition = candidate.getContent().getDefinition();
         this.oldMorphTarget = context.getClientDefinitionManager()
@@ -126,12 +127,11 @@ public final class MorphCanvasNodeCommand extends AbstractCanvasGraphCommand {
     }
 
     @Override
-    public CommandResult<CanvasViolation> doUndo( final AbstractCanvasHandler context ) {
+    protected AbstractCanvasCommand buildUndoCommand( final AbstractCanvasHandler context ) {
         final ShapeFactory factory = ShapeUtils.getDefaultShapeFactory( context, candidate );
-        final MorphCanvasNodeCommand command =
-                new MorphCanvasNodeCommand( candidate, morphDefinition, oldMorphTarget, factory );
-        return command.execute( context );
+        return new MorphCanvasNodeCommand( candidate, morphDefinition, oldMorphTarget, factory );
     }
+
 
     @Override
     @SuppressWarnings( "unchecked" )

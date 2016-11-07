@@ -24,64 +24,121 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 
-public interface CanvasCommandFactory {
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-    AddCanvasNodeCommand ADD_NODE( Node candidate, ShapeFactory factory );
+@ApplicationScoped
+public class CanvasCommandFactory {
 
-    AddCanvasEdgeCommand ADD_EDGE( Node parent, Edge candidate, ShapeFactory factory );
+    private final TreeWalkTraverseProcessor treeWalkTraverseProcessor;
 
-    DeleteCanvasNodeCommand DELETE_NODE( Node candidate );
+    protected CanvasCommandFactory() {
+        this.treeWalkTraverseProcessor = null;
+    }
 
-    DeleteCanvasEdgeCommand DELETE_EDGE( Edge candidate );
+    @Inject
+    public CanvasCommandFactory( final TreeWalkTraverseProcessor treeWalkTraverseProcessor ) {
+        this.treeWalkTraverseProcessor = treeWalkTraverseProcessor;
+    }
 
-    DrawCanvasCommand DRAW();
+    public AddCanvasNodeCommand ADD_NODE( Node candidate, ShapeFactory factory ) {
+        return new AddCanvasNodeCommand( candidate, factory );
+    }
 
-    ClearCanvasCommand CLEAR_CANVAS();
+    public AddCanvasEdgeCommand ADD_EDGE( Node parent, Edge candidate, ShapeFactory factory ) {
+        return new AddCanvasEdgeCommand( parent, candidate, factory );
+    }
 
-    AddCanvasChildEdgeCommand ADD_CHILD_EDGE( Node parent,
-                                              Node candidate );
+    public DeleteCanvasNodeCommand DELETE_NODE( Node candidate ) {
+        return new DeleteCanvasNodeCommand( candidate );
+    }
 
-    DeleteCanvasChildEdgeCommand DELETE_CHILD_EDGE( Node parent,
-                                                    Node candidate );
+    public DeleteCanvasEdgeCommand DELETE_EDGE( Edge candidate ) {
+        return new DeleteCanvasEdgeCommand( candidate );
+    }
 
-    AddCanvasParentEdgeCommand ADD_PARENT_EDGE( Node parent,
-                                                Node candidate );
+    public DrawCanvasCommand DRAW() {
+        return new DrawCanvasCommand( treeWalkTraverseProcessor );
+    }
 
-    DeleteCanvasParentEdgeCommand DELETE_PARENT_EDGE( Node parent,
-                                                      Node candidate );
+    public ClearCanvasCommand CLEAR_CANVAS() {
+        return new ClearCanvasCommand();
+    }
 
-    AddCanvasDockEdgeCommand ADD_DOCK_EDGE( Node parent,
-                                            Node candidate );
+    public AddCanvasChildEdgeCommand ADD_CHILD_EDGE( final Node parent, final Node candidate ) {
+        return new AddCanvasChildEdgeCommand( parent, candidate );
+    }
 
-    DeleteCanvasDockEdgeCommand DELETE_DOCK_EDGE( Node parent,
-                                                  Node candidate );
+    public DeleteCanvasChildEdgeCommand DELETE_CHILD_EDGE( final Node parent, final Node candidate ) {
+        return new DeleteCanvasChildEdgeCommand( parent, candidate );
+    }
 
-    UpdateCanvasElementPositionCommand UPDATE_POSITION( Element element,
-                                                        Double x,
-                                                        Double y );
+    public AddCanvasParentEdgeCommand ADD_PARENT_EDGE( Node parent,
+                                                       Node candidate ) {
+        return new AddCanvasParentEdgeCommand( parent, candidate );
+    }
 
-    UpdateCanvasElementPropertyCommand UPDATE_PROPERTY( Element element,
-                                                        String propertyId,
-                                                        Object value );
+    public DeleteCanvasParentEdgeCommand DELETE_PARENT_EDGE( final Node parent, final Node candidate ) {
+        return new DeleteCanvasParentEdgeCommand( parent, candidate );
+    }
 
-    UpdateCanvasElementPropertiesCommand UPDATE_PROPERTIES( Element element );
+    public AddCanvasDockEdgeCommand ADD_DOCK_EDGE( final Node parent,
+                                                   final Node candidate ) {
+        return new AddCanvasDockEdgeCommand( parent, candidate );
+    }
 
-    AddCanvasChildNodeCommand ADD_CHILD_NODE( Node parent, Node candidate, ShapeFactory factory );
+    public DeleteCanvasDockEdgeCommand DELETE_DOCK_EDGE( final Node parent,
+                                                         final Node candidate ) {
+        return new DeleteCanvasDockEdgeCommand( parent, candidate );
+    }
 
-    AddCanvasDockedNodeCommand ADD_DOCKED_NODE( Node parent, Node candidate, ShapeFactory factory );
+    public UpdateCanvasElementPositionCommand UPDATE_POSITION( final Element<?> element,
+                                                               final Double x,
+                                                               final Double y ) {
+        return new UpdateCanvasElementPositionCommand( element, x, y );
+    }
 
-    SetCanvasConnectionSourceNodeCommand SET_SOURCE_NODE( Node<? extends View<?>, Edge> node,
-                                                          Edge<? extends View<?>, Node> edge,
-                                                          int magnetIndex );
+    public UpdateCanvasElementPropertyCommand UPDATE_PROPERTY( final Element element,
+                                                               final String propertyId,
+                                                               final Object value ) {
+        return new UpdateCanvasElementPropertyCommand( element, propertyId, value );
+    }
 
-    SetCanvasConnectionTargetNodeCommand SET_TARGET_NODE( Node<? extends View<?>, Edge> node,
-                                                          Edge<? extends View<?>, Node> edge,
-                                                          int magnetIndex );
+    public UpdateCanvasElementPropertiesCommand UPDATE_PROPERTIES( final Element element ) {
+        return new UpdateCanvasElementPropertiesCommand( element );
+    }
 
-    MorphCanvasNodeCommand MORPH_NODE( Node<? extends Definition<?>, Edge> candidate,
-                                       MorphDefinition morphDefinition,
-                                       String morphTarget,
-                                       ShapeFactory factory );
+    public AddCanvasChildNodeCommand ADD_CHILD_NODE( final Node parent,
+                                                     final Node candidate,
+                                                     final ShapeFactory factory ) {
+        return new AddCanvasChildNodeCommand( parent, candidate, factory );
+    }
+
+    public AddCanvasDockedNodeCommand ADD_DOCKED_NODE( final Node parent,
+                                                       final Node candidate,
+                                                       final ShapeFactory factory ) {
+        return new AddCanvasDockedNodeCommand( parent, candidate, factory );
+    }
+
+    public SetCanvasConnectionSourceNodeCommand SET_SOURCE_NODE( final Node<? extends View<?>, Edge> node,
+                                                                 final Edge<? extends View<?>, Node> edge,
+                                                                 final int magnetIndex ) {
+        return new SetCanvasConnectionSourceNodeCommand( node, edge, magnetIndex );
+    }
+
+    public SetCanvasConnectionTargetNodeCommand SET_TARGET_NODE( final Node<? extends View<?>, Edge> node,
+                                                                 final Edge<? extends View<?>, Node> edge,
+                                                                 final int magnetIndex ) {
+        return new SetCanvasConnectionTargetNodeCommand( node, edge, magnetIndex );
+    }
+
+    public MorphCanvasNodeCommand MORPH_NODE( final Node<? extends Definition<?>, Edge> candidate,
+                                              final MorphDefinition morphDefinition,
+                                              final String morphTarget,
+                                              final ShapeFactory factory ) {
+        return new MorphCanvasNodeCommand( candidate, morphDefinition, morphTarget, factory );
+    }
 
 }

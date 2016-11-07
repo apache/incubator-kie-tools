@@ -18,11 +18,16 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.CommandUtils;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 import java.util.Collection;
@@ -57,13 +62,29 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
     protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
         // Check if rules are present.
         if ( null == context.getRulesManager() ) {
-            return GraphCommandResultBuilder.RESULT_OK;
+            return GraphCommandResultBuilder.SUCCESS;
         }
         return doCheck( context );
     }
 
+    protected Graph<?, Node> getGraph( final GraphCommandExecutionContext context ) {
+        return GraphUtils.getGraph( context );
+    }
+
+    protected Node<?, Edge> getNode( final GraphCommandExecutionContext context, final String uuid ) {
+        return GraphUtils.getNode( context, uuid );
+    }
+
+    protected Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context, final String uuid ) {
+        final  Node<?, Edge> e = getNode( context, uuid );
+        if ( null == e ) {
+            throw new BadCommandArgumentsException( this, uuid, "Node not found for [" + uuid + "]." );
+        }
+        return e;
+    }
+
     private EmptyRulesCommandExecutionContext buildEmptyExecutionContext( final GraphCommandExecutionContext context ) {
         return new EmptyRulesCommandExecutionContext( context.getDefinitionManager(),
-                context.getFactoryManager() );
+                context.getFactoryManager(), context.getGraphIndex() );
     }
 }

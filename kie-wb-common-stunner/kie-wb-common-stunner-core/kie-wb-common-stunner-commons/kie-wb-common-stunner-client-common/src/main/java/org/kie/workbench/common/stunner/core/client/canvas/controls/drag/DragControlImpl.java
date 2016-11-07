@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.DragEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.CommandUtils;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 import javax.enterprise.context.Dependent;
@@ -66,7 +66,9 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
                 @Override
                 public void end( final DragEvent event ) {
                     final double[] xy = getContainerXY( shape );
-                    CommandResult<CanvasViolation> result = canvasCommandManager.execute( canvasHandler, canvasCommandFactory.UPDATE_POSITION( element, xy[ 0 ], xy[ 1 ] ) );
+                    CommandResult<CanvasViolation> result = canvasCommandManager
+                            .execute( canvasHandler, canvasCommandFactory
+                                    .UPDATE_POSITION( element, xy[ 0 ], xy[ 1 ] ) );
                     if ( CommandUtils.isError( result ) ) {
                         // TODO: DragContext#reset
                     }

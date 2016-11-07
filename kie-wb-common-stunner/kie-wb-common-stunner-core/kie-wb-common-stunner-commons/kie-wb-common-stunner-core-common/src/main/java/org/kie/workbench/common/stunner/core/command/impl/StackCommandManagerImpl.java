@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.command.impl;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.CommandUtils;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.command.HasCommandManagerListener;
 import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
 import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManagerListener;
@@ -30,8 +30,12 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
+
+    private static Logger LOGGER = Logger.getLogger( StackCommandManagerImpl.class.getName() );
 
     private final BatchCommandManager<C, V> batchCommandManager;
     private final CommandRegistry<Command<C, V>> registry;
@@ -58,12 +62,14 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
     @Override
     public CommandResult<V> allow( final C context,
                                    final Command<C, V> command ) {
+        LOGGER.log( Level.FINE, "Evaluating (allow) command [" + command + "]..." );
         return batchCommandManager.allow( context, command );
     }
 
     @Override
     public CommandResult<V> execute( final C context,
                                      final Command<C, V> command ) {
+        LOGGER.log( Level.FINE, "Executing command [" + command + "]..." );
         CommandResult<V> result = batchCommandManager.execute( context, command );
         if ( null != _listener ) {
             _listener.onExecute( context, command, result );
@@ -74,6 +80,7 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
 
     @Override
     public CommandResult<V> undo( C context, Command<C, V> command ) {
+        LOGGER.log( Level.FINE, "Undoing command [" + command + "]..." );
         CommandResult<V> result = batchCommandManager.undo( context, command );
         if ( null != _listener ) {
             _listener.onUndo( context, command, result );
@@ -85,12 +92,14 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
 
     @Override
     public BatchCommandManager<C, V> batch( final Command<C, V> command ) {
+        LOGGER.log( Level.FINE, "Batch [" + command + "]" );
         return batchCommandManager.batch( command );
     }
 
     @Override
     public BatchCommandResult<V> executeBatch( final C context ) {
         final List<Command<C, V>> batchCommands = new LinkedList<>( batchCommandManager.getBatchCommands() );
+        LOGGER.log( Level.FINE, "Executing batch commands: " ); logCommands( "--", batchCommands );
         final BatchCommandResult<V> result = batchCommandManager.executeBatch( context );
         if ( null != _listener ) {
             _listener.onExecuteBatch( context, batchCommands, result );
@@ -99,9 +108,16 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
         return result;
     }
 
+    private void logCommands( final String preffix, final Collection<Command<C, V>> commands ) {
+        if ( null != commands ) {
+            commands.stream().forEach( command ->   LOGGER.log( Level.FINE, preffix + " [" + command + "]" ) );
+        }
+    }
+
     @Override
     public BatchCommandResult<V> undoBatch( final C context ) {
         final List<Command<C, V>> batchCommands = new LinkedList<>( batchCommandManager.getBatchCommands() );
+        LOGGER.log( Level.FINE, "Undoing batch commands: " ); logCommands( "ç--", batchCommands );
         final BatchCommandResult<V> result = batchCommandManager.undoBatch( context );
         if ( null != _listener ) {
             _listener.onUndoBatch( context, batchCommands, result );
@@ -121,16 +137,15 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
         BatchCommandResult<V> result = null;
         final Iterable<Command<C, V>> lastEntry = registry.peek();
         if ( null != lastEntry ) {
+            LOGGER.log( Level.FINE, "Undoing commands: " );
             for ( final Command<C, V> c : lastEntry ) {
+                LOGGER.log( Level.FINE, "-- [" + c + "]" );
                 batchCommandManager.batch( c );
-
             }
             result = batchCommandManager.undoBatch( context );
             if ( !CommandUtils.isError( result ) ) {
                 registry.pop();
-
             }
-
         }
         return result;
     }
@@ -153,7 +168,7 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
                                final Command<C, V> command,
                                final CommandResult<V> result ) {
             if ( !CommandUtils.isError( result ) ) {
-                // Keep the just executed batched commands on this instance stack.
+                // Keep the just executed batched commands on this stack instance.
                 registry.register( command );
 
             }

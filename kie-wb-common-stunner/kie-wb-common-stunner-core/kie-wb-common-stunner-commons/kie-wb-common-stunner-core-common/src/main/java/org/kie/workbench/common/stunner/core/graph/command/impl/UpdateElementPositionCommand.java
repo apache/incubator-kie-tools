@@ -18,9 +18,14 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.exception.BoundsExceededException;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -39,22 +44,18 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
     private static Logger LOGGER = Logger.getLogger( UpdateElementPositionCommand.class.getName() );
 
-    private Element element;
-    private Double x;
-    private Double y;
+    private final String uuid;
+    private final Double x;
+    private final Double y;
     private Double oldX;
     private Double oldY;
 
-    public UpdateElementPositionCommand( @MapsTo( "element" ) Element element,
+    public UpdateElementPositionCommand( @MapsTo( "uuid" ) String uuid,
                                          @MapsTo( "x" ) Double x,
                                          @MapsTo( "y" ) Double y ) {
-        this.element = PortablePreconditions.checkNotNull( "element",
-                element );
-        ;
-        this.x = PortablePreconditions.checkNotNull( "x",
-                x );
-        this.y = PortablePreconditions.checkNotNull( "y",
-                y );
+        this.uuid = PortablePreconditions.checkNotNull( "uuid", uuid );
+        this.x = PortablePreconditions.checkNotNull( "x", x );
+        this.y = PortablePreconditions.checkNotNull( "y", y );
     }
 
     @Override
@@ -64,11 +65,13 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
     @Override
     protected CommandResult<RuleViolation> doCheck( GraphCommandExecutionContext context ) {
-        return GraphCommandResultBuilder.RESULT_OK;
+        checkNodeNotNull( context, uuid );
+        return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
+        final Element<?> element = checkNodeNotNull( context, uuid );
         final Double[] oldPosition = GraphUtils.getPosition( ( View ) element.getContent() );
         final Double[] oldSize = GraphUtils.getSize( ( View ) element.getContent() );
         this.oldX = oldPosition[ 0 ];
@@ -79,14 +82,26 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
                 new BoundImpl( x, y ),
                 new BoundImpl( x + w, y + h )
         );
+        checkBounds( context, newBounds );
         ( ( View ) element.getContent() ).setBounds( newBounds );
         LOGGER.log( Level.FINE, "Moving element bounds to [" + x + "," + y + "] [" + ( x + w ) + "," + ( y + h ) + "]" );
-        return GraphCommandResultBuilder.RESULT_OK;
+        return GraphCommandResultBuilder.SUCCESS;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private void checkBounds( final GraphCommandExecutionContext context,
+                             final Bounds bounds ) {
+        final Graph<DefinitionSet, Node> graph = ( Graph<DefinitionSet, Node> ) getGraph( context );
+        final Bounds graphBounds = graph.getContent().getBounds();
+        if ( ( bounds.getLowerRight().getX() > graphBounds.getLowerRight().getX() )
+            || ( bounds.getLowerRight().getY() > graphBounds.getLowerRight().getY() ) ) {
+            throw new BoundsExceededException( this, bounds, graphBounds.getLowerRight().getX(), graphBounds.getLowerRight().getY() );
+        }
     }
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand( element, oldX, oldY );
+        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand( uuid, oldX, oldY );
         return undoCommand.execute( context );
     }
 
@@ -98,9 +113,13 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
         return oldY;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
     @Override
     public String toString() {
-        return "UpdateElementPositionCommand [element=" + element.getUUID() + ", x=" + x + ", y=" + y + "]";
+        return "UpdateElementPositionCommand [element=" + uuid + ", x=" + x + ", y=" + y + "]";
     }
 
 }

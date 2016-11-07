@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
 import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManagerListener;
 import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
 import org.kie.workbench.common.stunner.core.command.delegate.BatchDelegateCommandManager;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
 import javax.enterprise.event.Event;
 import java.util.Collection;

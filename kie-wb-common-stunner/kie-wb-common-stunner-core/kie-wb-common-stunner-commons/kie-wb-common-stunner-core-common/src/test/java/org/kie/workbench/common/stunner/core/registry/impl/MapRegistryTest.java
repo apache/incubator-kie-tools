@@ -27,10 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class MapRegistryTest {
@@ -103,5 +101,21 @@ public class MapRegistryTest {
         assertEquals( s1, o1 );
         assertEquals( s2, o2 );
     }
+
+
+    @Test
+    public void testEmpty() {
+        when( map.isEmpty() ).thenReturn( true );
+        boolean empty = tested.isEmpty();
+        assertTrue( empty );
+    }
+
+    @Test
+    public void testNotEmpty() {
+        when( map.isEmpty() ).thenReturn( false );
+        boolean empty = tested.isEmpty();
+        assertFalse( empty );
+    }
+
 
 }

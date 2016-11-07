@@ -20,16 +20,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.platform.PlatformManager;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.session.event.*;
+import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class ClientSessionManagerImplTest {
@@ -39,6 +37,7 @@ public class ClientSessionManagerImplTest {
     @Mock EventSourceMock<SessionPausedEvent> sessionPausedEventMock;
     @Mock EventSourceMock<SessionResumedEvent> sessionResumedEventMock;
     @Mock EventSourceMock<SessionDisposedEvent> sessionDisposedEventMock;
+    @Mock EventSourceMock<OnSessionErrorEvent> sessionErrorEventMock;
     @Mock AbstractClientSession session;
     @Mock AbstractClientSession session1;
 
@@ -47,7 +46,8 @@ public class ClientSessionManagerImplTest {
     @Before
     public void setup() throws Exception {
         this.tested = new ClientSessionManagerImpl( platformManager, sessionOpenedEventMock,
-                sessionDisposedEventMock, sessionPausedEventMock, sessionResumedEventMock );
+                sessionDisposedEventMock, sessionPausedEventMock, sessionResumedEventMock,
+                sessionErrorEventMock );
     }
 
     @Test
@@ -56,6 +56,7 @@ public class ClientSessionManagerImplTest {
         verify( sessionOpenedEventMock, times( 1 ) ).fire( any( SessionOpenedEvent.class ) );
         verify( sessionPausedEventMock, times( 0 ) ).fire( any( SessionPausedEvent.class ) );
         verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
         verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
@@ -66,6 +67,7 @@ public class ClientSessionManagerImplTest {
         verify( sessionOpenedEventMock, times( 1 ) ).fire( any( SessionOpenedEvent.class ) );
         verify( sessionPausedEventMock, times( 1 ) ).fire( any( SessionPausedEvent.class ) );
         verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
         verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
@@ -76,6 +78,7 @@ public class ClientSessionManagerImplTest {
         verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
         verify( sessionPausedEventMock, times( 1 ) ).fire( any( SessionPausedEvent.class ) );
         verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
         verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
@@ -86,6 +89,7 @@ public class ClientSessionManagerImplTest {
         verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
         verify( sessionPausedEventMock, times( 1 ) ).fire( any( SessionPausedEvent.class ) );
         verify( sessionResumedEventMock, times( 1 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
         verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
@@ -96,7 +100,32 @@ public class ClientSessionManagerImplTest {
         verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
         verify( sessionPausedEventMock, times( 0 ) ).fire( any( SessionPausedEvent.class ) );
         verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
         verify( sessionDisposedEventMock, times( 1 ) ).fire( any( SessionDisposedEvent.class ) );
+    }
+
+    @Test
+    public void testHandleClientError() {
+        tested.current = session;
+        ClientRuntimeError error = mock( ClientRuntimeError.class );
+        tested.handleClientError( error );
+        verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
+        verify( sessionPausedEventMock, times( 0 ) ).fire( any( SessionPausedEvent.class ) );
+        verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock, times( 1 ) ).fire( any( OnSessionErrorEvent.class ) );
+        verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+    }
+
+    @Test
+    public void testHandleClientCommandError() {
+        tested.current = session;
+        CommandException error = mock( CommandException.class );
+        tested.handleCommandError( error );
+        verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
+        verify( sessionPausedEventMock, times( 0 ) ).fire( any( SessionPausedEvent.class ) );
+        verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock, times( 1 ) ).fire( any( OnSessionErrorEvent.class ) );
+        verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
 }

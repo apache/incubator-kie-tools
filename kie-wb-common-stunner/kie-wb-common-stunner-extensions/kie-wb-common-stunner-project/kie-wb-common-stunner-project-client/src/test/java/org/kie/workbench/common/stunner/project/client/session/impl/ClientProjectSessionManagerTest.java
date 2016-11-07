@@ -20,10 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.platform.PlatformManager;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.*;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramWorkbenchDocks;
 import org.mockito.Mock;
@@ -48,6 +45,8 @@ public class ClientProjectSessionManagerTest {
     @Mock
     EventSourceMock<SessionResumedEvent> sessionResumedEvent;
     @Mock
+    EventSourceMock<OnSessionErrorEvent> sessionErrorEvent;
+    @Mock
     AbstractClientSession session;
 
     private ClientProjectSessionManager tested;
@@ -55,7 +54,8 @@ public class ClientProjectSessionManagerTest {
     @Before
     public void setup() throws Exception {
         this.tested = new ClientProjectSessionManager( editorDocks, platformManager,
-                sessionOpenedEvent, sessionDisposedEvent, sessionPausedEvent, sessionResumedEvent );
+                sessionOpenedEvent, sessionDisposedEvent, sessionPausedEvent,
+                sessionResumedEvent, sessionErrorEvent );
     }
 
     @Test

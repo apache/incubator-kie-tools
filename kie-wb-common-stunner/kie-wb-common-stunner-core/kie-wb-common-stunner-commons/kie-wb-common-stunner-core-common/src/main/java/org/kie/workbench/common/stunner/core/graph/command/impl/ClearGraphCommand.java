@@ -18,12 +18,12 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 import java.util.Iterator;
 
@@ -35,16 +35,10 @@ import java.util.Iterator;
 @Portable
 public final class ClearGraphCommand extends AbstractGraphCommand {
 
-    private Graph target;
-    private String rootUUID;
+    private final String rootUUID;
 
-    public ClearGraphCommand( @MapsTo( "target" ) Graph target,
-                              @MapsTo( "rootUUID" ) String rootUUID ) {
-        this.target = PortablePreconditions.checkNotNull( "target",
-                target );
-        ;
+    public ClearGraphCommand( @MapsTo( "rootUUID" ) String rootUUID ) {
         this.rootUUID = rootUUID;
-        ;
     }
 
     @Override
@@ -57,35 +51,34 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
+            final Graph<?, Node> graph = getGraph( context );
             if ( hasRootUUID() ) {
-                Iterator<Node> nodes = target.nodes().iterator();
+                Iterator<Node> nodes = graph.nodes().iterator();
                 if ( null != nodes ) {
-                    while ( nodes.hasNext() ) {
-                        final Node node = nodes.next();
+                    nodes.forEachRemaining( node -> {
                         if ( !node.getUUID().equals( rootUUID ) ) {
+                            getMutableIndex( context ).removeNode( node );
                             nodes.remove();
-
                         } else {
                             // Clear outgoing edges for canvas root element.
+                            node.getOutEdges().stream().forEach( edge -> getMutableIndex( context ).removeEdge( ( Edge ) edge ) );
                             node.getOutEdges().clear();
-
                         }
-
-                    }
-
+                    } );
                 }
-
             } else {
-                target.clear();
-
+                graph.clear();
+                getMutableIndex( context ).clear();
             }
-
         }
         return results;
     }
 
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        return GraphCommandResultBuilder.RESULT_OK;
+        if ( hasRootUUID() ) {
+            checkNodeNotNull( context, rootUUID );
+        }
+        return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
@@ -99,6 +92,6 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
 
     @Override
     public String toString() {
-        return "ClearGraphCommand [target=" + target.getUUID() + "]";
+        return "ClearGraphCommand [rootUUID=" + rootUUID + "]";
     }
 }

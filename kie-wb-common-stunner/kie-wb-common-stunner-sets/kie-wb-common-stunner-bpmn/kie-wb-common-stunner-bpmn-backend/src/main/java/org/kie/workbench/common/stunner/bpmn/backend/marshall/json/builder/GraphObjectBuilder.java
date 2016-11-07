@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.factory.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
@@ -55,7 +56,7 @@ public interface GraphObjectBuilder<W, T extends Element<View<W>>> {
 
         void init( Graph<DefinitionSet, Node> graph );
 
-        Graph<DefinitionSet, Node> getGraph();
+        Index<?, ?> getIndex();
 
         Collection<GraphObjectBuilder<?, ?>> getBuilders();
 
