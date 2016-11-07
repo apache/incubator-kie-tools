@@ -41,6 +41,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLAct
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.IssueSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
@@ -51,6 +52,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.sync
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager.LinkFoundCallback;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,6 +68,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.*;
 import static org.junit.Assert.*;
@@ -131,6 +135,44 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     public void testOnUpdatedLockStatusEvent_NullFile() {
         final UpdatedLockStatusEvent event = mock( UpdatedLockStatusEvent.class );
         dtPresenter.onUpdatedLockStatusEvent( event );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOnIssueSelectedEvent_NullEvent() {
+        dtPresenter.onIssueSelectedEvent( null );
+
+        verify( renderer,
+                never() ).clearHighlights();
+        verify( renderer,
+                never() ).highlightRows( any( Severity.class ),
+                                         any( Set.class ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOnIssueSelectedEvent_ClearHighlightsWithDifferentTable() {
+        dtPresenter.onIssueSelectedEvent( new IssueSelectedEvent( mock( PlaceRequest.class ),
+                                                                  mock( Issue.class ) ) );
+
+        verify( renderer,
+                times( 1 ) ).clearHighlights();
+        verify( renderer,
+                never() ).highlightRows( any( Severity.class ),
+                                         any( Set.class ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOnIssueSelectedEvent_HighlightsRows() {
+        dtPresenter.onIssueSelectedEvent( new IssueSelectedEvent( dtPlaceRequest,
+                                                                  mock( Issue.class ) ) );
+
+        verify( renderer,
+                never() ).clearHighlights();
+        verify( renderer,
+                times( 1 ) ).highlightRows( any( Severity.class ),
+                                            any( Set.class ) );
     }
 
     @Test

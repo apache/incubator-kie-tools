@@ -29,9 +29,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.Util.*;
@@ -45,8 +47,18 @@ public class AnalysisReportScreenTest {
 
     @Mock
     private AnalysisReportScreenView view;
+
     @Mock
     private PlaceManager placeManager;
+
+    @Mock
+    private EventSourceMock<IssueSelectedEvent> issueSelectedEvent;
+
+    @Captor
+    private ArgumentCaptor<ListDataProvider<Issue>> listDataProviderArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<IssueSelectedEvent> issueSelectedEventCaptor;
 
     private ListDataProvider dataProvider;
 
@@ -54,8 +66,9 @@ public class AnalysisReportScreenTest {
     public void setUp() throws Exception {
 
         screen = new AnalysisReportScreen( view,
-                                           placeManager );
-        ArgumentCaptor<ListDataProvider> listDataProviderArgumentCaptor = ArgumentCaptor.forClass( ListDataProvider.class );
+                                           placeManager,
+                                           issueSelectedEvent );
+
         verify( view ).setPresenter( screen );
         verify( view ).setUpDataProvider( listDataProviderArgumentCaptor.capture() );
         dataProvider = listDataProviderArgumentCaptor.getValue();
@@ -115,9 +128,19 @@ public class AnalysisReportScreenTest {
         Issue issue2 = new Issue( Severity.WARNING, "something else", mock( ExplanationProvider.class ) );
         screen.showReport( getAnalysis( issue1, issue2 ) );
 
+        verify( issueSelectedEvent,
+                times( 1 ) ).fire( issueSelectedEventCaptor.capture() );
+        assertEquals( issue1,
+                      issueSelectedEventCaptor.getValue().getIssue() );
+
         screen.onSelect( issue2 );
 
         verify( view ).showIssue( issue2 );
+
+        verify( issueSelectedEvent,
+                times( 2 ) ).fire( issueSelectedEventCaptor.capture() );
+        assertEquals( issue2,
+                      issueSelectedEventCaptor.getValue().getIssue() );
     }
 
     @Test
@@ -158,6 +181,11 @@ public class AnalysisReportScreenTest {
 
         verify( view, never() ).showIssue( any( Issue.class ) );
         verify( view ).clearIssue();
+
+        verify( issueSelectedEvent,
+                times( 1 ) ).fire( issueSelectedEventCaptor.capture() );
+        assertEquals( Issue.EMPTY,
+                      issueSelectedEventCaptor.getValue().getIssue() );
     }
 
     private AnalysisReport getAnalysis( Issue... issues ) {

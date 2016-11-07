@@ -76,6 +76,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.sync
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.MetaDataColumnSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ModelSynchronizerImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.RowSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableRenderer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.EnumLoaderUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager;
@@ -237,6 +238,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     protected Clipboard clipboard = spy( new DefaultClipboard() );
 
     @Mock
+    protected GuidedDecisionTableRenderer renderer;
+
+    @Mock
     protected GuidedDecisionTableView view;
 
     @Mock
@@ -294,6 +298,11 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
             @Override
             void initialiseLockManager() {
                 //Do nothing for tests
+            }
+
+            @Override
+            GuidedDecisionTableRenderer makeViewRenderer() {
+                return renderer;
             }
 
             @Override

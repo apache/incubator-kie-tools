@@ -16,22 +16,32 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.themes;
 
+import java.util.Set;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.shared.core.types.ColorName;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableViewImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 public class GuidedDecisionTableRenderer extends BaseGridRenderer {
 
     private static final int HEADER_HEIGHT = 96;
+
+    private Severity rowHighlightSeverity;
+    private Set<Integer> rowHighlightRowIndexes;
 
     public GuidedDecisionTableRenderer( final GuidedDecisionTableUiModel uiModel,
                                         final GuidedDecisionTable52 model ) {
@@ -42,6 +52,25 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
     @Override
     public double getHeaderHeight() {
         return HEADER_HEIGHT;
+    }
+
+    @Override
+    public Group renderBody( final GridData model,
+                             final GridBodyRenderContext context,
+                             final BaseGridRendererHelper rendererHelper,
+                             final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
+        final Group body = super.renderBody( model,
+                                             context,
+                                             rendererHelper,
+                                             renderingInformation );
+        if ( !( rowHighlightRowIndexes == null || rowHighlightRowIndexes.isEmpty() ) ) {
+            renderRowHighlights( body,
+                                 model,
+                                 context,
+                                 rendererHelper,
+                                 renderingInformation );
+        }
+        return body;
     }
 
     @Override
@@ -113,6 +142,61 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
         g.add( dividerLine1 );
         g.add( dividerLine2 );
         return g;
+    }
+
+    public void highlightRows( final Severity rowHighlightSeverity,
+                               final Set<Integer> rowHighlightRowIndexes ) {
+        this.rowHighlightSeverity = rowHighlightSeverity;
+        this.rowHighlightRowIndexes = rowHighlightRowIndexes;
+    }
+
+    public void clearHighlights() {
+        this.rowHighlightSeverity = null;
+        this.rowHighlightRowIndexes = null;
+    }
+
+    void renderRowHighlights( final Group body,
+                              final GridData model,
+                              final GridBodyRenderContext context,
+                              final BaseGridRendererHelper rendererHelper,
+                              final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
+        rowHighlightRowIndexes.stream().forEach( ( rowIndex ) -> {
+            final int _rowIndex = rowIndex - 1;
+            final int _visibleRowIndex = _rowIndex - renderingInformation.getMinVisibleRowIndex();
+            if ( _rowIndex >= 0 && _rowIndex < model.getRowCount() ) {
+                if ( _visibleRowIndex >= 0 && _visibleRowIndex < model.getRowCount() ) {
+                    body.add( makeRowHighlight( _rowIndex,
+                                                _visibleRowIndex,
+                                                model,
+                                                context,
+                                                rendererHelper ) );
+                }
+            }
+        } );
+    }
+
+    Rectangle makeRowHighlight( final int _rowIndex,
+                                final int _visibleRowIndex,
+                                final GridData model,
+                                final GridBodyRenderContext context,
+                                final BaseGridRendererHelper rendererHelper ) {
+        final Rectangle r = new Rectangle( 0, 0 ).setAlpha( 0.3 ).setFillColor( ColorName.ORANGE ).setListening( false );
+        r.setY( rendererHelper.getRowOffset( _visibleRowIndex ) );
+        r.setWidth( rendererHelper.getWidth( context.getBlockColumns() ) );
+        r.setHeight( model.getRow( _rowIndex ).getHeight() );
+
+        switch ( rowHighlightSeverity ) {
+            case NOTE:
+                r.setFillColor( ColorName.LIGHTBLUE );
+                break;
+            case WARNING:
+                r.setFillColor( ColorName.ORANGE );
+                break;
+            case ERROR:
+                r.setFillColor( ColorName.RED );
+                break;
+        }
+        return r;
     }
 
 }

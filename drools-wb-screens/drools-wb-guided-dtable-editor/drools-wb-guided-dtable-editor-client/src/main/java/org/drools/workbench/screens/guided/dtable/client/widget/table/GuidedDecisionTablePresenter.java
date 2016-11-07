@@ -70,6 +70,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.D
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.IssueSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.auditlog.AuditLog;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
@@ -95,6 +96,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager;
 import org.drools.workbench.screens.guided.rule.client.util.GWTDateConverter;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -160,6 +162,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     private GuidedDecisionTableUiModel uiModel;
     private GuidedDecisionTableView view;
+    private GuidedDecisionTableRenderer renderer;
 
     private AuditLog auditLog;
 
@@ -357,6 +360,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         this.rm = new BRLRuleModel( model );
 
         this.uiModel = makeUiModel();
+        this.renderer = makeViewRenderer();
         this.view = makeView( workItemDefinitions );
 
         initialiseLockManager();
@@ -413,10 +417,14 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         };
     }
 
+    GuidedDecisionTableRenderer makeViewRenderer() {
+        return new GuidedDecisionTableRenderer( uiModel,
+                                                model );
+    }
+
     GuidedDecisionTableView makeView( final Set<PortableWorkDefinition> workItemDefinitions ) {
         return new GuidedDecisionTableViewImpl( uiModel,
-                                                new GuidedDecisionTableRenderer( uiModel,
-                                                                                 model ),
+                                                renderer,
                                                 this,
                                                 model,
                                                 oracle,
@@ -595,6 +603,26 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             }
             parent.onLockStatusUpdated( this );
         }
+    }
+
+    void onIssueSelectedEvent( final @Observes IssueSelectedEvent event ) {
+        if ( event == null ) {
+            return;
+        }
+        final PlaceRequest placeRequest = event.getPlaceRequest();
+        final Issue issue = event.getIssue();
+
+        if ( placeRequest == null || issue == null ) {
+            renderer.clearHighlights();
+
+        } else if ( !placeRequest.equals( this.getPlaceRequest() ) ) {
+            renderer.clearHighlights();
+
+        } else {
+            renderer.highlightRows( event.getIssue().getSeverity(),
+                                    event.getIssue().getRowNumbers() );
+        }
+        getView().batch();
     }
 
     @Override

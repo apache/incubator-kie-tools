@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -46,6 +47,7 @@ public class AnalysisReportScreen {
 
     private AnalysisReportScreenView view;
     private PlaceManager placeManager;
+    private Event<IssueSelectedEvent> issueSelectedEvent;
 
     private final ListDataProvider<Issue> dataProvider = new ListDataProvider<Issue>();
     private AnalysisReport currentReport;
@@ -55,9 +57,11 @@ public class AnalysisReportScreen {
 
     @Inject
     public AnalysisReportScreen( final AnalysisReportScreenView view,
-                                 final PlaceManager placeManager ) {
+                                 final PlaceManager placeManager,
+                                 final Event<IssueSelectedEvent> issueSelectedEvent ) {
         this.view = view;
         this.placeManager = placeManager;
+        this.issueSelectedEvent = issueSelectedEvent;
 
         view.setPresenter( this );
         view.setUpDataProvider( dataProvider );
@@ -84,9 +88,12 @@ public class AnalysisReportScreen {
         dataProvider.setList( getIssues( report ) );
 
         if ( dataProvider.getList().isEmpty() ) {
+            fireIssueSelectedEvent( Issue.EMPTY );
             view.clearIssue();
+
         } else {
-            view.showIssue( dataProvider.getList().get( 0 ) );
+            final Issue issue = dataProvider.getList().get( 0 );
+            onSelect( issue );
         }
     }
 
@@ -150,6 +157,12 @@ public class AnalysisReportScreen {
 
     public void onSelect( final Issue issue ) {
         view.showIssue( issue );
+        fireIssueSelectedEvent( issue );
+    }
+
+    void fireIssueSelectedEvent( final Issue issue ) {
+        issueSelectedEvent.fire( new IssueSelectedEvent( currentReport.getPlace(),
+                                                         issue ) );
     }
 
     public void showStatus( final Status status ) {
