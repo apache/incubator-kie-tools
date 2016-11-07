@@ -38,8 +38,7 @@
         <module>kie-wb-common-stunner-backend</module>
         <module>kie-wb-common-stunner-client</module>
         <module>kie-wb-common-stunner-sets</module>
-        <!-- Ignored for now.. since it causes kie-wb-common to have a dependency on drools-wb. See BSIG mailing list -->
-        <!-- <module>kie-wb-common-stunner-showcase</module> -->
+        <module>kie-wb-common-stunner-showcase</module>
     </modules>
 
     <build>

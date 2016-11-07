@@ -558,6 +558,21 @@
             <classifier>sources</classifier>
         </dependency>
 
+        <dependency>
+            <groupId>org.kie.workbench.services</groupId>
+            <artifactId>kie-wb-common-datamodel-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-workbench-models-datamodel-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-bpmn2</artifactId>
+        </dependency>
+
         <!-- UberFire Plugins Extension -->
 
         <dependency>
@@ -686,7 +701,7 @@
 
                 <compileSourcesArtifacts>
 
-                    <!-- UberFire -->
+                    <!-- UberFire, Errai & Drools. -->
                     <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
                     <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
                     <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
@@ -701,6 +716,8 @@
                     <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
                     <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
                     <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
+                    <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
+                    <compileSourcesArtifact>org.drools:drools-workbench-models-datamodel-api</compileSourcesArtifact>
 
                     <!-- UF-ext -->
                     <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>

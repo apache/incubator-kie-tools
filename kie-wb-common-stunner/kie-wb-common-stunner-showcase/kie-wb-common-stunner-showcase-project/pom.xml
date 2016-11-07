@@ -736,14 +736,23 @@
         </dependency>
 
         <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-wb-workitems-editor-client</artifactId>
-            <scope>provided</scope>
+            <groupId>org.kie.workbench.services</groupId>
+            <artifactId>kie-wb-common-datamodel-api</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.drools</groupId>
-            <artifactId>drools-wb-workitems-editor-backend</artifactId>
+            <artifactId>drools-workbench-models-datamodel-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.workbench.screens</groupId>
+            <artifactId>kie-wb-common-default-editor-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-bpmn2</artifactId>
         </dependency>
 
         <dependency>
@@ -766,6 +775,11 @@
         <dependency>
             <groupId>org.kie.workbench.screens</groupId>
             <artifactId>kie-wb-common-project-explorer-backend</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.workbench.screens</groupId>
+            <artifactId>kie-wb-common-project-editor-api</artifactId>
         </dependency>
 
         <dependency>
@@ -995,7 +1009,9 @@
                         <compileSourcesArtifact>org.uberfire:uberfire-security-management-client-wb</compileSourcesArtifact>
                         <compileSourcesArtifact>org.uberfire:uberfire-widgets-security-management</compileSourcesArtifact>
 
-                        <!-- Guvnor. -->
+                        <!-- Drools & Guvnor. -->
+                        <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
+                        <compileSourcesArtifact>org.drools:drools-workbench-models-datamodel-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-client</compileSourcesArtifact>
                         <compileSourcesArtifact>org.guvnor:guvnor-structure-api</compileSourcesArtifact>
@@ -1025,7 +1041,6 @@
                         <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-config-resource-widget</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-decorated-grid-widget</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-services-api</compileSourcesArtifact>
-                        <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-refactoring-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-java-editor-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-java-editor-client</compileSourcesArtifact>
