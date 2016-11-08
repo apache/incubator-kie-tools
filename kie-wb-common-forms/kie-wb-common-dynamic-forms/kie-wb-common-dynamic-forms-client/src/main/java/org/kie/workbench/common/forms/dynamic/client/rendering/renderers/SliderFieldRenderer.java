@@ -19,14 +19,9 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Row;
-import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.Slider;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.model.impl.basic.slider.SliderBase;
 
 @Dependent
@@ -42,10 +37,10 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBase> {
     @Override
     public void initInputWidget() {
         slider = new Slider( field.getMin().doubleValue(),
-                field.getMax().doubleValue(),
-                field.getPrecision().doubleValue(),
-                field.getStep().doubleValue() );
-        slider.setEnabled( !field.getReadonly() );
+                             field.getMax().doubleValue(),
+                             field.getPrecision().doubleValue(),
+                             field.getStep().doubleValue() );
+        slider.setEnabled( !field.getReadonly() && renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
     }
 
     @Override
@@ -54,31 +49,18 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBase> {
     }
 
     @Override
-    protected void addFormGroupContents( FormGroup group ) {
-        FormLabel label = new FormLabel();
-        label.setText( field.getLabel() );
-
-        label.setFor( slider.getId() );
-        group.add( label );
-
-        Row newRow = new Row();
-
-        Column column = new Column( ColumnSize.MD_12 );
-
-        column.add( slider );
-
-        newRow.add( column );
-
-        group.add( newRow );
-
-        HelpBlock helpBlock = new HelpBlock();
-        helpBlock.setId( getHelpBlokId( field ) );
-
-        group.add( helpBlock );
+    public IsWidget getPrettyViewWidget() {
+        initInputWidget();
+        return getInputWidget();
     }
 
     @Override
     public String getSupportedCode() {
         return SliderBase.CODE;
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        slider.setEnabled( !readOnly );
     }
 }

@@ -51,7 +51,7 @@ import java.util.Map.Entry;
  * @author Antoine Toulme
  * @author Surdilovic
  *         <p>
- *         a marshaller to transform BPMN 2.0 elements into JSON format.
+ *         a classLoader to transform BPMN 2.0 elements into JSON format.
  */
 public class Bpmn2JsonMarshaller {
 

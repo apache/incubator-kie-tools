@@ -19,14 +19,19 @@ package org.kie.workbench.common.forms.editor.client.editor.preview;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
@@ -36,6 +41,15 @@ public class PreviewFormPresenterViewImpl extends Composite implements PreviewFo
 
     @DataField
     private SimplePanel content = new SimplePanel();
+
+    @DataField
+    private InputElement editRadio = Document.get().createRadioInputElement( "renderMode" );
+
+    @DataField
+    private InputElement readOnlyRadio = Document.get().createRadioInputElement( "renderMode" );
+    @Inject
+    @DataField
+    private InputElement prettyRadio = Document.get().createRadioInputElement( "renderMode" );
 
     private DynamicFormRenderer formRenderer;
 
@@ -67,5 +81,20 @@ public class PreviewFormPresenterViewImpl extends Composite implements PreviewFo
     public void preview( FormRenderingContext context ) {
         formRenderer.render( context );
         modal.show();
+    }
+
+    @EventHandler("editRadio")
+    public void onEdit( ClickEvent clickEvent ) {
+        formRenderer.switchToMode( RenderMode.EDIT_MODE );
+    }
+
+    @EventHandler("readOnlyRadio")
+    public void onReadOnly( ClickEvent clickEvent ) {
+        formRenderer.switchToMode( RenderMode.READ_ONLY_MODE );
+    }
+
+    @EventHandler("prettyRadio")
+    public void onPretty( ClickEvent clickEvent ) {
+        formRenderer.switchToMode( RenderMode.PRETTY_MODE );
     }
 }

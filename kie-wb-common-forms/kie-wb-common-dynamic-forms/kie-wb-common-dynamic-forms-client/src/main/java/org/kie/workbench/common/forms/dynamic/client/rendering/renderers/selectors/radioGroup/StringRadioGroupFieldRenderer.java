@@ -22,6 +22,7 @@ import javax.enterprise.context.Dependent;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Radio;
@@ -51,13 +52,16 @@ public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<S
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        return new HTML();
+    }
+
+    @Override
     public String getSupportedCode() {
         return StringRadioGroupFieldDefinition.CODE;
     }
 
-
-
-    protected void refreshInput( Map<String, String> optionsValues, String defaultValue) {
+    protected void refreshInput( Map<String, String> optionsValues, String defaultValue ) {
         input.clear();
         for ( String key : optionsValues.keySet() ) {
             Radio radio;
@@ -73,11 +77,15 @@ public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<S
         }
     }
 
-
     protected SafeHtml getOptionLabel( String text ) {
         if ( text == null || text.isEmpty() ) {
             return SafeHtmlUtils.fromTrustedString( "&nbsp;" );
         }
         return SafeHtmlUtils.fromString( text );
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        input.getRadioChildren().forEach( radio -> radio.setEnabled( !readOnly ) );
     }
 }

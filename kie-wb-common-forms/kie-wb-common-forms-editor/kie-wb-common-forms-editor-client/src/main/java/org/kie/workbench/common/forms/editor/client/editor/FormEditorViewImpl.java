@@ -20,16 +20,12 @@ import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
-import org.gwtbootstrap3.client.ui.Button;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.forms.editor.client.editor.preview.PreviewFormPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
 
@@ -42,26 +38,15 @@ public class FormEditorViewImpl extends KieEditorViewImpl implements FormEditorP
 
     @Inject
     @DataField
-    private Button createHolder;
-
-    @Inject
-    @DataField
-    private Button preview;
-
-    @Inject
-    @DataField
     private FlowPanel editorContent;
 
     private TranslationService translationService;
 
-    private PreviewFormPresenter previewFormPresenter;
-
     private FormEditorPresenter presenter;
 
     @Inject
-    public FormEditorViewImpl( TranslationService translationService, PreviewFormPresenter previewFormPresenter ) {
+    public FormEditorViewImpl( TranslationService translationService ) {
         this.translationService = translationService;
-        this.previewFormPresenter = previewFormPresenter;
     }
 
     @Override
@@ -73,16 +58,6 @@ public class FormEditorViewImpl extends KieEditorViewImpl implements FormEditorP
     public void setupLayoutEditor( LayoutEditor layoutEditor ) {
         editorContent.clear();
         editorContent.add( layoutEditor.asWidget() );
-    }
-
-    @EventHandler( "createHolder" )
-    public void handleClick( ClickEvent event ) {
-        presenter.initDataObjectsTab();
-    }
-
-    @EventHandler( "preview" )
-    public void onPreview( ClickEvent event ) {
-        previewFormPresenter.preview( presenter.getRenderingContext() );
     }
 
     @Override

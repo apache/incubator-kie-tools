@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorHelper;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextRequest;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextResponse;
@@ -41,7 +41,7 @@ import org.uberfire.ext.layout.editor.client.api.*;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 
 @Dependent
-public class EditorFieldLayoutComponent extends FieldLayoutComponent<FormEditorRenderingContext> implements HasDragAndDropSettings,
+public class EditorFieldLayoutComponent extends FieldLayoutComponent implements HasDragAndDropSettings,
         HasModalConfiguration {
 
     public final String[] SETTINGS_KEYS = new String[] { FORM_ID, FIELD_ID};
@@ -74,7 +74,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent<FormEditorR
     private String formId;
 
     @Override
-    public void init( FormEditorRenderingContext renderingContext, FieldDefinition field ) {
+    public void init( FormRenderingContext renderingContext, FieldDefinition field ) {
         super.init( renderingContext, field );
         initPropertiesConfig();
     }
@@ -126,7 +126,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent<FormEditorR
 
             @Override
             public Path getPath() {
-                return renderingContext.getFormPath();
+                return ((FormEditorRenderingContext)renderingContext).getFormPath();
             }
         };
     }
@@ -238,7 +238,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent<FormEditorR
     }
 
     public void switchToField(String bindingExpression) {
-        if (field.getBindingExpression().equals( bindingExpression )) return;
+        if (field.getBinding().equals( bindingExpression )) return;
 
         FieldDefinition destField = editorHelper.switchToField( field, bindingExpression );
 
@@ -275,9 +275,5 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent<FormEditorR
         }
 
         renderContent();
-    }
-
-    public Path getFormPath() {
-        return renderingContext.getFormPath();
     }
 }

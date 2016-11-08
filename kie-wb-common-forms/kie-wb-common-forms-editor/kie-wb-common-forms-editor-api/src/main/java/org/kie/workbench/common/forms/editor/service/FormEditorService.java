@@ -20,21 +20,14 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.FormModel;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 
-import java.util.List;
-
 @Remote
 public interface FormEditorService extends SupportsUpdate<FormModelerContent>, SupportsRename, SupportsDelete {
-    Path createForm(Path path, String formName);
+    Path createForm( Path path, String formName, FormModel formModel );
 
     public FormModelerContent loadContent( Path path );
-
-    public List<String> getAvailableDataObjects( Path path );
-
-    public List<FieldDefinition> getAvailableFieldsForType( Path path, String holderName, String type );
-
-    FieldDefinition resetField( FormDefinition definition, FieldDefinition field, Path path);
 }

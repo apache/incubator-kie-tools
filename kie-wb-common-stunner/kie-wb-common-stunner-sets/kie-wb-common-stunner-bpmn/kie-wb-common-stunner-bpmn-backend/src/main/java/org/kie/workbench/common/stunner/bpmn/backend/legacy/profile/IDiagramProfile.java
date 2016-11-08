@@ -74,7 +74,7 @@ public interface IDiagramProfile {
     public Collection<String> getPlugins();
 
     /**
-     * @return a marshaller to transform the json into the final model.
+     * @return a classLoader to transform the json into the final model.
      */
     public IDiagramMarshaller createMarshaller();
 

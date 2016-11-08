@@ -19,28 +19,45 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relati
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.columns.ColumnGenerator;;
+import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.columns.ColumnGenerator;
 
 @ApplicationScoped
 public class ColumnGeneratorManager {
+
+    protected ColumnGenerator defaultColumnGenerator;
+
     protected Map<String, ColumnGenerator> generators = new HashMap<String, ColumnGenerator>();
+
+    @Inject
+    public ColumnGeneratorManager( @Default ColumnGenerator defaultColumnGenerator ) {
+        this.defaultColumnGenerator = defaultColumnGenerator;
+    }
 
     @PostConstruct
     protected void init() {
         Collection<SyncBeanDef<ColumnGenerator>> generatorDefs = IOC.getBeanManager().lookupBeans( ColumnGenerator.class );
         for ( SyncBeanDef<ColumnGenerator> generatorDef : generatorDefs ) {
             ColumnGenerator generator = generatorDef.getInstance();
-            generators.put( generator.getType(), generator );
+            if ( !defaultColumnGenerator.equals( generator ) ) {
+                generators.put( generator.getType(), generator );
+            }
         }
     }
 
     public ColumnGenerator getGeneratorByType( String type ) {
-        return generators.get( type );
+        ColumnGenerator generator = generators.get( type );
+
+        if ( generator != null ) {
+            return generator;
+        }
+
+        return defaultColumnGenerator;
     }
 }

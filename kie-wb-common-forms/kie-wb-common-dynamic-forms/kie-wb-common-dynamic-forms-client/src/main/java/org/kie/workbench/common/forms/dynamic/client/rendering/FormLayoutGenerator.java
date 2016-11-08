@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
@@ -64,7 +64,8 @@ public class FormLayoutGenerator extends AbstractLayoutGenerator {
         if ( dragComponent instanceof FieldLayoutComponent ) {
             FieldLayoutComponent fieldComponent = (FieldLayoutComponent) dragComponent;
 
-            FieldDefinition field = renderingContext.getRootForm().getFieldById( layoutComponent.getProperties().get( FieldLayoutComponent.FIELD_ID ) );
+            FieldDefinition field = renderingContext.getRootForm().getFieldById( layoutComponent.getProperties().get(
+                    FieldLayoutComponent.FIELD_ID ) );
             fieldComponent.init( renderingContext, field );
 
             layoutComponents.add( fieldComponent );

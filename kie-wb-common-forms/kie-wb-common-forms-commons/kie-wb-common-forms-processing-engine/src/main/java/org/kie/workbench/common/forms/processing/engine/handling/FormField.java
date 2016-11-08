@@ -19,11 +19,24 @@ package org.kie.workbench.common.forms.processing.engine.handling;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface FormField {
+    public static final String FORM_GROUP_SUFFIX = "_form_group";
+    public static final String HELP_BLOCK_SUFFIX = "_help_block";
+
     String getFieldName();
 
     String getFieldBinding();
 
     boolean isValidateOnChange();
+
+    boolean isBindable();
+
+    void setVisible( boolean visible );
+
+    void setReadOnly( boolean readOnly );
+
+    void clearError();
+
+    void setError( String error );
 
     IsWidget getWidget();
 }

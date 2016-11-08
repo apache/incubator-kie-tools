@@ -15,15 +15,16 @@
  */
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Legend;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
 import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
 
 @Dependent
@@ -48,27 +49,19 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
     }
 
     @Override
-    protected void addFormGroupContents( FormGroup group ) {
-        group.add( container );
-
-        HelpBlock helpBlock = new HelpBlock();
-        helpBlock.setId( getHelpBlokId( field ) );
-
-        group.add( helpBlock );
-    }
-
-    @Override
-    public boolean isFieldWellConfigured() {
+    protected List<String> getConfigErrors() {
+        List<String> configErrors = new ArrayList<>();
 
         if ( field.getColumnMetas() == null || field.getColumnMetas().size() == 0 ) {
-            return false;
-        } else if ( field.getCreationForm() == null || field.getCreationForm().isEmpty() ){
-            return false;
-        } else if ( field.getEditionForm() == null || field.getEditionForm().isEmpty() ){
-            return false;
+            configErrors.add( FormRenderingConstants.MultipleSubformNoColumns );
         }
-
-        return true;
+        if ( field.getCreationForm() == null || field.getCreationForm().isEmpty() ) {
+            configErrors.add( FormRenderingConstants.MultipleSubformNoCreationForm );
+        }
+        if ( field.getEditionForm() == null || field.getEditionForm().isEmpty() ) {
+            configErrors.add( FormRenderingConstants.MultipleSubformNoEditionForm );
+        }
+        return configErrors;
     }
 
     @Override
@@ -77,11 +70,18 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        initInputWidget();
+        return getInputWidget();
+    }
+
+    @Override
     public String getSupportedCode() {
         return MultipleSubFormFieldDefinition.CODE;
     }
 
-    public void setHtmlContent( String content ) {
-
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        subFormWidget.setReadOnly( readOnly );
     }
 }

@@ -25,12 +25,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
-import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 
-@Dependent
 @Templated
 public class SubFormWidget extends Composite implements TakesValue<Object>, IsNestedModel {
 
@@ -74,5 +74,9 @@ public class SubFormWidget extends Composite implements TakesValue<Object>, IsNe
 
     public void unBind() {
         formRenderer.unBind();
+    }
+
+    public void setReadOnly( boolean readOnly ) {
+        formRenderer.switchToMode( readOnly ? RenderMode.READ_ONLY_MODE : RenderMode.EDIT_MODE );
     }
 }

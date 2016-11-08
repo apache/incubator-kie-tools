@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
@@ -48,7 +49,17 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBase> {
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        return new HTML();
+    }
+
+    @Override
     public String getSupportedCode() {
         return TextBoxBase.CODE;
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        textBox.setEnabled( !readOnly );
     }
 }

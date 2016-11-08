@@ -16,22 +16,23 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayerFactory;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayerWidgetAware;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.configError.ConfigErrorFormGroupDisplayer;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.processing.engine.handling.imp.FieldStyleHandlerImpl;
 
 public abstract class FieldRenderer<F extends FieldDefinition> {
 
     protected FormRenderingContext renderingContext;
     protected F field;
+    protected DefaultDynamicFormField formField = null;
+    protected FormGroupDisplayer group;
 
     public void init( FormRenderingContext renderingContext, F field ) {
         this.renderingContext = renderingContext;
@@ -39,44 +40,63 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
     }
 
     public IsWidget renderWidget() {
-        FormGroup group = new FormGroup();
-        group.getElement().setId( getFormGroupId( field ) );
+        FieldConfigStatus configStatus = checkFieldConfig();
 
-        if ( isFieldWellConfigured() ) {
-            initInputWidget();
-            addFormGroupContents( group );
+        if ( !configStatus.isWellConfigured() ) {
+            ConfigErrorFormGroupDisplayer errorGroup = FormGroupDisplayerFactory.getErrorGroup();
+
+            errorGroup.render( configStatus.getConfigErrors() );
+
+            group = errorGroup;
         } else {
-            group.setValidationState( ValidationState.ERROR );
-            HelpBlock helpBlock = new HelpBlock();
-            helpBlock.setIconType( IconType.WARNING );
-            helpBlock.setHTML( FormRenderingConstants.INSTANCE.unableToDisplayField() );
-            group.add( helpBlock );
+            IsWidget widget = null;
+
+            if ( renderingContext.getRenderMode().equals( RenderMode.PRETTY_MODE ) ) {
+                widget = getPrettyViewWidget();
+            } else {
+                initInputWidget();
+
+                widget = getInputWidget();
+            }
+
+            FormGroupDisplayerWidgetAware formGroup = FormGroupDisplayerFactory.getGeneratorForRenderer(
+                    renderingContext,
+                    this );
+
+            formGroup.render( widget.asWidget(), field );
+
+            group = formGroup;
+
+            formField = new DefaultDynamicFormField( field, widget.asWidget() ) {
+                @Override
+                protected void doSetReadOnly( boolean readOnly ) {
+                    if ( renderingContext.getRenderMode().equals( RenderMode.PRETTY_MODE ) ) {
+                        return;
+                    }
+                    FieldRenderer.this.setReadOnly( readOnly );
+                }
+            };
+
+            formField.setReadOnly( renderingContext.getRenderMode().equals( RenderMode.READ_ONLY_MODE ) );
         }
         return group;
     }
 
-    protected void addFormGroupContents( FormGroup group ) {
-        FormLabel label = new FormLabel();
-        label.setText( field.getLabel() );
 
-        Widget input = getInputWidget().asWidget();
-
-        label.setFor( input.getElement().getId() );
-        group.add( label );
-        group.add( input );
-
-        HelpBlock helpBlock = new HelpBlock();
-        helpBlock.setId( getHelpBlokId( field ) );
-
-        group.add( helpBlock );
+    public DefaultDynamicFormField getFormField() {
+        return formField;
     }
 
     public F getField() {
         return field;
     }
 
-    public boolean isFieldWellConfigured() {
-        return true;
+    protected FieldConfigStatus checkFieldConfig() {
+        return new FieldConfigStatus( getConfigErrors() );
+    }
+
+    protected List<String> getConfigErrors() {
+        return null;
     }
 
     public abstract String getName();
@@ -85,20 +105,26 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
 
     public abstract IsWidget getInputWidget();
 
+    public abstract IsWidget getPrettyViewWidget();
+
     public abstract String getSupportedCode();
 
-    protected String getFormGroupId( F field ) {
-        return generateRelatedId( field, FieldStyleHandlerImpl.FORM_GROUP_SUFFIX );
-    }
+    protected abstract void setReadOnly( boolean readOnly );
 
-    protected String getHelpBlokId( F field ) {
-        return generateRelatedId( field, FieldStyleHandlerImpl.HELP_BLOCK_SUFFIX );
-    }
+    protected class FieldConfigStatus {
 
-    private String generateRelatedId( F field, String suffix ) {
-        if ( field == null ) {
-            return "";
+        protected List<String> configErrors;
+
+        public FieldConfigStatus( List<String> configErrors ) {
+            this.configErrors = configErrors;
         }
-        return field.getName() + suffix;
+
+        public List<String> getConfigErrors() {
+            return configErrors;
+        }
+
+        public boolean isWellConfigured() {
+            return configErrors == null || configErrors.isEmpty();
+        }
     }
 }

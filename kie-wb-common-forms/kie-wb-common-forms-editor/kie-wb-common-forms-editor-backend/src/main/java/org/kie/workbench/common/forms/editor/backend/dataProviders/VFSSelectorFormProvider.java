@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SystemSelectorDataProvider;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.editor.service.VFSFormFinderService;
 import org.kie.workbench.common.forms.model.FieldDefinition;

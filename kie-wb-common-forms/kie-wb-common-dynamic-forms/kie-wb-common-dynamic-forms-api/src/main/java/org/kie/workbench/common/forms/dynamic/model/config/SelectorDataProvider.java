@@ -17,7 +17,7 @@
 package org.kie.workbench.common.forms.dynamic.model.config;
 
 
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 
 public interface SelectorDataProvider {
 

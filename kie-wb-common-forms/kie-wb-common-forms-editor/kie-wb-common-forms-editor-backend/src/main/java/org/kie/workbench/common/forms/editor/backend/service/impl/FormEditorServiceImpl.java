@@ -30,21 +30,19 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.workbench.common.forms.editor.backend.service.util.DataModellerFieldGenerator;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.FormCreatorService;
-import org.kie.workbench.common.forms.editor.service.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.editor.service.FormEditorService;
 import org.kie.workbench.common.forms.editor.service.VFSFormFinderService;
-import org.kie.workbench.common.forms.model.DataHolder;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.service.FieldManager;
-import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.forms.service.FormModelHandler;
+import org.kie.workbench.common.forms.service.FormModelHandlerManager;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,11 +68,9 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
-    protected DataModelerService dataModelerService;
-
     protected FieldManager fieldManager;
 
-    protected DataModellerFieldGenerator fieldGenerator;
+    protected FormModelHandlerManager modelHandlerManager;
 
     protected KieProjectService projectService;
 
@@ -89,9 +85,8 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                                   User identity,
                                   SessionInfo sessionInfo,
                                   Event<ResourceOpenedEvent> resourceOpenedEvent,
-                                  DataModelerService dataModelerService,
                                   FieldManager fieldManager,
-                                  DataModellerFieldGenerator fieldGenerator,
+                                  FormModelHandlerManager modelHandlerManager,
                                   KieProjectService projectService,
                                   FormDefinitionSerializer formDefinitionSerializer,
                                   FormCreatorService formCreatorService,
@@ -100,9 +95,8 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         this.identity = identity;
         this.sessionInfo = sessionInfo;
         this.resourceOpenedEvent = resourceOpenedEvent;
-        this.dataModelerService = dataModelerService;
         this.fieldManager = fieldManager;
-        this.fieldGenerator = fieldGenerator;
+        this.modelHandlerManager = modelHandlerManager;
         this.projectService = projectService;
         this.formDefinitionSerializer = formDefinitionSerializer;
         this.formCreatorService = formCreatorService;
@@ -118,13 +112,15 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
     private CommentedOptionFactory commentedOptionFactory;
 
     @Override
-    public Path createForm( Path path, String formName ) {
+    public Path createForm( Path path, String formName, FormModel formModel ) {
         org.uberfire.java.nio.file.Path kiePath = Paths.convert( path ).resolve(formName);
         try {
             if (ioService.exists(kiePath)) {
                 throw new FileAlreadyExistsException(kiePath.toString());
             }
             FormDefinition form = formCreatorService.getNewFormInstance();
+
+            form.setModel( formModel );
 
             form.setName( formName.substring( 0, formName.lastIndexOf( "." ) ) );
 
@@ -171,28 +167,23 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
             result.setRenderingContext( context );
 
-            if (!form.getDataHolders().isEmpty()) {
-                DataModel model = dataModelerService.loadModel( projectService.resolveProject( path ) );
+
+            if ( form.getModel() != null ) {
+
+                FormModelHandler formModelHandler = getHandlerForForm( form, path );
+
+                List<FieldDefinition> modelFields = formModelHandler.getAllFormModelFields();
 
                 Map<String, List<FieldDefinition>> availableFields = new HashMap<String, List<FieldDefinition>>();
+                List<FieldDefinition> availableModelFields = new ArrayList<>();
 
-                for ( DataHolder holder : form.getDataHolders() ) {
+                availableFields.put( form.getModel().getName(), availableModelFields );
 
-                    List<FieldDefinition> availableHolderFields = new ArrayList<FieldDefinition>(  );
-                    availableFields.put( holder.getName(), availableHolderFields );
-
-                    if ( model != null ) {
-                        DataObject dataObject = model.getDataObject( holder.getType() );
-                        if ( dataObject != null ) {
-                            List<FieldDefinition> holderFields = fieldGenerator.getFieldsFromDataObject( holder.getName(), dataObject );
-                            for ( FieldDefinition field : holderFields ) {
-                                if ( form.getFieldByName( field.getName() ) == null ) {
-                                    availableHolderFields.add( field );
-                                }
-                            }
-                        }
+                modelFields.forEach( fieldDefinition -> {
+                    if ( form.getFieldByName( fieldDefinition.getName() ) == null ) {
+                        availableModelFields.add( fieldDefinition );
                     }
-                }
+                } );
 
                 result.setAvailableFields(availableFields);
             }
@@ -232,48 +223,11 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         return form;
     }
 
-    @Override
-    public List<String> getAvailableDataObjects( Path path ) {
-        List<String>  result = new ArrayList<String>(  );
-        DataModel model = dataModelerService.loadModel( projectService.resolveProject( path ) );
+    protected FormModelHandler getHandlerForForm( FormDefinition form, Path path ) {
+        FormModelHandler handler = modelHandlerManager.getFormModelHandler( form.getModel().getClass() );
 
-        if (model != null) {
-            for (DataObject dataObject : model.getDataObjects()) {
-                if ( !isDataObjectBanned( dataObject )) {
-                    result.add( dataObject.getClassName() );
-                }
-            }
-        }
+        handler.init( form.getModel(), path );
 
-        return result;
-    }
-
-    protected boolean isDataObjectBanned( DataObject dataObject ) {
-        return false;
-    }
-
-    @Override
-    public List<FieldDefinition> getAvailableFieldsForType( Path path, String holderName, String type ) {
-        DataModel model = dataModelerService.loadModel( projectService.resolveProject( path ) );
-
-        if (model != null) {
-            DataObject dataObject = model.getDataObject( type );
-            if (dataObject != null) {
-                return fieldGenerator.getFieldsFromDataObject( holderName, dataObject );
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public FieldDefinition resetField(FormDefinition definition, FieldDefinition field, Path path) {
-        DataHolder holder = definition.getDataHolderByName(field.getModelName());
-        DataModel model = dataModelerService.loadModel(projectService.resolveProject(path));
-
-        if ( model != null ) {
-            return fieldGenerator.resetFieldDefinition(field, model.getDataObject(holder.getType()));
-        }
-        return null;
+        return handler;
     }
 }

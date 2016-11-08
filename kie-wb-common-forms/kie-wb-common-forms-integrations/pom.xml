@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kie-wb-common-forms</artifactId>
+    <groupId>org.kie.workbench.forms</groupId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-forms-integrations</artifactId>
+  <name>Kie Workbench - Common - Forms - Integrations Module</name>
+  <description>Kie Workbench - Forms - Integration Module</description>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>kie-wb-common-forms-jbpm-integration</module>
+    <module>kie-wb-common-forms-data-modeller-integration</module>
+  </modules>
+
+</project>

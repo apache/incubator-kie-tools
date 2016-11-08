@@ -15,12 +15,29 @@
  */
 package org.kie.workbench.common.forms.commons.layout;
 
+import java.util.List;
+
+import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
+/**
+ * Component to generate LayoutTemplates for FormDefinition
+ */
 public interface FormLayoutTemplateGenerator {
 
-    LayoutTemplate generateLayoutTemplate( FormDefinition formDefinition );
+    /**
+     * Generates a default LayoutTemplate for the given FormDefinition.
+     */
+    void generateLayoutTemplate( FormDefinition formDefinition );
 
-    public abstract String getDraggableType();
+    /**
+     * Returns the DragabbleType type name that is going to be use on the layout.
+     */
+    public String getDraggableType();
+
+    /**
+     * Updates the current layout to add the newFields.
+     */
+    void updateLayoutTemplate( FormDefinition form, List<FieldDefinition> newFields );
 }

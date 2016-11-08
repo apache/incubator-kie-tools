@@ -27,7 +27,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FormLayoutGenerator;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Dependent
@@ -60,10 +60,7 @@ public class DynamicFormRendererViewImpl extends Composite implements DynamicFor
     @Override
     public void bind() {
         for ( FieldLayoutComponent fieldComponent : layoutGenerator.getLayoutFields() ) {
-            FieldDefinition field = fieldComponent.getField();
-            Widget input = fieldComponent.getFieldRenderer().getInputWidget().asWidget();
-
-            presenter.bind( input, field );
+            presenter.bind( fieldComponent.getFieldRenderer() );
         }
     }
 

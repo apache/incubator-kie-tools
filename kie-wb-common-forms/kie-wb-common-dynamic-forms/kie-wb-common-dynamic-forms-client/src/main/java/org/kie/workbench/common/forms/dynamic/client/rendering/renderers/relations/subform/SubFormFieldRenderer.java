@@ -16,17 +16,18 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Legend;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
 
 @Dependent
@@ -42,30 +43,31 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
         container.clear();
         container.add( new Legend( field.getLabel() ) );
         container.add( subFormWidget );
-        if ( renderingContext != null && field.getNestedForm() != null) {
+        if ( renderingContext != null && field.getNestedForm() != null ) {
             FormRenderingContext nestedContext = renderingContext.getCopyFor( field.getNestedForm(), null );
             subFormWidget.render( nestedContext );
         }
     }
 
     @Override
-    protected void addFormGroupContents( FormGroup group ) {
-        group.add( container );
+    protected List<String> getConfigErrors() {
+        List<String> configErrors = new ArrayList<>();
 
-        HelpBlock helpBlock = new HelpBlock();
-        helpBlock.setId( getHelpBlokId( field ) );
-
-        group.add( helpBlock );
-    }
-
-    @Override
-    public boolean isFieldWellConfigured() {
-        return field.getNestedForm() != null && !field.getNestedForm().isEmpty();
+        if ( field.getNestedForm() == null || field.getNestedForm().isEmpty() ) {
+            configErrors.add( FormRenderingConstants.SubFormNoForm );
+        }
+        return configErrors;
     }
 
     @Override
     public IsWidget getInputWidget() {
         return subFormWidget;
+    }
+
+    @Override
+    public IsWidget getPrettyViewWidget() {
+        initInputWidget();
+        return getInputWidget();
     }
 
     @Override
@@ -78,7 +80,8 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
         return SubFormFieldDefinition.CODE;
     }
 
-    public void setHtmlContent( String template ) {
-        //TODO: REMOVE
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        subFormWidget.setReadOnly( readOnly );
     }
 }

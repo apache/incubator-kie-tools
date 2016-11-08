@@ -25,9 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
-import org.kie.workbench.common.forms.processing.engine.handling.imp.FieldChangeHandlerManagerImpl;
-import org.kie.workbench.common.forms.processing.engine.handling.imp.FieldStyleHandlerImpl;
-import org.kie.workbench.common.forms.processing.engine.handling.imp.FormValidatorImpl;
 
 import static org.mockito.Mockito.*;
 
@@ -42,7 +39,7 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        FormValidatorImpl formValidator = new FormValidatorImpl( validator, new FieldStyleHandlerImpl() );
+        FormValidatorImpl formValidator = new FormValidatorImpl( validator );
 
         formValidator.setFormFieldProvider( formFieldProvider );
 

@@ -23,7 +23,8 @@ import com.google.gwt.dom.client.VideoElement;
 
 public class PictureWidgetDriver extends JavaScriptObject {
 
-    protected PictureWidgetDriver(){}
+    protected PictureWidgetDriver() {
+    }
 
     public static native PictureWidgetDriver create( VideoElement video, CanvasElement canvas, Element image ) /*-{
         return {
@@ -35,7 +36,7 @@ public class PictureWidgetDriver extends JavaScriptObject {
     }-*/;
 
     public final native void startStreaming( double width, double height ) /*-{
-        if ( this.streaming ) {
+        if (this.streaming) {
             @org.kie.workbench.common.forms.common.rendering.client.widgets.picture.widget.PictureWidgetDriver::stopStreaming(*)(this);
         }
 
@@ -49,7 +50,7 @@ public class PictureWidgetDriver extends JavaScriptObject {
             audio: false
         };
 
-        var callback = function( mediaStream ) {
+        var callback = function (mediaStream) {
 
             var video = this.video;
 
@@ -59,63 +60,63 @@ public class PictureWidgetDriver extends JavaScriptObject {
                     video.mozSrcObject = mediaStream;
                 } else {
                     var vendorURL = window.URL || window.webkitURL;
-                    video.src = vendorURL.createObjectURL( mediaStream );
+                    video.src = vendorURL.createObjectURL(mediaStream);
                 }
                 video.play();
-            } catch ( err ) {
+            } catch (err) {
                 // swallow error
             }
 
-        }.bind( this );
+        }.bind(this);
 
-        var errorCallback = function( err ) {
-            console.log( "An error occured! " + err );
+        var errorCallback = function (err) {
+            console.log("An error occured! " + err);
         };
 
         var navigator = $wnd.navigator;
 
-        if ( navigator.getUserMedia ) {
-            navigator.getUserMedia( settings, callback, errorCallback );
-        } else  if ( navigator.webkitGetUserMedia ) {
-            navigator.webkitGetUserMedia( settings, callback, errorCallback );
-        } else if ( navigator.mozGetUserMedia ) {
-            navigator.mozGetUserMedia( settings, callback, errorCallback );
-        } else if ( navigator.msGetUserMedia ) {
-            navigator.msGetUserMedia( settings, callback, errorCallback );
+        if (navigator.getUserMedia) {
+            navigator.getUserMedia(settings, callback, errorCallback);
+        } else if (navigator.webkitGetUserMedia) {
+            navigator.webkitGetUserMedia(settings, callback, errorCallback);
+        } else if (navigator.mozGetUserMedia) {
+            navigator.mozGetUserMedia(settings, callback, errorCallback);
+        } else if (navigator.msGetUserMedia) {
+            navigator.msGetUserMedia(settings, callback, errorCallback);
         }
 
-        this.video.addEventListener('canplay', function(ev) {
+        this.video.addEventListener('canplay', function (ev) {
             var video = this.video;
 
             var width = this.width;
 
             var height = video.videoHeight / (video.videoWidth / width);
 
-            if ( isNaN( height ) ) {
-                height = width / (4/3);
+            if (isNaN(height)) {
+                height = width / (4 / 3);
             }
 
-            video.setAttribute( 'width', width );
-            video.setAttribute( 'height', height );
+            video.setAttribute('width', width);
+            video.setAttribute('height', height);
 
             var canvas = this.canvas;
 
-            canvas.setAttribute( 'width', width );
-            canvas.setAttribute( 'height', height );
+            canvas.setAttribute('width', width);
+            canvas.setAttribute('height', height);
 
             var image = this.image;
-            image.setAttribute( 'width', width );
-            image.setAttribute( 'height', height );
-        }.bind( this ), false);
+            image.setAttribute('width', width);
+            image.setAttribute('height', height);
+        }.bind(this), false);
 
     }-*/;
 
     public final native String takePicture() /*-{
-        var context = this.canvas.getContext( '2d' );
-        if ( this.width && this.height) {
+        var context = this.canvas.getContext('2d');
+        if (this.width && this.height) {
             this.canvas.width = this.width;
             this.canvas.height = this.height;
-            context.drawImage( this.video, 0, 0, this.width, this.height );
+            context.drawImage(this.video, 0, 0, this.width, this.height);
 
             var data = this.canvas.toDataURL('image/png');
 
@@ -138,14 +139,14 @@ public class PictureWidgetDriver extends JavaScriptObject {
                 this.video.pause();
                 this.video.src = null;
             }
-            if ( this.stream != null ) {
-                this.stream.getTracks().forEach( function( track ) {
+            if (this.stream != null) {
+                this.stream.getTracks().forEach(function (track) {
                     track.stop()
-                } )
+                })
                 this.stream = null;
             }
-        } catch ( err ) {
-            console.log( "An error occured! " + err );
+        } catch (err) {
+            console.log("An error occured! " + err);
         }
     }-*/;
 

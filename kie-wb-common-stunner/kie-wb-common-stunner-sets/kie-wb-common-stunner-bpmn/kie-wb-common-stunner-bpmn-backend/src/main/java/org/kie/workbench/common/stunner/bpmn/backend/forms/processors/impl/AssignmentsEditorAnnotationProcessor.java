@@ -20,12 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.workbench.models.datamodel.oracle.Annotation;
-import org.kie.workbench.common.forms.dynamic.backend.server.impl.FieldSetting;
-import org.kie.workbench.common.forms.dynamic.backend.server.impl.processors.AbstractFieldAnnotationProcessor;
-import org.kie.workbench.common.forms.dynamic.service.TransformerContext;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.AbstractFieldAnnotationProcessor;
+import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssignmentsEditor;
-import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.AssignmentsEditorFieldProvider;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.AssignmentsEditorFieldProvider;
 
 @Dependent
 public class AssignmentsEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<AssignmentsEditorFieldDefinition, AssignmentsEditorFieldProvider> {

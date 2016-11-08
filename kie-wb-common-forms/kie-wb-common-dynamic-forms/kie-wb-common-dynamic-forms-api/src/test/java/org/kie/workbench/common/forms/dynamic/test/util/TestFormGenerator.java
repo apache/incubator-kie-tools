@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.dynamic.test.util;
 
 import java.util.Date;
 
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.test.model.Address;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -52,7 +52,7 @@ public class TestFormGenerator {
         name.setName( "name" );
         name.setLabel( "Name" );
         name.setPlaceHolder( "Name" );
-        name.setModelName( "name" );
+        name.setBinding( "name" );
         name.setStandaloneClassName( String.class.getName() );
 
         TextBoxFieldDefinition lastName = new TextBoxFieldDefinition();
@@ -60,14 +60,14 @@ public class TestFormGenerator {
         lastName.setName( "surname" );
         lastName.setLabel( "Surname" );
         lastName.setPlaceHolder( "SurName" );
-        lastName.setModelName( "surname" );
+        lastName.setBinding( "surname" );
         lastName.setStandaloneClassName( String.class.getName() );
 
         DatePickerFieldDefinition birthday = new DatePickerFieldDefinition();
         birthday.setId( "birthday" );
         birthday.setName( "birthday" );
         birthday.setLabel( "Birthday" );
-        birthday.setModelName( "birthday" );
+        birthday.setBinding( "birthday" );
         birthday.setStandaloneClassName( Date.class.getName() );
 
         TextBoxFieldDefinition age = new TextBoxFieldDefinition();
@@ -75,22 +75,21 @@ public class TestFormGenerator {
         age.setName( "age" );
         age.setLabel( "Age" );
         age.setPlaceHolder( "age" );
-        age.setModelName( "age" );
-        age.setBoundPropertyName( "value" );
+        age.setBinding( "age.value" );
         age.setStandaloneClassName( Integer.class.getName() );
 
         CheckBoxFieldDefinition married = new CheckBoxFieldDefinition();
         married.setId("married");
         married.setName( "married" );
         married.setLabel( "Married" );
-        married.setModelName( "married" );
+        married.setBinding( "married" );
         married.setStandaloneClassName( Boolean.class.getName() );
 
         SubFormFieldDefinition address = new SubFormFieldDefinition();
         address.setId( "address" );
         address.setName( "address" );
         address.setLabel( "Address" );
-        address.setModelName( "address" );
+        address.setBinding( "address" );
         address.setNestedForm( "Address" );
         address.setStandaloneClassName( Address.class.getName() );
 
@@ -114,7 +113,7 @@ public class TestFormGenerator {
         name.setName( "street" );
         name.setLabel( "Street Name" );
         name.setPlaceHolder( "Street Name" );
-        name.setModelName( "street" );
+        name.setBinding( "street" );
         name.setStandaloneClassName( String.class.getName() );
 
         TextBoxFieldDefinition num = new TextBoxFieldDefinition();
@@ -122,7 +121,7 @@ public class TestFormGenerator {
         num.setName( "num" );
         num.setLabel( "#" );
         num.setPlaceHolder( "#" );
-        num.setModelName( "num" );
+        num.setBinding( "num" );
         num.setStandaloneClassName( Integer.class.getName() );
 
 

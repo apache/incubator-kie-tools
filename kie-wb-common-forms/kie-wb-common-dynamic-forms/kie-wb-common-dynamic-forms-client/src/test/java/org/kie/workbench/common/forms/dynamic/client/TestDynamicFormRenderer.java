@@ -16,25 +16,18 @@
 
 package org.kie.workbench.common.forms.dynamic.client;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContextGeneratorService;
-import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 
 public class TestDynamicFormRenderer extends DynamicFormRenderer {
 
     protected Object model;
 
-    protected boolean binded = false;
-
     public TestDynamicFormRenderer( DynamicFormRendererView view,
                                     Caller<FormRenderingContextGeneratorService> transformerService,
-                                    FormHandler formHandler ) {
-        super( view, transformerService, formHandler );
-    }
-
-    @Override
-    protected void doBind( Widget input, FieldDefinition field ) {
+                                    FormHandler formHandler, MapModelBindingHelper helper ) {
+        super( view, transformerService, formHandler, helper );
     }
 }

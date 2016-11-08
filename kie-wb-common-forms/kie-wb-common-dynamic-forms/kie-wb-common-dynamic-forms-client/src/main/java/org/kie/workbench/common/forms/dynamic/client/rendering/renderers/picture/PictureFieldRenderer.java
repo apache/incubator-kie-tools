@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.picture.PictureInput;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.model.impl.basic.image.PictureFieldDefinition;
 
 @Dependent
@@ -42,6 +43,7 @@ public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition> 
     @Override
     public void initInputWidget() {
         pictureInput.init( field.getSize().getWidth(), field.getSize().getHeight() );
+        pictureInput.setReadOnly( field.getReadonly() || renderingContext.getRenderMode().equals( RenderMode.PRETTY_MODE ) );
     }
 
     @Override
@@ -50,7 +52,18 @@ public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition> 
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        initInputWidget();
+        return getInputWidget();
+    }
+
+    @Override
     public String getSupportedCode() {
         return PictureFieldDefinition.CODE;
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        pictureInput.setReadOnly( readOnly );
     }
 }

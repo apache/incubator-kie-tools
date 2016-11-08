@@ -77,7 +77,7 @@ public class PictureInput extends SimplePanel implements HasValue<String> {
         widget.setPictureUrl( value );
 
         if ( fireEvents ) {
-            ValueChangeEvent.fire(this, value);
+            ValueChangeEvent.fire( this, value );
         }
     }
 

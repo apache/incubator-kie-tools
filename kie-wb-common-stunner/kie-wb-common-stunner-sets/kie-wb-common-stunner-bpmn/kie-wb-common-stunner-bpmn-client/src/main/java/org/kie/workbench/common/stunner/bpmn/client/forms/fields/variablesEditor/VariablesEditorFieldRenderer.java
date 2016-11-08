@@ -64,6 +64,17 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        initInputWidget();
+        return getPrettyViewWidget();
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+
+    }
+
+    @Override
     public String getSupportedCode() {
         return VariablesEditorFieldDefinition.CODE;
     }

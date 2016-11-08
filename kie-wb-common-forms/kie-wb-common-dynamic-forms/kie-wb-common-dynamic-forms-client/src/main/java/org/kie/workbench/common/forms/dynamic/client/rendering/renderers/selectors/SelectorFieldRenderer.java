@@ -26,8 +26,8 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.forms.dynamic.client.config.ClientSelectorDataProviderManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
-import org.kie.workbench.common.forms.dynamic.service.BackendSelectorDataProviderService;
-import org.kie.workbench.common.forms.dynamic.service.SelectorDataProviderManager;
+import org.kie.workbench.common.forms.dynamic.service.shared.BackendSelectorDataProviderService;
+import org.kie.workbench.common.forms.dynamic.service.shared.SelectorDataProviderManager;
 import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorFieldBase;
 import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorOption;
 
@@ -41,7 +41,7 @@ public abstract class SelectorFieldRenderer<F extends SelectorFieldBase, O exten
 
     public void refreshSelectorOptions() {
         if ( field.getDataProvider() != null && !field.getDataProvider().isEmpty() ) {
-            if ( field.getDataProvider().startsWith( ClientSelectorDataProviderManager.PREFFIX )) {
+            if ( field.getDataProvider().startsWith( ClientSelectorDataProviderManager.PREFFIX ) ) {
                 refreshSelectorOptions( clientProviderManager.getDataFromProvider(
                         renderingContext,
                         field.getDataProvider() ) );
@@ -59,7 +59,7 @@ public abstract class SelectorFieldRenderer<F extends SelectorFieldBase, O exten
     }
 
     public void refreshSelectorOptions( List<O> options ) {
-        Map<T, String> optionsValues = new HashMap<>( );
+        Map<T, String> optionsValues = new HashMap<>();
         T defaultValue = null;
 
         for ( O option : options ) {

@@ -71,6 +71,17 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        initInputWidget();
+        return getInputWidget();
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+
+    }
+
+    @Override
     public void doSave() {
         view.doSave();
     }

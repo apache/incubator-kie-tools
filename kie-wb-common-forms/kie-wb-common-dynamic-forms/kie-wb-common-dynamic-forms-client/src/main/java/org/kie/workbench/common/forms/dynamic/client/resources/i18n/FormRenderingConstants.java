@@ -16,11 +16,19 @@
 
 package org.kie.workbench.common.forms.dynamic.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
-public interface FormRenderingConstants extends Messages {
-    public static final FormRenderingConstants INSTANCE = GWT.create(FormRenderingConstants.class);
+public interface FormRenderingConstants {
 
-    public String unableToDisplayField();
+    @TranslationKey( defaultValue = "" )
+    String MultipleSubformNoColumns = "MultipleSubform.noColumns";
+
+    @TranslationKey( defaultValue = "" )
+    String MultipleSubformNoCreationForm = "MultipleSubform.noCreationForm";
+
+    @TranslationKey( defaultValue = "" )
+    String MultipleSubformNoEditionForm = "MultipleSubform.noEditionForm";
+
+    @TranslationKey( defaultValue = "" )
+    String SubFormNoForm = "SubForm.noForm";
 }

@@ -27,12 +27,12 @@ public class FormResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "Form";
+        return "Form Definition";
     }
 
     @Override
     public String getDescription() {
-        return "Forms";
+        return "Form Definitions";
     }
 
     @Override

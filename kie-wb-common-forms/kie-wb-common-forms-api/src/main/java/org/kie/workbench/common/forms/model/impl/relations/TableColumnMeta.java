@@ -36,7 +36,7 @@ public class TableColumnMeta {
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.forms.editor.backend.dataProviders.BeanPropertiesProvider")
+            className = "org.kie.workbench.common.forms.data.modeller.dataProvider.BeanPropertiesProvider")
     @NotNull
     @NotEmpty
     private String property;

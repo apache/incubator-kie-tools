@@ -19,20 +19,19 @@ package org.kie.workbench.common.forms.dynamic.client.rendering;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormLayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
-
 @Dependent
-public class FieldLayoutComponent<T extends FormRenderingContext> implements FormLayoutComponent, LayoutDragComponent {
+public class FieldLayoutComponent implements FormLayoutComponent, LayoutDragComponent {
 
-    protected SimplePanel content = new SimplePanel();
+    protected FlowPanel content = new FlowPanel();
 
     @Inject
     protected FieldRendererManager fieldRendererManager;
@@ -44,9 +43,9 @@ public class FieldLayoutComponent<T extends FormRenderingContext> implements For
 
     protected FieldRenderer fieldRenderer;
 
-    protected T renderingContext;
+    protected FormRenderingContext renderingContext;
 
-    public void init( T renderingContext, FieldDefinition field ) {
+    public void init( FormRenderingContext renderingContext, FieldDefinition field ) {
         this.renderingContext = renderingContext;
 
         this.field = field;
@@ -66,19 +65,14 @@ public class FieldLayoutComponent<T extends FormRenderingContext> implements For
 
         String name = "";
 
-        if ( field.getModelName() != null ) {
-            if ( field.getBoundPropertyName() != null ) {
-                name = field.getBoundPropertyName();
-            } else {
-                name = field.getModelName();
-            }
+        if ( field.getBinding() != null ) {
+            name = field.getBinding();
         } else {
             name = translationService.getTranslation( fieldRenderer.getName() );
             if ( name == null || name.isEmpty() ) {
                 name = fieldRenderer.getName();
             }
         }
-
 
         return name;
     }
@@ -90,11 +84,11 @@ public class FieldLayoutComponent<T extends FormRenderingContext> implements For
 
     @Override
     public IsWidget getShowWidget( RenderingContext ctx ) {
-        return generateContent(ctx);
+        return generateContent( ctx );
     }
 
     protected IsWidget generateContent( RenderingContext ctx ) {
-        if ( fieldRenderer != null) {
+        if ( fieldRenderer != null ) {
             renderContent();
         }
 

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.columns.impl;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -24,6 +25,7 @@ import org.jboss.errai.databinding.client.HasProperties;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.columns.ColumnGenerator;
 
 @Dependent
+@Default
 public class StringColumnGenerator implements ColumnGenerator<String> {
 
     @Override

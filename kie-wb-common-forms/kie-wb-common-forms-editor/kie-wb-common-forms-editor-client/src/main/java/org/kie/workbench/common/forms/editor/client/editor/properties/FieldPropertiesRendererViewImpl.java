@@ -143,7 +143,7 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
         for ( int i = 0; i < fields.size(); i++ ) {
             String field = fields.get( i );
             fieldBinding.addItem( field );
-            if ( field.equals( helper.getCurrentField().getBindingExpression() )) {
+            if ( field.equals( helper.getCurrentField().getBinding() )) {
                 fieldBinding.setSelectedIndex( i );
             }
         }

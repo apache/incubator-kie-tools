@@ -22,10 +22,11 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContextGeneratorService;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
 import org.kie.workbench.common.forms.dynamic.test.util.TestFormGenerator;
 import org.kie.workbench.common.forms.model.FieldDefinition;
@@ -55,6 +56,9 @@ public class DynamicFormRendererTest extends TestCase {
 
     @Mock
     private FormHandler formHandler;
+
+    @Mock
+    private MapModelBindingHelper helper;
 
     private DynamicFormRenderer.DynamicFormRendererView view;
 
@@ -86,7 +90,7 @@ public class DynamicFormRendererTest extends TestCase {
         when( component.getFieldRenderer() ).thenReturn( fieldRenderer );
         when( fieldRenderer.getInputWidget() ).thenReturn( widget );
 
-        renderer = new TestDynamicFormRenderer( view, transformer, formHandler );
+        renderer = new TestDynamicFormRenderer( view, transformer, formHandler, helper );
         renderer.init();
         verify( view ).setPresenter( renderer );
         renderer.asWidget();

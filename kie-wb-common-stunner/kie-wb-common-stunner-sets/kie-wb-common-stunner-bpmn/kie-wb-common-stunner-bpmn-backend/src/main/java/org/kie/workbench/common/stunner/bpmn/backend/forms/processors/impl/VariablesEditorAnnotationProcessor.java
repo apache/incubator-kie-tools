@@ -20,12 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.drools.workbench.models.datamodel.oracle.Annotation;
-import org.kie.workbench.common.forms.dynamic.backend.server.impl.FieldSetting;
-import org.kie.workbench.common.forms.dynamic.backend.server.impl.processors.AbstractFieldAnnotationProcessor;
-import org.kie.workbench.common.forms.dynamic.service.TransformerContext;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.AbstractFieldAnnotationProcessor;
+import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.VariablesEditor;
-import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.VariablesEditorFieldProvider;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.VariablesEditorFieldProvider;
 
 @Dependent
 public class VariablesEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<VariablesEditorFieldDefinition, VariablesEditorFieldProvider> {

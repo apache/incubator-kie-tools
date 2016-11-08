@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.editor.service;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.forms.dynamic.service.AbstractFormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.AbstractFormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.backend.vfs.Path;
 

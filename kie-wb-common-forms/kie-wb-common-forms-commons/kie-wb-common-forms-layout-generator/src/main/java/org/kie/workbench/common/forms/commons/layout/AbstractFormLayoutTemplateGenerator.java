@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.forms.commons.layout;
 
+import java.util.List;
+
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormLayoutComponent;
@@ -27,23 +29,43 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 public abstract class AbstractFormLayoutTemplateGenerator implements FormLayoutTemplateGenerator {
 
     @Override
-    public LayoutTemplate generateLayoutTemplate( FormDefinition formDefinition ) {
-        LayoutTemplate template = new LayoutTemplate();
+    public void generateLayoutTemplate( FormDefinition formDefinition ) {
 
-        for ( FieldDefinition field : formDefinition.getFields() ) {
+        formDefinition.setLayoutTemplate( new LayoutTemplate() );
+
+        addFieldsToTemplate( formDefinition.getLayoutTemplate(), formDefinition.getFields(), formDefinition.getId() );
+    }
+
+    @Override
+    public void updateLayoutTemplate( FormDefinition form, List<FieldDefinition> newFields ) {
+
+        newFields.forEach( newField -> {
+            if ( form.getFieldById( newField.getId() ) == null ) {
+                form.getFields().add( newField );
+            }
+        } );
+
+        if ( form.getLayoutTemplate() == null || form.getLayoutTemplate().isEmpty() ) {
+            generateLayoutTemplate( form );
+            return;
+        }
+
+        addFieldsToTemplate( form.getLayoutTemplate(), newFields, form.getId() );
+    }
+
+    protected void addFieldsToTemplate( LayoutTemplate template, List<FieldDefinition> fields, String formId ) {
+        fields.forEach( field -> {
             LayoutComponent layoutComponent = new LayoutComponent( getDraggableType() );
-            layoutComponent.addProperty( FormLayoutComponent.FORM_ID, formDefinition.getId() );
+            layoutComponent.addProperty( FormLayoutComponent.FORM_ID, formId );
             layoutComponent.addProperty( FormLayoutComponent.FIELD_ID, field.getId() );
 
-            LayoutColumn column = new LayoutColumn("12");
+            LayoutColumn column = new LayoutColumn( "12" );
             column.add( layoutComponent );
 
             LayoutRow row = new LayoutRow();
             row.add( column );
 
             template.addRow( row );
-        }
-
-        return template;
+        } );
     }
 }

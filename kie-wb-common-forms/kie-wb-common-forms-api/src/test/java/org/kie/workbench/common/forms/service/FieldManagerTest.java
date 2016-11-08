@@ -125,11 +125,16 @@ public class FieldManagerTest extends TestCase {
     @Test
     public void testGettingAllProvidersDefinitions() {
         for ( BasicTypeFieldProvider provider : fieldManager.getAllBasicTypeProviders() ) {
-            for ( Class clazz : provider.getSupportedTypes() ) {
-                FieldTypeInfo typeInfo = new DefaultFieldTypeInfo( clazz.getName(), false, clazz.isEnum() );
+            for ( String className : provider.getSupportedTypes() ) {
+                try {
+                    Class clazz = Class.forName( className );
+                    FieldTypeInfo typeInfo = new DefaultFieldTypeInfo( clazz.getName(), false, clazz.isEnum() );
 
-                FieldDefinition fieldDefinition = fieldManager.getFieldFromProvider( provider.getProviderCode(), typeInfo );
-                assertNotNull( fieldDefinition );
+                    FieldDefinition fieldDefinition = fieldManager.getFieldFromProvider( provider.getProviderCode(), typeInfo );
+                    assertNotNull( fieldDefinition );
+                } catch ( ClassNotFoundException e ) {
+                    // swallow error caused by looking up simple types
+                }
             }
         }
     }

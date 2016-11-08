@@ -16,13 +16,19 @@
 
 package org.kie.workbench.common.forms.editor.client.editor.preview;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import static org.mockito.Mockito.*;
 
@@ -35,12 +41,25 @@ public class PreviewFormPresenterTest extends TestCase {
     @Mock
     private FormRenderingContext context;
 
+    @Mock
+    private FormDefinition form;
+
     private PreviewFormPresenter presenter;
 
 
     @Before
     public void init() {
         presenter = new PreviewFormPresenter( view );
+        when( form.getId() ).thenReturn( "randomId" );
+        when( context.getAvailableForms() ).thenAnswer( new Answer<Map<String, FormDefinition>>() {
+            @Override
+            public Map<String, FormDefinition> answer( InvocationOnMock invocation ) throws Throwable {
+                Map<String, FormDefinition> forms = new HashMap<>();
+                forms.put( form.getId(), form );
+                return forms;
+            }
+        } );
+        when( context.getRootForm() ).thenReturn( form );
     }
 
     @Test
@@ -49,7 +68,7 @@ public class PreviewFormPresenterTest extends TestCase {
 
         presenter.asWidget();
 
-        verify( view ).preview( context );
+        verify( view ).preview( any() );
 
         verify( view ).asWidget();
     }

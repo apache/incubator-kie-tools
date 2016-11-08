@@ -26,9 +26,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SystemSelectorDataProvider;
-import org.kie.workbench.common.forms.dynamic.service.BackendSelectorDataProviderService;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.SelectorDataProviderManager;
+import org.kie.workbench.common.forms.dynamic.service.shared.BackendSelectorDataProviderService;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.SelectorDataProviderManager;
 
 @Dependent
 public class SelectorProvidersProvider implements SystemSelectorDataProvider {

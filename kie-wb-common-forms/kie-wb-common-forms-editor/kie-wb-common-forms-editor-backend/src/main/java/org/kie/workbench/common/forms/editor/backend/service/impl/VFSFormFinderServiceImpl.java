@@ -25,8 +25,9 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.forms.editor.service.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.IsJavaModel;
+import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.forms.editor.service.VFSFormFinderService;
@@ -68,10 +69,12 @@ public class VFSFormFinderServiceImpl implements VFSFormFinderService {
         return findForms( path, new FormSearchConstraint() {
             @Override
             public boolean accepts( FormDefinition form ) {
-                if ( form.getDataHolders().size() != 1 ) {
-                    return false;
+
+                if ( form.getModel() instanceof IsJavaModel ) {
+                    return ((IsJavaModel) form.getModel()).getType().equals( typeName );
                 }
-                return form.getDataHolders().get( 0 ).getType().equals( typeName );
+
+                return false;
             }
         } );
     }

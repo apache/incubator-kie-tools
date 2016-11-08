@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.editor.client.editor.properties;
 import java.util.Collection;
 import java.util.List;
 
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.backend.vfs.Path;
 

@@ -27,6 +27,12 @@ public interface FormEditorConstants {
     String NewFormDefinitionlHandlerCreatingNewForm = "NewFormDefinitionlHandler.creatingNewForm";
 
     @TranslationKey( defaultValue = "" )
+    String NewFormDefinitionlHandlerSelectFormUse = "NewFormDefinitionlHandler.selectFormUse";
+
+    @TranslationKey( defaultValue = "" )
+    String FormDefinitionResourceTypeFormTypeShortName = "FormDefinitionResourceType.formTypeShortName";
+
+    @TranslationKey( defaultValue = "" )
     String FormDefinitionResourceTypeFormTypeDescription = "FormDefinitionResourceType.formTypeDescription";
 
     @TranslationKey( defaultValue = "" )

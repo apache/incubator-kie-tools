@@ -122,12 +122,12 @@ public class PictureWidgetViewImpl extends Composite implements PictureWidgetVie
     }
 
     @EventHandler( "takeAnotherPicture" )
-    public void takeAnoterPicture( ClickEvent clickEvent )  {
+    public void takeAnoterPicture( ClickEvent clickEvent ) {
         showCapturePicture();
     }
 
     @EventHandler( "takePicture" )
-    public void takePicture( ClickEvent clickEvent )  {
+    public void takePicture( ClickEvent clickEvent ) {
         if ( callback != null ) {
             String url = driver.takePicture();
             setPictureUrl( url );
@@ -157,9 +157,11 @@ public class PictureWidgetViewImpl extends Composite implements PictureWidgetVie
         if ( readOnly ) {
             takePicture.setVisible( false );
             takeAnotherPicture.setVisible( false );
+            showPicture();
         } else {
             takePicture.setVisible( true );
             takeAnotherPicture.setVisible( true );
+            initDisplay();
         }
     }
 

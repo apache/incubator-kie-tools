@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.forms.backend.processors.impl;
 
 import org.drools.workbench.models.datamodel.oracle.Annotation;
-import org.kie.workbench.common.forms.dynamic.backend.server.impl.FieldSetting;
-import org.kie.workbench.common.forms.dynamic.backend.server.impl.processors.AbstractFieldAnnotationProcessor;
-import org.kie.workbench.common.forms.dynamic.service.TransformerContext;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.AbstractFieldAnnotationProcessor;
+import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
 import org.kie.workbench.common.stunner.forms.service.fieldProviders.ColorPickerFieldProvider;

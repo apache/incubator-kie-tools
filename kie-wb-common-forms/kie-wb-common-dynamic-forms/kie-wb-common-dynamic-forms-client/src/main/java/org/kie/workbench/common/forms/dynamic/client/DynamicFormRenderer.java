@@ -26,14 +26,17 @@ import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
+import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContextGeneratorService;
+import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
+import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
-import org.kie.workbench.common.forms.processing.engine.handling.imp.FormFieldImpl;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.uberfire.mvp.Command;
 
@@ -57,13 +60,17 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
 
     private FormRenderingContext context;
 
+    private MapModelBindingHelper helper;
+
     @Inject
     public DynamicFormRenderer( DynamicFormRendererView view,
                                 Caller<FormRenderingContextGeneratorService> transformerService,
-                                FormHandler formHandler) {
+                                FormHandler formHandler,
+                                MapModelBindingHelper helper ) {
         this.view = view;
         this.transformerService = transformerService;
         this.formHandler = formHandler;
+        this.helper = helper;
     }
 
     @PostConstruct
@@ -92,6 +99,13 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
         Assert.notNull( "FormRenderingContext must not be null", context);
 
         this.context = context;
+
+        if ( context instanceof MapModelRenderingContext && context.getParentContext() == null ) {
+            MapModelRenderingContext mapContext = (MapModelRenderingContext) context;
+            helper.initContext( mapContext );
+            ( (MapModelRenderingContext) context ).setModel(  mapContext.getModel() );
+        }
+
         view.render( context );
         if ( context.getModel() != null ) {
             bind( context.getModel() );
@@ -106,14 +120,13 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
         }
     }
 
-    protected void bind( Widget input, FieldDefinition field ) {
-        doBind( input, field );
+    protected void bind( FieldRenderer renderer ) {
+        doBind( renderer );
     }
 
-    protected void doBind( Widget input, final FieldDefinition field ) {
-        if ( isInitialized() ) {
-            formHandler.registerInput( new FormFieldImpl( field.getName(),
-                    field.getBindingExpression(), field.getValidateOnChange(), input) );
+    protected void doBind( FieldRenderer renderer ) {
+        if ( isInitialized() &&  renderer.getFormField() != null) {
+            formHandler.registerInput( renderer.getFormField() );
         }
     }
 
@@ -158,6 +171,23 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
             return formHandler.getModel();
         }
         return null;
+    }
+
+    public void switchToMode( RenderMode renderMode ) {
+        Assert.notNull( "RenderMode cannot be null", renderMode );
+        RenderMode currentMode = context.getRenderMode();
+        if ( context != null && isInitialized() && !currentMode.equals( renderMode ) ) {
+
+            context.setRenderMode( renderMode );
+
+            if ( currentMode.equals( RenderMode.PRETTY_MODE )) {
+                render( context );
+            } else if ( renderMode.equals( RenderMode.PRETTY_MODE ) ) {
+                render( context );
+            } else {
+                formHandler.setReadOnly( RenderMode.READ_ONLY_MODE.equals( renderMode ) );
+            }
+        }
     }
 
     public boolean isValid() {

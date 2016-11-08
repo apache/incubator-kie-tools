@@ -50,6 +50,17 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        initInputWidget();
+        return getInputWidget();
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+
+    }
+
+    @Override
     public IsWidget getInputWidget() {
         return assignmentsEditor;
     }

@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.service.impl.fieldProviders;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.function.Predicate;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.model.impl.basic.selectors.listBox.ListBoxBase;
@@ -54,8 +55,8 @@ public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBase> {
             return new EnumListBoxFieldDefinition();
         }
 
-        for ( Class clazz : supportedTypes ) {
-            if ( clazz.getName().equals( typeInfo.getType() ) ) {
+        for ( String type : supportedTypes ) {
+            if ( type.equals( typeInfo.getType() ) ) {
                 return new StringListBoxFieldDefinition();
             }
         }

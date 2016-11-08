@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.forms.editor.client.editor.preview;
 
+import java.util.HashMap;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.forms.dynamic.service.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 
 @Dependent
 public class PreviewFormPresenter implements IsWidget {
@@ -38,7 +40,13 @@ public class PreviewFormPresenter implements IsWidget {
     }
 
     public void preview( FormRenderingContext context ) {
-        view.preview( context );
+
+        MapModelRenderingContext mapContext = new MapModelRenderingContext();
+        mapContext.getAvailableForms().putAll( context.getAvailableForms() );
+        mapContext.setRootForm( context.getRootForm() );
+        mapContext.setModel( new HashMap<>() );
+
+        view.preview( mapContext );
     }
 
     @Override

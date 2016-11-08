@@ -28,7 +28,7 @@ import org.kie.workbench.common.forms.service.FieldProvider;
 
 public abstract class BasicTypeFieldProvider<T extends FieldDefinition> implements FieldProvider<T> {
 
-    protected List<Class> supportedTypes = new ArrayList<>();
+    protected List<String> supportedTypes = new ArrayList<>();
 
     @PostConstruct
     protected void registerFields() {
@@ -39,11 +39,15 @@ public abstract class BasicTypeFieldProvider<T extends FieldDefinition> implemen
 
     protected abstract void doRegisterFields();
 
-    public Class[] getSupportedTypes() {
-        return supportedTypes.toArray( new Class[ supportedTypes.size() ] );
+    public String[] getSupportedTypes() {
+        return supportedTypes.toArray( new String[ supportedTypes.size() ] );
     }
 
     protected void registerPropertyType( Class type ) {
+        registerPropertyType( type.getName() );
+    }
+
+    protected void registerPropertyType( String type ) {
         Assert.notNull( "Type cannot be null", type );
 
         supportedTypes.add( type );
@@ -74,8 +78,8 @@ public abstract class BasicTypeFieldProvider<T extends FieldDefinition> implemen
     }
 
     protected boolean isSupported( FieldTypeInfo typeInfo ) {
-        for ( Class type : supportedTypes ) {
-            if ( type.getName().equals( typeInfo.getType() ) ) {
+        for ( String type : supportedTypes ) {
+            if ( type.equals( typeInfo.getType() ) ) {
                 return true;
             }
         }
@@ -83,6 +87,6 @@ public abstract class BasicTypeFieldProvider<T extends FieldDefinition> implemen
     }
 
     public boolean supports( Class clazz ) {
-        return Arrays.asList( getSupportedTypes() ).contains( clazz );
+        return supportedTypes.contains( clazz.getName() );
     }
 }

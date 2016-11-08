@@ -32,7 +32,7 @@ public class DefaultValueListBoxRenderer<T> implements Renderer<T> {
     @Override
     public String render( T value ) {
         if ( value == null ) return "";
-        if ( values == null || !values.containsKey( value )) return "";
+        if ( values == null || !values.containsKey( value ) ) return "";
 
         return values.get( value );
     }

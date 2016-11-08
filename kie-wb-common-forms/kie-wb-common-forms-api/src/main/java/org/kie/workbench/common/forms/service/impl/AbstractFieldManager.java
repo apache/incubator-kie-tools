@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,22 +26,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.enterprise.context.Dependent;
-
 import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldTypeInfo;
 import org.kie.workbench.common.forms.model.impl.relations.EntityRelationField;
 import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.service.FieldManager;
 import org.kie.workbench.common.forms.service.FieldProvider;
 import org.kie.workbench.common.forms.service.MultipleFieldProvider;
+import org.kie.workbench.common.forms.service.impl.fieldProviders.BasicTypeFieldProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Dependent
 public abstract class AbstractFieldManager implements FieldManager {
     private static transient Logger log = LoggerFactory.getLogger( FieldManager.class );
 
@@ -162,8 +160,8 @@ public abstract class AbstractFieldManager implements FieldManager {
             BasicTypeFieldProvider provider = (BasicTypeFieldProvider) providersByFieldCode.get( fieldDefinition.getCode() );
 
             Set result = new TreeSet();
-            for ( Class clazz : provider.getSupportedTypes() ) {
-                result.addAll( getCompatibleTypes( clazz ) );
+            for ( String className : provider.getSupportedTypes() ) {
+                result.addAll( getCompatibleTypes( className ) );
             }
             return result;
         }
@@ -222,11 +220,11 @@ public abstract class AbstractFieldManager implements FieldManager {
 
 
 
-    protected List<String> getCompatibleTypes( Class clazz ) {
+    protected List<String> getCompatibleTypes( String className ) {
         List<String> result = new ArrayList<>();
 
         for ( BasicTypeFieldProvider provider : basicProviders ) {
-            if ( provider.supports( clazz ) ) {
+            if ( Arrays.asList( provider.getSupportedTypes() ).contains( className ) )  {
                 result.add( provider.getProviderCode() );
             }
         }

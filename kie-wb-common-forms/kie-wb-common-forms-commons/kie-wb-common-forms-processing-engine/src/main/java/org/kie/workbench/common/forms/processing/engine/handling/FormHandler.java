@@ -95,4 +95,9 @@ public interface FormHandler<T> {
      * @param handler The handler, it must not be null.
      */
     void addFieldChangeHandler( String fieldName, FieldChangeHandler handler );;
+
+    /**
+     * Sets the form widgets into readOnly mode
+     */
+    void setReadOnly( boolean readOnly );
 }

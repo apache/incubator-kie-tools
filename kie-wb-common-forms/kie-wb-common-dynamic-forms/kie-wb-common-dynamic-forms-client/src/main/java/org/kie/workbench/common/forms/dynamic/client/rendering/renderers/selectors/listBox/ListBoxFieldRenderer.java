@@ -18,7 +18,9 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.Dependent;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.ValueListBox;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.util.DefaultValueListBoxRenderer;
@@ -26,6 +28,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selecto
 import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.model.impl.basic.selectors.listBox.ListBoxBase;
 
+@Dependent
 public class ListBoxFieldRenderer<F extends ListBoxBase, O extends SelectorOption<T>, T>
         extends SelectorFieldRenderer<F, O, T> {
 
@@ -39,7 +42,7 @@ public class ListBoxFieldRenderer<F extends ListBoxBase, O extends SelectorOptio
     }
 
     @Override
-    protected void refreshInput( Map<T, String> optionsValues, T defaultValue) {
+    protected void refreshInput( Map<T, String> optionsValues, T defaultValue ) {
         Set<T> values = optionsValues.keySet();
 
         if ( field.getRequired() ) {
@@ -63,6 +66,11 @@ public class ListBoxFieldRenderer<F extends ListBoxBase, O extends SelectorOptio
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        return new HTML();
+    }
+
+    @Override
     public IsWidget getInputWidget() {
         return widgetList;
     }
@@ -70,5 +78,10 @@ public class ListBoxFieldRenderer<F extends ListBoxBase, O extends SelectorOptio
     @Override
     public String getSupportedCode() {
         return ListBoxBase.CODE;
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        widgetList.setEnabled( !readOnly );
     }
 }

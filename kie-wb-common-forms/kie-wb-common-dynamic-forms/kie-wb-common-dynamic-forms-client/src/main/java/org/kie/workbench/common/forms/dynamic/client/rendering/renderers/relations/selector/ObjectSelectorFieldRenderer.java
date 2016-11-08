@@ -22,16 +22,13 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.extras.typeahead.client.base.Dataset;
 import org.gwtbootstrap3.extras.typeahead.client.base.SuggestionCallback;
-import org.kie.workbench.common.forms.common.rendering.client.util.masks.ClientMaskInterpreter;
+import org.kie.workbench.common.forms.common.rendering.client.widgets.flatViews.impl.ObjectFlatView;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.typeahead.BindableTypeAhead;
-import org.kie.workbench.common.forms.commons.rendering.shared.util.masks.MaskInterpreter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.model.impl.relations.ObjectSelectorFieldDefinition;
 
 @Dependent
 public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFieldDefinition> {
-
-    private MaskInterpreter maskInterpreter;
 
     @Inject
     protected BindableTypeAhead widget;
@@ -50,7 +47,6 @@ public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFie
 
     @Override
     public void initInputWidget() {
-        maskInterpreter = new ClientMaskInterpreter( field.getMask() );
         widget.init( field.getMask(), dataset );
     }
 
@@ -60,7 +56,17 @@ public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFie
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        return new ObjectFlatView( field.getMask() );
+    }
+
+    @Override
     public String getSupportedCode() {
         return ObjectSelectorFieldDefinition.CODE;
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        widget.setReadOnly( readOnly );
     }
 }

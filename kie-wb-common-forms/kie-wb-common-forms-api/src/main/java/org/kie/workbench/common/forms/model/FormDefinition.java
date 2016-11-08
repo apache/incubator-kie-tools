@@ -17,9 +17,11 @@
 package org.kie.workbench.common.forms.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
@@ -27,11 +29,18 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 public class FormDefinition {
     private String id;
     private String name;
+    private FormModel model;
 
-    private List<FieldDefinition> fields = new ArrayList<FieldDefinition>(  );
-    private List<DataHolder> dataHolders = new ArrayList<DataHolder>(  );
+    private List<FieldDefinition> fields = new ArrayList<FieldDefinition>();
 
     private LayoutTemplate layoutTemplate;
+
+    public FormDefinition() {
+    }
+
+    public FormDefinition( @MapsTo( "model" ) FormModel model ) {
+        this.model = model;
+    }
 
     public String getId() {
         return id;
@@ -49,10 +58,6 @@ public class FormDefinition {
         this.name = name;
     }
 
-    public List<DataHolder> getDataHolders() {
-        return dataHolders;
-    }
-
     public List<FieldDefinition> getFields() {
         return fields;
     }
@@ -65,33 +70,31 @@ public class FormDefinition {
         this.layoutTemplate = layoutTemplate;
     }
 
-    public void addDataHolder (DataHolder dataH) {
-        dataHolders.add( dataH );
+    public FormModel getModel() {
+        return model;
     }
 
-    public void removeDataHolder( String holderName ) {
-        for (Iterator<DataHolder> it = dataHolders.iterator(); it.hasNext();) {
-            DataHolder dataHolder = it.next();
-            if (dataHolder.getName().equals( holderName ) ) {
-                it.remove();
-                return;
-            }
-        }
+    public void setModel( FormModel model ) {
+        this.model = model;
     }
 
-    public FieldDefinition getFieldByName( String name ) {
-        for (FieldDefinition definition : fields ) {
-            if (definition.getName().equals( name )) {
-                return definition;
-            }
-        }
-        return null;
+    public FieldDefinition getFieldByBinding( final String binding ) {
+        return getFieldBy( field -> field.getBinding() != null && field.getBinding().equals( binding ) );
     }
 
-    public FieldDefinition getFieldById(String fieldId) {
-        for (FieldDefinition definition : fields ) {
-            if (definition.getId().equals( fieldId )) {
-                return definition;
+    public FieldDefinition getFieldByName( final String name ) {
+        return getFieldBy( field -> field.getName().equals( name ) );
+    }
+
+    public FieldDefinition getFieldById( final String fieldId ) {
+        return getFieldBy( field -> field.getId().equals( fieldId ) );
+    }
+
+    protected FieldDefinition getFieldBy( Predicate<FieldDefinition> predicate ) {
+        if ( predicate != null ) {
+            Optional<FieldDefinition> result = fields.stream().filter( predicate ).findFirst();
+            if ( result.isPresent() ) {
+                return result.get();
             }
         }
         return null;
@@ -102,13 +105,5 @@ public class FormDefinition {
         int result = id != null ? id.hashCode() : 0;
         result = ~~result;
         return result;
-    }
-
-    public DataHolder getDataHolderByName(String name) {
-        for (DataHolder holder : dataHolders) {
-            if (holder.getName().equals(name)) return holder;
-        }
-
-        return null;
     }
 }

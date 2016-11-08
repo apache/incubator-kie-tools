@@ -42,6 +42,13 @@ public class FormDefinitionResourceType extends FormResourceTypeDefinition imple
     }
 
     @Override
+    public String getShortName() {
+        String desc = translationService.getTranslation( FormEditorConstants.FormDefinitionResourceTypeFormTypeShortName );
+        if ( desc == null || desc.isEmpty() ) return super.getShortName();
+        return desc;
+    }
+
+    @Override
     public String getDescription() {
         String desc = translationService.getTranslation( FormEditorConstants.FormDefinitionResourceTypeFormTypeDescription );
         if ( desc == null || desc.isEmpty() ) return super.getDescription();

@@ -52,4 +52,8 @@ public class PictureWidget implements IsWidget {
     public interface TakePictureCallback {
         public void onTakePicture( String url );
     }
+
+    public enum WidgetMode {
+        PICTURE, READONLY
+    }
 }

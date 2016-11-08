@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
@@ -48,7 +49,17 @@ public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition
     }
 
     @Override
+    public IsWidget getPrettyViewWidget() {
+        return new HTML();
+    }
+
+    @Override
     public String getSupportedCode() {
         return TextAreaFieldDefinition.CODE;
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        textArea.setEnabled( !readOnly );
     }
 }

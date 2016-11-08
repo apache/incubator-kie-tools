@@ -51,4 +51,15 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
     public String getSupportedCode() {
         return ColorPickerFieldDefinition.CODE;
     }
+
+    @Override
+    public IsWidget getPrettyViewWidget() {
+        initInputWidget();
+        return getInputWidget();
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+
+    }
 }

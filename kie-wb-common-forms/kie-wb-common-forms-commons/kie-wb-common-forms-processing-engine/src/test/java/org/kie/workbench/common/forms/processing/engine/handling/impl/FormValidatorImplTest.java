@@ -23,9 +23,6 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.processing.engine.handling.imp.FieldStyleHandlerImpl;
-import org.kie.workbench.common.forms.processing.engine.handling.imp.FormValidatorImpl;
-
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FormValidatorImplTest extends AbstractFormEngineTest {
@@ -34,15 +31,13 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
 
     protected FormValidatorImpl formValidator;
 
-    protected FieldStyleHandlerImpl fieldStyleHandler = new FieldStyleHandlerImpl();
-
     @Before
     public void init() {
         super.init();
 
         validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        formValidator = new FormValidatorImpl( validator, fieldStyleHandler );
+        formValidator = new FormValidatorImpl( validator );
 
         formValidator.setFormFieldProvider( formFieldProvider );
     }

@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
-import org.kie.workbench.common.forms.dynamic.service.AbstractSelectorDataProviderManager;
+import org.kie.workbench.common.forms.dynamic.service.shared.AbstractSelectorDataProviderManager;
 
 @ApplicationScoped
 public class ClientSelectorDataProviderManager extends AbstractSelectorDataProviderManager {

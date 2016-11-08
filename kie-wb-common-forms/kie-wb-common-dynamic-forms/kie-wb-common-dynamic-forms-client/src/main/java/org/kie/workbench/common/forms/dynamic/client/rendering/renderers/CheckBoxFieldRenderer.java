@@ -20,9 +20,8 @@ import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.model.impl.basic.checkBox.CheckBoxFieldDefinition;
 
 @Dependent
@@ -36,8 +35,8 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
 
     @Override
     public void initInputWidget() {
-        checkbox = new CheckBox(field.getLabel());
-        checkbox.setEnabled(!field.getReadonly());
+        checkbox = new CheckBox( field.getLabel() );
+        checkbox.setEnabled( !field.getReadonly() || renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
     }
 
     @Override
@@ -45,15 +44,19 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
         return checkbox;
     }
 
-    protected void addFormGroupContents( FormGroup group ) {
-        group.add(checkbox);
-        HelpBlock helpBlock = new HelpBlock();
-        helpBlock.setId( getHelpBlokId( field ) );
-        group.add(helpBlock);
+    @Override
+    public IsWidget getPrettyViewWidget() {
+        initInputWidget();
+        return getInputWidget();
     }
 
     @Override
     public String getSupportedCode() {
         return CheckBoxFieldDefinition.CODE;
+    }
+
+    @Override
+    protected void setReadOnly( boolean readOnly ) {
+        checkbox.setEnabled( !readOnly );
     }
 }

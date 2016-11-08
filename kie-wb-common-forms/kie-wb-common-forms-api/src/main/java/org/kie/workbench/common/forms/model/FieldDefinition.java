@@ -44,9 +44,7 @@ public abstract class FieldDefinition {
     @FieldDef( label = "Validate on Value Change", position = 101)
     protected Boolean validateOnChange = Boolean.TRUE;
 
-    protected String modelName;
-
-    protected String boundPropertyName;
+    protected String binding;
 
     protected String standaloneClassName;
 
@@ -99,14 +97,6 @@ public abstract class FieldDefinition {
         this.readonly = readonly;
     }
 
-    public String getBindingExpression() {
-        String bindingExpression = modelName;
-
-        if ( boundPropertyName!= null && !boundPropertyName.isEmpty() ) bindingExpression += "." + boundPropertyName;
-
-        return bindingExpression;
-    }
-
     public boolean isAnnotatedId() {
         return annotatedId;
     }
@@ -115,20 +105,12 @@ public abstract class FieldDefinition {
         this.annotatedId = annotatedId;
     }
 
-    public String getModelName() {
-        return modelName;
+    public String getBinding() {
+        return binding;
     }
 
-    public void setModelName( String modelName ) {
-        this.modelName = modelName;
-    }
-
-    public String getBoundPropertyName() {
-        return boundPropertyName;
-    }
-
-    public void setBoundPropertyName( String boundPropertyName ) {
-        this.boundPropertyName = boundPropertyName;
+    public void setBinding( String binding ) {
+        this.binding = binding;
     }
 
     public String getStandaloneClassName() {
@@ -159,8 +141,7 @@ public abstract class FieldDefinition {
         if ( !other.isAnnotatedId() ) setReadonly( other.getReadonly() );
 
         setStandaloneClassName( other.getStandaloneClassName());
-        setModelName( other.getModelName() );
-        setBoundPropertyName( other.getBoundPropertyName() );
+        setBinding( other.getBinding() );
 
         setRequired( other.getRequired() );
         setReadonly( other.getReadonly() );
