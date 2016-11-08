@@ -40,6 +40,7 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
                                                        RegisteredDocumentsMenuView.Presenter {
 
     private boolean isReadOnly;
+    private Command newDocumentCommand;
     private Command openDocumentCommand;
     private ParameterizedCommand<KieDocument> activateDocumentCommand;
     private ParameterizedCommand<KieDocument> removeDocumentCommand;
@@ -59,6 +60,8 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
     @PostConstruct
     void setup() {
         view.init( this );
+        view.enableNewDocumentButton( false );
+        view.enableOpenDocumentButton( false );
         this.isReadOnly = false;
     }
 
@@ -111,6 +114,16 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
     }
 
     @Override
+    public void onNewDocument() {
+        if ( isReadOnly ) {
+            return;
+        }
+        if ( newDocumentCommand != null ) {
+            newDocumentCommand.execute();
+        }
+    }
+
+    @Override
     public void registerDocument( final KieDocument document ) {
         final DocumentMenuItem documentMenuItem = makeDocumentMenuItem( document );
         registeredDocuments.put( document,
@@ -143,9 +156,17 @@ public class RegisteredDocumentsMenuBuilder implements MenuFactory.CustomMenuBui
     }
 
     @Override
+    public void setNewDocumentCommand( final Command newDocumentCommand ) {
+        this.newDocumentCommand = PortablePreconditions.checkNotNull( "newDocumentCommand",
+                                                                      newDocumentCommand );
+        view.enableNewDocumentButton( true );
+    }
+
+    @Override
     public void setOpenDocumentCommand( final Command openDocumentCommand ) {
         this.openDocumentCommand = PortablePreconditions.checkNotNull( "openDocumentCommand",
                                                                        openDocumentCommand );
+        view.enableOpenDocumentButton( true );
     }
 
     @Override

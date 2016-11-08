@@ -28,6 +28,8 @@ public interface RegisteredDocumentsMenuView extends UberElement<RegisteredDocum
 
     interface Presenter {
 
+        void onNewDocument();
+
         void onOpenDocument();
 
         void registerDocument( final KieDocument document );
@@ -37,6 +39,8 @@ public interface RegisteredDocumentsMenuView extends UberElement<RegisteredDocum
         void onActivateDocument( final KieDocument document );
 
         void onRemoveDocument( final KieDocument document );
+
+        void setNewDocumentCommand( final Command newDocumentCommand );
 
         void setOpenDocumentCommand( final Command openDocumentCommand );
 
@@ -69,6 +73,10 @@ public interface RegisteredDocumentsMenuView extends UberElement<RegisteredDocum
     }
 
     void clear();
+
+    void enableNewDocumentButton( final boolean enabled );
+
+    void enableOpenDocumentButton( final boolean enabled );
 
     void addDocument( final DocumentMenuItem document );
 

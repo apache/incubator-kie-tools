@@ -45,6 +45,10 @@ public class RegisteredDocumentsMenuViewImpl implements RegisteredDocumentsMenuV
     Div registeredDocumentsViewContainer;
 
     @Inject
+    @DataField("newDocumentMenuButton")
+    Button newDocumentMenuButton;
+
+    @Inject
     @DataField("openDocumentMenuButton")
     Button openDocumentMenuButton;
 
@@ -79,6 +83,16 @@ public class RegisteredDocumentsMenuViewImpl implements RegisteredDocumentsMenuV
     }
 
     @Override
+    public void enableNewDocumentButton( final boolean enabled ) {
+        newDocumentMenuButton.setDisabled( !enabled );
+    }
+
+    @Override
+    public void enableOpenDocumentButton( final boolean enabled ) {
+        openDocumentMenuButton.setDisabled( !enabled );
+    }
+
+    @Override
     public void addDocument( final DocumentMenuItem document ) {
         registeredDocumentsViewContainer.appendChild( document.getElement() );
     }
@@ -91,6 +105,12 @@ public class RegisteredDocumentsMenuViewImpl implements RegisteredDocumentsMenuV
     @Override
     public void setReadOnly( final boolean isReadOnly ) {
         openDocumentMenuButton.setDisabled( isReadOnly );
+    }
+
+    @SuppressWarnings("unused")
+    @EventHandler("newDocumentMenuButton")
+    public void onClickNewDocumentButton( final ClickEvent e ) {
+        presenter.onNewDocument();
     }
 
     @SuppressWarnings("unused")

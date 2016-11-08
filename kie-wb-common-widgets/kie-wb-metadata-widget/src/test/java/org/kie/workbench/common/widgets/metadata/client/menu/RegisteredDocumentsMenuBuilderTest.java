@@ -66,6 +66,14 @@ public class RegisteredDocumentsMenuBuilderTest {
     }
 
     @Test
+    public void testSetup() {
+        verify( view,
+                times( 1 ) ).enableNewDocumentButton( eq( false ) );
+        verify( view,
+                times( 1 ) ).enableOpenDocumentButton( eq( false ) );
+    }
+
+    @Test
     public void testEnable() {
         final MenuItem mi = builder.build();
         mi.setEnabled( true );
@@ -84,6 +92,31 @@ public class RegisteredDocumentsMenuBuilderTest {
     }
 
     @Test
+    public void testOnNewDocument_WithCommand() {
+        final Command command = mock( Command.class );
+        builder.setNewDocumentCommand( command );
+        builder.onNewDocument();
+
+        verify( command,
+                times( 1 ) ).execute();
+        verify( view,
+                times( 1 ) ).enableNewDocumentButton( eq( true ) );
+    }
+
+    @Test
+    public void testOnNewDocument_WithoutCommand() {
+        try {
+            builder.onNewDocument();
+
+            verify( view,
+                    never() ).enableNewDocumentButton( eq( true ) );
+
+        } catch ( NullPointerException npe ) {
+            fail( "Null Commands should be handled." );
+        }
+    }
+
+    @Test
     public void testOnOpenDocument_WithCommand() {
         final Command command = mock( Command.class );
         builder.setOpenDocumentCommand( command );
@@ -91,12 +124,18 @@ public class RegisteredDocumentsMenuBuilderTest {
 
         verify( command,
                 times( 1 ) ).execute();
+        verify( view,
+                times( 1 ) ).enableOpenDocumentButton( eq( true ) );
     }
 
     @Test
     public void testOnOpenDocument_WithoutCommand() {
         try {
             builder.onOpenDocument();
+
+            verify( view,
+                    never() ).enableOpenDocumentButton( eq( true ) );
+
         } catch ( NullPointerException npe ) {
             fail( "Null Commands should be handled." );
         }
