@@ -78,7 +78,17 @@ public class NewGuidedDecisionTableWizard extends AbstractWizard {
 
     private GuidedDecisionTable52 model;
     private AsyncPackageDataModelOracle oracle;
-    private NewGuidedDecisionTableHandler handler;
+    private GuidedDecisionTableWizardHandler handler;
+
+    public interface GuidedDecisionTableWizardHandler {
+
+        void save( final Path contextPath,
+                   final String baseFileName,
+                   final GuidedDecisionTable52 model );
+
+        void destroyWizard();
+
+    }
 
     @PostConstruct
     public void setupPages() {
@@ -95,7 +105,7 @@ public class NewGuidedDecisionTableWizard extends AbstractWizard {
                             final String baseFileName,
                             final GuidedDecisionTable52.TableFormat tableFormat,
                             final AsyncPackageDataModelOracle oracle,
-                            final NewGuidedDecisionTableHandler handler ) {
+                            final GuidedDecisionTableWizardHandler handler ) {
         this.model = new GuidedDecisionTable52();
         this.model.setTableFormat( tableFormat );
         this.contextPath = contextPath;

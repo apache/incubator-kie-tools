@@ -34,14 +34,17 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizardHelper;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphContent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +91,18 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     private GuidedDecisionTableGraphEditorService dtGraphService;
     private Caller<GuidedDecisionTableGraphEditorService> dtGraphServiceCaller;
 
+    @Mock
+    private ProjectContext context;
+
+    @Mock
+    private NewGuidedDecisionTableWizardHelper helper;
+
+    @Mock
+    private org.guvnor.common.services.project.model.Package activePackage;
+
+    @Mock
+    private Path activePackageResourcesPath;
+
     @Captor
     private ArgumentCaptor<ParameterizedCommand<KieDocument>> activateDocumentCommandCaptor;
 
@@ -95,10 +110,16 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     private ArgumentCaptor<ParameterizedCommand<KieDocument>> removeDocumentCommandCaptor;
 
     @Captor
+    private ArgumentCaptor<Command> newDocumentCommandCaptor;
+
+    @Captor
     private ArgumentCaptor<DecisionTableSelectedEvent> dtSelectedEventCaptor;
 
     @Captor
     private ArgumentCaptor<Path> dtPathCaptor;
+
+    @Captor
+    private ArgumentCaptor<List<Path>> dtPathsCaptor;
 
     @Captor
     private ArgumentCaptor<ObservablePath> dtObservablePathCaptor;
@@ -115,6 +136,9 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     @Captor
     private ArgumentCaptor<Callback<VersionRecord>> versionRecordCallbackCaptor;
 
+    @Captor
+    private ArgumentCaptor<RemoteCallback<Path>> onSaveSuccessCallbackCaptor;
+
     private Event<SaveInProgressEvent> saveInProgressEvent = spy( new EventSourceMock<SaveInProgressEvent>() {
         @Override
         public void fire( final SaveInProgressEvent event ) {
@@ -122,13 +146,15 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         }
     } );
 
-    private GuidedDTableGraphResourceType resourceType = new GuidedDTableGraphResourceType();
+    private GuidedDTableGraphResourceType dtGraphResourceType = new GuidedDTableGraphResourceType();
 
     @Before
     public void setup() {
         this.dtGraphServiceCaller = new CallerMock<>( dtGraphService );
 
         when( view.asWidget() ).thenReturn( mock( Widget.class ) );
+        when( context.getActivePackage() ).thenReturn( activePackage );
+        when( activePackage.getPackageMainResourcesPath() ).thenReturn( activePackageResourcesPath );
 
         super.setup();
     }
@@ -141,12 +167,14 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                             notification,
                                                             saveInProgressEvent,
                                                             decisionTableSelectedEvent,
-                                                            resourceType,
+                                                            dtGraphResourceType,
                                                             editMenuBuilder,
                                                             viewMenuBuilder,
                                                             insertMenuBuilder,
                                                             radarMenuBuilder,
                                                             modeller,
+                                                            context,
+                                                            helper,
                                                             beanManager,
                                                             placeManager,
                                                             lockManager ) {
@@ -181,6 +209,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                 times( 1 ) ).setActivateDocumentCommand( any( ParameterizedCommand.class ) );
         verify( registeredDocumentsMenuBuilder,
                 times( 1 ) ).setRemoveDocumentCommand( any( ParameterizedCommand.class ) );
+        verify( registeredDocumentsMenuBuilder,
+                times( 1 ) ).setNewDocumentCommand( any( Command.class ) );
     }
 
     @Test
@@ -217,6 +247,44 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                 times( 1 ) ).mayClose( eq( dtPresenter ) );
         verify( presenter,
                 times( 1 ) ).removeDocument( eq( dtPresenter ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkInitNewDocumentFromRegisteredDocumentMenu() {
+        verify( registeredDocumentsMenuBuilder,
+                times( 1 ) ).setNewDocumentCommand( newDocumentCommandCaptor.capture() );
+
+        final Command newDocumentCommand = newDocumentCommandCaptor.getValue();
+        assertNotNull( newDocumentCommand );
+        newDocumentCommand.execute();
+
+        verify( presenter,
+                times( 1 ) ).onNewDocument();
+        verify( helper,
+                times( 1 ) ).createNewGuidedDecisionTable( eq( activePackageResourcesPath ),
+                                                           eq( "" ),
+                                                           eq( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY ),
+                                                           eq( view ),
+                                                           onSaveSuccessCallbackCaptor.capture() );
+
+        final Path dtPath = mock( Path.class );
+        final RemoteCallback<Path> onSaveSuccessCallback = onSaveSuccessCallbackCaptor.getValue();
+        assertNotNull( onSaveSuccessCallback );
+
+        doNothing().when( presenter ).onOpenDocumentsInEditor( any( List.class ) );
+
+        onSaveSuccessCallback.callback( dtPath );
+
+        verify( presenter,
+                times( 1 ) ).onOpenDocumentsInEditor( dtPathsCaptor.capture() );
+
+        final List<Path> dtPaths = dtPathsCaptor.getValue();
+        assertNotNull( dtPaths );
+        assertEquals( 1,
+                      dtPaths.size() );
+        assertEquals( dtPath,
+                      dtPaths.get( 0 ) );
     }
 
     @Test

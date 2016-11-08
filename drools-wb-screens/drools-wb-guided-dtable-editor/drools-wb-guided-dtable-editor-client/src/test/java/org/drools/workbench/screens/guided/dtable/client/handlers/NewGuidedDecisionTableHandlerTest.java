@@ -22,6 +22,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
+import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizardHelper;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
@@ -88,17 +89,21 @@ public class NewGuidedDecisionTableHandlerTest {
     private ArgumentCaptor<String> fileNameCaptor;
 
     private NewGuidedDecisionTableHandler handler;
+    private NewGuidedDecisionTableWizardHelper helper;
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType();
 
     @Before
     public void setup() {
         serviceCaller = new CallerMock<>( service );
+        helper = new NewGuidedDecisionTableWizardHelper( serviceCaller,
+                                                         oracleFactory,
+                                                         beanManager );
         final NewGuidedDecisionTableHandler wrapped = new NewGuidedDecisionTableHandler( placeManager,
                                                                                          serviceCaller,
                                                                                          resourceType,
                                                                                          options,
                                                                                          busyIndicatorView,
-                                                                                         oracleFactory,
+                                                                                         helper,
                                                                                          beanManager ) {
             {
                 this.notificationEvent = mockNotificationEvent;
@@ -141,7 +146,7 @@ public class NewGuidedDecisionTableHandlerTest {
                                          fileNameCaptor.capture(),
                                          eq( TableFormat.EXTENDED_ENTRY ),
                                          any( AsyncPackageDataModelOracle.class ),
-                                         eq( handler ) );
+                                         any( NewGuidedDecisionTableWizard.GuidedDecisionTableWizardHandler.class ) );
     }
 
     @Test

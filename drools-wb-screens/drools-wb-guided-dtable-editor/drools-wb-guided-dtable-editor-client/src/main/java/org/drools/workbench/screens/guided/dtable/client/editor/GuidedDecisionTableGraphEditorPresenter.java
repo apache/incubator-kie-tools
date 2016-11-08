@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,11 +41,13 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizardHelper;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphContent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -98,6 +101,9 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     private GuidedDecisionTableEditorGraphContent content;
     private LoadGraphLatch loadGraphLatch = null;
     private SaveGraphLatch saveGraphLatch = null;
+
+    private ProjectContext context;
+    private NewGuidedDecisionTableWizardHelper helper;
 
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
     protected Access access = new Access();
@@ -293,12 +299,14 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                     final Event<NotificationEvent> notification,
                                                     final Event<SaveInProgressEvent> saveInProgressEvent,
                                                     final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
-                                                    final GuidedDTableGraphResourceType resourceType,
+                                                    final GuidedDTableGraphResourceType dtGraphResourceType,
                                                     final EditMenuBuilder editMenuBuilder,
                                                     final ViewMenuBuilder viewMenuBuilder,
                                                     final InsertMenuBuilder insertMenuBuilder,
                                                     final RadarMenuBuilder radarMenuBuilder,
                                                     final GuidedDecisionTableModellerView.Presenter modeller,
+                                                    final ProjectContext context,
+                                                    final NewGuidedDecisionTableWizardHelper helper,
                                                     final SyncBeanManager beanManager,
                                                     final PlaceManager placeManager,
                                                     final LockManager lockManager ) {
@@ -306,7 +314,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                service,
                notification,
                decisionTableSelectedEvent,
-               resourceType,
+               dtGraphResourceType,
                editMenuBuilder,
                viewMenuBuilder,
                insertMenuBuilder,
@@ -316,6 +324,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                placeManager );
         this.graphService = graphService;
         this.saveInProgressEvent = saveInProgressEvent;
+        this.context = context;
+        this.helper = helper;
         this.lockManager = lockManager;
     }
 
@@ -336,6 +346,17 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                 removeDocument( dtPresenter );
             }
         } );
+
+        registeredDocumentsMenuBuilder.setNewDocumentCommand( this::onNewDocument );
+    }
+
+    void onNewDocument() {
+        final Path contextPath = context.getActivePackage().getPackageMainResourcesPath();
+        helper.createNewGuidedDecisionTable( contextPath,
+                                             "",
+                                             GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,
+                                             view,
+                                             ( path ) -> onOpenDocumentsInEditor( Collections.singletonList( path ) ) );
     }
 
     @Override
