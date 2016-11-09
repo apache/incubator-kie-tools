@@ -23,6 +23,7 @@
     <module>kie-wb-common-forms-crud-component</module>
     <module>kie-wb-common-forms-common-rendering</module>
     <module>kie-wb-common-forms-serialization</module>
+    <module>kie-wb-common-forms-bpmn-api</module>
   </modules>
 
 </project>
