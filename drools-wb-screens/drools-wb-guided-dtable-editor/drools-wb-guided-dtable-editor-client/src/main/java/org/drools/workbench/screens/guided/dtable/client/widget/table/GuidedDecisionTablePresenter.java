@@ -622,7 +622,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             renderer.highlightRows( event.getIssue().getSeverity(),
                                     event.getIssue().getRowNumbers() );
         }
-        getView().batch();
+        getView().draw();
     }
 
     @Override

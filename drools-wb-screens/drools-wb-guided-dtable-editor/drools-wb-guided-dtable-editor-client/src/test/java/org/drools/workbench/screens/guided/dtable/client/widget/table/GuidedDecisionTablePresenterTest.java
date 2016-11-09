@@ -160,6 +160,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify( renderer,
                 never() ).highlightRows( any( Severity.class ),
                                          any( Set.class ) );
+        verify( view,
+                times( 1 ) ).draw();
     }
 
     @Test
@@ -173,6 +175,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify( renderer,
                 times( 1 ) ).highlightRows( any( Severity.class ),
                                             any( Set.class ) );
+        verify( view,
+                times( 1 ) ).draw();
     }
 
     @Test
