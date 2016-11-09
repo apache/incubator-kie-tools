@@ -30,7 +30,7 @@ import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerW
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
-import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
+import org.kie.workbench.common.workbench.client.resources.images.WorkbenchImageResources;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -47,8 +47,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AuthoringWorkbenchDocksTest {
-
-    private static final String PLANNER_ROLE = "plannermgmt";
 
     @Mock
     private UberfireDocks uberfireDocks;
@@ -73,30 +71,20 @@ public class AuthoringWorkbenchDocksTest {
     @InjectMocks
     private AuthoringWorkbenchDocks authoringDocks;
 
-    private Set<String> featureRoles = new HashSet<String>();
-
     @Before
     public void initTest() {
         authoringDocks.setup( "authoring", placeRequest );
-        featureRoles.add( PLANNER_ROLE );
         plannerDock = new UberfireDock( UberfireDockPosition.EAST,
-                                        "CALCULATOR",
+                                        WorkbenchImageResources.INSTANCE.optaPlannerDisabledIcon(),
+                                        WorkbenchImageResources.INSTANCE.optaPlannerEnabledIcon(),
                                         new DefaultPlaceRequest( "PlannerDomainScreen" ),
                                         "authoring" ).withSize( 450 ).withLabel( authoringDocks.constants.DocksOptaPlannerTitle() );
     }
 
     @Test
     public void plannerRoleGrantedTest() {
-        Set<Role> userRoles = new HashSet<Role>();
-        userRoles.add( new Role() {
-            @Override public String getName() {
-                return PLANNER_ROLE;
-            }
-        } );
-
         when( sessionInfo.getId() ).thenReturn( "logged_user" );
         when( sessionInfo.getIdentity() ).thenReturn( user );
-        when( user.getRoles() ).thenReturn( userRoles );
         when( authorizationManager.authorize( WorkbenchFeatures.PLANNER_AVAILABLE, user ) ).thenReturn( true );
 
         UberfireDockReadyEvent event = new UberfireDockReadyEvent( "authoring" );

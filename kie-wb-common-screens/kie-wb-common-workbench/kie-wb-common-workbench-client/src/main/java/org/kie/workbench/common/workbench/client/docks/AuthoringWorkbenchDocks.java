@@ -26,6 +26,7 @@ import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerW
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
+import org.kie.workbench.common.workbench.client.resources.images.WorkbenchImageResources;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
@@ -78,7 +79,12 @@ public class AuthoringWorkbenchDocks {
         if ( authoringPerspectiveIdentifier != null && dockReadyEvent.getCurrentPerspective().equals( authoringPerspectiveIdentifier ) ) {
             if ( authorizationManager.authorize( WorkbenchFeatures.PLANNER_AVAILABLE, sessionInfo.getIdentity() ) ) {
                 if ( plannerDock == null ) {
-                    plannerDock = new UberfireDock( UberfireDockPosition.EAST, "CALCULATOR", new DefaultPlaceRequest( "PlannerDomainScreen" ), authoringPerspectiveIdentifier ).withSize( 450 ).withLabel( constants.DocksOptaPlannerTitle() );
+                    plannerDock = new UberfireDock( UberfireDockPosition.EAST,
+                                                    WorkbenchImageResources.INSTANCE.optaPlannerDisabledIcon(),
+                                                    WorkbenchImageResources.INSTANCE.optaPlannerEnabledIcon(),
+                                                    new DefaultPlaceRequest( "PlannerDomainScreen" ),
+                                                    authoringPerspectiveIdentifier )
+                                                    .withSize( 450 ).withLabel( constants.DocksOptaPlannerTitle() );
                 } else {
                     //avoid duplications
                     uberfireDocks.remove( plannerDock );
