@@ -24,6 +24,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 import javax.validation.Valid;
 
 @Portable
@@ -35,17 +37,17 @@ public class BackgroundAndBorderSet {
     public static final transient String propertySetName = "Background And Borders";
 
     @Property
-    @FieldDef( label = "Background Color", property = "value" )
+    @FieldDef( label = FIELDDEF_BACKGROUND_COLOR, property = "value" )
     @Valid
     private BgColor bgColor;
 
     @Property
-    @FieldDef( label = "Border Color", property = "value" )
+    @FieldDef( label = FIELDDEF_BORDER_COLOR, property = "value" )
     @Valid
     private BorderColor borderColor;
 
     @Property
-    @FieldDef( label = "Border Size", property = "value" )
+    @FieldDef( label = FIELDDEF_BORDER_SIZE, property = "value" )
     @Valid
     private BorderSize borderSize;
 

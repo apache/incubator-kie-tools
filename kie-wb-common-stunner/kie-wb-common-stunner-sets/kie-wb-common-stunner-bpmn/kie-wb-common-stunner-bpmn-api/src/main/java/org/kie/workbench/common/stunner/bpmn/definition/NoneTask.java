@@ -40,6 +40,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @Definition( graphFactory = NodeFactory.class, builder = NoneTask.NoneTaskBuilder.class )
@@ -51,7 +53,7 @@ public class NoneTask extends BaseTask {
     public static final transient String title = "None Task";
 
     @PropertySet
-    @FieldDef( label = "Implementation/Execution", position = 1 )
+    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
     @Valid
     protected EmptyTaskExecutionSet executionSet;
 

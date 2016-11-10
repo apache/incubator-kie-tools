@@ -26,6 +26,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -43,32 +45,32 @@ public class SimulationSet implements BPMNPropertySet {
     protected Mean mean;
 
     @Property
-    @FieldDef( label = "TimeUnit", property = "value" )
+    @FieldDef( label = FIELDDEF_TIME_UNIT, property = "value" )
     @Valid
     protected TimeUnit timeUnit;
 
     @Property
-    @FieldDef( label = "Standard Deviation", property = "value" )
+    @FieldDef( label = FIELDDEF_STANDARD_DEVIATION, property = "value" )
     protected StandardDeviation standardDeviation;
 
     @Property
-    @FieldDef( label = "Distribution Type", property = "value" )
+    @FieldDef( label = FIELDDEF_DISTRIBUTION_TYPE, property = "value" )
     protected DistributionType distributionType;
 
     @Property
-    @FieldDef( label = "Quantity", property = "value" )
+    @FieldDef( label = FIELDDEF_QUANTITY, property = "value" )
     protected Quantity quantity;
 
     @Property
-    @FieldDef( label = "WorkingHours", property = "value" )
+    @FieldDef( label = FIELDDEF_WORKINGHOURS, property = "value" )
     protected WorkingHours workingHours;
 
     @Property
-    @FieldDef( label = "UnitCost", property = "value" )
+    @FieldDef( label = FIELDDEF_UNITCOST, property = "value" )
     protected UnitCost unitCost;
 
     @Property
-    @FieldDef( label = "Currency", property = "value" )
+    @FieldDef( label = FIELDDEF_CURRENCY, property = "value" )
     protected Currency currency;
 
     public SimulationSet() {

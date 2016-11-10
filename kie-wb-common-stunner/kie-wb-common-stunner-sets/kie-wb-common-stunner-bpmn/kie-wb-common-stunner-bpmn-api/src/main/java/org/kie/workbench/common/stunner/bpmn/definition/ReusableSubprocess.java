@@ -37,6 +37,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @Definition( graphFactory = NodeFactory.class, builder = ReusableSubprocess.ReusableSubprocessBuilder.class )
@@ -50,12 +52,12 @@ public class ReusableSubprocess extends BaseSubprocess {
     public static final transient String description = "A reusable subprocess. It can be used to invoke another process.";
 
     @PropertySet
-    @FieldDef( label = "Implementation/Execution", position = 1 )
+    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
     @Valid
     protected ReusableSubprocessTaskExecutionSet executionSet;
 
     @PropertySet
-    @FieldDef( label = "Task Data", position = 2)
+    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2)
     @Valid
     protected DataIOSet dataIOSet;
 

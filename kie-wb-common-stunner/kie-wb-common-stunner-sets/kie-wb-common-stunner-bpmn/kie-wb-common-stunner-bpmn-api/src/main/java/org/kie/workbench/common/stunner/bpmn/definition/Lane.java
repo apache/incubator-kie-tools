@@ -42,6 +42,8 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @Definition( graphFactory = NodeFactory.class, builder = Lane.LaneBuilder.class )
@@ -61,21 +63,21 @@ public class Lane implements BPMNDefinition {
             "Lanes sub-divide pools or other lanes hierarchically.";
 
     @PropertySet
-    @FieldDef( label = "General Settings", position = 0)
+    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0)
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = "Background Settings", position = 2)
+    @FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2)
     @Valid
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = "Font Settings" )
+    //@FieldDef( label = FIELDDEF_FONT_SETTINGS )
     private FontSet fontSet;
 
     @PropertySet
-    @FieldDef( label = "Shape Dimensions", position = 5 )
+    @FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 5 )
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels

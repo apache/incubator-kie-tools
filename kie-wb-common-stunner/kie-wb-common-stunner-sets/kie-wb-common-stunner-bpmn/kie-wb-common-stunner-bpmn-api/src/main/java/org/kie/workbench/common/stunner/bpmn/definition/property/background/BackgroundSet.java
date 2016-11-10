@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -37,19 +39,19 @@ public class BackgroundSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Background Set";
 
     @Property
-    @FieldDef( label = "Background Color", property = "value" )
+    @FieldDef( label = FIELDDEF_BACKGROUND_COLOR, property = "value" )
     @ColorPicker
     @Valid
     private BgColor bgColor;
 
     @Property
-    @FieldDef( label = "Border Color", property = "value" )
+    @FieldDef( label = FIELDDEF_BORDER_COLOR, property = "value" )
     @ColorPicker
     @Valid
     private BorderColor borderColor;
 
     @Property
-    @FieldDef( label = "Border Size", property = "value" )
+    @FieldDef( label = FIELDDEF_BORDER_SIZE, property = "value" )
     @Slider( min = 0.0, max = 5.0, step = 0.5 )
     @Valid
     private BorderSize borderSize;

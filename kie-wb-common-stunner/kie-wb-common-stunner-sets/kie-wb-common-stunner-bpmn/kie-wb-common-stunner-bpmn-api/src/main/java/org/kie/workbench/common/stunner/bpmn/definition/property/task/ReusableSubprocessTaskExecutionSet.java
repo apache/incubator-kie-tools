@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -36,7 +38,7 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = "Called Element", property = "value" )
+    @FieldDef( label = FIELDDEF_CALLED_ELEMENT, property = "value" )
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,

@@ -27,6 +27,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -36,13 +38,13 @@ public class RectangleDimensionsSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Shape Dimensions";
 
     @Property
-    @FieldDef( label = "Width", property = "value" )
+    @FieldDef( label = FIELDDEF_WIDTH, property = "value" )
     @Slider( min = 100.0, max = 300.0, step = 10.0, precision = 0.0 )
     @Valid
     protected Width width;
 
     @Property
-    @FieldDef( label = "Height", property = "value" )
+    @FieldDef( label = FIELDDEF_HEIGHT, property = "value" )
     @Slider( min = 40.0, max = 100.0, step = 5.0, precision = 0.0 )
     @Valid
     protected Height height;

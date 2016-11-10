@@ -30,6 +30,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,23 +42,23 @@ public abstract class BaseStartEvent implements BPMNDefinition {
     public static final transient String category = Categories.EVENTS;
 
     @PropertySet
-    @FieldDef( label = "General Settings", position = 1 )
+    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 1 )
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = "Background Settings", position = 2 )
+    @FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = "Font Settings" )
+    //@FieldDef( label = FIELDDEF_FONT_SETTINGS )
     protected FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = "Catch Event Attributes" )
+    //@FieldDef( label = FIELDDEF_CATCH_EVENT_ATTRIBUTES )
     protected CatchEventAttributes catchEventAttributes;
 
     @PropertySet
-    @FieldDef( label = "Shape Dimensions", position = 3 )
+    @FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 3 )
     private CircleDimensionSet dimensionsSet;
 
     @Labels

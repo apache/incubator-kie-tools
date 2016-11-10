@@ -42,6 +42,8 @@ import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @Definition( graphFactory = NodeFactory.class, builder = IntermediateTimerEvent.IntermediateTimerEventBuilder.class )
@@ -59,26 +61,26 @@ public class IntermediateTimerEvent implements BPMNDefinition {
             "is reached or a particular duration is over.";
 
     @PropertySet
-    @FieldDef( label = "General Settings", position = 0 )
+    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
     @Valid
     private BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = "Implementation/Execution", position = 1)
+    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     protected IntermediateTimerEventExecutionSet executionSet;
 
     @PropertySet
-    @FieldDef( label = "Background Settings", position = 2 )
+    @FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
     @Valid
     private BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = "Font Settings" )
+    //@FieldDef( label = FIELDDEF_FONT_SETTINGS )
     private FontSet fontSet;
 
     @PropertySet
-    @FieldDef( label = "Shape Dimensions", position = 3 )
+    @FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 3 )
     private CircleDimensionSet dimensionsSet;
 
     @Labels

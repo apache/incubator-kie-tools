@@ -24,6 +24,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 import javax.validation.Valid;
 
 @Portable
@@ -35,22 +37,22 @@ public class FontSet {
     public static final transient String propertySetName = "Font";
 
     @Property
-    @FieldDef( label = "Font Family", property = "value" )
+    @FieldDef( label = FIELDDEF_FONT_FAMILY, property = "value" )
     @Valid
     private FontFamily fontFamily;
 
     @Property
-    @FieldDef( label = "Font Color", property = "value" )
+    @FieldDef( label = FIELDDEF_FONT_COLOR, property = "value" )
     @Valid
     private FontColor fontColor;
 
     @Property
-    @FieldDef( label = "Font Size", property = "value" )
+    @FieldDef( label = FIELDDEF_FONT_SIZE, property = "value" )
     @Valid
     private FontSize fontSize;
 
     @Property
-    @FieldDef( label = "Font Border Size", property = "value" )
+    @FieldDef( label = FIELDDEF_FONT_BORDER_SIZE, property = "value" )
     @Valid
     private FontBorderSize fontBorderSize;
 

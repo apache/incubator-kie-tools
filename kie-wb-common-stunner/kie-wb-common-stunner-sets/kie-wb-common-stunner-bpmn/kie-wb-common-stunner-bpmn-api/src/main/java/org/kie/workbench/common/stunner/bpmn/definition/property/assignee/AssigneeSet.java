@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -37,13 +39,13 @@ public class AssigneeSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Assigned to";
 
     @Property
-    @FieldDef( label = "Actors", property = "value" )
+    @FieldDef( label = FIELDDEF_ACTORS, property = "value" )
     @AssigneeEditor( type = AssigneeType.USER)
     @Valid
     private Actors actors;
 
     @Property
-    @FieldDef( label = "Groups", property = "value" )
+    @FieldDef( label = FIELDDEF_GROUPS, property = "value" )
     @AssigneeEditor( type = AssigneeType.GROUP)
     @Valid
     private Groupid groupid;

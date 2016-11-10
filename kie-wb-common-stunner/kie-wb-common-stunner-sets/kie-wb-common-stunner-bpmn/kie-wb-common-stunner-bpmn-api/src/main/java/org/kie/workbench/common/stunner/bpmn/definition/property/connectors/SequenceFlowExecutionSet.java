@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -38,18 +40,18 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = "Priority", property = "value", position = 1 )
+    @FieldDef( label = FIELDDEF_PRIORITY, property = "value", position = 1 )
     @Valid
     private Priority priority;
 
     @Property
-    @FieldDef( label = "Condition Expression", property = "value", position = 2 )
+    @FieldDef( label = FIELDDEF_CONDITION_EXPRESSION, property = "value", position = 2 )
     @TextArea( rows = 5 )
     @Valid
     private ConditionExpression conditionExpression;
 
     @Property
-    @FieldDef( label = "Condition Expression Language", property = "value", position = 3 )
+    @FieldDef( label = FIELDDEF_CONDITION_EXPRESSION_LANGUAGE, property = "value", position = 3 )
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,

@@ -41,6 +41,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @Definition( graphFactory = NodeFactory.class, builder = UserTask.UserTaskBuilder.class )
@@ -52,11 +54,11 @@ public class UserTask extends BaseTask {
     public static final transient String title = "User Task";
 
     @PropertySet
-    @FieldDef( label = "Assigned to", position = 1 )
+    @FieldDef( label = FIELDDEF_ASSIGNED_TO, position = 1 )
     protected AssigneeSet assigneeSet;
 
     @PropertySet
-    @FieldDef( label = "Task Data", position = 2)
+    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2)
     @Valid
     protected DataIOSet dataIOSet;
 

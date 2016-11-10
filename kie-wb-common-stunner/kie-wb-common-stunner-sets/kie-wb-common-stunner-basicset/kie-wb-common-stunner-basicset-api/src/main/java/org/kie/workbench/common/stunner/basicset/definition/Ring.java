@@ -35,6 +35,8 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,27 +57,27 @@ public class Ring {
     public static final transient String description = "A ring";
 
     @Property
-    @FieldDef( label = "Name", property = "value" )
+    @FieldDef( label = FIELDDEF_NAME, property = "value" )
     @Valid
     private Name name;
 
     @PropertySet
-    @FieldDef( label = "Background and Borders", position = 0 )
+    @FieldDef( label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0 )
     @Valid
     private BackgroundAndBorderSet backgroundSet;
 
     @PropertySet
-    @FieldDef( label = "Font", position = 1 )
+    @FieldDef( label = FIELDDEF_FONT, position = 1 )
     @Valid
     private FontSet fontSet;
 
     @Property
-    @FieldDef( label = "Outer Radius", property = "value" )
+    @FieldDef( label = FIELDDEF_OUTER_RADIUS, property = "value" )
     @Valid
     private OuterRadius outerRadius;
 
     @Property
-    @FieldDef( label = "Inner Radius", property = "value" )
+    @FieldDef( label = FIELDDEF_INNER_RADIUS, property = "value" )
     @Valid
     private InnerRadius innerRadius;
 

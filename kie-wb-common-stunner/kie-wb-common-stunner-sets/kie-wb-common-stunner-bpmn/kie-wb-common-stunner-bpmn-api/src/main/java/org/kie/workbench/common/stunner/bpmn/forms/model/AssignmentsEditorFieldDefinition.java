@@ -22,13 +22,15 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssignmentsEditor;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 public class AssignmentsEditorFieldDefinition extends FieldDefinition {
 
     public static final String CODE = "AssignmentsEditor";
 
-    @FieldDef( label = "Default value" )
+    @FieldDef( label = FIELDDEF_DEFAULT_VALUE )
     @AssignmentsEditor
     private String defaultValue;
 

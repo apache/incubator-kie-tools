@@ -40,9 +40,13 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
 
 @Portable
 @Bindable
@@ -61,17 +65,17 @@ public class BPMNDiagram implements BPMNDefinition {
     public static final transient String description = "BPMN Diagram";
 
     @PropertySet
-    @FieldDef( label = "General Settings", position = 0 )
+    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
     @Valid
     private BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = "Process Settings", position = 1 )
+    @FieldDef( label = FIELDDEF_PROCESS_SETTINGS, position = 1 )
     @Valid
     private DiagramSet diagramSet;
 
     @PropertySet
-    @FieldDef( label = "Data", position = 2 )
+    @FieldDef( label = FIELDDEF_DATA, position = 2 )
     @Valid
     protected ProcessData processData;
 
@@ -82,7 +86,7 @@ public class BPMNDiagram implements BPMNDefinition {
     private FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = "Shape Dimensions", position = 5 )
+    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 5 )
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels

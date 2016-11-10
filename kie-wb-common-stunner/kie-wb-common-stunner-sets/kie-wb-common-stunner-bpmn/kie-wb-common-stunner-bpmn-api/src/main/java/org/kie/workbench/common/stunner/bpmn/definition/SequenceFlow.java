@@ -35,6 +35,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 import javax.validation.Valid;
 import java.util.Set;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @Definition( graphFactory = EdgeFactory.class, builder = SequenceFlow.SequenceFlowBuilder.class )
@@ -52,7 +54,7 @@ public class SequenceFlow extends BaseConnector {
     public static final transient String title = "Sequence Flow";
 
     @PropertySet
-    @FieldDef( label = "Implementation/Execution", position = 1 )
+    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
     @Valid
     protected SequenceFlowExecutionSet executionSet;
 

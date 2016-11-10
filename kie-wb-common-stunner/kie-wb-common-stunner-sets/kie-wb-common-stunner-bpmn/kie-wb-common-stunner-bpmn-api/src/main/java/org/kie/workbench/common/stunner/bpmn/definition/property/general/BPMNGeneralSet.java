@@ -27,6 +27,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -36,12 +38,12 @@ public class BPMNGeneralSet implements BPMNPropertySet {
     public static final transient String propertySetName = "General";
 
     @Property
-    @FieldDef(label = "Name", property = "value", position = 0)
+    @FieldDef(label = FIELDDEF_NAME, property = "value", position = 0)
     @Valid
     private Name name;
 
     @Property
-    @FieldDef(label = "Documentation", property = "value", position = 1)
+    @FieldDef(label = FIELDDEF_DOCUMENTATION, property = "value", position = 1)
     @TextArea(rows = 3)
     @Valid
     private Documentation documentation;

@@ -25,6 +25,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -34,7 +36,7 @@ public class CircleDimensionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Shape Dimensions";
 
     @Property
-    @FieldDef( label = "Radius", property = "value" )
+    @FieldDef( label = FIELDDEF_RADIUS, property = "value" )
     @Slider( min = 25.0, max = 50.0, step = 1, precision = 0.0 )
     protected Radius radius;
 

@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -37,7 +39,7 @@ public class DataIOSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Task Data";
 
     @Property
-    @FieldDef( label = "Assignments", property = "value" )
+    @FieldDef( label = FIELDDEF_ASSIGNMENTS, property = "value" )
     @AssignmentsEditor
     @Valid
     private AssignmentsInfo assignmentsinfo;

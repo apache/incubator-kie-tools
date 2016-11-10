@@ -22,17 +22,19 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssigneeEditor;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 public class AssigneeEditorFieldDefinition extends FieldDefinition {
 
     public static final String CODE = "AssigneeEditor";
 
-    @FieldDef( label = "Default value" )
+    @FieldDef( label = FIELDDEF_DEFAULT_VALUE )
     @AssigneeEditor
     private String defaultValue;
 
-    @FieldDef( label = "type" )
+    @FieldDef( label = FIELDDEF_TYPE )
     @AssigneeEditor
     private AssigneeType type;
 

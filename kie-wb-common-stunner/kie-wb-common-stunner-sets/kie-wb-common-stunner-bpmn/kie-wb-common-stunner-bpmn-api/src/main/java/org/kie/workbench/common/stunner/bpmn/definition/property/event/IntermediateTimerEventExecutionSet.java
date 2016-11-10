@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -36,12 +38,12 @@ public class IntermediateTimerEventExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef(label = "Time Cycle", property = "value", position = 1)
+    @FieldDef(label = FIELDDEF_TIME_CYCLE, property = "value", position = 1)
     @Valid
     private TimeCycle timeCycle;
 
     @Property
-    @FieldDef( label = "Time Cycle Language", property = "value", position = 2)
+    @FieldDef( label = FIELDDEF_TIME_CYCLE_LANGUAGE, property = "value", position = 2)
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
@@ -50,12 +52,12 @@ public class IntermediateTimerEventExecutionSet implements BPMNPropertySet {
     protected TimeCycleLanguage timeCycleLanguage;
 
     @Property
-    @FieldDef(label = "Time Date", property = "value", position = 3)
+    @FieldDef(label = FIELDDEF_TIME_DATE, property = "value", position = 3)
     @Valid
     private TimeDate timeDate;
 
     @Property
-    @FieldDef(label = "Time Duration", property = "value", position = 4)
+    @FieldDef(label = FIELDDEF_TIME_DURATION, property = "value", position = 4)
     @Valid
     private TimeDuration timeDuration;
 

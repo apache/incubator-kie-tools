@@ -36,6 +36,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 import javax.validation.Valid;
 
 @Portable
@@ -52,7 +54,7 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
     public static final transient String description = "Exclusive Data-based Gateway";
 
     @PropertySet
-    @FieldDef( label = "Implementation/Execution", position = 1 )
+    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
     @Valid
     ExclusiveGatewayExecutionSet executionSet;
 

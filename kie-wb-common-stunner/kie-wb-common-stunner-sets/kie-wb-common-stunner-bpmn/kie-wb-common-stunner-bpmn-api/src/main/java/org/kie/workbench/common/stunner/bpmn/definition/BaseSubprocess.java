@@ -33,6 +33,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBa
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,25 +49,25 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     public static final transient String description = "A subprocess is a decomposable activity.";
 
     @PropertySet
-    @FieldDef( label = "General Settings", position = 0 )
+    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = "Background Settings", position = 3 )
+    @FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 3 )
     @Valid
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = "Font Settings", position = 4 )
+    //@FieldDef( label = FIELDDEF_FONT_SETTINGS, position = 4 )
     protected FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = "Process Simulation", position = 5 )
+    //@FieldDef( label = FIELDDEF_PROCESS_SIMULATION, position = 5 )
     protected SimulationSet simulationSet;
 
     @PropertySet
-    @FieldDef( label = "Shape Dimensions", position = 6 )
+    @FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 6 )
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels

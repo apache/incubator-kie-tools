@@ -22,13 +22,15 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.VariablesEditor;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 public class VariablesEditorFieldDefinition extends FieldDefinition {
 
     public static final String CODE = "VariablesEditor";
 
-    @FieldDef( label = "Default value" )
+    @FieldDef( label = FIELDDEF_DEFAULT_VALUE )
     @VariablesEditor
     private String defaultValue;
 

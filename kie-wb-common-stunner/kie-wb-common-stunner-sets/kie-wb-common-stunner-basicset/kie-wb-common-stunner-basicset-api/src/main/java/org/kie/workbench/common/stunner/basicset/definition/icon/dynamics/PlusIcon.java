@@ -35,6 +35,8 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,22 +57,22 @@ public class PlusIcon implements DynamicIcon {
     public static final transient String description = "Plus Icon";
 
     @Property
-    @FieldDef( label = "Name", property = "value" )
+    @FieldDef( label = FIELDDEF_NAME, property = "value" )
     @Valid
     private Name name;
 
     @PropertySet
-    @FieldDef( label = "Background and Borders", position = 0 )
+    @FieldDef( label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0 )
     @Valid
     private BackgroundAndBorderSet backgroundSet;
 
     @Property
-    @FieldDef( label = "Width", property = "value" )
+    @FieldDef( label = FIELDDEF_WIDTH, property = "value" )
     @Valid
     private Width width;
 
     @Property
-    @FieldDef( label = "Height", property = "value" )
+    @FieldDef( label = FIELDDEF_HEIGHT, property = "value" )
     @Valid
     private Height height;
 

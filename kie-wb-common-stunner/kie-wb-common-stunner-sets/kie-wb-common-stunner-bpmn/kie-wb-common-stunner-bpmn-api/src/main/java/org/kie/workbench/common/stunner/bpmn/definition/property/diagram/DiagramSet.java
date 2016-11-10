@@ -27,6 +27,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -36,17 +38,17 @@ public class DiagramSet implements BPMNPropertySet {
     public static final transient String propertySetName = "BPMN Diagram";
 
     @Property
-    @FieldDef( label = "ID", property = "value" )
+    @FieldDef( label = FIELDDEF_ID, property = "value" )
     @Valid
     private Id id;
 
     @Property
-    @FieldDef( label = "Package", property = "value" )
+    @FieldDef( label = FIELDDEF_PACKAGE, property = "value" )
     @Valid
     private Package packageProperty;
 
     @Property
-    @FieldDef( label = "Version", property = "value" )
+    @FieldDef( label = FIELDDEF_VERSION, property = "value" )
     @Valid
     private Version version;
 

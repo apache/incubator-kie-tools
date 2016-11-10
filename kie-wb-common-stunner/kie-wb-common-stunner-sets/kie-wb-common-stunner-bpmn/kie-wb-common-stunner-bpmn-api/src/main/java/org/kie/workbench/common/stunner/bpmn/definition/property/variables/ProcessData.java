@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -37,7 +39,7 @@ public class ProcessData implements BPMNPropertySet {
     public static final transient String propertySetName = "Process Data";
 
     @Property
-    @FieldDef( label = "Process Variables", property = "value" )
+    @FieldDef( label = FIELDDEF_PROCESS_VARIABLES, property = "value" )
     @VariablesEditor
     @Valid
     private ProcessVariables processVariables;

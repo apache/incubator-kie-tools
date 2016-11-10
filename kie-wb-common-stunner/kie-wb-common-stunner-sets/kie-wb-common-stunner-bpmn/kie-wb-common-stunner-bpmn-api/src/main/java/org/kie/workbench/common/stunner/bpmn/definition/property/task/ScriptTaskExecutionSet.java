@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -38,13 +40,13 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = "Script", property = "value", position = 1 )
+    @FieldDef( label = FIELDDEF_SCRIPT, property = "value", position = 1 )
     @TextArea( rows = 5 )
     @Valid
     private Script script;
 
     @Property
-    @FieldDef( label = "Script Language", property = "value", position = 2 )
+    @FieldDef( label = FIELDDEF_SCRIPT_LANGUAGE, property = "value", position = 2 )
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,

@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 @Portable
 @Bindable
 @PropertySet
@@ -37,7 +39,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = "RuleFlow Group", property = "value" )
+    @FieldDef( label = FIELDDEF_RULEFLOW_GROUP, property = "value" )
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,

@@ -31,6 +31,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,17 +46,17 @@ public abstract class BaseConnector implements BPMNDefinition {
     public static final transient String description = "A Connecting Object";
 
     @PropertySet
-    @FieldDef( label = "General Settings", position = 0 )
+    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = "Background Settings", position = 2 )
+    @FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
     @Valid
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = "Font Settings", position = 3 )
+    //@FieldDef( label = FIELDDEF_FONT_SETTINGS, position = 3 )
     protected FontSet fontSet;
 
     @NonPortable
