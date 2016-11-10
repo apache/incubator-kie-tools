@@ -46,20 +46,20 @@ public abstract class AbstractGraphCommand implements Command<GraphCommandExecut
         return ( MutableIndex<Node, Edge> ) context.getGraphIndex();
     }
 
-    protected static Graph<?, Node> getGraph( final GraphCommandExecutionContext context ) {
+    protected Graph<?, Node> getGraph( final GraphCommandExecutionContext context ) {
         return GraphUtils.getGraph( context );
     }
 
-    protected static Node<?, Edge> getNode( final GraphCommandExecutionContext context, final String uuid ) {
+    protected Node<?, Edge> getNode( final GraphCommandExecutionContext context, final String uuid ) {
         return GraphUtils.getNode( context, uuid );
     }
 
-    protected static Edge<? extends View, Node> getViewEdge( final GraphCommandExecutionContext context, final String uuid ) {
+    protected Edge<? extends View, Node> getViewEdge( final GraphCommandExecutionContext context, final String uuid ) {
         return GraphUtils.getViewEdge( context, uuid );
     }
 
     protected Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context, final String uuid ) {
-        final  Node<?, Edge> e = getNode( context, uuid );
+        final Node<?, Edge> e = getNode( context, uuid );
         if ( null == e ) {
             throw new BadCommandArgumentsException( this, uuid, "Node not found for [" + uuid + "]." );
         }

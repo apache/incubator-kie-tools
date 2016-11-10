@@ -21,27 +21,23 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasC
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.command.*;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManagerListener;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
-import org.kie.workbench.common.stunner.core.command.delegate.BatchDelegateCommandManager;
+import org.kie.workbench.common.stunner.core.command.delegate.DelegateCommandManager;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
 import javax.enterprise.event.Event;
-import java.util.Collection;
 
 class CanvasCommandManagerImpl
-        extends BatchDelegateCommandManager<AbstractCanvasHandler, CanvasViolation>
+        extends DelegateCommandManager<AbstractCanvasHandler, CanvasViolation>
         implements
         CanvasCommandManager<AbstractCanvasHandler>,
-        HasCommandManagerListener<BatchCommandManagerListener<AbstractCanvasHandler, CanvasViolation>> {
+        HasCommandManagerListener<CommandManagerListener<AbstractCanvasHandler, CanvasViolation>> {
 
     private final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent;
     private final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent;
     private final Event<CanvasUndoCommandExecutedEvent> canvasUndoCommandExecutedEvent;
 
-    private final BatchCommandManager<AbstractCanvasHandler, CanvasViolation> commandManager;
-    private BatchCommandManagerListener<AbstractCanvasHandler, CanvasViolation> listener;
+    private final CommandManager<AbstractCanvasHandler, CanvasViolation> commandManager;
+    private CommandManagerListener<AbstractCanvasHandler, CanvasViolation> listener;
 
     CanvasCommandManagerImpl() {
         this( null, null, null, null );
@@ -54,12 +50,12 @@ class CanvasCommandManagerImpl
         this.isCanvasCommandAllowedEvent = isCanvasCommandAllowedEvent;
         this.canvasCommandExecutedEvent = canvasCommandExecutedEvent;
         this.canvasUndoCommandExecutedEvent = canvasUndoCommandExecutedEvent;
-        this.commandManager = commandManagerFactory.newBatchCommandManager();
+        this.commandManager = commandManagerFactory.newCommandManager();
         this.listener = null;
     }
 
     @Override
-    protected BatchCommandManager<AbstractCanvasHandler, CanvasViolation> getBatchDelegate() {
+    protected CommandManager<AbstractCanvasHandler, CanvasViolation> getDelegate() {
         return commandManager;
     }
 
@@ -102,26 +98,6 @@ class CanvasCommandManagerImpl
 
     @Override
     @SuppressWarnings( "unchecked" )
-    protected void postExecuteBatch( final AbstractCanvasHandler context,
-                                     final Collection<Command<AbstractCanvasHandler, CanvasViolation>> commands,
-                                     final BatchCommandResult<CanvasViolation> result ) {
-        super.postExecuteBatch( context, commands, result );
-        if ( null != result && !CommandUtils.isError( result ) ) {
-            draw( context );
-
-        }
-        if ( null != this.listener ) {
-            listener.onExecuteBatch( context, commands, result );
-
-        }
-        if ( null != canvasCommandExecutedEvent ) {
-            canvasCommandExecutedEvent.fire( new CanvasCommandExecutedEvent( context, commands, result ) );
-        }
-
-    }
-
-    @Override
-    @SuppressWarnings( "unchecked" )
     protected void postUndo( final AbstractCanvasHandler context,
                              final Command<AbstractCanvasHandler, CanvasViolation> command,
                              final CommandResult<CanvasViolation> result ) {
@@ -141,31 +117,14 @@ class CanvasCommandManagerImpl
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected void postUndo( final AbstractCanvasHandler context,
-                             final Collection<Command<AbstractCanvasHandler, CanvasViolation>> commands,
-                             final CommandResult<CanvasViolation> result ) {
-        super.postUndo( context, commands, result );
-        if ( null != result && !CommandUtils.isError( result ) ) {
-            draw( context );
-
-        }
-        if ( null != this.listener ) {
-            listener.onUndoBatch( context, commands, result );
-
-        }
-        if ( null != canvasUndoCommandExecutedEvent ) {
-            canvasUndoCommandExecutedEvent.fire( new CanvasUndoCommandExecutedEvent( context, commands, result ) );
-        }
-
+    public void setCommandManagerListener( final CommandManagerListener<AbstractCanvasHandler, CanvasViolation> listener ) {
+        this.listener = listener;
     }
 
     private void draw( final AbstractCanvasHandler context ) {
         context.getCanvas().draw();
     }
 
-    @Override
-    public void setCommandManagerListener( final BatchCommandManagerListener<AbstractCanvasHandler, CanvasViolation> listener ) {
-        this.listener = listener;
-    }
 }
+
+

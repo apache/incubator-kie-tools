@@ -42,6 +42,8 @@ public final class AddChildEdgeCommand extends AbstractGraphCommand {
 
     private final String parentUUID;
     private final String candidateUUID;
+    private transient Node<?, Edge> parent;
+    private transient Node<?, Edge> candidate;
 
     public AddChildEdgeCommand( @MapsTo( "parentUUID" ) String parentUUID,
                                 @MapsTo( "candidateUUID" ) String candidateUUID ) {
@@ -49,6 +51,13 @@ public final class AddChildEdgeCommand extends AbstractGraphCommand {
                 parentUUID );
         this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
                 candidateUUID );
+    }
+
+    public AddChildEdgeCommand( Node<?, Edge> parent,
+                                Node<?, Edge> candidate ) {
+        this( parent.getUUID(), candidate.getUUID() );
+        this.parent = parent;
+        this.candidate = candidate;
     }
 
     @Override
@@ -61,8 +70,8 @@ public final class AddChildEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
-            final Node<?, Edge> candidate = checkNodeNotNull( context, candidateUUID );
+            final Node<?, Edge> parent = getParent( context );
+            final Node<?, Edge> candidate = getCandidate( context );
             // TODO: Create a ParentEdgeFactory iface extending EdgeFactory using as content generics type Relationship
             final String uuid = UUID.uuid();
             final Edge<Child, Node> edge = new EdgeImpl<>( uuid );
@@ -79,8 +88,8 @@ public final class AddChildEdgeCommand extends AbstractGraphCommand {
 
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
-        final Node<Definition<?>, Edge> candidate = ( Node<Definition<?>, Edge> ) checkNodeNotNull( context, candidateUUID );
+        final Node<?, Edge> parent = getParent( context );
+        final Node<Definition<?>, Edge> candidate = ( Node<Definition<?>, Edge> ) getCandidate( context );
         final Collection<RuleViolation> containmentRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( parent, candidate ).violations();
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
@@ -90,10 +99,26 @@ public final class AddChildEdgeCommand extends AbstractGraphCommand {
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
-        final Node<?, Edge> candidate = checkNodeNotNull( context, candidateUUID );
-        DeleteChildEdgeCommand undoCommand = new DeleteChildEdgeCommand( parent.getUUID(), candidate.getUUID() );
+        final Node<?, Edge> parent = getParent( context );
+        final Node<?, Edge> candidate = getCandidate( context );
+        DeleteChildEdgeCommand undoCommand = new DeleteChildEdgeCommand( parent, candidate );
         return undoCommand.execute( context );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
+        if ( null == parent ) {
+            parent = checkNodeNotNull( context, parentUUID );
+        }
+        return parent;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
+        if ( null == candidate ) {
+            candidate = checkNodeNotNull( context, candidateUUID );
+        }
+        return candidate;
     }
 
     @Override

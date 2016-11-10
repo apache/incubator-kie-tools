@@ -19,7 +19,9 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -37,16 +39,25 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     private final String propertyId;
     private final Object value;
     private Object oldValue;
+    private transient Node<?, Edge> node;
 
     public UpdateElementPropertyValueCommand( @MapsTo( "elementUUID" ) String elementUUID,
                                               @MapsTo( "propertyId" ) String propertyId,
                                               @MapsTo( "value" ) Object value ) {
         this.elementUUID = PortablePreconditions.checkNotNull( "elementUUID",
                 elementUUID );
+        this.node = null;
         this.propertyId = PortablePreconditions.checkNotNull( "propertyId",
                 propertyId );
         this.value = PortablePreconditions.checkNotNull( "value",
                 value );
+    }
+
+    public UpdateElementPropertyValueCommand( final Node<?, Edge> node,
+                                              final String propertyId,
+                                              final Object value ) {
+        this( node.getUUID(), propertyId, value );
+        this.node = node;
     }
 
     @Override
@@ -56,14 +67,14 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
 
     @Override
     protected CommandResult<RuleViolation> doCheck( GraphCommandExecutionContext context ) {
-        checkNodeNotNull( context, elementUUID );
+        checkNodeNotNull( context );
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final Element<Definition<?>> element = ( Element<Definition<?>> ) checkNodeNotNull( context, elementUUID );
+        final Element<Definition<?>> element = ( Element<Definition<?>> ) checkNodeNotNull( context );
         final Object p = GraphUtils.getProperty( context.getDefinitionManager(), element, propertyId );
         final PropertyAdapter<Object, Object> adapter =
                 ( PropertyAdapter<Object, Object> ) context.getDefinitionManager().adapters().registry().getPropertyAdapter( p.getClass() );
@@ -74,12 +85,20 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final UpdateElementPropertyValueCommand undoCommand = new UpdateElementPropertyValueCommand( elementUUID, propertyId, oldValue );
+        final UpdateElementPropertyValueCommand undoCommand =
+                new UpdateElementPropertyValueCommand( checkNodeNotNull( context ), propertyId, oldValue );
         return undoCommand.execute( context );
     }
 
     public Object getOldValue() {
         return oldValue;
+    }
+
+    private Node<?, Edge> checkNodeNotNull( GraphCommandExecutionContext context ) {
+        if ( null == node ) {
+            node = super.checkNodeNotNull( context, elementUUID );
+        }
+        return node;
     }
 
     @Override

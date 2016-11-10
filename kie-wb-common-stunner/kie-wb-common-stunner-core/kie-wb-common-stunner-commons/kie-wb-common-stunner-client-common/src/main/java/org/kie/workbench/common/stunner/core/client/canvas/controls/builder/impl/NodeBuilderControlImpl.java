@@ -36,8 +36,9 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.util.EdgeMagnetsHelper;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -45,19 +46,21 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import java.util.LinkedList;
 import java.util.List;
 
 @Dependent
 public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl implements NodeBuilderControl<AbstractCanvasHandler> {
 
-    ClientDefinitionManager clientDefinitionManager;
-    ShapeManager shapeManager;
-    CanvasCommandFactory commandFactory;
-    CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
-    ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl;
-    EdgeMagnetsHelper magnetsHelper;
+    private final ClientDefinitionManager clientDefinitionManager;
+    private final ShapeManager shapeManager;
+    private final CanvasCommandFactory commandFactory;
+    private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    private final ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl;
+    private final EdgeMagnetsHelper magnetsHelper;
 
+    protected NodeBuilderControlImpl() {
+        this( null, null, null, null, null, null );
+    }
     @Inject
     public NodeBuilderControlImpl( final ClientDefinitionManager clientDefinitionManager,
                                    final ShapeManager shapeManager,
@@ -93,7 +96,6 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
             final ElementBuildRequest<AbstractCanvasHandler> request1 =
                     new ElementBuildRequestImpl( x, y, node.getContent().getDefinition(), null );
             return elementBuilderControl.allows( request1 );
-
         }
         return false;
     }
@@ -115,41 +117,35 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
             final Node<View<?>, Edge> parent = ebc.getParent( x, y );
             final Double[] childCoordinates = ebc.getChildCoordinates( parent, x, y );
             final ShapeFactory<Object, AbstractCanvasHandler, ?> nodeShapeFactory = shapeManager.getFactory( nodeId );
-            final List<Command<AbstractCanvasHandler, CanvasViolation>> commandList = new LinkedList<>();
             ebc.getElementCommands( node, parent, nodeShapeFactory, childCoordinates[ 0 ], childCoordinates[ 1 ], new AbstractElementBuilderControl.CommandsCallback() {
                 @Override
                 public void onComplete( final String uuid,
                                         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
-                    commandList.addAll( commands );
+                    final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
+                            new CompositeCommandImpl.CompositeCommandBuilder()
+                            .addCommands( commands );
                     if ( inEdge != null ) {
                         final Object edgeDef = inEdge.getContent().getDefinition();
                         final String edgeId = clientDefinitionManager.adapters().forDefinition().getId( edgeDef );
                         final ShapeFactory<?, ?, ?> edgeFactory = shapeManager.getFactory( edgeId );
                         // The commands to batch for the edge that connects both nodes.
-                        commandList.add( commandFactory.ADD_EDGE( inEdge.getSourceNode(), inEdge, edgeFactory ) );
-                        commandList.add( commandFactory.SET_SOURCE_NODE( inEdge.getSourceNode(), inEdge, sourceManget ) );
-                        commandList.add( commandFactory.SET_TARGET_NODE( node, inEdge, targetMagnet ) );
-
+                        commandBuilder.addCommand( commandFactory.ADD_EDGE( inEdge.getSourceNode(), inEdge, edgeFactory ) );
+                        commandBuilder.addCommand( commandFactory.SET_SOURCE_NODE( inEdge.getSourceNode(), inEdge, sourceManget ) );
+                        commandBuilder.addCommand( commandFactory.SET_TARGET_NODE( node, inEdge, targetMagnet ) );
                     }
-                    for ( final Command<AbstractCanvasHandler, CanvasViolation> command : commandList ) {
-                        canvasCommandManager.batch( command );
-
-                    }
-                    BatchCommandResult<CanvasViolation> results = canvasCommandManager.executeBatch( canvasHandler );
+                    final CommandResult<CanvasViolation> results =
+                            canvasCommandManager.execute( canvasHandler, commandBuilder.build() );
                     if ( !CommandUtils.isError( results ) ) {
                         updateConnectorShape( inEdge, node, sourceManget, targetMagnet );
 
                     }
                     buildCallback.onSuccess( uuid );
-
                 }
 
                 @Override
                 public void onError( final ClientRuntimeError error ) {
                     buildCallback.onError( error );
-
                 }
-
             } );
 
         }
@@ -171,9 +167,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
             connectorContent.setSourceMagnetIndex( sourceMagnet );
             connectorContent.setTargetMagnetIndex( targetManget );
             edgeShape.applyConnections( inEdge, sShape.getShapeView(), tShape.getShapeView(), MutationContext.STATIC );
-
         }
-
     }
 
     protected ElementBuilderControlImpl getElementBuilderControl() {

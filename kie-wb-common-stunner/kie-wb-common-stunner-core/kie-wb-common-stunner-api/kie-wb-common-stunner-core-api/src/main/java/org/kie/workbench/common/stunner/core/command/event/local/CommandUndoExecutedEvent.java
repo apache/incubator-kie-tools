@@ -23,8 +23,6 @@ import org.kie.workbench.common.stunner.core.command.event.AbstractGraphCommandE
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-import java.util.Collection;
-
 @NonPortable
 public final class CommandUndoExecutedEvent extends AbstractGraphCommandEvent {
 
@@ -33,8 +31,4 @@ public final class CommandUndoExecutedEvent extends AbstractGraphCommandEvent {
         super( command, result );
     }
 
-    public CommandUndoExecutedEvent( final Collection<Command<GraphCommandExecutionContext, RuleViolation>> commands,
-                                     final CommandResult<RuleViolation> result ) {
-        super( commands, result );
-    }
 }

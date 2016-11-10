@@ -23,12 +23,8 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
-
-import java.util.Collection;
-import java.util.LinkedList;
 
 /**
  * Creates a new node on the target graph and creates/defines a new dock relationship so new node will be docked into the
@@ -39,6 +35,7 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
 
     private final String parentUUID;
     private final Node candidate;
+    private transient Node parent;
 
     public AddDockedNodeCommand( @MapsTo( "parentUUID" ) String parentUUID,
                                  @MapsTo( "candidate" ) Node candidate ) {
@@ -48,24 +45,29 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
                 candidate );
     }
 
+    public AddDockedNodeCommand( Node parent,
+                                 Node candidate ) {
+        this( parent.getUUID(), candidate );
+        this.parent = parent;
+    }
+
     protected void initialize( final GraphCommandExecutionContext context ) {
         this.addCommand( new AddNodeCommand( candidate ) )
-                .addCommand( new AddDockEdgeCommand( parentUUID, candidate.getUUID() ) );
+                .addCommand( new AddDockEdgeCommand( getParent( context ), candidate ) );
     }
 
     @Override
-    protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
+    protected CommandResult<RuleViolation> doAllowCheck( final GraphCommandExecutionContext context,
+                                                         final Command<GraphCommandExecutionContext, RuleViolation> command ) {
         return command.allow( context );
     }
 
     @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        final Node<?, Edge> parent = getNode( context, parentUUID );
-        final Collection<RuleViolation> dockingRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager().docking().evaluate( parent, candidate ).violations();
-        final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
-        violations.addAll( dockingRuleViolations );
-        return new GraphCommandResultBuilder( violations ).build();
+    private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
+        if ( null == parent ) {
+            parent = checkNodeNotNull( context, parentUUID );
+        }
+        return parent;
     }
 
     @Override

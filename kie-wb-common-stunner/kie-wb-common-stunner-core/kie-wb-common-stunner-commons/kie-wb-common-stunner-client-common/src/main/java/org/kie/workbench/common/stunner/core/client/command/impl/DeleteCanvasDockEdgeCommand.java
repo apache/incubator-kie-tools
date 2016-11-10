@@ -50,8 +50,9 @@ public final class DeleteCanvasDockEdgeCommand extends AbstractCanvasGraphComman
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new DeleteDockEdgeCommand( parent.getUUID(), child.getUUID() );
+        return new DeleteDockEdgeCommand( parent, child );
     }
 
 }

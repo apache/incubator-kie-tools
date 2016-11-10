@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -30,13 +29,10 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
 public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation> {
 
-    protected abstract CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context );
+    protected abstract CommandResult<RuleViolation> doAllowCheck( GraphCommandExecutionContext context,
+                                                                  Command<GraphCommandExecutionContext, RuleViolation> command );
 
     @Override
     protected CommandResult<RuleViolation> doUndo( final GraphCommandExecutionContext context,
@@ -51,20 +47,12 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
     }
 
     @Override
-    protected CommandResult<RuleViolation> buildResult( final List<CommandResult<RuleViolation>> violations ) {
-        final Collection<RuleViolation> v = new LinkedList<>();
-        for ( final CommandResult<RuleViolation> result : violations ) {
-            v.addAll( CommandUtils.toList( result.getViolations() ) );
-        }
-        return new GraphCommandResultBuilder( v ).build();
-    }
-
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
         // Check if rules are present.
         if ( null == context.getRulesManager() ) {
             return GraphCommandResultBuilder.SUCCESS;
         }
-        return doCheck( context );
+        return doAllowCheck( context, command );
     }
 
     protected Graph<?, Node> getGraph( final GraphCommandExecutionContext context ) {
@@ -76,7 +64,7 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
     }
 
     protected Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context, final String uuid ) {
-        final  Node<?, Edge> e = getNode( context, uuid );
+        final Node<?, Edge> e = getNode( context, uuid );
         if ( null == e ) {
             throw new BadCommandArgumentsException( this, uuid, "Node not found for [" + uuid + "]." );
         }

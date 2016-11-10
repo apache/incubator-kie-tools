@@ -19,14 +19,14 @@ package org.kie.workbench.common.stunner.bpmn.factory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
-import org.kie.workbench.common.stunner.core.graph.command.factory.GraphCommandFactory;
+import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSetImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.core.graph.processing.index.IndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
@@ -93,10 +92,14 @@ public class BPMNGraphFactoryImpl implements BPMNGraphFactory {
         }
         // Add a BPMN diagram node by default.
         Node diagramNode = ( Node ) factoryManager.newElement( UUID.uuid(), BPMNDiagram.class );
-        graphCommandManager
-                .batch( graphCommandFactory.ADD_NODE( diagramNode ) )
-                .batch( graphCommandFactory.UPDATE_POSITION( diagramNode, 0d, 0d ) )
-                .executeBatch( createGraphContext( graph ) );
+
+        graphCommandManager.execute( createGraphContext( graph ),
+                new CompositeCommandImpl.CompositeCommandBuilder()
+                        .addCommand( graphCommandFactory.ADD_NODE( diagramNode ) )
+                        .addCommand( graphCommandFactory.UPDATE_POSITION( diagramNode, 0d, 0d ) )
+                        .build()
+        );
+
         return graph;
     }
 

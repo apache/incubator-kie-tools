@@ -45,23 +45,29 @@ import java.util.List;
 public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
     private String candidateUUID;
+    private transient Node<?, Edge> node;
 
     public SafeDeleteNodeCommand( @MapsTo( "candidateUUID" ) String candidateUUID ) {
         this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
                 candidateUUID );
     }
 
+    public SafeDeleteNodeCommand( Node<?, Edge> node ) {
+        this( node.getUUID() );
+        this.node = node;
+    }
+
     @Override
     @SuppressWarnings( "unchecked" )
     protected void initialize( final GraphCommandExecutionContext context ) {
-        final Node<Definition<?>, Edge> candidate = ( Node<Definition<?>, Edge> ) getNode( context, candidateUUID );
+        final Node<Definition<?>, Edge> candidate = ( Node<Definition<?>, Edge> ) getCandidate( context );
         // Delete & set incoming & outgoing edges for the node being deleted.
         final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = new LinkedList<>();
         new SafeDeleteNodeProcessor( candidate ).run( new SafeDeleteNodeProcessor.Callback() {
 
             @Override
             public void deleteChildNode( final Node<Definition<?>, Edge> node ) {
-                commands.add( new SafeDeleteNodeCommand( node.getUUID() ) );
+                commands.add( new SafeDeleteNodeCommand( node ) );
             }
 
             @Override
@@ -73,18 +79,18 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
             @Override
             public void deleteInChildEdge( final Node parent,
                                            final Edge<Child, Node> edge ) {
-                commands.add( new DeleteChildEdgeCommand( parent.getUUID(), candidate.getUUID() ) );
+                commands.add( new DeleteChildEdgeCommand( parent, candidate ) );
             }
 
             @Override
             public void deleteOutEdge( final Edge<? extends View<?>, Node> edge ) {
-                commands.add( new DeleteEdgeCommand( edge.getUUID() ) );
+                commands.add( new DeleteEdgeCommand( edge ) );
 
             }
 
             @Override
             public void deleteNode( final Node<Definition<?>, Edge> node ) {
-                commands.add( new DeleteNodeCommand( candidate.getUUID() ) );
+                commands.add( new DeleteNodeCommand( candidate ) );
             }
 
         } );
@@ -96,16 +102,11 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     }
 
     @Override
-    protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        checkNodeNotNull( context, candidateUUID );
-        return check( context );
-    }
-
     @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> doAllowCheck( final GraphCommandExecutionContext context,
+                                                         final Command<GraphCommandExecutionContext, RuleViolation> command ) {
         final Graph<?, Node> target = getGraph( context );
-        final Node<View<?>, Edge> candidate = ( Node<View<?>, Edge> ) getNode( context, candidateUUID );
-
+        final Node<View<?>, Edge> candidate = ( Node<View<?>, Edge> ) getCandidate( context );
         // Check node exist on the storage.
         boolean isNodeInGraph = false;
         for ( Object node : target.nodes() ) {
@@ -128,8 +129,15 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
             return builder.build();
 
         }
-
         throw new BadCommandArgumentsException( this, candidateUUID, "No node found for UUID" );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Node<? extends Definition<?>, Edge> getCandidate( final GraphCommandExecutionContext context ) {
+        if ( null == node ) {
+            node = checkNodeNotNull( context, candidateUUID );
+        }
+        return ( Node<View<?>, Edge> ) node;
     }
 
     @Override

@@ -33,6 +33,7 @@ public final class AddEdgeCommand extends AbstractGraphCommand {
 
     private final String nodeUUID;
     private final Edge edge;
+    private transient Node<?, Edge> node;
 
     public AddEdgeCommand( @MapsTo( "nodeUUID" ) String nodeUUID,
                            @MapsTo( "edge" ) Edge edge ) {
@@ -41,6 +42,12 @@ public final class AddEdgeCommand extends AbstractGraphCommand {
         this.edge = PortablePreconditions.checkNotNull( "edge",
                 edge );
         ;
+    }
+
+    public AddEdgeCommand( Node<?, Edge> node,
+                           Edge edge ) {
+        this( node.getUUID(), edge );
+        this.node = node;
     }
 
     @Override
@@ -53,7 +60,7 @@ public final class AddEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Node<?, Edge> target = checkNodeNotNull( context, nodeUUID );
+            final Node<?, Edge> target = getNode( context );
             target.getOutEdges().add( edge );
             getMutableIndex( context ).addEdge( edge );
         }
@@ -61,15 +68,23 @@ public final class AddEdgeCommand extends AbstractGraphCommand {
     }
 
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        checkNodeNotNull( context, nodeUUID );
+        getNode( context );
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final DeleteEdgeCommand undoCommand = new DeleteEdgeCommand( edge.getUUID() );
+        final DeleteEdgeCommand undoCommand = new DeleteEdgeCommand( edge );
         return undoCommand.execute( context );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Node<?, Edge> getNode( final GraphCommandExecutionContext context ) {
+        if ( null == node ) {
+            node = getNode( context, nodeUUID );
+        }
+        return node;
     }
 
     @Override

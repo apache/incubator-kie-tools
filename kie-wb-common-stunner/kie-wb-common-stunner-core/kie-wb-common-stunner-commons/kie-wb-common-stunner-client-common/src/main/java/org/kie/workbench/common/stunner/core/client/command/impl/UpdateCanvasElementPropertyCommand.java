@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPropertyValueCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -54,8 +55,9 @@ public final class UpdateCanvasElementPropertyCommand extends AbstractCanvasGrap
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new UpdateElementPropertyValueCommand( element.getUUID(), propertyId, value );
+        return new UpdateElementPropertyValueCommand( (Node ) element, propertyId, value );
     }
 
 }

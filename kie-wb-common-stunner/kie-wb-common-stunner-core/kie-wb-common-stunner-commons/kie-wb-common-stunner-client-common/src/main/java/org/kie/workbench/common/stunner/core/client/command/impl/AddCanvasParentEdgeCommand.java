@@ -52,8 +52,9 @@ public final class AddCanvasParentEdgeCommand extends AbstractCanvasGraphCommand
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new AddParentEdgeCommand( parent.getUUID(), candidate.getUUID() );
+        return new AddParentEdgeCommand( parent, candidate );
     }
 
 }

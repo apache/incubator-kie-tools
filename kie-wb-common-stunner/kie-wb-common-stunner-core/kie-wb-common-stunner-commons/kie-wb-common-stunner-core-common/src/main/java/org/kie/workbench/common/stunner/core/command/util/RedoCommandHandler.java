@@ -16,20 +16,23 @@
 package org.kie.workbench.common.stunner.core.command.util;
 
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Stack;
 import java.util.logging.Logger;
 
 /**
  * This handler is an util class that achieves command "re-do" features.
+ * It's behaviour is to keep in a command registry ( usually a in-memory registry), the commands that have been
+ * "undone" for a given context. It allows further re-do ( re-execution ) of that commands. If at some point
+ * the user undo some commands and executes whatever new action that produces a new command, this registry is cleared
+ * so you cannot redo older commands.
  * It can be used as:
  * <b>Inputs</b>
  * - Capture undo operations for commands and call the <code>onUndoCommandExecuted</code> method
@@ -45,6 +48,7 @@ import java.util.logging.Logger;
 public class RedoCommandHandler<C extends Command> {
 
     private static Logger LOGGER = Logger.getLogger( RedoCommandHandler.class.getName() );
+
 
     private final CommandRegistry<C> registry;
 
@@ -62,38 +66,17 @@ public class RedoCommandHandler<C extends Command> {
         return isEnabled();
     }
 
-    public boolean onUndoCommandExecuted( final Collection<C> commands ) {
-        registry.register( commands );
-        return isEnabled();
-    }
-
     @SuppressWarnings( "unchecked" )
     public boolean onCommandExecuted( final C command ) {
-        return _onCommandExecuted( new ArrayList<C>( 1 ) {{
-            add( command );
-        }} );
-    }
-
-    public boolean onCommandExecuted( final Collection<C> commands ) {
-        return _onCommandExecuted( commands );
+        return _onCommandExecuted( command );
     }
 
     @SuppressWarnings( "unchecked" )
     public CommandResult<?> execute( final Object context,
-                                     final BatchCommandManager commandManager ) {
+                                     final CommandManager commandManager ) {
         if ( !registry.isEmpty() ) {
-            final Collection<C> last = ( Collection<C> ) registry.peek();
-            final int s = last.size();
-            CommandResult<?> result = null;
-            if ( s == 1 ) {
-                result = commandManager.execute( context, last.iterator().next() );
-            } else {
-                final Stack<C> t = new Stack<>();
-                last.stream().forEach( t::push );
-                t.stream().forEach( commandManager::batch );
-                result = commandManager.executeBatch( context );
-            }
-            return result;
+            final C last =  registry.peek();
+            return commandManager.execute( context, last );
         }
         return null;
     }
@@ -106,10 +89,10 @@ public class RedoCommandHandler<C extends Command> {
         registry.clear();
     }
 
-    private boolean _onCommandExecuted( final Collection<C> commands ) {
+    private boolean _onCommandExecuted( final C command ) {
         if ( !registry.isEmpty() ) {
-            final Collection<C> last = getLastRegistryItem();
-            if ( null != last && last.equals( commands ) ) {
+            final C last = registry.peek();
+            if ( null != last && last.equals( command ) ) {
                 // If the recently executed command is the same in this handler' registry, means it has been
                 // executed by this handler so it can be removed from the registry.
                 registry.pop();
@@ -120,14 +103,6 @@ public class RedoCommandHandler<C extends Command> {
             }
         }
         return isEnabled();
-    }
-
-    private Collection<C> getLastRegistryItem() {
-        try {
-            return ( Collection<C> ) registry.peek();
-        } catch ( ClassCastException e ) {
-            throw new UnsupportedOperationException( "Registry type not supported [" + registry.getClass().getName() + "]", e );
-        }
     }
 
 }

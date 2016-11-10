@@ -23,17 +23,16 @@ import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
-import org.kie.workbench.common.stunner.core.command.delegate.BatchDelegateCommandManager;
+import org.kie.workbench.common.stunner.core.command.delegate.DelegateCommandManager;
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -42,7 +41,7 @@ import java.util.logging.Logger;
  */
 @ApplicationScoped
 @Session
-public class SessionCommandManagerImpl extends BatchDelegateCommandManager<AbstractCanvasHandler, CanvasViolation>
+public class SessionCommandManagerImpl extends DelegateCommandManager<AbstractCanvasHandler, CanvasViolation>
         implements SessionCommandManager<AbstractCanvasHandler> {
 
     private static Logger LOGGER = Logger.getLogger( SessionCommandManagerImpl.class.getName() );
@@ -59,18 +58,6 @@ public class SessionCommandManagerImpl extends BatchDelegateCommandManager<Abstr
     }
 
     @Override
-    public BatchCommandResult<CanvasViolation> executeBatch( AbstractCanvasHandler context ) {
-        try {
-            return super.executeBatch( context );
-        } catch ( final CommandException ce ) {
-            clientSessionManager.handleCommandError( ce );
-        } catch ( final RuntimeException e ) {
-            clientSessionManager.handleClientError( new ClientRuntimeError( e ) );
-        }
-        return CanvasCommandResultBuilder.FAILED;
-    }
-
-    @Override
     public CommandResult<CanvasViolation> execute( AbstractCanvasHandler context, Command<AbstractCanvasHandler, CanvasViolation> command ) {
         try {
             return super.execute( context, command );
@@ -83,7 +70,7 @@ public class SessionCommandManagerImpl extends BatchDelegateCommandManager<Abstr
     }
 
     @Override
-    protected BatchCommandManager<AbstractCanvasHandler, CanvasViolation> getBatchDelegate() {
+    protected CommandManager<AbstractCanvasHandler, CanvasViolation> getDelegate() {
         final ClientFullSession<AbstractCanvas, AbstractCanvasHandler> defaultSession = getDefaultSession();
         if ( null != defaultSession ) {
             return defaultSession.getCanvasCommandManager();
@@ -105,7 +92,7 @@ public class SessionCommandManagerImpl extends BatchDelegateCommandManager<Abstr
 
     @Override
     public CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {
-        final StackCommandManager<AbstractCanvasHandler, CanvasViolation> scm = ( StackCommandManager<AbstractCanvasHandler, CanvasViolation> ) getBatchDelegate();
+        final StackCommandManager<AbstractCanvasHandler, CanvasViolation> scm = ( StackCommandManager<AbstractCanvasHandler, CanvasViolation> ) getDelegate();
         if ( null != scm ) {
             return scm.getRegistry();
 
@@ -115,21 +102,12 @@ public class SessionCommandManagerImpl extends BatchDelegateCommandManager<Abstr
 
     @Override
     public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        final StackCommandManager<AbstractCanvasHandler, CanvasViolation> scm = ( StackCommandManager<AbstractCanvasHandler, CanvasViolation> ) getBatchDelegate();
+        final StackCommandManager<AbstractCanvasHandler, CanvasViolation> scm = ( StackCommandManager<AbstractCanvasHandler, CanvasViolation> ) getDelegate();
         if ( null != scm ) {
             return scm.undo( context );
         }
         return null;
 
-    }
-
-    @Override
-    public Collection<Command<AbstractCanvasHandler, CanvasViolation>> getBatchCommands() {
-        final StackCommandManager<AbstractCanvasHandler, CanvasViolation> scm = ( StackCommandManager<AbstractCanvasHandler, CanvasViolation> ) getBatchDelegate();
-        if ( null != scm ) {
-            return scm.getBatchCommands();
-        }
-        return null;
     }
 
     @Override

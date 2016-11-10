@@ -23,15 +23,13 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasU
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManagerFactory;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
 import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import java.util.Collection;
+import java.util.List;
 
 @Dependent
 public class CanvasStackCommandManager implements CanvasCommandManager<AbstractCanvasHandler>, StackCommandManager<AbstractCanvasHandler, CanvasViolation> {
@@ -59,26 +57,6 @@ public class CanvasStackCommandManager implements CanvasCommandManager<AbstractC
     @Override
     public CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {
         return stackCommandManager.getRegistry();
-    }
-
-    @Override
-    public BatchCommandManager<AbstractCanvasHandler, CanvasViolation> batch( final Command<AbstractCanvasHandler, CanvasViolation> command ) {
-        return stackCommandManager.batch( command );
-    }
-
-    @Override
-    public BatchCommandResult<CanvasViolation> executeBatch( final AbstractCanvasHandler context ) {
-        return stackCommandManager.executeBatch( context );
-    }
-
-    @Override
-    public BatchCommandResult<CanvasViolation> undoBatch( final AbstractCanvasHandler context ) {
-        return stackCommandManager.undoBatch( context );
-    }
-
-    @Override
-    public Collection<Command<AbstractCanvasHandler, CanvasViolation>> getBatchCommands() {
-        return stackCommandManager.getBatchCommands();
     }
 
     @Override

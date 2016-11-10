@@ -18,14 +18,10 @@ package org.kie.workbench.common.stunner.core.client.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.util.UUID;
 
 public abstract class AbstractCanvasCommand implements CanvasCommand<AbstractCanvasHandler> {
 
-    private final transient String uuid;
-
     public AbstractCanvasCommand() {
-        this.uuid = UUID.uuid();
     }
 
     @Override
@@ -35,18 +31,6 @@ public abstract class AbstractCanvasCommand implements CanvasCommand<AbstractCan
 
     protected CommandResult<CanvasViolation> buildResult() {
         return CanvasCommandResultBuilder.SUCCESS;
-    }
-
-    @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( !( o instanceof AbstractCanvasCommand ) ) {
-            return false;
-        }
-        AbstractCanvasCommand that = ( AbstractCanvasCommand ) o;
-        return uuid.equals( that.uuid );
     }
 
 }

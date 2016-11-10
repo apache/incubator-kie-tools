@@ -46,7 +46,7 @@ public final class AddCanvasDockedNodeCommand extends AddCanvasElementCommand<No
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new AddDockedNodeCommand( parent.getUUID(), candidate );
+        return new AddDockedNodeCommand( parent, candidate );
     }
 
     @Override

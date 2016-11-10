@@ -73,8 +73,9 @@ public final class AddNodeCommand extends AbstractGraphCommand {
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final SafeDeleteNodeCommand undoCommand = new SafeDeleteNodeCommand( candidate.getUUID() );
+        final SafeDeleteNodeCommand undoCommand = new SafeDeleteNodeCommand( candidate );
         return undoCommand.execute( context );
     }
 

@@ -18,10 +18,10 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
 import org.kie.workbench.common.stunner.core.command.util.RedoCommandHandler;
@@ -29,21 +29,20 @@ import org.kie.workbench.common.stunner.core.command.util.RedoCommandHandler;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.Collection;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class RedoSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
 
-    private final RedoCommandHandler<CanvasCommand<AbstractCanvasHandler>> redoCommandHandler;
+    private final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
 
     protected RedoSessionCommand() {
         this( null );
     }
 
     @Inject
-    public RedoSessionCommand( final RedoCommandHandler<CanvasCommand<AbstractCanvasHandler>> redoCommandHandler ) {
+    public RedoSessionCommand( final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler ) {
         super( false );
         this.redoCommandHandler = redoCommandHandler;
     }
@@ -69,9 +68,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<AbstractCli
         checkNotNull( "commandExecutedEvent", commandExecutedEvent );
         if ( null != commandExecutedEvent.getCommand() ) {
             redoCommandHandler
-                    .onCommandExecuted( ( CanvasCommand<AbstractCanvasHandler> ) commandExecutedEvent.getCommand() );
-        } else {
-            redoCommandHandler.onCommandExecuted( commandExecutedEvent.getCommands() );
+                    .onCommandExecuted( commandExecutedEvent.getCommand() );
         }
         checkState();
     }
@@ -79,12 +76,8 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<AbstractCli
     @SuppressWarnings( "unchecked" )
     void onCommandUndoExecuted( @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
         checkNotNull( "commandUndoExecutedEvent", commandUndoExecutedEvent );
-        final CanvasCommand<AbstractCanvasHandler> command = ( CanvasCommand<AbstractCanvasHandler> ) commandUndoExecutedEvent.getCommand();
-        final Collection<CanvasCommand<AbstractCanvasHandler>> commands = commandUndoExecutedEvent.getCommands();
-        if ( null != command ) {
-            redoCommandHandler.onUndoCommandExecuted( command );
-        } else {
-            redoCommandHandler.onUndoCommandExecuted( commands );
+        if ( null != commandUndoExecutedEvent.getCommand() ) {
+            redoCommandHandler.onUndoCommandExecuted( commandUndoExecutedEvent.getCommand() );
         }
         checkState();
     }

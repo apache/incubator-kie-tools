@@ -19,7 +19,6 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
-import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -44,12 +43,18 @@ public final class DeleteNodeCommand extends AbstractGraphCommand {
     private static Logger LOGGER = Logger.getLogger( DeleteNodeCommand.class.getName() );
 
     private final String uuid;
+    private transient Node<?, Edge> node;
     private transient Node<?, Edge> removed;
 
     public DeleteNodeCommand( @MapsTo( "uuid" ) String uuid ) {
         this.uuid = PortablePreconditions.checkNotNull( "uuid",
                 uuid );
         this.removed = null;
+    }
+
+    public DeleteNodeCommand( Node<?, Edge> node ) {
+        this( node.getUUID() );
+        this.node = node;
     }
 
     @Override
@@ -63,7 +68,7 @@ public final class DeleteNodeCommand extends AbstractGraphCommand {
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
             LOGGER.log( Level.FINE, "Executing..." );
             final Graph<?, Node> graph = getGraph( context );
-            final Node<?, Edge> candidate = getNode( context, uuid );
+            final Node<?, Edge> candidate = getCandidate( context );
             this.removed = candidate;
             graph.removeNode( candidate.getUUID() );
             getMutableIndex( context ).removeNode( candidate );
@@ -75,10 +80,10 @@ public final class DeleteNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
         // Check node exist on the index.
-        checkNodeNotNull( context, uuid );
+        checkCandidateNotNull( context );
         // And check it really exist on the graph storage as well.
         final Graph<?, Node> graph = getGraph( context );
-        final Node<View<?>, Edge> candidate = ( Node<View<?>, Edge> ) getNode( context, uuid );
+        final Node<View<?>, Edge> candidate = ( Node<View<?>, Edge> ) getCandidate( context );
         boolean isNodeInGraph = false;
         for ( Object node : graph.nodes() ) {
             if ( node.equals( candidate ) ) {
@@ -98,7 +103,6 @@ public final class DeleteNodeCommand extends AbstractGraphCommand {
             builder.addViolations( cardinalityRuleViolations );
             return builder.build();
         }
-
         throw new BadCommandArgumentsException( this, uuid, "No node found for UUID" );
     }
 
@@ -106,6 +110,22 @@ public final class DeleteNodeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
         final AddNodeCommand undoCommand = new AddNodeCommand( removed );
         return undoCommand.execute( context );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
+        if ( null == node ) {
+            node = getNode( context, uuid );
+        }
+        return node;
+    }
+
+    private Node<?, Edge> checkCandidateNotNull( final GraphCommandExecutionContext context ) {
+        final Node<?, Edge> e = getCandidate( context );
+        if ( null == e ) {
+            throw new BadCommandArgumentsException( this, uuid, "Node not found for [" + uuid + "]." );
+        }
+        return e;
     }
 
     @Override

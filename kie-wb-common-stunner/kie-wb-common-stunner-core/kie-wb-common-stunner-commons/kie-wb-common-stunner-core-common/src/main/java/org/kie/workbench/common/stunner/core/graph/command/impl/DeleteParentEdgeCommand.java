@@ -37,13 +37,22 @@ public final class DeleteParentEdgeCommand extends AbstractGraphCommand {
 
     private final String parentUUID;
     private final String candidateUUID;
+    private transient Node<?, Edge> parent;
+    private transient Node<?, Edge> candidate;
 
     public DeleteParentEdgeCommand( @MapsTo( "parentUUID" ) String parentUUID,
-                                   @MapsTo( "candidateUUID" ) String candidateUUID ) {
+                                    @MapsTo( "candidateUUID" ) String candidateUUID ) {
         this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
                 parentUUID );
         this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
                 candidateUUID );
+    }
+
+    public DeleteParentEdgeCommand( Node<?, Edge> parent,
+                                    Node<?, Edge> candidate ) {
+        this( parent.getUUID(), candidate.getUUID() );
+        this.parent = parent;
+        this.candidate = candidate;
     }
 
     @Override
@@ -55,8 +64,8 @@ public final class DeleteParentEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
-            final Node<?, Edge> candidate = checkNodeNotNull( context, candidateUUID );
+            final Node<?, Edge> parent = getParent( context );
+            final Node<?, Edge> candidate = getCandidate( context );
             final Edge<Parent, Node> edge = getEdgeForTarget( parent, candidate );
             if ( null != edge ) {
                 edge.setSourceNode( null );
@@ -87,15 +96,33 @@ public final class DeleteParentEdgeCommand extends AbstractGraphCommand {
     }
 
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        checkNodeNotNull( context, parentUUID );
-        checkNodeNotNull( context, candidateUUID );
+        getParent( context );
+        getCandidate( context );
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final AddParentEdgeCommand undoCommand = new AddParentEdgeCommand( parentUUID, candidateUUID );
+        final Node<?, Edge> parent = getParent( context );
+        final Node<?, Edge> candidate = getCandidate( context );
+        final AddParentEdgeCommand undoCommand = new AddParentEdgeCommand( parent, candidate );
         return undoCommand.execute( context );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
+        if ( null == parent ) {
+            parent = checkNodeNotNull( context, parentUUID );
+        }
+        return parent;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
+        if ( null == candidate ) {
+            candidate = checkNodeNotNull( context, candidateUUID );
+        }
+        return candidate;
     }
 
     @Override

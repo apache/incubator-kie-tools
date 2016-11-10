@@ -17,8 +17,8 @@
 package org.kie.workbench.common.stunner.core.client.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandManager;
 
-public interface CanvasCommandManager<H extends CanvasHandler> extends BatchCommandManager<H, CanvasViolation> {
+public interface CanvasCommandManager<H extends CanvasHandler> extends CommandManager<H, CanvasViolation> {
 
 }

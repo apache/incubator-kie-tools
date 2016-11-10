@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -99,33 +100,23 @@ public class StunnerClientLogger {
     @SuppressWarnings( "unchecked" )
     public static void logCommandHistory( final ClientFullSession session ) {
         if ( null != session ) {
-            final Iterable<Iterable<Command<AbstractCanvasHandler, CanvasViolation>>> history =
+            final List<Command<AbstractCanvasHandler, CanvasViolation>> history =
                     ( ( StackCommandManager<AbstractCanvasHandler, CanvasViolation> ) session.getCanvasCommandManager() ).getRegistry().getCommandHistory();
             logCommandHistory( history );
         }
     }
 
-    private static void logCommandHistory( final Iterable<Iterable<Command<AbstractCanvasHandler, CanvasViolation>>> history ) {
+    private static void logCommandHistory( final List<Command<AbstractCanvasHandler, CanvasViolation>> history ) {
         log( "**** COMMAND HISTORY START *********" );
         if ( null == history ) {
             log( "History is null" );
         } else {
-            int x = 0;
-            for ( final Iterable<Command<AbstractCanvasHandler, CanvasViolation>> entry : history ) {
-                log( "--------------- History Entry Start ---------------" );
-                if ( entry.iterator().hasNext() ) {
-                    log( "No commands" );
-                } else {
-                    int c = 0;
-                    for ( final Command<AbstractCanvasHandler, CanvasViolation> command : entry ) {
-                        logCommand( c, command );
-                        c++;
-                    }
-                }
-                log( "--------------- History Entry End ---------------" );
-                x++;
-            }
-            log( " ( FOUND " + x + " ENTRIES )" );
+            final int[] x = { 0 };
+            history.stream().forEach( command -> {
+                logCommand( x[0], command );
+                x[0]++;
+            } );
+            log( " ( FOUND " + x[0] + " ENTRIES )" );
         }
         log( "**** COMMAND HISTORY END *********" );
     }

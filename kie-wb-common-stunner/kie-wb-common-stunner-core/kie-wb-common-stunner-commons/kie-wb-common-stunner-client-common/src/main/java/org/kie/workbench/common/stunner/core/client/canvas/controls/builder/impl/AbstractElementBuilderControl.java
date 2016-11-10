@@ -30,6 +30,8 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -105,6 +107,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public void build( final ElementBuildRequest<AbstractCanvasHandler> request,
                        final BuildCallback buildCallback ) {
         if ( null == canvasHandler ) {
@@ -134,10 +137,9 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             @Override
             public void onComplete( final String uuid,
                                     final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
-                for ( final Command<AbstractCanvasHandler, CanvasViolation> command : commands ) {
-                    canvasCommandManager.batch( command );
-                }
-                canvasCommandManager.executeBatch( canvasHandler );
+                canvasCommandManager.execute( canvasHandler, new CompositeCommandImpl.CompositeCommandBuilder()
+                        .addCommands( commands )
+                        .build() );
                 buildCallback.onSuccess( uuid );
                 // Notify processing ends.
                 fireProcessingCompleted();

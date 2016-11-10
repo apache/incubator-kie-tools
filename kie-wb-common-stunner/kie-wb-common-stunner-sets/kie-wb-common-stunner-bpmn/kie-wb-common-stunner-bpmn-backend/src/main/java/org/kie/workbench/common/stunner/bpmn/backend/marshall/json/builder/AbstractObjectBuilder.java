@@ -20,7 +20,6 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2Ory
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.Bpmn2OryxPropertyManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -98,17 +97,6 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
             this.result = doBuild( context );
         }
         return this.result;
-    }
-
-    protected boolean hasErrors( BatchCommandResult<RuleViolation> results ) {
-        Iterator<CommandResult<RuleViolation>> iterator = results.iterator();
-        while ( iterator.hasNext() ) {
-            CommandResult<RuleViolation> result = iterator.next();
-            if ( CommandResult.Type.ERROR.equals( result.getType() ) ) {
-                return true;
-            }
-        }
-        return false;
     }
 
     protected boolean hasErrors( CommandResult<RuleViolation> results ) {

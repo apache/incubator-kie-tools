@@ -20,27 +20,22 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.registry.exception.RegistrySizeExceededException;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
+import java.util.*;
 
 /**
- * The Stack class behavior when using the iterator is not the expected one, so used
+ * The default generic implementation for the CommandRegistry type.
+ * It's implemented for achieving an in-memory and lightweight registry approach, don't do an overuse of it.
+ * Note: The Stack class behavior when using the iterator is not the expected one, so used
  * ArrayDeque instead of an Stack to provide right iteration order.
  */
 public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C> {
 
-    private final Deque<Iterable<C>> commands = new ArrayDeque<>();
+    private final Deque<C> commands = new ArrayDeque<>();
     private int maxStackSize = 50;
 
     @Override
     public void setMaxSize( final int size ) {
         this.maxStackSize = size;
-    }
-
-    @Override
-    public void register( final Collection<C> commands ) {
-        addIntoStack( commands );
     }
 
     @Override
@@ -69,23 +64,18 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
     }
 
     @Override
-    public Iterable<Iterable<C>> getCommandHistory() {
-        return commands;
+    public List<C> getCommandHistory() {
+        return new ArrayList<C>( commands );
     }
 
     @Override
-    public Iterable<C> peek() {
+    public C peek() {
         return commands.peek();
     }
 
     @Override
-    public Iterable<C> pop() {
+    public C pop() {
         return commands.pop();
-    }
-
-    @Override
-    public int getCommandHistorySize() {
-        return commands.size();
     }
 
     private void addIntoStack( final C command ) {
@@ -93,20 +83,7 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
             if ( ( commands.size() + 1 ) > maxStackSize ) {
                 stackSizeExceeded();
             }
-            final Deque<C> s = new ArrayDeque<>();
-            s.push( command );
-            commands.push( s );
-        }
-    }
-
-    private void addIntoStack( final Collection<C> _commands ) {
-        if ( null != _commands && !_commands.isEmpty() ) {
-            if ( ( commands.size() + _commands.size() ) > maxStackSize ) {
-                stackSizeExceeded();
-            }
-            final Deque<C> s = new ArrayDeque<>();
-            _commands.forEach( s::push );
-            commands.push( s );
+            commands.push( command );
         }
     }
 

@@ -19,6 +19,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BoundsExceededException;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -49,13 +50,22 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     private final Double y;
     private Double oldX;
     private Double oldY;
+    private transient Node<?, Edge> node;
 
     public UpdateElementPositionCommand( @MapsTo( "uuid" ) String uuid,
                                          @MapsTo( "x" ) Double x,
                                          @MapsTo( "y" ) Double y ) {
         this.uuid = PortablePreconditions.checkNotNull( "uuid", uuid );
+        this.node = null;
         this.x = PortablePreconditions.checkNotNull( "x", x );
         this.y = PortablePreconditions.checkNotNull( "y", y );
+    }
+
+    public UpdateElementPositionCommand( final Node<?, Edge> node,
+                                         final Double x,
+                                         final Double y ) {
+        this( node.getUUID(), x, y );
+        this.node = PortablePreconditions.checkNotNull( "node", node );
     }
 
     @Override
@@ -65,13 +75,20 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
     @Override
     protected CommandResult<RuleViolation> doCheck( GraphCommandExecutionContext context ) {
-        checkNodeNotNull( context, uuid );
+        checkNodeNotNull( context );
         return GraphCommandResultBuilder.SUCCESS;
+    }
+
+    private Node<?, Edge> checkNodeNotNull( GraphCommandExecutionContext context ) {
+        if ( null == node ) {
+            node = super.checkNodeNotNull( context, uuid );
+        }
+        return node;
     }
 
     @Override
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final Element<?> element = checkNodeNotNull( context, uuid );
+        final Element<?> element = checkNodeNotNull( context );
         final Double[] oldPosition = GraphUtils.getPosition( ( View ) element.getContent() );
         final Double[] oldSize = GraphUtils.getSize( ( View ) element.getContent() );
         this.oldX = oldPosition[ 0 ];
@@ -90,18 +107,19 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
     @SuppressWarnings( "unchecked" )
     private void checkBounds( final GraphCommandExecutionContext context,
-                             final Bounds bounds ) {
+                              final Bounds bounds ) {
         final Graph<DefinitionSet, Node> graph = ( Graph<DefinitionSet, Node> ) getGraph( context );
         final Bounds graphBounds = graph.getContent().getBounds();
         if ( ( bounds.getLowerRight().getX() > graphBounds.getLowerRight().getX() )
-            || ( bounds.getLowerRight().getY() > graphBounds.getLowerRight().getY() ) ) {
+                || ( bounds.getLowerRight().getY() > graphBounds.getLowerRight().getY() ) ) {
             throw new BoundsExceededException( this, bounds, graphBounds.getLowerRight().getX(), graphBounds.getLowerRight().getY() );
         }
     }
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand( uuid, oldX, oldY );
+        final UpdateElementPositionCommand undoCommand =
+                new UpdateElementPositionCommand( checkNodeNotNull( context ), oldX, oldY );
         return undoCommand.execute( context );
     }
 

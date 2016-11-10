@@ -44,6 +44,11 @@ public final class DeleteEdgeCommand extends AbstractGraphCommand {
                 edgeUUID );
     }
 
+    public DeleteEdgeCommand( Edge<? extends View, Node> edge ) {
+        this( edge.getUUID() );
+        this.edge = edge;
+    }
+
     @Override
     public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
         return check( context );
@@ -53,7 +58,7 @@ public final class DeleteEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final CommandResult<RuleViolation> results = check( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            this.edge = getViewEdge( context, edgeUUID );
+            this.edge = getCandidateEdge( context );
             final Node outNode = edge.getTargetNode();
             final Node inNode = edge.getSourceNode();
             if ( null != outNode ) {
@@ -71,7 +76,7 @@ public final class DeleteEdgeCommand extends AbstractGraphCommand {
 
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        final Edge<? extends View, Node> edge = getViewEdge( context, edgeUUID );
+        final Edge<? extends View, Node> edge = getCandidateEdge( context );
         final Collection<RuleViolation> cardinalityRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager()
                         .edgeCardinality()
@@ -89,6 +94,13 @@ public final class DeleteEdgeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
         final AddEdgeCommand undoCommand = new AddEdgeCommand( parentUUID, edge );
         return undoCommand.execute( context );
+    }
+
+    private Edge<? extends View, Node> getCandidateEdge( final GraphCommandExecutionContext context ) {
+        if ( null == edge ) {
+            edge = getViewEdge( context, edgeUUID );
+        }
+        return edge;
     }
 
     @Override

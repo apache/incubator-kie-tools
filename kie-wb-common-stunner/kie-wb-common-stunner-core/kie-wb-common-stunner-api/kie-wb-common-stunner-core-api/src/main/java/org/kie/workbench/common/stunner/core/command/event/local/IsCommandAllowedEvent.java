@@ -23,19 +23,12 @@ import org.kie.workbench.common.stunner.core.command.event.AbstractGraphCommandE
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-import java.util.Collection;
-
 @NonPortable
 public final class IsCommandAllowedEvent extends AbstractGraphCommandEvent {
 
     public IsCommandAllowedEvent( final Command<GraphCommandExecutionContext, RuleViolation> command,
                                   final CommandResult<RuleViolation> result ) {
         super( command, result );
-    }
-
-    public IsCommandAllowedEvent( final Collection<Command<GraphCommandExecutionContext, RuleViolation>> commands,
-                                  final CommandResult<RuleViolation> result ) {
-        super( commands, result );
     }
 
 }

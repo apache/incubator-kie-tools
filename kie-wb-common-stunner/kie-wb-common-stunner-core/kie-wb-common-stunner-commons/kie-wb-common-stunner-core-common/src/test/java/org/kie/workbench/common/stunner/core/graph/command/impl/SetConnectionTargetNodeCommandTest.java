@@ -67,7 +67,7 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         when( edge.getContent() ).thenReturn( edgeContent );
         when( edge.getSourceNode() ).thenReturn( source );
         when( edge.getTargetNode() ).thenReturn( lastTargetNode );
-        this.tested = new SetConnectionTargetNodeCommand( NODE_UUID, edge,  MAGNET_INDEX );
+        this.tested = new SetConnectionTargetNodeCommand( node, edge,  MAGNET_INDEX );
     }
 
     @Test

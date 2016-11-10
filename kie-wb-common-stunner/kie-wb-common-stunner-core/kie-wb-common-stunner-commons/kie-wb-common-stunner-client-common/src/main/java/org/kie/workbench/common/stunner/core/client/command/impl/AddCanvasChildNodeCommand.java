@@ -41,8 +41,9 @@ public final class AddCanvasChildNodeCommand extends AddCanvasElementCommand<Nod
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new AddChildNodeCommand( parent.getUUID(), candidate );
+        return new AddChildNodeCommand( parent, candidate );
     }
 
     @Override

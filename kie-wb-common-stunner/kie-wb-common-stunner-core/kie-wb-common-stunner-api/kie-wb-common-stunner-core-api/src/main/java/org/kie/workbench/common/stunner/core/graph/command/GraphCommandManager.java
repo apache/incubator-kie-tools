@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command;
 
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 /**
  * CommandManager that uses an execution context for a given graph.
  */
-public interface GraphCommandManager extends BatchCommandManager<GraphCommandExecutionContext, RuleViolation> {
+public interface GraphCommandManager extends CommandManager<GraphCommandExecutionContext, RuleViolation> {
 
 }

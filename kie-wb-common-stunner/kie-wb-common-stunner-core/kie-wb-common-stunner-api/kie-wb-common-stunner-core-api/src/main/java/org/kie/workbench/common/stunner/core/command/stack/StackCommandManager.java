@@ -17,11 +17,11 @@
 package org.kie.workbench.common.stunner.core.command.stack;
 
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
-public interface StackCommandManager<T, V> extends BatchCommandManager<T, V> {
+public interface StackCommandManager<T, V> extends CommandManager<T, V> {
 
     CommandRegistry<Command<T, V>> getRegistry();
 

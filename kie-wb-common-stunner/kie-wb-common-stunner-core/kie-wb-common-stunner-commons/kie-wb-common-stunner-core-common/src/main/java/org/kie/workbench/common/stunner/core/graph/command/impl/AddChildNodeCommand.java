@@ -40,6 +40,7 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
 
     private final String parentUUID;
     private final Node candidate;
+    private transient Node<?, Edge> parent;
 
     public AddChildNodeCommand( @MapsTo( "parentUUID" ) String parentUUID,
                                 @MapsTo( "candidate" ) Node candidate ) {
@@ -49,19 +50,24 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
                 candidate );
     }
 
-    protected void initialize( final GraphCommandExecutionContext context ) {
-        this.addCommand( new AddNodeCommand( candidate ) )
-            .addCommand( new AddChildEdgeCommand( parentUUID, candidate.getUUID() ) );
-    }
-
-    @Override
-    protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        return check( context );
+    public AddChildNodeCommand( Node<?, Edge> parent,
+                                Node candidate ) {
+        this( parent.getUUID(), candidate );
+        this.parent = parent;
     }
 
     @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        final Node<?, Edge> parent = checkNodeNotNull( context, parentUUID );
+    protected void initialize( final GraphCommandExecutionContext context ) {
+        final Node<?, Edge> parent = getParent( context );
+        this.addCommand( new AddNodeCommand( candidate ) )
+                .addCommand( new AddChildEdgeCommand( parent, candidate ) );
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    protected CommandResult<RuleViolation> doAllowCheck( final GraphCommandExecutionContext context,
+                                                         final Command<GraphCommandExecutionContext, RuleViolation> command ) {
+        final Node<?, Edge> parent = getParent( context );
         final Collection<RuleViolation> containmentRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( parent, candidate ).violations();
         final Collection<RuleViolation> cardinalityRuleViolations =
@@ -70,6 +76,14 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
         violations.addAll( containmentRuleViolations );
         violations.addAll( cardinalityRuleViolations );
         return new GraphCommandResultBuilder( violations ).build();
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
+        if ( null == parent ) {
+            parent = checkNodeNotNull( context, parentUUID );
+        }
+        return parent;
     }
 
     @Override

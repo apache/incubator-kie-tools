@@ -16,20 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.command.impl;
 
-import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.kie.workbench.common.stunner.core.command.HasCommandManagerListener;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManager;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandManagerListener;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
+import org.kie.workbench.common.stunner.core.command.*;
 import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,17 +29,17 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
 
     private static Logger LOGGER = Logger.getLogger( StackCommandManagerImpl.class.getName() );
 
-    private final BatchCommandManager<C, V> batchCommandManager;
+    private final CommandManager<C, V> commandManager;
     private final CommandRegistry<Command<C, V>> registry;
-    private final BatchCommandManagerListener<C, V> _listener;
+    private final CommandManagerListener<C, V> _listener;
 
     @SuppressWarnings( "unchecked" )
     StackCommandManagerImpl( final RegistryFactory registryFactory,
-                             final BatchCommandManager<C, V> batchCommandManager ) {
+                             final CommandManager<C, V> commandManager ) {
         this.registry = registryFactory.newCommandRegistry();
-        this.batchCommandManager = batchCommandManager;
-        if ( batchCommandManager instanceof HasCommandManagerListener ) {
-            ( ( HasCommandManagerListener ) batchCommandManager ).setCommandManagerListener( listener );
+        this.commandManager = commandManager;
+        if ( commandManager instanceof HasCommandManagerListener ) {
+            ( ( HasCommandManagerListener ) commandManager ).setCommandManagerListener( listener );
             // Listener will be fired by the batchCommandManager instance.
             _listener = null;
 
@@ -56,24 +48,22 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
             _listener = listener;
 
         }
-
     }
 
     @Override
     public CommandResult<V> allow( final C context,
                                    final Command<C, V> command ) {
         LOGGER.log( Level.FINE, "Evaluating (allow) command [" + command + "]..." );
-        return batchCommandManager.allow( context, command );
+        return commandManager.allow( context, command );
     }
 
     @Override
     public CommandResult<V> execute( final C context,
                                      final Command<C, V> command ) {
         LOGGER.log( Level.FINE, "Executing command [" + command + "]..." );
-        CommandResult<V> result = batchCommandManager.execute( context, command );
+        CommandResult<V> result = commandManager.execute( context, command );
         if ( null != _listener ) {
-            _listener.onExecute( context, command, result );
-
+            listener.onExecute( context, command, result );
         }
         return result;
     }
@@ -81,68 +71,27 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
     @Override
     public CommandResult<V> undo( C context, Command<C, V> command ) {
         LOGGER.log( Level.FINE, "Undoing command [" + command + "]..." );
-        CommandResult<V> result = batchCommandManager.undo( context, command );
+        CommandResult<V> result = commandManager.undo( context, command );
         if ( null != _listener ) {
-            _listener.onUndo( context, command, result );
-
+            listener.onUndo( context, command, result );
         }
         return result;
 
     }
 
-    @Override
-    public BatchCommandManager<C, V> batch( final Command<C, V> command ) {
-        LOGGER.log( Level.FINE, "Batch [" + command + "]" );
-        return batchCommandManager.batch( command );
-    }
-
-    @Override
-    public BatchCommandResult<V> executeBatch( final C context ) {
-        final List<Command<C, V>> batchCommands = new LinkedList<>( batchCommandManager.getBatchCommands() );
-        LOGGER.log( Level.FINE, "Executing batch commands: " ); logCommands( "--", batchCommands );
-        final BatchCommandResult<V> result = batchCommandManager.executeBatch( context );
-        if ( null != _listener ) {
-            _listener.onExecuteBatch( context, batchCommands, result );
-
-        }
-        return result;
-    }
-
-    private void logCommands( final String preffix, final Collection<Command<C, V>> commands ) {
+    private void logCommands( final String preffix, final Iterable<Command<C, V>> commands ) {
         if ( null != commands ) {
-            commands.stream().forEach( command ->   LOGGER.log( Level.FINE, preffix + " [" + command + "]" ) );
+            commands.forEach( command ->   LOGGER.log( Level.FINE, preffix + " [" + command + "]" ) );
         }
-    }
-
-    @Override
-    public BatchCommandResult<V> undoBatch( final C context ) {
-        final List<Command<C, V>> batchCommands = new LinkedList<>( batchCommandManager.getBatchCommands() );
-        LOGGER.log( Level.FINE, "Undoing batch commands: " ); logCommands( "ç--", batchCommands );
-        final BatchCommandResult<V> result = batchCommandManager.undoBatch( context );
-        if ( null != _listener ) {
-            _listener.onUndoBatch( context, batchCommands, result );
-
-        }
-        return result;
-
-    }
-
-    @Override
-    public Collection<Command<C, V>> getBatchCommands() {
-        return batchCommandManager.getBatchCommands();
     }
 
     @Override
     public CommandResult<V> undo( final C context ) {
-        BatchCommandResult<V> result = null;
-        final Iterable<Command<C, V>> lastEntry = registry.peek();
+        CommandResult<V> result = null;
+        final Command<C, V> lastEntry = registry.peek();
         if ( null != lastEntry ) {
             LOGGER.log( Level.FINE, "Undoing commands: " );
-            for ( final Command<C, V> c : lastEntry ) {
-                LOGGER.log( Level.FINE, "-- [" + c + "]" );
-                batchCommandManager.batch( c );
-            }
-            result = batchCommandManager.undoBatch( context );
+            result = commandManager.undo( context, lastEntry );
             if ( !CommandUtils.isError( result ) ) {
                 registry.pop();
             }
@@ -155,7 +104,7 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
         return registry;
     }
 
-    private final BatchCommandManagerListener<C, V> listener = new BatchCommandManagerListener<C, V>() {
+    private final CommandManagerListener<C, V> listener = new CommandManagerListener<C, V>() {
 
         @Override
         public void onAllow( final C context,
@@ -176,27 +125,9 @@ class StackCommandManagerImpl<C, V> implements StackCommandManager<C, V> {
         }
 
         @Override
-        public void onExecuteBatch( final C context,
-                                    final Collection<Command<C, V>> commands,
-                                    final BatchCommandResult<V> result ) {
-            if ( !CommandUtils.isError( result ) ) {
-                // Keep the just executed batched commands on this instance stack.
-                registry.register( commands );
-
-            }
-
-        }
-
-        @Override
         public void onUndo( final C context,
                             final Command<C, V> command,
                             final CommandResult<V> result ) {
-        }
-
-        @Override
-        public void onUndoBatch( final C context,
-                                 final Collection<Command<C, V>> commands,
-                                 final CommandResult<V> result ) {
         }
 
     };

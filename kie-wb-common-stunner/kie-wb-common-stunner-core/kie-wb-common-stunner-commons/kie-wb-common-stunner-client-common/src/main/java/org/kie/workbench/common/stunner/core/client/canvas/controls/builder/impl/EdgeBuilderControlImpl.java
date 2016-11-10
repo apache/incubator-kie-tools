@@ -20,6 +20,7 @@ import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.EdgeBuildRequest;
@@ -32,8 +33,9 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.util.EdgeMagnetsHelper;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -121,17 +123,19 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
         final Object edgeDef = edge.getContent().getDefinition();
         final String edgeDefId = clientDefinitionManager.adapters().forDefinition().getId( edgeDef );
         final ShapeFactory factory = shapeManager.getFactory( edgeDefId );
-        canvasCommandManager
-                .batch( commandFactory.ADD_EDGE( inNode, edge, factory ) )
-                .batch( commandFactory.SET_SOURCE_NODE( ( Node<? extends View<?>, Edge> ) inNode, edge, magnetIndexes[ 0 ] ) );
-        if ( null != outNode ) {
-            canvasCommandManager.batch( commandFactory.SET_TARGET_NODE( ( Node<? extends View<?>, Edge> ) outNode, edge, magnetIndexes[ 1 ] ) );
 
+        final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
+                new CompositeCommandImpl.CompositeCommandBuilder()
+                .addCommand( commandFactory.ADD_EDGE( inNode, edge, factory )  )
+                .addCommand( commandFactory.SET_SOURCE_NODE( inNode, edge, magnetIndexes[ 0 ] ) )
+                .addCommand( commandFactory.SET_TARGET_NODE( outNode, edge, magnetIndexes[ 1 ] ) );
+        if ( null != outNode ) {
+            commandBuilder.addCommand( commandFactory.SET_TARGET_NODE( outNode, edge, magnetIndexes[ 1 ] ) );
         }
-        final BatchCommandResult<CanvasViolation> results = canvasCommandManager.executeBatch( wch );
+        final CommandResult<CanvasViolation> results =
+                canvasCommandManager.execute( wch, commandBuilder.build() );
         if ( CommandUtils.isError( results ) ) {
             LOGGER.log( Level.SEVERE, results.toString() );
-
         }
         canvasHandler.applyElementMutation( edge, MutationContext.STATIC );
         buildCallback.onSuccess( edge.getUUID() );

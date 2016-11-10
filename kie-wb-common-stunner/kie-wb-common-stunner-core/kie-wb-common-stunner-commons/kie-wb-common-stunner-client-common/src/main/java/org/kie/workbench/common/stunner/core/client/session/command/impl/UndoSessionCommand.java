@@ -61,7 +61,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<AbstractCli
     private void checkState() {
         if ( null != getSession() ) {
             final StackCommandManager<AbstractCanvasHandler, CanvasViolation> canvasCommManager = getStackCommandManager();
-            final boolean isHistoryEmpty = canvasCommManager == null || canvasCommManager.getRegistry().getCommandHistorySize() == 0;
+            final boolean isHistoryEmpty = canvasCommManager == null || canvasCommManager.getRegistry().getCommandHistory().isEmpty();
             setEnabled( !isHistoryEmpty );
         } else {
             setEnabled( false );

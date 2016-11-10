@@ -17,8 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.command;
 
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.batch.BatchCommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.BatchCommandResultImpl;
 import org.kie.workbench.common.stunner.core.command.impl.CommandResultBuilder;
 import org.kie.workbench.common.stunner.core.command.impl.CommandResultImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -35,8 +33,7 @@ public class CanvasCommandResultBuilder extends CommandResultBuilder<CanvasViola
             new LinkedList<>()
     );
 
-    public static final BatchCommandResult<CanvasViolation> FAILED = new BatchCommandResultImpl<>(
-            new LinkedList<>(),
+    public static final CommandResult<CanvasViolation> FAILED = new CommandResultImpl<>(
             CommandResult.Type.ERROR,
             RESULT_FAILED,
             new LinkedList<>()

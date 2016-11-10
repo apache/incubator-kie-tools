@@ -70,15 +70,6 @@ public class RedoCommandHandlerTest {
         verify( commandRegistry, times( 1 ) ).register( eq( command1 )  );
         assertTrue( tested.isEnabled() );
     }
-
-    @Test
-    @SuppressWarnings( "unchecked" )
-    public void testUndoCommandsExecuted() {
-        tested.onUndoCommandExecuted( commands1 );
-        verify( commandRegistry, times( 1 ) ).register( eq( commands1 )  );
-        assertTrue( tested.isEnabled() );
-    }
-
     @Test
     @SuppressWarnings( "unchecked" )
     public void tesExecute1() {

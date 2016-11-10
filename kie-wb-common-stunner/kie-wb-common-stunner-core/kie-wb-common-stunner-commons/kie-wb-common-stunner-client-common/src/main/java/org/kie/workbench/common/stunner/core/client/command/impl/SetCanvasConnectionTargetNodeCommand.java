@@ -47,7 +47,7 @@ public final class SetCanvasConnectionTargetNodeCommand extends AbstractCanvasGr
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> buildGraphCommand( final AbstractCanvasHandler context ) {
-        return new SetConnectionTargetNodeCommand( null != node ? node.getUUID() : null, edge, magnetIndex );
+        return new SetConnectionTargetNodeCommand( node, edge, magnetIndex );
     }
 
     @Override

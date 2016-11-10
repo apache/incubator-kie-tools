@@ -27,6 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -60,24 +61,9 @@ public class CommandRegistryImplTest {
     @Test
     public void testRegisterCommand() {
         tested.register( command );
-        Iterable<Command> result = tested.peek();
+        Command result = tested.peek();
         assertNotNull( result );
-        assertEquals( command, result.iterator().next() );
-
-    }
-
-    @Test
-    public void testRegisterCommands() {
-        Collection<Command> commands = new ArrayList<Command>( 2 ) {{
-            add( command );
-            add( command1 );
-        }};
-        tested.register( commands );
-        Iterable<Command> result = tested.peek();
-        assertNotNull( result );
-        Iterator<Command> it = result.iterator();
-        assertEquals( command1, it.next() );
-        assertEquals( command, it.next() );
+        assertEquals( command, result );
 
     }
 
@@ -96,39 +82,35 @@ public class CommandRegistryImplTest {
 
     @Test
     public void testClear() {
-        Collection<Command> commands = new ArrayList<Command>( 2 ) {{
-            add( command );
-            add( command1 );
-        }};
-        tested.register( commands );
+        tested.register( command );
+        tested.register( command1 );
         tested.clear();
-        Iterable<Iterable<Command>> result = tested.getCommandHistory();
+        List<Command> result = tested.getCommandHistory();
         assertNotNull( result );
-        assertFalse( result.iterator().hasNext() );
-
+        assertTrue( result.isEmpty() );
     }
 
     @Test
     public void testPeek() {
         tested.register( command );
-        Iterable<Command> result = tested.peek();
+        Command result = tested.peek();
         assertNotNull( result );
-        assertEquals( command, result.iterator().next() );
-        Iterable<Iterable<Command>> result2 = tested.getCommandHistory();
+        assertEquals( command, result );
+        List<Command> result2 = tested.getCommandHistory();
         assertNotNull( result2 );
-        assertTrue( result.iterator().hasNext() );
+        assertFalse( result2.isEmpty() );
 
     }
 
     @Test
     public void testPop() {
         tested.register( command );
-        Iterable<Command> result = tested.pop();
+        Command result = tested.pop();
         assertNotNull( result );
-        assertEquals( command, result.iterator().next() );
-        Iterable<Iterable<Command>> result2 = tested.getCommandHistory();
+        assertEquals( command, result );
+        List<Command> result2 = tested.getCommandHistory();
         assertNotNull( result2 );
-        assertFalse( result2.iterator().hasNext() );
+        assertTrue( result2.isEmpty() );
 
     }
 
@@ -141,23 +123,16 @@ public class CommandRegistryImplTest {
 
     @Test( expected = RegistrySizeExceededException.class )
     public void testAddCollectionStackExceeded() {
-        Collection<Command> commands = new ArrayList<Command>( 2 ) {{
-            add( command );
-            add( command1 );
-        }};
         tested.setMaxSize( 1 );
-        tested.register( commands );
+        tested.register( command );
+        tested.register( command1 );
     }
 
     @Test
     public void testGetCommandSize() {
         tested.register( command );
-        Collection<Command> commands = new ArrayList<Command>( 2 ) {{
-            add( command );
-            add( command1 );
-        }};
-        tested.register( commands );
-        int size = tested.getCommandHistorySize();
+        tested.register( command1 );
+        int size = tested.getCommandHistory().size();
         assertEquals( 2, size );
 
     }
@@ -165,25 +140,15 @@ public class CommandRegistryImplTest {
     @Test
     public void testGetCommandHistory() {
         tested.register( command );
-        Collection<Command> commands = new ArrayList<Command>( 2 ) {{
-            add( command );
-            add( command1 );
-        }};
-        tested.register( commands );
-        Iterable<Iterable<Command>> result = tested.getCommandHistory();
+        tested.register( command1 );
+        List<Command> result = tested.getCommandHistory();
         assertNotNull( result );
-        Iterator<Iterable<Command>> it = result.iterator();
-        Iterable<Command> r1 = it.next();
+        Command r1 = result.get( 0 );
         assertNotNull( r1 );
-        Iterator<Command> it1 = r1.iterator();
-        Command cr1 = it1.next();
-        assertEquals( command1, cr1 );
-        Command cr11 = it1.next();
-        assertEquals( command, cr11 );
-        Iterable<Command> r2 = it.next();
-        Iterator<Command> it2 = r2.iterator();
-        Command cr2 = it2.next();
-        assertEquals( command, cr2 );
+        assertEquals( command1, r1 );
+        Command r2 = result.get( 1 );
+        assertNotNull( r2 );
+        assertEquals( command, r2 );
     }
 
     @Test( expected = RegistrySizeExceededException.class )
