@@ -18,11 +18,13 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.drools.workbench.services.verifier.api.client.checks.util.NullEqualityOperator;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.Column;
 import org.drools.workbench.services.verifier.api.client.index.Condition;
 import org.drools.workbench.services.verifier.api.client.index.Field;
 import org.drools.workbench.services.verifier.api.client.index.FieldCondition;
+import org.drools.workbench.services.verifier.api.client.index.keys.Values;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public class FieldConditionBuilder {
@@ -32,6 +34,7 @@ public class FieldConditionBuilder {
     private final ValuesResolver valuesResolver;
     private final Column column;
     private final AnalyzerConfiguration configuration;
+    private final DTCellValue52 realCellValue;
 
     public FieldConditionBuilder( final Field field,
                                   final ColumnUtilities utils,
@@ -47,20 +50,41 @@ public class FieldConditionBuilder {
                                                                    conditionColumn );
         this.configuration = PortablePreconditions.checkNotNull( "configuration",
                                                                  configuration );
+        this.realCellValue = PortablePreconditions.checkNotNull( "realCellValue",
+                                                                 realCellValue );
         this.valuesResolver = new ValuesResolver( PortablePreconditions.checkNotNull( "utils",
                                                                                       utils ),
                                                   conditionColumn,
-                                                  PortablePreconditions.checkNotNull( "realCellValue",
-                                                                                      realCellValue ) );
+                                                  this.realCellValue );
+    }
+
+    private Values resolveValues( final String operator ) {
+
+        if ( NullEqualityOperator.contains( operator ) ) {
+            if ( realCellValue.getBooleanValue() != null && realCellValue.getBooleanValue() ) {
+                return Values.nullValue();
+            } else {
+                return new Values();
+            }
+        } else {
+            return valuesResolver.getValues();
+        }
+    }
+
+    private String resolveOperator( final String operator ) {
+        if ( NullEqualityOperator.contains( operator ) ) {
+            return NullEqualityOperator.resolveOperator( operator );
+        } else {
+            return operator;
+        }
     }
 
     public Condition build() {
         return new FieldCondition( field,
                                    column,
-                                   conditionColumn.getOperator(),
-                                   valuesResolver.getValues(),
+                                   resolveOperator( conditionColumn.getOperator() ),
+                                   resolveValues( conditionColumn.getOperator() ),
                                    configuration );
     }
-
 
 }

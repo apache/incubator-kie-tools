@@ -23,7 +23,20 @@ public class ValuesTest {
 
 
     @Test
-    public void testName() throws Exception {
+    public void testNull() throws
+                           Exception {
+        final Values<Comparable> values = new Values<>();
+        values.add( null );
+
+        assertFalse( values.isEmpty() );
+        assertEquals( null,
+                      values.iterator()
+                              .next() );
+    }
+
+    @Test
+    public void testChanges() throws
+                              Exception {
         final Values a = new Values();
         final Values b = new Values();
 

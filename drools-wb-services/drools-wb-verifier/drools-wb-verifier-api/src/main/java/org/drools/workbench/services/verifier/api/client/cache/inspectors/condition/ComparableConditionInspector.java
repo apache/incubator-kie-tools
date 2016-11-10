@@ -82,14 +82,14 @@ public class ComparableConditionInspector<T extends Comparable<T>>
                         case NOT_EQUALS:
                             switch ( operator ) {
                                 case EQUALS:
-                                    return !getValue().equals( anotherPoint.getValue() );
+                                    return !valueIsEqualTo( anotherPoint.getValue() );
                                 default:
                                     return true;
                             }
                         case EQUALS:
                             switch ( operator ) {
                                 case NOT_EQUALS:
-                                    return !getValue().equals( anotherPoint.getValue() );
+                                    return !valueIsEqualTo( anotherPoint.getValue() );
                                 default:
                                     return covers( anotherPoint.getValue() );
                             }
@@ -185,7 +185,7 @@ public class ComparableConditionInspector<T extends Comparable<T>>
                         case NOT_EQUALS:
                             switch ( operator ) {
                                 case NOT_EQUALS:
-                                    return getValue().equals( anotherPoint.getValue() );
+                                    return valueIsEqualTo( anotherPoint.getValue() );
                                 case EQUALS:
                                     boolean valueIsEqualTo = valueIsEqualTo( anotherPoint.getValue() );
                                     boolean covers = covers( anotherPoint.getValue() );

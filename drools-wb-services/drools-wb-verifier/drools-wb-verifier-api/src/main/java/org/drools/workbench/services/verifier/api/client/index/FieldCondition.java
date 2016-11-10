@@ -19,9 +19,9 @@ package org.drools.workbench.services.verifier.api.client.index;
 import java.util.ArrayList;
 
 import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.Values;
-import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public class FieldCondition<T extends Comparable>
@@ -37,34 +37,15 @@ public class FieldCondition<T extends Comparable>
                            final AnalyzerConfiguration configuration ) {
         super( column,
                ConditionSuperType.FIELD_CONDITION,
-               resolveValues( PortablePreconditions.checkNotNull( "operator", operator ),
-                              PortablePreconditions.checkNotNull( "values", values ) ),
+               values,
                configuration );
-        this.field = PortablePreconditions.checkNotNull( "field", field );
-        this.operator = resolveOperator( operator );
+
+        this.field = PortablePreconditions.checkNotNull( "field",
+                                                         field );
+        this.operator = PortablePreconditions.checkNotNull( "operator",
+                                                            operator );
     }
 
-    private static Values resolveValues( final String operator,
-                                         final Values values ) {
-        if ( "!= null".equals( operator ) ) {
-            return Values.nullValue();
-        } else if ( "== null".equals( operator ) ) {
-            return Values.nullValue();
-        } else {
-            return values;
-        }
-    }
-
-    private String resolveOperator( final String operator ) {
-
-        if ( "!= null".equals( operator ) ) {
-            return "!=";
-        } else if ( "== null".equals( operator ) ) {
-            return "==";
-        } else {
-            return operator;
-        }
-    }
 
     public Field getField() {
         return field;

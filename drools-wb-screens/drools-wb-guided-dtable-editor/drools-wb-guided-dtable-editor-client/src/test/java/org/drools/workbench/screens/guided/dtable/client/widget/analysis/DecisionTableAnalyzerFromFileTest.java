@@ -25,8 +25,8 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.AnalyzerProvider;
+import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,10 +54,53 @@ public class DecisionTableAnalyzerFromFileTest {
     }
 
     @Test
-    public void testFile1() throws Exception {
-        String xml = loadResource( "Pricing loans.gdst" );
+    public void testUpdateNotNullColumn() throws
+                                          Exception {
+
+        String xml = loadResource( "Is Null Table.gdst" );
 
         final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
+
+        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+
+        // First run
+        analyzer.analyze( Collections.emptyList() );
+
+
+        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire",
+                        analyzerProvider.getAnalysisReport() );
+
+        // Update
+        table52.getData()
+                .get( 0 )
+                .get( 2 )
+                .setBooleanValue( true );
+        ArrayList<Coordinate> updates = new ArrayList<>();
+        updates.add( new Coordinate( 0,
+                                     2 ) );
+        analyzer.analyze( updates );
+
+        // Update
+        table52.getData()
+                .get( 1 )
+                .get( 2 )
+                .setBooleanValue( true );
+        ArrayList<Coordinate> updates2 = new ArrayList<>();
+        updates2.add( new Coordinate( 1,
+                                     2 ) );
+        analyzer.analyze( updates2 );
+
+        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire",
+                              analyzerProvider.getAnalysisReport() );
+    }
+
+    @Test
+    public void testFile1() throws
+                            Exception {
+        String xml = loadResource( "Pricing loans.gdst" );
+
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
+                .unmarshal( xml );
 
         DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
@@ -116,7 +159,8 @@ public class DecisionTableAnalyzerFromFileTest {
 
         analyzer.analyze( Collections.emptyList() );
 
-        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData().isEmpty() );
+        assertTrue( analyzerProvider.getAnalysisReport().getAnalysisData()
+                            .isEmpty() );
     }
 
     @Test

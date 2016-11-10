@@ -23,6 +23,7 @@ import java.util.Collection;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.AnalyzerConfigurationMock;
 import org.drools.workbench.services.verifier.api.client.cache.inspectors.condition.StringConditionInspector;
+import org.drools.workbench.services.verifier.api.client.checks.util.NullEqualityOperator;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.Column;
 import org.drools.workbench.services.verifier.api.client.index.Field;
@@ -78,12 +79,12 @@ public class StringConditionInspectorToHumanReadableTest {
 
         final StringConditionInspector inspector = getStringConditionInspector();
 
-        if ( operator.equals( "!= null" ) ) {
+        if ( NullEqualityOperator.IS_NOT_NULL.matches( operator ) ) {
             assertEquals( format( "%s %s",
                                   FIELD_NAME,
                                   operator ),
                           inspector.toHumanReadableString() );
-        } else if ( operator.equals( "== null" ) ) {
+        } else if ( NullEqualityOperator.IS_NULL.matches( operator ) ) {
             assertEquals( format( "%s %s",
                                   FIELD_NAME,
                                   operator ),
@@ -98,7 +99,7 @@ public class StringConditionInspectorToHumanReadableTest {
     }
 
     private StringConditionInspector getStringConditionInspector() {
-        if ( operator.equals( "!= null" ) ) {
+        if ( NullEqualityOperator.IS_NOT_NULL.matches( operator )  ) {
             return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ),
                                                                                   "Test",
                                                                                   "String",
@@ -110,7 +111,7 @@ public class StringConditionInspectorToHumanReadableTest {
                                                                        configuration
             ),
                                                  configuration );
-        } else if ( operator.equals( "== null" ) ) {
+        } else if ( NullEqualityOperator.IS_NULL.matches(  operator ) ) {
             return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ),
                                                                                   "Test",
                                                                                   "String",

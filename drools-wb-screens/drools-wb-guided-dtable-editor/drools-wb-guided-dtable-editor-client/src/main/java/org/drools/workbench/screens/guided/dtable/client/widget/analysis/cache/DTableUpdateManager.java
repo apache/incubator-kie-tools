@@ -19,20 +19,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.builders.ActionBuilder;
 import org.drools.workbench.services.verifier.api.client.cache.UpdateManager;
 import org.drools.workbench.services.verifier.api.client.checks.base.Check;
 import org.drools.workbench.services.verifier.api.client.checks.base.CheckRunner;
-import org.drools.workbench.services.verifier.api.client.index.Action;
-import org.drools.workbench.services.verifier.api.client.index.Actions;
-import org.drools.workbench.services.verifier.api.client.index.Column;
-import org.drools.workbench.services.verifier.api.client.index.Condition;
-import org.drools.workbench.services.verifier.api.client.index.Conditions;
+import org.drools.workbench.services.verifier.api.client.checks.util.NullEqualityOperator;
 import org.drools.workbench.services.verifier.api.client.index.Index;
-import org.drools.workbench.services.verifier.api.client.index.Rule;
-import org.drools.workbench.services.verifier.api.client.index.keys.Values;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -65,7 +59,7 @@ public class DTableUpdateManager
             if ( coordinate.getCol() != ROW_NUMBER_COLUMN
                     && coordinate.getCol() != DESCRIPTION_COLUMN ) {
 
-                if ( new CellUpdateManager( coordinate ).update() ) {
+                if ( getCellUpdateManager( coordinate ).update() ) {
                     checks.addAll( cache.getRuleInspector( coordinate.getRow() ).getChecks() );
                 }
 
@@ -79,102 +73,25 @@ public class DTableUpdateManager
         return !checks.isEmpty();
     }
 
-    private class CellUpdateManager {
+    private CellUpdateManager getCellUpdateManager( final Coordinate coordinate ) {
+        final BaseColumn baseColumn = model.getExpandedColumns()
+                .get( coordinate.getCol() );
 
-        private final Column column;
-        private final Actions actions;
-        private final Conditions conditions;
-        private final Values values;
-
-        public CellUpdateManager( final Coordinate coordinate ) {
-
-            column = index.columns
-                    .where( Column.index().is( coordinate.getCol() ) )
-                    .select().first();
-
-            final Rule rule = index.rules
-                    .where( Rule.index().is( coordinate.getRow() ) )
-                    .select().first();
-            actions = rule.getActions();
-            conditions = rule.getConditions();
-
-            values = getValue( model.getData().get( coordinate.getRow() ).get( coordinate.getCol() ) );
-        }
-
-        /**
-         * @return Returns true if the cell content was found and the value changed.
-         */
-        public boolean update() {
-
-            if ( !updateCondition() ) {
-                return updateAction();
-            } else {
-                return true;
-            }
-        }
-
-        private boolean updateAction() {
-            final Action action = actions.where( Action.columnUUID().is( column.getUuidKey() ) )
-                                         .select().first();
-
-            if ( action != null ) {
-                return updateAction( action );
-            } else {
-                return false;
-            }
-        }
-
-        private boolean updateAction( final Action action ) {
-            final Values comparable = action.getValues();
-
-            if ( values.isThereChanges( comparable ) ) {
-                action.setValue( values );
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        private boolean updateCondition() {
-
-            final Condition condition = conditions.where( Condition.columnUUID().is( column.getUuidKey() ) )
-                                                  .select().first();
-
-            if ( condition != null ) {
-                return updateCondition( condition );
-            } else {
-                return false;
-            }
-        }
-
-        private boolean updateCondition( final Condition condition ) {
-            final Values oldValues = condition.getValues();
-
-
-            if ( values == null && oldValues == null ) {
-                return false;
-            } else if ( values == null || oldValues == null ) {
-                condition.setValue( values );
-                return true;
-            } else if ( values.isThereChanges( oldValues ) ) {
-                condition.setValue( values );
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        private Values getValue( final DTCellValue52 cell ) {
-            final Comparable value = ActionBuilder.getValue( cell );
-            if ( value == null ) {
-                return new Values();
-            } else if ( value instanceof String && (( String ) value).isEmpty() ) {
-                return new Values();
-            } else {
-                final Values values = new Values();
-                values.add( value );
-                return values;
-            }
+        if ( isConditionColumnWithSpecialOperator( baseColumn ) ) {
+            return new NullEqualityOperatorCellUpdateManager( index,
+                                                              model,
+                                                              coordinate );
+        } else {
+            return new RegularCellUpdateManager( index,
+                                                 model,
+                                                 coordinate );
         }
     }
+
+    private boolean isConditionColumnWithSpecialOperator( final BaseColumn baseColumn ) {
+        return baseColumn instanceof ConditionCol52
+                &&
+                NullEqualityOperator.contains( ( (ConditionCol52) baseColumn ).getOperator() ) ;
+    }
+
 }
