@@ -515,6 +515,7 @@
             <include>**/*Constants_fr.properties</include>
             <include>**/*Constants_ja.properties</include>
             <include>**/*Constants_pt_BR.properties</include>
+            <include>**/*Constants_zh_CN.properties</include>
           </includes>
           <excludes>
             <exclude>**/ErraiApp.properties</exclude>
