@@ -36,8 +36,8 @@
         <explorer:EntitiesExplorerView ui:field="entitiesExplorerView"/>
       </b:ModalBody>
       <b:ModalFooter>
-        <b:Button type="DEFAULT"  ui:field="closeButton" text="{i18n.cancel}" title="{i18n.cancel}"/>
         <b:Button type="PRIMARY" ui:field="saveButton" text="{i18n.save}" title="{i18n.save}"/>
+        <b:Button type="DEFAULT"  ui:field="closeButton" text="{i18n.cancel}" title="{i18n.cancel}"/>
       </b:ModalFooter>
     </b:Modal>
       
