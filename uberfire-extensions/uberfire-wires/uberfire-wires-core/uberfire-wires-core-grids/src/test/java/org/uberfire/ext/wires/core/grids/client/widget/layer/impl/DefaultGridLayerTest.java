@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -32,6 +33,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -46,10 +48,6 @@ public class DefaultGridLayerTest {
     @Mock
     private Mediators mediators;
 
-    private GridWidget gridWidget;
-
-    private GridData uiModel;
-
     private GridLayer gridLayer;
 
     private Transform transform;
@@ -57,16 +55,6 @@ public class DefaultGridLayerTest {
     @Before
     public void setup() {
         this.transform = new Transform();
-        this.uiModel = new BaseGridData();
-        this.gridWidget = new BaseGridWidget( uiModel,
-                                              gridLayer,
-                                              gridLayer,
-                                              renderer ) {
-            @Override
-            public void select() {
-                //Don't render Selector for tests
-            }
-        };
 
         final LienzoPanel panel = new LienzoPanel( 500,
                                                    500 );
@@ -86,16 +74,31 @@ public class DefaultGridLayerTest {
         };
         panel.add( wrapped );
         this.gridLayer = spy( wrapped );
-        this.gridLayer.add( gridWidget );
 
         when( gridLayer.getViewport() ).thenReturn( viewport );
-        when( gridWidget.getViewport() ).thenReturn( viewport );
         when( viewport.getTransform() ).thenReturn( transform );
         when( viewport.getMediators() ).thenReturn( mediators );
     }
 
+    private GridWidget makeGridWidget() {
+        final GridData uiModel = new BaseGridData();
+        return new BaseGridWidget( uiModel,
+                                   gridLayer,
+                                   gridLayer,
+                                   renderer ) {
+            @Override
+            public void select() {
+                //Don't render Selector for tests
+            }
+        };
+
+    }
+
     @Test
     public void checkFlipToGridWidgetWhenPinned() {
+        final GridWidget gridWidget = makeGridWidget();
+        this.gridLayer.add( gridWidget );
+
         gridLayer.enterPinnedMode( gridWidget,
                                    new GridLayerRedrawManager.PrioritizedCommand( 0 ) {
                                        @Override
@@ -114,6 +117,9 @@ public class DefaultGridLayerTest {
 
     @Test
     public void checkFlipToGridWidgetWhenNotPinned() {
+        final GridWidget gridWidget = makeGridWidget();
+        this.gridLayer.add( gridWidget );
+
         gridLayer.flipToGridWidget( gridWidget );
 
         verify( gridLayer,
@@ -124,6 +130,9 @@ public class DefaultGridLayerTest {
 
     @Test
     public void checkScrollToGridWidgetWhenPinned() {
+        final GridWidget gridWidget = makeGridWidget();
+        this.gridLayer.add( gridWidget );
+
         gridLayer.enterPinnedMode( gridWidget,
                                    new GridLayerRedrawManager.PrioritizedCommand( 0 ) {
                                        @Override
@@ -140,10 +149,43 @@ public class DefaultGridLayerTest {
 
     @Test
     public void checkScrollToGridWidgetWhenNotPinned() {
+        final GridWidget gridWidget = makeGridWidget();
+        this.gridLayer.add( gridWidget );
+
         gridLayer.scrollToGridWidget( gridWidget );
 
         verify( gridLayer,
                 times( 1 ) ).select( eq( gridWidget ) );
+    }
+
+    @Test
+    public void checkRemoveAllClearsCachedReferences() {
+        final GridWidget gridWidget1 = makeGridWidget();
+        final GridColumn column1 = mock( GridColumn.class );
+        when( column1.isVisible() ).thenReturn( true );
+        gridWidget1.getModel().appendColumn( column1 );
+
+        final GridWidget gridWidget2 = makeGridWidget();
+        final GridColumn column2 = mock( GridColumn.class );
+        when( column2.isVisible() ).thenReturn( true );
+        when( column2.isLinked() ).thenReturn( true );
+        when( column2.getLink() ).thenReturn( column1 );
+        gridWidget2.getModel().appendColumn( column2 );
+
+        this.gridLayer.add( gridWidget1 );
+        this.gridLayer.add( gridWidget2 );
+
+        assertEquals( 2,
+                      gridLayer.getGridWidgets().size() );
+        assertEquals( 1,
+                      gridLayer.getGridWidgetConnectors().size() );
+
+        gridLayer.removeAll();
+
+        assertEquals( 0,
+                      gridLayer.getGridWidgets().size() );
+        assertEquals( 0,
+                      gridLayer.getGridWidgetConnectors().size() );
     }
 
 }
