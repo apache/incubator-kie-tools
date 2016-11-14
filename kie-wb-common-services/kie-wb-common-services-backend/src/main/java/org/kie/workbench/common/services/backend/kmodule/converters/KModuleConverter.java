@@ -34,7 +34,8 @@ public class KModuleConverter
     public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
         KModuleModel kModule = (KModuleModel) value;
 
-        writer.addAttribute("xmlns", "http://jboss.org/kie/6.0.0/kmodule");
+        //https://issues.jboss.org/browse/DROOLS-1023 introduced "version-less" XSDs
+        writer.addAttribute("xmlns", "http://www.drools.org/xsd/kmodule");
         writer.addAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
         for (KBaseModel kBaseModule : kModule.getKBases().values()) {

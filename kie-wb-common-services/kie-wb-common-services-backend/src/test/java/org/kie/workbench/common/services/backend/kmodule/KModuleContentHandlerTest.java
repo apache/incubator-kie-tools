@@ -18,10 +18,10 @@ package org.kie.workbench.common.services.backend.kmodule;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;import java.lang.Exception;import java.lang.IllegalStateException;import java.lang.String;import java.lang.StringBuffer;
+import java.io.InputStreamReader;
 
-import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.junit.Test;
+import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 
 import static org.junit.Assert.*;
 
@@ -34,6 +34,15 @@ public class KModuleContentHandlerTest {
         KModuleModel model = kModuleContentHandler.toModel(readResource("simpleKModule.xml"));
 
         assertNotNull(model);
+    }
+
+    @Test
+    public void testMarshallingOfDefaultDroolsNameSpace() throws Exception {
+        final KModuleContentHandler kModuleContentHandler = new KModuleContentHandler();
+        final String kmodule = kModuleContentHandler.toString( new KModuleModel() );
+
+        assertNotNull( kmodule );
+        assertTrue( kmodule.contains( "xmlns=\"http://www.drools.org/xsd/kmodule\"" ) );
     }
 
     private String readResource(String name) {
