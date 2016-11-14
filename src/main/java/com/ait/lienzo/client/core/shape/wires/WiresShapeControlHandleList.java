@@ -1,17 +1,19 @@
 /*
-   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ *
+ *    Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ *
  */
 // TODO - review DSJ
 
@@ -43,7 +45,6 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 /**
@@ -57,8 +58,7 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
  */
 public class WiresShapeControlHandleList implements IControlHandleList
 {
-
-    private static final int                       C_POINTS_SIZE = 4;
+    private static final int POINTS_SIZE = 4;
 
     private final WiresShape                       m_wires_shape;
 
@@ -70,17 +70,17 @@ public class WiresShapeControlHandleList implements IControlHandleList
 
     private Group                                  parent;
 
-    public WiresShapeControlHandleList(final WiresShape m_wires_shape, final IControlHandle.ControlHandleType m_ctrls_type, final ControlHandleList m_ctrls)
+    public WiresShapeControlHandleList(final WiresShape wiresShape, final IControlHandle.ControlHandleType controlsType, final ControlHandleList controls)
     {
-        this(m_wires_shape, m_ctrls_type, m_ctrls, new HandlerRegistrationManager());
+        this(wiresShape, controlsType, controls, new HandlerRegistrationManager());
     }
 
-    WiresShapeControlHandleList(final WiresShape m_wires_shape, final IControlHandle.ControlHandleType m_ctrls_type, final ControlHandleList m_ctrls, final HandlerRegistrationManager m_registrationManager)
+    WiresShapeControlHandleList(final WiresShape wiresShape, final IControlHandle.ControlHandleType controlsType, final ControlHandleList controls, final HandlerRegistrationManager registrationManager)
     {
-        this.m_wires_shape = m_wires_shape;
-        this.m_ctrls = m_ctrls;
-        this.m_ctrls_type = m_ctrls_type;
-        this.m_registrationManager = m_registrationManager;
+        this.m_wires_shape = wiresShape;
+        this.m_ctrls = controls;
+        this.m_ctrls_type = controlsType;
+        this.m_registrationManager = registrationManager;
         this.parent = null;
         updateParentLocation();
         initControlsListeners();
@@ -185,29 +185,24 @@ public class WiresShapeControlHandleList implements IControlHandleList
 
     private void initControlsListeners()
     {
-
         // Control points - to provide the resize support.
         if (IControlHandle.ControlHandleStandardType.RESIZE.equals(m_ctrls_type))
         {
-
-            for (int i = 0; i < C_POINTS_SIZE; i++)
+            for (int i = 0; i < POINTS_SIZE; i++)
             {
-
                 final IControlHandle handle = m_ctrls.getHandle(i);
-                final IPrimitive<?> ctrol = handle.getControl();
+                final IPrimitive<?> control = handle.getControl();
 
-                m_registrationManager.register(
+                m_registrationManager.register(control.addNodeDragStartHandler(new NodeDragStartHandler()
+                {
+                    @Override
+                    public void onNodeDragStart(final NodeDragStartEvent event)
+                    {
+                        WiresShapeControlHandleList.this.resizeStart(event);
+                    }
+                }));
 
-                        ctrol.addNodeDragStartHandler(new NodeDragStartHandler()
-                        {
-                            @Override
-                            public void onNodeDragStart(final NodeDragStartEvent event)
-                            {
-                                WiresShapeControlHandleList.this.resizeStart(event);
-                            }
-                        }));
-
-                m_registrationManager.register(ctrol.addNodeDragMoveHandler(new NodeDragMoveHandler()
+                m_registrationManager.register(control.addNodeDragMoveHandler(new NodeDragMoveHandler()
                 {
                     @Override
                     public void onNodeDragMove(final NodeDragMoveEvent event)
@@ -216,7 +211,7 @@ public class WiresShapeControlHandleList implements IControlHandleList
                     }
                 }));
 
-                m_registrationManager.register(ctrol.addNodeDragEndHandler(new NodeDragEndHandler()
+                m_registrationManager.register(control.addNodeDragEndHandler(new NodeDragEndHandler()
                 {
                     @Override
                     public void onNodeDragEnd(final NodeDragEndEvent event)
@@ -224,9 +219,7 @@ public class WiresShapeControlHandleList implements IControlHandleList
                         WiresShapeControlHandleList.this.resizeEnd(event);
                     }
                 }));
-
             }
-
         }
 
         // Shape container's drag.
@@ -236,10 +229,8 @@ public class WiresShapeControlHandleList implements IControlHandleList
             public void onShapeDragStart(WiresDragStartEvent event)
             {
                 updateParentLocation();
-
             }
         }));
-        ;
 
         m_registrationManager.register(m_wires_shape.addWiresDragMoveHandler(new WiresDragMoveHandler()
         {
@@ -268,10 +259,9 @@ public class WiresShapeControlHandleList implements IControlHandleList
                 updateParentLocation();
             }
         }));
-
     }
 
-    private void resizeStart(final AbstractNodeDragEvent<?> dragEvent)
+    protected void resizeStart(final AbstractNodeDragEvent<?> dragEvent)
     {
         final double[] r = this.resizeWhileDrag(dragEvent);
 
@@ -279,10 +269,9 @@ public class WiresShapeControlHandleList implements IControlHandleList
         {
             m_wires_shape.getHandlerManager().fireEvent(new WiresResizeStartEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
         }
-
     }
 
-    private void resizeMove(final AbstractNodeDragEvent<?> dragEvent)
+    protected void resizeMove(final AbstractNodeDragEvent<?> dragEvent)
     {
         final double[] r = this.resizeWhileDrag(dragEvent);
 
@@ -292,7 +281,7 @@ public class WiresShapeControlHandleList implements IControlHandleList
         }
     }
 
-    private void resizeEnd(final AbstractNodeDragEvent<?> dragEvent)
+    protected void resizeEnd(final AbstractNodeDragEvent<?> dragEvent)
     {
         final double[] r = this.resizeWhileDrag(dragEvent);
 
@@ -304,10 +293,8 @@ public class WiresShapeControlHandleList implements IControlHandleList
 
     private double[] resizeWhileDrag(final AbstractNodeDragEvent<?> dragEvent)
     {
-
         if (m_wires_shape.isResizable())
         {
-
             // Ensure magnets hidden while resizing.
             if (null != m_wires_shape.getMagnets())
             {
@@ -321,15 +308,13 @@ public class WiresShapeControlHandleList implements IControlHandleList
             this.resize(attrs[0], attrs[1], attrs[2], attrs[3], false);
 
             return attrs;
-
         }
 
         return null;
     }
 
-    private void resize(final Double x, final Double y, final double width, final double height, final boolean refresh)
+    protected void resize(final Double x, final Double y, final double width, final double height, final boolean refresh)
     {
-
         if (null != x && null != y)
         {
             m_wires_shape.getLayoutContainer().setOffset(new Point2D(x, y));
@@ -351,72 +336,59 @@ public class WiresShapeControlHandleList implements IControlHandleList
 
         // For now, move path to bottom to make controls and magnets visible.
         m_wires_shape.getPath().moveToBottom();
-
     }
 
     private Point2DArray getControlPointsArray()
     {
-
         Point2DArray result = new Point2DArray();
 
-        for (int i = 0; i < C_POINTS_SIZE; i++)
+        for (int i = 0; i < POINTS_SIZE; i++)
         {
-
             final IControlHandle handle = m_ctrls.getHandle(i);
-            final IPrimitive<?> ctrol = handle.getControl();
-            final Point2D p = new Point2D(ctrol.getX(), ctrol.getY());
+            final IPrimitive<?> control = handle.getControl();
+            final Point2D p = new Point2D(control.getX(), control.getY());
             result.push(p);
-
         }
 
         return result;
     }
 
-    private void updateParentLocation()
+    protected void updateParentLocation()
     {
-
         if (null == parent && null != getGroup().getLayer())
         {
             this.parent = new Group();
             getGroup().getLayer().add(parent);
         }
 
-        if (null != parent)
+        if (null == parent)
         {
-
-            final double[] ap = getAbsolute(getGroup());
-            parent.setX(ap[0]);
-            parent.setY(ap[1]);
-            parent.moveToTop();
-
-            final NFastArrayList<WiresShape> children = m_wires_shape.getChildShapes();
-            if (null != children && !children.isEmpty())
-            {
-                for (final WiresShape child : children)
-                {
-                    if (null != child.getControls())
-                    {
-                        child.getControls().updateParentLocation();
-                    }
-                }
-            }
-
+            return;
         }
 
+        final double[] ap = getAbsolute(getGroup());
+        parent.setX(ap[0]);
+        parent.setY(ap[1]);
+        parent.moveToTop();
+
+        for (final WiresShape child : m_wires_shape.getChildShapes())
+        {
+            if (null != child.getControls())
+            {
+                child.getControls().updateParentLocation();
+            }
+        }
     }
 
-    private double[] getBBAttributes(final Point2DArray point2Ds)
+    private double[] getBBAttributes(final Point2DArray controlPoints)
     {
-        double minx = point2Ds.get(0).getX();
-        double miny = point2Ds.get(0).getY();
-        double maxx = point2Ds.get(0).getX();
-        double maxy = point2Ds.get(0).getY();
-        ;
+        double minx = controlPoints.get(0).getX();
+        double miny = controlPoints.get(0).getY();
+        double maxx = controlPoints.get(0).getX();
+        double maxy = controlPoints.get(0).getY();
 
-        for (int pos = 0; pos < 4; pos++)
+        for (Point2D control : controlPoints)
         {
-            final Point2D control = point2Ds.get(pos);
-
             if (control.getX() < minx)
             {
                 minx = control.getX();
@@ -440,52 +412,40 @@ public class WiresShapeControlHandleList implements IControlHandleList
         final double h = maxy - miny;
 
         return new double[] { minx, miny, w, h };
-
     }
 
     private void switchVisibility(final boolean visible)
     {
-
-        if (null != parent)
+        if (null == parent)
         {
+            return;
+        }
 
-            final NFastArrayList<WiresShape> children = m_wires_shape.getChildShapes();
-
-            if (null != children)
+        for (WiresShape shape : m_wires_shape.getChildShapes())
+        {
+            if (shape.getControls() == null)
             {
-
-                for (final WiresShape shape : children)
-                {
-
-                    if (shape.getControls() != null)
-                    {
-
-                        if (visible)
-                        {
-                            shape.getControls().show();
-                        }
-                        else
-                        {
-                            shape.getControls().hide();
-                        }
-
-                    }
-
-                }
-
+                continue;
             }
 
             if (visible)
             {
-                m_ctrls.showOn(parent);
+                shape.getControls().show();
             }
             else
             {
-                m_ctrls.hide();
+                shape.getControls().hide();
             }
-
         }
 
+        if (visible)
+        {
+            m_ctrls.showOn(parent);
+        }
+        else
+        {
+            m_ctrls.hide();
+        }
     }
 
     private static double[] getAbsolute(final Group group)

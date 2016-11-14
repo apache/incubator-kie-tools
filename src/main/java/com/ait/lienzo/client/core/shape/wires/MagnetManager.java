@@ -230,10 +230,6 @@ public class MagnetManager
 
         private WiresShape                       m_wiresShape;
 
-        private Shape<?>                         m_shape;
-
-        private IPrimitive<?>                    m_primTarget;
-
         private boolean                          m_isDragging;
 
         private final HandlerRegistrationManager m_registrationManager = new HandlerRegistrationManager();
@@ -242,19 +238,14 @@ public class MagnetManager
         {
             m_list = list;
             m_magnetManager = magnetManager;
-            m_shape = wiresShape.getPath();
-            m_primTarget = wiresShape.getGroup();
             m_wiresShape = wiresShape;
 
-            m_registrationManager.register(m_primTarget.addAttributesChangedHandler(Attribute.X, this));
-
-            m_registrationManager.register(m_primTarget.addAttributesChangedHandler(Attribute.Y, this));
-
-            m_registrationManager.register(m_primTarget.addNodeDragStartHandler(this));
-
-            m_registrationManager.register(m_primTarget.addNodeDragMoveHandler(this));
-
-            m_registrationManager.register(m_primTarget.addNodeDragEndHandler(this));
+            Group shapeGroup = wiresShape.getGroup();
+            m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.X, this));
+            m_registrationManager.register(shapeGroup.addAttributesChangedHandler(Attribute.Y, this));
+            m_registrationManager.register(shapeGroup.addNodeDragStartHandler(this));
+            m_registrationManager.register(shapeGroup.addNodeDragMoveHandler(this));
+            m_registrationManager.register(shapeGroup.addNodeDragEndHandler(this));
         }
 
         public WiresShape getWiresShape()
@@ -264,7 +255,7 @@ public class MagnetManager
 
         public IPrimitive<?> getPrimTarget()
         {
-            return m_primTarget;
+            return getGroup();
         }
 
         @Override
@@ -332,17 +323,14 @@ public class MagnetManager
 
             if (points.size() == m_list.size())
             {
-
                 for (int i = 0; i < m_list.size(); i++)
                 {
                     Point2D p = points.get(i);
                     WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
                     m.setRx(p.getX()).setRy(p.getY());
                 }
-
                 this.shapeMoved();
             }
-
         }
 
         public void show()
@@ -363,7 +351,7 @@ public class MagnetManager
 
             m_registrationManager.removeHandler();
 
-            m_magnetManager.m_magnetRegistry.remove(m_shape.uuid());
+            m_magnetManager.m_magnetRegistry.remove(m_wiresShape.getPath().uuid());
         }
 
         public void destroy(WiresMagnet magnet)
@@ -383,12 +371,12 @@ public class MagnetManager
 
         public Shape<?> getShape()
         {
-            return m_shape;
+            return m_wiresShape.getPath();
         }
 
         public Group getGroup()
         {
-            return (Group) m_primTarget;
+            return m_wiresShape.getGroup();
         }
 
         public WiresMagnet getMagnet(int index)
@@ -398,9 +386,9 @@ public class MagnetManager
 
         private void batch()
         {
-            if (null != m_shape.getLayer())
+            if (null != m_wiresShape.getPath().getLayer())
             {
-                m_shape.getLayer().batch();
+                m_wiresShape.getPath().getLayer().batch();
             }
         }
     }
