@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.service.FactoryService;
 import org.mockito.Mock;
@@ -36,6 +37,7 @@ public class ClientFactoryServicesTest {
 
     @Mock ClientFactoryManager clientFactoryManager;
     @Mock FactoryService factoryService;
+    @Mock Metadata metadata;
     private Caller<FactoryService> factoryServiceCaller;;
 
     private ClientFactoryService tested;
@@ -179,13 +181,13 @@ public class ClientFactoryServicesTest {
         String name = "name1";
         ServiceCallback<Diagram> callback = mock( ServiceCallback.class );
         Diagram def = mock( Diagram.class );
-        when( clientFactoryManager.newDiagram( eq( name ), eq( id ) ) ).thenReturn( def );
-        tested.newDiagram( name, id, callback );
+        when( clientFactoryManager.newDiagram( eq( name ), eq( id ), any( Metadata.class ) ) ).thenReturn( def );
+        tested.newDiagram( name, id, metadata, callback );
         verify( callback, times( 1 ) ).onSuccess( eq( def ) );
-        verify( clientFactoryManager, times( 1 ) ).newDiagram( eq( name ), eq( id ) );
-        verify( clientFactoryManager, times( 0 ) ).newDiagram( anyString(), any( Class.class ) );
-        verify( factoryService, times( 0 ) ).newDiagram( anyString(), anyString() );
-        verify( factoryService, times( 0 ) ).newDiagram( anyString(), any( Class.class ) );
+        verify( clientFactoryManager, times( 1 ) ).newDiagram( eq( name ), eq( id ), eq( metadata ) );
+        verify( clientFactoryManager, times( 0 ) ).newDiagram( anyString(), any( Class.class ), any( Metadata.class ) );
+        verify( factoryService, times( 0 ) ).newDiagram( anyString(), anyString(), any( Metadata.class ) );
+        verify( factoryService, times( 0 ) ).newDiagram( anyString(), any( Class.class ), any( Metadata.class ) );
     }
 
     @Test
@@ -195,14 +197,14 @@ public class ClientFactoryServicesTest {
         String name = "name1";
         ServiceCallback<Diagram> callback = mock( ServiceCallback.class );
         Diagram def = mock( Diagram.class );
-        when( clientFactoryManager.newDiagram( eq( name ), eq( id ) ) ).thenReturn( null );
-        when( factoryService.newDiagram( eq( name ), eq( id ) ) ).thenReturn( def );
-        tested.newDiagram( name, id, callback );
+        when( clientFactoryManager.newDiagram( eq( name ), eq( id ), any( Metadata.class ) ) ).thenReturn( null );
+        when( factoryService.newDiagram( eq( name ), eq( id ), any( Metadata.class ) ) ).thenReturn( def );
+        tested.newDiagram( name, id, metadata, callback );
         verify( callback, times( 1 ) ).onSuccess( eq( def ) );
-        verify( clientFactoryManager, times( 1 ) ).newDiagram( eq( name ), eq( id ) );
-        verify( clientFactoryManager, times( 0 ) ).newDiagram( anyString(), any( Class.class ) );
-        verify( factoryService, times( 1 ) ).newDiagram( eq( name ), eq( id ) );
-        verify( factoryService, times( 0 ) ).newDiagram( anyString(), any( Class.class ) );
+        verify( clientFactoryManager, times( 1 ) ).newDiagram( eq( name ), eq( id ), any( Metadata.class ) );
+        verify( clientFactoryManager, times( 0 ) ).newDiagram( anyString(), any( Class.class ), any( Metadata.class ) );
+        verify( factoryService, times( 1 ) ).newDiagram( eq( name ), eq( id ), any( Metadata.class ) );
+        verify( factoryService, times( 0 ) ).newDiagram( anyString(), any( Class.class ), any( Metadata.class ) );
     }
 
     @Test
@@ -211,13 +213,13 @@ public class ClientFactoryServicesTest {
         String name = "name1";
         ServiceCallback<Diagram> callback = mock( ServiceCallback.class );
         Diagram def = mock( Diagram.class );
-        when( clientFactoryManager.newDiagram( eq( name ), eq( MyType.class ) ) ).thenReturn( def );
-        tested.newDiagram( name, MyType.class, callback );
+        when( clientFactoryManager.newDiagram( eq( name ), eq( MyType.class ), any( Metadata.class ) ) ).thenReturn( def );
+        tested.newDiagram( name, MyType.class, metadata, callback );
         verify( callback, times( 1 ) ).onSuccess( eq( def ) );
-        verify( clientFactoryManager, times( 0 ) ).newDiagram( anyString(), anyString() );
-        verify( clientFactoryManager, times( 1 ) ).newDiagram( anyString(), eq( MyType.class ) );
-        verify( factoryService, times( 0 ) ).newDiagram( anyString(), anyString() );
-        verify( factoryService, times( 0 ) ).newDiagram( anyString(), any( Class.class ) );
+        verify( clientFactoryManager, times( 0 ) ).newDiagram( anyString(), anyString(), any( Metadata.class ) );
+        verify( clientFactoryManager, times( 1 ) ).newDiagram( anyString(), eq( MyType.class ), any( Metadata.class ) );
+        verify( factoryService, times( 0 ) ).newDiagram( anyString(), anyString(), any( Metadata.class ) );
+        verify( factoryService, times( 0 ) ).newDiagram( anyString(), any( Class.class ), any( Metadata.class ) );
     }
 
     @Test
@@ -226,14 +228,14 @@ public class ClientFactoryServicesTest {
         String name = "name1";
         ServiceCallback<Diagram> callback = mock( ServiceCallback.class );
         Diagram def = mock( Diagram.class );
-        when( clientFactoryManager.newDiagram( eq( name ), eq( MyType.class ) ) ).thenReturn( null );
-        when( factoryService.newDiagram( eq( name ), eq( MyType.class ) ) ).thenReturn( def );
-        tested.newDiagram( name, MyType.class, callback );
+        when( clientFactoryManager.newDiagram( eq( name ), eq( MyType.class ), any( Metadata.class ) ) ).thenReturn( null );
+        when( factoryService.newDiagram( eq( name ), eq( MyType.class ), any( Metadata.class ) ) ).thenReturn( def );
+        tested.newDiagram( name, MyType.class, metadata, callback );
         verify( callback, times( 1 ) ).onSuccess( eq( def ) );
-        verify( clientFactoryManager, times( 0 ) ).newDiagram( anyString(), anyString() );
-        verify( clientFactoryManager, times( 1 ) ).newDiagram( anyString(), eq( MyType.class ) );
-        verify( factoryService, times( 0 ) ).newDiagram( anyString(), anyString() );
-        verify( factoryService, times( 1 ) ).newDiagram( anyString(), any( Class.class ) );
+        verify( clientFactoryManager, times( 0 ) ).newDiagram( anyString(), anyString(), any( Metadata.class ) );
+        verify( clientFactoryManager, times( 1 ) ).newDiagram( anyString(), eq( MyType.class ), any( Metadata.class ) );
+        verify( factoryService, times( 0 ) ).newDiagram( anyString(), anyString(), any( Metadata.class ) );
+        verify( factoryService, times( 1 ) ).newDiagram( anyString(), any( Class.class ), any( Metadata.class ) );
     }
 
 }

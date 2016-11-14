@@ -49,7 +49,7 @@ public class Package implements BPMNProperty {
     public static final PropertyType type = new StringType();
 
     @DefaultValue
-    public static final transient String defaultValue = "/defaultPackage/defaultPackage";
+    public static final transient String defaultValue = null;
 
     @Value
     @NotNull

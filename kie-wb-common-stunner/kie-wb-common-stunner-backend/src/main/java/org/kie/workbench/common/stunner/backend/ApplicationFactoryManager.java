@@ -38,53 +38,42 @@ import javax.inject.Inject;
 public class ApplicationFactoryManager extends AbstractFactoryManager implements FactoryService, FactoryManager {
 
     private Instance<DefinitionFactory<?>> definitionFactoryInstances;
-    private Instance<GraphFactory<?>> graphFactoryInstances;
+    private Instance<GraphFactory> graphFactoryInstances;
     private Instance<NodeFactory<?>> nodeFactoryInstances;
     private Instance<EdgeFactory<?>> edgeFactoryInstances;
+    private Instance<DiagramFactory<?, ?>> diagramFactoryInstances;
 
     protected ApplicationFactoryManager() {
-        super();
+        this( null, null, null, null, null, null, null );
     }
 
     @Inject
     public ApplicationFactoryManager( final RegistryFactory registryFactory,
                                       final DefinitionManager definitionManager,
                                       final Instance<DefinitionFactory<?>> definitionFactoryInstances,
-                                      final Instance<GraphFactory<?>> graphFactoryInstances,
+                                      final Instance<GraphFactory> graphFactoryInstances,
                                       final Instance<NodeFactory<?>> nodeFactoryInstances,
                                       final Instance<EdgeFactory<?>> edgeFactoryInstances,
-                                      final DiagramFactory diagramFactory ) {
-        super( registryFactory, definitionManager, diagramFactory );
+                                      final Instance<DiagramFactory<?, ?>> diagramFactoryInstances ) {
+        super( registryFactory, definitionManager );
         this.definitionFactoryInstances = definitionFactoryInstances;
         this.graphFactoryInstances = graphFactoryInstances;
         this.nodeFactoryInstances = nodeFactoryInstances;
         this.edgeFactoryInstances = edgeFactoryInstances;
+        this.diagramFactoryInstances = diagramFactoryInstances;
     }
 
     @PostConstruct
+    @SuppressWarnings( "unchecked" )
     public void init() {
-        initDefinitionFactories();
-        initGraphFactories();
-    }
-
-    @SuppressWarnings( "unchecked" )
-    private void initDefinitionFactories() {
-        for ( DefinitionFactory<?> factory : definitionFactoryInstances ) {
-            registry().register( factory );
-        }
-    }
-
-    @SuppressWarnings( "unchecked" )
-    private void initGraphFactories() {
-        for ( GraphFactory<?> factory : graphFactoryInstances ) {
-            registry().register( factory );
-        }
-        for ( NodeFactory<?> factory : nodeFactoryInstances ) {
-            registry().register( factory );
-        }
-        for ( EdgeFactory<?> factory : edgeFactoryInstances ) {
-            registry().register( factory );
-        }
+        // Definition factories.
+        definitionFactoryInstances.forEach( factory -> registry().register( factory ) );
+        // Graph factories.
+        graphFactoryInstances.forEach( factory -> registry().register( factory ) );
+        nodeFactoryInstances.forEach( factory -> registry().register( factory ) );
+        edgeFactoryInstances.forEach( factory -> registry().register( factory ) );
+        // Diagram factories.
+        diagramFactoryInstances.forEach( factory -> registry().register( factory ) );
     }
 
 }

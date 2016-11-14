@@ -59,7 +59,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     private final ProjectDiagramServiceController controller;
 
     protected ProjectDiagramServiceImpl() {
-        this( null, null, null, null, null, null, null, null, null, null, null );
+        this( null, null, null, null, null, null, null, null, null, null );
     }
 
     @Inject
@@ -72,8 +72,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                       SessionInfo sessionInfo,
                                       Event<ResourceOpenedEvent> resourceOpenedEvent,
                                       KieProjectService projectService,
-                                      CommentedOptionFactory commentedOptionFactory,
-                                      DiagramFactory diagramFactory ) {
+                                      CommentedOptionFactory commentedOptionFactory ) {
         this.ioService = ioService;
         this.identity = identity;
         this.sessionInfo = sessionInfo;
@@ -83,7 +82,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
         this.controller =
                 new ProjectDiagramServiceController( definitionManager,
                         factoryManager, definitionSetServiceInstances,
-                        ioService, registryFactory, diagramFactory );
+                        ioService, registryFactory );
     }
 
     @PostConstruct
@@ -100,6 +99,10 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     @Override
     public boolean accepts( Path path ) {
         return controller.accepts( path );
+    }
+
+    public Path create( Path path, String name, String defSetId, String projName, String projPkg ) {
+        return controller.create( path, name, defSetId, projName, projPkg );
     }
 
     @Override

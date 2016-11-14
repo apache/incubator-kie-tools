@@ -32,7 +32,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
-public class GraphFactoryImpl extends AbstractElementFactory<Object, Graph<Object, Node>> implements GraphFactory<Object> {
+public class GraphFactoryImpl extends AbstractElementFactory<String, DefinitionSet, Graph<DefinitionSet, Node>>
+        implements GraphFactory {
 
     private final DefinitionManager definitionManager;
 
@@ -46,32 +47,23 @@ public class GraphFactoryImpl extends AbstractElementFactory<Object, Graph<Objec
     }
 
     @Override
-    public Graph<Object, Node> build( final String uuid ) {
-        return build( uuid, null );
-    }
-
-    @Override
     public Class<? extends ElementFactory> getFactoryType() {
         return GraphFactory.class;
     }
 
     @Override
     @SuppressWarnings( "unchecked   " )
-    public Graph<Object, Node> build( final String uuid,
-                                      final Object definitionSet ) {
+    public Graph<DefinitionSet, Node> build( final String uuid,
+                                             final String definitionSetId ) {
         final GraphImpl graph = new GraphImpl<>( uuid, new GraphNodeStoreImpl() );
-        final String id = getId( definitionSet );
-        final DefinitionSet content = new DefinitionSetImpl( id );
+        final DefinitionSet content = new DefinitionSetImpl( definitionSetId );
+        graph.setContent( content );
         content.setBounds( new BoundsImpl(
                 new BoundImpl( 0d, 0d ),
                 new BoundImpl( DEFAULT_WIDTH, DEFAULT_HEIGHT )
         ) );
-        graph.setContent( content );
         return graph;
     }
 
-    private String getId( final Object defSet ) {
-        return definitionManager.adapters().forDefinitionSet().getId( defSet );
-    }
 
 }

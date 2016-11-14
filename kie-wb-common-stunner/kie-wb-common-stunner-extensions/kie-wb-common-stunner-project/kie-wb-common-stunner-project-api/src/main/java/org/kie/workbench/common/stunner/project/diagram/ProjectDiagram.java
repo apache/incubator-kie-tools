@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.project.diagram;
 
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
-public interface ProjectDiagram extends Diagram<Graph, ProjectMetadata> {
+public interface ProjectDiagram extends Diagram<Graph<DefinitionSet, ?>, ProjectMetadata> {
 }

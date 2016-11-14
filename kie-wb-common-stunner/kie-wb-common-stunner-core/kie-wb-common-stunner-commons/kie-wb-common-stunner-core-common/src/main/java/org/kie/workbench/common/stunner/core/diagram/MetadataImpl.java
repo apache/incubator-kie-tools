@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
+import org.uberfire.backend.vfs.Path;
 
 import java.util.Collection;
 
@@ -35,6 +36,11 @@ public final class MetadataImpl extends AbstractMetadata {
         super( definitionSetId );
     }
 
+    @Override
+    public Class<? extends Metadata> getMetadataType() {
+        return Metadata.class;
+    }
+
     @NonPortable
     public static class MetadataImplBuilder {
 
@@ -42,6 +48,8 @@ public final class MetadataImpl extends AbstractMetadata {
         private final DefinitionManager definitionManager;
         private final ShapeManager shapeManager;
         private String title;
+        private String ssid;
+        private Path path;
 
         public MetadataImplBuilder( final String defSetId ) {
             this( defSetId, null );
@@ -60,26 +68,35 @@ public final class MetadataImpl extends AbstractMetadata {
             this.shapeManager = shapeManager;
         }
 
+        public MetadataImplBuilder setPath( final Path path ) {
+            this.path = path;
+            return this;
+        }
+
         public MetadataImplBuilder setTitle( final String t ) {
             this.title = t;
             return this;
         }
 
-        public MetadataImpl build() {
+        public MetadataImplBuilder setShapeSetId( final String id ) {
+            this.ssid = id;
+            return this;
+        }
 
+        public MetadataImpl build() {
             final MetadataImpl result = new MetadataImpl( defSetId );
+            result.setPath( path );
             if ( null != definitionManager ) {
                 final Object defSet = definitionManager.definitionSets().getDefinitionSetById( defSetId );
                 if ( null != defSet ) {
                     result.setTitle( null != title ? title :
                             definitionManager.adapters().forDefinitionSet().getDescription( defSet ) );
-                    final ShapeSet<?> shapeSet = getShapeSet();
-                    if ( null != shapeSet ) {
-                        result.setShapeSetId( shapeSet.getId() );
+                    final String s = null != ssid ? ssid : ( null != getShapeSet() ? getShapeSet().getId() : null );
+                    if ( null != s ) {
+                        result.setShapeSetId( s );
                     }
                 }
             }
-
             return result;
         }
 

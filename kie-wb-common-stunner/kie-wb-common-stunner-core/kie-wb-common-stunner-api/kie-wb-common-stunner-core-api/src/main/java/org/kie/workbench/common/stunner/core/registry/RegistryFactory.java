@@ -54,7 +54,7 @@ public interface RegistryFactory {
     /**
      * Creates a new registry instance for model domain factories.
      */
-    <T extends Factory<?, ?>> FactoryRegistry<T> newFactoryRegistry();
+    <T extends Factory<?>> FactoryRegistry<T> newFactoryRegistry();
 
     /**
      * Creates a new registry instance for diagrams.

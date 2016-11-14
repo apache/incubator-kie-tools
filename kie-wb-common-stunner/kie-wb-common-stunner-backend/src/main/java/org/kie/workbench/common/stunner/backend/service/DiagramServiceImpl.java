@@ -24,6 +24,8 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramService;
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 import org.kie.workbench.common.stunner.core.service.DiagramService;
@@ -65,7 +67,7 @@ public class DiagramServiceImpl
     private org.uberfire.java.nio.file.Path root;
 
     protected DiagramServiceImpl() {
-        this( null, null, null, null, null, null );
+        this( null, null, null, null, null );
     }
 
     @Inject
@@ -73,9 +75,8 @@ public class DiagramServiceImpl
                                final FactoryManager factoryManager,
                                final Instance<DefinitionSetService> definitionSetServiceInstances,
                                final @Named( "ioStrategy" ) IOService ioService,
-                               final BackendRegistryFactory registryFactory,
-                               final DiagramFactory diagramFactory ) {
-        super( definitionManager, factoryManager, definitionSetServiceInstances, ioService, registryFactory, diagramFactory );
+                               final BackendRegistryFactory registryFactory ) {
+        super( definitionManager, factoryManager, definitionSetServiceInstances, ioService, registryFactory );
     }
 
     @PostConstruct
@@ -94,8 +95,26 @@ public class DiagramServiceImpl
     }
 
     @Override
+    public Path create( Path path, String name, String defSetId ) {
+        return super.create( path, name, defSetId, buildMetadataInstance( path, defSetId, name ) );
+    }
+
+    @Override
+    protected Metadata buildMetadataInstance( org.uberfire.backend.vfs.Path path, String defSetId, String title ) {
+        return  new MetadataImpl.MetadataImplBuilder( defSetId, getDefinitionManager() )
+                .setPath( path )
+                .setTitle( title )
+                .build();
+    }
+
+    @Override
     protected InputStream loadMetadataForPath( Path path ) {
         return doLoadMetadataStreamByDiagramPath( path );
+    }
+
+    @Override
+    protected Class<? extends Metadata> getMetadataType() {
+        return Metadata.class;
     }
 
     @Override

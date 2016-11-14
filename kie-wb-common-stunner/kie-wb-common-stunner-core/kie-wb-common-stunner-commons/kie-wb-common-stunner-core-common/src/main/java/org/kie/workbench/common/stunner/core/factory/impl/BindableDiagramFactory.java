@@ -15,20 +15,22 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
-public abstract class AbstractDiagramFactory implements DiagramFactory {
+public abstract class BindableDiagramFactory<M extends Metadata, D extends Diagram<Graph<DefinitionSet, ?>, M>>
+        implements DiagramFactory<M ,D> {
 
-    public Diagram build( String name ) {
-        return build( name, null );
-    }
+    protected abstract Class<?> getDefinitionSetType();
 
     @Override
-    public Diagram build( String name, Metadata metadata ) {
-        return build( name, metadata, null );
+    public boolean accepts( final String source ) {
+        return null != source &&
+                source.equals( BindableAdapterUtils.getDefinitionSetId( getDefinitionSetType() ) );
     }
 
 }

@@ -65,9 +65,9 @@ public class FactoryRegistryImplTest {
 
     @Test
     public void testGetGraphFactory() {
-        assertNull( factory.getGraphFactory( elementFactory.getFactoryType() ) );
+        assertNull( factory.getElementFactory( elementFactory.getFactoryType() ) );
         factory.register( elementFactory );
-        assertEquals( elementFactory, factory.getGraphFactory( elementFactory.getFactoryType() ) );
+        assertEquals( elementFactory, factory.getElementFactory( elementFactory.getFactoryType() ) );
     }
 
     @Test

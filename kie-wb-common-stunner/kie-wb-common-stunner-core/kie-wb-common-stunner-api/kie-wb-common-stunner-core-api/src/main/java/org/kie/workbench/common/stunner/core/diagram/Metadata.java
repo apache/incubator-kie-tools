@@ -41,4 +41,7 @@ public interface Metadata {
     Path getPath();
 
     void setPath( Path path );
+
+    Class<? extends Metadata> getMetadataType();
+
 }

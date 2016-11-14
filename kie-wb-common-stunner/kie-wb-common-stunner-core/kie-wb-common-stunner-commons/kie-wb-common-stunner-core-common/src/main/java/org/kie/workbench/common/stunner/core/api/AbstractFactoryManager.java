@@ -18,9 +18,7 @@ package org.kie.workbench.common.stunner.core.api;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
@@ -28,6 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
@@ -39,20 +38,11 @@ public abstract class AbstractFactoryManager {
 
     private final FactoryRegistry factoryRegistry;
     private final DefinitionManager definitionManager;
-    private final DiagramFactory diagramFactory;
-
-    protected AbstractFactoryManager() {
-        this.factoryRegistry = null;
-        this.definitionManager = null;
-        this.diagramFactory = null;
-    }
 
     public AbstractFactoryManager( final RegistryFactory registryFactory,
-                                   final DefinitionManager definitionManager,
-                                   final DiagramFactory diagramFactory ) {
-        this.factoryRegistry = registryFactory.newFactoryRegistry();
+                                   final DefinitionManager definitionManager ) {
+        this.factoryRegistry = null != registryFactory ? registryFactory.newFactoryRegistry() : null;
         this.definitionManager = definitionManager;
-        this.diagramFactory = diagramFactory;
     }
 
     @SuppressWarnings( "unchecked" )
@@ -66,13 +56,15 @@ public abstract class AbstractFactoryManager {
         return newDefinition( id );
     }
 
-    public Element newElement( final String uuid,
-                               final String id ) {
-        return doBuild( uuid, id );
+    public Element<?> newElement( final String uuid,
+                                  final String id ) {
+        final Object defSet = getDefinitionSet( id );
+        final boolean isDefSet = null != defSet;
+        return !isDefSet ? doBuildElement( uuid, id ) : doBuildGraph( uuid, id, defSet );
     }
 
-    public Element newElement( final String uuid,
-                               final Class<?> type ) {
+    public Element<?> newElement( final String uuid,
+                                  final Class<?> type ) {
         final String id = BindableAdapterUtils.getGenericClassName( type );
         return newElement( uuid, id );
     }
@@ -82,32 +74,37 @@ public abstract class AbstractFactoryManager {
     }
 
     @SuppressWarnings( "unchecked" )
-    public <D extends Diagram> D newDiagram( final String name,
-                                             final String id ) {
-        final Graph graph = ( Graph ) newElement( UUID.uuid(), id );
-        final Metadata metadata = buildMetadata( id, name );
+    public <M extends Metadata, D extends Diagram> D newDiagram( final String name,
+                                                                 final String id,
+                                                                 final M metadata ) {
+        final Graph<DefinitionSet, ?> graph = ( Graph<DefinitionSet, ?> ) newElement( UUID.uuid(), id );
         final String rootId = getCanvasRoot( graph );
         if ( null != rootId ) {
             metadata.setCanvasRootUUID( rootId );
-
         }
-        return ( D ) diagramFactory.build( name, metadata, graph );
+        return ( D ) checkDiagramFactoryNotNull( graph.getContent().getDefinition(), metadata )
+                .build( name, metadata, graph );
     }
 
-    public <D extends Diagram> D newDiagram( final String uuid,
-                                             final Class<?> type ) {
+    @SuppressWarnings( "unchecked" )
+    private <M extends Metadata> DiagramFactory<M, ?> checkDiagramFactoryNotNull( final String defSetid, final M metadata ) {
+        final DiagramFactory<M, ?> factory = registry().getDiagramFactory( defSetid, metadata.getMetadataType() );
+        if ( null == factory ) {
+            throw new IllegalArgumentException( "No diagram factory found for [" + defSetid + "] and " +
+                    "metadata type [" + metadata.getClass() + "]" );
+        }
+        return factory;
+    }
+
+    public <M extends Metadata, D extends Diagram> D newDiagram( final String uuid,
+                                                                 final Class<?> type,
+                                                                 final M metadata ) {
         final String id = BindableAdapterUtils.getDefinitionSetId( type, definitionManager.adapters().registry() );
-        return newDiagram( uuid, id );
+        return newDiagram( uuid, id, metadata );
     }
 
     public FactoryRegistry registry() {
         return factoryRegistry;
-    }
-
-    protected Metadata buildMetadata( final String defSetId, final String title ) {
-        return new MetadataImpl.MetadataImplBuilder( defSetId, definitionManager )
-                .setTitle( title )
-                .build();
     }
 
     protected DefinitionManager getDefinitionManager() {
@@ -115,23 +112,25 @@ public abstract class AbstractFactoryManager {
     }
 
     @SuppressWarnings( "unchecked" )
-    private <T, C extends Definition<T>> Element<C> doBuild( final String uuid,
-                                                             final String definitionId ) {
-        final Object defSet = getDefinitionSet( definitionId );
-        final boolean isDefSet = null != defSet;
-        final Object definition = isDefSet ? defSet : newDefinition( definitionId );
-        final Class<? extends ElementFactory> factoryType = isDefSet ?
-                definitionManager.adapters().forDefinitionSet().getGraphFactoryType( definition ) :
+    private <T, C extends Definition<T>> Element<C> doBuildElement( final String uuid,
+                                                                    final String definitionId ) {
+        final T definition = newDefinition( definitionId );
+        final Class<? extends ElementFactory> factoryType =
                 definitionManager.adapters().forDefinition().getGraphFactoryType( definition );
-        final ElementFactory<Definition<Object>, Element<Definition<Object>>> factory = getGraphFactory( factoryType );
-        final Element<Definition<Object>> element = factory.build( uuid, definition );
-        return ( Element<C> ) element;
+        final ElementFactory<T, C, Element<C>> factory =
+                factoryRegistry.getElementFactory( factoryType );
+        return factory.build( uuid, definition );
     }
 
     @SuppressWarnings( "unchecked" )
-    private ElementFactory<Definition<Object>, Element<Definition<Object>>> getGraphFactory( final Class<? extends ElementFactory> type ) {
-        return factoryRegistry.getGraphFactory( type );
-
+    private <C extends DefinitionSet> Element<C> doBuildGraph( final String uuid,
+                                                               final String defSetId,
+                                                               final Object defSet ) {
+        final Class<? extends ElementFactory> factoryType =
+                definitionManager.adapters().forDefinitionSet().getGraphFactoryType( defSet );
+        final ElementFactory<String, DefinitionSet, Element<DefinitionSet>> factory =
+                factoryRegistry.getElementFactory( factoryType );
+        return ( Element<C> ) factory.build( uuid, defSetId );
     }
 
     // TODO: Refactor this - do not apply by default this behavior?

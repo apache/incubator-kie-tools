@@ -19,9 +19,15 @@ import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 
 @Remote
 public interface ProjectDiagramService extends BaseDiagramService<ProjectDiagram>, SupportsUpdate<ProjectDiagram>, SupportsDelete {
 
+    Path create( final Path path,
+            final String name,
+            final String defSetId,
+            final String projName,
+            final String projPkg );
 }

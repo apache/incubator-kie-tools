@@ -18,8 +18,9 @@ package org.kie.workbench.common.stunner.core.factory.graph;
 
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
-public interface GraphFactory<C> extends ElementFactory<C, Graph<C, Node>> {
+public interface GraphFactory extends ElementFactory<String, DefinitionSet, Graph<DefinitionSet, Node>> {
 
     double DEFAULT_WIDTH = 1400d;
     double DEFAULT_HEIGHT = 600d;

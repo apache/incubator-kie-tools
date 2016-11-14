@@ -15,24 +15,40 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
+import org.kie.workbench.common.stunner.core.diagram.AbstractDiagram;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class DiagramFactoryImpl
-        extends AbstractDiagramFactory
-        implements DiagramFactory {
+        implements DiagramFactory<Metadata, Diagram<Graph<DefinitionSet, ?>, Metadata>> {
 
     @Override
-    public Diagram build( String name, Metadata metadata, Graph graph ) {
-        final DiagramImpl result = new DiagramImpl( name, metadata );
+    public Class<? extends Metadata> getMetadataType() {
+        return Metadata.class;
+    }
+
+    @Override
+    public Diagram<Graph<DefinitionSet, ?>, Metadata> build( String name, Metadata metadata, Graph<DefinitionSet, ?> graph ) {
+        final AbstractDiagram<Graph<DefinitionSet, ?>, Metadata> result = new DiagramImpl( name, metadata );
         result.setGraph( graph );
         return result;
     }
 
+    /**
+     * The default factory for generic Diagrams.
+     * @param source the Definition Set identifier.
+     * @return If does not accepts any concrete Definition Set, so no matter the identifier,
+     * this instance is the default factory for all definition sets on the default context (Metadata).
+     */
+    @Override
+    public boolean accepts( String source ) {
+        return false;
+    }
 }

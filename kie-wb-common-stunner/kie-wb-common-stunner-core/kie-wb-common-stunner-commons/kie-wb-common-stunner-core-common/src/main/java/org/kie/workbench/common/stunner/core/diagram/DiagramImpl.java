@@ -19,9 +19,10 @@ package org.kie.workbench.common.stunner.core.diagram;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
 @Portable
-public final class DiagramImpl extends AbstractDiagram<Graph, Metadata> {
+public final class DiagramImpl extends AbstractDiagram<Graph<DefinitionSet, ?>, Metadata> {
 
     public DiagramImpl( @MapsTo( "name" ) String name,
                         @MapsTo( "metadata" ) Metadata metadata ) {

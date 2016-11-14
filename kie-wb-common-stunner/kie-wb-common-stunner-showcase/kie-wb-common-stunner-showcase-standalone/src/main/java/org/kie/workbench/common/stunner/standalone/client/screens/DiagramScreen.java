@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.Ab
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommandCallback;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.ToolbarFactory;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
@@ -34,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasVali
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
@@ -65,6 +67,7 @@ public class DiagramScreen {
 
     public static final String SCREEN_ID = "DiagramScreen";
 
+    private final DefinitionManager definitionManager;
     private final ClientFactoryService clientFactoryServices;
     private final ClientDiagramService clientDiagramServices;
     private final AbstractClientSessionManager canvasSessionManager;
@@ -82,7 +85,8 @@ public class DiagramScreen {
     private Menus menu = null;
 
     @Inject
-    public DiagramScreen( final ClientFactoryService clientFactoryServices,
+    public DiagramScreen( final DefinitionManager definitionManager,
+                          final ClientFactoryService clientFactoryServices,
                           final ClientDiagramService clientDiagramServices,
                           final AbstractClientSessionManager canvasSessionManager,
                           final AbstractClientSessionPresenter clientSessionPresenter,
@@ -91,6 +95,7 @@ public class DiagramScreen {
                           final ToolbarFactory toolbars,
                           final ClientSessionUtils sessionUtils,
                           final MenuDevCommandsBuilder menuDevCommandsBuilder ) {
+        this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.clientDiagramServices = clientDiagramServices;
         this.canvasSessionManager = canvasSessionManager;
@@ -232,7 +237,8 @@ public class DiagramScreen {
                             final String definitionSetId,
                             final String shapeSetId,
                             final Command callback ) {
-        clientFactoryServices.newDiagram( uuid, definitionSetId, new ServiceCallback<Diagram>() {
+        final Metadata metadata = buildMetadata( definitionSetId, shapeSetId, title );
+        clientFactoryServices.newDiagram( uuid, definitionSetId, metadata, new ServiceCallback<Diagram>() {
             @Override
             public void onSuccess( final Diagram diagram ) {
                 final Metadata metadata = diagram.getMetadata();
@@ -248,6 +254,15 @@ public class DiagramScreen {
             }
         } );
 
+    }
+
+    private Metadata buildMetadata( final String defSetId,
+                                    final String shapeSetId,
+                                    final String title ) {
+        return new MetadataImpl.MetadataImplBuilder( defSetId, definitionManager )
+                .setTitle( title )
+                .setShapeSetId( shapeSetId )
+                .build();
     }
 
     private void load( final String name,

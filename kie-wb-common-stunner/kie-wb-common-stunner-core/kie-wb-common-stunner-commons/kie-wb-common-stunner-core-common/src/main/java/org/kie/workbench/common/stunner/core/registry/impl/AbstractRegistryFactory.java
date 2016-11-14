@@ -63,7 +63,7 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
     }
 
     @Override
-    public <T extends Factory<?, ?>> FactoryRegistry<T> newFactoryRegistry() {
+    public <T extends Factory<?>> FactoryRegistry<T> newFactoryRegistry() {
         return new FactoryRegistryImpl<T>( adapterManager );
     }
 

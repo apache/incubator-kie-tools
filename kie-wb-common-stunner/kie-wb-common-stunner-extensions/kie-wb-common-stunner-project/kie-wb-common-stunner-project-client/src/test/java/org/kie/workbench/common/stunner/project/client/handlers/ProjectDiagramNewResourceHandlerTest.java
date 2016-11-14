@@ -40,6 +40,9 @@ import static org.mockito.Mockito.*;
 public class ProjectDiagramNewResourceHandlerTest {
 
     private static final String DEFSET_ID = "ds1";
+    private static final String PROJ_PKG = "org.kie.stunner.test";
+    private static final String PROJ_ROOT_FILENAME = "rootFileName";
+
     @Mock
     DefinitionManager definitionManager;
     @Mock
@@ -60,6 +63,8 @@ public class ProjectDiagramNewResourceHandlerTest {
     NewResourcePresenter presenter;
     @Mock
     Path path;
+    @Mock
+    Path projRootPath;
 
     private ProjectDiagramNewResourceHandlerStub tested;
 
@@ -73,6 +78,9 @@ public class ProjectDiagramNewResourceHandlerTest {
         when( definitionSetRegistry.getDefinitionSetByType( any( Class.class ) ) ).thenReturn( definitionSet );
         when( definitionSetAdapter.getId( eq( definitionSet ) ) ).thenReturn( DEFSET_ID );
         when( aPackage.getPackageMainResourcesPath() ).thenReturn( path );
+        when( aPackage.getPackageName() ).thenReturn( PROJ_PKG );
+        when( aPackage.getProjectRootPath() ).thenReturn( projRootPath );
+        when( projRootPath.getFileName() ).thenReturn( PROJ_ROOT_FILENAME );
         when( projectDiagramResourceType.getSuffix() ).thenReturn( "bpmn2" );
         when( projectDiagramResourceType.getPrefix() ).thenReturn( "" );
         this.tested = new ProjectDiagramNewResourceHandlerStub( definitionManager,
@@ -84,8 +92,8 @@ public class ProjectDiagramNewResourceHandlerTest {
     public void testCreate() {
         final String baseFileName = "file1";
         tested.create( aPackage, baseFileName, presenter );
-        verify( projectDiagramServices, times( 1 ) ).create( eq( path ), eq( "file1" ),
-                eq( DEFSET_ID ), any( ServiceCallback.class ) );
+        verify( projectDiagramServices, times( 1 ) ).create( eq( path ), eq( "file1" ), eq( DEFSET_ID ),
+                eq( PROJ_ROOT_FILENAME ), eq( PROJ_PKG ), any( ServiceCallback.class ) );
     }
 
     private class ProjectDiagramNewResourceHandlerStub extends AbstractProjectDiagramNewResourceHandler<ClientResourceType> {

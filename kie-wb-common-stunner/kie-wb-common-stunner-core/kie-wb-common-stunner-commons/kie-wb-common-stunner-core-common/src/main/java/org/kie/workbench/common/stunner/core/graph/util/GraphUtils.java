@@ -33,6 +33,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 @ApplicationScoped
 public class GraphUtils {
@@ -183,6 +184,34 @@ public class GraphUtils {
                 new BoundImpl( x + width, y + height )
         );
         element.setBounds( bounds );
+    }
+
+    /**
+     * Finds the first node in the graph structure for the given type.
+     * @param graph The graph structure.
+     * @param type The Definition type..
+     */
+    @SuppressWarnings( "unchecked" )
+    public static <C> Node<Definition<C>, ?> getFirstNode( final Graph<?, Node> graph,
+                                                           final Class<?> type ) {
+        if ( null != graph ) {
+            for ( final Node node : graph.nodes() ) {
+                final Object content = node.getContent();
+                try {
+                    final Definition definitionContent = ( Definition ) content;
+                    if ( instanceOf( definitionContent.getDefinition(), type ) ) {
+                        return node;
+                    }
+                } catch ( final ClassCastException e ) {
+                    // Node content does not contains a definition.
+                }
+            }
+        }
+        return null;
+    }
+
+    private static boolean instanceOf( final Object item, final Class<?> clazz ) {
+        return null != item && item.getClass().equals( clazz );
     }
 
 }

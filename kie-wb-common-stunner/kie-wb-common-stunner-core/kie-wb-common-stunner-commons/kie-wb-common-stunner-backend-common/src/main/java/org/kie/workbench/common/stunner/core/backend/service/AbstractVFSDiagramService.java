@@ -22,9 +22,9 @@ import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetSer
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
 import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
@@ -59,7 +59,6 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
     private final IOService ioService;
     private final Instance<DefinitionSetService> definitionSetServiceInstances;
     private final BackendRegistryFactory registryFactory;
-    private final DiagramFactory diagramFactory;
     private Collection<DefinitionSetService> definitionSetServices = new LinkedList<>();
     private DiagramRegistry<D> registry;
 
@@ -67,14 +66,12 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
                                       final FactoryManager factoryManager,
                                       final Instance<DefinitionSetService> definitionSetServiceInstances,
                                       final IOService ioService,
-                                      final BackendRegistryFactory registryFactory,
-                                      final DiagramFactory diagramFactory ) {
+                                      final BackendRegistryFactory registryFactory ) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.ioService = ioService;
         this.definitionSetServiceInstances = definitionSetServiceInstances;
         this.registryFactory = registryFactory;
-        this.diagramFactory = diagramFactory;
     }
 
     protected void initialize() {
@@ -84,7 +81,7 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
         this.registry = registryFactory.newDiagramSynchronizedRegistry();
     }
 
-    public Path create( Path path, String name, String defSetId ) {
+    public Path create( Path path, String name, String defSetId, Metadata metadata ) {
         final DefinitionSetService services = getServicesById( defSetId );
         if ( null == services ) {
             throw new IllegalStateException( "No backend Definition Set services for [" + defSetId + "]" );
@@ -95,16 +92,17 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
             if ( ioService.exists( kiePath ) ) {
                 throw new FileAlreadyExistsException( kiePath.toString() );
             }
-            final D diagram = factoryManager.newDiagram( name, defSetId );
+            final D diagram = factoryManager.newDiagram( name, defSetId, metadata );
             final String[] raw = serizalize( diagram );
             ioService.write( kiePath, raw[ 0 ] );
-            // TODO: Handle metadata.
             return Paths.convert( kiePath );
         } catch ( final Exception e ) {
             LOG.error( "Cannot create diagram in path [" + kiePath + "]", e );
         }
         return null;
     }
+
+    protected abstract Class<? extends Metadata> getMetadataType();
 
     private String buildFileName( final String baseFileName,
                                   final ResourceTypeDefinition resourceType ) {
@@ -135,16 +133,16 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
                     }
                 }
                 if ( null == metadata ) {
-                    metadata = new MetadataImpl.MetadataImplBuilder( defSetId, definitionManager )
-                            .setTitle( name )
-                            .build();
+                    metadata = buildMetadataInstance( file, defSetId, name );
                 }
                 metadata.setPath( file );
                 // Parse and load the diagram raw data.
                 final InputStream is = loadPath( file );
                 try {
-                    Graph graph = services.getDiagramMarshaller().unmarshall( metadata, is );
-                    return ( D ) diagramFactory.build( name, metadata, graph );
+                    Graph<DefinitionSet, ?> graph = services.getDiagramMarshaller().unmarshall( metadata, is );
+                    DiagramFactory<Metadata, ?> factory =
+                            factoryManager.registry().getDiagramFactory( graph.getContent().getDefinition(), getMetadataType() );
+                    return ( D ) factory.build( name, metadata, graph );
                 } catch ( java.io.IOException e ) {
                     LOG.error( "Cannot unmarshall diagram for diagram's path [" + file + "]", e );
                     return null;
@@ -153,7 +151,6 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
 
         }
         throw new UnsupportedOperationException( "Diagram format not supported [" + file + "]" );
-
     }
 
     private String parseFileName( final org.uberfire.backend.vfs.Path file,
@@ -238,6 +235,8 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
 
     protected abstract InputStream loadMetadataForPath( org.uberfire.backend.vfs.Path path );
 
+    protected abstract Metadata buildMetadataInstance( org.uberfire.backend.vfs.Path path, String defSetId, String title );
+
     protected InputStream loadPath( org.uberfire.backend.vfs.Path _path ) {
         org.uberfire.java.nio.file.Path path = Paths.convert( _path );
         final byte[] bytes = ioService.readAllBytes( path );
@@ -300,6 +299,10 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
 
     protected IOService getIoService() {
         return ioService;
+    }
+
+    protected DefinitionManager getDefinitionManager() {
+        return definitionManager;
     }
 
     protected DiagramRegistry<D> getRegistry() {

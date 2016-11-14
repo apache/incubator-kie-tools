@@ -18,7 +18,8 @@ package org.kie.workbench.common.stunner.core.factory.graph;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
-public interface EdgeFactory<C> extends ElementFactory<C, Edge<C, Node>> {
+public interface EdgeFactory<C> extends ElementFactory<C, Definition<C>, Edge<Definition<C>, Node>> {
 
 }

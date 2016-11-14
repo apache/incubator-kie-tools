@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -30,7 +31,8 @@ import javax.inject.Inject;
 import java.util.Set;
 
 @ApplicationScoped
-public class NodeFactoryImpl extends AbstractElementFactory<Object, Node<Object, Edge>> implements NodeFactory<Object> {
+public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<Object>, Node<Definition<Object>, Edge>>
+        implements NodeFactory<Object> {
 
     private final DefinitionManager definitionManager;
 
@@ -44,18 +46,13 @@ public class NodeFactoryImpl extends AbstractElementFactory<Object, Node<Object,
     }
 
     @Override
-    public Node<Object, Edge> build( final String uuid ) {
-        return build( uuid, null );
-    }
-
-    @Override
     public Class<? extends ElementFactory> getFactoryType() {
         return NodeFactory.class;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public Node<Object, Edge> build( final String uuid,
+    public Node<Definition<Object>, Edge> build( final String uuid,
                                      final Object definition ) {
         final NodeImpl node = new NodeImpl<>( uuid );
         if ( null != definition ) {

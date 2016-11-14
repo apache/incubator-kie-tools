@@ -17,9 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.factory;
 
 import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
-public interface BPMNGraphFactory extends GraphFactory<DefinitionSet> {
+/**
+ * Custom BPMN factory for graphs.
+ * The implementations can initialize the graph in whatever state you need.
+ */
+public interface BPMNGraphFactory extends GraphFactory {
 
     double GRAPH_DEFAULT_WIDTH = 1400d;
     double GRAPH_DEFAULT_HEIGHT = 600d;

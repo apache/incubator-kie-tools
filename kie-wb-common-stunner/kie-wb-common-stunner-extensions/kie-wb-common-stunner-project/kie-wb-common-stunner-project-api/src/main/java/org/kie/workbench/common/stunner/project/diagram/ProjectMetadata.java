@@ -19,6 +19,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 public interface ProjectMetadata extends Metadata {
 
+    String getProjectPackage();
+
     String getProjectName();
 
 }

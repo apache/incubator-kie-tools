@@ -198,7 +198,7 @@ public class DefinitionUtils {
     public static boolean isNodeFactory( final Class<? extends ElementFactory> graphFactoryClass,
                                          final FactoryRegistry registry ) {
         if ( !graphFactoryClass.equals( NodeFactory.class ) ) {
-            ElementFactory factory = registry.getGraphFactory( graphFactoryClass );
+            ElementFactory factory = registry.getElementFactory( graphFactoryClass );
             return factory instanceof NodeFactory;
 
         }
@@ -209,7 +209,7 @@ public class DefinitionUtils {
     public static boolean isEdgeFactory( final Class<? extends ElementFactory> graphFactoryClass,
                                          final FactoryRegistry registry ) {
         if ( !graphFactoryClass.equals( EdgeFactory.class ) ) {
-            ElementFactory factory = registry.getGraphFactory( graphFactoryClass );
+            ElementFactory factory = registry.getElementFactory( graphFactoryClass );
             return factory instanceof EdgeFactory;
 
         }

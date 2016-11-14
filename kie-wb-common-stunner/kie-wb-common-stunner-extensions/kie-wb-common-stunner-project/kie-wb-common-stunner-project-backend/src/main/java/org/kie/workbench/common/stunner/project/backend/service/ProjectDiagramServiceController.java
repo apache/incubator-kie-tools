@@ -19,9 +19,11 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramService;
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
-import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
+import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.diagram.impl.ProjectMetadataImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -34,7 +36,6 @@ import javax.enterprise.inject.Instance;
 import java.io.InputStream;
 import java.util.Map;
 
-// TODO: Metadata handling.
 class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectDiagram> {
 
     private static final Logger LOG =
@@ -44,15 +45,45 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectD
                                      final FactoryManager factoryManager,
                                      final Instance<DefinitionSetService> definitionSetServiceInstances,
                                      final IOService ioService,
-                                     final BackendRegistryFactory registryFactory,
-                                     final DiagramFactory diagramFactory ) {
-        super( definitionManager, factoryManager, definitionSetServiceInstances, ioService, registryFactory, diagramFactory );
+                                     final BackendRegistryFactory registryFactory ) {
+        super( definitionManager, factoryManager, definitionSetServiceInstances, ioService, registryFactory );
     }
 
     @Override
     protected void initialize() {
         // Initialize caches.
         super.initialize();
+    }
+
+    @Override
+    protected Class<? extends Metadata> getMetadataType() {
+        return ProjectMetadata.class;
+    }
+
+    @Override
+    public Path create( Path path, String name, String defSetId ) {
+        return create( path, name, defSetId, null, null );
+    }
+
+    public Path create( Path path, String name, String defSetId, String projName, String projPkg ) {
+        ProjectMetadata metadata = buildProjectMetadataInstance( path, name, defSetId, projName, projPkg );
+        return this.create( path, name, defSetId, metadata );
+    }
+
+    // TODO: Jeremy - set project name and package values when loading a diagram.
+    @Override
+    protected ProjectMetadata buildMetadataInstance( org.uberfire.backend.vfs.Path path, String defSetId, String title ) {
+        return buildProjectMetadataInstance( path, title, defSetId, null, null );
+    }
+
+    private ProjectMetadata buildProjectMetadataInstance( Path path, String name, String defSetId, String projName, String projPkg ) {
+        return new ProjectMetadataImpl.ProjectMetadataBuilder()
+                .forDefinitionSetId( defSetId )
+                .forProjectName( projName )
+                .forProjectPackage( projPkg )
+                .forTitle( name )
+                .forPath( path )
+                .build();
     }
 
     @Override

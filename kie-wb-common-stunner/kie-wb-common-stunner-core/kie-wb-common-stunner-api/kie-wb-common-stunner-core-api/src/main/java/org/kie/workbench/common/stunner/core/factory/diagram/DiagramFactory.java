@@ -19,15 +19,25 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.Factory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
 /**
- * Factory for Diagrams..
+ * Base Stunner factory type for generic Diagrams.
  */
-public interface DiagramFactory extends Factory<Diagram, String> {
+public interface DiagramFactory<M extends Metadata, D extends Diagram<Graph<DefinitionSet, ?>, M>>
+        extends Factory<String> {
 
-    Diagram build( String name );
+    /**
+     * The metadata class supported by the diagram types of this factory.
+     */
+    Class<? extends Metadata> getMetadataType();
 
-    Diagram build( String name, Metadata metadata );
+    /**
+     * Builds a diagram instance.
+     * @param name The diagram's name.
+     * @param metadata The diagram's metadata.
+     * @param graph The diagram's graph
+     */
+    D build( String name, M metadata, Graph<DefinitionSet, ?> graph );
 
-    Diagram build( String name, Metadata metadata, Graph graph );
 }

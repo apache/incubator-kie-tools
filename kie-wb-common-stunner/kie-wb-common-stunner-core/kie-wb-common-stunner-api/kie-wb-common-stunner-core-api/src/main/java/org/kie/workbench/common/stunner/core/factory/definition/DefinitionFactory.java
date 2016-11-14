@@ -23,8 +23,10 @@ import org.kie.workbench.common.stunner.core.factory.Factory;
  * The <code>identifier</code> argument for <code>accepts</code> and <code>build</code> methods
  * corresponds with the definition type identifier. ( Eg: Task, Rectangle ).
  */
-public interface DefinitionFactory<T> extends Factory<T, String> {
+public interface DefinitionFactory<T> extends Factory<String> {
 
     boolean accepts( String identifier );
+
+    T build( String identifier );
 
 }

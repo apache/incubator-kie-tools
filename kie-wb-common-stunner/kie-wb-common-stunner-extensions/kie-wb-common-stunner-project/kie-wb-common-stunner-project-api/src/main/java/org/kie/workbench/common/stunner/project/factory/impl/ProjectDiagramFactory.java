@@ -17,30 +17,39 @@ package org.kie.workbench.common.stunner.project.factory.impl;
 
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
-import org.kie.workbench.common.stunner.core.factory.impl.DiagramFactoryImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
-import org.kie.workbench.common.stunner.project.diagram.impl.ProjectMetadataImpl;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Specializes;
 
 @ApplicationScoped
-@Specializes
 public class ProjectDiagramFactory
-        extends DiagramFactoryImpl
-        implements DiagramFactory {
+        implements DiagramFactory<ProjectMetadata, ProjectDiagram> {
 
     @Override
-    public ProjectDiagram build( String name, Metadata metadata, Graph graph ) {
-        // TODO: Handle project name.
-        final ProjectMetadata projectMetadata =
-                new ProjectMetadataImpl.ProjectMetadataBuilder()
-                        .fromMetadata( metadata )
-                        .forProjectName( "projectName" )
-                        .build();
-        return new ProjectDiagramImpl( name, graph, projectMetadata );
+    public Class<? extends Metadata> getMetadataType() {
+        return ProjectMetadata.class;
     }
+
+    @Override
+    public ProjectDiagram build( final String name,
+                                 final ProjectMetadata metadata,
+                                 final Graph<DefinitionSet, ?> graph ) {
+        return new ProjectDiagramImpl( name, graph, metadata );
+    }
+
+    /**
+     * The default factory for ProjectDiagrams.
+     * @param source the Definition Set identifier.
+     * @return If does not accepts any concrete Definition Set, so no matter the identifier,
+     * this instance is the default factory for all definition sets on the Project context (ProjectMetadata).
+     */
+    @Override
+    public boolean accepts( final String source ) {
+        return false;
+    }
+
 }

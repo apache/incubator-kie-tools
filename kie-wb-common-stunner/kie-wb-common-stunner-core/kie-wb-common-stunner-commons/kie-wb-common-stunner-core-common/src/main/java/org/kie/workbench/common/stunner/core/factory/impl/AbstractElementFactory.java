@@ -19,13 +19,19 @@ package org.kie.workbench.common.stunner.core.factory.impl;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 
-public abstract class AbstractElementFactory<C, T extends Element<C>>
-        implements ElementFactory<C, T> {
+public abstract class AbstractElementFactory<C, D extends Definition<C>, T extends Element<D>>
+        implements ElementFactory<C, D, T> {
 
     protected AbstractElementFactory() {
+    }
+
+    @Override
+    public boolean accepts( final Object definition ) {
+        return true;
     }
 
     // TODO

@@ -19,15 +19,16 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.diagram.AbstractDiagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 
 //  TODO: Implement hash function for wb editor usage.
 @Portable
-public class ProjectDiagramImpl extends AbstractDiagram<Graph, ProjectMetadata> implements ProjectDiagram {
+public class ProjectDiagramImpl extends AbstractDiagram<Graph<DefinitionSet, ?>, ProjectMetadata> implements ProjectDiagram {
 
     public ProjectDiagramImpl( @MapsTo( "name" ) String name,
-                               @MapsTo( "graph" ) Graph graph,
+                               @MapsTo( "graph" ) Graph<DefinitionSet, ?> graph,
                                @MapsTo( "metadata" ) ProjectMetadata metadata ) {
         super( name, graph, metadata );
     }

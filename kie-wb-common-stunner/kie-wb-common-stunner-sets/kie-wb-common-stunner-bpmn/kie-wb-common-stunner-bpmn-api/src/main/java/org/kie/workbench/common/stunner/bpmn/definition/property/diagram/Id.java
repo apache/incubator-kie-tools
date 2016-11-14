@@ -46,7 +46,7 @@ public class Id implements BPMNProperty {
     public static final PropertyType type = new StringType();
 
     @DefaultValue
-    public static final transient String defaultValue = "defaultID";
+    public static final transient String defaultValue = "DefaultID";
 
     @Value
     private String value = defaultValue;

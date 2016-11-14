@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2UnMarsha
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.BPMNGraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.util.BPMNUtils;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
@@ -56,7 +57,6 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 @Dependent
@@ -156,7 +156,7 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Graph, Metadata,
     }
 
     public static String getTitle( final Graph graph ) {
-        final Node diagramNode = getFirstDiagramNode( graph );
+        final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode( graph );
         final BPMNDiagram diagramBean = null != diagramNode ?
                 ( BPMNDiagram ) ( ( Definition ) diagramNode.getContent() ).getDefinition() : null;
         return getTitle( diagramBean );
@@ -195,29 +195,10 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Graph, Metadata,
         }
         return null;
     }
+
     @SuppressWarnings( "unchecked" )
-    private static  Node getFirstDiagramNode( final Graph graph ) {
-        if ( null != graph ) {
-            Iterable<Node> nodesIterable = graph.nodes();
-            if ( null != nodesIterable ) {
-                Iterator<Node> nodesIt = nodesIterable.iterator();
-                if ( null != nodesIt ) {
-                    while ( nodesIt.hasNext() ) {
-                        Node node = nodesIt.next();
-                        Object content = node.getContent();
-                        if ( content instanceof Definition ) {
-                            Definition definitionContent = ( Definition ) content;
-                            if ( definitionContent.getDefinition() instanceof BPMNDiagram ) {
-                                return node;
-                            }
-                        }
-
-                    }
-                }
-            }
-
-        }
-        return null;
+    private static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode( final Graph graph ) {
+       return BPMNUtils.getFirstDiagramNode( graph );
     }
 
     private static String getTitle( BPMNDiagram diagram ) {

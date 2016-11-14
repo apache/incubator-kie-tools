@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.project.client.service;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.service.AbstractClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -44,6 +45,23 @@ public class ClientProjectDiagramService extends AbstractClientDiagramService<Pr
                                         final Caller<ProjectDiagramService> diagramServiceCaller,
                                         final Caller<DiagramLookupService> diagramLookupServiceCaller ) {
         super( shapeManager, diagramServiceCaller, diagramLookupServiceCaller );
+    }
+
+    public void create( final Path path,
+                        final String name,
+                        final String defSetId,
+                        final String projName,
+                        final String projPkg,
+                        final ServiceCallback<Path> callback ) {
+        diagramServiceCaller.call( new RemoteCallback<Path>() {
+            @Override
+            public void callback( Path path ) {
+                callback.onSuccess( path );
+            }
+        }, ( message, throwable ) -> {
+            callback.onError( new ClientRuntimeError( throwable ) );
+            return false;
+        } ).create( path, name, defSetId, projName, projPkg );
     }
 
     public void saveOrUpdate( final Path path,

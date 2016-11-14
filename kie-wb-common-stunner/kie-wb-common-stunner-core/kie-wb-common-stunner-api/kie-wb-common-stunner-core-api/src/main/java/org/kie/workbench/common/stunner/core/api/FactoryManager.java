@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.api;
 
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 
@@ -46,43 +47,43 @@ public interface FactoryManager {
 
     /**
      * Creates a new graph element for the given Definition identifier.
-     * TODO: Generics.
      *
      * @param uuid The element unique identifier.
      * @param id   The definition identifier.
      * @return A new graph, node or edge which content is based on the a Definition.
      */
-    Element newElement( String uuid, String id );
+    Element<?> newElement( String uuid, String id );
 
     /**
      * Creates a new graph element for the given Definition type.
-     * TODO: Generics.
      *
      * @param uuid The element unique identifier.
      * @param type The definition type.
      * @return A new graph, node or edge which content is based on the a Definition.
      */
-    Element newElement( String uuid, Class<?> type );
+    Element<?> newElement( String uuid, Class<?> type );
 
     /**
      * Creates a new diagram for the given Definition Set identifier.
      *
      * @param name The unique diagram's name.
      * @param id   The definition set identifier.
+     * @param metadata   The diagram metadata.
      * @param <D>  The diagram type.
      * @return A new diagram instance.
      */
-    <D extends Diagram> D newDiagram( String name, String id );
+    <M extends Metadata, D extends Diagram> D newDiagram( String name, String id, M metadata );
 
     /**
      * Creates a new diagram for the given Definition Set type.
      *
      * @param name The unique diagram's name.
      * @param type The definition set type.
+     * @param metadata   The diagram metadata.
      * @param <D>  The diagram type.
      * @return A new diagram instance.
      */
-    <D extends Diagram> D newDiagram( String name, Class<?> type );
+    <M extends Metadata, D extends Diagram> D newDiagram( String name, Class<?> type, M metadata );
 
     /**
      * The registry that handles all different factories.

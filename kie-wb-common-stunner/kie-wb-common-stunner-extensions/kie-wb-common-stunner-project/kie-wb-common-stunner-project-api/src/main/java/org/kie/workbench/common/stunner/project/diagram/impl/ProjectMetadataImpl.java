@@ -21,19 +21,23 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.diagram.AbstractMetadata;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMetadata {
 
     private String projectName;
+    private String projectPkg;
 
     public ProjectMetadataImpl() {
     }
 
     private ProjectMetadataImpl( @MapsTo( "definitionSetId" ) String definitionSetId,
+                                 @MapsTo( "projectPkg" ) String projectPkg,
                                  @MapsTo( "projectName" ) String projectName ) {
         super( definitionSetId );
         this.projectName = projectName;
+        this.projectPkg = projectPkg;
     }
 
     @Override
@@ -41,14 +45,32 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
         return projectName;
     }
 
+    @Override
+    public String getProjectPackage() {
+        return projectPkg;
+    }
+
+    @Override
+    public Class<? extends Metadata> getMetadataType() {
+        return ProjectMetadata.class;
+    }
+
     @NonPortable
     public static class ProjectMetadataBuilder {
 
-        private Metadata metadata;
+        private String defSetId;
+        private String title;
         private String pName;
+        private String pPkg;
+        private Path path;
 
-        public ProjectMetadataBuilder fromMetadata( Metadata metadata ) {
-            this.metadata = metadata;
+        public ProjectMetadataBuilder forDefinitionSetId( String s ) {
+            this.defSetId = s;
+            return this;
+        }
+
+        public ProjectMetadataBuilder forTitle( String t ) {
+            this.title = t;
             return this;
         }
 
@@ -57,13 +79,20 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
             return this;
         }
 
+        public ProjectMetadataBuilder forProjectPackage( String pPkg ) {
+            this.pPkg = pPkg;
+            return this;
+        }
+
+        public ProjectMetadataBuilder forPath( Path path ) {
+            this.path = path;
+            return this;
+        }
+
         public ProjectMetadataImpl build() {
-            final ProjectMetadataImpl result = new ProjectMetadataImpl( metadata.getDefinitionSetId(), pName );
-            result.setShapeSetId( metadata.getShapeSetId() );
-            result.setPath( metadata.getPath() );
-            result.setCanvasRootUUID( metadata.getCanvasRootUUID() );
-            result.setTitle( metadata.getTitle() );
-            result.setThumbData( metadata.getThumbData() );
+            final ProjectMetadataImpl result = new ProjectMetadataImpl( defSetId, pPkg, pName );
+            result.setPath( path );
+            result.setTitle( title );
             return result;
         }
 

@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.registry.factory;
 
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.Factory;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
+import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 
@@ -27,7 +29,7 @@ import java.util.Collection;
  * Base registry type for different domain model object's factories.
  * @param <F> The type of the factory.
  */
-public interface FactoryRegistry<F extends Factory<?, ?>> extends DynamicRegistry<F> {
+public interface FactoryRegistry<F extends Factory<?>> extends DynamicRegistry<F> {
 
     /**
      * Return the factory for the Definition with <code>id</code> as identifier.
@@ -39,7 +41,14 @@ public interface FactoryRegistry<F extends Factory<?, ?>> extends DynamicRegistr
      * Returns the factory for the type of the graph element.
      * @param type The graph element type, such as Nodes, Edges.
      */
-    ElementFactory<?, ?> getGraphFactory( Class<? extends ElementFactory> type );
+    ElementFactory<?, ?, ?> getElementFactory( Class<? extends ElementFactory> type );
+
+    /**
+     * Returns the diagram factory for the given metadata type and the given DefinitionSet item.
+     * @param id The Definition Set identifier for the diagram's graph.
+     * @param metadataType The diagram's metadata type
+     */
+    DiagramFactory<?, ?> getDiagramFactory( String id, Class<? extends Metadata> metadataType );
 
     /**
      * Return all registered factories.

@@ -18,17 +18,18 @@ package org.kie.workbench.common.stunner.core.factory.graph;
 
 import org.kie.workbench.common.stunner.core.factory.Factory;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 /**
  * Factory for different types of graph elements, such as nodes or edges.
  * The <code>identifier</code> argument for <code>build</code> method
  * corresponds with the UUID of the resulting element.
  */
-public interface ElementFactory<C, T extends Element<C>>
-        extends Factory<T, String> {
+public interface ElementFactory<C, D extends Definition<C>, T extends Element<D>>
+        extends Factory<C> {
 
     Class<? extends ElementFactory> getFactoryType();
 
-    T build( String uuid, Object definition );
+    T build( String uuid, C definition );
 
 }

@@ -129,6 +129,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
     public void close() throws IOException {
         logBuilders();
         this.graph = ( Graph<DefinitionSet, Node> ) factoryManager.newElement( UUID.uuid(), BPMNDefinitionSet.class );
+
         // TODO: Where are the bpmn diagram bounds in the oryx json strcuture?
         if ( null == graph.getContent().getBounds() ) {
             graph.getContent().setBounds( new BoundsImpl(
@@ -136,11 +137,14 @@ public class BPMNGraphGenerator extends JsonGenerator {
                     new BoundImpl( BPMNGraphFactory.GRAPH_DEFAULT_WIDTH, BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT )
             ) );
         }
-        // TODO: Improve this - Remove the default diagram built by the bpmn graph factory.
+
+        // Remove the default diagram instance built by the BPMN graph factory, as it's already present
+        // on the deserialized graph structure.
         Iterator<Node> nodes = this.graph.nodes().iterator();
         while ( nodes.hasNext() ) {
             graph.removeNode( nodes.next().getUUID() );
         }
+
         // Initialize the builder context.
         builderContext.init( graph );
         NodeObjectBuilder diagramBuilder = getDiagramBuilder( builderContext );
@@ -152,7 +156,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
         this.isClosed = true;
     }
 
-    // TODO: Can be multiple.
     @SuppressWarnings( "unchecked" )
     protected NodeObjectBuilder getDiagramBuilder( final GraphObjectBuilder.BuilderContext context ) {
         Collection<GraphObjectBuilder<?, ?>> builders = context.getBuilders();
