@@ -49,4 +49,7 @@ public class AnalysisReporter {
         reportScreen.showStatus( status );
     }
 
+    public void close() {
+        reportScreen.close();
+    }
 }

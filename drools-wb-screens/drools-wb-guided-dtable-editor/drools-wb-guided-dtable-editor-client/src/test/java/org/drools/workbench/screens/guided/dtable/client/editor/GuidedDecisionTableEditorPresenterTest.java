@@ -106,6 +106,29 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
     }
 
     @Test
+    public void onFocus() throws
+                          Exception {
+        final GuidedDecisionTableView.Presenter presenter = mock( GuidedDecisionTableView.Presenter.class );
+        when( modeller.getActiveDecisionTable() ).thenReturn( presenter );
+
+        this.presenter.onFocus();
+
+        verify( modeller,
+                times( 2 ) ).getActiveDecisionTable();
+        verify( presenter ).initialiseAnalysis();
+    }
+
+    @Test
+    public void onFocusNoActiveDTable() throws
+                                        Exception {
+        when( modeller.getActiveDecisionTable() ).thenReturn( null );
+
+        this.presenter.onFocus();
+        verify( modeller,
+                times( 1 ) ).getActiveDecisionTable();
+    }
+
+    @Test
     public void checkGetAvailableDocumentPaths() {
         presenter.getAvailableDocumentPaths( ( result ) -> assertTrue( result.isEmpty() ) );
     }

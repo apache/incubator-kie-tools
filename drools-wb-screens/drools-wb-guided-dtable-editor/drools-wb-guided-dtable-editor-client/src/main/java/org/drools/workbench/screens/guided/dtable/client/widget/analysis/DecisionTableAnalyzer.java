@@ -209,6 +209,11 @@ public class DecisionTableAnalyzer {
         checkRunner.cancelExistingAnalysis();
     }
 
+    public void terminate() {
+        stop();
+        reporter.close();
+    }
+
     class EventManager {
 
         boolean rowAppended = false;

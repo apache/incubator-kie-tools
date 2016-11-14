@@ -77,9 +77,9 @@ public class AnalyzerControllerImplTest {
     }
 
     @Test
-    public void stop() throws Exception {
+    public void terminate() throws Exception {
         controller.terminateAnalysis();
-        verify( analyzer ).stop();
+        verify( analyzer ).terminate();
     }
 
     @Test

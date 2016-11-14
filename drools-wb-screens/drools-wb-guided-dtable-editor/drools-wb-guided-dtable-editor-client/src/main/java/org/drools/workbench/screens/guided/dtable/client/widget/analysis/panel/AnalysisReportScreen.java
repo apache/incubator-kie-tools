@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -35,7 +34,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
@@ -67,19 +65,17 @@ public class AnalysisReportScreen {
         view.setUpDataProvider( dataProvider );
     }
 
-    public void onDTableClose( @Observes ClosePlaceEvent event ) {
-        if ( currentReport != null && event.getPlace().equals( currentReport.getPlace() ) ) {
-            placeManager.closePlace( IDENTIFIER );
-        }
+    public void close() {
+        placeManager.closePlace( IDENTIFIER );
     }
 
     public void showReport( final AnalysisReport report ) {
-
         view.showStatusComplete();
 
         currentReport = report;
 
-        if ( !report.getAnalysisData().isEmpty() ) {
+        if ( !report.getAnalysisData()
+                .isEmpty() ) {
             placeManager.goTo( IDENTIFIER );
         } else {
             placeManager.closePlace( IDENTIFIER );
@@ -87,12 +83,14 @@ public class AnalysisReportScreen {
 
         dataProvider.setList( getIssues( report ) );
 
-        if ( dataProvider.getList().isEmpty() ) {
+        if ( dataProvider.getList()
+                .isEmpty() ) {
             fireIssueSelectedEvent( Issue.EMPTY );
             view.clearIssue();
 
         } else {
-            final Issue issue = dataProvider.getList().get( 0 );
+            final Issue issue = dataProvider.getList()
+                    .get( 0 );
             onSelect( issue );
         }
     }

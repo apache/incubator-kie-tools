@@ -47,6 +47,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -104,6 +105,14 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
 
         loadDocument( path,
                       placeRequest );
+    }
+
+    @OnFocus
+    public void onFocus() {
+        if ( modeller.getActiveDecisionTable() != null ) {
+            modeller.getActiveDecisionTable()
+                    .initialiseAnalysis();
+        }
     }
 
     @Override

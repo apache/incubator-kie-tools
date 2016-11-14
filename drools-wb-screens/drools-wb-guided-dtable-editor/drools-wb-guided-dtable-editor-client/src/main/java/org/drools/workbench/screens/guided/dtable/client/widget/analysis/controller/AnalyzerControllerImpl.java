@@ -66,7 +66,7 @@ public class AnalyzerControllerImpl
 
     @Override
     public void terminateAnalysis() {
-        decisionTableAnalyzer.stop();
+        decisionTableAnalyzer.terminate();
     }
 
     @Override

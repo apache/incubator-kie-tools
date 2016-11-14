@@ -32,7 +32,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -144,24 +143,6 @@ public class AnalysisReportScreenTest {
     }
 
     @Test
-    public void testDTableCloses() throws Exception {
-        Issue issue1 = new Issue( Severity.WARNING, "something", mock( ExplanationProvider.class ) );
-
-        PlaceRequest thisPlace = mock( PlaceRequest.class );
-        PlaceRequest someOtherPlace = mock( PlaceRequest.class );
-        screen.showReport( getAnalysis( thisPlace, issue1 ) );
-
-        verify( view ).showStatusComplete();
-        verify( view ).showIssue( issue1 );
-
-        screen.onDTableClose( new ClosePlaceEvent( someOtherPlace ) );
-        verify( placeManager, never() ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
-
-        screen.onDTableClose( new ClosePlaceEvent( thisPlace ) );
-        verify( placeManager ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
-    }
-
-    @Test
     public void testShowStatus() throws Exception {
         screen.showStatus( new Status( 1, 2, 3 ) );
 
@@ -169,10 +150,10 @@ public class AnalysisReportScreenTest {
     }
 
     @Test
-    public void testDTableClosesWhenThereIsNoReport() throws Exception {
+    public void testClose() throws Exception {
 
-        screen.onDTableClose( new ClosePlaceEvent( mock( PlaceRequest.class ) ) );
-        verify( placeManager, never() ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
+        screen.close();
+        verify( placeManager ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
     }
 
     @Test
