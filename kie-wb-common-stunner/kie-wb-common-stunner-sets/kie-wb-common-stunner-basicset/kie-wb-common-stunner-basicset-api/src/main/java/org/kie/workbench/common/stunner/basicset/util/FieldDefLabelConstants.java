@@ -54,7 +54,7 @@ public final class FieldDefLabelConstants {
     public static final String FIELDDEF_CREATE_FORM = "Create Form";
     public static final String FIELDDEF_EDIT_FORM = "Edit Form";
     public static final String FIELDDEF_TABLE_COLUMNS = "Table Columns";
-    public static final String FIELDDEF_VALUE_MASK = "Value Mask";
+    public static final String FIELDDEF_VALUE_MASK = "Value Nask";
     public static final String FIELDDEF_NESTED_FORM = "Nested Form";
     public static final String FIELDDEF_CAPTION = "Caption";
     public static final String FIELDDEF_PROPERTY = "Property";
@@ -98,6 +98,5 @@ public final class FieldDefLabelConstants {
     public static final String FIELDDEF_TYPE = "Type";
     public static final String FIELDDEF_PROCESS_SETTINGS = "Process";
     public static final String FIELDDEF_ASSIGNMENTS = "Assignments";
-    public static final String FIELDDEF_TASK_NAME = "Task Name";
 
 }

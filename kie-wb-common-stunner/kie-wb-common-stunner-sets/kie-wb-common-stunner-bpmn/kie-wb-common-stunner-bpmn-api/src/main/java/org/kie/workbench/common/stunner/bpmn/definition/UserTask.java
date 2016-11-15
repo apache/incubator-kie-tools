@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
@@ -55,15 +54,11 @@ public class UserTask extends BaseTask {
     public static final transient String title = "User Task";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
-    protected UserTaskExecutionSet executionSet;
-
-    @PropertySet
-    @FieldDef( label = FIELDDEF_ASSIGNED_TO, position = 2 )
+    @FieldDef( label = FIELDDEF_ASSIGNED_TO, position = 1 )
     protected AssigneeSet assigneeSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_TASK_DATA, position = 3)
+    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2)
     @Valid
     protected DataIOSet dataIOSet;
 
@@ -73,7 +68,6 @@ public class UserTask extends BaseTask {
         @Override
         public UserTask build() {
             return new UserTask( new TaskGeneralSet(new Name( "Task" ), new Documentation( "" )),
-                    new UserTaskExecutionSet(),
                     new AssigneeSet(),
                     new DataIOSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
@@ -90,7 +84,6 @@ public class UserTask extends BaseTask {
     }
 
     public UserTask( @MapsTo( "general" ) TaskGeneralSet general,
-                     @MapsTo( "executionSet" ) UserTaskExecutionSet executionSet,
                      @MapsTo( "assigneeSet" ) AssigneeSet assigneeSet,
                      @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
                      @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
@@ -99,7 +92,6 @@ public class UserTask extends BaseTask {
                      @MapsTo( "simulationSet" ) SimulationSet simulationSet,
                      @MapsTo( "taskType" ) TaskType taskType ) {
         super( general, backgroundSet, fontSet, dimensionsSet, simulationSet, taskType );
-        this.executionSet = executionSet;
         this.assigneeSet = assigneeSet;
         this.dataIOSet = dataIOSet;
     }
@@ -108,20 +100,12 @@ public class UserTask extends BaseTask {
         return title;
     }
 
-    public UserTaskExecutionSet getExecutionSet() {
-        return executionSet;
-    }
-
     public AssigneeSet getAssigneeSet() {
         return assigneeSet;
     }
 
     public DataIOSet getDataIOSet() {
         return dataIOSet;
-    }
-
-    public void setExecutionSet( UserTaskExecutionSet executionSet ) {
-        this.executionSet = executionSet;
     }
 
     public void setAssigneeSet( AssigneeSet assigneeSet ) {
