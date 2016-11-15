@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Work
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptLanguage;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -103,6 +104,7 @@ public class Bpmn2OryxIdMappings {
         Map<Class<?>, String> userTaskPropertiesMap = new HashMap<Class<?>, String>();
         put( UserTask.class, userTaskPropertiesMap );
         userTaskPropertiesMap.put( AssignmentsInfo.class, "assignmentsinfo" );
+        userTaskPropertiesMap.put( TaskName.class, "taskname" );
         Map<Class<?>, String> exclusiveDatabasedGatewayPropertiesMap = new HashMap<Class<?>, String>();
         put( ExclusiveDatabasedGateway.class, exclusiveDatabasedGatewayPropertiesMap );
         exclusiveDatabasedGatewayPropertiesMap.put( DefaultRoute.class, "defaultgate" );

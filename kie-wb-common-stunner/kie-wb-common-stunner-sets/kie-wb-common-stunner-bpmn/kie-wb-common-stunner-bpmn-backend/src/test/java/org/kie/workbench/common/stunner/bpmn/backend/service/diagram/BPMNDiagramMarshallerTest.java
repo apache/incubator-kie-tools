@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Diagram
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation.RuntimeDefinitionAdapter;
@@ -110,6 +111,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
     private static final String BPMN_SCRIPTTASK = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/scriptTask.bpmn";
     private static final String BPMN_USERTASKASSIGNEES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignees.bpmn";
+    private static final String BPMN_USERTASKPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskProperties.bpmn";
     private static final String BPMN_SEQUENCEFLOW = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/sequenceFlow.bpmn";
     private static final String BPMN_XORGATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/xorGateway.bpmn";
     private static final String BPMN_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/timerEvent.bpmn";
@@ -406,6 +408,28 @@ public class BPMNDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings( "unchecked" )
+    public void testUnmarshallUserTaskProperties() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall( BPMN_USERTASKPROPERTIES );
+        assertDiagram( diagram, 4 );
+        assertEquals( "MyBP", diagram.getMetadata().getTitle() );
+        UserTaskExecutionSet userTaskExecutionSet = null;
+        Iterator<Element> it = diagram.getGraph().nodes().iterator();
+        while ( it.hasNext() ) {
+            Element element = it.next();
+            if ( element.getContent() instanceof View ) {
+                Object oDefinition = ( ( View ) element.getContent() ).getDefinition();
+                if ( oDefinition instanceof UserTask ) {
+                    UserTask userTask = ( UserTask ) oDefinition;
+                    userTaskExecutionSet = userTask.getExecutionSet();
+                    break;
+                }
+            }
+        }
+        assertEquals( "MyUserTask", userTaskExecutionSet.getTaskName().getValue() );
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
     public void testUnmarshallSimulationProperties() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_SIMULATIONPROPERTIES );
         assertDiagram( diagram, 4 );
@@ -626,6 +650,14 @@ public class BPMNDiagramMarshallerTest {
         result = result.replace( '\n', ' ' );
         assertTrue( result.matches( "(.*)<bpmn2:resourceAssignmentExpression(.*)>user</bpmn2:formalExpression>(.*)" ) );
         assertTrue( result.matches( "(.*)<bpmn2:resourceAssignmentExpression(.*)>user1</bpmn2:formalExpression>(.*)" ) );
+    }
+
+    @Test
+    public void testMarshallUserTaskProperties() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall( BPMN_USERTASKPROPERTIES );
+        String result = tested.marshall( diagram );
+        assertDiagram( result, 1, 3, 2 );
+        assertTrue( result.contains( "MyUserTask</bpmn2:from>" ) );
     }
 
     @Test
