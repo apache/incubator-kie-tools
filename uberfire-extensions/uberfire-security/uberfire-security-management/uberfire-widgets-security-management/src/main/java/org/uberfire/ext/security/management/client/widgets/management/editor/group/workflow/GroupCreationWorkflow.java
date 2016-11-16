@@ -103,7 +103,7 @@ public class GroupCreationWorkflow implements IsWidget {
         view.setWidget(createEntity.asWidget())
                 .setSaveButtonVisible(true)
                 .setSaveButtonEnabled(true)
-                .setSaveButtonText(UsersManagementWidgetsConstants.INSTANCE.saveChanges())
+                .setSaveButtonText(UsersManagementWidgetsConstants.INSTANCE.next())
                 .setCancelButtonVisible(false)
                 .setCallback(new EntityWorkflowView.Callback() {
                     @Override
