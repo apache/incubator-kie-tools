@@ -57,6 +57,7 @@
             <include>**/*_fr.properties</include>
             <include>**/*_ja.properties</include>
             <include>**/*_pt_BR.properties</include>
+            <include>**/*_zh_CN.properties</include>
           </includes>
           <excludes>
             <exclude>**/ErraiApp.properties</exclude>
