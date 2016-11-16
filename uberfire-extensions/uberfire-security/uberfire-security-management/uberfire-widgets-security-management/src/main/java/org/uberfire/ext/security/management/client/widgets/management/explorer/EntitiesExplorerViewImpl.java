@@ -164,7 +164,7 @@ public class EntitiesExplorerViewImpl extends Composite
         heading.setText(allEntitiesHeader);
         searchBox.setText("");
         searchBox.setPlaceholder(allEntitiesHeader);
-        clearSearchButton.setEnabled(true);
+        clearSearchButton.setEnabled(false);
         return this;
     }
 
@@ -177,10 +177,10 @@ public class EntitiesExplorerViewImpl extends Composite
         return this;
     }
     
-    private void doSearch(final String pattern) {
+    void doSearch(final String pattern) {
         final String pEsc = SafeHtmlUtils.htmlEscape(pattern);
         heading.setText(UsersManagementWidgetsConstants.INSTANCE.searchResultsFor() + " " + pEsc);
-        clearSearchButton.setEnabled(false);
+        clearSearchButton.setEnabled(true);
         if (callback != null) callback.onSearch(pattern);
     }
     
