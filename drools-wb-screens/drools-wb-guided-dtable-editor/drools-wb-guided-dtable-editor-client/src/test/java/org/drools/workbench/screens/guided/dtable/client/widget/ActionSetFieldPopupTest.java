@@ -24,6 +24,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.gwtbootstrap3.client.ui.html.Text;
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.Mock;
+import org.uberfire.ext.widgets.common.client.common.ImageButton;
 
 import static org.mockito.Mockito.*;
 
@@ -70,6 +72,7 @@ public class ActionSetFieldPopupTest {
                                                    column,
                                                    isNew,
                                                    isReadOnly ) );
+        this.popup.editField = mock( ImageButton.class );
     }
 
     @Test
@@ -88,6 +91,8 @@ public class ActionSetFieldPopupTest {
 
         verify( popup,
                 times( 1 ) ).setFieldLabelPleaseChooseAFactPatternFirst();
+        verify( popup.editField,
+                times( 1 ) ).setEnabled( false );
         verify( popup,
                 never() ).setFieldLabelPleaseSelectAField();
         verify( popup,
@@ -113,6 +118,33 @@ public class ActionSetFieldPopupTest {
                 never() ).setFieldLabelPleaseChooseAFactPatternFirst();
         verify( popup,
                 times( 1 ) ).setFieldLabelPleaseSelectAField();
+        verify( popup.editField,
+                times( 1 ) ).setEnabled( true );
+        verify( popup,
+                never() ).setFieldLabelToFieldName( any( String.class ) );
+    }
+
+    @Test
+    public void patternAsConstantSelectedNoFieldSelected() {
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        final ActionSetFieldCol52 column = new ActionSetFieldCol52();
+        column.setBoundName( GuidedDecisionTableConstants.INSTANCE.Choose() );
+
+        model.getActionCols().add( column );
+
+        setup( model,
+                column,
+                false,
+                false );
+
+        popup.doFieldLabel();
+
+        verify( popup,
+                times( 1 ) ).setFieldLabelPleaseChooseAFactPatternFirst();
+        verify( popup.editField,
+                times( 1 ) ).setEnabled( false );
+        verify( popup,
+                never() ).setFieldLabelPleaseSelectAField();
         verify( popup,
                 never() ).setFieldLabelToFieldName( any( String.class ) );
     }
@@ -149,6 +181,8 @@ public class ActionSetFieldPopupTest {
                 never() ).setFieldLabelPleaseSelectAField();
         verify( popup,
                 times( 1 ) ).setFieldLabelToFieldName( any( String.class ) );
+        verify( popup.editField,
+                times( 1 ) ).setEnabled( true );
     }
 
 }

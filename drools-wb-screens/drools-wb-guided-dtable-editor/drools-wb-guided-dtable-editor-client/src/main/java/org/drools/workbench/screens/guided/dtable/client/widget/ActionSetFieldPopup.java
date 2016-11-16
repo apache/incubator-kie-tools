@@ -95,6 +95,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
     };
     private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( cmdOK,
                                                                                       cmdCancel );
+    ImageButton editField;
 
     public ActionSetFieldPopup( final GuidedDecisionTable52 model,
                                 final AsyncPackageDataModelOracle oracle,
@@ -145,14 +146,14 @@ public class ActionSetFieldPopup extends FormStylePopup {
         HorizontalPanel field = new HorizontalPanel();
         fieldLabel.setEnabled( !isReadOnly );
         field.add( fieldLabel );
-        ImageButton editField = new ImageButton( createEnabledEditButton(),
-                                                 createDisabledEditButton(),
-                                                 GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
-                                                 new ClickHandler() {
-                                                     public void onClick( ClickEvent w ) {
-                                                         showFieldChange();
-                                                     }
-                                                 } );
+        editField = new ImageButton( createEnabledEditButton(),
+                                     createDisabledEditButton(),
+                                     GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
+                                     new ClickHandler() {
+                                         public void onClick( ClickEvent w ) {
+                                             showFieldChange();
+                                         }
+                                   } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
         addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
@@ -385,10 +386,14 @@ public class ActionSetFieldPopup extends FormStylePopup {
     void doFieldLabel() {
         if ( !nil( this.editingCol.getFactField() ) ) {
             setFieldLabelToFieldName( this.editingCol.getFactField() );
-        } else if ( !nil( this.editingCol.getBoundName() ) ) {
+            this.editField.setEnabled( true );
+        } else if ( !nil( this.editingCol.getBoundName() ) &&
+                    GuidedDecisionTableConstants.INSTANCE.Choose().compareTo( this.editingCol.getBoundName() ) != 0 ) {
             setFieldLabelPleaseSelectAField();
+            this.editField.setEnabled( true );
         } else {
             setFieldLabelPleaseChooseAFactPatternFirst();
+            this.editField.setEnabled( false );
         }
     }
 
