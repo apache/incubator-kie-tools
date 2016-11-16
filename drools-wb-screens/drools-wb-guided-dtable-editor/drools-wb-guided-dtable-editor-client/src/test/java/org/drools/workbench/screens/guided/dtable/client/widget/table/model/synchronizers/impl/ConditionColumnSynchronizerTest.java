@@ -527,6 +527,53 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
+    public void testUpdate6() throws ModelSynchronizer.MoveColumnVetoException {
+        //Single Pattern, single Condition
+        final Pattern52 pattern = spy( new Pattern52() );
+        pattern.setBoundName( "$a" );
+        pattern.setFactType( "Applicant" );
+
+        final ConditionCol52 condition = spy( new ConditionCol52() );
+        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        condition.setHeader( "col1" );
+        condition.setFactField( "age" );
+        condition.setOperator( "==" );
+
+        modelSynchronizer.appendColumn( pattern,
+                condition );
+
+        final Pattern52 editedPattern = new Pattern52();
+        editedPattern.setBoundName( "$a" );
+        editedPattern.setFactType( "Applicant" );
+
+        final ConditionCol52 editedCondition = new ConditionCol52();
+        editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        editedCondition.setHeader( "col1" );
+        editedCondition.setFactField( "age" );
+        editedCondition.setOperator( "!=" );
+
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
+                condition,
+                editedPattern,
+                editedCondition );
+        assertEquals( 1,
+                diffs.size() );
+        verify( pattern ).diff( editedPattern );
+        verify( condition ).diff( editedCondition );
+
+        assertEquals( 3,
+                model.getExpandedColumns().size() );
+        assertEquals( 1,
+                model.getConditions().size() );
+        assertEquals( 1,
+                model.getConditionPattern( "$a" ).getChildColumns().size() );
+
+        assertEquals( 3,
+                uiModel.getColumns().size() );
+        assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
+    }
+
+    @Test
     public void testDelete1() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, single Condition
         final Pattern52 pattern = new Pattern52();
