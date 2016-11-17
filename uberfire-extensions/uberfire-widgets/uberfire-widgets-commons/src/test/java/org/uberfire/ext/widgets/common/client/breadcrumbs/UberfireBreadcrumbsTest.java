@@ -1,10 +1,9 @@
 package org.uberfire.ext.widgets.common.client.breadcrumbs;
 
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.common.client.dom.Element;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.workbench.docks.UberfireDockContainerReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocksContainer;
-import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbsPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
@@ -62,80 +60,72 @@ public class UberfireBreadcrumbsTest {
 
         assertNotNull( uberfireBreadcrumbs );
         verify( uberfireDocksContainer ).addBreadcrumbs( any( IsElement.class ), eq( UberfireBreadcrumbs.SIZE ) );
-        verify( uberfireDocksContainer ).hide( any( IsElement.class ) );
     }
 
     @Test
-    public void addRootBreadCrumb() {
+    public void addToolbar() {
+        assertTrue( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+
+        uberfireBreadcrumbs.currentPerspective = "myperspective";
+        uberfireBreadcrumbs.addToolbar( "myperspective", mock( Element.class ) );
+
+        assertFalse( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+    }
+
+    @Test
+    public void addBreadCrumbs() {
         assertTrue( uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty() );
 
         uberfireBreadcrumbs.currentPerspective = "myperspective";
-        uberfireBreadcrumbs.createRoot( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
         uberfireBreadcrumbs
-                .navigateTo( "label2", new DefaultPlaceRequest( "screen2" ), mock( HasWidgets.class ) );
-        uberfireBreadcrumbs.navigateTo( "label3", new DefaultPlaceRequest( "screen3" ) );
-        uberfireBreadcrumbs.createRoot( "myperspective2", "label4", new DefaultPlaceRequest( "screen4" ) );
+                .addBreadCrumb( "myperspective", "label2", new DefaultPlaceRequest( "screen2" ), Optional.empty() );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective2", "label4", new DefaultPlaceRequest( "screen4" ) );
 
 
-        assertTrue( !uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty() );
+        assertFalse( uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty() );
         assertEquals( 2, uberfireBreadcrumbs.breadcrumbsPerPerspective.size() );
-        assertEquals( 3, uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).size() );
+        assertEquals( 2, uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).size() );
     }
 
+
     @Test
-    public void addRootBreadCrumbWithGoTo() {
-        assertTrue( uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty() );
+    public void clearBreadCrumbs() {
 
         uberfireBreadcrumbs.currentPerspective = "myperspective";
-        DefaultPlaceRequest placeRequest = new DefaultPlaceRequest( "screen" );
-        uberfireBreadcrumbs.createRoot( "myperspective", "label", placeRequest, true );
+        uberfireBreadcrumbs.addToolbar( "myperspective", mock( Element.class ) );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
 
-        verify( placeManager ).goTo( placeRequest );
+        assertFalse( uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).isEmpty() );
+        assertFalse( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
 
-    }
+        uberfireBreadcrumbs.clearBreadCrumbsAndToolBars( "myperspective" );
 
-    @Test
-    public void perspectiveChangeEventShouldHideWhenThereIsNoBreadCrumb() {
-        uberfireBreadcrumbs.createRoot( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
+        assertTrue( uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).isEmpty() );
+        assertTrue( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
 
-        PerspectiveChange perspectiveChange = new PerspectiveChange( null, null, null, "nop" );
-
-        uberfireBreadcrumbs.perspectiveChangeEvent( perspectiveChange );
-
-        verify( uberfireDocksContainer ).hide( any( IsElement.class ) );
-    }
-
-    @Test
-    public void perspectiveChangeEventShouldShowWhenThereIsBreadCrumb() {
-        uberfireBreadcrumbs.createRoot( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
-
-        PerspectiveChange perspectiveChange = new PerspectiveChange( null, null, null, "myperspective" );
-
-        uberfireBreadcrumbs.perspectiveChangeEvent( perspectiveChange );
-
-        verify( uberfireDocksContainer ).show( any( IsElement.class ) );
     }
 
     @Test
     public void removeDeepLevelBreadcrumbsTest() {
-        uberfireBreadcrumbs.createRoot( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
         uberfireBreadcrumbs
-                .navigateTo( "label2", new DefaultPlaceRequest( "screen2" ), mock( HasWidgets.class ) );
-        uberfireBreadcrumbs.navigateTo( "label3", new DefaultPlaceRequest( "screen3" ) );
+                .addBreadCrumb( "myperspective", "label2", new DefaultPlaceRequest( "screen2" ) );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label3", new DefaultPlaceRequest( "screen3" ) );
 
-        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.getBreadcrumbsPresenters( "myperspective" );
+        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" );
 
         uberfireBreadcrumbs.removeDeepLevelBreadcrumbs( "myperspective", breadcrumbs.get( 0 ) );
 
-        assertEquals( 1, uberfireBreadcrumbs.getBreadcrumbsPresenters( "myperspective" ).size() );
+        assertEquals( 1, uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).size() );
     }
 
     @Test
     public void generateBreadCrumbSelectCommandTest() {
         DefaultPlaceRequest placeRequest = new DefaultPlaceRequest( "screen" );
-        uberfireBreadcrumbs.createRoot( "myperspective", "label", placeRequest );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", placeRequest );
 
-        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.getBreadcrumbsPresenters( "myperspective" );
+        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" );
 
         BreadcrumbsPresenter breadcrumb = breadcrumbs.get( 0 );
 
@@ -149,12 +139,13 @@ public class UberfireBreadcrumbsTest {
         verify( placeManager, never() ).goTo( eq( placeRequest ), any( HasWidgets.class ) );
     }
 
+
     @Test
     public void generateBreadCrumbSelectCommandWithTargetPanelTest() {
         DefaultPlaceRequest placeRequest = new DefaultPlaceRequest( "screen" );
-        uberfireBreadcrumbs.createRoot( "myperspective", "label", placeRequest );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", placeRequest );
 
-        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.getBreadcrumbsPresenters( "myperspective" );
+        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" );
 
         BreadcrumbsPresenter breadcrumb = breadcrumbs.get( 0 );
 
@@ -174,17 +165,19 @@ public class UberfireBreadcrumbsTest {
         List<BreadcrumbsPresenter> breadcrumbs = Arrays
                 .asList( mock( BreadcrumbsPresenter.class ), mock( BreadcrumbsPresenter.class ) );
         uberfireBreadcrumbs.breadcrumbsPerPerspective.put( "myperspective", breadcrumbs );
+        uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.put( "myperspective", mock( Element.class ) );
 
         uberfireBreadcrumbs.getView();
 
         verify( view ).clear();
-        verify( view, never() ).add( any( UberElement.class ) );
+        verify( view, never() ).addBreadcrumb( any( UberElement.class ) );
 
         uberfireBreadcrumbs.currentPerspective = "myperspective";
 
         uberfireBreadcrumbs.getView();
 
-        verify( view, times( 2 ) ).add( any( UberElement.class ) );
+        verify( view, times( 2 ) ).addBreadcrumb( any( UberElement.class ) );
+        verify( view, times( 1 ) ).addBreadcrumbToolbar( any( Element.class ) );
     }
 
 }

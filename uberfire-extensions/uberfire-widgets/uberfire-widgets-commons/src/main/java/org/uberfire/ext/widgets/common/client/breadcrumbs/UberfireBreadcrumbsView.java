@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.widgets.common.client.breadcrumbs;
 
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Element;
 import org.jboss.errai.common.client.dom.OrderedList;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -23,8 +25,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbsPresenter;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
@@ -38,7 +38,11 @@ public class UberfireBreadcrumbsView implements UberElement<UberfireBreadcrumbs>
 
     @Inject
     @DataField
-    OrderedList breadcrumb;
+    OrderedList breadcrumbs;
+
+    @Inject
+    @DataField
+    Div breadcrumbsToolbar;
 
     @Override
     public void init( UberfireBreadcrumbs presenter ) {
@@ -47,11 +51,18 @@ public class UberfireBreadcrumbsView implements UberElement<UberfireBreadcrumbs>
 
     @Override
     public void clear() {
-        removeAllChildren( breadcrumb );
+        removeAllChildren( breadcrumbs );
+        removeAllChildren( breadcrumbsToolbar );
     }
 
     @Override
-    public void add( UberElement<BreadcrumbsPresenter> view ) {
-        breadcrumb.appendChild( view.getElement() );
+    public void addBreadcrumb( UberElement<BreadcrumbsPresenter> view ) {
+        breadcrumbs.appendChild( view.getElement() );
+    }
+
+    @Override
+    public void addBreadcrumbToolbar( Element toolbar ) {
+        removeAllChildren( breadcrumbsToolbar );
+        breadcrumbsToolbar.appendChild( toolbar );
     }
 }
