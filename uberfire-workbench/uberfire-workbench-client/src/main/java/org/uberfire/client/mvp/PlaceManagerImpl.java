@@ -15,26 +15,12 @@
  */
 package org.uberfire.client.mvp;
 
-import static java.util.Collections.unmodifiableCollection;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.plugin.PluginUtil.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Supplier;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus;
+import jsinterop.annotations.JsMethod;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.SharedSingleton;
@@ -45,35 +31,33 @@ import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.client.workbench.events.ClosePlaceEvent;
-import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
-import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.events.*;
 import org.uberfire.client.workbench.panels.impl.UnanchoredStaticWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.ForcedPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.model.ActivityResourceType;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.*;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.function.Supplier;
 
-import jsinterop.annotations.JsMethod;
+import static java.util.Collections.unmodifiableCollection;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.plugin.PluginUtil.ensureIterable;
+import static org.uberfire.plugin.PluginUtil.toInteger;
 
 @SharedSingleton
 @EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
@@ -302,17 +286,19 @@ public class PlaceManagerImpl
      */
     private ResolvedRequest resolveActivity( final PlaceRequest place ) {
 
-        final ResolvedRequest existingDestination = resolveExistingParts( place );
+        final PlaceRequest resolvedPlaceRequest = resolvePlaceRequest( place );
+
+        final ResolvedRequest existingDestination = resolveExistingParts( resolvedPlaceRequest );
 
         if ( existingDestination != null ) {
             return existingDestination;
         }
 
-        final Set<Activity> activities = activityManager.getActivities( place );
+        final Set<Activity> activities = activityManager.getActivities( resolvedPlaceRequest );
 
         if ( activities == null || activities.size() == 0 ) {
             final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
-            notFoundPopup.addParameter( "requestedPlaceIdentifier", place.getIdentifier() );
+            notFoundPopup.addParameter( "requestedPlaceIdentifier", resolvedPlaceRequest.getIdentifier() );
 
             if ( activityManager.containsActivity( notFoundPopup ) ) {
                 return new ResolvedRequest( null, notFoundPopup );
@@ -329,8 +315,23 @@ public class PlaceManagerImpl
         }
 
         Activity unambigousActivity = activities.iterator().next();
-        existingWorkbenchActivities.put( place, unambigousActivity );
-        return new ResolvedRequest( unambigousActivity, place );
+        existingWorkbenchActivities.put( resolvedPlaceRequest, unambigousActivity );
+        return new ResolvedRequest( unambigousActivity, resolvedPlaceRequest );
+    }
+
+    private PlaceRequest resolvePlaceRequest( PlaceRequest place ) {
+        if ( isaConditionalPlaceRequest( place ) ) {
+            return resolveConditionalPlaceRequest( ( ConditionalPlaceRequest ) place );
+        }
+        return place;
+    }
+
+    private PlaceRequest resolveConditionalPlaceRequest( ConditionalPlaceRequest conditionalPlaceRequest ) {
+        return conditionalPlaceRequest.resolveConditionalPlaceRequest( );
+    }
+
+    private boolean isaConditionalPlaceRequest( PlaceRequest place ) {
+        return place instanceof ConditionalPlaceRequest;
     }
 
     private ResolvedRequest resolveExistingParts( final PlaceRequest place ) {
@@ -342,10 +343,10 @@ public class PlaceManagerImpl
 
         if ( place instanceof PathPlaceRequest ) {
             final ObservablePath path = ( (PathPlaceRequest) place ).getPath();
-            
+
             for ( final Map.Entry<PlaceRequest, PartDefinition> entry : visibleWorkbenchParts.entrySet() ) {
                 final PlaceRequest pr = entry.getKey();
-                if ( pr instanceof PathPlaceRequest ) { 
+                if ( pr instanceof PathPlaceRequest ) {
                     final Path visiblePath = ( (PathPlaceRequest) pr ).getPath();
                     final String visiblePathURI = visiblePath.toURI();
                     if ( (visiblePathURI != null && visiblePathURI.compareTo( path.toURI() ) == 0) || visiblePath.compareTo( path ) == 0) {
@@ -627,11 +628,11 @@ public class PlaceManagerImpl
         final IsWidget titleDecoration = maybeWrapExternalWidget( activity,
                                                           () -> activity.getTitleDecorationElement(),
                                                           () -> activity.getTitleDecoration() );
-        
+
         final IsWidget widget = maybeWrapExternalWidget( activity,
                                                  () -> activity.getWidgetElement(),
                                                  () -> activity.getWidget() );
-        
+
         final UIPart uiPart = new UIPart( activity.getTitle(),
                                           titleDecoration,
                                           widget );
@@ -653,11 +654,11 @@ public class PlaceManagerImpl
             closePlace( place );
         }
     }
-    
+
     private IsWidget maybeWrapExternalWidget( WorkbenchActivity activity,
                                               Supplier<Element> element,
                                               Supplier<IsWidget> widget ) {
-        
+
         if ( activity.isDynamic() ) {
             final Element e = element.get();
             return (e == null) ? null : ElementWrapperWidget.getWidget( e );

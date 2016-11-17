@@ -38,10 +38,25 @@ public class DefaultPlaceRequest implements PlaceRequest {
         this( "" );
     }
 
+    /**
+     * Creates a place request for the given place ID.
+     *
+     * @param identifier
+     *            The place ID, or an empty string for the default place.
+     */
     public DefaultPlaceRequest( final String identifier ) {
         this( identifier, Collections.<String, String>emptyMap(), true );
     }
 
+    /**
+     * Creates a place request for the given place ID with the given
+     * state parameters for that place.
+     *
+     * @param identifier
+     *            The place ID, or an empty string for the default place.
+     * @param parameters
+     *            Place-specific parameters to pass to the place. Must not be null.
+     */
     public DefaultPlaceRequest( final String identifier,
                                 final Map<String, String> parameters ) {
         this( identifier, parameters, true );

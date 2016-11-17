@@ -32,6 +32,7 @@ import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
@@ -124,7 +125,7 @@ public class ShowcaseEntryPoint {
         } ).endMenu().newTopLevelMenu( "Widgets" ).respondsWith( new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( "UFWidgets" ) );
+                placeManager.goTo( new ConditionalPlaceRequest( "UFWidgets" ).when( p -> true ).orElse( new DefaultPlaceRequest( "AppsPerspective" ) ) );
             }
         } ).endMenu().newTopLevelMenu( "Admin" ).respondsWith( new Command() {
             @Override

@@ -16,13 +16,6 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HasWidgets;
 import org.jboss.errai.ioc.client.QualifierUtil;
@@ -39,35 +32,19 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.AbstractPopupActivity;
-import org.uberfire.client.mvp.Activity;
-import org.uberfire.client.mvp.ActivityManager;
-import org.uberfire.workbench.model.ActivityResourceType;
-import org.uberfire.client.mvp.ContextActivity;
-import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.client.mvp.PerspectiveManager;
-import org.uberfire.client.mvp.PlaceHistoryHandler;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.PlaceManagerImpl;
-import org.uberfire.client.mvp.PlaceStatus;
-import org.uberfire.client.mvp.SplashScreenActivity;
-import org.uberfire.client.mvp.UIPart;
-import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.mvp.WorkbenchScreenActivity;
+import org.uberfire.client.mvp.*;
 import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.client.workbench.events.ClosePlaceEvent;
-import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
-import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.events.*;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
@@ -77,7 +54,14 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import static java.util.Collections.*;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+
+import static java.util.Collections.singleton;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -85,41 +69,62 @@ import static org.mockito.Matchers.isNull;
 import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith( MockitoJUnitRunner.class )
 public class PlaceManagerTest {
 
-    @Mock Event<BeforeClosePlaceEvent> workbenchPartBeforeCloseEvent;
-    @Mock Event<ClosePlaceEvent> workbenchPartCloseEvent;
-    @Mock Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
-    @Mock Event<NewSplashScreenActiveEvent> newSplashScreenActiveEvent;
-    @Mock ActivityManager activityManager;
-    @Mock PlaceHistoryHandler placeHistoryHandler;
-    @Mock Event<SelectPlaceEvent> selectWorkbenchPartEvent;
-    @Mock PanelManager panelManager;
-    @Mock PerspectiveManager perspectiveManager;
-    @Mock WorkbenchLayout workbenchLayout;
-    @Mock LayoutSelection layoutSelection;
+    @Mock
+    Event<BeforeClosePlaceEvent> workbenchPartBeforeCloseEvent;
+    @Mock
+    Event<ClosePlaceEvent> workbenchPartCloseEvent;
+    @Mock
+    Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
+    @Mock
+    Event<NewSplashScreenActiveEvent> newSplashScreenActiveEvent;
+    @Mock
+    ActivityManager activityManager;
+    @Mock
+    PlaceHistoryHandler placeHistoryHandler;
+    @Mock
+    Event<SelectPlaceEvent> selectWorkbenchPartEvent;
+    @Mock
+    PanelManager panelManager;
+    @Mock
+    PerspectiveManager perspectiveManager;
+    @Mock
+    WorkbenchLayout workbenchLayout;
+    @Mock
+    LayoutSelection layoutSelection;
 
     /**
      * This is the thing we're testing. Weeee!
      */
-    @InjectMocks PlaceManagerImpl placeManager;
+    @InjectMocks
+    PlaceManagerImpl placeManager;
 
-    /** Returned by the mock activityManager for the special "workbench.activity.notfound" place. */
-    private final Activity notFoundActivity = mock(Activity.class);
+    /**
+     * Returned by the mock activityManager for the special "workbench.activity.notfound" place.
+     */
+    private final Activity notFoundActivity = mock( Activity.class );
 
-    /** The setup method makes this the current place. */
+    /**
+     * The setup method makes this the current place.
+     */
     private final PlaceRequest kansas = new DefaultPlaceRequest( "kansas" );
 
-    /** The setup method links this activity with the kansas PlaceRequest. */
+    /**
+     * The setup method links this activity with the kansas PlaceRequest.
+     */
     private final WorkbenchScreenActivity kansasActivity = mock( WorkbenchScreenActivity.class );
 
-    /** This panel will always be returned from panelManager.getRoot(). */
-    private final PanelDefinition rootPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+    /**
+     * This panel will always be returned from panelManager.getRoot().
+     */
+    private final PanelDefinition rootPanel = new PanelDefinitionImpl(
+            MultiListWorkbenchPanelPresenter.class.getName() );
 
     @Before
     public void setup() {
-        ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
+        ( ( SyncBeanManagerImpl ) IOC.getBeanManager() ).reset();
 
         when( activityManager.getActivities( any( PlaceRequest.class ) ) ).thenReturn( singleton( notFoundActivity ) );
 
@@ -130,18 +135,20 @@ public class PlaceManagerTest {
         IOC.getBeanManager().registerBean( new MockIOCBeanDef<ObservablePath, ObservablePath>( mockObservablePath,
                                                                                                ObservablePath.class,
                                                                                                Dependent.class,
-                                                                                               new HashSet<Annotation>( Arrays.asList( QualifierUtil.DEFAULT_QUALIFIERS ) ),
+                                                                                               new HashSet<Annotation>(
+                                                                                                       Arrays.asList(
+                                                                                                               QualifierUtil.DEFAULT_QUALIFIERS ) ),
                                                                                                "ObservablePath",
                                                                                                true ) );
 
         // every test starts in Kansas, with no side effect interactions recorded
-        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
+        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( ( Activity ) kansasActivity ) );
         setupPanelManagerMock();
 
         when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        when( kansasActivity.isDynamic( ) ).thenReturn( false );
-        
-        placeManager.goTo( kansas, (PanelDefinition) null );
+        when( kansasActivity.isDynamic() ).thenReturn( false );
+
+        placeManager.goTo( kansas, ( PanelDefinition ) null );
         resetInjectedMocks();
         reset( kansasActivity );
 
@@ -150,29 +157,32 @@ public class PlaceManagerTest {
         when( kansasActivity.preferredHeight() ).thenReturn( 456 );
 
         // arrange for the mock PerspectiveManager to invoke the doWhenFinished callbacks
-        doAnswer( new Answer<Void>(){
-            @SuppressWarnings({"rawtypes", "unchecked"})
+        doAnswer( new Answer<Void>() {
+            @SuppressWarnings( {"rawtypes", "unchecked"} )
             @Override
             public Void answer( InvocationOnMock invocation ) throws Throwable {
-                ParameterizedCommand callback = (ParameterizedCommand) invocation.getArguments()[2];
-                PerspectiveActivity perspectiveActivity = (PerspectiveActivity) invocation.getArguments()[1];
+                ParameterizedCommand callback = ( ParameterizedCommand ) invocation.getArguments()[2];
+                PerspectiveActivity perspectiveActivity = ( PerspectiveActivity ) invocation.getArguments()[1];
                 callback.execute( perspectiveActivity.getDefaultPerspectiveLayout() );
                 return null;
-            }} ).when( perspectiveManager ).switchToPerspective( any( PlaceRequest.class), any( PerspectiveActivity.class ), any( ParameterizedCommand.class ) );
-        doAnswer( new Answer<Void>(){
+            }
+        } ).when( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), any( PerspectiveActivity.class ),
+                                                            any( ParameterizedCommand.class ) );
+        doAnswer( new Answer<Void>() {
             @Override
             public Void answer( InvocationOnMock invocation ) throws Throwable {
-                Command callback = (Command) invocation.getArguments()[0];
+                Command callback = ( Command ) invocation.getArguments()[0];
                 callback.execute();
                 return null;
-            }} ).when( perspectiveManager ).savePerspectiveState( any( Command.class ) );
+            }
+        } ).when( perspectiveManager ).savePerspectiveState( any( Command.class ) );
     }
 
     /**
      * Resets all the mocks that were injected into the PlaceManager under test. This should probably only be used in
      * the setup method.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     private void resetInjectedMocks() {
         reset( workbenchPartBeforeCloseEvent );
         reset( workbenchPartCloseEvent );
@@ -191,17 +201,17 @@ public class PlaceManagerTest {
     private void setupPanelManagerMock() {
         when( panelManager.getRoot() ).thenReturn( rootPanel );
         when( panelManager.addWorkbenchPanel( any( PanelDefinition.class ),
-                                              any( Position.class),
+                                              any( Position.class ),
                                               any( Integer.class ),
                                               any( Integer.class ),
                                               any( Integer.class ),
                                               any( Integer.class ) ) )
-            .thenAnswer( new Answer<PanelDefinition>() {
-                @Override
-                public PanelDefinition answer( InvocationOnMock invocation ) throws Throwable {
-                    return (PanelDefinition) invocation.getArguments()[ 0 ];
-                }
-            } );
+                .thenAnswer( new Answer<PanelDefinition>() {
+                    @Override
+                    public PanelDefinition answer( InvocationOnMock invocation ) throws Throwable {
+                        return ( PanelDefinition ) invocation.getArguments()[0];
+                    }
+                } );
     }
 
     @Test
@@ -214,16 +224,56 @@ public class PlaceManagerTest {
     }
 
     @Test
+    public void testGoToConditionalPlaceById() throws Exception {
+
+        PlaceRequest dora = new ConditionalPlaceRequest( "dora" ).when( p -> true )
+                .orElse( new DefaultPlaceRequest( "other" ) );
+
+        WorkbenchScreenActivity doraActivity = mock( WorkbenchScreenActivity.class );
+        when( doraActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( activityManager.getActivities( dora ) ).thenReturn( singleton( ( Activity ) doraActivity ) );
+
+        placeManager.goTo( dora );
+
+        verifyActivityLaunchSideEffects( dora, doraActivity, null );
+
+    }
+
+    @Test
+    public void testGoToConditionalPlaceByIdOrElse() throws Exception {
+
+        DefaultPlaceRequest other = new DefaultPlaceRequest( "other" );
+        PlaceRequest dora = new ConditionalPlaceRequest( "dora" ).when( p -> false )
+                .orElse( other );
+
+        WorkbenchScreenActivity doraActivity = mock( WorkbenchScreenActivity.class );
+        WorkbenchScreenActivity otherActivity = mock( WorkbenchScreenActivity.class );
+        when( doraActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( otherActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( activityManager.getActivities( dora ) ).thenReturn( singleton( ( Activity ) doraActivity ) );
+        when( activityManager.getActivities( other ) ).thenReturn( singleton( ( Activity ) otherActivity ) );
+
+        placeManager.goTo( dora );
+
+        verify( doraActivity, never() ).onOpen();
+        verify( otherActivity ).onOpen();
+
+        verifyActivityLaunchSideEffects( other, otherActivity, null );
+
+    }
+
+
+    @Test
     public void testGoToNewPlaceById() throws Exception {
         PlaceRequest oz = new DefaultPlaceRequest( "oz" );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
         when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        when( ozActivity.isDynamic( ) ).thenReturn( false );
+        when( ozActivity.isDynamic() ).thenReturn( false );
         when( ozActivity.preferredWidth() ).thenReturn( -1 );
         when( ozActivity.preferredHeight() ).thenReturn( -1 );
-        when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
+        when( activityManager.getActivities( oz ) ).thenReturn( singleton( ( Activity ) ozActivity ) );
 
-        placeManager.goTo( oz, (PanelDefinition) null );
+        placeManager.goTo( oz, ( PanelDefinition ) null );
 
         verifyActivityLaunchSideEffects( oz, ozActivity, null );
     }
@@ -231,7 +281,7 @@ public class PlaceManagerTest {
     @Test
     public void testGoToPlaceWeAreAlreadyAt() throws Exception {
         when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        placeManager.goTo( kansas, (PanelDefinition) null );
+        placeManager.goTo( kansas, ( PanelDefinition ) null );
 
         // note "refEq" tests equality field by field using reflection. don't read it as "reference equals!" :)
         verify( selectWorkbenchPartEvent ).fire( refEq( new SelectPlaceEvent( kansas ) ) );
@@ -241,7 +291,7 @@ public class PlaceManagerTest {
 
     @Test
     public void testGoToNowhereDoesNothing() throws Exception {
-        placeManager.goTo( PlaceRequest.NOWHERE, (PanelDefinition) null );
+        placeManager.goTo( PlaceRequest.NOWHERE, ( PanelDefinition ) null );
 
         verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
     }
@@ -250,7 +300,7 @@ public class PlaceManagerTest {
     @Test
     public void testGoToNullDoesNothing() throws Exception {
 
-        placeManager.goTo( (PlaceRequest) null, (PanelDefinition) null );
+        placeManager.goTo( ( PlaceRequest ) null, ( PanelDefinition ) null );
 
         verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
     }
@@ -260,11 +310,11 @@ public class PlaceManagerTest {
 
         PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest( mock( ObservablePath.class ) );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
-        
-        when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
 
-        placeManager.goTo( yellowBrickRoad, (PanelDefinition) null );
+        when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( ( Activity ) ozActivity ) );
+
+        placeManager.goTo( yellowBrickRoad, ( PanelDefinition ) null );
 
         verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity, null );
 
@@ -274,7 +324,8 @@ public class PlaceManagerTest {
 
     class FakePathPlaceRequest extends PathPlaceRequest {
         final ObservablePath path;
-        FakePathPlaceRequest(ObservablePath path) {
+
+        FakePathPlaceRequest( ObservablePath path ) {
             this.path = path;
         }
 
@@ -324,7 +375,7 @@ public class PlaceManagerTest {
         verify( activityManager, never() ).destroyActivity( kansasActivity );
         verify( panelManager, never() ).removePartForPlace( kansas );
 
-        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( kansas ));
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( kansas ) );
         assertSame( kansasActivity, placeManager.getActivity( kansas ) );
         assertTrue( placeManager.getActivePlaceRequests().contains( kansas ) );
     }
@@ -332,7 +383,7 @@ public class PlaceManagerTest {
     @Test
     public void testForceCloseExistingScreenActivity() throws Exception {
         when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        
+
         placeManager.forceClosePlace( kansas );
 
         verify( workbenchPartBeforeCloseEvent ).fire( refEq( new BeforeClosePlaceEvent( kansas, true, true ) ) );
@@ -343,7 +394,7 @@ public class PlaceManagerTest {
         verify( activityManager ).destroyActivity( kansasActivity );
         verify( panelManager ).removePartForPlace( kansas );
 
-        assertEquals( PlaceStatus.CLOSE, placeManager.getStatus( kansas ));
+        assertEquals( PlaceStatus.CLOSE, placeManager.getStatus( kansas ) );
         assertNull( placeManager.getActivity( kansas ) );
         assertFalse( placeManager.getActivePlaceRequests().contains( kansas ) );
     }
@@ -358,7 +409,8 @@ public class PlaceManagerTest {
         PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest( "oz_perspective" );
         PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
 
-        when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
+        when( activityManager.getActivities( ozPerspectivePlace ) )
+                .thenReturn( singleton( ( Activity ) ozPerspectiveActivity ) );
         when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
         when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
         when( ozPerspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
@@ -366,7 +418,8 @@ public class PlaceManagerTest {
 
         // verify perspective changed to oz
         verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ), any( ParameterizedCommand.class ) );
+        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ),
+                                                          any( ParameterizedCommand.class ) );
         verify( ozPerspectiveActivity ).onOpen();
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
         assertTrue( placeManager.getActivePlaceRequests().contains( ozPerspectivePlace ) );
@@ -380,12 +433,13 @@ public class PlaceManagerTest {
         PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest( "oz_perspective" );
         PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
 
-        when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
+        when( activityManager.getActivities( ozPerspectivePlace ) )
+                .thenReturn( singleton( ( Activity ) ozPerspectiveActivity ) );
         when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
         when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
         when( ozPerspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
         when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        
+
         // we'll pretend we started in kansas
         PerspectiveActivity kansasPerspectiveActivity = mock( PerspectiveActivity.class );
         when( perspectiveManager.getCurrentPerspective() ).thenReturn( kansasPerspectiveActivity );
@@ -411,7 +465,8 @@ public class PlaceManagerTest {
         PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest( "oz_perspective" );
         PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
 
-        when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
+        when( activityManager.getActivities( ozPerspectivePlace ) )
+                .thenReturn( singleton( ( Activity ) ozPerspectiveActivity ) );
         when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
         when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
 
@@ -423,7 +478,9 @@ public class PlaceManagerTest {
         // verify no side effects (should stay put)
         verify( ozPerspectiveActivity, never() ).onOpen();
         verify( perspectiveManager, never() ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager, never() ).switchToPerspective( any( PlaceRequest.class ), any( PerspectiveActivity.class ), any( ParameterizedCommand.class ) );
+        verify( perspectiveManager, never() )
+                .switchToPerspective( any( PlaceRequest.class ), any( PerspectiveActivity.class ),
+                                      any( ParameterizedCommand.class ) );
     }
 
     /**
@@ -436,22 +493,25 @@ public class PlaceManagerTest {
         PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest( "oz_perspective" );
         PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
 
-        when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
+        when( activityManager.getActivities( ozPerspectivePlace ) )
+                .thenReturn( singleton( ( Activity ) ozPerspectiveActivity ) );
         when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
         when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
         when( ozPerspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
-        
+
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
-        when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
+        when( activityManager.getActivities( emeraldCityPlace ) )
+                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
         when( emeraldCityActivity.getOwningPlace() ).thenReturn( ozPerspectivePlace );
         when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        
-        placeManager.goTo( emeraldCityPlace, (PanelDefinition) null );
+
+        placeManager.goTo( emeraldCityPlace, ( PanelDefinition ) null );
 
         // verify perspective changed to oz
         verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ), any( ParameterizedCommand.class ) );
+        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ),
+                                                          any( ParameterizedCommand.class ) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
 
         // verify perspective opened before the activity that launches inside it
@@ -467,15 +527,17 @@ public class PlaceManagerTest {
     public void testPerspectiveLaunchWithSplashScreen() throws Exception {
         final PlaceRequest perspectivePlace = new DefaultPlaceRequest( "Somewhere" );
         final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
-        final PerspectiveDefinition perspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        final PerspectiveDefinition perspectiveDef = new PerspectiveDefinitionImpl(
+                SimpleWorkbenchPanelPresenter.class.getName() );
         when( perspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( perspectiveDef );
-        when( activityManager.getActivities( perspectivePlace ) ).thenReturn( singleton( (Activity) perspectiveActivity ) );
+        when( activityManager.getActivities( perspectivePlace ) )
+                .thenReturn( singleton( ( Activity ) perspectiveActivity ) );
 
         final SplashScreenActivity splashScreenActivity = mock( SplashScreenActivity.class );
         when( activityManager.getSplashScreenInterceptor( perspectivePlace ) ).thenReturn( splashScreenActivity );
         when( perspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
         when( splashScreenActivity.isType( ActivityResourceType.SPLASH.name() ) ).thenReturn( true );
-        
+
         placeManager.goTo( perspectivePlace );
 
         // splash screen should be open and registered as an active splash screen
@@ -498,10 +560,12 @@ public class PlaceManagerTest {
     public void testProperSplashScreenShutdownOnPerspectiveSwitch() throws Exception {
         final PlaceRequest perspectivePlace = new DefaultPlaceRequest( "Somewhere" );
         final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
-        final PerspectiveDefinition perspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        final PerspectiveDefinition perspectiveDef = new PerspectiveDefinitionImpl(
+                SimpleWorkbenchPanelPresenter.class.getName() );
         when( perspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( perspectiveDef );
         when( perspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( perspectivePlace ) ).thenReturn( singleton( (Activity) perspectiveActivity ) );
+        when( activityManager.getActivities( perspectivePlace ) )
+                .thenReturn( singleton( ( Activity ) perspectiveActivity ) );
 
         // first splash screen: linked to the perspective itself
         final SplashScreenActivity splashScreenActivity1 = mock( SplashScreenActivity.class );
@@ -511,10 +575,10 @@ public class PlaceManagerTest {
         // second splash screen: linked to a screen that we will display in the perspective
         final SplashScreenActivity splashScreenActivity2 = mock( SplashScreenActivity.class );
         when( activityManager.getSplashScreenInterceptor( kansas ) ).thenReturn( splashScreenActivity2 );
-        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
+        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( ( Activity ) kansasActivity ) );
         when( splashScreenActivity2.isType( ActivityResourceType.SPLASH.name() ) ).thenReturn( true );
         when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        
+
         placeManager.goTo( perspectivePlace );
         placeManager.goTo( kansas );
 
@@ -524,16 +588,18 @@ public class PlaceManagerTest {
         // now switch to another perspective and ensure both kinds of splash screens got closed
         final PlaceRequest otherPerspectivePlace = new DefaultPlaceRequest( "Elsewhere" );
         final PerspectiveActivity otherPerspectiveActivity = mock( PerspectiveActivity.class );
-        final PerspectiveDefinition otherPerspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        final PerspectiveDefinition otherPerspectiveDef = new PerspectiveDefinitionImpl(
+                SimpleWorkbenchPanelPresenter.class.getName() );
         when( otherPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( otherPerspectiveDef );
         when( otherPerspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( otherPerspectivePlace ) ).thenReturn( singleton( (Activity) otherPerspectiveActivity ) );
+        when( activityManager.getActivities( otherPerspectivePlace ) )
+                .thenReturn( singleton( ( Activity ) otherPerspectiveActivity ) );
 
         placeManager.goTo( otherPerspectivePlace );
 
         assertTrue( placeManager.getActiveSplashScreens().isEmpty() );
-        verify( splashScreenActivity1).closeIfOpen();
-        verify( splashScreenActivity2).closeIfOpen();
+        verify( splashScreenActivity1 ).closeIfOpen();
+        verify( splashScreenActivity2 ).closeIfOpen();
 
         // splash screens are Application Scoped, but we still "destroy" them (activity manager will call their onShutdown)
         verify( activityManager ).destroyActivity( splashScreenActivity1 );
@@ -544,35 +610,35 @@ public class PlaceManagerTest {
     public void testPartLaunchWithSplashScreen() throws Exception {
         PlaceRequest oz = new DefaultPlaceRequest( "oz" );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
-        when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
+        when( activityManager.getActivities( oz ) ).thenReturn( singleton( ( Activity ) ozActivity ) );
         when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         final SplashScreenActivity lollipopGuildActivity = mock( SplashScreenActivity.class );
         when( activityManager.getSplashScreenInterceptor( oz ) ).thenReturn( lollipopGuildActivity );
         when( lollipopGuildActivity.isType( ActivityResourceType.SPLASH.name() ) ).thenReturn( true );
 
-        placeManager.goTo( oz, (PanelDefinition) null );
+        placeManager.goTo( oz, ( PanelDefinition ) null );
 
         assertTrue( placeManager.getActiveSplashScreens().contains( lollipopGuildActivity ) );
         verify( lollipopGuildActivity, never() ).onStartup( any( PlaceRequest.class ) );
 
         InOrder inOrder = inOrder( lollipopGuildActivity, newSplashScreenActiveEvent );
         inOrder.verify( lollipopGuildActivity ).onOpen();
-        inOrder.verify( newSplashScreenActiveEvent ).fire( any( NewSplashScreenActiveEvent.class) );
+        inOrder.verify( newSplashScreenActiveEvent ).fire( any( NewSplashScreenActiveEvent.class ) );
     }
 
     @Test
     public void testProperSplashScreenShutdownOnPartClose() throws Exception {
         PlaceRequest oz = new DefaultPlaceRequest( "oz" );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
-        when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
+        when( activityManager.getActivities( oz ) ).thenReturn( singleton( ( Activity ) ozActivity ) );
 
         final SplashScreenActivity lollipopGuildActivity = mock( SplashScreenActivity.class );
         when( lollipopGuildActivity.isType( ActivityResourceType.SPLASH.name() ) ).thenReturn( true );
         when( activityManager.getSplashScreenInterceptor( oz ) ).thenReturn( lollipopGuildActivity );
         when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        
-        placeManager.goTo( oz, (PanelDefinition) null );
+
+        placeManager.goTo( oz, ( PanelDefinition ) null );
         placeManager.closePlace( oz );
 
         assertTrue( placeManager.getActiveSplashScreens().isEmpty() );
@@ -593,7 +659,7 @@ public class PlaceManagerTest {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
         final SplashScreenActivity splashScreenActivity = mock( SplashScreenActivity.class );
-        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) splashScreenActivity ) );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( ( Activity ) splashScreenActivity ) );
 
         placeManager.goTo( somewhere );
 
@@ -612,12 +678,12 @@ public class PlaceManagerTest {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
         final ContextActivity activity = mock( ContextActivity.class );
-        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) activity ) );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( ( Activity ) activity ) );
 
         placeManager.goTo( somewhere );
 
-        verify( activity , never()).onStartup( eq( somewhere ) );
-        verify( activity , never()).onOpen();
+        verify( activity, never() ).onStartup( eq( somewhere ) );
+        verify( activity, never() ).onOpen();
     }
 
     @Test
@@ -626,9 +692,9 @@ public class PlaceManagerTest {
         final PlaceRequest popupPlace = new DefaultPlaceRequest( "Somewhere" );
         final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
 
-        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
+        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( ( Activity ) popupActivity ) );
         when( popupActivity.isType( ActivityResourceType.POPUP.name() ) ).thenReturn( true );
-        
+
         placeManager.goTo( popupPlace );
 
         verify( popupActivity, never() ).onStartup( any( PlaceRequest.class ) );
@@ -646,9 +712,9 @@ public class PlaceManagerTest {
         final PlaceRequest popupPlace = new DefaultPlaceRequest( "Somewhere" );
         final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
 
-        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
+        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( ( Activity ) popupActivity ) );
         when( popupActivity.isType( ActivityResourceType.POPUP.name() ) ).thenReturn( true );
-        
+
         placeManager.goTo( popupPlace );
         placeManager.goTo( popupPlace );
 
@@ -665,7 +731,7 @@ public class PlaceManagerTest {
         final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
         when( popupActivity.onMayClose() ).thenReturn( true );
         when( popupActivity.isType( ActivityResourceType.POPUP.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
+        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( ( Activity ) popupActivity ) );
 
         placeManager.goTo( popupPlace );
         placeManager.closePlace( popupPlace );
@@ -683,7 +749,7 @@ public class PlaceManagerTest {
         final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
         when( popupActivity.onMayClose() ).thenReturn( false );
         when( popupActivity.isType( ActivityResourceType.POPUP.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
+        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( ( Activity ) popupActivity ) );
 
         placeManager.goTo( popupPlace );
         placeManager.closePlace( popupPlace );
@@ -694,15 +760,18 @@ public class PlaceManagerTest {
 
     @Test
     public void testLaunchActivityInCustomPanel() throws Exception {
-        PanelDefinition customPanelDef = new PanelDefinitionImpl( UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition customPanelDef = new PanelDefinitionImpl(
+                UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
         when( panelManager.addCustomPanel( any( HasWidgets.class ),
-                                               eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
+                                           eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) )
+                .thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
         when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
         when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
-        when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
+        when( activityManager.getActivities( emeraldCityPlace ) )
+                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
         when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         HasWidgets customContainer = mock( HasWidgets.class );
@@ -728,24 +797,28 @@ public class PlaceManagerTest {
         when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
         placeManager.goTo( kansas, customContainer );
 
-        verify( panelManager, never() ).addCustomPanel( customContainer, StaticWorkbenchPanelPresenter.class.getName() );
+        verify( panelManager, never() )
+                .addCustomPanel( customContainer, StaticWorkbenchPanelPresenter.class.getName() );
         verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
         verify( selectWorkbenchPartEvent ).fire( refEq( new SelectPlaceEvent( kansas ) ) );
     }
 
     @Test
     public void testClosingActivityInCustomPanel() throws Exception {
-        PanelDefinition customPanelDef = new PanelDefinitionImpl( UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition customPanelDef = new PanelDefinitionImpl(
+                UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
         when( panelManager.addCustomPanel( any( HasWidgets.class ),
-                                               eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
+                                           eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) )
+                .thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
         when( emeraldCityActivity.onMayClose() ).thenReturn( true );
         when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
         when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
-        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() )).thenReturn( true );
-        when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
+        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( activityManager.getActivities( emeraldCityPlace ) )
+                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
 
         HasWidgets customContainer = mock( HasWidgets.class );
 
@@ -758,9 +831,11 @@ public class PlaceManagerTest {
 
     @Test
     public void testClosingAllPlacesIncludesCustomPanels() throws Exception {
-        PanelDefinition customPanelDef = new PanelDefinitionImpl( UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition customPanelDef = new PanelDefinitionImpl(
+                UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
         when( panelManager.addCustomPanel( any( HasWidgets.class ),
-                                               eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
+                                           eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) )
+                .thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
@@ -768,7 +843,8 @@ public class PlaceManagerTest {
         when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
         when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
         when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
+        when( activityManager.getActivities( emeraldCityPlace ) )
+                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
 
         HasWidgets customContainer = mock( HasWidgets.class );
 
@@ -785,7 +861,7 @@ public class PlaceManagerTest {
         final PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest( path );
         final WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
 
-        when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
+        when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( ( Activity ) ozActivity ) );
         when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         placeManager.goTo( yellowBrickRoad );
@@ -797,7 +873,8 @@ public class PlaceManagerTest {
         final ResourceTypeDefinition resourceType = mock( ResourceTypeDefinition.class );
         when( resourceType.accept( path ) ).thenReturn( false );
 
-        final Collection<PathPlaceRequest> resolvedActivities = placeManager.getActivitiesForResourceType( resourceType );
+        final Collection<PathPlaceRequest> resolvedActivities = placeManager
+                .getActivitiesForResourceType( resourceType );
         assertNotNull( resolvedActivities );
         assertEquals( 0,
                       resolvedActivities.size() );
@@ -809,7 +886,7 @@ public class PlaceManagerTest {
         final PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest( path );
         final WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
 
-        when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
+        when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( ( Activity ) ozActivity ) );
         when( ozActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
 
         placeManager.goTo( yellowBrickRoad );
@@ -821,7 +898,8 @@ public class PlaceManagerTest {
         final ResourceTypeDefinition resourceType = mock( ResourceTypeDefinition.class );
         when( resourceType.accept( path ) ).thenReturn( true );
 
-        final Collection<PathPlaceRequest> resolvedActivities = placeManager.getActivitiesForResourceType( resourceType );
+        final Collection<PathPlaceRequest> resolvedActivities = placeManager
+                .getActivitiesForResourceType( resourceType );
         assertNotNull( resolvedActivities );
         assertEquals( 1,
                       resolvedActivities.size() );
@@ -848,12 +926,11 @@ public class PlaceManagerTest {
     /**
      * Verifies that all the expected side effects of a screen or editor activity launch have happened.
      *
-     * @param placeRequest
-     *            The place request that was passed to some variant of PlaceManager.goTo().
-     * @param activity
-     *            <b>A Mockito mock<b> of the activity that was resolved for <tt>placeRequest</tt>.
+     * @param placeRequest The place request that was passed to some variant of PlaceManager.goTo().
+     * @param activity     <b>A Mockito mock<b> of the activity that was resolved for <tt>placeRequest</tt>.
      */
-    private void verifyActivityLaunchSideEffects(PlaceRequest placeRequest, WorkbenchActivity activity, PanelDefinition expectedPanel ) {
+    private void verifyActivityLaunchSideEffects( PlaceRequest placeRequest, WorkbenchActivity activity,
+                                                  PanelDefinition expectedPanel ) {
 
         // as of UberFire 0.4. this event only happens if the place is already visible.
         // it might be be better if the event was fired unconditionally. needs investigation.
@@ -878,7 +955,8 @@ public class PlaceManagerTest {
         }
         verify( panelManager ).addWorkbenchPart( eq( placeRequest ),
                                                  eq( new PartDefinitionImpl( placeRequest ) ),
-                                                 expectedPanel == null ? any( PanelDefinition.class ) : eq( expectedPanel ),
+                                                 expectedPanel == null ? any( PanelDefinition.class ) : eq(
+                                                         expectedPanel ),
                                                  isNull( Menus.class ),
                                                  any( UIPart.class ),
                                                  isNull( String.class ),
@@ -902,12 +980,11 @@ public class PlaceManagerTest {
     /**
      * Verifies that the "place change" side effects have not happened, and that the given activity is still current.
      *
-     * @param expectedCurrentPlace
-     *            The place request that placeManager should still consider "current."
-     * @param activity
-     *            <b>A Mockito mock<b> of the activity tied to <tt>expectedCurrentPlace</tt>.
+     * @param expectedCurrentPlace The place request that placeManager should still consider "current."
+     * @param activity             <b>A Mockito mock<b> of the activity tied to <tt>expectedCurrentPlace</tt>.
      */
-    private void verifyNoActivityLaunchSideEffects(PlaceRequest expectedCurrentPlace, WorkbenchScreenActivity activity) {
+    private void verifyNoActivityLaunchSideEffects( PlaceRequest expectedCurrentPlace,
+                                                    WorkbenchScreenActivity activity ) {
 
         // contract between PlaceManager and PanelManager
         verify( panelManager, never() ).addWorkbenchPanel( eq( panelManager.getRoot() ), any( Position.class ),
@@ -923,8 +1000,8 @@ public class PlaceManagerTest {
 
         // state changes in PlaceManager itself (contract between PlaceManager and everyone)
         assertTrue(
-                   "Actual place requests: " + placeManager.getActivePlaceRequests(),
-                   placeManager.getActivePlaceRequests().contains( expectedCurrentPlace ) );
+                "Actual place requests: " + placeManager.getActivePlaceRequests(),
+                placeManager.getActivePlaceRequests().contains( expectedCurrentPlace ) );
         assertSame( activity, placeManager.getActivity( expectedCurrentPlace ) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( expectedCurrentPlace ) );
 
