@@ -94,4 +94,9 @@ public interface AppConstants
 
     String Examples();
 
+    String Settings();
+
+    String Library();
+
+    String AdminPreferences();
 }

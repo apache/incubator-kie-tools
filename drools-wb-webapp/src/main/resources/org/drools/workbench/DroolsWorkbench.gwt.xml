@@ -28,6 +28,7 @@
   <inherits name='org.guvnor.organizationalunit.manager.GuvnorOrganizationalUnitManager'/>
 
   <!--Common Screens -->
+  <inherits name="org.kie.workbench.common.screens.library.LibraryClient"/>
   <inherits name="org.kie.workbench.common.screens.home.KieWorkbenchHomeClient"/>
   <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
   <inherits name="org.kie.workbench.common.screens.search.KieWorkbenchSearchScreenClient"/>

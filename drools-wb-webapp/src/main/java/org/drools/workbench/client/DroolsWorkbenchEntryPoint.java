@@ -25,12 +25,14 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.search.client.menu.SearchMenuBuilder;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
+import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.entrypoint.DefaultWorkbenchEntryPoint;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -48,6 +50,10 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
 
     protected WorkbenchMenuBarPresenter menuBar;
 
+    protected AdminPage adminPage;
+
+    protected DefaultAdminPageHelper adminPageHelper;
+
     @Inject
     public DroolsWorkbenchEntryPoint( final Caller<AppConfigService> appConfigService,
                                       final Caller<PlaceManagerActivityService> pmas,
@@ -55,16 +61,27 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                                       final PlaceManager placeManager,
                                       final SyncBeanManager iocManager,
                                       final DefaultWorkbenchFeaturesMenusHelper menusHelper,
-                                      final WorkbenchMenuBarPresenter menuBar ) {
+                                      final WorkbenchMenuBarPresenter menuBar,
+                                      AdminPage adminPage,
+                                      DefaultAdminPageHelper adminPageHelper) {
         super( appConfigService, pmas, activityBeansCache );
         this.placeManager = placeManager;
         this.iocManager = iocManager;
         this.menusHelper = menusHelper;
         this.menuBar = menuBar;
+        this.adminPage = adminPage;
+        this.adminPageHelper = adminPageHelper;
     }
 
     @Override
     public void setupMenu() {
+        adminPage.addScreen( "root", AppConstants.INSTANCE.Settings() );
+        adminPage.addPreference( "root",
+                                 "LibraryPreferences",
+                                 AppConstants.INSTANCE.Library(),
+                                 "fa-cubes",
+                                 "preferences" );
+
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = menusHelper.getDefaultPerspectiveActivity();
 
         menusHelper.addRolesMenuItems();
@@ -79,6 +96,11 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                         Window.alert( "Default perspective not found." );
                     }
                 } )
+                .endMenu()
+                .newTopLevelMenu( MenuFactory.newSimpleItem( AppConstants.INSTANCE.AdminPreferences() )
+                                          .respondsWith( adminPageHelper.getAdminToolCommand( "root" ) )
+                                          .endMenu()
+                                          .build().getItems().get( 0 ) )
                 .endMenu()
                 .newTopLevelMenu( constants.Perspectives() )
                 .withItems( menusHelper.getPerspectivesMenuItems() )

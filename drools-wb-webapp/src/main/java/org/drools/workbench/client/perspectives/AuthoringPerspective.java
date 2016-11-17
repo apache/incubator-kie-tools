@@ -15,15 +15,15 @@
  */
 package org.drools.workbench.client.perspectives;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
+import com.google.gwt.core.client.Scheduler;
 import org.drools.workbench.client.resources.i18n.AppConstants;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.examples.client.wizard.ExamplesWizard;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
+import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
+import org.kie.workbench.common.screens.library.api.LibraryInfo;
+import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.projecteditor.client.menu.ProjectMenu;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -35,8 +35,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
+import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -44,6 +44,14 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * A Perspective for Rule authors. Note the @WorkbenchPerspective has the same identifier as kie-drools-wb
@@ -164,6 +172,12 @@ public class AuthoringPerspective {
                     }
                 } ).endMenu().build().getItems().get( 0 ) );
         return menuItems;
+    }
+
+    public void onLibraryContextSwitchEvent( @Observes final LibraryContextSwitchEvent event ) {
+        if ( event.isProjectFromExample() ) {
+            wizard.start();
+        }
     }
 
 }
