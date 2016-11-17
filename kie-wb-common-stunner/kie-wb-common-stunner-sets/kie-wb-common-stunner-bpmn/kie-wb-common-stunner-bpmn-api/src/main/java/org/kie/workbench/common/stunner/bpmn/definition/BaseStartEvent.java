@@ -46,7 +46,7 @@ public abstract class BaseStartEvent implements BPMNDefinition {
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
+    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
     protected BackgroundSet backgroundSet;
 
     @PropertySet
@@ -58,7 +58,7 @@ public abstract class BaseStartEvent implements BPMNDefinition {
     protected CatchEventAttributes catchEventAttributes;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 3 )
+    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 3 )
     private CircleDimensionSet dimensionsSet;
 
     @Labels

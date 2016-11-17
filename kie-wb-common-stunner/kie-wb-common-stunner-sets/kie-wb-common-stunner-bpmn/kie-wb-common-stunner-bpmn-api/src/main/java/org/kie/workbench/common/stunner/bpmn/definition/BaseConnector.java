@@ -51,7 +51,7 @@ public abstract class BaseConnector implements BPMNDefinition {
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
+    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
     @Valid
     protected BackgroundSet backgroundSet;
 

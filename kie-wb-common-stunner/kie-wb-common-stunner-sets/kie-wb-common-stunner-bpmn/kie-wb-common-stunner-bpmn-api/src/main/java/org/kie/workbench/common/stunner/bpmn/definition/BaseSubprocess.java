@@ -54,7 +54,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 3 )
+    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 3 )
     @Valid
     protected BackgroundSet backgroundSet;
 
@@ -67,7 +67,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     protected SimulationSet simulationSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 6 )
+    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 6 )
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels

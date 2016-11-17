@@ -47,7 +47,7 @@ public abstract class BaseGateway implements BPMNDefinition {
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
+    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
     @Valid
     protected BackgroundSet backgroundSet;
 
@@ -56,7 +56,7 @@ public abstract class BaseGateway implements BPMNDefinition {
     protected FontSet fontSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 5 )
+    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 5 )
     protected CircleDimensionSet dimensionsSet;
 
     @Labels
