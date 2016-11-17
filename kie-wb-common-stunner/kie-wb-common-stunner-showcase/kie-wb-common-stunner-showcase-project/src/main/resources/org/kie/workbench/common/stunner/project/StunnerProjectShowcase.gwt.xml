@@ -54,6 +54,8 @@
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
   <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
   <inherits name="org.kie.workbench.common.widgets.decoratedgrid.KieWorkbenchDecoratedGridWidget"/>
+  <inherits name="org.kie.workbench.common.widgets.decoratedgrid.KieWorkbenchDecoratedGridWidget"/>
+  <inherits name="org.kie.workbench.common.screens.library.LibraryAPI"/>
 
   <!-- kie server -->
   <inherits name="org.kie.workbench.common.screens.server.management.ServerManagementAPI"/>

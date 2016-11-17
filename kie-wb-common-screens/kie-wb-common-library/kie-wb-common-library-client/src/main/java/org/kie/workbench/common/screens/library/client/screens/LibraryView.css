@@ -1,0 +1,263 @@
+.status-ok-bxms {
+    color: #92d400;
+}
+
+.circle-icon-bxms {
+    background-color: #f5f5f5;
+    font-size: 1.25em;
+    font-weight: 400;
+    height: 2.5em;
+    line-height: 2.5em;
+    margin: .5em;
+    width: 2.5em;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.circle-icon-bxms:hover {
+    background-color: #72767b;
+    color: #fff;
+}
+
+.circle-icon-bxms-large {
+    font-size: 2.5em;
+}
+
+.button-card-text-bxms {
+    max-width: 10em;
+    white-space: normal;
+}
+
+.bxms-row__nav-tabs {
+    padding-left: .5em;
+    padding-right: .5em;
+    margin-top: .5em;
+}
+
+.row-toolbar-bxms {
+    padding: .25em 0;
+    background-color: #fff;
+    border-collapse: collapse;
+}
+
+.toolbar-pf {
+    padding: .5em 1em;
+}
+
+.toolbar-bxms {
+    display: flex;
+}
+
+.toolbar-pf .form-group,
+.toolbar-pf .btn-group {
+    margin-bottom: 0;
+    display: flex;
+}
+
+.toolbar-pf .form-group:last-of-type {
+    border-right: none;
+}
+
+.toolbar-title-bxms {
+    font-size: 2em;
+    margin-right: 1em;
+}
+
+.toolbar-right-bxms {
+    float: right;
+}
+
+.toolbar-element-bxms {
+    display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.dropdown-minimal-bxms {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.toolbar-btn-group-bxms {
+    float: right;
+    margin-top: .5em;
+}
+
+.btn-group-bxms-right {
+    float: right;
+}
+
+.toolbar-pf-filter {
+    min-width: 18em;
+}
+
+.toolbar-data-title-bxms {
+    display: table-cell;
+    float: left;
+    font-size: 1.5em;
+    margin-right: 1em;
+}
+
+.dropdown-kebab-pf {
+    margin-left: 1em !important;
+}
+
+.input-group-bxms {
+    margin-bottom: .5em;
+}
+
+@media (min-width: 768px) {
+    .toolbar-pf-actions {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .btn-group-bxms-right {
+        margin-left: auto;
+    }
+
+    .input-group-bxms {
+        margin-bottom: auto;
+    }
+}
+
+.about-modal-pf {
+    background-color: #083452;
+    min-height: 30em;
+}
+
+.page-content-bxms {
+    background-color: #f5f5f5;
+    padding-bottom: 1em;
+    padding-top: 1em;
+}
+
+.main-content-bxms {
+. box-shadow(0 1 px 1 px fade(@color-pf-black, 17.5 %));
+}
+
+.blank-slate-pf {
+    background-color: #fff;
+    border: 0px;
+}
+
+.button-card-bxms {
+    background-color: transparent;
+    box-shadow: none;
+    min-width: 10em;
+    padding: 1em;
+    vertical-align: top;
+}
+
+.button-card-bxms:hover .circle-icon-bxms {
+    background-color: #72767b;
+    color: #fff;
+}
+
+.fa-process-flow-bxms {
+    transform: rotate(90deg);
+}
+
+.fa-imported-bxms {
+    transform: rotate(180deg);
+}
+
+.card-title-link-bxms {
+    margin-left: .5em;
+}
+
+.card-pf-heading-link-bxms {
+    padding: 20px 0;
+}
+
+.card-pf-body {
+    margin: auto;
+}
+
+.card-pf-footer {
+    padding-bottom: 20px;
+}
+
+.name-list-bxms dt {
+    text-align: left;
+    font-weight: normal;
+}
+
+.checked-bxms:before {
+    content: "\f046";
+    font-family: FontAwesome;
+    margin-right: .25em;
+}
+
+.unchecked-bxms:before {
+    content: "\f096";
+    font-family: FontAwesome;
+    margin-right: .25em;
+}
+
+.list-view-bxms-kebab {
+    margin-left: auto !important;
+    align-self: flex-end;
+}
+
+.list-view-pf-body {
+    display: flex;
+}
+
+.list-view-pf-additional-info-item {
+    width: 7em;
+}
+
+@media (min-width: 992px) {
+    .list-view-pf-additional-info {
+        flex: 0 0 auto;
+        float: left;
+        width: 15%;
+    }
+
+    .list-view-pf .list-group-item-heading {
+        -ms-flex: 1 0 calc(70% - 20px) !important;
+        flex: 1 0 calc(70% - 20px);
+        width: calc(70% - 20px);
+    }
+
+    .list-view-pf .list-group-item-text {
+        -ms-flex: 0 0 calc(30% - 20px);
+        flex: 0 0 calc(30% - 20px);
+        width: calc(30% - 20px);
+    }
+}
+
+.list-view-pf-left .fa.list-view-pf-icon-sm {
+    height: 2em;
+    line-height: 2em;
+    width: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.toolbar-pf-actions {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* hack by ederign */
+.dropdown-kebab-pf {
+     margin-left: 0 !important;
+}
+
+.bold-font {
+    font-weight: bold;
+    /* i cannot override flex size check with designers*/
+}
+
+
+.normal-font {
+    font-weight: normal;
+    /* i cannot override flex size check with designers*/
+}

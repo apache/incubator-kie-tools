@@ -26,6 +26,7 @@ public interface PerspectiveIds {
     String CONTRIBUTORS = "ContributorsPerspective";
     String GUVNOR_M2REPO = "GuvnorM2RepoPerspective";
     String ADMINISTRATION = "AdministrationPerspective";
+    String LIBRARY = "LibraryPerspective";
     String DROOLS_ADMIN = "DroolsAdminPerspective";
     String PLANNER_ADMIN = "PlannerAdminPerspective";
     String PROCESS_DEFINITIONS = "Process Definitions";

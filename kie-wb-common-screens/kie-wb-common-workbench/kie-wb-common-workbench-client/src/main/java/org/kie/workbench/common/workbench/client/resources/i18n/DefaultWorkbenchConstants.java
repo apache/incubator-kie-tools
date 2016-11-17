@@ -124,4 +124,6 @@ public interface DefaultWorkbenchConstants
     String Groups();
 
     String Users();
+
+    String Library();
 }

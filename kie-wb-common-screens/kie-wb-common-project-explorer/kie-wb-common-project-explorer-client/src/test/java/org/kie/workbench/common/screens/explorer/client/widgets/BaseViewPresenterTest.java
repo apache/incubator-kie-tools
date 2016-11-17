@@ -15,10 +15,6 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -43,6 +39,7 @@ import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
+import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.popups.copy.CopyPopupWithPackageView;
@@ -51,8 +48,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
@@ -68,10 +63,13 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BaseViewPresenterTest {
@@ -80,6 +78,7 @@ public class BaseViewPresenterTest {
     CommonConstants commonConstants;
 
     private ExplorerService explorerServiceActual = mock( ExplorerService.class );
+
     private BuildService buildServiceActual = mock( BuildService.class );
 
     @Spy
@@ -340,6 +339,23 @@ public class BaseViewPresenterTest {
         RenamePopUpPresenter.View view = presenter.getRenameView();
 
         assertTrue( view instanceof RenamePopUpPresenter.View );
+    }
+
+    @Test
+    public void testOnLibraryContextSwitchEvent() {
+
+        LibraryContextSwitchEvent event = mock( LibraryContextSwitchEvent.class );
+        BaseViewPresenter spy = spy( presenter );
+
+        when( event.isProjectSelected() ).thenReturn( true );
+        when( event.getUri() ).thenReturn( "uri" );
+        doNothing().when( spy ).setupActiveContextFor( any() );
+
+        spy.onLibraryContextSwitchEvent( event );
+
+        verify( placeManager ).goTo( BaseViewPresenter.PROJECT_SCREEN );
+        verify( spy ).setupActiveContextFor( any() );
+
     }
 
     private void copyPopUpPresenterShowMock() {
