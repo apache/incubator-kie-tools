@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -61,7 +62,6 @@ public class BPMNProjectDiagramFactoryTest {
         graphNodes.add( diagramNode );
         when( diagramNode.getContent() ).thenReturn( diagramNodeContent );
         when( graph.nodes() ).thenReturn( graphNodes );
-        when( metadata.getProjectPackage() ).thenReturn( PKG );
         tested = new BPMNProjectDiagramFactory();
     }
 
@@ -80,17 +80,19 @@ public class BPMNProjectDiagramFactoryTest {
     @Test
     @SuppressWarnings( "unchecked" )
     public void testBuildNoPackageSpecified() {
+        when( metadata.getProjectPackage() ).thenReturn( null );
         ProjectDiagram pdiagram = tested.build( NAME, metadata, graph);
         assertNotNull( pdiagram );
         assertEquals( graph, pdiagram.getGraph() );
         assertEquals( NAME, diagram.getDiagramSet().getId().getValue() );
-        assertEquals( PKG, diagram.getDiagramSet().getPackageProperty().getValue() );
+        assertEquals( Package.DEFAULT_PACKAGE, diagram.getDiagramSet().getPackageProperty().getValue() );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testBuild() {
         final String pName = "p1";
+        when( metadata.getProjectPackage() ).thenReturn( PKG );
         when( metadata.getProjectName() ).thenReturn( pName );
         ProjectDiagram pdiagram = tested.build( NAME, metadata, graph);
         assertNotNull( pdiagram );

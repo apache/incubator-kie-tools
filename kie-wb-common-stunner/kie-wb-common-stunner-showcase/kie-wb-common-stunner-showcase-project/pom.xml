@@ -500,7 +500,6 @@
         <dependency>
             <groupId>org.kie.workbench.stunner</groupId>
             <artifactId>kie-wb-common-stunner-bpmn-project</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

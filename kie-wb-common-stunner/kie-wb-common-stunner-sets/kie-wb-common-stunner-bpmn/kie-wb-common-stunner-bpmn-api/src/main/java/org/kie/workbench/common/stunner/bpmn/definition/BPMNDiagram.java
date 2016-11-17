@@ -106,7 +106,7 @@ public class BPMNDiagram implements BPMNDefinition {
 
         @Override
         public BPMNDiagram build() {
-            return new BPMNDiagram( new BPMNGeneralSet(),
+            return new BPMNDiagram( new BPMNGeneralSet(""),
                     new DiagramSet(),
                     new ProcessData(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),

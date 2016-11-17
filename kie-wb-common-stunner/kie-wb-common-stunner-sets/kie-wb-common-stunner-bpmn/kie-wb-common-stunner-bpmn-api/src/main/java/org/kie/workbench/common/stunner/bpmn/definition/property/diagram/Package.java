@@ -51,6 +51,8 @@ public class Package implements BPMNProperty {
     @DefaultValue
     public static final transient String defaultValue = null;
 
+    public static final String DEFAULT_PACKAGE = "org.jbpm";
+
     @Value
     @NotNull
     @NotEmpty
