@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Gly
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -74,7 +74,6 @@ public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<
     protected void beforeBind() {
         super.beforeBind();
         itemViews.clear();
-
     }
 
     @Override
@@ -83,32 +82,28 @@ public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<
         final PaletteGrid grid = getGrid();
         for ( final GlyphPaletteItem item : getItems() ) {
             addGlyphItemIntoView( item, grid );
-
         }
-
     }
 
     @Override
     protected void afterBind() {
         super.afterBind();
         doExpandCollapse();
-
     }
 
     @SuppressWarnings( "unchecked" )
     protected void addGlyphItemIntoView( final GlyphPaletteItem item,
                                          final PaletteGrid grid ) {
-        final ShapeGlyph<Group> glyph = getGlyph( item.getDefinitionId(), grid.getIconSize(), grid.getIconSize() );
+        final Glyph<Group> glyph = getGlyph( item.getDefinitionId(), grid.getIconSize(), grid.getIconSize() );
         final LienzoGlyphPaletteItemView paletteItemView = new LienzoGlyphPaletteItemViewImpl( item, getView(), glyph );
         itemViews.add( paletteItemView );
         view.add( paletteItemView );
-
     }
 
     @SuppressWarnings( "unchecked" )
-    protected ShapeGlyph<Group> getGlyph( final String id,
-                                          final double width,
-                                          final double height ) {
+    protected Glyph<Group> getGlyph( final String id,
+                                     final double width,
+                                     final double height ) {
         final ShapeFactory shapeFactory = getFactory( id );
         return shapeFactory.glyph( id, width, height );
     }
@@ -124,7 +119,6 @@ public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<
         final List<GlyphPaletteItem> items = getItems();
         if ( null != items && items.size() > index ) {
             return items.get( index ).getId();
-
         }
         return null;
     }
@@ -137,17 +131,13 @@ public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<
         if ( expanded ) {
             final List<GlyphPaletteItem> paletteItems = getItems();
             longestTitle = ClientPaletteUtils.getLongestText( paletteItems );
-
         }
         final int titleLength = null != longestTitle ? longestTitle.length() : 0;
         if ( isHorizontalLayout() ) {
             return ClientPaletteUtils.computeSizeForHorizontalLayout( getItems().size(), grid.getIconSize(), grid.getPadding(), titleLength );
-
         } else {
             return ClientPaletteUtils.computeSizeForVerticalLayout( getItems().size(), grid.getIconSize(), grid.getPadding(), titleLength );
-
         }
-
     }
 
     @Override
@@ -196,21 +186,22 @@ public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<
                                    final double itemY ) {
         if ( null != glyphTooltipCallback ) {
             glyphTooltipCallback.onShowTooltip( definitionGlyphTooltip, item, mouseX, mouseY, itemX, itemY );
-
         } else if ( !expanded ) {
             final PaletteGrid grid = getGrid();
-            definitionGlyphTooltip.showTooltip( item.getDefinitionId(), mouseX + ( grid.getIconSize() / 2 ), mouseY, GlyphTooltip.Direction.WEST );
-
+            definitionGlyphTooltip
+                    .showTooltip(
+                            item.getDefinitionId(),
+                            itemX + ( grid.getIconSize() / 2 ),
+                            itemY,
+                            GlyphTooltip.Direction.WEST );
         }
         return true;
-
     }
 
     @Override
     public boolean onItemOut( final int index ) {
         if ( super.onItemOut( index ) ) {
             definitionGlyphTooltip.hide();
-
         }
         return true;
     }
@@ -221,24 +212,18 @@ public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<
                 final LienzoGlyphPaletteItemView glyphPaletteItemView = ( LienzoGlyphPaletteItemView ) itemView;
                 if ( expanded ) {
                     glyphPaletteItemView.expand();
-
                 } else {
                     glyphPaletteItemView.collapse();
-
                 }
-
             }
-
         }
         getView().draw();
-
     }
 
     @Override
     protected void doDestroy() {
         itemViews.clear();
         super.doDestroy();
-
     }
 
 }

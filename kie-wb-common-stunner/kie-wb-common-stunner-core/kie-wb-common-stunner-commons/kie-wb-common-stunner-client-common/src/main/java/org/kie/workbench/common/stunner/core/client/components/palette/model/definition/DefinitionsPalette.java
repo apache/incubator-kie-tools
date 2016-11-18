@@ -20,6 +20,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Pal
 
 /**
  * A flat - single level palette that has a collection of definition palette items.
+ * Definition categories do not come into play in this palette.
  */
 public interface DefinitionsPalette extends PaletteDefinition<DefinitionPaletteItem> {
 

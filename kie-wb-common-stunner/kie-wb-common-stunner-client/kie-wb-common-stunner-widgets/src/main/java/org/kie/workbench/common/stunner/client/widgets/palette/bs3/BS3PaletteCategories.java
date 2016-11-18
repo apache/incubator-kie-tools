@@ -167,6 +167,18 @@ public class BS3PaletteCategories
 
     }
 
+    void onItemMouseDown( final String id,
+                      final int mouseX,
+                      final int mouseY,
+                      final int itemX,
+                      final int itemY ) {
+        if ( null != itemMouseDownCallback ) {
+            itemMouseDownCallback.onItemMouseDown( id, mouseX, mouseY, itemX, itemY );
+
+        }
+
+    }
+
     private int getIndex( final String categoryId ) {
         final List<DefinitionPaletteCategory> categories = paletteDefinition.getItems();
         if ( null != categories && !categories.isEmpty() ) {

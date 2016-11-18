@@ -22,20 +22,20 @@ import com.ait.lienzo.client.core.shape.Text;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.LienzoPaletteView;
 import org.kie.workbench.common.stunner.core.client.components.palette.ClientPaletteUtils;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 public final class LienzoGlyphPaletteItemViewImpl
         extends AbstractLienzoGlyphPaletteItemView {
 
     private static final String FONT_FAMILY = "Open Sans";
 
-    protected final ShapeGlyph<Group> glyph;
+    protected final Glyph<Group> glyph;
     private final Group view = new Group();
     private Text text;
 
     public LienzoGlyphPaletteItemViewImpl( final GlyphPaletteItem item,
                                            final LienzoPaletteView paletteView,
-                                           final ShapeGlyph<Group> glyph ) {
+                                           final Glyph<Group> glyph ) {
         super( item, paletteView );
         this.glyph = glyph;
         init();

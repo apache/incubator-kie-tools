@@ -98,6 +98,20 @@ public class DefinitionUtils {
 
     }
 
+    public boolean hasMorphTargets( final Object definition ) {
+        final MorphAdapter<Object> morphAdapter = definitionManager.adapters().registry().getMorphAdapter( definition.getClass() );
+        final Iterable<MorphDefinition> morphDefinitions = morphAdapter.getMorphDefinitions( definition );
+        if ( null != morphDefinitions && morphDefinitions.iterator().hasNext() ) {
+            for ( final MorphDefinition morphDefinition : morphDefinitions ) {
+                final Iterable<String> morphTargets = morphAdapter.getTargets( definition, morphDefinition );
+                if ( null != morphTargets && morphTargets.iterator().hasNext() ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns the identifiers for the defintion type and its parent, if any.
      */

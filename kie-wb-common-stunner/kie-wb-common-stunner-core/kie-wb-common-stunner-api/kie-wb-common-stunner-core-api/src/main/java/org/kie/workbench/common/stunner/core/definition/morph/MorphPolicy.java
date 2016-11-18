@@ -18,11 +18,15 @@ package org.kie.workbench.common.stunner.core.definition.morph;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+/**
+ * The different built-in policies when morphing.
+ */
 @Portable
 public enum MorphPolicy {
+    /* Keep all potential properties that match. */
     ALL,
-
+    /* Discard all properties. */
     NONE,
-
+    /* Keep only node's name property. */
     DEFAULT;
 }

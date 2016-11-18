@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.basicset.shape.def.icon.dynamics;
 
 import org.kie.workbench.common.stunner.basicset.definition.icon.dynamics.MinusIcon;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.MinusIconShapeDef;
 
 public final class MinusIconShapeDefImpl
@@ -24,13 +26,7 @@ public final class MinusIconShapeDefImpl
         implements MinusIconShapeDef<MinusIcon> {
 
     @Override
-    public String getGlyphBackgroundColor( final MinusIcon definition ) {
-        return MinusIcon.COLOR;
+    public GlyphDef<MinusIcon> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
     }
-
-    @Override
-    public String getGlyphDescription( final MinusIcon definition ) {
-        return MinusIcon.description;
-    }
-
 }

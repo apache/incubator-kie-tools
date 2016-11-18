@@ -23,8 +23,6 @@ public interface ToolboxButtonBuilder<I> {
 
     ToolboxButtonBuilder<I> setIcon( I icon );
 
-    ToolboxButtonBuilder<I> setHoverAnimation( ToolboxButton.HoverAnimation animation );
-
     ToolboxButtonBuilder<I> setClickHandler( ToolboxButtonEventHandler handler );
 
     ToolboxButtonBuilder<I> setMouseDownHandler( ToolboxButtonEventHandler handler );

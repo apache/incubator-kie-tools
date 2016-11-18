@@ -25,7 +25,13 @@
       min-height: 20px;
       min-width: 80px;
     }
+    .nameBox {
+      border: 1px solid grey;
+    }
     .button {
+      background-color: black;
+      padding: 2px;
+      color: white;
       margin-left: 5px;
       cursor: pointer;
     }
@@ -34,7 +40,7 @@
   <g:FlowPanel ui:field="mainPanel" addStyleNames="{style.mainPanel}">
 
     <g:HorizontalPanel>
-      <b:TextBox ui:field="nameBox"/>
+      <b:TextBox ui:field="nameBox" addStyleNames="{style.nameBox}"/>
       <b:Icon ui:field="saveButton" type="CHECK" size="TIMES2" title="Save" addStyleNames="{style.button}"/>
       <b:Icon ui:field="closeButton" type="TIMES" size="TIMES2" title="Close" addStyleNames="{style.button}"/>
     </g:HorizontalPanel>

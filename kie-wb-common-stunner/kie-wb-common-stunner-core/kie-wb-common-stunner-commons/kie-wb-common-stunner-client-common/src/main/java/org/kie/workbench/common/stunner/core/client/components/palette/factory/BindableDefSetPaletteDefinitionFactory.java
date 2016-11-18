@@ -29,12 +29,30 @@ public abstract class BindableDefSetPaletteDefinitionFactory
         super( shapeManager, paletteBuilder );
     }
 
+    /**
+     * Returns the title to show for the category with the given id.
+     */
     protected abstract String getCategoryTitle( String id );
 
+    /**
+     * Returns the Definition type that will be created as by this category.
+     * Return <code>null</code> if no definition associated with this category.
+     */
+    protected abstract Class<?> getCategoryTargetDefinitionId( String id );
+
+    /**
+     * Returns the description to show for the category with the given id.
+     */
     protected abstract String getCategoryDescription( String id );
 
+    /**
+     * Returns the title to show for the morph group with the given id.
+     */
     protected abstract String getMorphGroupTitle( String morphBaseId, Object definition );
 
+    /**
+     * Returns the description to show for the morph group with the given id.
+     */
     protected abstract String getMorphGroupDescription( String morphBaseId, Object definition );
 
     @Override
@@ -53,7 +71,13 @@ public abstract class BindableDefSetPaletteDefinitionFactory
 
             }
 
+            @Override
+            public String getDefinitionId( final String id ) {
+                final Class<?> type = getCategoryTargetDefinitionId( id );
+                return null != type ? BindableAdapterUtils.getDefinitionId( type ) : null;
+            }
         } );
+
         paletteBuilder.setMorphGroupProvider( new DefinitionSetPaletteBuilder.PaletteMorphGroupProvider() {
 
             @Override
@@ -71,6 +95,7 @@ public abstract class BindableDefSetPaletteDefinitionFactory
             }
 
         } );
+
         configureBuilder();
         return paletteBuilder;
     }
@@ -78,9 +103,13 @@ public abstract class BindableDefSetPaletteDefinitionFactory
     protected void configureBuilder() {
     }
 
-    protected void exclude( final Class<?> type ) {
+    protected void excludeDefinition( final Class<?> type ) {
         final String id = BindableAdapterUtils.getDefinitionId( type );
-        paletteBuilder.exclude( id );
+        paletteBuilder.excludeDefinition( id );
+    }
+
+    protected void excludeCategory( final String id ) {
+        paletteBuilder.excludeCategory( id );
     }
 
 }

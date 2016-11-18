@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Pal
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V extends PaletteWidgetView>
         extends AbstractPalette<D>
@@ -105,7 +105,7 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
 
     }
 
-    public ShapeGlyph<?> getShapeGlyph( final String definitionId ) {
+    public Glyph<?> getShapeGlyph( final String definitionId ) {
         return getFactory( definitionId ).glyph( definitionId, getIconSize(), getIconSize() );
     }
 

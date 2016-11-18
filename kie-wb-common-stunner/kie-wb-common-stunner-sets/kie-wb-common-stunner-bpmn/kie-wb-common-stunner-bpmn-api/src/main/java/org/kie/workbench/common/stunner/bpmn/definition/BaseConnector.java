@@ -31,11 +31,12 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
-
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BACKGROUND_SETTINGS;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
 @Shape( factory = BasicShapesFactory.class, def = SequenceFlowConnectorDef.class )
 public abstract class BaseConnector implements BPMNDefinition {
@@ -64,7 +65,7 @@ public abstract class BaseConnector implements BPMNDefinition {
 
         public static final transient String COLOR = "#000000";
         public static final transient String BORDER_COLOR = "#000000";
-        public static final Double BORDER_SIZE = 3d;
+        public static final Double BORDER_SIZE = 1d;
 
     }
 

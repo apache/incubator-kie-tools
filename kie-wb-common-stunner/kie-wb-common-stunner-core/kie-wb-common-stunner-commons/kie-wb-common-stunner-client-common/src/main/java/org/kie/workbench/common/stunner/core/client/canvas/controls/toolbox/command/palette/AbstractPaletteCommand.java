@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.com
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.AbstractToolboxCommand;
@@ -111,16 +112,11 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
     }
 
     @Override
-    public ToolboxButton.HoverAnimation getButtonAnimation() {
-        return ToolboxButton.HoverAnimation.HOVER_COLOR;
-    }
-
-    @Override
     @SuppressWarnings( "unchecked" )
     public void mouseEnter( final Context<AbstractCanvasHandler> context,
                             final Element element ) {
+        super.mouseEnter( context, element );
         showPalette( context, element );
-
     }
 
     @Override
@@ -129,12 +125,9 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
         super.click( context, element );
         if ( paletteVisible ) {
             clear();
-
         } else {
             showPalette( context, element );
-
         }
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -164,9 +157,7 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                         }
 
                     } );
-
         }
-
     }
 
     protected abstract void attachPaletteView();
@@ -176,13 +167,20 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                                  Context<AbstractCanvasHandler> context ) {
         palette
                 .bind( paletteDefinition )
+                .onItemHover( AbstractPaletteCommand.this::_onItemHover )
+                .onItemOut( AbstractPaletteCommand.this::_onItemOut )
                 .onItemClick( AbstractPaletteCommand.this::_onItemClick )
                 .onItemMouseDown( AbstractPaletteCommand.this::_onItemMouseDown );
-        getPaletteView().setX( context.getX() );
-        getPaletteView().setY( context.getY() );
+        // Use the relative coordinates (x/y) as palette gets added into same canvas' layer as the toolbox.
+        showPaletteViewAt( context.getX(), context.getY() );
+    }
+
+    protected void showPaletteViewAt( final double x,
+                                      final double y ) {
+        getPaletteView().setX( x );
+        getPaletteView().setY( y );
         attachPaletteView();
         getPaletteView().show();
-
     }
 
     public void clear() {
@@ -197,6 +195,22 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                                   final double itemX,
                                   final double itemY ) {
         // TODO
+        return true;
+
+    }
+
+    private boolean _onItemHover( final String id,
+                                  final double mouseX,
+                                  final double mouseY,
+                                  final double itemX,
+                                  final double itemY ) {
+        canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.POINTER );
+        return true;
+
+    }
+
+    private boolean _onItemOut( final String id ) {
+        canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
         return true;
 
     }

@@ -1,45 +1,29 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.core.client.shape.view;
 
-/**
- * A Shape Glyph.
- */
-public interface ShapeGlyph<G> {
+package org.kie.workbench.common.stunner.core.client.canvas;
 
-    /**
-     * Get the glyph's container.
-     */
-    G getGroup();
+public abstract class AbstractLayer<T, S, A> implements Layer<T, S ,A> {
 
-    /**
-     * Copy this glysh.
-     */
-    G copy();
+    protected abstract double[] getTranslate();
 
-    /**
-     * Get the glyph's width
-     */
-    double getWidth();
+    protected abstract double[] getScale();
 
-    /**
-     * Get the glyph's height
-     *
-     * @return
-     */
-    double getHeight();
+    @Override
+    public Transform getTransform() {
+        return new TransformImpl( getTranslate(), getScale() );
+    }
 
 }

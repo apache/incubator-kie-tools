@@ -23,18 +23,23 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoUtils;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.AbstractBindableShapeGlyphBuilder;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.AbstractGlyphShapeBuilder;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphShapeDef;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-@Dependent
-public class LienzoShapesGlyphBuilder extends AbstractBindableShapeGlyphBuilder<Group> {
+@ApplicationScoped
+public class LienzoShapesGlyphBuilder extends AbstractGlyphShapeBuilder<Group> {
 
-    FactoryManager factoryManager;
+    private final FactoryManager factoryManager;
+
+    protected LienzoShapesGlyphBuilder() {
+        this( null );
+    }
 
     @Inject
     public LienzoShapesGlyphBuilder( final FactoryManager factoryManager ) {
@@ -47,7 +52,7 @@ public class LienzoShapesGlyphBuilder extends AbstractBindableShapeGlyphBuilder<
     }
 
     @Override
-    protected ShapeGlyph<Group> doBuild( final Shape<?> shape ) {
+    protected Glyph<Group> doBuild( final Shape<?> shape ) {
         final ShapeView<?> view = shape.getShapeView();
         Group group = null;
         BoundingBox bb = null;
@@ -78,6 +83,11 @@ public class LienzoShapesGlyphBuilder extends AbstractBindableShapeGlyphBuilder<
         group.setScale( scale[ 0 ], scale[ 1 ] );
         return new LienzoShapeGlyph( group, width, height );
 
+    }
+
+    @Override
+    public Class<?> getType() {
+        return GlyphShapeDef.class;
     }
 
 }

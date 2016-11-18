@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command;
 
+import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.MoveShapeDownToolboxCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.MoveShapeUpToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.RemoveToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewNodeCommand;
@@ -36,6 +38,10 @@ public abstract class ToolboxCommandFactory {
     }
 
     public abstract RemoveToolboxCommand<?> newRemoveToolboxCommand();
+
+    public abstract MoveShapeUpToolboxCommand<?> newMoveShapeUpToolboxCommand();
+
+    public abstract MoveShapeDownToolboxCommand<?> newMoveShapeDownToolboxCommand();
 
     public NewNodeCommand<?> newNodeCommand() {
         return newNodeCommands.get();

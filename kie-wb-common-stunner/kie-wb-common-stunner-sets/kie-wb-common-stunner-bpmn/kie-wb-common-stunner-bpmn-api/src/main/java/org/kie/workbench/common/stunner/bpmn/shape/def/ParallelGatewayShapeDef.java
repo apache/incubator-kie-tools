@@ -18,12 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
 import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.DynamicIconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
+import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -90,13 +93,13 @@ public final class ParallelGatewayShapeDef
     }
 
     @Override
-    public String getGlyphBackgroundColor( final ParallelGateway element ) {
-        return ParallelGateway.ParallelGatewayBuilder.COLOR;
+    public HasTitle.Position getFontPosition( final ParallelGateway element ) {
+        return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public String getGlyphDescription( final ParallelGateway element ) {
-        return ParallelGateway.description;
+    public double getFontRotation( final ParallelGateway element ) {
+        return 0;
     }
 
     @Override
@@ -106,6 +109,25 @@ public final class ParallelGatewayShapeDef
 
         }};
 
+    }
+
+    private static final PictureGlyphDef<ParallelGateway, BPMNPictures> PICTURE_GLYPH_DEF =
+            new PictureGlyphDef<ParallelGateway, BPMNPictures>() {
+
+                @Override
+                public String getGlyphDescription( ParallelGateway element ) {
+                    return element.getDescription();
+                }
+
+                @Override
+                public BPMNPictures getSource( final Class<?> type ) {
+                    return BPMNPictures.PARALLEL_EVENT;
+                }
+            };
+
+    @Override
+    public GlyphDef<ParallelGateway> getGlyphDef() {
+        return PICTURE_GLYPH_DEF;
     }
 
     public final class IconProxy
@@ -152,15 +174,6 @@ public final class ParallelGatewayShapeDef
             return 1;
         }
 
-        @Override
-        public String getGlyphDescription( final ParallelGateway element ) {
-            return null;
-        }
-
-        @Override
-        public String getGlyphBackgroundColor( final ParallelGateway element ) {
-            return null;
-        }
     }
 
 }

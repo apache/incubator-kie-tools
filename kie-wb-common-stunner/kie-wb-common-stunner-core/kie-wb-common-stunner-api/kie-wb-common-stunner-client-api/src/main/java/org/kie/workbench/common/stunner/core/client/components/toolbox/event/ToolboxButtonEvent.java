@@ -22,6 +22,10 @@ public interface ToolboxButtonEvent {
 
     int getY();
 
+    int getAbsoluteX();
+
+    int getAbsoluteY();
+
     int getClientX();
 
     int getClientY();

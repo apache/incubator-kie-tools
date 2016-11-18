@@ -41,7 +41,7 @@ import java.util.List;
 public class MenuDevCommandsBuilder {
 
     private final ManagedInstance<MenuDevCommand> menuDevCommandManagedInstances;
-    private final List<MenuDevCommand<?>> devCommands = new LinkedList<>();
+    private final List<MenuDevCommand> devCommands = new LinkedList<>();
     private boolean enabled;
 
     @Inject
@@ -69,7 +69,7 @@ public class MenuDevCommandsBuilder {
         final DropDownMenu menu = new DropDownMenu() {{
             addStyleName( "pull-right" );
         }};
-        for ( final MenuDevCommand<?> command : devCommands ) {
+        for ( final MenuDevCommand command : devCommands ) {
             menu.add( new AnchorListItem( command.getText() ) {{
                 setIcon( command.getIcon() );
                 addClickHandler( event -> command.execute() );

@@ -40,8 +40,6 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
-
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;

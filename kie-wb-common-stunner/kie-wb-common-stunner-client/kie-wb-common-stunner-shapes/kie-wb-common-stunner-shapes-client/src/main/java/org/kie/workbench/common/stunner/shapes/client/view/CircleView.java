@@ -17,8 +17,13 @@
 package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 
+/**
+ * The lienzo view implementation for the Circle shape.
+ * TODO: Disabling for now the resize for circles - ARC resize is not implemented yet on lienzo side.
+ */
 public class CircleView extends BasicShapeView<CircleView>
         implements HasRadius<CircleView> {
 
@@ -31,13 +36,19 @@ public class CircleView extends BasicShapeView<CircleView>
         create( getPath().clear(), radius );
         updateFillGradient( radius * 2, radius * 2 );
         refresh();
+        super.setResizable( false );
         return this;
 
     }
 
     private static MultiPath create( final MultiPath path,
                                      final double radius ) {
-        return path.M( radius, 0 ).circle( radius );
+        return path.M( radius, 0 ).circle( radius ).Z();
+    }
+
+    @Override
+    public WiresShape setResizable( final boolean resizable ) {
+        return super.setResizable( false );
     }
 
 }

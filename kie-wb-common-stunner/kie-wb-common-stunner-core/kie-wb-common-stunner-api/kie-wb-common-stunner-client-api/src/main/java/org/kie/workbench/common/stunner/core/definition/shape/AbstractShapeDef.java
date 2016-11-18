@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.definition.shape;
 
-public abstract class AbstractShapeDef<W> extends AbstractBindableGlyphDef<W> implements ShapeDef<W> {
+public abstract class AbstractShapeDef<W> implements ShapeDef<W> {
+
+    @Override
+    public GlyphDef<W> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
+    }
 
 }

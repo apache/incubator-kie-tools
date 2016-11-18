@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.factory;
 
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
@@ -33,12 +34,12 @@ public abstract class AbstractShapeDefFactory<W, V extends ShapeView, S extends 
 
     protected final Map<Class<?>, P> definitions = new HashMap<Class<?>, P>();
 
-    protected FactoryManager factoryManager;
+    protected final DefinitionManager definitionManager;
+    protected final FactoryManager factoryManager;
 
-    protected AbstractShapeDefFactory() {
-    }
-
-    public AbstractShapeDefFactory( final FactoryManager factoryManager ) {
+    public AbstractShapeDefFactory( final DefinitionManager definitionManager,
+                                    final FactoryManager factoryManager ) {
+        this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
     }
 
@@ -51,7 +52,7 @@ public abstract class AbstractShapeDefFactory<W, V extends ShapeView, S extends 
         final P proxy = getShapeDef( definitionId );
         // TODO: Avoid creating domain object instance here.
         final W tempObject = factoryManager.newDefinition( definitionId );
-        return proxy.getGlyphDescription( tempObject );
+        return definitionManager.adapters().forDefinition().getDescription( tempObject );
     }
 
     @Override
@@ -84,9 +85,9 @@ public abstract class AbstractShapeDefFactory<W, V extends ShapeView, S extends 
     }
 
     @Override
-    public ShapeGlyph glyph( final String definitionId,
-                             final double width,
-                             final double height ) {
+    public Glyph glyph( final String definitionId,
+                        final double width,
+                        final double height ) {
         final Class<?> clazz = getDefinitionClass( definitionId );
         return glyph( clazz, width, height );
     }

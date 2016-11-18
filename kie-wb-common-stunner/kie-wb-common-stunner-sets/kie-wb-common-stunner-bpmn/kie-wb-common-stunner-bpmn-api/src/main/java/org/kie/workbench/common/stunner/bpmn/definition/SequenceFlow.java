@@ -35,18 +35,20 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 import javax.validation.Valid;
 import java.util.Set;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
 
 @Portable
 @Bindable
 @Definition( graphFactory = EdgeFactory.class, builder = SequenceFlow.SequenceFlowBuilder.class )
-// Connection rules.
+// *** Connection rules ****
 @CanConnect( startRole = "sequence_start", endRole = "sequence_end" )
 @CanConnect( startRole = "choreography_sequence_start", endRole = "choreography_sequence_end" )
 @CanConnect( startRole = "Exclusive_Eventbased_Gateway", endRole = "FromEventbasedGateway" )
 @CanConnect( startRole = "EventbasedGateway", endRole = "FromEventbasedGateway" )
-// Edge cardinality rules.
+// **** Cardinality rules for connectors ****
+// No incoming connections for start events.
 @EdgeOccurrences( role = "Startevents_all", type = EdgeOccurrences.EdgeType.INCOMING, max = 0 )
+// No outgoing connections for end events.
 @EdgeOccurrences( role = "Endevents_all", type = EdgeOccurrences.EdgeType.OUTGOING, max = 0 )
 public class SequenceFlow extends BaseConnector {
 

@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.DragBounds;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public abstract class AbstractShapeView<T> extends WiresShape
@@ -39,9 +41,10 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setUUID( final String uuid ) {
         this.uuid = uuid;
-        this.getGroup().setUserData( UUID_PREFFIX + uuid );
+        this.getGroup().setUserData( UUID_PREFIX + uuid );
         return ( T ) this;
     }
 
@@ -51,6 +54,7 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setZIndex( final int zindez ) {
         this.zindex = zindez;
         return ( T ) this;
@@ -59,12 +63,6 @@ public abstract class AbstractShapeView<T> extends WiresShape
     @Override
     public int getZIndex() {
         return zindex;
-    }
-
-    @Override
-    public T setDragEnabled( boolean isDraggable ) {
-        this.setDraggable( isDraggable );
-        return ( T ) this;
     }
 
     @Override
@@ -78,15 +76,22 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setShapeX( final double x ) {
         getContainer().getAttributes().setX( x );
         return ( T ) this;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setShapeY( final double y ) {
         getContainer().getAttributes().setY( y );
         return ( T ) this;
+    }
+
+    @Override
+    public double[] getShapeAbsoluteLocation() {
+        return WiresUtils.getAbsolute( getContainer() );
     }
 
     @Override
@@ -95,6 +100,7 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setFillColor( final String color ) {
         getShape().setFillColor( color );
         return ( T ) this;
@@ -106,6 +112,7 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setFillAlpha( final double alpha ) {
         getShape().setFillAlpha( alpha );
         return ( T ) this;
@@ -117,6 +124,7 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setStrokeColor( final String color ) {
         getShape().setStrokeColor( color );
         return ( T ) this;
@@ -128,6 +136,7 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setStrokeAlpha( final double alpha ) {
         getShape().setStrokeAlpha( alpha );
         return ( T ) this;
@@ -139,30 +148,46 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setStrokeWidth( final double width ) {
         getShape().setStrokeWidth( width );
         return ( T ) this;
     }
 
+    // TODO: Move this into lienzo WiresShape/WiresConnector?
     @Override
+    @SuppressWarnings( "unchecked" )
+    public T setDragBounds( final double x1,
+                            final double y1,
+                            final double x2,
+                            final double y2 ) {
+        getGroup().setDragBounds( new DragBounds( x1, y1, x2, y2 ) );
+        return ( T ) this;
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
     public T moveToTop() {
         getContainer().moveToTop();
         return ( T ) this;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T moveToBottom() {
         getContainer().moveToBottom();
         return ( T ) this;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T moveUp() {
         getContainer().moveUp();
         return ( T ) this;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T moveDown() {
         getContainer().moveDown();
         return ( T ) this;

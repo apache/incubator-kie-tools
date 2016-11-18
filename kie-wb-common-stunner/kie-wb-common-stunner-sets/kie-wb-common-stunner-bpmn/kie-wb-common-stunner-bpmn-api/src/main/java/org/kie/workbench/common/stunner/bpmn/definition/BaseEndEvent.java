@@ -29,13 +29,16 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
-
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
-@MorphBase( defaultType = EndNoneEvent.class, targets = { BaseStartEvent.class } )
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_GENERAL_SETTINGS;
+
+@MorphBase( defaultType = EndNoneEvent.class
+        /* TODO: Disabled morphing from end to start events for M1
+        targets = { BaseStartEvent.class } */
+)
 public abstract class BaseEndEvent implements BPMNDefinition {
 
     @Category
@@ -76,8 +79,8 @@ public abstract class BaseEndEvent implements BPMNDefinition {
 
     static abstract class BaseEndEventBuilder<T extends BaseEndEvent> implements Builder<T> {
 
-        public static final transient String COLOR = "#ff7b5e";
-        public static final Double BORDER_SIZE = 2d;
+        public static final String BG_COLOR = "#FFFFFF";
+        public static final Double BORDER_SIZE = 4d;
         public static final String BORDER_COLOR = "#000000";
         public static final Double RADIUS = 14d;
     }

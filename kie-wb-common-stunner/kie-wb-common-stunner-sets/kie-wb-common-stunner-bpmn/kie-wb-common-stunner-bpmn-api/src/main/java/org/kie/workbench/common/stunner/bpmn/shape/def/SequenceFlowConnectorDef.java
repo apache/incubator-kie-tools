@@ -17,6 +17,9 @@
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.AbstractConnectorDef;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
@@ -50,13 +53,22 @@ public final class SequenceFlowConnectorDef
     }
 
     @Override
-    public String getGlyphBackgroundColor( final SequenceFlow element ) {
-        return element.getBackgroundSet().getBgColor().getValue();
-    }
-
-    @Override
     public String getGlyphDescription( final SequenceFlow element ) {
         return element.getTitle();
     }
 
+    @Override
+    public HasTitle.Position getFontPosition( final SequenceFlow element ) {
+        return HasTitle.Position.TOP;
+    }
+
+    @Override
+    public double getFontRotation( final SequenceFlow element ) {
+        return 0;
+    }
+
+    @Override
+    public GlyphDef<SequenceFlow> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
+    }
 }

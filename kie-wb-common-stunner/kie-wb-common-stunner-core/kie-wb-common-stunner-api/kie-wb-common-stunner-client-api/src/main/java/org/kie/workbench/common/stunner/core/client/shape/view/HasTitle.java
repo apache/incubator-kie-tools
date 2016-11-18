@@ -26,6 +26,8 @@ public interface HasTitle<T> {
 
     T setTitlePosition( Position position );
 
+    T setTitleRotation( double degrees );
+
     T setTitleStrokeColor( String color );
 
     T setTitleFontFamily( String fontFamily );

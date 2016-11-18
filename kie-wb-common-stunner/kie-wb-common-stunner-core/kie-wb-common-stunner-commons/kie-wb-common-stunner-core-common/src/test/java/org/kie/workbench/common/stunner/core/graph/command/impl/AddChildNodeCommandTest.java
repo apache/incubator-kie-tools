@@ -43,6 +43,8 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
 
     private static final String PARENT_UUID = "parentUUID";
     private static final String CANDIDATE_UUID = "candidateUUID";
+    private static final Double x = 100d;
+    private static final Double y = 200d;
 
     private Node parent;
     private Node candidate;
@@ -55,13 +57,28 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
         this.parent = mockNode( PARENT_UUID );
         this.candidate = mockNode( CANDIDATE_UUID );
         when( graphIndex.getNode( eq( PARENT_UUID ) )).thenReturn( parent );
-        this.tested = new AddChildNodeCommand( PARENT_UUID, candidate );
+        this.tested = new AddChildNodeCommand( PARENT_UUID, candidate, x, y );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testInitializeCommands() {
         this.tested = spy( tested );
+        tested.initialize( graphCommandExecutionContext );
+        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
+        verify( tested, times( 3 ) ).addCommand( commandArgumentCaptor.capture() );
+        List<Command > commands = commandArgumentCaptor.getAllValues();
+        assertNotNull( commands );
+        assertTrue( commands.size() == 3 );
+        assertTrue( commands.get( 0 ) instanceof AddNodeCommand );
+        assertTrue( commands.get( 1 ) instanceof UpdateElementPositionCommand );
+        assertTrue( commands.get( 2 ) instanceof AddChildEdgeCommand );
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    public void testInitializeWithNoPositionCommands() {
+        this.tested = spy( new AddChildNodeCommand( PARENT_UUID, candidate, null, null ) );
         tested.initialize( graphCommandExecutionContext );
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
         verify( tested, times( 2 ) ).addCommand( commandArgumentCaptor.capture() );
@@ -77,8 +94,9 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
     public void testAllow() {
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
         assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( containmentRuleManager, times( 2 ) ).evaluate( eq( parent ), eq( candidate ) );
-        verify( cardinalityRuleManager, times( 2 ) ).evaluate( eq( graph ), eq( candidate ), eq( RuleManager.Operation.ADD ) );
+        // TODO: Improve this kind of things on built-in composite commands, it's not necessary to check same rule 3x.
+        verify( containmentRuleManager, times( 3 ) ).evaluate( eq( parent ), eq( candidate ) );
+        verify( cardinalityRuleManager, times( 3 ) ).evaluate( eq( graph ), eq( candidate ), eq( RuleManager.Operation.ADD ) );
         verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
         verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ),
                 any( List.class ), any( List.class ), any( RuleManager.Operation.class ) );

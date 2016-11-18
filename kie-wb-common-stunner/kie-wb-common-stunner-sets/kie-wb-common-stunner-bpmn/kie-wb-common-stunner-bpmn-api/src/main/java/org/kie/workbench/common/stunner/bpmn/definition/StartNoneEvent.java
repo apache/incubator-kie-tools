@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.CatchEventAttributes;
@@ -52,11 +53,11 @@ public class StartNoneEvent extends BaseStartEvent {
 
         @Override
         public StartNoneEvent build() {
-            return new StartNoneEvent( new BPMNGeneralSet( "Start" ),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
+            return new StartNoneEvent( new BPMNGeneralSet(),
+                    new BackgroundSet( BG_COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
                     new CatchEventAttributes(),
-                    new CircleDimensionSet( RADIUS ) );
+                    new CircleDimensionSet( new Radius( RADIUS ) ) );
         }
 
     }

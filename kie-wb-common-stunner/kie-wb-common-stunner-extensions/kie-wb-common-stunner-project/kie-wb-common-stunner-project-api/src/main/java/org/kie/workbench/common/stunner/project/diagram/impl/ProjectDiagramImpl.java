@@ -23,7 +23,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 
-//  TODO: Implement hash function for wb editor usage.
 @Portable
 public class ProjectDiagramImpl extends AbstractDiagram<Graph<DefinitionSet, ?>, ProjectMetadata> implements ProjectDiagram {
 
@@ -31,6 +30,15 @@ public class ProjectDiagramImpl extends AbstractDiagram<Graph<DefinitionSet, ?>,
                                @MapsTo( "graph" ) Graph<DefinitionSet, ?> graph,
                                @MapsTo( "metadata" ) ProjectMetadata metadata ) {
         super( name, graph, metadata );
+    }
+
+    /**
+     * Currently diagram's name and metadata are not updated, just rely on the graph instance.
+     * Improve this later if necessary.
+     */
+    @Override
+    public int hashCode() {
+        return getGraph().hashCode();
     }
 
 }

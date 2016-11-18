@@ -27,13 +27,16 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.tooling.common.api.flow.Flows;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import org.kie.workbench.common.stunner.lienzo.grid.Grid;
 import org.kie.workbench.common.stunner.lienzo.toolbox.grid.GridToolbox;
+import org.w3c.dom.Attr;
 
+import javax.smartcardio.ATR;
 import java.util.Iterator;
 import java.util.List;
 
@@ -116,8 +119,8 @@ public abstract class AbstractToolbox implements GridToolbox {
     }
 
     private void reposition( final boolean batch ) {
-        final double gx = shape.getGroup().getAbsoluteLocation().getX();
-        final double gy = shape.getGroup().getAbsoluteLocation().getY();
+        final double gx = WiresUtils.getLocation( shape.getGroup() ).getX();
+        final double gy = WiresUtils.getLocation( shape.getGroup() ).getY();
         final Point2D anchorPoint = Positioning.anchorFor( this.shape.getPath().getBoundingPoints().getBoundingBox(), this.anchor );
         final Grid.Point toolboxPosition = this.grid.findPosition( new Grid.Point( ( int ) anchorPoint.getX(), ( int ) anchorPoint.getY() ), this.towards );
         group.setX( gx + toolboxPosition.getX() );
@@ -129,11 +132,10 @@ public abstract class AbstractToolbox implements GridToolbox {
 
     @Override
     public void show() {
+        reposition( true );
         for ( ToolboxButton button : buttons ) {
             button.getShape().getGroup().animate( AnimationTweener.LINEAR, AnimationProperties.toPropertyList( AnimationProperty.Properties.ALPHA( 1 ) ), 500, new AnimationCallback() );
-
         }
-
     }
 
     @Override

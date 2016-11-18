@@ -40,7 +40,7 @@ public interface MorphAdapter<S> extends Adapter {
     <T> Iterable<String> getTargets( T definition, MorphDefinition morphDefinition );
 
     /**
-     * Performs the morph operation for a diven morph definition and a given target.
+     * Performs the morph operation for a given morph definition and a given target.
      */
     <T> T morph( S source, MorphDefinition definition, String target );
 

@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command;
 
 import com.google.gwt.user.client.Timer;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButton;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 import javax.enterprise.event.Event;
@@ -33,21 +33,18 @@ public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<Abstra
     }
 
     public void mouseEnter( final Context<AbstractCanvasHandler> context, final Element element ) {
+        context.getCanvasHandler().getCanvas().getView().setCursor( AbstractCanvas.Cursors.POINTER );
     }
 
     public void mouseExit( final Context<AbstractCanvasHandler> context, final Element element ) {
-    }
-
-    @Override
-    public ToolboxButton.HoverAnimation getButtonAnimation() {
-        return ToolboxButton.HoverAnimation.ELASTIC;
+        context.getCanvasHandler().getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
     }
 
     @Override
     public void execute( final Context<AbstractCanvasHandler> context,
                          final Element element ) {
-        final Context.Event event = context.getEvent();
-        switch ( event ) {
+        final Context.EventType eventType = context.getEventType();
+        switch ( eventType ) {
             case CLICK:
                 click( context, element );
                 break;
@@ -75,15 +72,12 @@ public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<Abstra
         canvasHandler.getCanvas().getLayer().disableHandlers();
         elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler, uuid ) );
         final Timer t = new Timer() {
-
             @Override
             public void run() {
                 canvasHandler.getCanvas().getLayer().enableHandlers();
-
             }
         };
         t.schedule( 500 );
-
     }
 
     protected void fireLoadingStarted( final Context<AbstractCanvasHandler> context ) {

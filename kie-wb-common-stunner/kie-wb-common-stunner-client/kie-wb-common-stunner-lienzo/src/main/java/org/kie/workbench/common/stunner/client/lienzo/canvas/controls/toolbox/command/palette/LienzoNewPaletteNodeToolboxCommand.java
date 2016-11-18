@@ -51,6 +51,7 @@ public abstract class LienzoNewPaletteNodeToolboxCommand extends NewPaletteNodeC
                 nodeBuilderControl, graphBoundsIndexer, SVGUtils.createSVGIcon( SVGUtils.getAddIcon() ) );
     }
 
+    // TODO: i18n.
     @PostConstruct
     public void init() {
         getLienzoPalette()
@@ -58,7 +59,7 @@ public abstract class LienzoNewPaletteNodeToolboxCommand extends NewPaletteNodeC
                 .setIconSize( 15 )
                 .setPadding( 5 )
                 .setLayout( LienzoPalette.Layout.VERTICAL );
-        ( ( AbstractLienzoGlyphItemsPalette ) getLienzoPalette() ).getDefinitionGlyphTooltip().setPrefix( "Create a new " );
+        ( ( AbstractLienzoGlyphItemsPalette ) getLienzoPalette() ).getDefinitionGlyphTooltip().setPrefix( "Click to create a " );
 
     }
 

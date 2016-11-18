@@ -129,24 +129,19 @@ public class BPMNGraphGenerator extends JsonGenerator {
     public void close() throws IOException {
         logBuilders();
         this.graph = ( Graph<DefinitionSet, Node> ) factoryManager.newElement( UUID.uuid(), BPMNDefinitionSet.class );
-
-        // TODO: Where are the bpmn diagram bounds in the oryx json strcuture?
+        // TODO: Where are the BPMN diagram bounds in the Oryx json structure? Exist?
         if ( null == graph.getContent().getBounds() ) {
             graph.getContent().setBounds( new BoundsImpl(
                     new BoundImpl( 0d, 0d ),
                     new BoundImpl( BPMNGraphFactory.GRAPH_DEFAULT_WIDTH, BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT )
             ) );
         }
-
-        // Remove the default diagram instance built by the BPMN graph factory, as it's already present
-        // on the deserialized graph structure.
-        Iterator<Node> nodes = this.graph.nodes().iterator();
-        while ( nodes.hasNext() ) {
-            graph.removeNode( nodes.next().getUUID() );
-        }
-
-        // Initialize the builder context.
-        builderContext.init( graph );
+        builderContext
+                // Initialize the builder context.
+                .init( graph )
+                // Clears the nodes present, if any, on the recently new graph instance for BPMN. This generator
+                // provides the generation for the complete graph structure and nodes.
+                .execute( builderContext.getCommandFactory().CLEAR_GRAPH() );
         NodeObjectBuilder diagramBuilder = getDiagramBuilder( builderContext );
         if ( diagramBuilder == null ) {
             throw new RuntimeException( "No diagrams found!" );
@@ -185,9 +180,10 @@ public class BPMNGraphGenerator extends JsonGenerator {
         Index<?, ?> index;
 
         @Override
-        public void init( final Graph<DefinitionSet, Node> graph ) {
+        public GraphObjectBuilder.BuilderContext init( final Graph<DefinitionSet, Node> graph ) {
             this.graph = graph;
             this.index = indexBuilder.build( graph );
+            return this;
         }
 
         @Override

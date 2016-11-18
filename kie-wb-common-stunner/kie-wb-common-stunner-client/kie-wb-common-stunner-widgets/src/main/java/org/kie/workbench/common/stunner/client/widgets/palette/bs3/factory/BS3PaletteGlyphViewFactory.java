@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.validation.client.impl.Group;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoPanelUtils;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {
 
@@ -42,12 +42,12 @@ class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {
 
     @Override
     public IsWidget getDefinitionView( final String defId, final int width, final int height ) {
-        final ShapeGlyph<Group> glyph = getGlyph( defId, width, height );
+        final Glyph<Group> glyph = getGlyph( defId, width, height );
         return LienzoPanelUtils.newPanel( glyph, width, height );
     }
 
     @SuppressWarnings( "unchecked" )
-    private ShapeGlyph<Group> getGlyph( final String id, final int width, final int height ) {
+    private Glyph<Group> getGlyph( final String id, final int width, final int height ) {
         return shapeManager.getFactory( id ).glyph( id, width, height );
     }
 

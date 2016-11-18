@@ -17,7 +17,10 @@
 package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.Ring;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.RingShapeDef;
 
 public final class RingShapeDefImpl
@@ -75,6 +78,16 @@ public final class RingShapeDefImpl
     }
 
     @Override
+    public HasTitle.Position getFontPosition( final Ring element ) {
+        return HasTitle.Position.BOTTOM;
+    }
+
+    @Override
+    public double getFontRotation( final Ring element ) {
+        return 0;
+    }
+
+    @Override
     public double getOuterRadius( final Ring element ) {
         return element.getOuterRadius().getValue();
     }
@@ -85,13 +98,8 @@ public final class RingShapeDefImpl
     }
 
     @Override
-    public String getGlyphDescription( final Ring element ) {
-        return Ring.title;
-    }
-
-    @Override
-    public String getGlyphBackgroundColor( final Ring elementRing ) {
-        return Ring.RingBuilder.COLOR;
+    public GlyphDef<Ring> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
     }
 
 }

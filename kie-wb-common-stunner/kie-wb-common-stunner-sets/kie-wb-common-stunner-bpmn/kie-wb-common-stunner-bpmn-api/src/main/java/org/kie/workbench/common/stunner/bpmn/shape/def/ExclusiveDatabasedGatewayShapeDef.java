@@ -18,12 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
 import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.DynamicIconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
+import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -90,13 +93,32 @@ public final class ExclusiveDatabasedGatewayShapeDef
     }
 
     @Override
-    public String getGlyphBackgroundColor( final ExclusiveDatabasedGateway element ) {
-        return ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder.COLOR;
+    public HasTitle.Position getFontPosition( final ExclusiveDatabasedGateway element ) {
+        return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public String getGlyphDescription( final ExclusiveDatabasedGateway element ) {
-        return ExclusiveDatabasedGateway.description;
+    public double getFontRotation( final ExclusiveDatabasedGateway element ) {
+        return 0;
+    }
+
+    private static final PictureGlyphDef<ExclusiveDatabasedGateway, BPMNPictures> PICTURE_GLYPH_DEF =
+            new PictureGlyphDef<ExclusiveDatabasedGateway, BPMNPictures>() {
+
+                @Override
+                public String getGlyphDescription( ExclusiveDatabasedGateway element ) {
+                    return element.getDescription();
+                }
+
+                @Override
+                public BPMNPictures getSource( final Class<?> type ) {
+                    return BPMNPictures.CANCEL;
+                }
+            };
+
+    @Override
+    public GlyphDef<ExclusiveDatabasedGateway> getGlyphDef() {
+        return PICTURE_GLYPH_DEF;
     }
 
     @Override
@@ -152,15 +174,6 @@ public final class ExclusiveDatabasedGatewayShapeDef
             return 1;
         }
 
-        @Override
-        public String getGlyphDescription( final ExclusiveDatabasedGateway element ) {
-            return null;
-        }
-
-        @Override
-        public String getGlyphBackgroundColor( final ExclusiveDatabasedGateway element ) {
-            return null;
-        }
     }
 
 }

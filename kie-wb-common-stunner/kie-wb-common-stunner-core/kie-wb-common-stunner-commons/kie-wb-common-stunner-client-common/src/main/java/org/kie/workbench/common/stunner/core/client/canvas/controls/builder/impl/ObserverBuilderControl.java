@@ -52,7 +52,11 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
 
     private static Logger LOGGER = Logger.getLogger( ObserverBuilderControl.class.getName() );
 
-    Event<CanvasElementSelectedEvent> elementSelectedEvent;
+    private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
+
+    protected ObserverBuilderControl() {
+        this( null, null, null, null, null, null, null, null, null, null );
+    }
 
     @Inject
     public ObserverBuilderControl( final ClientDefinitionManager clientDefinitionManager,
@@ -71,6 +75,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
         this.elementSelectedEvent = elementSelectedEvent;
     }
 
+    @SuppressWarnings( "unchecked" )
     void onBuildCanvasShape( @Observes BuildCanvasShapeEvent buildCanvasShapeEvent ) {
         checkNotNull( "buildCanvasShapeEvent", buildCanvasShapeEvent );
         if ( null != canvasHandler ) {
@@ -89,20 +94,15 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                     public void onSuccess( final String uuid ) {
                         canvasHandler.getCanvas().draw();
                         elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler, uuid ) );
-
                     }
 
                     @Override
                     public void onError( final ClientRuntimeError error ) {
                         LOGGER.log( Level.SEVERE, error.toString() );
-
                     }
-
                 } );
-
             }
         }
-
     }
 
 }

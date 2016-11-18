@@ -16,32 +16,41 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.resize;
 
-import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
-import com.google.gwt.core.client.GWT;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 // TODO: Handler registrations, update model, resize toolbox, etc
 
 @Dependent
-public class ResizeControlImpl extends AbstractCanvasHandlerControl implements ResizeControl<AbstractCanvasHandler, Element> {
+public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl implements ResizeControl<AbstractCanvasHandler, Element> {
 
-    CanvasCommandFactory canvasCommandFactory;
-    CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    private static Logger LOGGER = Logger.getLogger( ResizeControlImpl.class.getName() );
+
+    private final CanvasCommandFactory canvasCommandFactory;
+    private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+
+    protected ResizeControlImpl() {
+        this( null, null );
+    }
 
     @Inject
     public ResizeControlImpl( final CanvasCommandFactory canvasCommandFactory,
@@ -51,25 +60,59 @@ public class ResizeControlImpl extends AbstractCanvasHandlerControl implements R
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public void register( final Element element ) {
-        final Shape<?> shape = canvasHandler.getCanvas().getShape( element.getUUID() );
-        if ( null != shape && ( shape.getShapeView() instanceof WiresShape ) ) {
-            register( element, shape );
-
+        final AbstractCanvas<?> canvas = canvasHandler.getCanvas();
+        final Shape<?> shape = canvas.getShape( element.getUUID() );
+        if ( registerCPHandlers( shape.getShapeView() ) ) {
+            registerResizeHandlers( element, shape );
         }
-
     }
 
-    private void register( final Element element,
-                           final Shape<?> shape ) {
-        final WiresShape wiresShape = ( WiresShape ) shape.getShapeView();
-        // Enable resize controls on chick + shift down.
-        wiresShape
-                .setResizable( true )
-                .getGroup()
-                .addNodeMouseClickHandler( new NodeMouseClickHandler() {
-                    @Override
-                    public void onNodeMouseClick( final NodeMouseClickEvent event ) {
+    private void registerResizeHandlers( final Element element,
+                                         final Shape<?> shape ) {
+        if ( shape.getShapeView() instanceof HasEventHandlers ) {
+            final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shape.getShapeView();
+            final ResizeHandler resizeHandler = new ResizeHandler() {
+                @Override
+                public void start( final ResizeEvent event ) {
+                }
+
+                @Override
+                public void handle( final ResizeEvent event ) {
+                }
+
+                @Override
+                public void end( final ResizeEvent event ) {
+                    LOGGER.log( Level.FINE, "Shape [" + element.getUUID() + "] resized to size {"
+                            + event.getWidth() + ", " + event.getHeight() + "]" );
+                    // TODO: Update the model when resize is done.
+                    /*CommandResult<CanvasViolation> result =
+                            canvasCommandManager.execute( canvasHandler,
+                                    canvasCommandFactory.UPDATE_PROPERTY( element, );
+                    if ( CommandUtils.isError( result ) ) {
+                        // TODO: DragContext#reset & show error somewhere.
+                    }*/
+                }
+
+            };
+            hasEventHandlers.addHandler( ViewEventType.RESIZE, resizeHandler );
+            registerHandler( element.getUUID(), resizeHandler );
+        }
+    }
+
+    /**
+     * This method shows the shape's control points on when clicking on it.
+     * TODO: Move this code to some view class or make the conrol points stuff more generic for shape views.
+     */
+    private boolean registerCPHandlers( final ShapeView<?> shapeView ) {
+        if ( shapeView instanceof WiresShape ) {
+            final WiresShape wiresShape = ( WiresShape ) shapeView;
+            // Enable resize controls on chick + shift down.
+            wiresShape
+                    .setResizable( true )
+                    .getGroup()
+                    .addNodeMouseClickHandler( event -> {
                         final IControlHandleList controlHandles = wiresShape.loadControls( IControlHandle.ControlHandleStandardType.RESIZE );
                         if ( null != controlHandles ) {
                             if ( event.isShiftKeyDown() && !controlHandles.isVisible() ) {
@@ -77,35 +120,11 @@ public class ResizeControlImpl extends AbstractCanvasHandlerControl implements R
                             } else {
                                 controlHandles.hide();
                             }
-
                         }
-
-                    }
-
-                } );
-        // Update the model when resize event obesrved.
-        wiresShape.addWiresResizeEndHandler( new WiresResizeEndHandler() {
-            @Override
-            public void onShapeResizeEnd( WiresResizeEndEvent event ) {
-                GWT.log( "Shape resized TO {" + event.getWidth() + ", " + event.getHeight() + "]" );
-                /* TODO
-                CommandResult<CanvasViolation> result = canvasCommandManager.execute( canvasHandler, canvasCommandFactory.UPDATE_PROPERTY(element,  );
-                if ( CommandUtils.isError( result) ) {
-                    // TODO: DragContext#reset
-                }*/
-            }
-        } );
-
-    }
-
-    @Override
-    public void deregister( final Element element ) {
-        // TODO
-    }
-
-    @Override
-    protected void doDisable() {
-        // TODO
+                    } );
+            return true;
+        }
+        return false;
     }
 
 }

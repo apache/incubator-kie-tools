@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.components.drag.GlyphDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.PrimitiveDragProxy;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -39,7 +39,7 @@ public class GlyphDragProxyImpl implements GlyphDragProxy<AbstractCanvas> {
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public DragProxy<AbstractCanvas, ShapeGlyph, DragProxyCallback> proxyFor( final AbstractCanvas context ) {
+    public DragProxy<AbstractCanvas, Glyph, DragProxyCallback> proxyFor( final AbstractCanvas context ) {
         final LienzoLayer layer = ( LienzoLayer ) context.getLayer();
         this.primitiveDragProxyFactory.proxyFor( layer.getLienzoLayer() );
         return this;
@@ -47,10 +47,10 @@ public class GlyphDragProxyImpl implements GlyphDragProxy<AbstractCanvas> {
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public DragProxy<AbstractCanvas, ShapeGlyph, DragProxyCallback> show( final ShapeGlyph item,
-                                                                          final int x,
-                                                                          final int y,
-                                                                          final DragProxyCallback callback ) {
+    public DragProxy<AbstractCanvas, Glyph, DragProxyCallback> show( final Glyph item,
+                                                                     final int x,
+                                                                     final int y,
+                                                                     final DragProxyCallback callback ) {
         primitiveDragProxyFactory.show( item.getGroup(), x, y, callback );
         return this;
     }

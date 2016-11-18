@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.shapes.client.view;
 
+import com.ait.lienzo.client.core.event.NodeMouseOverEvent;
+import com.ait.lienzo.client.core.event.NodeMouseOverHandler;
 import com.ait.lienzo.client.core.shape.*;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
@@ -50,15 +52,21 @@ public abstract class BasicShapeView<T>
         HasChildren<BasicShapeView<T>> {
 
     private static final ViewEventType[] SUPPORTED_EVENT_TYPES = new ViewEventType[]{
-            ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK, ViewEventType.DRAG, ViewEventType.RESIZE,
+            ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK,
+            ViewEventType.TEXT_OVER, ViewEventType.TEXT_OUT,
+            ViewEventType.DRAG, ViewEventType.RESIZE,
             ViewEventType.TOUCH, ViewEventType.GESTURE
     };
 
     private ViewEventHandlerManager eventHandlerManager;
+    // Text event handlers will be only registered if text instace gets built.
+    private ViewHandler<TextOverEvent> textOverHandlerViewHandler;
+    private ViewHandler<TextOutEvent> textOutEventViewHandler;
     private final List<BasicShapeView<T>> children = new ArrayList<>();
     private Text text;
 
     private WiresLayoutContainer.Layout textPosition;
+    private double textRotationDegrees;
     private Type fillGradientType = null;
     private String fillGradientStartColor = null;
     private String fillGradientEndColor = null;
@@ -66,6 +74,7 @@ public abstract class BasicShapeView<T>
     public BasicShapeView( final MultiPath path ) {
         super( path );
         this.textPosition = WiresLayoutContainer.Layout.BOTTOM;
+        this.textRotationDegrees = 0;
         initialize();
 
     }
@@ -124,6 +133,8 @@ public abstract class BasicShapeView<T>
         if ( null == text ) {
             text = buildText( title );
             this.addChild( text, getTextPosition() );
+            registerTextOverHandler();
+            registerTextOutHandler();
         } else {
             text.setText( title );
         }
@@ -145,6 +156,13 @@ public abstract class BasicShapeView<T>
         } else if ( Position.CENTER.equals( position ) ) {
             this.textPosition = LayoutContainer.Layout.CENTER;
         }
+        return ( T ) this;
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public T setTitleRotation( final double degrees ) {
+        this.textRotationDegrees = degrees;
         return ( T ) this;
     }
 
@@ -200,7 +218,11 @@ public abstract class BasicShapeView<T>
     }
 
     private Text buildText( String _text ) {
-        Text text = new Text( _text ).setFontSize( 14 ).setFillColor( ColorName.BLACK ).setStrokeWidth( 1 );
+        Text text = new Text( _text )
+                .setFontSize( 14 )
+                .setFillColor( ColorName.BLACK )
+                .setStrokeWidth( 1 )
+                .setRotationDegrees( textRotationDegrees);
         return text.moveToTop().setDraggable( false ).setAlpha( 0 );
     }
 
@@ -269,6 +291,11 @@ public abstract class BasicShapeView<T>
     }
 
     @Override
+    public boolean areControlsVisible() {
+        return null != getControls() && getControls().isVisible();
+    }
+
+    @Override
     protected void doDestroy() {
         if ( null != eventHandlerManager ) {
             // Remove all registered handlers.
@@ -300,17 +327,17 @@ public abstract class BasicShapeView<T>
                 final HandlerRegistration[] registrations =
                         registerDragHandler( ( DragHandler ) eventHandler );
                 eventHandlerManager.addHandlersRegistration( type, registrations );
-
             } else if ( ViewEventType.RESIZE.equals( type ) ) {
                 final HandlerRegistration[] registrations =
                         registerResizeHandler( ( ResizeHandler ) eventHandler );
                 eventHandlerManager.addHandlersRegistration( type, registrations );
-
+            } if ( ViewEventType.TEXT_OVER.equals( type ) )
+                textOverHandlerViewHandler = ( ViewHandler<TextOverEvent> ) eventHandler;{
+            } if ( ViewEventType.TEXT_OUT.equals( type ) ) {
+                textOutEventViewHandler = ( ViewHandler<TextOutEvent> ) eventHandler;
             } else {
                 eventHandlerManager.addHandler( type, eventHandler );
-
             }
-
         }
         return ( T ) this;
     }
@@ -352,6 +379,31 @@ public abstract class BasicShapeView<T>
             dragHandler.end( e );
         } );
         return new HandlerRegistration[]{ dragStartReg, dragMoveReg, dragEndReg };
+    }
+
+    private void registerTextOverHandler() {
+        if ( null != textOverHandlerViewHandler ) {
+            HandlerRegistration registration = getText().addNodeMouseOverHandler( new NodeMouseOverHandler() {
+                @Override
+                public void onNodeMouseOver( NodeMouseOverEvent nodeMouseOverEvent ) {
+                    final TextOverEvent event = new TextOverEvent( nodeMouseOverEvent.getX(), nodeMouseOverEvent.getY(),
+                            nodeMouseOverEvent.getMouseEvent().getClientX(), nodeMouseOverEvent.getMouseEvent().getClientY() );
+                    textOverHandlerViewHandler.handle( event );
+                }
+            } );
+            eventHandlerManager.addHandlersRegistration( ViewEventType.TEXT_OVER, registration );
+        }
+    }
+
+    private void registerTextOutHandler() {
+        if ( null != textOutEventViewHandler ) {
+            HandlerRegistration registration = getText().addNodeMouseOutHandler( nodeMouseOverEvent -> {
+                final TextOutEvent event = new TextOutEvent( nodeMouseOverEvent.getX(), nodeMouseOverEvent.getY(),
+                        nodeMouseOverEvent.getMouseEvent().getClientX(), nodeMouseOverEvent.getMouseEvent().getClientY() );
+                textOutEventViewHandler.handle( event );
+            } );
+            eventHandlerManager.addHandlersRegistration( ViewEventType.TEXT_OUT, registration );
+        }
     }
 
     private HandlerRegistration[] registerResizeHandler( final ViewHandler<ResizeEvent> eventHandler ) {

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
-import org.kie.workbench.common.stunner.core.client.api.platform.Desktop;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -32,7 +31,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @Dependent
-@Desktop
 public final class SelectionControlImpl extends AbstractSelectionControl {
 
     @Inject

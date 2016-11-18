@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.shapes.def;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 public interface BasicShapeDef<W>
-        extends ShapeDef<W>, BasicGlyphDef<W> {
+        extends ShapeDef<W> {
 
     String getBackgroundColor( W element );
 

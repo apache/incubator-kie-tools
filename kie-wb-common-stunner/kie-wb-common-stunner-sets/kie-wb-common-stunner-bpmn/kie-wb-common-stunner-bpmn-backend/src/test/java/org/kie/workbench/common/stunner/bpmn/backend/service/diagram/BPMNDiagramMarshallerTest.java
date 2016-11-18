@@ -456,7 +456,7 @@ public class BPMNDiagramMarshallerTest {
         assertEquals( Double.valueOf(321),  simulationSet.getMean().getValue() );
     }
 
-    @Test
+    // TODO: Disabled @Test - As intermediate events has been disabled for M1
     @SuppressWarnings( "unchecked" )
     public void testUnmarshallNotBoundaryEvents() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_NOT_BOUNDARY_EVENTS );
@@ -483,7 +483,7 @@ public class BPMNDiagramMarshallerTest {
         assertEquals( 330, lr.getY(), 0 );
     }
 
-    @Test
+    // TODO: Disabled @Test - As intermediate events has been disabled for M1
     @SuppressWarnings( "unchecked" )
     public void testUnmarshallBoundaryEvents() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_BOUNDARY_EVENTS );
@@ -590,14 +590,14 @@ public class BPMNDiagramMarshallerTest {
         assertDiagram( result, 1, 7, 7 );
     }
 
-    @Test
+    // TODO: Disabled @Test - As intermediate events has been disabled for M1
     public void testMarshallNotBoundaryEvents() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_NOT_BOUNDARY_EVENTS );
         String result = tested.marshall( diagram );
         assertDiagram( result, 1, 5, 4 );
     }
 
-    @Test
+    // TODO: Disabled @Test - As intermediate events has been disabled for M1
     public void testMarshallBoundaryEvents() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_BOUNDARY_EVENTS );
         String result = tested.marshall( diagram );
@@ -783,7 +783,7 @@ public class BPMNDiagramMarshallerTest {
         assertTrue( result.contains( "<bpmn2:exclusiveGateway id=\"_877EA035-1A14-42E9-8CAA-43E9BF908C70\" drools:dg=\"under 10 : _5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\" name=\"AgeSplit\" gatewayDirection=\"Diverging\" default=\"_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\">" ) );
     }
 
-    @Test
+    // TODO: Disabled @Test - As intermediate events has been disabled for M1
     public void testMarshallIntermediateTimerEvent() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall(BPMN_TIMER_EVENT);
         IntermediateTimerEvent timerEvent = null;

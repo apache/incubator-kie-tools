@@ -34,9 +34,9 @@ public abstract class AbstractElementFactory<C, D extends Definition<C>, T exten
         return true;
     }
 
-    // TODO
+    // TODO: Dummy bounds - In addition see GraphUtils#updateBounds methods.
     protected Bounds buildBounds() {
-        return new BoundsImpl( new BoundImpl( 0d, 0d ), new BoundImpl( 0d, 0d ) );
+        return new BoundsImpl( new BoundImpl( 0d, 0d ), new BoundImpl( 30d, 30d ) );
     }
 
 }

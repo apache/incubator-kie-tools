@@ -27,7 +27,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 import javax.enterprise.context.Dependent;
 
@@ -38,7 +38,7 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Group> {
     private static final int ZINDEX = Integer.MAX_VALUE;
 
     @Override
-    public void show( final ShapeGlyph<Group> shapeGlyph,
+    public void show( final Glyph<Group> shapeGlyph,
                       final double x,
                       final double y,
                       final Callback callback ) {
@@ -49,6 +49,7 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Group> {
         dragShape.setY( proxyHeight / 2 );
         final LienzoPanel dragProxyPanel = new LienzoPanel( ( ( int ) proxyWidth * 2 ),
                 ( ( int ) proxyHeight * 2 ) );
+        dragProxyPanel.getElement().getStyle().setCursor( Style.Cursor.MOVE );
         final Layer dragProxyLayer = new Layer();
         dragProxyLayer.add( dragShape );
         dragProxyPanel.add( dragProxyLayer );

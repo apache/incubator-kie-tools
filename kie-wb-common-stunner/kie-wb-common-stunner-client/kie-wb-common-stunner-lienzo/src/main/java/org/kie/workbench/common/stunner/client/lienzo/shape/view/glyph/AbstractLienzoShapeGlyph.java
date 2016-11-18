@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.glyph;
 
 import com.ait.lienzo.client.core.shape.Group;
-import org.kie.workbench.common.stunner.core.client.shape.view.AbstractShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.AbstractGlyph;
 
-public abstract class AbstractLienzoShapeGlyph extends AbstractShapeGlyph<Group> {
+public abstract class AbstractLienzoShapeGlyph extends AbstractGlyph<Group> {
 
     public AbstractLienzoShapeGlyph( final Group group,
                                      final double width,

@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.basicset.shape.def.icon.dynamics;
 
 import org.kie.workbench.common.stunner.basicset.definition.icon.dynamics.XORIcon;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.XORIconShapeDef;
 
 public final class XORIconShapeDefImpl
@@ -24,13 +26,7 @@ public final class XORIconShapeDefImpl
         implements XORIconShapeDef<XORIcon> {
 
     @Override
-    public String getGlyphBackgroundColor( final XORIcon definition ) {
-        return XORIcon.COLOR;
+    public GlyphDef<XORIcon> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
     }
-
-    @Override
-    public String getGlyphDescription( final XORIcon definition ) {
-        return XORIcon.description;
-    }
-
 }

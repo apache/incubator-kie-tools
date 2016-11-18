@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.BasicConnector;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
 public final class BasicConnectorDefImpl
@@ -73,18 +75,17 @@ public final class BasicConnectorDefImpl
     }
 
     @Override
-    public String getGlyphBackgroundColor( final BasicConnector element ) {
-        return element.getBackgroundSet().getBgColor().getValue();
+    public HasTitle.Position getFontPosition( final BasicConnector element ) {
+        return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public String getGlyphDefinitionId( final String definitionId ) {
+    public double getFontRotation( final BasicConnector element ) {
+        return 0;
+    }
+
+    @Override
+    public GlyphDef<BasicConnector> getGlyphDef() {
         return null;
     }
-
-    @Override
-    public String getGlyphDescription( final BasicConnector element ) {
-        return element.getTitle();
-    }
-
 }

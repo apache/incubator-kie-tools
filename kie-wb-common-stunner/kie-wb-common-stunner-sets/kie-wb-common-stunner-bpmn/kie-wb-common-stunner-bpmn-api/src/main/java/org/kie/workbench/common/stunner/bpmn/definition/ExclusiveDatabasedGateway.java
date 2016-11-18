@@ -20,9 +20,9 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.ExclusiveGatewayExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -35,8 +35,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ti
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
-
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
 
 import javax.validation.Valid;
 
@@ -66,11 +64,11 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
 
         @Override
         public ExclusiveDatabasedGateway build() {
-            return new ExclusiveDatabasedGateway( new BPMNGeneralSet( "Gateway" ),
+            return new ExclusiveDatabasedGateway( new BPMNGeneralSet(),
                     new ExclusiveGatewayExecutionSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
-                    new CircleDimensionSet( RADIUS ) );
+                    new CircleDimensionSet( new Radius( RADIUS ) ) );
         }
 
     }

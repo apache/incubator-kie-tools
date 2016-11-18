@@ -20,13 +20,7 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.event.Too
 
 public interface ToolboxButton<I> {
 
-    public enum HoverAnimation {
-        ELASTIC, HOVER_COLOR;
-    }
-
     I getIcon();
-
-    HoverAnimation getAnimation();
 
     ToolboxButtonEventHandler getClickHandler();
 

@@ -20,19 +20,51 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 
 public interface Context<H extends CanvasHandler> {
 
-    enum Event {
+    enum EventType {
         CLICK, MOUSE_ENTER, MOUSE_EXIT, MOUSE_DOWN;
     }
 
+    /**
+     * Returns the canvas handler instance for this context.
+     */
     H getCanvasHandler();
 
-    Event getEvent();
+    /**
+     * Returns the type of event that has been fired.
+     */
+    EventType getEventType();
 
-    double getX();
+    /**
+     * Returns the X coordinate for the canvas.
+     * It's relative to the current layer/viewport's transform, if any.
+     */
+    int getX();
 
-    double getY();
+    /**
+     * Returns the Y coordinate for the canvas.
+     * It's relative to the current layer/viewport's transform, if any.
+     */
+    int getY();
 
-    double getClientX();
+    /**
+     * Returns the X coordinate for the canvas.
+     * It's absolute, not relative to the current layer/viewport's transform, if any.
+     */
+    int getAbsoluteX();
 
-    double getClientY();
+    /**
+     * Returns the Y coordinate for the canvas.
+     * It's absolute, not relative to the current layer/viewport's transform, if any.
+     */
+    int getAbsoluteY();
+
+    /**
+     * Returns the X coordinate for the input human event.
+     */
+    int getClientX();
+
+    /**
+     * Returns the Y coordinate for the input human event.
+     */
+    int getClientY();
 }

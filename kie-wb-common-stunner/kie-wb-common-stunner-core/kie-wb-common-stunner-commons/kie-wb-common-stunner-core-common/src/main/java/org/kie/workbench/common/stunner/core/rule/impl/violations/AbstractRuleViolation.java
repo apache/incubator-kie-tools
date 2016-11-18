@@ -25,4 +25,9 @@ public abstract class AbstractRuleViolation implements RuleViolation {
         return Type.ERROR;
     }
 
+    @Override
+    public String toString() {
+        return "[" + this.getClass().getSimpleName() + "] " + getMessage();
+    }
+
 }

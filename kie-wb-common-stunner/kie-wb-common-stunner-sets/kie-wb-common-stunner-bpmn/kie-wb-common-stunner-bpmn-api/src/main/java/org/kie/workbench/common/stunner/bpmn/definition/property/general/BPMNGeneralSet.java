@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.general;
 
-import javax.validation.Valid;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -27,7 +25,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import javax.validation.Valid;
+
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_DOCUMENTATION;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_NAME;
 
 @Portable
 @Bindable

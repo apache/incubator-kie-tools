@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
-import org.kie.workbench.common.stunner.core.definition.shape.AbstractBindableGlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.AbstractGlyphShapeDef;
 
 // TODO: Connector text not supported yet.
-public abstract class AbstractConnectorDef<W> extends AbstractBindableGlyphDef<W> implements ConnectorShapeDef<W> {
+public abstract class AbstractConnectorDef<W> extends AbstractGlyphShapeDef<W> implements ConnectorShapeDef<W> {
 
     @Override
     public String getNamePropertyValue( final W element ) {

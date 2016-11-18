@@ -21,16 +21,13 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.metaModel.TextArea;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphProperty;
 
 import javax.validation.Valid;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_DOCUMENTATION;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_NAME;
 
 @Portable
 @Bindable

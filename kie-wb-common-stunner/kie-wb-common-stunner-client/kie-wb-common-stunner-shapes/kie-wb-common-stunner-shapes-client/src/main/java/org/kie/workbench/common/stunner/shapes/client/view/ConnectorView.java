@@ -20,8 +20,12 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.shared.core.types.ColorName;
 
 public class ConnectorView extends BasicConnectorView<ConnectorView> {
+
+    private static final double DECORATOR_WIDTH = 10;
+    private static final double DECORATOR_HEIGHT = 15;
 
     public ConnectorView( final double... points ) {
         this( createLine( points ) );
@@ -34,20 +38,26 @@ public class ConnectorView extends BasicConnectorView<ConnectorView> {
     }
 
     private static Object[] createLine( final double... points ) {
+        // The head decorator must be not visible, as connectors are unidirectional.
+        // TODO: Remove this when decorators can be nullified for WiresConnectors and just nullify this instance.
         final MultiPath head = new MultiPath()
                 .M( 1, 2 )
                 .L( 0, 2 )
                 .L( 1 / 2, 0 )
                 .Z()
-                // TODO: Remove when decorators can be nullified for the WiresConnector
                 .setFillAlpha( 0 )
                 .setStrokeAlpha( 0 );
         final MultiPath tail = new MultiPath()
-                .M( 15, 20 )
-                .L( 0, 20 )
-                .L( 15 / 2, 0 )
-                .Z();
-        final OrthogonalPolyLine line = new OrthogonalPolyLine( Point2DArray.fromArrayOfDouble( points ) ).setCornerRadius( 5 ).setDraggable( true );
+                .M( DECORATOR_WIDTH, DECORATOR_HEIGHT )
+                .L( 0, DECORATOR_HEIGHT )
+                .L( DECORATOR_WIDTH / 2, 0 )
+                .Z()
+                .setFillColor( ColorName.BLACK )
+                .setFillAlpha( 1 );
+        final OrthogonalPolyLine line =
+                new OrthogonalPolyLine( Point2DArray.fromArrayOfDouble( points ) )
+                .setCornerRadius( 5 )
+                .setDraggable( true );
         line.setHeadOffset( head.getBoundingBox().getHeight() );
         line.setTailOffset( tail.getBoundingBox().getHeight() );
         final MultiPathDecorator headDecorator = new MultiPathDecorator( head );

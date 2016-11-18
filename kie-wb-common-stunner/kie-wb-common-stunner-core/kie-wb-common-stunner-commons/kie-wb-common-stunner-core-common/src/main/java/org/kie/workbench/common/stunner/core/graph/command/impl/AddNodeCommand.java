@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -66,10 +67,10 @@ public final class AddNodeCommand extends AbstractGraphCommand {
                 ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( graph, candidate ).violations();
         final Collection<RuleViolation> cardinalityRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager().cardinality().evaluate( graph, candidate, RuleManager.Operation.ADD ).violations();
-        final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
-        violations.addAll( containmentRuleViolations );
-        violations.addAll( cardinalityRuleViolations );
-        return new GraphCommandResultBuilder( violations ).build();
+        return new GraphCommandResultBuilder( new ArrayList<RuleViolation>( 2 ) {{
+            addAll( containmentRuleViolations );
+            addAll( cardinalityRuleViolations );
+        }} ).build();
     }
 
     @Override

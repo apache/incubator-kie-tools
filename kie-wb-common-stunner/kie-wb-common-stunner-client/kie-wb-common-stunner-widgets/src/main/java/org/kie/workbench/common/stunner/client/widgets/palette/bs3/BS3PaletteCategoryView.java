@@ -32,6 +32,7 @@ import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 
 import javax.enterprise.context.Dependent;
 
+// TODO: i18n.
 @Dependent
 public class BS3PaletteCategoryView extends Composite implements BS3PaletteCategory.View {
 
@@ -40,6 +41,7 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
     }
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private static final String CLICK_OR_DRAG_TOOLTIP_TEXT = " (Drag into the screen to create it)";
     private static final int MOUSE_DOWN_TIMER_DURATION = 150;
 
     private BS3PaletteCategory presenter;
@@ -103,10 +105,11 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
                                             final String description,
                                             final String glyphDefId,
                                             final IsWidget view ) {
+        final String itemDesc = getDescription( id, text, description, glyphDefId );
         final Column iconColumn = new Column( ColumnSize.MD_2 );
         iconColumn.add( view );
         final HTML itemText = new HTML( text );
-        itemText.setTitle( description );
+        itemText.setTitle( itemDesc );
         final Column textColumn = new Column( ColumnSize.MD_9 );
         textColumn.add( itemText );
         final Row row = new Row();
@@ -117,62 +120,57 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
         row.setPaddingLeft( 5 );
         row.setPaddingBottom( 5 );
         row.setPaddingTop( 5 );
-        row.addDomHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent clickEvent ) {
-                clearItemMouseDownTimer();
-                BS3PaletteCategoryView.this.onMouseClick( id,
-                        clickEvent.getClientX(), clickEvent.getClientY(),
-                        clickEvent.getX(), clickEvent.getY() );
-
-            }
+        row.addDomHandler( clickEvent -> {
+            clearItemMouseDownTimer();
+            BS3PaletteCategoryView.this.onMouseClick( id,
+                    clickEvent.getClientX(), clickEvent.getClientY(),
+                    clickEvent.getX(), clickEvent.getY() );
 
         }, ClickEvent.getType() );
-        row.addDomHandler( new MouseMoveHandler() {
-
-            @Override
-            public void onMouseMove( final MouseMoveEvent mouseMoveEvent ) {
-                if ( null != BS3PaletteCategoryView.this.itemMouseDownTimer ) {
-                    BS3PaletteCategoryView.this.itemMouseDownTimer.run();
-                    BS3PaletteCategoryView.this.clearItemMouseDownTimer();
-
-                }
+        row.addDomHandler( mouseMoveEvent -> {
+            if ( null != BS3PaletteCategoryView.this.itemMouseDownTimer ) {
+                BS3PaletteCategoryView.this.itemMouseDownTimer.run();
+                BS3PaletteCategoryView.this.clearItemMouseDownTimer();
 
             }
 
         }, MouseMoveEvent.getType() );
-        row.addDomHandler( new MouseDownHandler() {
-            @Override
-            public void onMouseDown( MouseDownEvent mouseDownEvent ) {
-                final int mX = mouseDownEvent.getClientX();
-                final int mY = mouseDownEvent.getClientY();
-                final int iX = mouseDownEvent.getX();
-                final int iY = mouseDownEvent.getY();
-                // This timeout is used to differentiate between mouse down and click events.
-                // If calling presenter login when mouse down and presenter clear the palette view,
-                // the click event is never fired on the DOM.
-                // So using this timer the mouse down job is postponed, so if after MOUSE_DOWN_TIMER_DURATION
-                // there is no click event, this timer fires and shows the drag def. If click event fires, will
-                // cancer the timer so the mouse down job is not performed, as expected. Same for mouse move event just
-                // after the mouse down one.
-                BS3PaletteCategoryView.this.itemMouseDownTimer = new Timer() {
+        row.addDomHandler( mouseDownEvent -> {
+            final int mX = mouseDownEvent.getClientX();
+            final int mY = mouseDownEvent.getClientY();
+            final int iX = mouseDownEvent.getX();
+            final int iY = mouseDownEvent.getY();
+            // This timeout is used to differentiate between mouse down and click events.
+            // If calling presenter login when mouse down and presenter clear the palette view,
+            // the click event is never fired on the DOM.
+            // So using this timer the mouse down job is postponed, so if after MOUSE_DOWN_TIMER_DURATION
+            // there is no click event, this timer fires and shows the drag def. If click event fires, will
+            // cancer the timer so the mouse down job is not performed, as expected. Same for mouse move event just
+            // after the mouse down one.
+            BS3PaletteCategoryView.this.itemMouseDownTimer = new Timer() {
 
-                    @Override
-                    public void run() {
-                        BS3PaletteCategoryView.this.onMouseDown( id, mX, mY, iX, iY );
+                @Override
+                public void run() {
+                    BS3PaletteCategoryView.this.onMouseDown( id, mX, mY, iX, iY );
 
-                    }
+                }
 
-                };
-                BS3PaletteCategoryView.this.itemMouseDownTimer.schedule( MOUSE_DOWN_TIMER_DURATION );
+            };
+            BS3PaletteCategoryView.this.itemMouseDownTimer.schedule( MOUSE_DOWN_TIMER_DURATION );
 
-            }
         }, MouseDownEvent.getType() );
         row.addDomHandler( mouseOverEvent -> BS3PaletteCategoryView.this.onMouseOver( row ), MouseOverEvent.getType() );
         row.addDomHandler( mouseOutEvent -> BS3PaletteCategoryView.this.onMouseOut( row ), MouseOutEvent.getType() );
         mainContainer.add( row );
         return this;
+    }
+
+    private String getDescription(  final String id,
+                                    final String text,
+                                    final String description,
+                                    final String glyphDefId ) {
+        return null == glyphDefId ? description :
+                description + CLICK_OR_DRAG_TOOLTIP_TEXT;
     }
 
     private void onMouseOver( final Row row ) {

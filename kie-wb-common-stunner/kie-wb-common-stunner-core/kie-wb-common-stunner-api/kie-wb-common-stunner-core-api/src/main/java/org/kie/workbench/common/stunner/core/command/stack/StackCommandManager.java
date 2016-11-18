@@ -26,7 +26,7 @@ public interface StackCommandManager<T, V> extends CommandManager<T, V> {
     CommandRegistry<Command<T, V>> getRegistry();
 
     /**
-     * Undo latest command in the registry..
+     * Undo latest command in the registry.
      */
     CommandResult<V> undo( T context );
 

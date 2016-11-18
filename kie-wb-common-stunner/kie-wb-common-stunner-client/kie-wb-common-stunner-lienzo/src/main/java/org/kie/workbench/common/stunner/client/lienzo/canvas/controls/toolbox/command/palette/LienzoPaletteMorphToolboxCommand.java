@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoP
 import org.kie.workbench.common.stunner.client.lienzo.util.SVGUtils;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.palette.AbstractPaletteMorphCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
+import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
@@ -45,6 +47,9 @@ import javax.inject.Inject;
 
 @Dependent
 public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphCommand<Shape<?>> {
+
+    private static final int ICON_SIZE = 20;
+    private static final int PADDING = 10;
 
     @Inject
     public LienzoPaletteMorphToolboxCommand( final DefinitionUtils definitionUtils,
@@ -68,14 +73,36 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
 
     @PostConstruct
     public void init() {
+        // Initialize some lienzo palette layout stuff.
         getLienzoPalette()
                 .collapse()
                 .setExpandable( false )
-                .setIconSize( 18 )
-                .setPadding( 10 )
+                .setIconSize( ICON_SIZE )
+                .setPadding( PADDING )
                 .setLayout( LienzoPalette.Layout.HORIZONTAL );
+        // Set the prefix to use on tooltips.
         ( ( AbstractLienzoGlyphItemsPalette ) getLienzoPalette() ).getDefinitionGlyphTooltip().setPrefix( "Convert to " );
+        // Show the tooltip at the right coordinates..
+        getLienzoPalette().onShowGlyTooltip( ( glyphTooltip, item, mouseX, mouseY, itemX, itemY ) -> {
+            final Transform transform = canvasHandler.getCanvas().getLayer().getTransform();
+            final double ax = canvasHandler.getCanvas().getAbsoluteX();
+            final double ay = canvasHandler.getCanvas().getAbsoluteY();
+            // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
+            // using current transform attributes to obtain the right absolute position on the screen.
+            final double[] t = transform.transform( getPaletteView().getX(), getPaletteView().getY() );
+            glyphTooltip
+                    .showTooltip( item.getDefinitionId(),
+                            ax + t[0] + itemX,
+                            ay + t[1] + itemY + ICON_SIZE + ( PADDING / 2 ),
+                            GlyphTooltip.Direction.NORTH );
+            return false;
+        } );
+    }
 
+    @Override
+    protected void showPaletteViewAt( final double x, final double y ) {
+        // Adjust the palette view taking into account the lienzo shape size used as icon.
+        super.showPaletteViewAt( x - ICON_SIZE + PADDING, y + ICON_SIZE );
     }
 
     @Override
@@ -90,7 +117,7 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
         return getLienzoPalette().getView();
     }
 
-    protected LienzoPalette getLienzoPalette() {
-        return ( LienzoPalette ) palette;
+    private LienzoGlyphsHoverPalette getLienzoPalette() {
+        return ( LienzoGlyphsHoverPalette ) palette;
     }
 }

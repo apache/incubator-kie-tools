@@ -29,7 +29,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_ACTORS;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_GROUPS;
 
 @Portable
 @Bindable

@@ -133,6 +133,11 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-properties-editor-api</artifactId>
     </dependency>
 

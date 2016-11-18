@@ -16,13 +16,21 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.wires;
 
+import com.ait.lienzo.client.core.shape.IContainer;
+import com.ait.lienzo.client.core.shape.IDrawable;
 import com.ait.lienzo.client.core.shape.wires.*;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 public final class WiresUtils {
+
+    public static double[] getAbsolute( final IDrawable<?> shape ) {
+        final Point2D p = com.ait.lienzo.client.core.shape.wires.WiresUtils.getLocation( shape );
+        return new double[] { p.getX(), p.getY() };
+    }
 
     public static Node getNode( final AbstractCanvasHandler canvasHandler,
                                 final WiresContainer shape ) {

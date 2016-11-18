@@ -21,7 +21,7 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.uberfire.client.mvp.UberView;
 
 import javax.annotation.PostConstruct;
@@ -75,7 +75,7 @@ public class GlyphTooltipImpl implements GlyphTooltip<Group>, IsWidget {
     }
 
     @Override
-    public void show( final ShapeGlyph<Group> glyph, final String text, final double x, final double y, final Direction direction ) {
+    public void show( final Glyph<Group> glyph, final String text, final double x, final double y, final Direction direction ) {
         view.show( glyph.getGroup(), text, x, y, glyph.getWidth(), glyph.getHeight(), direction );
     }
 

@@ -18,7 +18,9 @@ package org.kie.workbench.common.stunner.bpmn.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.BasicShapeWithTitleDef;
 import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
@@ -26,6 +28,7 @@ import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
 import org.kie.workbench.common.stunner.shapes.def.WrappedBasicNamedShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.IconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons;
+import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -94,13 +97,13 @@ public final class IntermediateTimerEventShapeDef
     }
 
     @Override
-    public String getGlyphBackgroundColor( final IntermediateTimerEvent element ) {
-        return IntermediateTimerEvent.IntermediateTimerEventBuilder.COLOR;
+    public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+        return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public String getGlyphDescription( final IntermediateTimerEvent element ) {
-        return IntermediateTimerEvent.description;
+    public double getFontRotation( final IntermediateTimerEvent element ) {
+        return 0;
     }
 
     @Override
@@ -112,9 +115,26 @@ public final class IntermediateTimerEventShapeDef
             put( new Circle4Proxy( IntermediateTimerEventShapeDef.this ), HasChildren.Layout.CENTER );
             put( new Circle5Proxy( IntermediateTimerEventShapeDef.this ), HasChildren.Layout.CENTER );
             put( new TimerIconProxy(), HasChildren.Layout.CENTER );
-
         }};
+    }
 
+    private static final PictureGlyphDef<IntermediateTimerEvent, BPMNPictures> PICTURE_GLYPH_DEF =
+            new PictureGlyphDef<IntermediateTimerEvent, BPMNPictures>() {
+
+                @Override
+                public String getGlyphDescription( IntermediateTimerEvent element ) {
+                    return element.getDescription();
+                }
+
+                @Override
+                public BPMNPictures getSource( final Class<?> type ) {
+                    return BPMNPictures.CLOCK_O;
+                }
+            };
+
+    @Override
+    public GlyphDef<IntermediateTimerEvent> getGlyphDef() {
+        return PICTURE_GLYPH_DEF;
     }
 
     // The timer icon.
@@ -127,10 +147,6 @@ public final class IntermediateTimerEventShapeDef
             return Icons.TIMER;
         }
 
-        @Override
-        public String getGlyphDescription( final IntermediateTimerEvent element ) {
-            return null;
-        }
 
     }
 
@@ -152,6 +168,15 @@ public final class IntermediateTimerEventShapeDef
             return 1;
         }
 
+        @Override
+        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+            return HasTitle.Position.BOTTOM;
+        }
+
+        @Override
+        public double getFontRotation( final IntermediateTimerEvent element ) {
+            return 0;
+        }
     }
 
     // Outer circle #2.
@@ -172,6 +197,15 @@ public final class IntermediateTimerEventShapeDef
             return 1;
         }
 
+        @Override
+        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+            return HasTitle.Position.BOTTOM;
+        }
+
+        @Override
+        public double getFontRotation( final IntermediateTimerEvent element ) {
+            return 0;
+        }
     }
 
     // Outer circle #3.
@@ -192,6 +226,15 @@ public final class IntermediateTimerEventShapeDef
             return 1;
         }
 
+        @Override
+        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+            return HasTitle.Position.BOTTOM;
+        }
+
+        @Override
+        public double getFontRotation( final IntermediateTimerEvent element ) {
+            return 0;
+        }
     }
 
     // Outer circle #4.
@@ -212,6 +255,15 @@ public final class IntermediateTimerEventShapeDef
             return 1;
         }
 
+        @Override
+        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+            return HasTitle.Position.BOTTOM;
+        }
+
+        @Override
+        public double getFontRotation( final IntermediateTimerEvent element ) {
+            return 0;
+        }
     }
 
     // Outer circle #5.
@@ -232,6 +284,15 @@ public final class IntermediateTimerEventShapeDef
             return 1;
         }
 
+        @Override
+        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+            return HasTitle.Position.BOTTOM;
+        }
+
+        @Override
+        public double getFontRotation( final IntermediateTimerEvent element ) {
+            return 0;
+        }
     }
 
     private double percent( final IntermediateTimerEvent element, final double pct ) {

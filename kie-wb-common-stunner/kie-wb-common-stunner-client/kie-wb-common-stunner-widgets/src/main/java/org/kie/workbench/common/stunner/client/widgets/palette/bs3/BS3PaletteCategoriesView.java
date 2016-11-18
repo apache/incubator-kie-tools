@@ -18,11 +18,11 @@ package org.kie.workbench.common.stunner.client.widgets.palette.bs3;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,8 +37,12 @@ import javax.enterprise.context.Dependent;
 import java.util.LinkedList;
 import java.util.List;
 
+// TODO: i18n.
 @Dependent
 public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCategories.View {
+
+    private static final String CLICK_OR_DRAG_TOOLTIP_TEXT = " (Drag into the screen to create a ";
+    private static final int MOUSE_DOWN_TIMER_DURATION = 150;
 
     interface ViewBinder extends UiBinder<Widget, BS3PaletteCategoriesView> {
 
@@ -48,6 +52,7 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
 
     private BS3PaletteCategories presenter;
     private final List<HandlerRegistration> handlerRegistrationList = new LinkedList<>();
+    private Timer itemMouseDownTimer;
     private int iconWidth = 25;
     private int iconHeight = 25;
     private int padding = 50;
@@ -91,7 +96,7 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
                                           final IsWidget view ) {
         final AnchorListItem item = new AnchorListItem();
         item.setId( categoryId );
-        item.setTitle( categoryTitle );
+        item.setTitle( getCategoryTitle( categoryId, categoryTitle, categoryGlyphId ) );
         if ( null != view ) {
             if ( view instanceof Icon ) {
                 final Icon icon = ( Icon ) view;
@@ -120,16 +125,49 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
         final HandlerRegistration handlerRegistration = item.addDomHandler( mouseOverEvent ->
                 presenter.onItemHover( categoryId, mouseOverEvent.getX(), mouseOverEvent.getY(), mouseOverEvent.getX(), mouseOverEvent.getY() ), MouseOverEvent.getType() );
         final HandlerRegistration handlerRegistration1 = item.addClickHandler( clickEvent -> {
+            clearItemMouseDownTimer();
             presenter.onItemClick( categoryId, clickEvent.getX(), clickEvent.getY(), clickEvent.getX(), clickEvent.getY() );
 
         } );
         final HandlerRegistration handlerRegistration2 = item.addDomHandler( mouseOutEvent ->
                 presenter.onItemOut( categoryId ), MouseOutEvent.getType() );
+        final HandlerRegistration handlerRegistration3 = item.addDomHandler( mouseDownEvent -> {
+            final int mX = mouseDownEvent.getClientX();
+            final int mY = mouseDownEvent.getClientY();
+            final int iX = mouseDownEvent.getX();
+            final int iY = mouseDownEvent.getY();
+            BS3PaletteCategoriesView.this.itemMouseDownTimer = new Timer() {
+                @Override
+                public void run() {
+                    presenter.onItemMouseDown( categoryId, mX, mY, iX, iY );
+                }
+            };
+            BS3PaletteCategoriesView.this.itemMouseDownTimer.schedule( MOUSE_DOWN_TIMER_DURATION );
+        }, MouseDownEvent.getType() );
+        final HandlerRegistration handlerRegistration4 = item.addDomHandler( mouseMoveEvent -> {
+            if ( null != BS3PaletteCategoriesView.this.itemMouseDownTimer ) {
+                BS3PaletteCategoriesView.this.itemMouseDownTimer.run();
+                BS3PaletteCategoriesView.this.clearItemMouseDownTimer();
+
+            }
+        }, MouseMoveEvent.getType() );
         handlerRegistrationList.add( handlerRegistration );
         handlerRegistrationList.add( handlerRegistration1 );
         handlerRegistrationList.add( handlerRegistration2 );
+        handlerRegistrationList.add( handlerRegistration3 );
+        handlerRegistrationList.add( handlerRegistration4 );
         mainContainer.add( item );
         return this;
+    }
+
+    // TODO: Immprove glyphid title.
+    private String getCategoryTitle( final String categoryId,
+                                     final String categoryTitle,
+                                     final String categoryGlyphId ) {
+        return null == categoryGlyphId ? categoryTitle :
+                categoryTitle + CLICK_OR_DRAG_TOOLTIP_TEXT +
+                        categoryGlyphId.substring( categoryGlyphId.lastIndexOf( "." ) + 1, categoryGlyphId.length() )
+                + ")";
     }
 
     private void setPadding( final AnchorListItem item ) {
@@ -143,9 +181,20 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
 
     @Override
     public BS3PaletteCategories.View clear() {
+        clearItemMouseDownTimer();
         clearHandlers();
         mainContainer.clear();
         return this;
+    }
+
+    private void clearItemMouseDownTimer() {
+        if ( null != this.itemMouseDownTimer ) {
+            if ( this.itemMouseDownTimer.isRunning() ) {
+                this.itemMouseDownTimer.cancel();
+            }
+            this.itemMouseDownTimer = null;
+        }
+
     }
 
     private void clearHandlers() {

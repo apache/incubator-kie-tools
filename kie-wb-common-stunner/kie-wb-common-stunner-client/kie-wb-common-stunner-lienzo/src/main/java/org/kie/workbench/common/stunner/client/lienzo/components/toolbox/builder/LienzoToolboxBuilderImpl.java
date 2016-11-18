@@ -24,10 +24,7 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxBu
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.lienzo.toolbox.Toolboxes;
-import org.kie.workbench.common.stunner.lienzo.toolbox.builder.Button;
-import org.kie.workbench.common.stunner.lienzo.toolbox.builder.ButtonGrid;
-import org.kie.workbench.common.stunner.lienzo.toolbox.builder.ButtonsOrRegister;
-import org.kie.workbench.common.stunner.lienzo.toolbox.builder.On;
+import org.kie.workbench.common.stunner.lienzo.toolbox.builder.*;
 import org.kie.workbench.common.stunner.lienzo.toolbox.event.ToolboxButtonEventHandler;
 
 public class LienzoToolboxBuilderImpl
@@ -37,6 +34,8 @@ public class LienzoToolboxBuilderImpl
     private On on;
     private ButtonGrid buttonGrid;
     private ButtonsOrRegister buttonsOrRegister;
+    private int padding = 5;
+    private int iconSize = 12;
 
     @Override
     public LienzoToolboxBuilderImpl forView( final ShapeView<?> view ) {
@@ -46,11 +45,8 @@ public class LienzoToolboxBuilderImpl
                 final HasEventHandlers<?, Shape<?>> hasEventHandlers = ( HasEventHandlers ) view;
                 if ( null != hasEventHandlers.getAttachableShape() ) {
                     on.attachTo( hasEventHandlers.getAttachableShape() );
-
                 }
-
             }
-
         }
         return this;
     }
@@ -65,31 +61,28 @@ public class LienzoToolboxBuilderImpl
 
     @Override
     public LienzoToolboxBuilderImpl grid( final LienzoToolboxButtonGrid grid ) {
+        this.padding = grid.getPadding();
+        this.iconSize = grid.getButtonSize();
         buttonsOrRegister = buttonGrid.grid( grid.getPadding(), grid.getButtonSize(), grid.getRows(), grid.getColumns() );
         return this;
     }
 
     @Override
     public LienzoToolboxBuilderImpl add( final ToolboxButton<Shape<?>> button ) {
-        Button b = buttonsOrRegister.add( button.getIcon() );
+        Button b = buttonsOrRegister
+                .add( button.getIcon() );
+        b.setIconSize( iconSize ).setPadding( padding );
         if ( null != button.getClickHandler() ) {
             b.setClickHandler( buildHandler( button.getClickHandler() ) );
-
         }
         if ( null != button.getMouseDownHandler() ) {
             b.setMouseDownHandler( buildHandler( button.getMouseDownHandler() ) );
-
         }
         if ( null != button.getMouseEnterHandler() ) {
             b.setMouseEnterHandler( buildHandler( button.getMouseEnterHandler() ) );
-
         }
         if ( null != button.getMouseExitHandler() ) {
             b.setMouseExitHandler( buildHandler( button.getMouseExitHandler() ) );
-
-        }
-        if ( null != button.getAnimation() ) {
-            b.setAnimation( getAnimation( button.getAnimation() ) );
         }
         b.end();
         return this;
@@ -109,6 +102,16 @@ public class LienzoToolboxBuilderImpl
             }
 
             @Override
+            public int getAbsoluteX() {
+                return event.getAbsoluteX();
+            }
+
+            @Override
+            public int getAbsoluteY() {
+                return event.getAbsoluteY();
+            }
+
+            @Override
             public int getClientX() {
                 return event.getClientX();
             }
@@ -119,17 +122,14 @@ public class LienzoToolboxBuilderImpl
             }
 
         } );
-
     }
 
     @Override
     public LienzoToolbox build() {
         if ( null != buttonsOrRegister ) {
             toolbox = new LienzoToolbox( buttonsOrRegister.register() );
-
         } else {
             throw new RuntimeException( "No buttons added for toolbox." );
-
         }
         return toolbox;
     }
@@ -152,20 +152,8 @@ public class LienzoToolboxBuilderImpl
                 return com.ait.lienzo.shared.core.types.Direction.SOUTH_EAST;
             case SOUTH_WEST:
                 return com.ait.lienzo.shared.core.types.Direction.SOUTH_WEST;
-
         }
         throw new UnsupportedOperationException( "Toolbox direction [" + direction.name() + "] not supported." );
-    }
-
-    private org.kie.workbench.common.stunner.lienzo.toolbox.ToolboxButton.HoverAnimation getAnimation( final ToolboxButton.HoverAnimation animation ) {
-        switch ( animation ) {
-            case ELASTIC:
-                return org.kie.workbench.common.stunner.lienzo.toolbox.ToolboxButton.HoverAnimation.ELASTIC;
-            case HOVER_COLOR:
-                return org.kie.workbench.common.stunner.lienzo.toolbox.ToolboxButton.HoverAnimation.HOVER_COLOR;
-
-        }
-        throw new UnsupportedOperationException( "Animation [" + animation.name() + "] not supported." );
     }
 
 }

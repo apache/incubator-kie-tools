@@ -88,13 +88,13 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
     public static class ButtonBuilder implements Button {
         private final Layer layer;
         private final AbstractBuilder builder;
-        private final List<WhenReady> whenReadyCallbacks = new ArrayList<>();
         private final IPrimitive<?> shape;
+        private int padding;
+        private int iconSize;
         private ToolboxButtonEventHandler clickHandler;
         private ToolboxButtonEventHandler moveDownHandler;
         private ToolboxButtonEventHandler mouseEnterHandler;
         private ToolboxButtonEventHandler mouseExitHandler;
-        private ToolboxButton.HoverAnimation animation;
 
         public ButtonBuilder( final Layer layer,
                               final AbstractBuilder builder,
@@ -102,12 +102,15 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
             this.layer = layer;
             this.builder = builder;
             this.shape = shape;
-            this.animation = ToolboxButton.HoverAnimation.ELASTIC;
         }
 
-        @Override
-        public Button setAnimation( final ToolboxButton.HoverAnimation animation ) {
-            this.animation = animation;
+        public ButtonBuilder setPadding( final int padding ) {
+            this.padding = padding;
+            return this;
+        }
+
+        public ButtonBuilder setIconSize( final int size ) {
+            this.iconSize = size;
             return this;
         }
 
@@ -136,15 +139,9 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
         }
 
         @Override
-        public Button whenReady( WhenReady callback ) {
-            this.whenReadyCallbacks.add( callback );
-            return this;
-        }
-
-        @Override
         public ButtonsOrRegister end() {
-            builder.add( new ToolboxButton( layer, shape, this.whenReadyCallbacks, clickHandler, moveDownHandler,
-                    mouseEnterHandler, mouseExitHandler, animation ) );
+            builder.add( new ToolboxButton( layer, shape, padding, iconSize,
+                    clickHandler, moveDownHandler, mouseEnterHandler, mouseExitHandler ) );
             return builder;
         }
     }

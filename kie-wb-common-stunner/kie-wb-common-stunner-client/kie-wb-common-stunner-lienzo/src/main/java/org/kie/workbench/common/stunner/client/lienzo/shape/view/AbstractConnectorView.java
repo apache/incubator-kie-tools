@@ -24,19 +24,25 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 
 public abstract class AbstractConnectorView<T> extends WiresConnector
         implements
         ShapeView<T>,
-        IsConnector<T> {
+        IsConnector<T>,
+        HasControlPoints<T> {
 
     protected String uuid;
     private int zindex;
     private WiresConnectorControl connectorControl;
+    private final HandlerRegistrationImpl handlerRegistration = new HandlerRegistrationImpl();
 
     public AbstractConnectorView( AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator ) {
         super( line, headDecorator, tailDecorator );
@@ -59,7 +65,7 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     @SuppressWarnings( "unchecked" )
     public T setUUID( final String uuid ) {
         this.uuid = uuid;
-        this.getGroup().setUserData( UUID_PREFFIX + uuid );
+        this.getGroup().setUserData( UUID_PREFIX + uuid );
         return ( T ) this;
     }
 
@@ -115,28 +121,11 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
         // Update the magnets.
         this.setHeadMagnet( m0_1 );
         this.setTailMagnet( m1_1 );
-        double x0 = m0_1.getControl().getX();
-        double y0 = m0_1.getControl().getY();
-        double x1 = m1_1.getControl().getX();
-        double y1 = m1_1.getControl().getY();
-        // TODO: Update the connector decorator in order to modify head & tail decorators (connector direction)
-       /* OrthogonalPolyLine line = createLine(x0, y0, (x0 + ((x1 - x0) / 2)), (y0 + ((y1 - y0) / 2)), x1, y1);
-        this.setDecorator(
-                line, 
-                headArrow ? new SimpleArrow(20, 0.75) : null,
-                tailArrow ? new SimpleArrow(20, 0.75) : null);*/
         return ( T ) this;
     }
 
     private OrthogonalPolyLine createLine( final double... points ) {
         return new OrthogonalPolyLine( Point2DArray.fromArrayOfDouble( points ) ).setCornerRadius( 5 ).setDraggable( true );
-    }
-
-    @Override
-    @SuppressWarnings( "unchecked" )
-    public T setDragEnabled( final boolean isDraggable ) {
-        this.setDraggable();
-        return ( T ) this;
     }
 
     @Override
@@ -167,6 +156,11 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     public T setShapeY( final double y ) {
         getGroup().setY( y );
         return ( T ) this;
+    }
+
+    @Override
+    public double[] getShapeAbsoluteLocation() {
+        return WiresUtils.getAbsolute( getGroup() );
     }
 
     @Override
@@ -229,6 +223,17 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
         return ( T ) this;
     }
 
+    // TODO: Move this into lienzo WiresShape/WiresConnector?
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public T setDragBounds( final double x1,
+                            final double y1,
+                            final double x2,
+                            final double y2 ) {
+        getGroup().setDragBounds( new DragBounds( x1, y1, x2, y2 ) );
+        return ( T ) this;
+    }
+
     @Override
     @SuppressWarnings( "unchecked" )
     public T moveToTop() {
@@ -258,13 +263,64 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
+    public T showControlPoints( final ControlPointType type ) {
+        if ( null != getControl() ) {
+            if ( ControlPointType.MAGNET.equals( type ) ) {
+                getControl().showControlPoints();
+            } else {
+                throw new UnsupportedOperationException( "Control point type [" + type + "] not supported yet" );
+            }
+        }
+        return ( T ) this;
+    }
+
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public T hideControlPoints() {
+        if ( null != getControl() ) {
+            getControl().hideControlPoints();
+        }
+        return ( T ) this;
+    }
+
+    @Override
+    public boolean areControlsVisible() {
+        return getPointHandles().isVisible();
+    }
+
+    @Override
     public void destroy() {
+        // Remove any handler registrations present.
+        handlerRegistration.removeHandler();
         // Implementations can clear its state here.
         this.doDestroy();
         // Remove me.
         this.removeFromParent();
         this.connectorControl = null;
+    }
 
+    /**
+     * Try to make easier the connectors selection/updates from a user perspective ( eg: when line widths are small )
+     */
+    protected void enableShowControlsOnMouseEnter() {
+        // Register a mouse enter handler for the connector's line.
+        handlerRegistration.register(
+                getLine().addNodeMouseEnterHandler( nodeMouseEnterEvent -> showControlPoints( ControlPointType.MAGNET ) )
+        );
+        // Register a mouse enter handler for the connector's head decorator, if exists.
+        if ( null != getHead() ) {
+            handlerRegistration.register(
+                    getHead().addNodeMouseEnterHandler( nodeMouseEnterEvent -> showControlPoints( ControlPointType.MAGNET ) )
+            );
+        }
+        // Register a mouse enter handler for the connector's tail decorator, if exists.
+        if ( null != getTail() ) {
+            handlerRegistration.register(
+                    getTail().addNodeMouseEnterHandler( nodeMouseEnterEvent -> showControlPoints( ControlPointType.MAGNET ) )
+            );
+        }
     }
 
 }

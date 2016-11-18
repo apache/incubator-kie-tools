@@ -126,11 +126,10 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
                         for ( final ToolboxCommand<?, ?> command : commands ) {
                             // TODO: Use command title (tooltip).
                             final ToolboxButton button = buttonBuilder.setIcon( command.getIcon( grid.getButtonSize(), grid.getButtonSize() ) )
-                                    .setClickHandler( event -> fireCommandExecution( element, command, event, Context.Event.CLICK ) )
-                                    .setMouseEnterHandler( event -> fireCommandExecution( element, command, event, Context.Event.MOUSE_ENTER ) )
-                                    .setMouseExitHandler( event -> fireCommandExecution( element, command, event, Context.Event.MOUSE_EXIT ) )
-                                    .setMouseDownHandler( event -> fireCommandExecution( element, command, event, Context.Event.MOUSE_DOWN ) )
-                                    .setHoverAnimation( command.getButtonAnimation() )
+                                    .setClickHandler( event -> fireCommandExecutionAndHideToolbox( element, command, event, Context.EventType.CLICK ) )
+                                    .setMouseEnterHandler( event -> fireCommandExecution( element, command, event, Context.EventType.MOUSE_ENTER ) )
+                                    .setMouseExitHandler( event -> fireCommandExecution( element, command, event, Context.EventType.MOUSE_EXIT ) )
+                                    .setMouseDownHandler( event -> fireCommandExecutionAndHideToolbox( element, command, event, Context.EventType.MOUSE_DOWN ) )
                                     .build();
                             toolboxBuilder.add( button );
 
@@ -166,15 +165,25 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
     private void fireCommandExecution( final Element element,
                                        final ToolboxCommand command,
                                        final ToolboxButtonEvent event,
-                                       final Context.Event eventType ) {
+                                       final Context.EventType eventTypeType ) {
         Context _context = new ContextImpl( canvasHandler,
-                eventType,
+                eventTypeType,
                 event.getX(),
                 event.getY(),
+                event.getAbsoluteX(),
+                event.getAbsoluteY(),
                 event.getClientX(),
                 event.getClientY() );
         setCommandView( command ).execute( _context, element );
 
+    }
+
+    private void fireCommandExecutionAndHideToolbox( final Element element,
+                                                     final ToolboxCommand command,
+                                                     final ToolboxButtonEvent event,
+                                                     final Context.EventType eventTypeType ) {
+        fireCommandExecution( element, command, event, eventTypeType );
+        hideToolboxes( element );
     }
 
     @Override
@@ -184,16 +193,13 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
     }
 
     private void deregister( final String uuid ) {
-        final List<Toolbox> toolboxes = toolboxMap.get( uuid );
+        final List<Toolbox> toolboxes = getToolboxes( uuid );
         if ( null != toolboxes && !toolboxes.isEmpty() ) {
             for ( final Toolbox toolbox : toolboxes ) {
                 toolbox.remove();
-
             }
             toolboxMap.remove( uuid );
-
         }
-
     }
 
     @Override
@@ -258,7 +264,7 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
     void CanvasClearSelectionEvent( @Observes CanvasClearSelectionEvent event ) {
         checkNotNull( "event", event );
         if ( null != this.currentToolboxUUID ) {
-            setVisibile( this.currentToolboxUUID, false );
+            setVisible( this.currentToolboxUUID, false );
             this.currentToolboxUUID = null;
 
         }
@@ -271,23 +277,23 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
 
     private void switchVisibility( final String uuid ) {
         if ( isVisible( uuid ) ) {
-            setVisibile( this.currentToolboxUUID, false );
+            setVisible( this.currentToolboxUUID, false );
             this.currentToolboxUUID = null;
 
         } else {
             if ( null != this.currentToolboxUUID ) {
-                setVisibile( this.currentToolboxUUID, false );
+                setVisible( this.currentToolboxUUID, false );
 
             }
-            setVisibile( uuid, true );
+            setVisible( uuid, true );
             this.currentToolboxUUID = uuid;
 
         }
 
     }
 
-    private void setVisibile( final String uuid, final boolean visible ) {
-        final List<Toolbox> toolboxes = toolboxMap.get( uuid );
+    private void setVisible( final String uuid, final boolean visible ) {
+        final List<Toolbox> toolboxes = getToolboxes( uuid );
         if ( null != toolboxes ) {
             for ( final Toolbox toolbox : toolboxes ) {
                 if ( visible ) {
@@ -302,6 +308,22 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
 
         }
 
+    }
+
+    private void hideToolboxes( final Element<?> element ) {
+        final List<Toolbox> toolboxes = getToolboxes( element );
+        if ( null != toolboxes ) {
+            toolboxes.stream().forEach( Toolbox::hide );
+        }
+    }
+
+    private List<Toolbox> getToolboxes( final Element<?> element ) {
+        final String uuid = null != element ? element.getUUID() : null;
+        return null != uuid ? getToolboxes( uuid ) : null;
+    }
+
+    private List<Toolbox> getToolboxes( final String uuid ) {
+        return toolboxMap.get( uuid );
     }
 
 }

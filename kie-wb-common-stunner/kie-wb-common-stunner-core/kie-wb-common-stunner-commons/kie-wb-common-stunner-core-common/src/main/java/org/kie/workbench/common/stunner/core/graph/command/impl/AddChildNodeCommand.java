@@ -40,27 +40,43 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
 
     private final String parentUUID;
     private final Node candidate;
+    private final Double x;
+    private final Double y;
     private transient Node<?, Edge> parent;
 
     public AddChildNodeCommand( @MapsTo( "parentUUID" ) String parentUUID,
-                                @MapsTo( "candidate" ) Node candidate ) {
+                                @MapsTo( "candidate" ) Node candidate,
+                                @MapsTo( "x" ) Double x,
+                                @MapsTo( "y" ) Double y) {
         this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
                 parentUUID );
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
                 candidate );
+        this.x = x;
+        this.y = y;
     }
 
     public AddChildNodeCommand( Node<?, Edge> parent,
-                                Node candidate ) {
-        this( parent.getUUID(), candidate );
+                                Node candidate,
+                                Double x,
+                                Double y ) {
+        this( parent.getUUID(), candidate, x, y );
         this.parent = parent;
+    }
+
+    public AddChildNodeCommand( Node<?, Edge> parent,
+                                Node candidate) {
+        this( parent, candidate, null, null );
     }
 
     @SuppressWarnings( "unchecked" )
     protected void initialize( final GraphCommandExecutionContext context ) {
         final Node<?, Edge> parent = getParent( context );
-        this.addCommand( new AddNodeCommand( candidate ) )
-                .addCommand( new AddChildEdgeCommand( parent, candidate ) );
+        this.addCommand( new AddNodeCommand( candidate ) );
+        if ( null != x && null != y ) {
+            this.addCommand( new UpdateElementPositionCommand( candidate, x, y ) );
+        }
+        this.addCommand( new AddChildEdgeCommand( parent, candidate ) );
     }
 
     @Override

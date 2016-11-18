@@ -33,11 +33,11 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBa
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
-
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
 
 @Shape( factory = BasicShapesFactory.class, def = SubprocessShapeDef.class )
 @MorphBase( defaultType = ReusableSubprocess.class, targets = { BaseTask.class } )

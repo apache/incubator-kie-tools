@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Heading;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 import javax.enterprise.context.Dependent;
 
@@ -76,7 +76,7 @@ public class TreeExplorerItemView extends Composite implements TreeExplorerItem.
     }
 
     @Override
-    public TreeExplorerItem.View setGlyph( final ShapeGlyph<Group> glyph ) {
+    public TreeExplorerItem.View setGlyph( final Glyph<Group> glyph ) {
         initLienzoPanel( glyph.getWidth(), glyph.getHeight() );
         lienzoLayer.add( glyph.getGroup() );
         return this;

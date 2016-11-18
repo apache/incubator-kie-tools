@@ -16,10 +16,21 @@
 
 package org.kie.workbench.common.stunner.shapes.client.util;
 
+import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import org.kie.workbench.common.stunner.client.lienzo.util.LienzoUtils;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 
 public class BasicShapesUtils {
+
+    public static void scalePicture( final Picture picture,
+                                     final double width,
+                                     final double height ) {
+        final BoundingBox bb = picture.getBoundingBox();
+        final double[] scale = LienzoUtils.getScaleFactor( bb.getWidth(), bb.getHeight(), width, height );
+        picture.setScale( scale[ 0 ], scale[ 1 ] );
+    }
 
     public static WiresLayoutContainer.Layout getWiresLayout( final HasChildren.Layout layout ) {
         switch ( layout ) {

@@ -53,7 +53,7 @@ public class HoverTimerTest {
     public void testFirstMouseExit() {
         hoverTimer.onNodeMouseExit( exitEvent );
         verify( actions ).isReadyToHide();
-        verify( timer ).schedule( 200 );
+        verify( timer ).schedule( HoverTimer.TIMEOUT );
     }
 
     @Test
@@ -69,7 +69,7 @@ public class HoverTimerTest {
         hoverTimer.onNodeMouseExit( exitEvent );
         hoverTimer.onNodeMouseExit( exitEvent );
         verify( actions, times( 2 ) ).isReadyToHide();
-        verify( timer, times( 1 ) ).schedule( 200 );
+        verify( timer, times( 1 ) ).schedule( HoverTimer.TIMEOUT );
     }
 
     @Test

@@ -16,7 +16,7 @@
 package org.kie.workbench.common.stunner.core.client.shape.factory;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 /**
  * Factory for building shapes available for authoring.
@@ -41,6 +41,6 @@ public interface ShapeFactory<W, C, S extends Shape> {
     /**
      * Builds a new shape glyph instance with the given size.
      */
-    ShapeGlyph glyph( String definitionId, double width, double height );
+    Glyph glyph( String definitionId, double width, double height );
 
 }

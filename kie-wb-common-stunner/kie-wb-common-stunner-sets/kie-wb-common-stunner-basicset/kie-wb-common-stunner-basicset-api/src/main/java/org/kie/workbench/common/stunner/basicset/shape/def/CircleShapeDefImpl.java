@@ -17,7 +17,10 @@
 package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.Circle;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
 
 public final class CircleShapeDefImpl
@@ -65,6 +68,16 @@ public final class CircleShapeDefImpl
     }
 
     @Override
+    public HasTitle.Position getFontPosition( final Circle element ) {
+        return HasTitle.Position.BOTTOM;
+    }
+
+    @Override
+    public double getFontRotation( final Circle element ) {
+        return 0;
+    }
+
+    @Override
     public double getRadius( final Circle element ) {
         return element.getRadius().getValue();
     }
@@ -80,13 +93,7 @@ public final class CircleShapeDefImpl
     }
 
     @Override
-    public String getGlyphDescription( final Circle element ) {
-        return Circle.title;
+    public GlyphDef<Circle> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
     }
-
-    @Override
-    public String getGlyphBackgroundColor( final Circle element ) {
-        return Circle.CircleBuilder.COLOR;
-    }
-
 }

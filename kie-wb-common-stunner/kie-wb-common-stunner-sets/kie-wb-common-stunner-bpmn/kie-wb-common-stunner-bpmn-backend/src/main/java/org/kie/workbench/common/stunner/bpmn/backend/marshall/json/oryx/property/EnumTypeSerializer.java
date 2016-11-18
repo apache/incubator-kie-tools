@@ -51,7 +51,7 @@ public class EnumTypeSerializer implements Bpmn2OryxPropertySerializer<Object> {
         } else {
             // Assume that enum names that contains an "_" symbol (underscore) are serialized
             // string by replacing this symbol by a whitespace and vice-versa.
-            // Eg: For TaskType.BUSINESS_RULE -> in oryx the json string value is "Business Rule".
+            // Eg: For TaskType.TASK_BUSINESS_RULE -> in oryx the json string value is "Business Rule".
             final String v = value.toUpperCase().replaceAll( " ", "_" );
             return definitionUtils.getPropertyAllowedValue( property, v );
 

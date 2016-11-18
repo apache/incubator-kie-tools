@@ -17,8 +17,11 @@
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 
 public final class StartNoneEventShapeDef
         extends AbstractShapeDef<StartNoneEvent>
@@ -80,12 +83,31 @@ public final class StartNoneEventShapeDef
     }
 
     @Override
-    public String getGlyphBackgroundColor( final StartNoneEvent element ) {
-        return StartNoneEvent.StartNoneEventBuilder.COLOR;
+    public HasTitle.Position getFontPosition( final StartNoneEvent element ) {
+        return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public String getGlyphDescription( final StartNoneEvent element ) {
-        return StartNoneEvent.description;
+    public double getFontRotation( final StartNoneEvent element ) {
+        return 0;
+    }
+
+    private static final PictureGlyphDef<StartNoneEvent, BPMNPictures> PICTURE_GLYPH_DEF =
+            new PictureGlyphDef<StartNoneEvent, BPMNPictures>() {
+
+                @Override
+                public String getGlyphDescription( StartNoneEvent element ) {
+                    return element.getDescription();
+                }
+
+                @Override
+                public BPMNPictures getSource( final Class<?> type ) {
+                    return BPMNPictures.EVENT_START;
+                }
+            };
+
+    @Override
+    public GlyphDef<StartNoneEvent> getGlyphDef() {
+        return PICTURE_GLYPH_DEF;
     }
 }

@@ -40,8 +40,8 @@ public class DefinitionsPaletteBuilderImpl
         extends AbstractPaletteDefinitionBuilder<Iterable<String>, DefinitionsPalette, ClientRuntimeError>
         implements DefinitionsPaletteBuilder {
 
-    DefinitionUtils definitionUtils;
-    ClientFactoryService clientFactoryServices;
+    private final DefinitionUtils definitionUtils;
+    private final ClientFactoryService clientFactoryServices;
 
     protected DefinitionsPaletteBuilderImpl() {
         this( null, null );
@@ -61,9 +61,8 @@ public class DefinitionsPaletteBuilderImpl
             final List<DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder> builders =
                     new LinkedList<DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder>();
             for ( final String definitionId : definitions ) {
-                if ( !exclusions.contains( definitionId ) ) {
+                if ( !isDefinitionExcluded( definitionId ) ) {
                     clientFactoryServices.newDefinition( definitionId, new ServiceCallback<Object>() {
-
                         @Override
                         public void onSuccess( final Object definition ) {
                             final String id = toValidId( definitionId );
@@ -76,19 +75,14 @@ public class DefinitionsPaletteBuilderImpl
                                             .description( description )
                                             .tooltip( description );
                             builders.add( itemBuilder );
-
                         }
 
                         @Override
                         public void onError( final ClientRuntimeError error ) {
                             callback.onError( error );
-
                         }
-
                     } );
-
                 }
-
             }
             if ( !builders.isEmpty() ) {
                 final List<DefinitionPaletteItem> paletteItems = new LinkedList<DefinitionPaletteItem>();
@@ -99,17 +93,12 @@ public class DefinitionsPaletteBuilderImpl
                 }
                 final DefinitionsPaletteImpl definitionsPalette = new DefinitionsPaletteImpl( paletteItems );
                 callback.onSuccess( definitionsPalette );
-
             } else {
                 callback.onError( new ClientRuntimeError( "No categories found." ) );
-
             }
-
         } else {
             callback.onError( new ClientRuntimeError( "Missing definitions argument." ) );
-
         }
-
     }
 
     @Override
@@ -118,7 +107,6 @@ public class DefinitionsPaletteBuilderImpl
         final Object defSet = getDefinitionManager().definitionSets().getDefinitionSetById( defintionSetId );
         final Set<String> definitions = getDefinitionManager().adapters().forDefinitionSet().getDefinitions( defSet );
         build( definitions, callback );
-
     }
 
     @Override
@@ -130,7 +118,6 @@ public class DefinitionsPaletteBuilderImpl
 
     protected DefinitionManager getDefinitionManager() {
         return definitionUtils.getDefinitionManager();
-
     }
 
 }

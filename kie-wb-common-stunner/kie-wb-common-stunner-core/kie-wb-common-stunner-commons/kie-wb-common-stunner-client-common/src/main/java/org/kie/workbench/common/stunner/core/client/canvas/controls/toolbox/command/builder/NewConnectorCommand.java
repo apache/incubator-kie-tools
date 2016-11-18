@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
+import org.uberfire.mvp.Command;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -64,9 +65,10 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
 
     }
 
+    // TODO: i18n.
     @PostConstruct
     public void init() {
-        getGlyphTooltip().setPrefix( "Create a new " );
+        getGlyphTooltip().setPrefix( "Click and move to connect using a " );
     }
 
     public void setEdgeIdentifier( final String edgeId ) {
@@ -130,7 +132,22 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
                 return edgeFactory;
             }
         };
+    }
 
+    /**
+     * Set the source node for the recently new connector instance as the source
+     * element for the shape's toolbox, so further rules can be evaluated for all commands.
+     */
+    @Override
+    @SuppressWarnings( "unchecked" )
+    protected void onDefinitionInstanceBuilt( final Context<AbstractCanvasHandler> context,
+                                              final Element source,
+                                              final Element newElement,
+                                              final Command callback ) {
+        final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
+        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
+        edge.setSourceNode( sourceNode );
+        NewConnectorCommand.super.onDefinitionInstanceBuilt( context, source, newElement, callback );
     }
 
     @Override
@@ -165,7 +182,6 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
     @Override
     public void destroy() {
         super.destroy();
-
     }
 
 }

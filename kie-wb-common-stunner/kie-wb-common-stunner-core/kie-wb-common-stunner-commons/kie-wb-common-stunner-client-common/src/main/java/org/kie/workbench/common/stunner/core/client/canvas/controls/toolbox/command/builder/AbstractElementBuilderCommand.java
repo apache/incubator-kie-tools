@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.com
 
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyboardEvent;
@@ -26,7 +27,7 @@ import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionG
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 
@@ -59,7 +60,6 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
         super.destroy();
         this.factory = null;
         this.iconView = null;
-
     }
 
     @Override
@@ -68,9 +68,9 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
                       final double height ) {
         if ( null == iconView ) {
             final ShapeFactory factory = getFactory();
-            final ShapeGlyph<I> glyph = factory.glyph( getGlyphDefinitionId(), width, height );
+            // TODO: Review why glyphs result smaller than expected. Adding some padding pixels here.
+            final Glyph<I> glyph = factory.glyph( getGlyphDefinitionId(), width + 6, height + 6 );
             this.iconView = glyph.getGroup();
-
         }
         return iconView;
     }
@@ -80,14 +80,18 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
                             final Element element ) {
         super.mouseEnter( context, element );
         if ( null != getFactory() ) {
+            final Transform transform = context.getCanvasHandler().getCanvas().getLayer().getTransform();
+            final double ax = context.getCanvasHandler().getCanvas().getView().getAbsoluteX();
+            final double ay = context.getCanvasHandler().getCanvas().getView().getAbsoluteY();
+            // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
+            // using current transform attributes to obtain the right absolute position on the screen.
+            final double[] t = transform.transform( context.getX(), context.getY() );
             glyphTooltip
                     .showTooltip( getGlyphDefinitionId(),
-                            context.getClientX() + 20,
-                            context.getClientY(),
+                            ax + t[0] + 20,
+                            ay + t[1],
                             GlyphTooltip.Direction.WEST );
-
         }
-
     }
 
     @Override
@@ -95,13 +99,11 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
                            final Element element ) {
         super.mouseExit( context, element );
         glyphTooltip.hide();
-
     }
 
     protected ShapeFactory getFactory() {
         if ( null == factory ) {
             factory = shapeManager.getFactory( getGlyphDefinitionId() );
-
         }
         return factory;
     }
@@ -111,34 +113,28 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
                                                       final Element element,
                                                       final Element item ) {
         return new DragProxyCallback() {
-
             @Override
             public void onStart( final int x1,
                                  final int y1 ) {
                 AbstractElementBuilderCommand.this.onStart( context, element, item, x1, y1 );
-
             }
 
             @Override
             public void onMove( final int x1,
                                 final int y1 ) {
                 AbstractElementBuilderCommand.this.onMove( context, element, item, x1, y1 );
-
             }
 
             @Override
             public void onComplete( final int x1,
                                     final int y1 ) {
                 AbstractElementBuilderCommand.this.onComplete( context, element, item, x1, y1 );
-
             }
         };
-
     }
 
     protected void clearDragProxy() {
         getDragProxyFactory().clear();
-
     }
 
     ShapeManager getShapeManager() {
@@ -149,14 +145,15 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
         return glyphTooltip;
     }
 
+    /**
+     * Listens for <code>ESC</code> key pressed - cancels the current drag/build operation.
+     */
     void onKeyDownEvent( @Observes KeyDownEvent keyDownEvent ) {
         checkNotNull( "keyDownEvent", keyDownEvent );
         final KeyboardEvent.Key key = keyDownEvent.getKey();
         if ( null != key && KeyboardEvent.Key.ESC.equals( key ) ) {
             clearDragProxy();
-
         }
-
     }
 
 }

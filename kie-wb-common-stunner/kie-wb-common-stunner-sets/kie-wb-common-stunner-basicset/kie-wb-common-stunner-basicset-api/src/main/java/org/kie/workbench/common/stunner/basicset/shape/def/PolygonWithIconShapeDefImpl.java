@@ -18,7 +18,10 @@ package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.PolygonWithIcon;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
 import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
@@ -90,13 +93,18 @@ public final class PolygonWithIconShapeDefImpl
     }
 
     @Override
-    public String getGlyphDescription( final PolygonWithIcon element ) {
-        return PolygonWithIcon.title;
+    public HasTitle.Position getFontPosition( final PolygonWithIcon element ) {
+        return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public String getGlyphBackgroundColor( final PolygonWithIcon element ) {
-        return PolygonWithIcon.PolygonWithIconBuilder.COLOR;
+    public double getFontRotation( final PolygonWithIcon element ) {
+        return 0;
+    }
+
+    @Override
+    public GlyphDef<PolygonWithIcon> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
     }
 
     @Override
@@ -106,7 +114,7 @@ public final class PolygonWithIconShapeDefImpl
         }};
     }
 
-    public final class IconProxy
+    private final class IconProxy
             extends AbstractShapeDef<PolygonWithIcon>
             implements DynamicIconShapeDef<PolygonWithIcon> {
 
@@ -152,15 +160,6 @@ public final class PolygonWithIconShapeDefImpl
             return 1;
         }
 
-        @Override
-        public String getGlyphDescription( final PolygonWithIcon element ) {
-            return null;
-        }
-
-        @Override
-        public String getGlyphBackgroundColor( final PolygonWithIcon element ) {
-            return null;
-        }
     }
 
 }

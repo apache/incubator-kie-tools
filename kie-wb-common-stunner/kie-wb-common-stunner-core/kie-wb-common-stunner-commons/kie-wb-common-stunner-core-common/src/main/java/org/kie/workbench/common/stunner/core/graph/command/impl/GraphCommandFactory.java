@@ -29,7 +29,15 @@ public class GraphCommandFactory {
     @SuppressWarnings( "unchecked" )
     public AddChildNodeCommand ADD_CHILD_NODE( final Node parent,
                                                final Node candidate ) {
-        return new AddChildNodeCommand( parent, candidate );
+        return new AddChildNodeCommand( parent, candidate, null, null );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public AddChildNodeCommand ADD_CHILD_NODE( final Node parent,
+                                               final Node candidate,
+                                               final Double x,
+                                               final Double y ) {
+        return new AddChildNodeCommand( parent, candidate, x, y );
     }
 
     @SuppressWarnings( "unchecked" )

@@ -24,8 +24,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
+import org.uberfire.mvp.Command;
 
 import javax.enterprise.context.Dependent;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Floating view implementation for generic GWT Widgets.
@@ -41,6 +44,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     private Timer timer;
     private int timeout = 800;
     private boolean visible;
+    private Command hideCallback;
     private final FlowPanel panel = new FlowPanel();
     private final HandlerRegistrationImpl handlerRegistrationManager = new HandlerRegistrationImpl();
 
@@ -49,6 +53,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
         this.ox = 0;
         this.oy = 0;
         this.visible = false;
+        this.hideCallback = () -> {};
     }
 
     @Override
@@ -93,6 +98,13 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     }
 
     @Override
+    public FloatingView<IsWidget> setHideCallback( final Command hideCallback ) {
+        checkNotNull( "hideCallback", hideCallback );
+        this.hideCallback = hideCallback;
+        return this;
+    }
+
+    @Override
     public void clear() {
         panel.clear();
     }
@@ -126,6 +138,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     protected void doHide() {
         panel.getElement().getStyle().setDisplay( Style.Display.NONE );
+        hideCallback.execute();
     }
 
     private void attach() {

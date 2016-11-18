@@ -45,7 +45,7 @@ public class FontSize {
     public static final PropertyType type = new DoubleType();
 
     @DefaultValue
-    public static final Double defaultValue = 8d;
+    public static final Double defaultValue = 11d;
 
     @Value
     private Double value = defaultValue;

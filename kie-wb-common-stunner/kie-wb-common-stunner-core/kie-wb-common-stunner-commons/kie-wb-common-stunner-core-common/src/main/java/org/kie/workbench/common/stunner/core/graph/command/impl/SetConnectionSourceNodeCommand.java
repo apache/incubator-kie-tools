@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 /**
  * A Command to set the outgoing connection for an edge.
@@ -113,10 +113,10 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                                 targetNode != null ? targetNode.getInEdges() : null,
                                 RuleManager.Operation.ADD )
                         .violations();
-        final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
-        violations.addAll( connectionRuleViolations );
-        violations.addAll( cardinalityRuleViolations );
-        return new GraphCommandResultBuilder( violations ).build();
+        return new GraphCommandResultBuilder( new ArrayList<RuleViolation>( 2 ) {{
+            addAll( connectionRuleViolations );
+            addAll( cardinalityRuleViolations );
+        }} ).build();
     }
 
     @Override

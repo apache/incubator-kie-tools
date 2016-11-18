@@ -17,7 +17,10 @@
 package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.Rectangle;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
 public final class RectangleShapeDefImpl
@@ -32,6 +35,11 @@ public final class RectangleShapeDefImpl
     @Override
     public double getHeight( final Rectangle element ) {
         return element.getHeight().getValue();
+    }
+
+    @Override
+    public double getCornerRadius( final Rectangle element ) {
+        return 5;
     }
 
     @Override
@@ -85,13 +93,17 @@ public final class RectangleShapeDefImpl
     }
 
     @Override
-    public String getGlyphDescription( final Rectangle element ) {
-        return Rectangle.title;
+    public HasTitle.Position getFontPosition( final Rectangle element ) {
+        return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public String getGlyphBackgroundColor( final Rectangle element ) {
-        return Rectangle.RectangleBuilder.COLOR;
+    public double getFontRotation( final Rectangle element ) {
+        return 0;
     }
 
+    @Override
+    public GlyphDef<Rectangle> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
+    }
 }

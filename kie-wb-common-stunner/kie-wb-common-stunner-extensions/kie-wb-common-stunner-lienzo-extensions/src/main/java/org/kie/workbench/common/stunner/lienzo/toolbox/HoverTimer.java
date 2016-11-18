@@ -24,6 +24,8 @@ import com.google.gwt.user.client.Timer;
 
 public class HoverTimer implements NodeMouseEnterHandler, NodeMouseExitHandler {
 
+    public static final int TIMEOUT = 100;
+
     private final Actions actions;
 
     public HoverTimer( Actions actions ) {
@@ -67,7 +69,7 @@ public class HoverTimer implements NodeMouseEnterHandler, NodeMouseExitHandler {
     private void createHideTimer() {
         if ( m_timer == null ) {
             m_timer = createTimer();
-            m_timer.schedule( 200 );
+            m_timer.schedule( TIMEOUT );
         }
     }
 

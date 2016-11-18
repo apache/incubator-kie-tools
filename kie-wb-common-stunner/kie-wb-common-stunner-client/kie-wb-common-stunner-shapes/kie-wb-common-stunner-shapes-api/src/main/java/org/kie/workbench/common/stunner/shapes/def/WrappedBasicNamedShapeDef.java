@@ -78,14 +78,5 @@ public abstract class WrappedBasicNamedShapeDef<W>
         return parent.getBorderAlpha( element );
     }
 
-    @Override
-    public String getGlyphBackgroundColor( final W element ) {
-        return null;
-    }
-
-    @Override
-    public String getGlyphDescription( final W element ) {
-        return null;
-    }
 
 }

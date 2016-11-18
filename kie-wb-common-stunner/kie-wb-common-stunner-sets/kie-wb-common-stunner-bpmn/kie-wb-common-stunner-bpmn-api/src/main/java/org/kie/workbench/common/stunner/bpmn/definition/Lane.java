@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.HashSet;
-import java.util.Set;
-import javax.validation.Valid;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -27,6 +23,9 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontBorderSize;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontColor;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontFamily;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.shape.def.LaneShapeDef;
@@ -41,6 +40,10 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
+
+import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
 
@@ -91,7 +94,7 @@ public class Lane implements BPMNDefinition {
     @NonPortable
     public static class LaneBuilder implements Builder<Lane> {
 
-        public static final transient String COLOR = "#ffffff";
+        public static final transient String COLOR = "#FFFFFF";
         public static final Double WIDTH = 450d;
         public static final Double HEIGHT = 250d;
         public static final Double BORDER_SIZE = 1d;
@@ -101,10 +104,9 @@ public class Lane implements BPMNDefinition {
         public Lane build() {
             return new Lane( new BPMNGeneralSet( "Lane" ),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet(),
+                    new FontSet( FontFamily.defaultValue, FontColor.defaultValue, 14d, FontBorderSize.defaultValue ),
                     new RectangleDimensionsSet( WIDTH, HEIGHT ) );
         }
-
     }
 
     public Lane() {

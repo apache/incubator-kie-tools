@@ -24,6 +24,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <!--
+        IMPORANT NOTE:
+            This module contains both server/client side, ensure the right provided scopes in this pom
+            to provide the right dependency tree resolution on the upstream modules.
+    -->
+
     <artifactId>kie-wb-common-stunner-bpmn-project</artifactId>
     <name>Kie Workbench - Common - Stunner - BPMN Definition Set - Project integration</name>
     <description>Kie Workbench - Common - Stunner - BPMN Definition Set - Project integration</description>
@@ -86,6 +92,7 @@
         <dependency>
             <groupId>org.kie.workbench.stunner</groupId>
             <artifactId>kie-wb-common-stunner-project-client</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -127,16 +134,19 @@
         <dependency>
             <groupId>org.uberfire</groupId>
             <artifactId>uberfire-widgets-properties-editor-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.uberfire</groupId>
             <artifactId>uberfire-workbench-client</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.uberfire</groupId>
             <artifactId>uberfire-commons-editor-client</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

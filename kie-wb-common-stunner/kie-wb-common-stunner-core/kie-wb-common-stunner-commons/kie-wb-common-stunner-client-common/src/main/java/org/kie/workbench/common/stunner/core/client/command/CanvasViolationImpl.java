@@ -53,4 +53,8 @@ public final class CanvasViolationImpl implements CanvasViolation {
 
     }
 
+    @Override
+    public String toString() {
+        return getMessage();
+    }
 }

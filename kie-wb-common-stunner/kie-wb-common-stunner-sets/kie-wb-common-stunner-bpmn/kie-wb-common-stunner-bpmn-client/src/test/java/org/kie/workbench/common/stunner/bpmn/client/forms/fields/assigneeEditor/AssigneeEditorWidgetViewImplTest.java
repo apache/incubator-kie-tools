@@ -159,7 +159,7 @@ public class AssigneeEditorWidgetViewImplTest {
 
     @Test
     public void testGetNamesUsers() {
-        // Make view type USER
+        // Make view type TASK_USER
         when(presenter.getType()).thenReturn( AssigneeType.USER);
 
         List<User> users = new ArrayList<User>();

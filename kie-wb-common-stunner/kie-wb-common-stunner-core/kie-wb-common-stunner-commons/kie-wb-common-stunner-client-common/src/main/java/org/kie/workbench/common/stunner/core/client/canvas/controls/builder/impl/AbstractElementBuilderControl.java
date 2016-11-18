@@ -117,7 +117,8 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         double x = 0;
         double y = 0;
         if ( request.getX() == -1 || request.getY() == -1 ) {
-            final double[] p = canvasLayoutUtils.getNextLayoutPosition( canvasHandler );
+            // TODO: Use the right size of the target element to be created.
+            final double[] p = canvasLayoutUtils.getNext( canvasHandler, 150, 75 );
             x = p[ 0 ] + 50;
             y = p[ 1 ] > 0 ? p[ 1 ] : 200;
 

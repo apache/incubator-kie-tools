@@ -21,22 +21,28 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 public class ContextImpl implements Context {
 
     private final AbstractCanvasHandler canvasHandler;
-    private final Event event;
-    private final double x;
-    private final double y;
-    private final double clientX;
-    private final double clientY;
+    private final EventType eventType;
+    private final int x;
+    private final int y;
+    private final int absX;
+    private final int absY;
+    private final int clientX;
+    private final int clientY;
 
     public ContextImpl( final AbstractCanvasHandler canvasHandler,
-                        final Event event,
-                        final double x,
-                        final double y,
-                        final double clientX,
-                        final double clientY ) {
+                        final EventType eventType,
+                        final int x,
+                        final int y,
+                        final int absX,
+                        final int absY,
+                        final int clientX,
+                        final int clientY ) {
         this.canvasHandler = canvasHandler;
-        this.event = event;
+        this.eventType = eventType;
         this.x = x;
         this.y = y;
+        this.absX = absX;
+        this.absY = absY;
         this.clientX = clientX;
         this.clientY = clientY;
     }
@@ -46,28 +52,37 @@ public class ContextImpl implements Context {
         return canvasHandler;
     }
 
-    @Override
-    public Event getEvent() {
-        return event;
+    public EventType getEventType() {
+        return eventType;
     }
 
     @Override
-    public double getX() {
+    public int getX() {
         return x;
     }
 
     @Override
-    public double getY() {
+    public int getY() {
         return y;
     }
 
     @Override
-    public double getClientX() {
+    public int getAbsoluteX() {
+        return absX;
+    }
+
+    @Override
+    public int getAbsoluteY() {
+        return absY;
+    }
+
+    @Override
+    public int getClientX() {
         return clientX;
     }
 
     @Override
-    public double getClientY() {
+    public int getClientY() {
         return clientY;
     }
 

@@ -16,10 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.definition.shape;
 
+/**
+ * Base glyph definition type.
+ * @param <W> The bean type.
+ */
 public interface GlyphDef<W> {
 
-    String getGlyphDefinitionId( String definitionId );
+    /**
+     * Returns the glyph defintion type.
+     */
+    Class<?> getType();
 
+    /**
+     * The glyph's description. Can be used as tooltips or titles for widgets
+     * or other client side components.
+     */
     String getGlyphDescription( W element );
 
 }

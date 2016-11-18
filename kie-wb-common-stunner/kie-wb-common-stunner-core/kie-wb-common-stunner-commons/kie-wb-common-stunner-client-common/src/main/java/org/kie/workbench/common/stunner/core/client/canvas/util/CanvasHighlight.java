@@ -26,7 +26,7 @@ public class CanvasHighlight {
 
     private final AbstractCanvasHandler canvasHandler;
     private Shape shape;
-    private long duration = 200;
+    private long duration = 50;
 
     public CanvasHighlight( final AbstractCanvasHandler canvasHandler ) {
         this.canvasHandler = canvasHandler;
@@ -38,6 +38,19 @@ public class CanvasHighlight {
     }
 
     public void highLight( final Node node ) {
+        applyState( node, ShapeState.HIGHLIGHT );
+    }
+
+    public void invalid( final Node node ) {
+        applyState( node, ShapeState.INVALID );
+    }
+
+    public void none( final Node node ) {
+        applyState( node, ShapeState.NONE );
+    }
+
+    private void applyState( final Node node, final ShapeState state ) {
+        // Only one shape is being highlight at same time, so take this into account in the next conditional sentence.
         if ( null != this.shape && !node.getUUID().equals( shape.getUUID() ) ) {
             unhighLight();
         }
@@ -46,7 +59,7 @@ public class CanvasHighlight {
             final Shape shape = getShape( uuid );
             if ( null != shape ) {
                 this.shape = shape;
-                shape.applyState( ShapeState.HIGHLIGHT );
+                shape.applyState( state );
                 getCanvas().draw();
 
             }

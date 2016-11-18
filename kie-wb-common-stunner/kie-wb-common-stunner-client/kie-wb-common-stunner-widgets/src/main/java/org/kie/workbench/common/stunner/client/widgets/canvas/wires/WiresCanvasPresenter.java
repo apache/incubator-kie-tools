@@ -38,7 +38,11 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
 
     private static final int PADDING = 15;
 
-    LienzoPanel lienzoPanel;
+    private final LienzoPanel lienzoPanel;
+
+    protected WiresCanvasPresenter() {
+        this( null, null, null, null, null, null, null, null );
+    }
 
     @Inject
     public WiresCanvasPresenter( final Event<CanvasClearEvent> canvasClearEvent,
@@ -63,7 +67,7 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     public Canvas initialize( final int width, final int height ) {
         lienzoPanel.show( width, height, PADDING );
         show( lienzoPanel.asWidget(), layer );
-        layer.onAfterDraw( () -> WiresCanvasPresenter.this.afterDrawCanvas() );
+        layer.onAfterDraw( WiresCanvasPresenter.this::afterDrawCanvas );
         return this;
     }
 
@@ -87,6 +91,5 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     public void destroy() {
         super.destroy();
         lienzoPanel.destroy();
-        lienzoPanel = null;
     }
 }

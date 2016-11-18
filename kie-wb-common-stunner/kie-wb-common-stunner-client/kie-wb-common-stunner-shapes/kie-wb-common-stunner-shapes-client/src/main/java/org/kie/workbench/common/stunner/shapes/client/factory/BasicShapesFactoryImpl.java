@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.shapes.client.factory;
 
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -26,10 +25,10 @@ import org.kie.workbench.common.stunner.core.client.shape.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.MutableShape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.AbstractShapeDefFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.AbstractBindableShapeGlyphBuilder;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyphBuilder;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.GlyphBuilderFactory;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.kie.workbench.common.stunner.shapes.client.*;
 import org.kie.workbench.common.stunner.shapes.client.view.*;
@@ -39,6 +38,7 @@ import org.kie.workbench.common.stunner.shapes.client.view.icon.statics.StaticIc
 import org.kie.workbench.common.stunner.shapes.def.*;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.IconShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -52,23 +52,22 @@ public class BasicShapesFactoryImpl
 
     protected static final double DEFAULT_SIZE = 50;
 
-    protected ShapeViewFactory shapeViewFactory;
-    protected DefinitionManager definitionManager;
-    protected ShapeGlyphBuilder<Group> glyphBuilder;
+    private final ShapeViewFactory shapeViewFactory;
+    private final GlyphBuilderFactory glyphBuilderFactory;
+
 
     protected BasicShapesFactoryImpl() {
+        this( null, null, null, null );
     }
 
     @Inject
     public BasicShapesFactoryImpl( final FactoryManager factoryManager,
                                    final ShapeViewFactory shapeViewFactory,
                                    final DefinitionManager definitionManager,
-                                   final ShapeGlyphBuilder<Group> glyphBuilder ) {
-        super( factoryManager );
+                                   final GlyphBuilderFactory glyphBuilderFactory ) {
+        super( definitionManager, factoryManager );
         this.shapeViewFactory = shapeViewFactory;
-        this.definitionManager = definitionManager;
-        this.glyphBuilder = glyphBuilder;
-
+        this.glyphBuilderFactory = glyphBuilderFactory;
     }
 
     @Override
@@ -84,6 +83,7 @@ public class BasicShapesFactoryImpl
     protected MutableShape<Object, ShapeView> build( final Object definition,
                                                      final ShapeDef<Object> proxy,
                                                      final AbstractCanvasHandler context ) {
+        boolean found = false;
         MutableShape<Object, ShapeView> shape = null;
         if ( isCircle( proxy ) ) {
             final CircleShapeDef<Object> circleProxy = ( CircleShapeDef<Object> ) proxy;
@@ -91,7 +91,7 @@ public class BasicShapesFactoryImpl
             final CircleView view =
                     shapeViewFactory.circle( radius );
             shape = new CircleShape( view, circleProxy );
-
+            found = true;
         }
         if ( isRing( proxy ) ) {
             final RingShapeDef<Object> ringProxy = ( RingShapeDef<Object> ) proxy;
@@ -99,16 +99,17 @@ public class BasicShapesFactoryImpl
             final RingView view =
                     shapeViewFactory.ring( oRadius );
             shape = new RingShape( view, ringProxy );
-
+            found = true;
         }
         if ( isRectangle( proxy ) ) {
             final RectangleShapeDef<Object> rectangleProxy = ( RectangleShapeDef<Object> ) proxy;
             final double width = rectangleProxy.getWidth( definition );
             final double height = rectangleProxy.getHeight( definition );
+            final double cr = rectangleProxy.getCornerRadius( definition );
             final RectangleView view =
-                    shapeViewFactory.rectangle( width, height );
+                    shapeViewFactory.rectangle( width, height, cr );
             shape = new RectangleShape( view, rectangleProxy );
-
+            found = true;
         }
         if ( isPolygon( proxy ) ) {
             final PolygonShapeDef<Object> polygonProxy = ( PolygonShapeDef<Object> ) proxy;
@@ -118,13 +119,13 @@ public class BasicShapesFactoryImpl
                     shapeViewFactory.polygon( radius,
                             fillColor );
             shape = new PolygonShape( view, polygonProxy );
-
+            found = true;
         }
         if ( isConnector( proxy ) ) {
             final ConnectorShapeDef<Object> polygonProxy = ( ConnectorShapeDef<Object> ) proxy;
             final ConnectorView view = shapeViewFactory.connector( 0, 0, 100, 100 );
             shape = new ConnectorShape( view, polygonProxy );
-
+            found = true;
         }
         if ( isStaticIcon( proxy ) ) {
             final IconShapeDef<Object> iconProxy =
@@ -133,7 +134,18 @@ public class BasicShapesFactoryImpl
             final StaticIconShapeView view =
                     shapeViewFactory.staticIcon( icon );
             shape = new StaticIconShape( view, iconProxy );
-
+            found = true;
+        }
+        if ( isPicture( proxy ) ) {
+            final PictureShapeDef pictureProxy = ( PictureShapeDef ) proxy;
+            final Object pictureSource = pictureProxy.getPictureSource( definition );
+            if ( null != pictureSource ) {
+                final double width = pictureProxy.getWidth( definition );
+                final double height = pictureProxy.getHeight( definition );
+                final PictureShapeView view = shapeViewFactory.picture( pictureSource, width, height );
+                shape = new PictureShape( view, pictureProxy );
+            }
+            found = true;
         }
         if ( isDynamicIcon( proxy ) ) {
             final org.kie.workbench.common.stunner.shapes.def.icon.dynamics.IconShapeDef iconProxy =
@@ -144,10 +156,12 @@ public class BasicShapesFactoryImpl
             final DynamicIconShapeView view =
                     shapeViewFactory.dynamicIcon( icon, width, height );
             shape = new DynamicIconShape( view, iconProxy );
-
+            found = true;
         }
         // Add children, if any.
-        if ( null != shape && proxy instanceof HasChildShapeDefs ) {
+        if ( null != shape
+                && shape instanceof AbstractCompositeShape
+                && proxy instanceof HasChildShapeDefs ) {
             final HasChildShapeDefs<Object> hasChildren = ( HasChildShapeDefs<Object> ) proxy;
             final Map<ShapeDef<Object>, HasChildren.Layout> childShapeDefs = hasChildren.getChildShapeDefs();
             if ( null != childShapeDefs && !childShapeDefs.isEmpty() ) {
@@ -155,22 +169,17 @@ public class BasicShapesFactoryImpl
                     final ShapeDef<Object> child = entry.getKey();
                     final HasChildren.Layout layout = entry.getValue();
                     final MutableShape<Object, ShapeView> childShape = this.build( definition, child, context );
-                    if ( shape instanceof AbstractCompositeShape ) {
+                    if ( null != childShape ) {
                         ( ( AbstractCompositeShape ) shape ).addChild( ( AbstractShape ) childShape, layout );
-
                     }
-
                 }
             }
-
         }
-        if ( null != shape ) {
-            return shape;
-
+        if ( !found ) {
+            final String id = definitionManager.adapters().forDefinition().getId( definition );
+            throw new RuntimeException( "This factory supports [" + id + "] but cannot built a shape for it." );
         }
-        final String id = definitionManager.adapters().forDefinition().getId( definition );
-        throw new RuntimeException( "This factory supports [" + id + "] but cannot built a shape for it." );
-
+        return shape;
     }
 
     private boolean isCircle( final ShapeDef<Object> proxy ) {
@@ -201,40 +210,29 @@ public class BasicShapesFactoryImpl
         return proxy instanceof IconShapeDef;
     }
 
+    private boolean isPicture( final ShapeDef<Object> proxy ) {
+        return proxy instanceof PictureShapeDef;
+    }
+
     @Override
     @SuppressWarnings( "unchecked" )
-    protected ShapeGlyph glyph( final Class<?> clazz,
-                                final double width,
-                                final double height ) {
-        final String id = getDefinitionId( clazz );
-        final ShapeDef<Object> proxy = getShapeDef( id );
-        // Custom shape glyphs.
-        if ( null != proxy && isConnector( proxy ) ) {
+    protected Glyph glyph( final Class<?> clazz,
+                           final double width,
+                           final double height ) {
+        final ShapeDef<Object> shapeDef = getShapeDef( clazz );
+        final GlyphDef<Object> glyphDef = shapeDef.getGlyphDef();
+        // TODO: Refactor this customization and remove from here? - Custom shape glyph for connectors.
+        if ( isConnector( shapeDef ) ) {
             return new ConnectorGlyph( width, height, ColorName.BLACK.getColorString() );
-
         }
-        // Use of Shape Glyph Builder - it builds the glyph by building the shape for the given Definition
-        // and scaling it to the given size.
-        if ( null != proxy ) {
-            if ( glyphBuilder instanceof AbstractBindableShapeGlyphBuilder ) {
-                final AbstractBindableShapeGlyphBuilder bindableShapeGlyphBuilder =
-                        ( AbstractBindableShapeGlyphBuilder ) glyphBuilder;
-                bindableShapeGlyphBuilder.glyphProxy( proxy, clazz );
-
-            } else {
-                glyphBuilder.glyphProxy( proxy, id );
-
-            }
-
-        } else {
-            glyphBuilder.definition( id );
-
-        }
-        return glyphBuilder
-                .factory( this )
-                .height( height )
-                .width( width )
-                .build();
+        return glyphBuilderFactory
+                .getBuilder( glyphDef )
+                    .definitionType( clazz )
+                    .glyphDef( glyphDef )
+                    .factory( this )
+                    .height( height )
+                    .width( width )
+                        .build();
     }
 
 }

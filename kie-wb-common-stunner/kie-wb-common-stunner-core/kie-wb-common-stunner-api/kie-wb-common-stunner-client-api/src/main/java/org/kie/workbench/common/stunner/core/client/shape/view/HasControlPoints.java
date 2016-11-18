@@ -26,4 +26,6 @@ public interface HasControlPoints<T> {
 
     T hideControlPoints();
 
+    boolean areControlsVisible();
+
 }

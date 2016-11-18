@@ -20,10 +20,16 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Ring;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.event.*;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 
+/**
+ * The lienzo view implementation for the Ring shape.
+ *
+ * TODO: Disabling for now the resize for rings - ARC resize is not implemented yet on lienzo side.
+ */
 public class RingView extends BasicShapeView<RingView>
         implements HasRadius<RingView> {
 
@@ -36,7 +42,8 @@ public class RingView extends BasicShapeView<RingView>
         super( initPath( new MultiPath(), radius ) );
         ring = new Ring( getInnerRadius( radius ), getOuterRadius( radius ) );
         addChild( ring, LayoutContainer.Layout.CENTER );
-        initResizeHandlers();
+        // TODO: initResizeHandlers();
+        super.setResizable( false );
     }
 
     @Override
@@ -69,11 +76,15 @@ public class RingView extends BasicShapeView<RingView>
     }
 
     @Override
+    public WiresShape setResizable( final boolean resizable ) {
+        return super.setResizable( false );
+    }
+
+    @Override
     protected void doDestroy() {
         super.doDestroy();
         registrations.removeHandler();
         ring.removeFromParent();
-
     }
 
     private void initResizeHandlers() {

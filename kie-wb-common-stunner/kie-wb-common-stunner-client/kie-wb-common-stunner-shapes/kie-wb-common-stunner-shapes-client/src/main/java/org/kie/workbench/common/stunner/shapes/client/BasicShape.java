@@ -37,6 +37,19 @@ public abstract class BasicShape<W, V extends BasicShapeView>
 
     private ShapeState state = ShapeState.NONE;
     private BasicShapeAnimation animation = null;
+    /*
+        The following instance members:
+            - _strokeWidth
+            - _strokeAlpha
+            - _strokeColor
+        Are used to keep the original stroke attributes from the
+        domain model object because the behavior for changing
+        this shape state is based on updating the shape's borders.
+        Eg: when the shape is in SELECTED state, the borders are
+        using different colors/sizes, so to be able to get
+        back to NONE state, it just reverts the border attributes
+        to these private instance members.
+     */
     private Double _strokeWidth = null;
     private Double _strokeAlpha = null;
     private String _strokeColor = null;
@@ -69,13 +82,12 @@ public abstract class BasicShape<W, V extends BasicShapeView>
         final Double alpha = getBackgroundAlpha( element );
         super.applyFillAlpha( alpha, mutationContext );
         // Apply border styles.
-        final String bcolor = getBorderColor( element );
-        final Double bwidth = getBorderSize( element );
-        super.applyBorders( bcolor, bwidth, mutationContext );
+        _strokeColor = getBorderColor( element );
+        _strokeWidth = getBorderSize( element );
+        super.applyBorders( _strokeColor, _strokeWidth, mutationContext );
         // Apply border alpha.
-        final Double balpha = getBorderAlpha( element );
-        super.applyBorderAlpha( balpha, mutationContext );
-
+        _strokeAlpha = getBorderAlpha( element );
+        super.applyBorderAlpha( _strokeAlpha, mutationContext );
     }
 
     @Override
@@ -134,40 +146,15 @@ public abstract class BasicShape<W, V extends BasicShapeView>
     }
 
     private void applyActiveState( final String color ) {
-        if ( null == this._strokeWidth ) {
-            this._strokeWidth = getShapeView().getStrokeWidth();
-        }
-        if ( null == this._strokeColor ) {
-            this._strokeColor = getShapeView().getStrokeColor();
-        }
-        if ( null == this._strokeAlpha ) {
-            this._strokeAlpha = getShapeView().getStrokeAlpha();
-        }
-        new BasicShapeDecoratorAnimation( color, 5, 1 ).forShape( this ).run();
+        new BasicShapeDecoratorAnimation( color, 1.5, 1 ).forShape( this ).run();
 
     }
 
     private void applyNoneState() {
         new BasicShapeDecoratorAnimation( this._strokeColor,
-                null != this._strokeWidth ? this._strokeWidth : 0,
-                null != this._strokeAlpha ? this._strokeAlpha : 0 )
+                null != this._strokeWidth ? this._strokeWidth : 1,
+                null != this._strokeAlpha ? this._strokeAlpha : 1 )
                 .forShape( this )
-                .setCallback( new Animation.AnimationCallback() {
-                    @Override
-                    public void onStart() {
-                    }
-
-                    @Override
-                    public void onFrame() {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        BasicShape.this._strokeWidth = null;
-                        BasicShape.this._strokeColor = null;
-                        BasicShape.this._strokeAlpha = null;
-                    }
-                } )
                 .run();
     }
 

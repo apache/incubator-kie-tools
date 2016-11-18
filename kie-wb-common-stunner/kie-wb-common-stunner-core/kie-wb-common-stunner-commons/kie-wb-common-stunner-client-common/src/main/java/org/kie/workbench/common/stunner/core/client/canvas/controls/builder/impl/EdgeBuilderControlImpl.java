@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.EdgeBuildRequest;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Session;
@@ -115,7 +116,7 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
         final Shape sourceShape = canvas.getShape( inNode.getUUID() );
         final Shape targetShape = outNode != null ? canvas.getShape( outNode.getUUID() ) : null;
         int[] magnetIndexes = new int[]{ 0, 0 };
-        if ( outNode != null ) {
+        if ( targetShape != null ) {
             magnetIndexes = magnetsHelper.getDefaultMagnetsIndex( sourceShape.getShapeView(),
                     targetShape.getShapeView() );
 
@@ -127,8 +128,7 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
         final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
                 new CompositeCommandImpl.CompositeCommandBuilder()
                 .addCommand( commandFactory.ADD_EDGE( inNode, edge, factory )  )
-                .addCommand( commandFactory.SET_SOURCE_NODE( inNode, edge, magnetIndexes[ 0 ] ) )
-                .addCommand( commandFactory.SET_TARGET_NODE( outNode, edge, magnetIndexes[ 1 ] ) );
+                .addCommand( commandFactory.SET_SOURCE_NODE( inNode, edge, magnetIndexes[ 0 ] ) );
         if ( null != outNode ) {
             commandBuilder.addCommand( commandFactory.SET_TARGET_NODE( outNode, edge, magnetIndexes[ 1 ] ) );
         }

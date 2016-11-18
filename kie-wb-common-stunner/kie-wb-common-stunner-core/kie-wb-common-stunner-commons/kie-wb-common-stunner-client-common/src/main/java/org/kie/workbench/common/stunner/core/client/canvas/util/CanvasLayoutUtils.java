@@ -26,20 +26,56 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 import javax.enterprise.context.Dependent;
-import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
 
-// TODO: This has to be refactored by the use of a good impl for dynamic layouts.
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
+/**
+ * This class is a basic implementation for achieving a simple layout mechanism.
+ * It finds an empty area on the canvas where new elements could be place as:
+ * - Calling <code>getNextLayoutPosition( CanvasHandler canvasHandler )</code> returns the
+ * cartesian coordinates for an empty area found in the diagram's graph that is being managed by the
+ * canvas handler instance.
+ * - Calling <code>getNextLayoutPosition( CanvasHandler canvasHandler, Element<View<?>> source )</code> returns the
+ * cartesian coordinates for an empty area found in the diagram's graph but relative to the given <code>source</code>
+ * argument and its parent, if any.
+ * In both cases the resulting coordinates are given from the coordinates of the visible element in the graph, which
+ * is position is on bottom right rather than the others, plus a given <code>PADDING</code> anb some
+ * error margin given by the <code>MARGIN</code> floating point.
+ * <p>
+ * TODO: This has to be refactored by the use of a good impl that achieve good dynamic layouts. Probably each
+ * Definition Set / Diagram will require a different layout manager as well.
+ */
 @Dependent
 public class CanvasLayoutUtils {
 
+    private static Logger LOGGER = Logger.getLogger( CanvasLayoutUtils.class.getName() );
+
     private static final int PADDING = 50;
     private static final float MARGIN = 0.2f;
+
+    public class LayoutBoundExceededException extends RuntimeException {
+        private final double x;
+        private final double y;
+        private final double maxX;
+        private final double maxY;
+
+        public LayoutBoundExceededException( final double x,
+                                             final double y,
+                                             final double maxX,
+                                             final double maxY ) {
+            this.x = x;
+            this.y = y;
+            this.maxX = maxX;
+            this.maxY = maxY;
+        }
+
+    }
 
     public static boolean isCanvasRoot( final Diagram diagram,
                                         final Element parent ) {
@@ -52,123 +88,169 @@ public class CanvasLayoutUtils {
         return ( null != canvasRoot && null != pUUID && canvasRoot.equals( pUUID ) );
     }
 
-    public double[] getNextLayoutPosition( final CanvasHandler canvasHandler, final Element<View<?>> source ) {
-        final double[] pos = getBoundCoordinates( source.getContent(), 0, 0 );
-        return checkNextLayoutPosition( pos[ 0 ] + PADDING, pos[ 1 ] + PADDING, canvasHandler );
-    }
-
-    public double[] getNextLayoutPosition( final CanvasHandler canvasHandler ) {
-        final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
-        final double[] next = getNextLayoutPosition( canvasHandler, ruuid );
-        return checkNextLayoutPosition( next[ 0 ], next[ 1 ], canvasHandler );
-    }
-
-    // Check that "next" coordinates on both cartesian axis do not exceed than graph bounds.
     @SuppressWarnings( "unchecked" )
-    private double[] checkNextLayoutPosition( final double x,
-                                              final double y,
-                                              final CanvasHandler canvasHandler ) {
-        final double[] result = { x, y };
-        final Graph<DefinitionSet, ?> graph = canvasHandler.getDiagram().getGraph();
-        final Bounds bounds = graph.getContent().getBounds();
+    public double[] getNext( final CanvasHandler canvasHandler,
+                             final double width,
+                             final double height ) {
+        checkNotNull( "canvasHandler", canvasHandler );
+        final Bounds bounds = getGraphBounds( canvasHandler );
+        final Bounds.Bound ul = bounds.getUpperLeft();
+        final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
+        if ( null != ruuid ) {
+            Node root = canvasHandler.getDiagram().getGraph().getNode( ruuid );
+            return getNext( canvasHandler, root, width, height, ul.getX(), ul.getY() );
+        }
+        final Iterable<Node> nodes = canvasHandler.getDiagram().getGraph().nodes();
+        if ( null != nodes ) {
+            final Bounds.Bound lr = bounds.getLowerRight();
+            final List<Node<View<?>, Edge>> nodeList = new LinkedList<>();
+            nodes.forEach( nodeList::add );
+            return getNext( canvasHandler, nodeList, width, height, ul.getX(), ul.getY(), lr.getX() - PADDING, lr.getY() - PADDING );
+        }
+        return new double[]{ ul.getX(), ul.getY() };
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public double[] getNext( final CanvasHandler canvasHandler,
+                             final double w,
+                             final double h,
+                             final double minX,
+                             final double minY ) {
+        checkNotNull( "canvasHandler", canvasHandler );
+        final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
+        if ( null != ruuid ) {
+            Node root = canvasHandler.getDiagram().getGraph().getNode( ruuid );
+            return getNext( canvasHandler, root, w, h, minX, minY );
+        }
+        final Bounds bounds = getGraphBounds( canvasHandler );
         final Bounds.Bound lr = bounds.getLowerRight();
-        if ( x >= getBound( lr.getX() ) ) {
-            result[ 0 ] = PADDING;
-            result[ 1 ] += PADDING;
-
+        final Iterable<Node> nodes = canvasHandler.getDiagram().getGraph().nodes();
+        if ( null != nodes ) {
+            final List<Node<View<?>, Edge>> nodeList = new LinkedList<>();
+            nodes.forEach( nodeList::add );
+            return getNext( canvasHandler, nodeList, w, h, minX, minY, lr.getX() - PADDING, lr.getY() - PADDING );
         }
-        if ( result[ 1 ] >= getBound( lr.getY() ) ) {
-            throw new RuntimeException( "Diagram bounds exceeded." );
+        return new double[]{ minX, minY };
+    }
 
+    @SuppressWarnings( "unchecked" )
+    public double[] getNext( final CanvasHandler canvasHandler,
+                             final Node<View<?>, Edge> root ) {
+        final double[] rootBounds = getBoundCoordinates( root.getContent() );
+        final Double[] size = GraphUtils.getSize( root.getContent() );
+
+        return getNext( canvasHandler, root, size[0], size[1], rootBounds[ 0 ], rootBounds[ 1 ] );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public double[] getNext( final CanvasHandler canvasHandler,
+                             final Node<View<?>, Edge> root,
+                             final double w,
+                             final double h,
+                             final double minX,
+                             final double minY ) {
+        checkNotNull( "canvasHandler", canvasHandler );
+        checkNotNull( "root", root );
+        final List<Edge> outEdges = root.getOutEdges();
+        if ( null != outEdges ) {
+            final List<Node<View<?>, Edge>> nodes = new LinkedList<>();
+            outEdges.stream().forEach( edge -> {
+                if ( edge instanceof Child
+                        && edge.getTargetNode().getContent() instanceof View ) {
+                    nodes.add( edge.getTargetNode() );
+                }
+            } );
+            if ( !nodes.isEmpty() ) {
+                final double[] rootBounds = getBoundCoordinates( root.getContent() );
+                final double[] n = getNext( canvasHandler, nodes, w, h, minX, minY,
+                        rootBounds[ 0 ] - PADDING, rootBounds[ 1 ] - PADDING );
+                return new double[]{ n[ 0 ] + PADDING, n[ 1 ] };
+            }
         }
+        final Bounds bounds = getGraphBounds( canvasHandler );
+        final Bounds.Bound lr = bounds.getLowerRight();
+        return check( minX, minY, w, h, minX, minY, lr.getX() - PADDING, lr.getY() - PADDING );
+    }
+
+    private double[] getNext( final CanvasHandler canvasHandler,
+                              final List<Node<View<?>, Edge>> nodes,
+                              final double width,
+                              final double height,
+                              final double minX,
+                              final double minY,
+                              final double maxX,
+                              final double maxY ) {
+        checkNotNull( "canvasHandler", canvasHandler );
+        checkNotNull( "nodes", nodes );
+        final double[] result = new double[]{ minX, minY };
+        nodes.stream().forEach( node -> {
+            final double[] coordinates = getAbsolute( node );
+            result[ 0 ] = coordinates[ 0 ] >= result[ 0 ] ? coordinates[ 0 ] : result[ 0 ];
+            result[ 1 ] = coordinates[ 1 ] >= result[ 1 ] ? coordinates[ 1 ] : result[ 1 ];
+            final double[] r = check( coordinates[ 0 ], coordinates[ 1 ], width, height, minX, minY, maxX, maxY );
+            if ( ( coordinates[ 0 ] + width ) >= maxX ) {
+                result[ 0 ] = r[ 0 ];
+                result[ 1 ] = r[ 1 ];
+            }
+            if ( ( result[ 1 ] + height ) > maxX ) {
+                throw new LayoutBoundExceededException( result[ 0 ], result[ 1 ], maxX, maxY );
+            }
+        } );
         return result;
     }
 
-    private double getBound( final double bound ) {
-        return bound - getMargin( bound );
-    }
-
-    private double getMargin( final double size ) {
-        return size * MARGIN;
+    private double[] check( final double x,
+                            final double y,
+                            final double w,
+                            final double h,
+                            final double lx,
+                            final double ly,
+                            final double ux,
+                            final double uy ) {
+        final double[] result = new double[]{ x, y };
+        if ( ( x + w ) >= ux ) {
+            result[ 0 ] = lx;
+            result[ 1 ] += y + PADDING;
+        }
+        if ( ( y + h ) > uy ) {
+            throw new LayoutBoundExceededException( result[ 0 ], result[ 1 ], ux, uy );
+        }
+        return new double[]{ result[ 0 ] + PADDING, result[ 1 ] };
     }
 
     @SuppressWarnings( "unchecked" )
-    private double[] getNextLayoutPosition( final CanvasHandler canvasHandler, final String rootUUID ) {
-        final Graph graph = canvasHandler.getDiagram().getGraph();
-        final double[] currentCandidateCoords = new double[] { 0, 0 };
-
-        new ChildrenTraverseProcessorImpl( new TreeWalkTraverseProcessorImpl() )
-                .setRootUUID( rootUUID )
-                .traverse( graph, new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
-
-
-                    @Override
-                    public void startNodeTraversal( final Node<View, Edge> node ) {
-                        super.startNodeTraversal( node );
-                        onStartNodeTraversal( null, node );
-                    }
-
-                    @Override
-                    public boolean startNodeTraversal( final Iterator<Node<View, Edge>> parents,
-                                                       final Node<View, Edge> node ) {
-                        super.startNodeTraversal( parents, node );
-                        onStartNodeTraversal( parents, node );
-                        return true;
-                    }
-
-                    private void onStartNodeTraversal( final Iterator<Node<View, Edge>> parents,
-                                                       final Node<View, Edge> node ) {
-                        if ( null != parents && parents.hasNext() ) {
-                            double parentX = 0;
-                            double parentY = 0;
-                            while ( parents.hasNext() ) {
-                                Node tParent = parents.next();
-                                final Object content = tParent.getContent();
-                                if ( content instanceof View ) {
-                                    final View viewContent = ( View ) content;
-                                    final Double[] parentCoords = GraphUtils.getPosition( viewContent );
-                                    parentX += parentCoords[ 0 ];
-                                    parentY += parentCoords[ 1 ];
-                                }
-
-                            }
-                            tryThisCandidate( node, parentX, parentY );
-                        } else if ( null != node ) {
-                            tryThisCandidate( node, 0, 0 );
-                        }
-                    }
-
-                    private void tryThisCandidate( final Node<View, Edge> node,
-                                                   final double parentX,
-                                                   final double parentY ){
-                        final double[] coordinates = getBoundCoordinates( node.getContent(), parentX, parentY );
-                        if ( coordinates[ 0 ] > getCurrentMaxX() && coordinates[ 1 ] > getCurrentMaxY() ) {
-                            currentCandidateCoords[ 0 ] = coordinates[ 0 ];
-                            currentCandidateCoords[ 1 ] = coordinates[ 1 ];
-                        }
-                    }
-
-                    private double getCurrentMaxX() {
-                        return currentCandidateCoords[ 0 ];
-                    }
-
-                    private double getCurrentMaxY() {
-                        return currentCandidateCoords[ 1 ];
-                    }
-
-                } );
-
-        return new double[] { currentCandidateCoords[0] + PADDING, currentCandidateCoords[1] + PADDING };
+    private double[] getAbsolute( final Node<View<?>, Edge> root ) {
+        final double[] pos = getBoundCoordinates( root.getContent() );
+        return getAbsolute( root, pos[ 0 ], pos[ 1 ] );
     }
 
-    private double[] getBoundCoordinates( final View view,
-                                         final double parentX,
-                                         final double parentY ) {
+    @SuppressWarnings( "unchecked" )
+    private double[] getAbsolute( final Node<View<?>, Edge> root,
+                                  final double x,
+                                  final double y ) {
+        Element parent = GraphUtils.getParent( root );
+        if ( null != parent
+                && parent instanceof Node
+                && parent.getContent() instanceof View ) {
+            final double[] pos = getBoundCoordinates( ( View ) parent.getContent() );
+            return getAbsolute( ( Node<View<?>, Edge> ) parent, x + pos[ 0 ], y + pos[ 1 ] );
+        }
+        return new double[]{ x, y };
+    }
+
+    private double[] getBoundCoordinates( final View view ) {
         final Bounds bounds = view.getBounds();
+        final Bounds.Bound ulBound = bounds.getUpperLeft();
         final Bounds.Bound lrBound = bounds.getLowerRight();
-        final double lrX = lrBound.getX() + parentX;
-        final double lrY = lrBound.getY() + parentY;
+        final double lrX = lrBound.getX();
+        final double lrY = ulBound.getY();
         return new double[]{ lrX, lrY };
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Bounds getGraphBounds( final CanvasHandler canvasHandler ) {
+        final Graph<DefinitionSet, ?> graph = canvasHandler.getDiagram().getGraph();
+        return graph.getContent().getBounds();
     }
 
 }

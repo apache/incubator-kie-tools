@@ -48,12 +48,12 @@ public class LienzoLayerUtils {
 
     private static boolean hasUUID( final com.ait.lienzo.client.core.shape.Node<?> node ) {
         return node != null && node.getUserData() != null && ( node.getUserData() instanceof String ) &&
-                ( ( ( String ) node.getUserData() ).startsWith( ShapeView.UUID_PREFFIX ) );
+                ( ( ( String ) node.getUserData() ).startsWith( ShapeView.UUID_PREFIX ) );
     }
 
     private static String getNodeViewUUID( final com.ait.lienzo.client.core.shape.Node<?> node ) {
         final String userData = ( String ) node.getUserData();
-        return userData.substring( ShapeView.UUID_PREFFIX.length(), userData.length() - 1 );
+        return userData.substring( ShapeView.UUID_PREFIX.length(), userData.length() - 1 );
     }
 
 }

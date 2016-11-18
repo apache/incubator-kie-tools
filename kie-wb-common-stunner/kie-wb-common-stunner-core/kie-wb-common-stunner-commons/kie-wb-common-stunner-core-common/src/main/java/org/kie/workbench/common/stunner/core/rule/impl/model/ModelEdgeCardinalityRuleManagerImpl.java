@@ -26,10 +26,14 @@ import org.kie.workbench.common.stunner.core.rule.model.ModelEdgeCardinalityRule
 
 import javax.enterprise.context.Dependent;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Dependent
 public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinalityRuleManager<String, Set<String>, Integer>
         implements ModelEdgeCardinalityRuleManager {
+
+    private static Logger LOGGER = Logger.getLogger( ModelEdgeCardinalityRuleManagerImpl.class.getName() );
 
     private static final String NAME = "Domain Model Edge Cardinality Rule Manager";
 
@@ -45,6 +49,13 @@ public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinality
                                          final Integer outEdgesCount,
                                          final Integer inEdgesCount,
                                          final Operation operation ) {
+        LOGGER.log( Level.FINE, "Evaluating edge cardinality rules with arguments "
+                + "[edgeId=" + edgeId
+                + ", outLabels=" + outLabels
+                + ", inLabels=" + inLabels
+                + ", outEdgesCount=" + outEdgesCount
+                + ", inEdgesCount=" + inEdgesCount
+                + ", operation=" + operation + "]" );
         final DefaultRuleViolations results = new DefaultRuleViolations();
         for ( EdgeCardinalityRule rule : rules ) {
             final int minOccurrences = rule.getMinOccurrences();

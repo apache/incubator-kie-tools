@@ -63,8 +63,12 @@
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-lienzo-extensions</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-lienzo</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- GWT and GWT Extensions -->

@@ -19,6 +19,7 @@ import com.ait.lienzo.client.core.shape.GridLayer;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -69,12 +70,14 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public AbstractCanvas.View addShape( final ShapeView<?> shapeView ) {
         layer.addShape( shapeView );
         return this;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public AbstractCanvas.View removeShape( final ShapeView<?> shapeView ) {
         layer.removeShape( shapeView );
         return this;
@@ -155,6 +158,37 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
 
         } else {
             panel.setBackgroundLayer( null );
+
+        }
+        return this;
+    }
+
+    @Override
+    public AbstractCanvas.View setCursor( final AbstractCanvas.Cursors cursor ) {
+        Style style = panel.getElement().getStyle();
+        switch ( cursor ) {
+            case AUTO:
+                style.setCursor( Style.Cursor.AUTO );
+                break;
+            case MOVE:
+                style.setCursor( Style.Cursor.MOVE );
+                break;
+            case TEXT:
+                style.setCursor( Style.Cursor.TEXT );
+                break;
+            case POINTER:
+                style.setCursor( Style.Cursor.POINTER );
+                break;
+            case NOT_ALLOWED:
+                // TODO: Use a good cursor.
+                style.setCursor( Style.Cursor.AUTO );
+                break;
+            case WAIT:
+                style.setCursor( Style.Cursor.WAIT);
+                break;
+            case CROSSHAIR:
+                style.setCursor( Style.Cursor.CROSSHAIR );
+                break;
 
         }
         return this;

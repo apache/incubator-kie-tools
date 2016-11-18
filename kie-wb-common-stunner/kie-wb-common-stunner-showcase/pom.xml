@@ -31,7 +31,10 @@
   <description>Kie Workbench - Common - Stunner - Showcase</description>
 
   <modules>
-    <module>kie-wb-common-stunner-showcase-standalone</module>
+    <!--
+    Disabled for now until having time to check it again and ensure all services and client assets will be working fine.
+      <module>kie-wb-common-stunner-showcase-standalone</module>
+     -->
     <module>kie-wb-common-stunner-showcase-project</module>
   </modules>
 

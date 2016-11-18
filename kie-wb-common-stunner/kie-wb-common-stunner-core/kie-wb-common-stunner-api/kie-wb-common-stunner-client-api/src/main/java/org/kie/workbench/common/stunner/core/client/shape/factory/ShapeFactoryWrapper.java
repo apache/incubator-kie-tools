@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.shape.factory;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 public abstract class ShapeFactoryWrapper<W, C, S extends Shape> implements ShapeFactory<W, C, S> {
 
@@ -41,9 +41,9 @@ public abstract class ShapeFactoryWrapper<W, C, S extends Shape> implements Shap
     }
 
     @Override
-    public ShapeGlyph glyph( final String definitionId,
-                             final double width,
-                             final double height ) {
+    public Glyph glyph( final String definitionId,
+                        final double width,
+                        final double height ) {
         return getFactory().glyph( definitionId, width, height );
     }
 

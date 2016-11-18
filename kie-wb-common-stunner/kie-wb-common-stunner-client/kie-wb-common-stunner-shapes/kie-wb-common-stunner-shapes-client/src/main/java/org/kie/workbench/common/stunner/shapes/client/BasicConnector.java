@@ -83,9 +83,7 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
                 }
             } );
             getAnimation().run();
-
         }
-
     }
 
     @Override
@@ -101,9 +99,7 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
             } else {
                 applyNoneState();
             }
-
         }
-
     }
 
     private void applySelectedState() {
@@ -119,7 +115,7 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
         applyActiveState( ShapeState.HIGHLIGHT.getColor() );
     }
 
-    // TODO Use of BasicShapeStateAnimation.
+    // TODO Use of animations here? ( BasicShapeAnimation ).
     private void applyActiveState( final String color ) {
         if ( null == this._strokeWidth ) {
             this._strokeWidth = getShapeView().getLine().getStrokeWidth();
@@ -136,7 +132,7 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
 
     }
 
-    // TODO Use of BasicShapeStateAnimation.
+    // TODO Use of animations here? ( BasicShapeAnimation ).
     private void applyNoneState() {
         if ( null != this._strokeWidth ) {
             getShapeView().getLine().setStrokeWidth( this._strokeWidth );
@@ -148,8 +144,6 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
         }
         getShapeView().getLine().setStrokeAlpha( null != this._strokeAlpha ? this._strokeAlpha : 1 );
         this._strokeAlpha = null;
-        getShapeView().getControl().hideControlPoints();
-
     }
 
     protected BasicConnector<W, V> _applyFillColor( final Edge<ViewConnector<W>, Node> element,
@@ -158,12 +152,9 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
         if ( color != null && color.trim().length() > 0 ) {
             if ( isAnimationMutation( mutationContext ) ) {
                 getAnimation().animateFillColor( color );
-
             } else {
                 super._applyFillColor( color, mutationContext );
-
             }
-
         }
         return this;
     }
@@ -189,12 +180,9 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
         final boolean isAnimation = isAnimationMutation( mutationContext );
         if ( isAnimation ) {
             getAnimation().animateStrokeColor( color );
-
         } else {
             super._applyBorderColor( color, mutationContext );
-
         }
-
     }
 
     @Override
@@ -203,12 +191,9 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
         final boolean isAnimation = isAnimationMutation( mutationContext );
         if ( isAnimation ) {
             getAnimation().animateStrokeWidth( width );
-
         } else {
             super._applyBorderWidth( width, mutationContext );
-
         }
-
     }
 
     protected BasicConnector<W, V> _applyBorderApha( final Edge<ViewConnector<W>, Node> element,

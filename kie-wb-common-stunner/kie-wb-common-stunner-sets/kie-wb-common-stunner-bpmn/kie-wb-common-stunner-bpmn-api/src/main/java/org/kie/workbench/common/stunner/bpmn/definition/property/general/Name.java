@@ -48,7 +48,7 @@ public class Name implements BPMNProperty {
     public static final PropertyType type = new StringType();
 
     @DefaultValue
-    public static final transient String defaultValue = "My name";
+    public static final transient String defaultValue = "";
 
     @Value
     @NotNull

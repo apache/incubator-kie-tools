@@ -30,7 +30,6 @@ public interface ToolboxCommand<H extends CanvasHandler, I> {
 
     String getTitle();
 
-    ToolboxButton.HoverAnimation getButtonAnimation();
     // TODO: add method -> Status check( Element element );
 
     void execute( Context<H> context, Element element );

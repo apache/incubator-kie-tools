@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -90,7 +90,7 @@ public class DefinitionGlyphTooltipImpl
         final String title = getTitle( definitionId );
         if ( null != title ) {
             final ShapeFactory<?, ?, ?> factory = shapeManager.getFactory( definitionId );
-            final ShapeGlyph glyph = factory.glyph( definitionId, width, height );
+            final Glyph glyph = factory.glyph( definitionId, width, height );
             this.show( glyph, getTitleToShow( title ), x, y, direction );
 
         }

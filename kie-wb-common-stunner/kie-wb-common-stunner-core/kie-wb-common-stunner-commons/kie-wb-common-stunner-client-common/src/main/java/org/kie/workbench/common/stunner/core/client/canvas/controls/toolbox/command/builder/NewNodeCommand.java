@@ -93,9 +93,10 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
         this.layerEventHandlers = null;
     }
 
+    // TODO: i18n.
     @PostConstruct
     public void init() {
-        getGlyphTooltip().setPrefix( "Create a new " );
+        getGlyphTooltip().setPrefix( "Click to create a " );
     }
 
 
@@ -152,9 +153,9 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
                         getBuilderControl().enable( canvasHandler );
                         getGraphBoundsIndexer().build( canvasHandler.getDiagram().getGraph() );
                         // TODO: Use right magnets.
-                        NewNodeCommand.this.sourceMagnet = 0;
+                        NewNodeCommand.this.sourceMagnet = 3;
                         NewNodeCommand.this.targetMagnet = 7;
-                        final double[] next = canvasLayoutUtils.getNextLayoutPosition( canvasHandler, element );
+                        final double[] next = canvasLayoutUtils.getNext( canvasHandler, ( Node<View<?>, Edge> ) element );
                         log( Level.INFO, "New edge request complete - [UUID=" + newEdgeElement.getUUID()
                                 + ", x=" + next[0] + ", y=" + next[1] + "]" );
                         NewNodeCommand.this.onComplete( context, element, newEdgeElement, ( int ) next[ 0 ], ( int ) next[ 1 ] );

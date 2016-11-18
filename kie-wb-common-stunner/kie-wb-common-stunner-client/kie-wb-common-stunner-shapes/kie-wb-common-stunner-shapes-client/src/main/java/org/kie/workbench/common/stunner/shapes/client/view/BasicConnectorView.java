@@ -43,6 +43,7 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
     protected ViewEventHandlerManager eventHandlerManager;
     protected Text text;
     protected WiresLayoutContainer.Layout textPosition;
+    protected double textRotationDegrees;
     private Double strokeWidth;
     private String color;
 
@@ -63,7 +64,9 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
     protected void init() {
         super.init();
         this.textPosition = WiresLayoutContainer.Layout.CENTER;
+        this.textRotationDegrees = 0;
         this.eventHandlerManager = new ViewEventHandlerManager( getLine(), SUPPORTED_EVENT_TYPES );
+        enableShowControlsOnMouseEnter();
     }
 
     @Override
@@ -129,6 +132,13 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
         } else if ( Position.CENTER.equals( position ) ) {
             this.textPosition = LayoutContainer.Layout.CENTER;
         }
+        return ( T ) this;
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public T setTitleRotation( double degrees ) {
+        this.textRotationDegrees = degrees;
         return ( T ) this;
     }
 

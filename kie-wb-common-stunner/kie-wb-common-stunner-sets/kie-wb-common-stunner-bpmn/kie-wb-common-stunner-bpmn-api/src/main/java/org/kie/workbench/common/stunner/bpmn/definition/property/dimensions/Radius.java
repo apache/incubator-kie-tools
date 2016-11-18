@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.dimensions;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
@@ -49,12 +50,12 @@ public class Radius implements BPMNProperty {
     public static final Double defaultValue = 25d;
 
     @Value
-    private Double value = defaultValue;
+    private Double value;
 
     public Radius() {
     }
 
-    public Radius( final Double value ) {
+    public Radius( @MapsTo( "value" ) Double value ) {
         this.value = value;
     }
 

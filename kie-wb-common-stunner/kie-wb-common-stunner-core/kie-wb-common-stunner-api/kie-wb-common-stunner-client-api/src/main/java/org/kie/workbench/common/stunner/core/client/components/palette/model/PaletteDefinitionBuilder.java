@@ -32,7 +32,15 @@ public interface PaletteDefinitionBuilder<T, P, E> {
      * @param definitionId The Definition identifier to exclude.
      * @return The builder instance.
      */
-    PaletteDefinitionBuilder<T, P, E> exclude( String definitionId );
+    PaletteDefinitionBuilder<T, P, E> excludeDefinition( String definitionId );
+
+    /**
+     * Exclude the given category identifier from appearing on the palette.
+     *
+     * @param categoryId The category identifier to exclude.
+     * @return The builder instance.
+     */
+    PaletteDefinitionBuilder<T, P, E> excludeCategory( String categoryId );
 
     /**
      * Build the palette from source. Results present on the callback argument, as palette definition could be

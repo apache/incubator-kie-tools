@@ -22,4 +22,6 @@ public interface RectangleShapeDef<W> extends BasicShapeWithTitleDef<W> {
 
     double getHeight( W element );
 
+    double getCornerRadius( W element );
+
 }

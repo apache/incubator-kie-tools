@@ -451,7 +451,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected int getCurrentDiagramHash() {
         if ( getDiagram() == null ) return 0;
-        return getDiagram().getName().hashCode();
+        return getDiagram().hashCode();
     }
 
     protected ProjectDiagram getDiagram() {

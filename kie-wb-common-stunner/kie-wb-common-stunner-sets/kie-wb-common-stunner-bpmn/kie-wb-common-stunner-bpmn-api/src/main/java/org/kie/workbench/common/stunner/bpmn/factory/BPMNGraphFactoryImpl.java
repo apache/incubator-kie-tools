@@ -17,17 +17,20 @@
 package org.kie.workbench.common.stunner.bpmn.factory;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.impl.AbstractElementFactory;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSetImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
@@ -43,10 +46,10 @@ import javax.inject.Inject;
 
 /**
  * The custom factory for BPMN graphs.
- * It initializes the BPMN graph with a new Diagram node instance, which represents th main process.
+ * It initializes the BPMN graph with a new Diagram node instance, which represents the main process.
  * This class uses the Commands API in order to avoid adding nodes/edges and setting bean values manually on the graph structure,
  * so this will avoid further errors, but in fact there should be not need to check runtime rules when executing
- * the commands.
+ * these commands.
  */
 @ApplicationScoped
 public class BPMNGraphFactoryImpl
@@ -94,14 +97,13 @@ public class BPMNGraphFactoryImpl
                     new BoundImpl( BPMNGraphFactory.GRAPH_DEFAULT_WIDTH, BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT )
             ) );
         }
-
-        // Add a BPMN diagram node by default when creating a new BPMN graph.
-        Node diagramNode = ( Node ) factoryManager.newElement( UUID.uuid(), BPMNDiagram.class );
-
+        // Add a BPMN diagram and a start event nodes by default.
+        Node<Definition<BPMNDiagram>, Edge> diagramNode = ( Node<Definition<BPMNDiagram>, Edge> ) factoryManager.newElement( UUID.uuid(), BPMNDiagram.class );
+        Node<Definition<StartNoneEvent>, Edge> startEventNode = ( Node<Definition<StartNoneEvent>, Edge> ) factoryManager.newElement( UUID.uuid(), StartNoneEvent.class );
         graphCommandManager.execute( createGraphContext( graph ),
                 new CompositeCommandImpl.CompositeCommandBuilder()
                         .addCommand( graphCommandFactory.ADD_NODE( diagramNode ) )
-                        .addCommand( graphCommandFactory.UPDATE_POSITION( diagramNode, 0d, 0d ) )
+                        .addCommand( graphCommandFactory.ADD_CHILD_NODE( diagramNode, startEventNode, 100d, 100d ) )
                         .build()
         );
 

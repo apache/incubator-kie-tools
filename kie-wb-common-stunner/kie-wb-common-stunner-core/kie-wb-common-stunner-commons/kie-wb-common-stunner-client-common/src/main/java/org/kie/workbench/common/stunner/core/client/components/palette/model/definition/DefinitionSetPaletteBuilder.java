@@ -27,6 +27,8 @@ public interface DefinitionSetPaletteBuilder extends PaletteDefinitionBuilder<Ob
 
         String getDescription( String id );
 
+        String getDefinitionId( String id );
+
     }
 
     interface PaletteMorphGroupProvider {

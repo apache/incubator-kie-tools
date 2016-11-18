@@ -31,7 +31,7 @@ import java.util.*;
 public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C> {
 
     private final Deque<C> commands = new ArrayDeque<>();
-    private int maxStackSize = 50;
+    private int maxStackSize = 200;
 
     @Override
     public void setMaxSize( final int size ) {

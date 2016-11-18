@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -141,6 +142,18 @@ public class GraphUtils {
         return targetId;
     }
 
+    @SuppressWarnings( "unchecked" )
+    public static Element<?> getParent( final Node<?, Edge> element ) {
+        final List<Edge> inEdges = element.getInEdges();
+        if ( null != inEdges ) {
+            final Edge<Child, ?> childEdge = inEdges.stream().filter( edge -> ( edge instanceof Child ) ).findFirst().orElse( null );
+            if ( null != childEdge ) {
+                return childEdge.getSourceNode();
+            }
+        }
+        return null;
+    }
+
     public static Double[] getPosition( final View element ) {
         final Bounds.Bound ul = element.getBounds().getUpperLeft();
         final double x = ul.getX();
@@ -156,12 +169,14 @@ public class GraphUtils {
         return new Double[]{ Math.abs( w ), Math.abs( h ) };
     }
 
+    // TODO: Workaround - review.
     public static void updateBounds( final double radius,
                                      final View element ) {
         final Double[] coords = getPosition( element );
         updateBounds( coords[ 0 ], coords[ 1 ], radius, element );
     }
 
+    // TODO: Workaround - review.
     public static void updateBounds( final double x,
                                      final double y,
                                      final double radius,
@@ -169,11 +184,13 @@ public class GraphUtils {
         updateBounds( x, y, radius * 2, radius * 2, element );
     }
 
+    // TODO: Workaround - review.
     public static void updateBounds( final double width, final double height, final View element ) {
         final Double[] coords = getPosition( element );
         updateBounds( coords[ 0 ], coords[ 1 ], width, height, element );
     }
 
+    // TODO: Workaround - review.
     public static void updateBounds( final double x,
                                      final double y,
                                      final double width,

@@ -17,7 +17,10 @@
 package org.kie.workbench.common.stunner.basicset.shape.def;
 
 import org.kie.workbench.common.stunner.basicset.definition.Polygon;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
 
 public final class PolygonShapeDefImpl
@@ -80,13 +83,17 @@ public final class PolygonShapeDefImpl
     }
 
     @Override
-    public String getGlyphDescription( final Polygon element ) {
-        return Polygon.title;
+    public HasTitle.Position getFontPosition( final Polygon element ) {
+        return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public String getGlyphBackgroundColor( final Polygon element ) {
-        return Polygon.PolygonBuilder.COLOR;
+    public double getFontRotation( final Polygon element ) {
+        return 0;
     }
 
+    @Override
+    public GlyphDef<Polygon> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
+    }
 }

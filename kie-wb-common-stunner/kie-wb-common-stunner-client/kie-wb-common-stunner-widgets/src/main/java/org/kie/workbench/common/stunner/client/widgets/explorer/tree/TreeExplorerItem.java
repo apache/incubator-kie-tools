@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -43,7 +43,7 @@ public class TreeExplorerItem implements IsWidget {
 
         View setName( String name );
 
-        View setGlyph( ShapeGlyph<Group> glyph );
+        View setGlyph( Glyph<Group> glyph );
 
     }
 

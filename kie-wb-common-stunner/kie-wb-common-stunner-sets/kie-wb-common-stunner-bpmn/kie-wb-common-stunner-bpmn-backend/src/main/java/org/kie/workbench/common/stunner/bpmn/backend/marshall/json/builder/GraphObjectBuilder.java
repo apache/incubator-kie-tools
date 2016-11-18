@@ -54,7 +54,7 @@ public interface GraphObjectBuilder<W, T extends Element<View<W>>> {
 
     interface BuilderContext {
 
-        void init( Graph<DefinitionSet, Node> graph );
+        BuilderContext init( Graph<DefinitionSet, Node> graph );
 
         Index<?, ?> getIndex();
 

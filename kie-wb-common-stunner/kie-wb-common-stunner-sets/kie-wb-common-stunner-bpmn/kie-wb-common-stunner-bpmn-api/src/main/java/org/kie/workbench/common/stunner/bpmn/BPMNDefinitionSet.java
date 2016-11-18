@@ -43,7 +43,7 @@ import javax.enterprise.context.ApplicationScoped;
                 StartNoneEvent.class,
                 EndNoneEvent.class,
                 EndTerminateEvent.class,
-                IntermediateTimerEvent.class,
+                // TODO: Removed for M1 ( no form properties available for it yet ) - IntermediateTimerEvent.class,
                 ParallelGateway.class,
                 ExclusiveDatabasedGateway.class,
                 ReusableSubprocess.class,

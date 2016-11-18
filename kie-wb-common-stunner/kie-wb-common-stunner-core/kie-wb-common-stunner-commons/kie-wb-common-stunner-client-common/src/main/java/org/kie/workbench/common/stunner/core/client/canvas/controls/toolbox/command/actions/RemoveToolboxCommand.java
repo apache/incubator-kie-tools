@@ -18,11 +18,11 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.com
 
 import com.google.gwt.user.client.Window;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.AbstractToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
@@ -30,37 +30,34 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 @Dependent
-public class RemoveToolboxCommand<I> extends AbstractToolboxCommand<I> {
+public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
 
     private final CanvasCommandFactory commandFactory;
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
-    private I icon;
+
+    protected RemoveToolboxCommand() {
+        this( null, null, null );
+    }
 
     @Inject
-    public RemoveToolboxCommand( final CanvasCommandFactory commandFactory,
-                         final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
+    public RemoveToolboxCommand( final DefinitionGlyphTooltip<?> glyphTooltip,
+                                 final CanvasCommandFactory commandFactory,
+                                 final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
+        super( glyphTooltip );
         this.commandFactory = commandFactory;
         this.canvasCommandManager = canvasCommandManager;
     }
 
-    public RemoveToolboxCommand<I> setIcon( final I icon ) {
-        this.icon = icon;
-        return this;
-    }
-
-    @Override
-    public I getIcon( final double width, final double height ) {
-        return icon;
-    }
-
+    // TODO: i18n.
     @Override
     public String getTitle() {
-        return "Remove";
+        return "Delete";
     }
 
     @Override
     public void click( final Context<AbstractCanvasHandler> context,
                        final Element element ) {
+        super.click( context, element );
         // TODO: Remove use of hardcoded confirm box here & I18n.
         if ( Window.confirm( "Are you sure?" ) ) {
             canvasCommandManager.execute( context.getCanvasHandler(), commandFactory.DELETE_NODE( ( Node ) element ) );

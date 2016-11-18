@@ -17,7 +17,6 @@ package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.AbstractMenuDevCommand;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 
@@ -27,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Dependent
-public class LogCommandHistoryDevCommand extends AbstractMenuDevCommand<ClientSession> {
+public class LogCommandHistoryDevCommand extends AbstractMenuDevCommand {
 
     private static Logger LOGGER = Logger.getLogger( LogCommandHistoryDevCommand.class.getName() );
 

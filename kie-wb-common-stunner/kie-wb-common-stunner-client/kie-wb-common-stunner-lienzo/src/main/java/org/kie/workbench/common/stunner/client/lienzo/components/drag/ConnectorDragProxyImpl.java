@@ -203,6 +203,11 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
         }
 
         @Override
+        public double[] getShapeAbsoluteLocation() {
+            return new double[ 0 ];
+        }
+
+        @Override
         public String getFillColor() {
             return null;
         }
@@ -253,7 +258,7 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
         }
 
         @Override
-        public DummyShapeView setDragEnabled( boolean isDraggable ) {
+        public DummyShapeView setDragBounds( double x1, double y1, double x2, double y2 ) {
             return null;
         }
 

@@ -16,26 +16,31 @@
 
 package org.kie.workbench.common.stunner.lienzo.toolbox;
 
-import com.ait.lienzo.client.core.animation.*;
+import com.ait.lienzo.client.core.shape.IDrawable;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.user.client.Timer;
-import org.kie.workbench.common.stunner.lienzo.toolbox.builder.Button;
 import org.kie.workbench.common.stunner.lienzo.toolbox.event.ToolboxButtonEvent;
 import org.kie.workbench.common.stunner.lienzo.toolbox.event.ToolboxButtonEventHandler;
+import org.kie.workbench.common.stunner.lienzo.util.LienzoPaths;
 
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ToolboxButton {
 
+    private static Logger LOGGER = Logger.getLogger( ToolboxButton.class.getName() );
+
     private static final int CLICK_HANDLER_TIMER_DURATION = 100;
+    private static final String DECORATOR_STROKE_COLOR = "#8c8c8c";
 
     private final WiresShape primitive;
 
@@ -46,45 +51,25 @@ public class ToolboxButton {
     private ToolboxButtonEventHandler mouseDownHandler;
     private ToolboxButtonEventHandler mouseEnterHandler;
     private ToolboxButtonEventHandler mouseExitHandler;
-    private double iScaleX;
-    private double iScaleY;
-    private String iFillColor;
-    private String iStrokeColor;
-    private boolean isHovering;
-    private boolean isHoverComplete;
-    private boolean isOutRequested;
-    private HoverAnimation animation;
     private Timer clickHandlerTimer;
 
     private MultiPath decorator;
 
-    public enum HoverAnimation {
-        ELASTIC, HOVER_COLOR;
-    }
-
     public ToolboxButton( final Layer layer,
                           final IPrimitive<?> shape,
-                          final List<Button.WhenReady> callbacks,
+                          final int padding,
+                          final int iconSize,
                           final ToolboxButtonEventHandler clickHandler,
                           final ToolboxButtonEventHandler mouseDownHandler,
                           final ToolboxButtonEventHandler mouseEnterHandler,
-                          final ToolboxButtonEventHandler mouseExitHandler,
-                          final HoverAnimation animation ) {
+                          final ToolboxButtonEventHandler mouseExitHandler ) {
         this.layer = layer;
         this.clickHandler = clickHandler;
         this.mouseDownHandler = mouseDownHandler;
         this.mouseEnterHandler = mouseEnterHandler;
         this.mouseExitHandler = mouseExitHandler;
-        this.primitive = build( shape );
-        this.isHovering = false;
-        this.isHoverComplete = false;
-        this.isOutRequested = false;
-        this.animation = animation;
+        this.primitive = build( shape, iconSize, padding );
         this.clickHandlerTimer = null;
-        for ( Button.WhenReady callback : callbacks ) {
-            callback.whenReady( this );
-        }
-
     }
 
     public WiresShape getShape() {
@@ -103,152 +88,158 @@ public class ToolboxButton {
         layer.batch();
     }
 
-    private WiresShape build( final IPrimitive<?> shape ) {
-        final BoundingBox bb = shape.getBoundingBox();
-        decorator = new MultiPath().rect( 0.5, 0.5, bb.getWidth() + 1, bb.getHeight() + 1 )
-                .setFillAlpha( 0.01 )
-                .setStrokeWidth( 0 )
+    private WiresShape build( final IPrimitive<?> shape,
+                              final int padding,
+                              final int iconSize ) {
+        final WiresManager manager = WiresManager.get( layer );
+        // Create the wires shape multipath that will be used as decorator.
+        final float dPad4 = padding / 4;
+        decorator = LienzoPaths.rectangle(  iconSize + padding, iconSize + padding, 0 )
+                .setX( 0 )
+                .setY( 0 )
+                .setStrokeWidth( 1.5 )
                 .setStrokeAlpha( 0 )
-                .setDraggable( false );
-        final Point2D scale = shape.getScale();
-        this.iFillColor = shape.getAttributes().getFillColor();
-        this.iStrokeColor = shape.getAttributes().getStrokeColor();
-        this.iFillColor = null != this.iFillColor ? this.iFillColor : "#000000";
-        this.iStrokeColor = null != this.iStrokeColor ? this.iStrokeColor : "#000000";
-        if ( null != scale ) {
-            this.iScaleX = scale.getX();
-            this.iScaleY = scale.getY();
-            decorator.setScale( scale );
-
-        } else {
-            this.iScaleX = 1;
-            this.iScaleY = 1;
-
-        }
-        WiresManager manager = WiresManager.get( layer );
-        WiresShape wiresShape = new WiresShape( decorator ).setDraggable( false );
+                .setStrokeColor( DECORATOR_STROKE_COLOR )
+                .setDraggable( false )
+                // TODO: This is a workaround to make the mouse over/exit event handlers registered here work - review.
+                .setFillAlpha( 0.01 );
+        // Create and register the wires shape.
+        final WiresShape wiresShape = new WiresShape( decorator ).setDraggable( false ).setResizable( false );
         manager.register( wiresShape, false );
-        wiresShape.getContainer().add( shape.setDraggable( false ) );
+        // Add the primitive shape as child.
+        wiresShape.addChild( shape.setDraggable( false ) );
+        // TODO: Ensure decorator is on top to receive the differnt events - review this.
         decorator.moveToTop();
-        handlerRegistrationManager.register(
-                wiresShape.getPath().addNodeMouseEnterHandler( event -> {
-                    onButtonMouseEnter( shape );
-                    if ( null != mouseEnterHandler ) {
-                        mouseEnterHandler.fire( buildEvent( event.getX(), event.getY(), event.getHumanInputEvent().getClientX(), event.getHumanInputEvent().getClientY() ) );
-                    }
-
-                } )
-        );
-        handlerRegistrationManager.register(
-                wiresShape.getPath().addNodeMouseExitHandler( event -> {
-                    onButtonMouseExit( shape );
-                    if ( null != mouseExitHandler ) {
-                        mouseExitHandler.fire(
-                                buildEvent(
-                                        event.getX(),
-                                        event.getY(),
-                                        event.getHumanInputEvent().getClientX(),
-                                        event.getHumanInputEvent().getClientY()
-                                )
-                        );
-                    }
-
-                } )
-        );
-        if ( null != clickHandler ) {
-            handlerRegistrationManager.register(
-                    wiresShape.getGroup().addNodeMouseClickHandler( event -> {
-                                ToolboxButton.this.clearClickHandlerTimer();
-                                final int x = event.getX();
-                                final int y = event.getY();
-                                final int clientX = event.getHumanInputEvent().getClientX();
-                                final int clientY = event.getHumanInputEvent().getClientY();
-                                clickHandler.fire(
-                                        buildEvent( x, y, clientX, clientY ) );
-
-                            }
-                    )
-            );
-
-        }
-        if ( null != mouseDownHandler ) {
-            handlerRegistrationManager.register(
-                    wiresShape.getGroup().addNodeMouseDownHandler( event -> {
-                                final int x = event.getX();
-                                final int y = event.getY();
-                                final int clientX = event.getHumanInputEvent().getClientX();
-                                final int clientY = event.getHumanInputEvent().getClientY();
-                                if ( null == ToolboxButton.this.clickHandlerTimer ) {
-                                    ToolboxButton.this.clickHandlerTimer = new Timer() {
-
-                                        @Override
-                                        public void run() {
-                                            mouseDownHandler.fire(
-                                                    buildEvent( x, y, clientX, clientY ) );
-                                            ToolboxButton.this.clickHandlerTimer = null;
-
-                                        }
-
-                                    };
-                                    ToolboxButton.this.clickHandlerTimer.schedule( CLICK_HANDLER_TIMER_DURATION );
-
-                                }
-
-                            }
-                    ) );
-
-        }
+        registerShapeHandlers( wiresShape, decorator );
         return wiresShape;
     }
 
-    private void onButtonMouseEnter( final IPrimitive<?> shape ) {
-        if ( !isHoverComplete && !isHovering ) {
-            this.isHovering = true;
-            doButtonAnimate( shape, iScaleX * 2, iScaleY * 2, 2, ColorName.BLUE.getColorString(), ColorName.BLUE.getColorString(), true );
-
+    private void registerShapeHandlers( final WiresShape wiresShape,
+                                        final IDrawable<?> shape ) {
+        // Add mouse enter event handlers for the wiresshape's multipath.
+        handlerRegistrationManager.register(
+                shape.addNodeMouseEnterHandler( event ->
+                        onButtonMouseEnter( shape, getLocation( wiresShape ), wiresShape.getGroup().getAbsoluteLocation(),
+                                event.getHumanInputEvent().getClientX(), event.getHumanInputEvent().getClientY() )
+                ) );
+        // Add mouse exit event handlers for the wiresshape's multipath.
+        handlerRegistrationManager.register(
+                shape.addNodeMouseExitHandler( event ->
+                        onButtonMouseExit( shape, getLocation( wiresShape ), wiresShape.getGroup().getAbsoluteLocation(),
+                                event.getHumanInputEvent().getClientX(), event.getHumanInputEvent().getClientY() )
+                ) );
+        if ( null != clickHandler ) {
+            // Add mouse click event handlers for the primitive shape.
+            handlerRegistrationManager.register(
+                    shape.addNodeMouseClickHandler( event ->
+                            ToolboxButton.this.onButtonMouseClick( shape, getLocation( wiresShape ), wiresShape.getGroup().getAbsoluteLocation(),
+                                    event.getHumanInputEvent().getClientX(), event.getHumanInputEvent().getClientY() )
+                    ) );
         }
-
+        if ( null != mouseDownHandler ) {
+            // Add mouse down event handlers for the primitive shape.
+            handlerRegistrationManager.register(
+                    shape.addNodeMouseDownHandler( event ->
+                            ToolboxButton.this.onButtonMouseDown( shape, getLocation( wiresShape ), wiresShape.getGroup().getAbsoluteLocation(),
+                                    event.getHumanInputEvent().getClientX(), event.getHumanInputEvent().getClientY() )
+                    ) );
+        }
     }
 
-    private void onButtonMouseExit( final IPrimitive<?> shape ) {
-        if ( isHoverComplete ) {
-            doButtonAnimate( shape, iScaleX, iScaleY, 1, iFillColor, iStrokeColor, false );
-
-        } else {
-            isOutRequested = true;
-
-        }
-
+    private Point2D getLocation( final WiresShape shape ) {
+        return WiresUtils.getLocation( shape.getGroup() );
     }
 
-    private void doButtonAnimate( final IPrimitive<?> shape,
-                                  final double scaleX,
-                                  final double scaleY,
-                                  final double decoratorScale,
-                                  final String fillColor,
-                                  final String strokeColor,
-                                  final boolean isHover ) {
-        if ( HoverAnimation.ELASTIC.equals( animation ) ) {
-            animateElastic( shape, scaleX, scaleY, decoratorScale, isHover );
 
-        } else {
-            animateHoverColor( shape, fillColor, strokeColor, isHover );
-
+    private void onButtonMouseEnter( final IDrawable<?> shape,
+                                     final Point2D location,
+                                     final Point2D abs,
+                                     final int clientX,
+                                     final int clientY ) {
+        LOGGER.log( Level.FINE, "Entering into toolbox button..." );
+        showDecorator();
+        if ( null != mouseEnterHandler ) {
+            mouseEnterHandler.fire( buildEvent( location, abs, clientX, clientY ) );
         }
-
+        layer.batch();
     }
 
-    private ToolboxButtonEvent buildEvent( final int x, final int y, final int clientX, final int clientY ) {
+    private void onButtonMouseExit( final IDrawable<?> shape,
+                                    final Point2D location,
+                                    final Point2D abs,
+                                    final int clientX,
+                                    final int clientY ) {
+        LOGGER.log( Level.FINE, "Exiting from toolbox button..." );
+        hideDecorator();
+        if ( null != mouseExitHandler ) {
+            mouseExitHandler.fire( buildEvent( location,  abs, clientX, clientY ) );
+        }
+        layer.batch();
+    }
+
+    private void onButtonMouseClick( final IDrawable<?> shape,
+                                     final Point2D location,
+                                     final Point2D abs,
+                                     final int clientX,
+                                     final int clientY ) {
+        LOGGER.log( Level.FINE, "Clicking on toolbox button..." );
+        hideDecorator();
+        ToolboxButton.this.clearClickHandlerTimer();
+        clickHandler.fire(
+                buildEvent( location, abs, clientX, clientY ) );
+        layer.batch();
+    }
+
+    private void onButtonMouseDown( final IDrawable<?> shape,
+                                    final Point2D location,
+                                    final Point2D abs,
+                                    final int clientX,
+                                    final int clientY ) {
+        if ( null == ToolboxButton.this.clickHandlerTimer ) {
+            ToolboxButton.this.clickHandlerTimer = new Timer() {
+                @Override
+                public void run() {
+                    LOGGER.log( Level.FINE, "Mouse down on toolbox button..." );
+                    hideDecorator();
+                    layer.batch();
+                    mouseDownHandler.fire(
+                            buildEvent( location, abs, clientX, clientY ) );
+                    ToolboxButton.this.clickHandlerTimer = null;
+                }
+            };
+            ToolboxButton.this.clickHandlerTimer.schedule( CLICK_HANDLER_TIMER_DURATION );
+        }
+    }
+
+    private void showDecorator() {
+        decorator.setStrokeAlpha( 1 );
+    }
+
+    private void hideDecorator() {
+        decorator.setStrokeAlpha( 0 );
+    }
+
+    private ToolboxButtonEvent buildEvent( final Point2D location, final Point2D abs, final int clientX, final int clientY ) {
         return new ToolboxButtonEvent() {
 
             @Override
             public int getX() {
-                return x;
+                return (int) location.getX();
             }
 
             @Override
             public int getY() {
-                return y;
+                return (int) location.getY();
+            }
+
+            @Override
+            public int getAbsoluteX() {
+                return (int) abs.getX();
+            }
+
+            @Override
+            public int getAbsoluteY() {
+                return (int) abs.getY();
             }
 
             @Override
@@ -261,72 +252,6 @@ public class ToolboxButton {
                 return clientY;
             }
         };
-
-    }
-
-    private void animateElastic( final IPrimitive<?> shape,
-                                 final double scaleX,
-                                 final double scaleY,
-                                 final double decoratorScale,
-                                 final boolean isHover ) {
-        shape.animate(
-                AnimationTweener.LINEAR,
-                AnimationProperties.toPropertyList(
-                        AnimationProperty.Properties.SCALE( scaleX, scaleY )
-                ),
-                ANIMATION_DURATION
-        );
-        decorator.animate(
-                AnimationTweener.LINEAR,
-                AnimationProperties.toPropertyList(
-                        AnimationProperty.Properties.SCALE( decoratorScale )
-                ),
-                ANIMATION_DURATION,
-                new HoverAnimationCallback( isHover, shape )
-        );
-
-    }
-
-    private void animateHoverColor( final IPrimitive<?> shape,
-                                    final String fillColor,
-                                    final String strokeColor,
-                                    final boolean isHover ) {
-        shape.animate(
-                AnimationTweener.LINEAR,
-                AnimationProperties.toPropertyList(
-                        AnimationProperty.Properties.FILL_COLOR( fillColor ),
-                        AnimationProperty.Properties.STROKE_COLOR( strokeColor )
-                ),
-                ANIMATION_DURATION,
-                new HoverAnimationCallback( isHover, shape )
-        );
-
-    }
-
-    private final class HoverAnimationCallback extends AnimationCallback {
-
-        private final boolean isHoverComplete;
-        private final IPrimitive<?> shape;
-
-        private HoverAnimationCallback( final boolean isHoverComplete,
-                                        final IPrimitive<?> shape ) {
-            this.isHoverComplete = isHoverComplete;
-            this.shape = shape;
-        }
-
-        @Override
-        public void onClose( final IAnimation animation, final IAnimationHandle handle ) {
-            super.onClose( animation, handle );
-            ToolboxButton.this.isHovering = false;
-            ToolboxButton.this.isHoverComplete = isHoverComplete;
-            if ( ToolboxButton.this.isOutRequested ) {
-                onButtonMouseExit( shape );
-                ToolboxButton.this.isOutRequested = false;
-
-            }
-
-        }
-
     }
 
     private void clearClickHandlerTimer() {
@@ -336,7 +261,6 @@ public class ToolboxButton {
             }
             this.clickHandlerTimer = null;
         }
-
     }
 
 }

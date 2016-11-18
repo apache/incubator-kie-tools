@@ -36,7 +36,7 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
     @Override
     public SwitchGridSessionCommand bind( final AbstractClientReadOnlySession session ) {
         super.bind( session );
-        showGrid();
+        hideGrid();
         return this;
     }
 

@@ -27,7 +27,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_HEIGHT;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_WIDTH;
 
 @Portable
 @Bindable

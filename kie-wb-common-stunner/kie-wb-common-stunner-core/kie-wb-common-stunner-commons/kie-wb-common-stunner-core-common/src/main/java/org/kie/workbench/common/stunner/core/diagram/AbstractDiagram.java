@@ -68,7 +68,6 @@ public abstract class AbstractDiagram<G extends Graph, S extends Metadata> imple
         }
         Diagram that = ( Diagram ) o;
         return name.equals( that.getName() );
-
     }
 
 }

@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.basicset.shape.def.icon.statics;
 
 import org.kie.workbench.common.stunner.basicset.definition.icon.statics.StaticIcon;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDefinitions;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.IconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons;
 
@@ -34,8 +36,8 @@ public class StaticIconShapeDefImpl
     }
 
     @Override
-    public String getGlyphDescription( final StaticIcon element ) {
-        return DESCRIPTION;
+    public GlyphDef<StaticIcon> getGlyphDef() {
+        return GlyphDefinitions.GLYPH_SHAPE();
     }
 
 }

@@ -46,7 +46,7 @@ public class FontSize implements BPMNProperty {
     public static final PropertyType type = new DoubleType();
 
     @DefaultValue
-    public static final Double defaultValue = 8d;
+    public static final Double defaultValue = 10d;
 
     @Value
     private Double value = defaultValue;

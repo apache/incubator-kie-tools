@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.event.keyboard;
 public interface KeyboardEvent {
 
     enum Key {
-        ESC( 27 );
+        ESC( 27 ), DELETE( 46 );
 
         private final int unicharCode;
 

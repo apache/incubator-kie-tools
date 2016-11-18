@@ -102,7 +102,7 @@ public class LienzoDefinitionSetPaletteImpl
 
     // TODO: I18n.
     private String getGlyphTooltipText( final GlyphPaletteItem item ) {
-        return "Create a new " + item.getTitle();
+        return "Create a " + item.getTitle();
     }
 
     @Override

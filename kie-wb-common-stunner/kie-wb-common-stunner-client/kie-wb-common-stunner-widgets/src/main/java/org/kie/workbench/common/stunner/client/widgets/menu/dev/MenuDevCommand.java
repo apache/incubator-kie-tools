@@ -16,7 +16,6 @@
 package org.kie.workbench.common.stunner.client.widgets.menu.dev;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 /**
  * Session command types only available on development.
@@ -24,7 +23,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
  * a bean for this type.
  * @See org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder
  */
-public interface MenuDevCommand<S extends ClientSession> {
+public interface MenuDevCommand {
 
     String getText();
 

@@ -21,8 +21,9 @@ import com.ait.lienzo.client.core.animation.AnimationTweener;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
 import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.STROKE_ALPHA;
+import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.STROKE_COLOR;
+import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.STROKE_WIDTH;
 
-// TODO: highlight state.
 abstract class BasicDecoratorAnimation<S extends Shape> extends AbstractBasicAnimation<S> {
 
     private final String color;
@@ -41,12 +42,9 @@ abstract class BasicDecoratorAnimation<S extends Shape> extends AbstractBasicAni
 
     @Override
     public void run() {
-        getDecorator().setStrokeColor( color );
-        getDecorator().setStrokeWidth( strokeWidth );
-        getDecorator().setStrokeAlpha( 0 );
         getDecorator().animate(
                 AnimationTweener.LINEAR,
-                AnimationProperties.toPropertyList( STROKE_ALPHA( strokeAlpha ) ),
+                AnimationProperties.toPropertyList( STROKE_ALPHA( strokeAlpha ), STROKE_COLOR( color ), STROKE_WIDTH( strokeWidth ) ),
                 getDuration(),
                 getAnimationCallback() );
 

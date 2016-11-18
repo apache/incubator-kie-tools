@@ -28,8 +28,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.HasCanvasLis
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLoadingObserver;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickHandler;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 import javax.enterprise.event.Event;
@@ -47,6 +45,10 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         implements Canvas<Shape>, HasCanvasListeners<CanvasShapeListener> {
 
     private static Logger LOGGER = Logger.getLogger( AbstractCanvas.class.getName() );
+
+    public enum Cursors {
+        AUTO, MOVE, POINTER, TEXT, NOT_ALLOWED, WAIT, CROSSHAIR;
+    }
 
     public interface View<P> extends IsWidget {
 
@@ -78,6 +80,8 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
         View setGrid( CanvasGrid grid );
 
+        View setCursor( Cursors cursor );
+
         Layer getLayer();
 
         View clear();
@@ -88,6 +92,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     protected Layer layer;
     protected V view;
+    protected CanvasGrid grid;
     protected Event<CanvasClearEvent> canvasClearEvent;
     protected Event<CanvasShapeAddedEvent> canvasShapeAddedEvent;
     protected Event<CanvasShapeRemovedEvent> canvasShapeRemovedEvent;
@@ -118,10 +123,14 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     }
 
     @SuppressWarnings( "unchecked" )
-    public <P> void show( P panel, Layer layer ) {
+    public <P> void show( final P panel,
+                          final Layer layer ) {
+        // Show the canvas layer on using the given panel instance.
         view.show( panel, layer );
-        // Click event.
-        final MouseClickHandler clickHandler = new MouseClickHandler() {
+        // TODO: Review this.
+        //       If adding this handler, the SelectionControl for this layer never fires,
+        //       so it seems it's not registering fine more than one click event handler.
+        /*final MouseClickHandler clickHandler = new MouseClickHandler() {
 
             @Override
             public void handle( final MouseClickEvent event ) {
@@ -130,9 +139,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
             }
 
         };
-        // TODO: layer.addHandler( ViewEventType.MOUSE_CLICK, clickHandler );
-        //       If adding this handler, the SelectionControl for this layer never fires,
-        //       so it seems it's not registering fine more than one click event handler.
+        layer.addHandler( ViewEventType.MOUSE_CLICK, clickHandler );*/
     }
 
     public abstract void addControl( IsWidget controlView );
@@ -153,24 +160,28 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         return null;
     }
 
+    @SuppressWarnings( "unchecked" )
     public Canvas addChildShape( final Shape parent, final Shape child ) {
         getView().addChildShape( parent.getShapeView(), child.getShapeView() );
         log( Level.FINE, "Adding child [" + child.getUUID() + "] into parent [" + parent.getUUID() + "]" );
         return this;
     }
 
+    @SuppressWarnings( "unchecked" )
     public Canvas deleteChildShape( final Shape parent, final Shape child ) {
         getView().removeChildShape( parent.getShapeView(), child.getShapeView() );
         log( Level.FINE, "Deleting child [" + child.getUUID() + "] from parent [" + parent.getUUID() + "]" );
         return this;
     }
 
+    @SuppressWarnings( "unchecked" )
     public Canvas dock( final Shape parent, final Shape child ) {
         getView().dock( parent.getShapeView(), child.getShapeView() );
         log( Level.FINE, "Docking child [" + child.getUUID() + "] into parent [" + parent.getUUID() + "]" );
         return this;
     }
 
+    @SuppressWarnings( "unchecked" )
     public Canvas undock( final Shape parent, final Shape child ) {
         getView().undock( parent.getShapeView(), child.getShapeView() );
         log( Level.FINE, "Undocking child [" + child.getUUID() + "] from parent [" + parent.getUUID() + "]" );
@@ -186,6 +197,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         return this;
     }
 
+    @SuppressWarnings( "unchecked" )
     public Canvas addTransientShape( final Shape shape ) {
         if ( shape.getUUID() == null ) {
             shape.setUUID( UUID.uuid() );
@@ -205,8 +217,13 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     @Override
     public Canvas setGrid( final CanvasGrid grid ) {
+        this.grid = grid;
         view.setGrid( grid );
         return this;
+    }
+
+    public CanvasGrid getGrid() {
+        return grid;
     }
 
     @Override
@@ -223,6 +240,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         return this;
     }
 
+    @SuppressWarnings( "unchecked" )
     public Canvas deleteTransientShape( final Shape shape ) {
         view.removeShape( shape.getShapeView() );
         shape.destroy();

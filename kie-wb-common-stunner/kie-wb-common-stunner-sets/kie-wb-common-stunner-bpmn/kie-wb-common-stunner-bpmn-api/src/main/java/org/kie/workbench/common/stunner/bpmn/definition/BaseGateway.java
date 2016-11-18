@@ -29,11 +29,11 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
-
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
 
 @MorphBase( defaultType = ParallelGateway.class )
 public abstract class BaseGateway implements BPMNDefinition {

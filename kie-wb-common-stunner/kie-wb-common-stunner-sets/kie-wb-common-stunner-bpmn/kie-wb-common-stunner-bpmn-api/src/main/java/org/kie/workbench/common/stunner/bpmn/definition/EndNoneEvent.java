@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.ThrowEventAttributes;
@@ -52,11 +53,11 @@ public class EndNoneEvent extends BaseEndEvent {
 
         @Override
         public EndNoneEvent build() {
-            return new EndNoneEvent( new BPMNGeneralSet( "End" ),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
+            return new EndNoneEvent( new BPMNGeneralSet(),
+                    new BackgroundSet( BG_COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
                     new ThrowEventAttributes(),
-                    new CircleDimensionSet( RADIUS ) );
+                    new CircleDimensionSet( new Radius( RADIUS ) ) );
         }
 
     }

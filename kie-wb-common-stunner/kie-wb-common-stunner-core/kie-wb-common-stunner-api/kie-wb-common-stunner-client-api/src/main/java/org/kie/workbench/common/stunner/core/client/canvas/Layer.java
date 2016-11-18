@@ -29,6 +29,8 @@ public interface Layer<T, S, A> extends HasEventHandlers<T, A> {
 
     T draw();
 
+    Transform getTransform();
+
     void clear();
 
     String toDataURL();

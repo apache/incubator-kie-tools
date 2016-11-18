@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
@@ -75,8 +76,13 @@ public final class BPMNDiagramShapeDef
     }
 
     @Override
-    public String getGlyphBackgroundColor( final BPMNDiagram element ) {
-        return element.getBackgroundSet().getBgColor().getValue();
+    public HasTitle.Position getFontPosition( final BPMNDiagram element ) {
+        return HasTitle.Position.BOTTOM;
+    }
+
+    @Override
+    public double getFontRotation( final BPMNDiagram element ) {
+        return 0;
     }
 
     @Override
@@ -87,6 +93,11 @@ public final class BPMNDiagramShapeDef
     @Override
     public double getHeight( final BPMNDiagram element ) {
         return element.getDimensionsSet().getHeight().getValue();
+    }
+
+    @Override
+    public double getCornerRadius( final BPMNDiagram element ) {
+        return 0;
     }
 
 }

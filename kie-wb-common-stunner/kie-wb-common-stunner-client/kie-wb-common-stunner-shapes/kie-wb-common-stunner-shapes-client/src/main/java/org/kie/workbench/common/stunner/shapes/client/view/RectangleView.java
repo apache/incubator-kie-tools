@@ -17,27 +17,44 @@
 package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
+import org.kie.workbench.common.stunner.lienzo.util.LienzoPaths;
 
+/**
+ * The lienzo view implementation for the Rectangle shape.
+ *
+ * TODO: Disabling for now the resize for rectangles when they're using a corner radius value different
+ * from zero - ARC resize is not implemented yet on lienzo side, and the corners are built using ARCs.
+ * See <a>org.kie.workbench.common.stunner.lienzo.util.LienzoPaths#rectangle</a>.
+ */
 public class RectangleView extends BasicShapeView<RectangleView>
         implements HasSize<RectangleView> {
 
-    // TODO: Arc resize on lienzo is not supported. Cannot use corner radius.
-    private static final double CORNER_RADIUS = 0;
+    private final double corner_radius;
 
     public RectangleView( final double width,
-                          final double height ) {
-        super( create( new MultiPath(), width, height, CORNER_RADIUS ) );
+                          final double height,
+                          final double corner ) {
+        super( create( new MultiPath(), width, height, corner ) );
+        super.setResizable( corner == 0 );
+        this.corner_radius = corner;
     }
 
     @Override
     public RectangleView setSize( final double width,
                                   final double height ) {
-        create( getPath().clear(), width, height, CORNER_RADIUS );
+        create( getPath().clear(), width, height, corner_radius );
         updateFillGradient( width, height );
         refresh();
         return this;
 
+    }
+
+
+    @Override
+    public WiresShape setResizable( boolean resizable ) {
+        return super.setResizable( corner_radius == 0 && resizable );
     }
 
     /**
@@ -52,26 +69,7 @@ public class RectangleView extends BasicShapeView<RectangleView>
                                      final double w,
                                      final double h,
                                      final double r ) {
-        if ( ( w > 0 ) && ( h > 0 ) ) {
-            if ( ( r > 0 ) && ( r < ( w / 2 ) ) && ( r < ( h / 2 ) ) ) {
-                path.M( r, 0 );
-                path.L( w - r, 0 );
-                path.A( w, 0, w, r, r );
-                path.L( w, h - r );
-                path.A( w, h, w - r, h, r );
-                path.L( r, h );
-                path.A( 0, h, 0, h - r, r );
-                path.L( 0, r );
-                path.A( 0, 0, r, 0, r );
-
-            } else {
-                path.rect( 0, 0, w, h );
-
-            }
-            path.Z();
-
-        }
-        return path;
-
+        return LienzoPaths.rectangle( path, w, h, r );
     }
+
 }

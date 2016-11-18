@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.components.glyph;
 
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 public interface GlyphTooltip<G> {
 
@@ -26,7 +26,7 @@ public interface GlyphTooltip<G> {
 
     void show( String text, double x, double y, Direction direction );
 
-    void show( ShapeGlyph<G> glyph, String text, double x, double y, Direction direction );
+    void show( Glyph<G> glyph, String text, double x, double y, Direction direction );
 
     void hide();
 

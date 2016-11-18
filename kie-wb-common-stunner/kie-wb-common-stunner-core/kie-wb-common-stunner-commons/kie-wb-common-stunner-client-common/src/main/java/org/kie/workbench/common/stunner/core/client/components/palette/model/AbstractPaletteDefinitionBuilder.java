@@ -22,7 +22,8 @@ import java.util.List;
 public abstract class AbstractPaletteDefinitionBuilder<T, P, E>
         implements PaletteDefinitionBuilder<T, P, E> {
 
-    protected final List<String> exclusions = new LinkedList<>();
+    private final List<String> definitionExclusions = new LinkedList<>();
+    private final List<String> categoryExclusions = new LinkedList<>();
 
     public AbstractPaletteDefinitionBuilder() {
     }
@@ -32,9 +33,23 @@ public abstract class AbstractPaletteDefinitionBuilder<T, P, E>
     }
 
     @Override
-    public PaletteDefinitionBuilder<T, P, E> exclude( final String definitionId ) {
-        this.exclusions.add( definitionId );
+    public PaletteDefinitionBuilder<T, P, E> excludeCategory( final String categoryId ) {
+        this.categoryExclusions.add( categoryId );
         return this;
+    }
+
+    @Override
+    public PaletteDefinitionBuilder<T, P, E> excludeDefinition( final String definitionId ) {
+        this.definitionExclusions.add( definitionId );
+        return this;
+    }
+
+    protected boolean isCategoryExcluded( final String categoryId ) {
+        return this.categoryExclusions.contains( categoryId );
+    }
+
+    protected boolean isDefinitionExcluded( final String definitionId ) {
+        return this.definitionExclusions.contains( definitionId );
     }
 
     protected <I extends PaletteItemBuilder> I getItemBuilder( final List<I> items, final String id ) {

@@ -17,8 +17,11 @@
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 
 public final class LaneShapeDef
         extends AbstractShapeDef<Lane>
@@ -31,7 +34,7 @@ public final class LaneShapeDef
 
     @Override
     public double getBackgroundAlpha( final Lane element ) {
-        return 0.8;
+        return 0.05;
     }
 
     @Override
@@ -75,8 +78,13 @@ public final class LaneShapeDef
     }
 
     @Override
-    public String getGlyphBackgroundColor( final Lane element ) {
-        return element.getBackgroundSet().getBgColor().getValue();
+    public HasTitle.Position getFontPosition( final Lane element ) {
+        return HasTitle.Position.LEFT;
+    }
+
+    @Override
+    public double getFontRotation( final Lane element ) {
+        return 270;
     }
 
     @Override
@@ -89,4 +97,27 @@ public final class LaneShapeDef
         return element.getDimensionsSet().getHeight().getValue();
     }
 
+    @Override
+    public double getCornerRadius( final Lane element ) {
+        return 0;
+    }
+
+    private static final PictureGlyphDef<Lane, BPMNPictures> PICTURE_GLYPH_DEF =
+            new PictureGlyphDef<Lane, BPMNPictures>() {
+
+                @Override
+                public String getGlyphDescription( Lane element ) {
+                    return element.getDescription();
+                }
+
+                @Override
+                public BPMNPictures getSource( final Class<?> type ) {
+                    return BPMNPictures.LANE;
+                }
+            };
+
+    @Override
+    public GlyphDef<Lane> getGlyphDef() {
+        return PICTURE_GLYPH_DEF;
+    }
 }

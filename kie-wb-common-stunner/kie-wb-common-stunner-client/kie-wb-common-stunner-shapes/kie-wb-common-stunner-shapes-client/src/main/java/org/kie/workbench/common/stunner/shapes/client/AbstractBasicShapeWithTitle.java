@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.shapes.client;
 
+import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -31,6 +32,17 @@ public abstract class AbstractBasicShapeWithTitle<W, V extends BasicShapeView, P
                                         final P proxy ) {
         super( view );
         this.proxy = proxy;
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public void applyProperties( final Node<View<W>, Edge> element,
+                                 final MutationContext mutationContext ) {
+        // Apply font position and rotation for title.
+        getShapeView().setTitlePosition( proxy.getFontPosition( getDefinition( element ) ) );
+        getShapeView().setTitleRotation( proxy.getFontRotation( getDefinition( element ) ) );
+        // Apply other font styles on parent.
+        super.applyProperties( element, mutationContext );
     }
 
     @Override

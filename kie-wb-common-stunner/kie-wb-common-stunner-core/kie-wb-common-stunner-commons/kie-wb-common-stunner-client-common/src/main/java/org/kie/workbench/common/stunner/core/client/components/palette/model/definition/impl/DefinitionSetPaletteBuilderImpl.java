@@ -44,8 +44,8 @@ public class DefinitionSetPaletteBuilderImpl
         extends AbstractPaletteDefinitionBuilder<Object, DefinitionSetPalette, ClientRuntimeError>
         implements DefinitionSetPaletteBuilder {
 
-    DefinitionUtils definitionUtils;
-    ClientFactoryService clientFactoryServices;
+    private final DefinitionUtils definitionUtils;
+    private final ClientFactoryService clientFactoryServices;
 
     private PaletteCategoryProvider paletteCategoryProvider;
     private PaletteMorphGroupProvider paletteMorphGroupProvider;
@@ -72,73 +72,69 @@ public class DefinitionSetPaletteBuilderImpl
         if ( null != definitions ) {
             final List<DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder> categoryBuilders = new LinkedList<>();
             for ( final String defId : definitions ) {
-                if ( !exclusions.contains( defId ) ) {
+                // Check if this concrete definition is excluded from the palette model.
+                if ( !isDefinitionExcluded( defId ) ) {
                     clientFactoryServices.newDefinition( defId, new ServiceCallback<Object>() {
-
                         @Override
                         public void onSuccess( final Object definition ) {
                             final String id = getDefinitionManager().adapters().forDefinition().getId( definition );
                             final String category = getDefinitionManager().adapters().forDefinition().getCategory( definition );
                             final String categoryId = toValidId( category );
-                            DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder categoryGroupBuilder =
-                                    getItemBuilder( categoryBuilders, categoryId );
-                            if ( null == categoryGroupBuilder ) {
-                                categoryGroupBuilder =
-                                        new DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder( categoryId )
-                                                .title( paletteCategoryProvider.getTitle( categoryId ) )
-                                                .tooltip( paletteCategoryProvider.getTitle( categoryId ) )
-                                                .description( paletteCategoryProvider.getDescription( categoryId ) );
-                                categoryBuilders.add( categoryGroupBuilder );
-                            }
-                            final MorphDefinition morphDefinition = definitionUtils.getMorphDefinition( definition );
-                            final boolean hasMorphBase = null != morphDefinition;
-                            DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder morphGroupBuilder = null;
-                            String morphDefault = null;
-                            if ( hasMorphBase ) {
-                                final String morphBase = morphDefinition.getBase();
-                                morphDefault = morphDefinition.getDefault();
-                                final String morphBaseId = toValidId( morphBase );
-                                morphGroupBuilder = ( DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder ) categoryGroupBuilder.getItem( morphBaseId );
-                                if ( null == morphGroupBuilder ) {
-                                    morphGroupBuilder =
-                                            new DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder( morphBaseId )
-                                                    .definitionId( morphDefault )
-                                                    .title( paletteMorphGroupProvider.getTitle( morphBase, morphDefinition ) )
-                                                    .description( paletteMorphGroupProvider.getDescription( morphBase, morphDefinition ) )
-                                                    .tooltip( paletteMorphGroupProvider.getTitle( morphBase, morphDefinition ) );
-                                    categoryGroupBuilder.addItem( morphGroupBuilder );
-
+                            // Check if this concrete category excluded from the palette model.
+                            if ( !isCategoryExcluded( categoryId ) ) {
+                                DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder categoryGroupBuilder =
+                                        getItemBuilder( categoryBuilders, categoryId );
+                                if ( null == categoryGroupBuilder ) {
+                                    categoryGroupBuilder =
+                                            new DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder( categoryId )
+                                                    .definitionId( paletteCategoryProvider.getDefinitionId( categoryId ) )
+                                                    .title( paletteCategoryProvider.getTitle( categoryId ) )
+                                                    .tooltip( paletteCategoryProvider.getTitle( categoryId ) )
+                                                    .description( paletteCategoryProvider.getDescription( categoryId ) );
+                                    categoryBuilders.add( categoryGroupBuilder );
                                 }
-
-                            }
-                            final String title = getDefinitionManager().adapters().forDefinition().getTitle( definition );
-                            final String description = getDefinitionManager().adapters().forDefinition().getDescription( definition );
-                            final DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder itemBuilder =
-                                    new DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder( id )
-                                            .definitionId( id )
-                                            .title( title )
-                                            .description( description )
-                                            .tooltip( description );
-                            if ( null != morphGroupBuilder ) {
-                                if ( null != morphDefault && morphDefault.equals( id ) ) {
-                                    morphGroupBuilder.addItem( 0, itemBuilder );
-
+                                final MorphDefinition morphDefinition = definitionUtils.getMorphDefinition( definition );
+                                final boolean hasMorphBase = null != morphDefinition;
+                                DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder morphGroupBuilder = null;
+                                String morphDefault = null;
+                                if ( hasMorphBase ) {
+                                    final String morphBase = morphDefinition.getBase();
+                                    morphDefault = morphDefinition.getDefault();
+                                    final String morphBaseId = toValidId( morphBase );
+                                    morphGroupBuilder = ( DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder ) categoryGroupBuilder.getItem( morphBaseId );
+                                    if ( null == morphGroupBuilder ) {
+                                        morphGroupBuilder =
+                                                new DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder( morphBaseId )
+                                                        .definitionId( morphDefault )
+                                                        .title( paletteMorphGroupProvider.getTitle( morphBase, morphDefinition ) )
+                                                        .description( paletteMorphGroupProvider.getDescription( morphBase, morphDefinition ) )
+                                                        .tooltip( paletteMorphGroupProvider.getTitle( morphBase, morphDefinition ) );
+                                        categoryGroupBuilder.addItem( morphGroupBuilder );
+                                    }
+                                }
+                                final String title = getDefinitionManager().adapters().forDefinition().getTitle( definition );
+                                final String description = getDefinitionManager().adapters().forDefinition().getDescription( definition );
+                                final DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder itemBuilder =
+                                        new DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder( id )
+                                                .definitionId( id )
+                                                .title( title )
+                                                .description( description )
+                                                .tooltip( description );
+                                if ( null != morphGroupBuilder ) {
+                                    if ( null != morphDefault && morphDefault.equals( id ) ) {
+                                        morphGroupBuilder.addItem( 0, itemBuilder );
+                                    } else {
+                                        morphGroupBuilder.addItem( itemBuilder );
+                                    }
                                 } else {
-                                    morphGroupBuilder.addItem( itemBuilder );
-
+                                    categoryGroupBuilder.addItem( itemBuilder );
                                 }
-
-                            } else {
-                                categoryGroupBuilder.addItem( itemBuilder );
-
                             }
-
                         }
 
                         @Override
                         public void onError( final ClientRuntimeError error ) {
                             callback.onError( error );
-
                         }
 
                     } );
@@ -178,6 +174,11 @@ public class DefinitionSetPaletteBuilderImpl
         @Override
         public String getDescription( final String id ) {
             return id;
+        }
+
+        @Override
+        public String getDefinitionId( final String id ) {
+            return null;
         }
 
     };

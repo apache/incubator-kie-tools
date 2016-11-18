@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.components.views;
 
+import org.uberfire.mvp.Command;
+
 public interface FloatingView<V> {
 
     void add( V item );
@@ -35,6 +37,8 @@ public interface FloatingView<V> {
     FloatingView<V> setTimeOut( int timeOut );
 
     FloatingView<V> clearTimeOut();
+
+    FloatingView<V> setHideCallback( Command hideCallback );
 
     void clear();
 

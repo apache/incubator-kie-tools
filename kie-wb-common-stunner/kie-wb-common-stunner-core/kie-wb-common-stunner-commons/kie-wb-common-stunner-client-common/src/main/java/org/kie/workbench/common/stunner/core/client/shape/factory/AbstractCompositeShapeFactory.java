@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.client.shape.factory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -82,9 +82,9 @@ public abstract class AbstractCompositeShapeFactory<W, S extends Shape>
     }
 
     @Override
-    public ShapeGlyph glyph( final String definitionId,
-                             final double width,
-                             final double height ) {
+    public Glyph glyph( final String definitionId,
+                        final double width,
+                        final double height ) {
         for ( final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories ) {
             if ( factory.accepts( definitionId ) ) {
                 return factory.glyph( definitionId, width, height );

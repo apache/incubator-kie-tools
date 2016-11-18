@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_RADIUS;
 
 @Portable
 @Bindable
@@ -41,11 +41,6 @@ public class CircleDimensionSet implements BPMNPropertySet {
     protected Radius radius;
 
     public CircleDimensionSet() {
-        this( new Radius( Radius.defaultValue ) );
-    }
-
-    public CircleDimensionSet( Double radius ) {
-        this( new Radius( radius ) );
     }
 
     public CircleDimensionSet( @MapsTo( "radius" ) Radius radius ) {

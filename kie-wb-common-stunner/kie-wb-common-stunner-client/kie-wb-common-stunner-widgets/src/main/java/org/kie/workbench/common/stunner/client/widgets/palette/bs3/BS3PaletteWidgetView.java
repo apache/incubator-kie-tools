@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidgetView;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.uberfire.client.mvp.UberView;
 
 import javax.enterprise.context.Dependent;
@@ -72,7 +72,7 @@ public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView
     public void showDragProxy( final String itemId,
                                final double x,
                                final double y ) {
-        final ShapeGlyph<Group> glyph = ( ShapeGlyph<Group> ) presenter.getShapeGlyph( itemId );
+        final Glyph<Group> glyph = ( Glyph<Group> ) presenter.getShapeGlyph( itemId );
         shapeGlyphDragHandler.show( glyph, x, y, new ShapeGlyphDragHandler.Callback() {
 
             @Override

@@ -17,14 +17,13 @@ package org.kie.workbench.common.stunner.client.widgets.menu.dev;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-public abstract class AbstractMenuDevCommand<S extends ClientSession>
-        implements MenuDevCommand<S> {
+public abstract class AbstractMenuDevCommand
+        implements MenuDevCommand {
 
     private final AbstractClientSessionManager sessionManager;
 

@@ -16,18 +16,35 @@
 
 package org.kie.workbench.common.stunner.shapes.client.view;
 
+import com.google.gwt.safehtml.shared.SafeUri;
+import org.kie.workbench.common.stunner.shapes.client.factory.PictureProvidersManager;
 import org.kie.workbench.common.stunner.shapes.client.view.icon.dynamics.DynamicIconShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.icon.statics.StaticIconShapeView;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class ShapeViewFactory {
 
+    private final PictureProvidersManager pictureProvidersManager;
+
+    protected ShapeViewFactory() {
+        this( null );
+    }
+
+    @Inject
+    public ShapeViewFactory( PictureProvidersManager pictureProvidersManager ) {
+        this.pictureProvidersManager = pictureProvidersManager;
+    }
+
     public RectangleView rectangle( final double width,
-                                    final double height ) {
-        return new RectangleView( width, height );
+                                    final double height,
+                                    final double corner_radius ) {
+        return new RectangleView( width, height, corner_radius );
 
     }
 
@@ -41,6 +58,14 @@ public class ShapeViewFactory {
     public StaticIconShapeView staticIcon( final org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons icon ) {
         return new StaticIconShapeView( icon );
 
+    }
+
+    public PictureShapeView picture( final Object source,
+                                     final double width,
+                                     final double height ) {
+        checkNotNull( "source", source );
+        final SafeUri uri = pictureProvidersManager.getUri( source );
+        return new PictureShapeView( uri.asString(), width, height );
     }
 
     public CircleView circle( final double radius ) {

@@ -23,6 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IntermediateTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -114,7 +115,7 @@ public class IntermediateTimerEvent implements BPMNDefinition {
                     new IntermediateTimerEventExecutionSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
-                    new CircleDimensionSet( RADIUS ) );
+                    new CircleDimensionSet( new Radius( RADIUS ) ) );
         }
 
     }

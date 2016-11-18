@@ -16,6 +16,6 @@
 
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="all">
   <scan>
-    <exclude name="org.kie.workbench.common.stunner.bpmn.guvnor.client.**"/>
+    <exclude name="org.kie.workbench.common.stunner.bpmn.project.client.**"/>
   </scan>
 </beans>

@@ -21,6 +21,7 @@ import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Session;
@@ -45,6 +46,7 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
     CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
 
     private AbstractCanvasHandler canvasHandler;
+    private CanvasHighlight canvasHighlight;
 
     @Inject
     public ConnectionAcceptorControlImpl( final CanvasCommandFactory canvasCommandFactory,
@@ -56,6 +58,7 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
     @Override
     public void enable( final AbstractCanvasHandler canvasHandler ) {
         this.canvasHandler = canvasHandler;
+        this.canvasHighlight = new CanvasHighlight( canvasHandler );
         final WiresCanvas.View canvasView = ( WiresCanvas.View ) canvasHandler.getCanvas().getView();
         canvasView.setConnectionAcceptor( CONNECTION_ACCEPTOR );
     }
@@ -66,6 +69,8 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
             final WiresCanvas.View canvasView = ( WiresCanvas.View ) canvasHandler.getCanvas().getView();
             canvasView.setConnectionAcceptor( IConnectionAcceptor.NONE );
         }
+        this.canvasHighlight.destroy();
+        this.canvasHighlight = null;
         this.canvasHandler = null;
     }
 
@@ -79,9 +84,11 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         }
         final boolean eq = eq( source, connector.getSourceNode() );
         if ( !eq ) {
-            CommandResult<CanvasViolation> violations =
+            final CommandResult<CanvasViolation> violations =
                     canvasCommandManager.allow( canvasHandler, canvasCommandFactory.SET_SOURCE_NODE( source, connector, magnet ) );
-            return isAccept( violations );
+            final boolean accepts = isAccept( violations );
+            highlight( source, accepts );
+            return accepts;
         }
         return true;
     }
@@ -96,9 +103,11 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         }
         final boolean eq = eq( target, connector.getTargetNode() );
         if ( !eq ) {
-            CommandResult<CanvasViolation> violations =
+            final CommandResult<CanvasViolation> violations =
                     canvasCommandManager.allow( canvasHandler, canvasCommandFactory.SET_TARGET_NODE( target, connector, magnet ) );
-            return isAccept( violations );
+            final boolean accepts = isAccept( violations );
+            highlight( target, accepts );
+            return accepts;
         }
         return true;
     }
@@ -113,7 +122,8 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         }
         final boolean eq = eq( source, connector.getSourceNode() );
         if ( !eq ) {
-            CommandResult<CanvasViolation> violations =
+            ensureUnHighLight();
+            final CommandResult<CanvasViolation> violations =
                     canvasCommandManager.execute( canvasHandler, canvasCommandFactory.SET_SOURCE_NODE( source, connector, magnet ) );
             return isAccept( violations );
         }
@@ -130,7 +140,8 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         }
         final boolean eq = eq( target, connector.getTargetNode() );
         if ( !eq ) {
-            CommandResult<CanvasViolation> violations =
+            ensureUnHighLight();
+            final CommandResult<CanvasViolation> violations =
                     canvasCommandManager.execute( canvasHandler, canvasCommandFactory.SET_TARGET_NODE( target, connector, magnet ) );
             return isAccept( violations );
         }
@@ -222,6 +233,20 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
 
     private boolean isAccept( final CommandResult<CanvasViolation> result ) {
         return !CommandUtils.isError( result );
+    }
+
+    private void highlight( final Node node, final boolean valid ) {
+        if ( null != node && valid ) {
+            canvasHighlight.highLight( node );
+        } else if ( null != node ) {
+            canvasHighlight.invalid( node );
+        }
+    }
+
+    private void ensureUnHighLight() {
+        if ( null != canvasHighlight ) {
+            canvasHighlight.unhighLight();
+        }
     }
 
     private void log( final Level level, final String message ) {

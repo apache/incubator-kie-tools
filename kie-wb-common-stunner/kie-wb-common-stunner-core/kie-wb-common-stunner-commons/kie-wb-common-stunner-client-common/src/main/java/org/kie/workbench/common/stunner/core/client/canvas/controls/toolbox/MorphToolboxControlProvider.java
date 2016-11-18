@@ -23,27 +23,36 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxBu
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxBuilder;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxButtonGridBuilder;
+import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Dependent
 public class MorphToolboxControlProvider extends AbstractToolboxControlProvider {
 
-    AbstractPaletteMorphCommand morphCommand;
+    private static Logger LOGGER = Logger.getLogger( MorphToolboxControlProvider.class.getName() );
+
+    private final AbstractPaletteMorphCommand morphCommand;
+    private final DefinitionUtils definitionUtils;
 
     protected MorphToolboxControlProvider() {
-        this( null, null );
+        this( null, null, null );
     }
 
     @Inject
     public MorphToolboxControlProvider( final ToolboxFactory toolboxFactory,
-                                        final AbstractPaletteMorphCommand morphCommand ) {
+                                        final AbstractPaletteMorphCommand morphCommand,
+                                        final DefinitionUtils definitionUtils ) {
         super( toolboxFactory );
         this.morphCommand = morphCommand;
+        this.definitionUtils = definitionUtils;
     }
 
     @Override
@@ -58,6 +67,7 @@ public class MorphToolboxControlProvider extends AbstractToolboxControlProvider 
         return buttonGridBuilder
                 .setRows( 1 )
                 .setColumns( 1 )
+                .setPadding( DEFAULT_PADDING )
                 .build();
     }
 
@@ -74,11 +84,21 @@ public class MorphToolboxControlProvider extends AbstractToolboxControlProvider 
     @Override
     public List<ToolboxCommand<?, ?>> getCommands( final AbstractCanvasHandler context,
                                                    final Element item ) {
-        return new LinkedList<ToolboxCommand<?, ?>>() {{
-            add( morphCommand );
+        return !hasMorphTargets( item ) ? null :
+                new ArrayList<ToolboxCommand<?, ?>>( 1 ) {{
+                    add( morphCommand );
+                }};
+    }
 
-        }};
-
+    private boolean hasMorphTargets( final Element item ) {
+        try {
+            final Object def = ( ( Definition<?> ) item.getContent() ).getDefinition();
+            return definitionUtils.hasMorphTargets( def );
+        } catch ( final ClassCastException e ) {
+            LOGGER.log( Level.SEVERE, "Only contents for type Definition are expected on the toolbox " +
+                    "morphing control provider.", e );
+            return false;
+        }
     }
 
 }

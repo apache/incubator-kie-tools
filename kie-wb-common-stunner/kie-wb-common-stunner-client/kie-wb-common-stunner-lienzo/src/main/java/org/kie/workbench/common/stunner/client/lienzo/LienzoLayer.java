@@ -22,6 +22,7 @@ import com.ait.lienzo.shared.core.types.DataURLType;
 import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.util.LienzoImageDataUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
@@ -33,7 +34,7 @@ import javax.enterprise.context.Dependent;
 
 @Dependent
 @Lienzo
-public class LienzoLayer implements Layer<LienzoLayer, ShapeView<?>, Shape<?>> {
+public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<?>> {
 
     private static final ViewEventType[] SUPPORTED_EVENT_TYPES = new ViewEventType[]{
             ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK, ViewEventType.MOUSE_MOVE
@@ -150,6 +151,22 @@ public class LienzoLayer implements Layer<LienzoLayer, ShapeView<?>, Shape<?>> {
 
     public com.ait.lienzo.client.core.shape.Layer getLienzoLayer() {
         return this.layer;
+    }
+
+    @Override
+    protected double[] getTranslate() {
+        return new double[] {
+                layer.getAbsoluteTransform().getTranslateX(),
+                layer.getAbsoluteTransform().getTranslateY()
+        };
+    }
+
+    @Override
+    protected double[] getScale() {
+        return new double[] {
+                layer.getAbsoluteTransform().getScaleX(),
+                layer.getAbsoluteTransform().getScaleY()
+        };
     }
 
 }

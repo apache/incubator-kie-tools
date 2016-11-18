@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.DragCanvasGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -144,6 +145,8 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
         enableControl( getContainmentAcceptorControl(), getCanvasHandler() );
         enableControl( getDockingAcceptorControl(), getCanvasHandler() );
         enableControl( getDragControl(), getCanvasHandler() );
+        // Enable show grid on drag by default.
+        getDragControl().setDragGrid( DragCanvasGrid.INSTANCE );
         enableControl( getToolboxControl(), getCanvasHandler() );
         enableControl( getBuilderControl(), getCanvasHandler() );
         enableControl( getCanvasValidationControl(), getCanvasHandler() );

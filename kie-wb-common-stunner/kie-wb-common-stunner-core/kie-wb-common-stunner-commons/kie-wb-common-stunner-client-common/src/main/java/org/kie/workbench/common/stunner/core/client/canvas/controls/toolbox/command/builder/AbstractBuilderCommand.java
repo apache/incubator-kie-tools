@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder;
 
 import com.google.gwt.logging.client.LogConfiguration;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuilderControl;
@@ -92,8 +93,8 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
     private void showDragProxy( final Context<AbstractCanvasHandler> context,
                                 final Element element ) {
         final AbstractCanvasHandler canvasHandler = context.getCanvasHandler();
-        final double x = context.getX();
-        final double y = context.getY();
+        final double x = context.getAbsoluteX();
+        final double y = context.getAbsoluteY();
         graphBoundsIndexer.setRootUUID( canvasHandler.getDiagram().getMetadata().getCanvasRootUUID() );
         clientFactoryServices.newElement( UUID.uuid(), getDefinitionIdentifier( context ), new ServiceCallback<Element>() {
 
@@ -143,14 +144,11 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
         // TODO: Two expensive calls to bounds indexer, this one and the one inside connectorDragProxyFactory.
         final Node targetNode = graphBoundsIndexer.getAt( x1, y1 );
         final boolean accepts = onDragProxyMove( x1, y1, element, item, targetNode );
-        if ( accepts ) {
+        if ( null != targetNode && accepts ) {
             canvasHighlight.highLight( targetNode );
-
-        } else {
-            canvasHighlight.unhighLight();
-
+        } else if ( null != targetNode ) {
+            canvasHighlight.invalid( targetNode );
         }
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -162,28 +160,30 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
         fireLoadingStarted( context );
         final Node targetNode = graphBoundsIndexer.getAt( x1, y1 );
         log( Level.INFO, "Completing element creation - Creating node for parent ["
-            + ( null != targetNode ? targetNode.getUUID() : "null") );
+                + ( null != targetNode ? targetNode.getUUID() : "null" ) );
         if ( null != targetNode ) {
+            // Ensure back to NONE shape state before any further operations.
+            ensureUnHighLight();
+            // Create the build request.
             final BuildRequest buildRequest = createBuildRequest( x1, y1, element, item, targetNode );
+            // Use the builder control to perform the operation.
             getBuilderControl().build( buildRequest, new BuilderControl.BuildCallback() {
 
                 @Override
                 public void onSuccess( final String uuid ) {
                     log( Level.INFO, "Item build with UUID [" + uuid + "]" );
                     onItemBuilt( context, uuid );
-
                 }
 
                 @Override
                 public void onError( final ClientRuntimeError error ) {
                     AbstractBuilderCommand.this.onError( context, error );
-
                 }
 
             } );
 
         }
-
+        context.getCanvasHandler().getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
     }
 
     protected void onError( final Context<AbstractCanvasHandler> context,
@@ -196,11 +196,6 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
     protected void onItemBuilt( final Context<AbstractCanvasHandler> context,
                                 final String uuid ) {
         fireLoadingCompleted( context );
-        if ( null != canvasHighlight ) {
-            canvasHighlight.unhighLight();
-
-        }
-
     }
 
     @Override
@@ -221,6 +216,12 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
 
     protected GraphBoundsIndexer getGraphBoundsIndexer() {
         return graphBoundsIndexer;
+    }
+
+    private void ensureUnHighLight() {
+        if ( null != canvasHighlight ) {
+            canvasHighlight.unhighLight();
+        }
     }
 
     private void log( final Level level, final String message ) {
