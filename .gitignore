@@ -1,3 +1,11 @@
+# Gradle binaries
 /bin/
 /build/
 /.gradle/
+
+# Maven binaries
+target
+
+# IntelliJ IDEA config files
+.idea
+lienzo-tests.iml
