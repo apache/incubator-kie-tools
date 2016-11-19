@@ -58,7 +58,7 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPartShape<T>>extends Shape<T>
 {
-    private final NFastArrayList<PathPartList> pathPoints = new NFastArrayList<>();
+    private final NFastArrayList<PathPartList> m_points = new NFastArrayList<PathPartList>();
 
     protected AbstractMultiPathPartShape(final ShapeType type)
     {
@@ -73,15 +73,17 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     @Override
     public BoundingBox getBoundingBox()
     {
-        if (pathPoints.size() < 1)
+        final int size = m_points.size();
+
+        if (size < 1)
         {
             return new BoundingBox(0, 0, 0, 0);
         }
-        BoundingBox bbox = new BoundingBox();
+        final BoundingBox bbox = new BoundingBox();
 
-        for (PathPartList point : pathPoints)
+        for (int i = 0; i < size; i++)
         {
-            bbox.add(point.getBoundingBox());
+            bbox.add(m_points.get(i).getBoundingBox());
         }
         return bbox;
     }
@@ -94,23 +96,25 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     public T clear()
     {
-        for (PathPartList point : pathPoints)
+        final int size = m_points.size();
+
+        for (int i = 0; i < size; i++)
         {
-            point.clear();
+            m_points.get(i).clear();
         }
-        pathPoints.clear();
+        m_points.clear();
 
         return cast();
     }
 
-    protected final void add(PathPartList list)
+    protected final void add(final PathPartList list)
     {
-        pathPoints.add(list);
+        m_points.add(list);
     }
 
     public final NFastArrayList<PathPartList> getPathPartListArray()
     {
-        return pathPoints;
+        return m_points;
     }
 
     @Override
@@ -126,7 +130,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
         if (prepare(context, attr, alpha))
         {
-            final int size = pathPoints.size();
+            final int size = m_points.size();
 
             if (size < 1)
             {
@@ -136,7 +140,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             {
                 setAppliedShadow(false);
 
-                final PathPartList list = pathPoints.get(i);
+                final PathPartList list = m_points.get(i);
 
                 if (list.size() > 1)
                 {
@@ -161,7 +165,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         {
             return factory;
         }
-        return new DefaultMultiPathShapeHandleFactory(pathPoints, this);
+        return new DefaultMultiPathShapeHandleFactory(m_points, this);
     }
 
     public static class OnDragMoveIControlHandleList implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
@@ -294,7 +298,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         public IControlHandleList getPointHandles()
         {
-            ControlHandleList chlist = new ControlHandleList( m_shape );
+            ControlHandleList chlist = new ControlHandleList(m_shape);
 
             NFastArrayList<Point2DArray> allPoints = new NFastArrayList<Point2DArray>();
 
@@ -327,7 +331,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         {
             // FIXME This isn't quite right yet, do not release  (mdp, um what did I mean here?)
 
-            ControlHandleList chlist = new ControlHandleList( shape );
+            ControlHandleList chlist = new ControlHandleList(shape);
 
             BoundingBox box = shape.getBoundingBox();
 
