@@ -26,8 +26,10 @@ import org.guvnor.common.services.project.client.NameChangeHandler;
 import org.guvnor.common.services.project.client.POMEditorPanel;
 import org.guvnor.common.services.project.client.POMEditorPanelView;
 import org.guvnor.common.services.project.client.VersionChangeHandler;
+import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,8 +43,10 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -71,6 +75,12 @@ public class POMWizardPageTest {
     private ValidationService validationService;
 
     @Mock
+    private GAVPreferences gavPreferences;
+
+    @Mock
+    protected ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
+
+    @Mock
     Event event;
 
     @Captor
@@ -95,7 +105,9 @@ public class POMWizardPageTest {
         gavEditor = new GAVEditor( gavEditorView );
 
         pomEditor = spy( new POMEditorPanel( pomEditorView,
-                                             syncBeanManager ) );
+                                             syncBeanManager,
+                                             gavPreferences,
+                                             projectScopedResolutionStrategySupplier ) );
 
         //POMEditorView implementation updates a nested GAVEditor presenter. Mock the implementation to avoid use of real widgets
         doAnswer( new Answer<Void>() {
@@ -133,6 +145,11 @@ public class POMWizardPageTest {
                                        new CallerMock<ProjectScreenService>( projectScreenService ),
                                        new CallerMock<ValidationService>( validationService ) ) );
         page.initialise();
+
+        doAnswer( invocationOnMock -> {
+            ( (ParameterizedCommand<GAVPreferences>) invocationOnMock.getArguments()[1] ).execute( gavPreferences );
+            return null;
+        } ).when( gavPreferences ).load( any( PreferenceScopeResolutionStrategyInfo.class ), any( ParameterizedCommand.class ), any( ParameterizedCommand.class ) );
     }
 
     @Test

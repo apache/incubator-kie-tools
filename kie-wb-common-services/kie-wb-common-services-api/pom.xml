@@ -77,6 +77,17 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-processors</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
@@ -99,6 +110,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

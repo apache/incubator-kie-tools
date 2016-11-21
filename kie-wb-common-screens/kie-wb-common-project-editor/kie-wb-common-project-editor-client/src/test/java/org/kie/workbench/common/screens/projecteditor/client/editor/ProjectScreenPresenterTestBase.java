@@ -22,10 +22,12 @@ import java.util.Collections;
 import com.google.gwtmockito.GwtMock;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.structure.repositories.Repository;
@@ -53,9 +55,11 @@ import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Mockito.*;
@@ -109,6 +113,10 @@ public abstract class ProjectScreenPresenterTestBase {
     protected Repository repository;
     @Mock
     protected Path pomPath;
+    @Mock
+    protected GAVPreferences gavPreferences;
+    @Mock
+    protected ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
 
     protected ObservablePath        observablePathToPomXML;
 
@@ -166,6 +174,11 @@ public abstract class ProjectScreenPresenterTestBase {
     protected void constructProjectScreenPresenter( final KieProject project,
                                                     final Caller<BuildService> buildServiceCaller,
                                                     final Caller<SpecManagementService> specManagementServiceCaller ) {
+        doAnswer( invocationOnMock -> {
+            ( (ParameterizedCommand<GAVPreferences>) invocationOnMock.getArguments()[1] ).execute( gavPreferences );
+            return null;
+        } ).when( gavPreferences ).load( any( PreferenceScopeResolutionStrategyInfo.class ), any( ParameterizedCommand.class ), any( ParameterizedCommand.class ) );
+
         presenter = new ProjectScreenPresenter( view,
                                                 context,
                                                 new CallerMock<ProjectScreenService>( projectScreenService ),
@@ -186,7 +199,9 @@ public abstract class ProjectScreenPresenterTestBase {
                                                 copyPopUpPresenter,
                                                 renamePopUpPresenter,
                                                 deletePopUpPresenter,
-                                                savePopUpPresenter ) {
+                                                savePopUpPresenter,
+                                                gavPreferences,
+                                                projectScopedResolutionStrategySupplier ) {
 
             @Override
             protected Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> getBuildExtensions() {

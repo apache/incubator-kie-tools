@@ -24,6 +24,8 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.workbench.client.admin.resources.i18n.PreferencesConstants;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
@@ -48,6 +50,9 @@ public class DefaultAdminPageHelper {
 
     @Inject
     private ClientUserSystemManager userSystemManager;
+
+    @Inject
+    private TranslationService translationService;
 
     public void setup() {
         adminPage.addScreen( "root", constants.Settings() );
@@ -96,6 +101,18 @@ public class DefaultAdminPageHelper {
                                    command.execute( response.getTotal() );
                                }
                            }, ( o, throwable ) -> false ).search( new SearchRequestImpl( "", 1, 1, null ) ) );
+
+        adminPage.addPreference( "root",
+                                 "ProjectPreferences",
+                                 translationService.format( PreferencesConstants.ProjectPreferences_Label ),
+                                 "fa-pencil-square-o",
+                                 "preferences" );
+
+        adminPage.addPreference( "root",
+                                 "LibraryPreferences",
+                                 translationService.format( PreferencesConstants.LibraryPreferences_Title ),
+                                 "fa-cubes",
+                                 "preferences" );
     }
 
     public Command getAdminToolCommand( final String screen ) {

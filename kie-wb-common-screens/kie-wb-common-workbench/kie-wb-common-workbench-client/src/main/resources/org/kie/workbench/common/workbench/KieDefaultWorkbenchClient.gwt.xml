@@ -20,5 +20,6 @@
   <inherits name='org.gwtbootstrap3.extras.typeahead.Typeahead'/>
 
   <source path="client"/>
+  <source path="shared"/>
 
 </module>

@@ -43,6 +43,10 @@
       <artifactId>errai-security-server</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ui</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
@@ -108,7 +112,15 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-preferences-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-processors</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -142,6 +154,10 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>

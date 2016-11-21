@@ -323,4 +323,6 @@ public interface ProjectEditorConstants
 
     String NoServersAvailableForProvisioning();
 
+    String ProjectPreferences();
+
 }

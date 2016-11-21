@@ -35,12 +35,14 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandle;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.guvnor.common.services.project.security.ProjectAction;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
@@ -98,6 +100,8 @@ import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
+import org.uberfire.ext.preferences.client.admin.AdminPagePresenter;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -107,6 +111,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -180,6 +185,10 @@ public class ProjectScreenPresenter
 
     protected SavePopUpPresenter savePopUpPresenter;
 
+    private GAVPreferences gavPreferences;
+
+    private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
+
     //Used by ErrorCallback for "Build" operation.
     private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndDeployGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
         put( GAVAlreadyExistsException.class,
@@ -226,12 +235,19 @@ public class ProjectScreenPresenter
                                    final CopyPopUpPresenter copyPopUpPresenter,
                                    final RenamePopUpPresenter renamePopUpPresenter,
                                    final DeletePopUpPresenter deletePopUpPresenter,
-                                   final SavePopUpPresenter savePopUpPresenter) {
+                                   final SavePopUpPresenter savePopUpPresenter,
+                                   final GAVPreferences gavPreferences,
+                                   final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier ) {
 
         this.view = view;
         this.user = user;
         view.setPresenter( this );
-        view.setGAVCheckDisabledSetting( ApplicationPreferences.getBooleanPref( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED ) );
+
+        gavPreferences.load( projectScopedResolutionStrategySupplier.get(), loadedGAVPreferences -> {
+            view.setGAVCheckDisabledSetting( loadedGAVPreferences.isConflictingGAVCheckDisabled() );
+        }, throwable -> {
+            throw new RuntimeException( throwable );
+        } );
 
         this.projectScreenService = projectScreenService;
         this.buildServiceCaller = buildServiceCaller;
@@ -254,6 +270,9 @@ public class ProjectScreenPresenter
         this.renamePopUpPresenter = renamePopUpPresenter;
         this.deletePopUpPresenter = deletePopUpPresenter;
         this.savePopUpPresenter = savePopUpPresenter;
+
+        this.gavPreferences = gavPreferences;
+        this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
 
         projectContextChangeHandle = workbenchContext.addChangeHandler( new ProjectContextChangeHandler() {
             @Override
@@ -1148,6 +1167,14 @@ public class ProjectScreenPresenter
         view.showGAVMetadataPanel();
         acquireLockOnDemand( model.getPathToPOM(),
                              view.getPomMetadataPart() );
+    }
+
+    @Override
+    public void onProjectPreferencesSelected() {
+        Map<String, String> params = new HashMap<>();
+        params.put( "screen", "project" );
+        params.put( "perspectiveIdentifierToGoBackTo", "AuthoringPerspective" );
+        placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
     }
 
     @Override
