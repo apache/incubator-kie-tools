@@ -212,7 +212,13 @@ public class AsyncPackageDataModelOracleImplTest {
                                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                                         ModelField.FIELD_ORIGIN.DECLARED,
                                                         FieldAccessorsAndMutators.BOTH,
-                                                        DataType.TYPE_BOOLEAN ) } );
+                                                        DataType.TYPE_BOOLEAN ),
+                                        new ModelField( "number",
+                                                        Integer.class.getName(),
+                                                        ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                        ModelField.FIELD_ORIGIN.DECLARED,
+                                                        FieldAccessorsAndMutators.BOTH,
+                                                        DataType.TYPE_NUMERIC_INTEGER )} );
         payload.setModelFields( addressModelFields );
 
         return payload;
@@ -354,7 +360,7 @@ public class AsyncPackageDataModelOracleImplTest {
         Callback<ModelField[]> callback = spy( new Callback<ModelField[]>() {
             @Override
             public void callback( ModelField[] result ) {
-                assertEquals( 3,
+                assertEquals( 4,
                               result.length );
 
                 assertEquals( "Address",
@@ -375,6 +381,12 @@ public class AsyncPackageDataModelOracleImplTest {
                 assertEquals( "Boolean",
                               oracle.getFieldType( "Address",
                                                    "homeAddress" ) );
+                assertEquals( Integer.class.getName(),
+                              oracle.getFieldClassName( "Address",
+                                                        "number" ) );
+                assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                              oracle.getFieldType( "Address",
+                                                    "number" ) );
             }
         } );
 
@@ -383,6 +395,68 @@ public class AsyncPackageDataModelOracleImplTest {
 
         verify( callback ).callback( any( ModelField[].class ) );
 
+    }
+
+    @Test
+    public void testGetOperatorCompletionsForString() throws Exception {
+        Callback<String[]> callback = spy(new Callback<String[]>() {
+            @Override
+            public void callback(String[] result) {
+                assertArrayEquals( new String[] { "==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null",  "in", "not in" },
+                                   result );
+            }
+        });
+
+        oracle.getFieldCompletions( "Address", mock( Callback.class ) );
+        oracle.getOperatorCompletions( "Address", "street", callback );
+
+        verify( callback ).callback( any( String[].class ) );
+    }
+
+    @Test
+    public void testGetOperatorCompletionsForInteger() throws Exception {
+        Callback<String[]> callback = spy(new Callback<String[]>() {
+            @Override
+            public void callback(String[] result) {
+                assertArrayEquals( new String[] { "==", "!=", "<", ">", "<=", ">=", "== null", "!= null",  "in", "not in" },
+                                   result );
+            }
+        });
+
+        oracle.getFieldCompletions( "Address", mock( Callback.class ) );
+        oracle.getOperatorCompletions( "Address", "number", callback );
+
+        verify( callback ).callback( any( String[].class ) );
+    }
+
+    @Test
+    public void testGetOperatorCompletionsForBoolean() throws Exception {
+        Callback<String[]> callback = spy(new Callback<String[]>() {
+            @Override
+            public void callback(String[] result) {
+                assertArrayEquals( new String[] { "==", "!=", "== null", "!= null" }, result );
+            }
+        });
+
+        oracle.getFieldCompletions( "Address", mock( Callback.class ) );
+        oracle.getOperatorCompletions( "Address", "homeAddress", callback );
+
+        verify( callback ).callback( any( String[].class ) );
+    }
+
+    @Test
+    public void testGetOperatorCompletionsForThis() throws Exception {
+        Callback<String[]> callback = spy(new Callback<String[]>() {
+            @Override
+            public void callback(String[] result) {
+                assertArrayEquals( new String[] { "==", "!=", "== null", "!= null" }, result );
+            }
+        });
+
+        oracle.getFieldCompletions( "Address", mock( Callback.class ) );
+        oracle.getOperatorCompletions( "Address", "this", callback );
+
+        verify( callback ).callback( any( String[].class ) );
     }
 
     @Test
@@ -406,7 +480,7 @@ public class AsyncPackageDataModelOracleImplTest {
         Callback<ModelField[]> callback = spy( new Callback<ModelField[]>() {
             @Override
             public void callback( ModelField[] result ) {
-                assertEquals( 2,
+                assertEquals( 3,
                               result.length );
             }
         } );
