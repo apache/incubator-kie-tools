@@ -85,10 +85,20 @@ public class WiresShape extends WiresContainer
         init();
     }
 
+    public double getX()
+    {
+        return getGroup().getX();
+    }
+
     public WiresShape setX(final double x)
     {
         getGroup().setX(x);
         return this;
+    }
+
+    public double getY()
+    {
+        return getGroup().getY();
     }
 
     public WiresShape setY(final double y)
