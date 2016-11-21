@@ -54,8 +54,6 @@ public class MyPreference implements BasePreference<MyPreference> {
         defaultValue.age = 27;
         defaultValue.password = "password";
         defaultValue.myInnerPreference.text = "text";
-        defaultValue.mySharedPreference.text = "text";
-        defaultValue.mySharedPreference.myInnerPreference2.text = "text";
 
         return defaultValue;
     }

@@ -82,4 +82,10 @@ public interface BasePreferencePortable<T> extends BasePreference<T> {
     default PropertyFormType getPropertyType( String propertyName ) {
         return getPropertiesTypes().get( propertyName );
     }
+
+    /**
+     * A preference is persistable when it has at least one non-shared property.
+     * @return true if it is persistable and false otherwise.
+     */
+    boolean isPersistable();
 }

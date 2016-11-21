@@ -42,10 +42,12 @@ public class AdminPageCategoryPresenter {
         this.adminPageItemPresenterProvider = adminPageItemPresenterProvider;
     }
 
-    public void setup( final List<AdminTool> adminTools ) {
+    public void setup( final List<AdminTool> adminTools,
+                       final String screen,
+                       final String perspectiveIdentifierToGoBackTo ) {
         adminTools.forEach( adminTool -> {
             final AdminPageItemPresenter itemPresenter = adminPageItemPresenterProvider.get();
-            itemPresenter.setup( adminTool );
+            itemPresenter.setup( adminTool, screen, perspectiveIdentifierToGoBackTo );
             view.add( itemPresenter.getView() );
         } );
     }

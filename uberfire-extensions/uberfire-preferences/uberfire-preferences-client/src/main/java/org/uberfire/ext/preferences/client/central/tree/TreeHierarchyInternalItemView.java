@@ -116,8 +116,12 @@ public class TreeHierarchyInternalItemView implements IsElement,
     public void select() {
         if ( !label.hasClassName( "selected" ) ) {
             presenter.select();
-            treeNode.getClassList().add( "selected" );
         }
+    }
+
+    @Override
+    public void selectElement() {
+        treeNode.getClassList().add( "selected" );
     }
 
     private String getPreferenceLabel( String bundleKey ) {

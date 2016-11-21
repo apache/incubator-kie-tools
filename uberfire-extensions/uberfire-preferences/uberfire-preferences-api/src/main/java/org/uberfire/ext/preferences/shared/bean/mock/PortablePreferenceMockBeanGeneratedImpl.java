@@ -16,20 +16,22 @@
 
 package org.uberfire.ext.preferences.shared.bean.mock;
 
+import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.uberfire.ext.preferences.shared.bean.BasePreferenceBean;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanStore;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-/**
- * Created to be used in tests, and to avoid Errai errors due to unimplemented
- * interfaces used in portable classes.
- */
 @Dependent
+@Generated("org.uberfire.ext.preferences.processors.WorkbenchPreferenceProcessor")
+/*
+* WARNING! This class is generated. Do not modify.
+*/
 public class PortablePreferenceMockBeanGeneratedImpl extends PortablePreferenceMock implements BasePreferenceBean<PortablePreferenceMock> {
 
     private PreferenceBeanStore store;
@@ -41,12 +43,12 @@ public class PortablePreferenceMockBeanGeneratedImpl extends PortablePreferenceM
 
     @Override
     public void load() {
-        load( null );
+        load( ( ParameterizedCommand<Throwable> ) null );
     }
 
     @Override
     public void load( final ParameterizedCommand<Throwable> errorCallback ) {
-        load( null, errorCallback );
+        load( ( ParameterizedCommand<PortablePreferenceMock> ) null, errorCallback );
     }
 
     @Override
@@ -54,7 +56,38 @@ public class PortablePreferenceMockBeanGeneratedImpl extends PortablePreferenceM
                       final ParameterizedCommand<Throwable> errorCallback ) {
         final PortablePreferenceMockBeanGeneratedImpl preferenceBean = this;
 
-        store.load( new PortablePreferenceMockPortableGeneratedImpl(), new ParameterizedCommand<BasePreferencePortable<PortablePreferenceMock>>() {
+        store.load( new PortablePreferenceMockPortableGeneratedImpl(), 
+                    getLoadSuccessCallback( successCallback ), 
+                    errorCallback );
+    }
+
+    @Override
+    public void load( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy ) {
+        load( customScopeResolutionStrategy, null );
+    }
+
+    @Override
+    public void load( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        load( customScopeResolutionStrategy, null, errorCallback );
+    }
+
+    @Override
+    public void load( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                      final ParameterizedCommand<PortablePreferenceMock> successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        final PortablePreferenceMockBeanGeneratedImpl preferenceBean = this;
+
+        store.load( new PortablePreferenceMockPortableGeneratedImpl(),
+                    customScopeResolutionStrategy,
+                    getLoadSuccessCallback( successCallback ), 
+                    errorCallback );
+    }
+
+    private ParameterizedCommand<BasePreferencePortable<PortablePreferenceMock>> getLoadSuccessCallback( final ParameterizedCommand<PortablePreferenceMock> successCallback ) {
+        final PortablePreferenceMockBeanGeneratedImpl preferenceBean = this;
+
+        return new ParameterizedCommand<BasePreferencePortable<PortablePreferenceMock>>() {
             @Override
             public void execute( final BasePreferencePortable<PortablePreferenceMock> portablePreference ) {
                 copy( (PortablePreferenceMockPortableGeneratedImpl) portablePreference, preferenceBean );
@@ -62,7 +95,7 @@ public class PortablePreferenceMockBeanGeneratedImpl extends PortablePreferenceM
                     successCallback.execute( preferenceBean );
                 }
             }
-        }, errorCallback );
+        };
     }
 
     private void copy( final PortablePreferenceMock from,
@@ -72,18 +105,41 @@ public class PortablePreferenceMockBeanGeneratedImpl extends PortablePreferenceM
 
     @Override
     public void save() {
-        save( null );
+        save( ( ParameterizedCommand<Throwable> ) null );
     }
 
     @Override
     public void save( final ParameterizedCommand<Throwable> errorCallback ) {
-        save( null, errorCallback );
+        save( ( Command ) null, errorCallback );
     }
 
     @Override
     public void save( final Command successCallback,
                       final ParameterizedCommand<Throwable> errorCallback ) {
-        store.save( createPortableCopy(), successCallback, errorCallback );
+        store.save( createPortableCopy(), 
+                    successCallback, 
+                    errorCallback );
+    }
+
+    @Override
+    public void save( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy ) {
+        save( customScopeResolutionStrategy, null );
+    }
+
+    @Override
+    public void save( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        save( customScopeResolutionStrategy, null, errorCallback );
+    }
+
+    @Override
+    public void save( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                      final Command successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        store.save( createPortableCopy(),
+                    customScopeResolutionStrategy,
+                    successCallback, 
+                    errorCallback );
     }
 
     @Override
@@ -93,7 +149,7 @@ public class PortablePreferenceMockBeanGeneratedImpl extends PortablePreferenceM
 
     @Override
     public void saveDefaultValue( final ParameterizedCommand<Throwable> errorCallback ) {
-        saveDefaultValue( null, errorCallback );
+        saveDefaultValue( null, errorCallback);
     }
 
     @Override

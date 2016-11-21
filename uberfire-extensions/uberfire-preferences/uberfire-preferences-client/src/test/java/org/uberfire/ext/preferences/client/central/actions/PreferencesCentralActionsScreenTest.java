@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralActionsConfigurationEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralPreSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
@@ -71,11 +72,11 @@ public class PreferencesCentralActionsScreenTest {
 
         params = new HashMap<>();
         params.put( "screen", "screen" );
-        actionsScreen.onStartup( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
+        actionsScreen.initEvent( new PreferencesCentralActionsConfigurationEvent( "screen", null ) );
     }
 
     @Test
-    public void fireSaveEvent() {
+    public void fireSaveEventTest() {
         actionsScreen.fireSaveEvent();
 
         verify( preSaveEvent ).fire( any( PreferencesCentralPreSaveEvent.class ) );
@@ -90,5 +91,26 @@ public class PreferencesCentralActionsScreenTest {
         verify( undoChangesEvent ).fire( any( PreferencesCentralUndoChangesEvent.class ) );
         verify( notification ).fire( any( NotificationEvent.class ) );
         verify( placeManager ).goTo( eq( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) ) );
+    }
+
+    @Test
+    public void goBackToAdminPageWithPerspectiveIdentifierToGoBackToTest() {
+        actionsScreen.initEvent( new PreferencesCentralActionsConfigurationEvent( "adminPage", "perspective" ) );
+        actionsScreen.goBackToAdminPage();
+
+        Map<String, String> params = new HashMap<>();
+        params.put( "screen", "adminPage" );
+        params.put( "perspectiveIdentifierToGoBackTo", "perspective" );
+        verify( placeManager ).goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
+    }
+
+    @Test
+    public void goBackToAdminPageWithoutPerspectiveIdentifierToGoBackToTest() {
+        actionsScreen.initEvent( new PreferencesCentralActionsConfigurationEvent( "adminPage", null ) );
+        actionsScreen.goBackToAdminPage();
+
+        Map<String, String> params = new HashMap<>();
+        params.put( "screen", "adminPage" );
+        verify( placeManager ).goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
     }
 }

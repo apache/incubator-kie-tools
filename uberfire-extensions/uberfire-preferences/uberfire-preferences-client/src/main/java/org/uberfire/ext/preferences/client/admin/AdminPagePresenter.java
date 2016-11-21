@@ -59,6 +59,8 @@ public class AdminPagePresenter {
 
     private String screen;
 
+    private String perspectiveIdentifierToGoBackTo;
+
     @Inject
     public AdminPagePresenter( final View view,
                                final AdminPage adminPage,
@@ -72,7 +74,9 @@ public class AdminPagePresenter {
 
     @OnStartup
     public void onStartup( final PlaceRequest placeRequest ) {
-        final String screen = placeRequest.getParameter( "screen", null );
+        screen = placeRequest.getParameter( "screen", adminPage.getDefaultScreen() );
+        perspectiveIdentifierToGoBackTo = placeRequest.getParameter( "perspectiveIdentifierToGoBackTo", null );
+
         view.init( this );
 
         if ( screen == null ) {
@@ -90,7 +94,7 @@ public class AdminPagePresenter {
         if ( toolsByCategory != null ) {
             toolsByCategory.forEach( ( category, adminTools ) -> {
                 AdminPageCategoryPresenter categoryPresenter = categoryPresenterProvider.get();
-                categoryPresenter.setup( adminTools );
+                categoryPresenter.setup( adminTools, screen, perspectiveIdentifierToGoBackTo );
                 view.add( categoryPresenter.getView() );
             } );
         } else {

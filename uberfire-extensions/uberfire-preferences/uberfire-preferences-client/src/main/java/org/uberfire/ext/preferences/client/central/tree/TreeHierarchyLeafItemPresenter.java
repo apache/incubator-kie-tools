@@ -32,6 +32,8 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
                                   UberElement<TreeHierarchyLeafItemPresenter> {
 
         void select();
+
+        void selectElement();
     }
 
     private final View view;
@@ -51,7 +53,8 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
 
     @Override
     public <T> void init( final PreferenceHierarchyElement<T> preference,
-                          final int level ) {
+                          final int level,
+                          final boolean tryToSelectChild ) {
         hierarchyElement = preference;
         this.level = level;
         view.init( this );
@@ -63,8 +66,11 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
     }
 
     public void select() {
-        final HierarchyItemSelectedEvent event = new HierarchyItemSelectedEvent( hierarchyElement );
-        hierarchyItemSelectedEvent.fire( event );
+        if ( hierarchyElement.isSelectable() ) {
+            final HierarchyItemSelectedEvent event = new HierarchyItemSelectedEvent( hierarchyElement );
+            hierarchyItemSelectedEvent.fire( event );
+            view.selectElement();
+        }
     }
 
     public void itemSelectedEvent( @Observes HierarchyItemSelectedEvent event ) {

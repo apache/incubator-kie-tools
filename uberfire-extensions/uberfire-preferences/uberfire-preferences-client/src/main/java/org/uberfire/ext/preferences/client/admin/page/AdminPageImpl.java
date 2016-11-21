@@ -21,11 +21,15 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -35,17 +39,23 @@ public class AdminPageImpl implements AdminPage {
 
     private PlaceManager placeManager;
 
+    private Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent;
+
     private Map<String, String> screenTitleByIdentifier;
 
     private Map<String, Map<String, List<AdminTool>>> toolsByCategoryByScreen;
 
+    private String defaultScreen;
+
     public AdminPageImpl() {
-        this( null );
+        this( null, null );
     }
 
     @Inject
-    public AdminPageImpl( final PlaceManager placeManager ) {
+    public AdminPageImpl( final PlaceManager placeManager,
+                          final Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent ) {
         this.placeManager = placeManager;
+        this.preferencesCentralInitializationEvent = preferencesCentralInitializationEvent;
         this.toolsByCategoryByScreen = new HashMap<>();
         this.screenTitleByIdentifier = new HashMap<>();
     }
@@ -116,23 +126,19 @@ public class AdminPageImpl implements AdminPage {
                                final String title,
                                final String iconCss,
                                final String category,
-                               final Map<String, String> customScopeResolutionStrategyParams ) {
-        Map<String, String> parameters = new HashMap<>();
-
-        if ( customScopeResolutionStrategyParams != null && !customScopeResolutionStrategyParams.isEmpty() ) {
-            parameters.putAll( customScopeResolutionStrategyParams );
-            parameters.put( "customScopeResolutionStrategy", "true" );
-        }
-
-        parameters.put( "identifier", identifier );
-        parameters.put( "title", title );
-        parameters.put( "screen", screen );
+                               final Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier ) {
 
         addTool( screen,
                  title,
                  iconCss,
                  category,
-                 () -> placeManager.goTo( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER, parameters ) ) );
+                 () -> {
+                     final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy = customScopeResolutionStrategySupplier != null ? customScopeResolutionStrategySupplier.get() : null;
+                     final PreferencesCentralInitializationEvent initEvent = new PreferencesCentralInitializationEvent( identifier,
+                                                                                                                        customScopeResolutionStrategy );
+                     placeManager.goTo( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER ) );
+                     preferencesCentralInitializationEvent.fire( initEvent );
+                 } );
     }
 
     @Override
@@ -143,5 +149,15 @@ public class AdminPageImpl implements AdminPage {
     @Override
     public String getScreenTitle( final String screen ) {
         return screenTitleByIdentifier.get( screen );
+    }
+
+    @Override
+    public void setDefaultScreen( final String defaultScreen ) {
+        this.defaultScreen = defaultScreen;
+    }
+
+    @Override
+    public String getDefaultScreen() {
+        return defaultScreen;
     }
 }

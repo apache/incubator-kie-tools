@@ -36,6 +36,10 @@ public final class URIUtil {
         return null;
     }
 
+    public static String encodeQueryString( final String content ) {
+        return encode( content );
+    }
+
     public static boolean isValid( final String uri ) {
         try {
             URI.create( uri );

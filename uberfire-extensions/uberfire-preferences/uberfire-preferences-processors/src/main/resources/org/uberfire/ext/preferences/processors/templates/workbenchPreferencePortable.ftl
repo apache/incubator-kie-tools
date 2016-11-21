@@ -37,6 +37,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 */
 public class ${targetClassName} extends ${sourceClassName} implements BasePreferencePortable<${sourceClassName}> {
 
+<#if constructorParamsText != "">
     public ${targetClassName}() {
     <#list subPreferences as subPreference>
         <#if subPreference.isPrivateAccess()>
@@ -46,6 +47,7 @@ public class ${targetClassName} extends ${sourceClassName} implements BasePrefer
         </#if>
     </#list>
     }
+</#if>
 
     public ${targetClassName}( ${constructorParamsText} ) {
     <#list properties as property>
@@ -156,5 +158,10 @@ public class ${targetClassName} extends ${sourceClassName} implements BasePrefer
     </#list>
 
         return result;
+    }
+
+    @Override
+    public boolean isPersistable() {
+        return ${isPersistable};
     }
 }

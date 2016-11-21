@@ -164,5 +164,10 @@ public class PreferenceBeanStoreImplTest {
         public Map<String, PropertyFormType> getPropertiesTypes() {
             return null;
         }
+
+        @Override
+        public boolean isPersistable() {
+            return false;
+        }
     }
 }

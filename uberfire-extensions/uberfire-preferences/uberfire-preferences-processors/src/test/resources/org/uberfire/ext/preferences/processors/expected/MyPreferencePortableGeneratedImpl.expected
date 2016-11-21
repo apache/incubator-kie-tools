@@ -186,4 +186,9 @@ public class MyPreferencePortableGeneratedImpl extends MyPreference implements B
 
         return result;
     }
+
+    @Override
+    public boolean isPersistable() {
+        return true;
+    }
 }

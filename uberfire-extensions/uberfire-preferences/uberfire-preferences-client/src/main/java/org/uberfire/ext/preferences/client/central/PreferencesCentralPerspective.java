@@ -16,10 +16,12 @@
 
 package org.uberfire.ext.preferences.client.central;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -29,6 +31,7 @@ import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.ext.preferences.client.central.actions.PreferencesCentralActionsScreen;
+import org.uberfire.ext.preferences.client.resources.i18n.Constants;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -46,6 +49,9 @@ public class PreferencesCentralPerspective {
     public static final String IDENTIFIER = "PreferencesCentralPerspective";
 
     @Inject
+    private TranslationService translationService;
+
+    @Inject
     private UberfireDocks uberfireDocks;
 
     private UberfireDock dock;
@@ -60,50 +66,31 @@ public class PreferencesCentralPerspective {
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        if ( perspective == null ) {
-            return createPerspectiveDefinition();
-        }
-
-        return perspective;
+        return buildPerspective();
     }
 
-    @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        perspective = createPerspectiveDefinition();
-        configurePerspective( placeRequest );
-    }
-
-    PerspectiveDefinition createPerspectiveDefinition() {
+    PerspectiveDefinition buildPerspective() {
         PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         perspective.setName( "Preferences" );
 
-        return perspective;
-    }
-
-    void configurePerspective( final PlaceRequest placeRequest ) {
         final PanelDefinition actionsBar = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
         actionsBar.setHeight( 80 );
-        actionsBar.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( PreferencesCentralActionsScreen.IDENTIFIER, placeRequest.getParameters() ) ) );
+        actionsBar.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( PreferencesCentralActionsScreen.IDENTIFIER ) ) );
 
         perspective.getRoot().insertChild( CompassPosition.SOUTH,
                                            actionsBar );
 
-        setupNavBarDock( new DefaultPlaceRequest( PreferencesCentralNavBarScreen.IDENTIFIER, placeRequest.getParameters() ) );
+        return perspective;
     }
 
-    private void setupNavBarDock( final PlaceRequest placeRequest ) {
-        final String title = placeRequest.getParameter( "title", null );
-
-        if ( dock != null ) {
-            uberfireDocks.remove( dock );
-        }
-
+    @PostConstruct
+    public void setupNavBarDock() {
         dock = new UberfireDock( UberfireDockPosition.WEST,
                                  "ADJUST",
-                                 placeRequest,
+                                 new DefaultPlaceRequest( PreferencesCentralNavBarScreen.IDENTIFIER ),
                                  IDENTIFIER )
-                .withSize( 420 )
-                .withLabel( title );
+                .withLabel( translationService.format( Constants.PreferencesCentralPerspective_Preferences ) )
+                .withSize( 420 );
 
         uberfireDocks.add( dock );
     }

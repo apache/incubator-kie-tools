@@ -26,11 +26,11 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.central.form.DefaultPreferenceForm;
 import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyItemPresenter;
 import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyStructurePresenter;
@@ -41,7 +41,6 @@ import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.utils.PreferenceFormBeansInfo;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
-import org.uberfire.ext.preferences.shared.CustomPreferenceScopeResolutionStrategyInfoFactory;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanServerStore;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanStore;
 import org.uberfire.ext.preferences.shared.bean.PreferenceHierarchyElement;
@@ -118,7 +117,7 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
 
         this.customScopeResolutionStrategyInfo = customScopeResolutionStrategyInfo;
 
-        preferenceBeanServerStoreCaller.call( new RemoteCallback<PreferenceHierarchyElement<?>>() {
+        final RemoteCallback<PreferenceHierarchyElement<?>> successCallback = new RemoteCallback<PreferenceHierarchyElement<?>>() {
             @Override
             public void callback( final PreferenceHierarchyElement<?> rootPreference ) {
                 preferenceElement = rootPreference;
@@ -129,14 +128,27 @@ public class TreeHierarchyStructurePresenter implements HierarchyStructurePresen
                     hierarchyItem = treeHierarchyLeafItemPresenterProvider.get();
                 }
 
-                hierarchyItem.init( rootPreference, 0 );
-                hierarchyItem.fireSelect();
+                hierarchyItem.init( rootPreference, 0, !rootPreference.isSelectable() );
+                if ( rootPreference.isSelectable() ) {
+                    hierarchyItem.fireSelect();
+                }
 
                 view.init( presenter );
             }
-        }, ( message, throwable ) -> {
+        };
+
+        final ErrorCallback<Object> errorCallback = ( message, throwable ) -> {
             throw new RuntimeException( throwable );
-        } ).buildHierarchyStructureForPreference( rootIdentifier );
+        };
+
+        if ( customScopeResolutionStrategyInfo != null ) {
+            preferenceBeanServerStoreCaller.call( successCallback,
+                                                  errorCallback ).buildHierarchyStructureForPreference( rootIdentifier,
+                                                                                                        customScopeResolutionStrategyInfo );
+        } else {
+            preferenceBeanServerStoreCaller.call( successCallback,
+                                                  errorCallback ).buildHierarchyStructureForPreference( rootIdentifier );
+        }
     }
 
     public void hierarchyItemSelectedEvent( @Observes HierarchyItemSelectedEvent hierarchyItemSelectedEvent ) {

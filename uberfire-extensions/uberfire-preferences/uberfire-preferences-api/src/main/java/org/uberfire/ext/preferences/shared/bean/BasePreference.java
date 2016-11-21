@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.preferences.shared.bean;
 
+import java.util.Map;
+
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -53,6 +56,36 @@ public interface BasePreference<T> extends Preference {
     }
 
     /**
+     * Loads the preference content recursively through its properties.
+     * @param customScopeResolutionStrategy Custom preference scope resolution strategy to be used.
+     */
+    default void load( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy ) {
+        throw new UnsupportedOperationException( "You should call this method only for default qualified injected instances." );
+    }
+
+    /**
+     * Loads the preference content recursively through its properties.
+     * @param customScopeResolutionStrategy Custom preference scope resolution strategy to be used.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     */
+    default void load( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                       final ParameterizedCommand<Throwable> errorCallback ) {
+        throw new UnsupportedOperationException( "You should call this method only for default qualified injected instances." );
+    }
+
+    /**
+     * Loads the preference content recursively through its properties.
+     * @param customScopeResolutionStrategy Custom preference scope resolution strategy to be used.
+     * @param successCallback Success callback that returns the loaded preference.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     */
+    default void load( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                       final ParameterizedCommand<T> successCallback,
+                       final ParameterizedCommand<Throwable> errorCallback ) {
+        throw new UnsupportedOperationException( "You should call this method only for default qualified injected instances." );
+    }
+
+    /**
      * Saves the preference content recursively through its properties.
      */
     default void save() {
@@ -73,6 +106,36 @@ public interface BasePreference<T> extends Preference {
      * @param errorCallback Error callback that returns the exception that occurred (if any).
      */
     default void save( final Command successCallback,
+                       final ParameterizedCommand<Throwable> errorCallback ) {
+        throw new UnsupportedOperationException( "You should call this method only for default qualified injected instances." );
+    }
+
+    /**
+     * Saves the preference content recursively through its properties.
+     * @param customScopeResolutionStrategy Custom preference scope resolution strategy to be used.
+     */
+    default void save( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy ) {
+        throw new UnsupportedOperationException( "You should call this method only for default qualified injected instances." );
+    }
+
+    /**
+     * Saves the preference content recursively through its properties.
+     * @param customScopeResolutionStrategy Custom preference scope resolution strategy to be used.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     */
+    default void save( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                       final ParameterizedCommand<Throwable> errorCallback ) {
+        throw new UnsupportedOperationException( "You should call this method only for default qualified injected instances." );
+    }
+
+    /**
+     * Saves the preference content recursively through its properties.
+     * @param customScopeResolutionStrategy Custom preference scope resolution strategy to be used.
+     * @param successCallback Success callback that indicates that the preference was saved.
+     * @param errorCallback Error callback that returns the exception that occurred (if any).
+     */
+    default void save( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                       final Command successCallback,
                        final ParameterizedCommand<Throwable> errorCallback ) {
         throw new UnsupportedOperationException( "You should call this method only for default qualified injected instances." );
     }

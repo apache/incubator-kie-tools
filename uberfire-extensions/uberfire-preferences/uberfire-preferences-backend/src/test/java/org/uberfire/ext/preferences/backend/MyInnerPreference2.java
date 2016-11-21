@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.preferences.backend;
 
-import org.uberfire.ext.preferences.shared.annotations.Property;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
@@ -24,6 +23,4 @@ import org.uberfire.ext.preferences.shared.bean.BasePreference;
         bundleKey = "MyInnerPreference2.Label")
 public class MyInnerPreference2 implements BasePreference<MyInnerPreference2> {
 
-    @Property(bundleKey = "MyInnerPreference2.Text")
-    String text;
 }

@@ -36,6 +36,8 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
                                   UberElement<TreeHierarchyInternalItemPresenter> {
 
         void select();
+
+        void selectElement();
     }
 
     private final View view;
@@ -65,13 +67,14 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
 
     @Override
     public <T> void init( final PreferenceHierarchyElement<T> preference,
-                          final int level ) {
+                          final int level,
+                          boolean tryToSelectChild ) {
         hierarchyElement = preference;
         this.level = level;
 
         hierarchyItems = new ArrayList<>();
 
-        preference.getChildren().forEach( child -> {
+        for ( PreferenceHierarchyElement<?> child : preference.getChildren() ) {
             HierarchyItemPresenter hierarchyItem;
 
             if ( child.hasChildren() ) {
@@ -80,9 +83,14 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
                 hierarchyItem = treeHierarchyLeafItemPresenterProvider.get();
             }
 
-            hierarchyItem.init( child, level + 1 );
+            hierarchyItem.init( child, level + 1, tryToSelectChild && !child.isSelectable() );
+            if ( child.isSelectable() ) {
+                hierarchyItem.fireSelect();
+                tryToSelectChild = false;
+            }
+
             hierarchyItems.add( hierarchyItem );
-        } );
+        }
 
         view.init( this );
     }
@@ -93,8 +101,11 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
     }
 
     public void select() {
-        final HierarchyItemSelectedEvent event = new HierarchyItemSelectedEvent( hierarchyElement );
-        hierarchyItemSelectedEvent.fire( event );
+        if ( hierarchyElement.isSelectable() ) {
+            final HierarchyItemSelectedEvent event = new HierarchyItemSelectedEvent( hierarchyElement );
+            hierarchyItemSelectedEvent.fire( event );
+            view.selectElement();
+        }
     }
 
     public void hierarchyItemSelectedEvent( @Observes HierarchyItemSelectedEvent hierarchyItemSelectedEvent ) {

@@ -16,11 +16,13 @@
 
 package org.uberfire.ext.preferences.client.admin.item;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.preferences.client.admin.page.AdminTool;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralActionsConfigurationEvent;
 
 public class AdminPageItemPresenter {
 
@@ -32,22 +34,33 @@ public class AdminPageItemPresenter {
 
     private final PlaceManager placeManager;
 
+    private final Event<PreferencesCentralActionsConfigurationEvent> adminPageConfigurationEvent;
+
     private AdminTool adminTool;
+
+    private PreferencesCentralActionsConfigurationEvent preferencesCentralActionsConfigurationEventToFire;
 
     @Inject
     public AdminPageItemPresenter( final View view,
-                                   final PlaceManager placeManager ) {
+                                   final PlaceManager placeManager,
+                                   final Event<PreferencesCentralActionsConfigurationEvent> adminPageConfigurationEvent ) {
         this.view = view;
         this.placeManager = placeManager;
+        this.adminPageConfigurationEvent = adminPageConfigurationEvent;
     }
 
-    public void setup( final AdminTool adminTool ) {
+    public void setup( final AdminTool adminTool,
+                       final String screen,
+                       final String perspectiveIdentifierToGoBackTo ) {
         this.adminTool = adminTool;
+        this.preferencesCentralActionsConfigurationEventToFire = new PreferencesCentralActionsConfigurationEvent( screen, perspectiveIdentifierToGoBackTo );
+
         view.init( this );
     }
 
     public void enter() {
         adminTool.getOnClickCommand().execute();
+        adminPageConfigurationEvent.fire( preferencesCentralActionsConfigurationEventToFire );
     }
 
     public AdminTool getAdminTool() {

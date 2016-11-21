@@ -66,6 +66,7 @@ public class ShowcaseEntryPoint {
 
     private void setupSettings() {
         adminPage.addScreen( "root", "Wires Admin Tools" );
+        adminPage.setDefaultScreen( "root" );
 
         adminPage.addTool( "root",
                            "Apps",

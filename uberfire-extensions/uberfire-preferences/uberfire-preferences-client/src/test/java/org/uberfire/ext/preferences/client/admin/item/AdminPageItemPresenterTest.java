@@ -18,25 +18,34 @@ package org.uberfire.ext.preferences.client.admin.item;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.admin.page.AdminTool;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralActionsConfigurationEvent;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AdminPageItemPresenterTest {
 
+    @Mock
     private PlaceManager placeManager;
 
+    @Mock
+    private EventSourceMock<PreferencesCentralActionsConfigurationEvent> adminPageConfigurationEvent;
+
+    @Mock
     private AdminPageItemPresenter.View view;
 
     private AdminPageItemPresenter presenter;
 
     @Before
     public void setup() {
-        view = mock( AdminPageItemPresenter.View.class );
-        placeManager = mock( PlaceManager.class );
-        presenter = new AdminPageItemPresenter( view, placeManager );
+        presenter = new AdminPageItemPresenter( view, placeManager, adminPageConfigurationEvent );
     }
 
     @Test
@@ -49,10 +58,11 @@ public class AdminPageItemPresenterTest {
 
         AdminTool adminTool = new AdminTool( "title1", "iconCss1", "category1", command );
 
-        presenter.setup( adminTool );
+        presenter.setup( adminTool, "screen", null );
         presenter.enter();
 
         verify( view ).init( presenter );
         verify( command ).execute();
+        verify( adminPageConfigurationEvent ).fire( any( PreferencesCentralActionsConfigurationEvent.class ) );
     }
 }

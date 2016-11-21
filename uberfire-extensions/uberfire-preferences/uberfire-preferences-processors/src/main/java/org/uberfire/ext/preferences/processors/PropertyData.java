@@ -131,6 +131,8 @@ public class PropertyData {
     public String getFieldAccessorCommand() {
         if ( !isPrivateAccess() ) {
             return fieldName;
+        } else if ( isPrimitive() && TypeKind.BOOLEAN.equals( typeKind ) ) {
+            return "is" + capitalizedFieldName + "()";
         } else {
             return "get" + capitalizedFieldName + "()";
         }

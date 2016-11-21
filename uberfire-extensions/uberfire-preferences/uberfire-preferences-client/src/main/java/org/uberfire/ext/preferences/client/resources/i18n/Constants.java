@@ -31,4 +31,10 @@ public class Constants {
 
     @TranslationKey(defaultValue = "")
     public static final String AdminPagePresenter_NoScreenFoundError = "AdminPagePresenter.NoScreenFoundError";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AdminPagePerspective_GoBackToThePreviousPage = "AdminPagePerspective.GoBackToThePreviousPage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String PreferencesCentralPerspective_Preferences = "PreferencesCentralPerspective.Preferences";
 }

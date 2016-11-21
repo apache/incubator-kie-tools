@@ -83,7 +83,7 @@ public class PreferenceStorageImpl implements PreferenceStorage {
 
     @PostConstruct
     public void init() {
-        final String rootPath = "default://preferences";
+        final String rootPath = "git://preferences";
         objectStorage.init( rootPath );
     }
 

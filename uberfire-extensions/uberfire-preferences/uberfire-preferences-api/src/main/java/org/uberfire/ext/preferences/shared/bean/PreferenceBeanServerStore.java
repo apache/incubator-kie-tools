@@ -96,4 +96,14 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      * @return A tree hierarchy between all preference beans.
      */
     PreferenceHierarchyElement<?> buildHierarchyStructureForPreference( String identifier );
+
+    /**
+     * Builds a tree hierarchy that begins with the root preference bean which identifier was passed and
+     * grows based on their sub-preferences.
+     * @param identifier Root preference identifier. Must not be null.
+     * @param scopeResolutionStrategyInfo Custom scope resolution strategy to follow.
+     * @return A tree hierarchy between all preference beans.
+     */
+    PreferenceHierarchyElement<?> buildHierarchyStructureForPreference( String identifier,
+                                                                        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
 }

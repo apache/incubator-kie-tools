@@ -18,7 +18,9 @@ package org.uberfire.ext.preferences.client.admin.page;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -27,11 +29,17 @@ import org.uberfire.mvp.ParameterizedCommand;
  */
 public interface AdminPage {
 
+    /**
+     * Adds a new admin screen context to be configured and opened.
+     * @param identifier Admin screen identifier.
+     * @param title Admin screen title.
+     */
     void addScreen( String identifier,
                     String title );
 
     /**
      * Adds a new admin tool to the admin page (with a counter).
+     * @param screen Identifier for the admin screen where the tool will be inserted.
      * @param title Title that will be displayed on the tool accessor.
      * @param iconCss CSS class(es) responsible to stylize the icon.
      * @param category Defines the group inside which the shortcut will be.
@@ -48,6 +56,7 @@ public interface AdminPage {
 
     /**
      * Adds a new admin tool to the admin page.
+     * @param screen Identifier for the admin screen where the tool will be inserted.
      * @param title Title that will be displayed on the tool accessor.
      * @param iconCss CSS class(es) responsible to stylize the icon.
      * @param category Defines the group inside which the shortcut will be.
@@ -61,6 +70,8 @@ public interface AdminPage {
 
     /**
      * Adds a new admin tool that links to a preference to the admin page.
+     * @param screen Identifier for the admin screen where the preference will be inserted.
+     * @param identifier Preference identifier.
      * @param title Preference title that will be displayed on the tool accessor.
      * @param iconCss CSS class related to the shortcut icon.
      * @param category Defines the group inside which the shortcut will be.
@@ -71,18 +82,46 @@ public interface AdminPage {
                         String iconCss,
                         String category );
 
+    /**
+     * Adds a new admin tool that links to a preference to the admin page.
+     * @param screen Identifier for the admin screen where the preference will be inserted.
+     * @param identifier Preference identifier.
+     * @param title Preference title that will be displayed on the tool accessor.
+     * @param iconCss CSS class related to the shortcut icon.
+     * @param category Defines the group inside which the shortcut will be.
+     * @param customScopeResolutionStrategySupplier Supplier for a custom preference scope resolution strategy.
+     * It will be used when the tool is selected.
+     */
     void addPreference( String screen,
                         String identifier,
                         String title,
                         String iconCss,
                         String category,
-                        Map<String, String> customScopeResolutionStrategyParams );
+                        Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier );
 
     /**
      * Returns all added admin tools, grouped by their category.
-     * @return A map containing a list of admin tools by each category.
+     * @param screen Identifier for the admin screen from where the tools will be returned.
+     * @return A map containing a list of admin tools by each category of that screen.
      */
     Map<String, List<AdminTool>> getToolsByCategory( String screen );
 
+    /**
+     * Returns the screen title to be exhibit in the admin page.
+     * @param screen Screen identifier.
+     * @return Screen title, as passed when the screen was added.
+     */
     String getScreenTitle( String screen );
+
+    /**
+     * Defines the default screen to be opened when navigating to the Admin Page perspective.
+     * @param defaultScreen Default screen identifier. Must not be null or empty.
+     */
+    void setDefaultScreen( String defaultScreen );
+
+    /**
+     * Returns the default screen to be opened when navigating to the Admin Page perspective.
+     * @return Default screen identifier.
+     */
+    String getDefaultScreen();
 }

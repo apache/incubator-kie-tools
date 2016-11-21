@@ -22,9 +22,13 @@ public final class URIUtil {
     static {
         ScriptInjector.fromString( RESOURCES.uriDotJs().getText() ).inject();
     }
-    
+
     public static String encode( String content ) {
         return URL.encode( content );
+    }
+
+    public static String encodeQueryString( String content ) {
+        return URL.encodeQueryString( content );
     }
 
     public native static boolean isValid( final String uri ) /*-{

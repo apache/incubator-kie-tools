@@ -23,6 +23,7 @@ import javax.annotation.Generated;
 import org.uberfire.ext.preferences.shared.bean.BasePreferenceBean;
 import org.uberfire.ext.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.ext.preferences.shared.bean.PreferenceBeanStore;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -42,12 +43,12 @@ public class MyPreferenceBeanGeneratedImpl extends MyPreference implements BaseP
 
     @Override
     public void load() {
-        load( null );
+        load( ( ParameterizedCommand<Throwable> ) null );
     }
 
     @Override
     public void load( final ParameterizedCommand<Throwable> errorCallback ) {
-        load( null, errorCallback );
+        load( ( ParameterizedCommand<MyPreference> ) null, errorCallback );
     }
 
     @Override
@@ -55,7 +56,38 @@ public class MyPreferenceBeanGeneratedImpl extends MyPreference implements BaseP
                       final ParameterizedCommand<Throwable> errorCallback ) {
         final MyPreferenceBeanGeneratedImpl preferenceBean = this;
 
-        store.load( new MyPreferencePortableGeneratedImpl(), new ParameterizedCommand<BasePreferencePortable<MyPreference>>() {
+        store.load( new MyPreferencePortableGeneratedImpl(),
+                    getLoadSuccessCallback( successCallback ),
+                    errorCallback );
+    }
+
+    @Override
+    public void load( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy ) {
+        load( customScopeResolutionStrategy, null );
+    }
+
+    @Override
+    public void load( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        load( customScopeResolutionStrategy, null, errorCallback );
+    }
+
+    @Override
+    public void load( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                      final ParameterizedCommand<MyPreference> successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        final MyPreferenceBeanGeneratedImpl preferenceBean = this;
+
+        store.load( new MyPreferencePortableGeneratedImpl(),
+                    customScopeResolutionStrategy,
+                    getLoadSuccessCallback( successCallback ),
+                    errorCallback );
+    }
+
+    private ParameterizedCommand<BasePreferencePortable<MyPreference>> getLoadSuccessCallback( final ParameterizedCommand<MyPreference> successCallback ) {
+        final MyPreferenceBeanGeneratedImpl preferenceBean = this;
+
+        return new ParameterizedCommand<BasePreferencePortable<MyPreference>>() {
             @Override
             public void execute( final BasePreferencePortable<MyPreference> portablePreference ) {
                 copy( (MyPreferencePortableGeneratedImpl) portablePreference, preferenceBean );
@@ -63,7 +95,7 @@ public class MyPreferenceBeanGeneratedImpl extends MyPreference implements BaseP
                     successCallback.execute( preferenceBean );
                 }
             }
-        }, errorCallback );
+        };
     }
 
     private void copy( final MyPreference from,
@@ -79,18 +111,41 @@ public class MyPreferenceBeanGeneratedImpl extends MyPreference implements BaseP
 
     @Override
     public void save() {
-        save( null );
+        save( ( ParameterizedCommand<Throwable> ) null );
     }
 
     @Override
     public void save( final ParameterizedCommand<Throwable> errorCallback ) {
-        save( null, errorCallback );
+        save( ( Command ) null, errorCallback );
     }
 
     @Override
     public void save( final Command successCallback,
                       final ParameterizedCommand<Throwable> errorCallback ) {
-        store.save( createPortableCopy(), successCallback, errorCallback );
+        store.save( createPortableCopy(),
+                    successCallback,
+                    errorCallback );
+    }
+
+    @Override
+    public void save( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy ) {
+        save( customScopeResolutionStrategy, null );
+    }
+
+    @Override
+    public void save( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        save( customScopeResolutionStrategy, null, errorCallback );
+    }
+
+    @Override
+    public void save( final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy,
+                      final Command successCallback,
+                      final ParameterizedCommand<Throwable> errorCallback ) {
+        store.save( createPortableCopy(),
+                    customScopeResolutionStrategy,
+                    successCallback,
+                    errorCallback );
     }
 
     @Override

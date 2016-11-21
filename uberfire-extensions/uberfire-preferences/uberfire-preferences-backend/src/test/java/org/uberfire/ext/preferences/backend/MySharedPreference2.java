@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.preferences.backend;
 
-import org.uberfire.ext.preferences.shared.annotations.Property;
 import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.ext.preferences.shared.bean.BasePreference;
 
@@ -25,13 +24,4 @@ import org.uberfire.ext.preferences.shared.bean.BasePreference;
         bundleKey = "MySharedPreference2.Label")
 public class MySharedPreference2 implements BasePreference<MySharedPreference2> {
 
-    @Property(bundleKey = "MySharedPreference2.Text")
-    String text;
-
-    @Override
-    public MySharedPreference2 defaultValue( final MySharedPreference2 defaultValue ) {
-        defaultValue.text = "text";
-
-        return defaultValue;
-    }
 }

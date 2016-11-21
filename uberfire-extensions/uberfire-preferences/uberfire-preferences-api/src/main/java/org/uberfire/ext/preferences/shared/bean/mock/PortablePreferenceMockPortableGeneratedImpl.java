@@ -115,4 +115,9 @@ public class PortablePreferenceMockPortableGeneratedImpl extends PortablePrefere
 
         return result;
     }
+
+    @Override
+    public boolean isPersistable() {
+        return true;
+    }
 }

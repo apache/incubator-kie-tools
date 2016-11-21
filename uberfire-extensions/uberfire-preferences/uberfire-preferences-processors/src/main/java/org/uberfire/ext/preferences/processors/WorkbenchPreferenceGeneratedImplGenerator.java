@@ -119,6 +119,8 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
 
         final String parentsIdentifiers = String.join( ", ", parents );
 
+        final String isPersistable = Boolean.toString( !simpleProperties.isEmpty() || !nonSharedSubPreferences.isEmpty() );
+
         if ( GeneratorUtils.debugLoggingEnabled() ) {
             final List<String> simplePropertiesNames = simpleProperties.stream()
                     .map( PropertyData::getFieldName )
@@ -152,6 +154,7 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
             messager.printMessage( Kind.NOTE, "Shared subPreferences fields: " + sharedSubPreferencesText );
             messager.printMessage( Kind.NOTE, "Non-shared subPreferences fields: " + nonSharedSubPreferencesText );
             messager.printMessage( Kind.NOTE, "Constructor parameters: " + constructorParamsText );
+            messager.printMessage( Kind.NOTE, "Is persistable: " + isPersistable );
         }
 
         Map<String, Object> root = new HashMap<String, Object>();
@@ -183,6 +186,8 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
                   constructorParamsText );
         root.put( "propertyFieldsText",
                   propertyFieldsText );
+        root.put( "isPersistable",
+                  isPersistable );
 
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter( sw );

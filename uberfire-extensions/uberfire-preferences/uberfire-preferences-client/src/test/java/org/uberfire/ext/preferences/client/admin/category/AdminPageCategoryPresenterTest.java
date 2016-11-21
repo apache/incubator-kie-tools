@@ -50,7 +50,7 @@ public class AdminPageCategoryPresenterTest {
         adminTools.add( mock( AdminTool.class ) );
         adminTools.add( mock( AdminTool.class ) );
 
-        presenter.setup( adminTools );
+        presenter.setup( adminTools, "screen", null );
 
         verify( adminPageItemPresenterProvider, times( 2 ) ).get();
         verify( view, times( 2 ) ).add( any() );

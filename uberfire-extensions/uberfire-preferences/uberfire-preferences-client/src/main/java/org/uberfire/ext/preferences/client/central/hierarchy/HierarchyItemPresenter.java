@@ -21,7 +21,8 @@ import org.uberfire.ext.preferences.shared.bean.PreferenceHierarchyElement;
 public interface HierarchyItemPresenter {
 
     <T> void init( PreferenceHierarchyElement<T> preference,
-                   int level );
+                   int level,
+                   boolean tryToSelectChild );
 
     void fireSelect();
 

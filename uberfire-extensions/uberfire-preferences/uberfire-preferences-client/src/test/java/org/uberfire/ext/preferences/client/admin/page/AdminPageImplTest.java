@@ -19,33 +19,47 @@ package org.uberfire.ext.preferences.client.admin.page;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+
+import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AdminPageImplTest {
 
+    @Mock
     private PlaceManager placeManager;
+
+    @Mock
+    private Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent;
 
     private AdminPageImpl adminPage;
 
     @Before
     public void setup() {
-        placeManager = mock( PlaceManager.class );
-        adminPage = new AdminPageImpl( placeManager );
+        adminPage = new AdminPageImpl( placeManager, preferencesCentralInitializationEvent );
     }
 
     @Test
     public void addValidScreen() {
         adminPage.addScreen( "screen", "title" );
+        assertEquals( "title", adminPage.getScreenTitle( "screen" ) );
     }
 
     @Test(expected = RuntimeException.class)
@@ -109,7 +123,6 @@ public class AdminPageImplTest {
 
     @Test
     public void addPreferenceTest() {
-
         adminPage.addScreen( "screen1", "Screen 1" );
         adminPage.addPreference( "screen1", "MyPreference", "My Preference", "fa-map", "category1", null );
 
@@ -123,23 +136,29 @@ public class AdminPageImplTest {
         assertEquals( "My Preference", category1Tools.get( 0 ).getTitle() );
         assertEquals( "fa-map", category1Tools.get( 0 ).getIconCss() );
 
-        Map<String, String> params = new HashMap<>();
-        params.put( "identifier", "MyPreference" );
-        params.put( "title", "My Preference" );
-        params.put( "screen", "screen1" );
-
         category1Tools.get( 0 ).getOnClickCommand().execute();
 
-        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER, params ) ) );
+        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER ) ) );
+        verify( preferencesCentralInitializationEvent ).fire( eq( new PreferencesCentralInitializationEvent( "MyPreference",
+                                                                                                             null ) ) );
     }
 
     @Test
     public void addPreferenceWithCustomScopeResolutionStrategyParameterTest() {
-        Map<String, String> params = new HashMap<>();
-        params.put( "myParamKey", "myParamValue" );
+        Supplier<PreferenceScopeResolutionStrategyInfo> scopeResolutionStrategyInfoSupplier = new Supplier<PreferenceScopeResolutionStrategyInfo>() {
+            PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = null;
+            @Override
+            public PreferenceScopeResolutionStrategyInfo get() {
+                if ( scopeResolutionStrategyInfo == null ) {
+                    scopeResolutionStrategyInfo = mock( PreferenceScopeResolutionStrategyInfo.class );
+                }
+
+                return scopeResolutionStrategyInfo;
+            }
+        };
 
         adminPage.addScreen( "screen1", "Screen 1" );
-        adminPage.addPreference( "screen1", "MyPreference", "My Preference", "fa-map", "category1", params );
+        adminPage.addPreference( "screen1", "MyPreference", "My Preference", "fa-map", "category1", scopeResolutionStrategyInfoSupplier );
 
         final Map<String, List<AdminTool>> toolsByCategory1 = adminPage.getToolsByCategory( "screen1" );
 
@@ -151,13 +170,19 @@ public class AdminPageImplTest {
         assertEquals( "My Preference", category1Tools.get( 0 ).getTitle() );
         assertEquals( "fa-map", category1Tools.get( 0 ).getIconCss() );
 
-        params.put( "customScopeResolutionStrategy", "true" );
-        params.put( "identifier", "MyPreference" );
-        params.put( "title", "My Preference" );
-        params.put( "screen", "screen1" );
-
         category1Tools.get( 0 ).getOnClickCommand().execute();
 
-        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER, params ) ) );
+        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( PreferencesCentralPerspective.IDENTIFIER ) ) );
+        verify( preferencesCentralInitializationEvent ).fire( eq( new PreferencesCentralInitializationEvent( "MyPreference",
+                                                                                                             scopeResolutionStrategyInfoSupplier.get() ) ) );
+    }
+
+    @Test
+    public void setDefaultScreen() {
+        adminPage.setDefaultScreen( "screen1" );
+        assertEquals( "screen1", adminPage.getDefaultScreen() );
+
+        adminPage.setDefaultScreen( "screen2" );
+        assertEquals( "screen2", adminPage.getDefaultScreen() );
     }
 }

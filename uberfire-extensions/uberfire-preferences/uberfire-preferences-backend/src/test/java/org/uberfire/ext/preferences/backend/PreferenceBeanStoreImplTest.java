@@ -147,11 +147,11 @@ public class PreferenceBeanStoreImplTest {
 
         preferenceBeanStoreImpl.save( preferencesToSave );
 
-        verify( preferenceStore, times( 3 ) ).put( eq( scopeInfo.defaultScope() ), anyString(), any( Object.class ) );
+        verify( preferenceStore, times( 2 ) ).put( eq( scopeInfo.defaultScope() ), anyString(), any( Object.class ) );
 
         verify( preferenceStore ).put( scopeInfo.defaultScope(), MyPreference.class.getSimpleName(), myPreference );
         verify( preferenceStore ).put( scopeInfo.defaultScope(), MySharedPreference.class.getSimpleName(), myPreference.mySharedPreference );
-        verify( preferenceStore ).put( eq( scopeInfo.defaultScope() ), eq( MySharedPreference2.class.getSimpleName() ), same( mySharedPreference2 ) );
+        verify( preferenceStore, never() ).put( eq( scopeInfo.defaultScope() ), eq( MySharedPreference2.class.getSimpleName() ), same( mySharedPreference2 ) );
     }
 
     @Test
@@ -164,11 +164,11 @@ public class PreferenceBeanStoreImplTest {
 
         preferenceBeanStoreImpl.save( preferencesToSave, scopeResolutionStrategyInfo );
 
-        verify( preferenceStore, times( 3 ) ).put( eq( scopeResolutionStrategyInfo.defaultScope() ), anyString(), any( Object.class ) );
+        verify( preferenceStore, times( 2 ) ).put( eq( scopeResolutionStrategyInfo.defaultScope() ), anyString(), any( Object.class ) );
 
         verify( preferenceStore ).put( scopeResolutionStrategyInfo.defaultScope(), MyPreference.class.getSimpleName(), myPreference );
         verify( preferenceStore ).put( scopeResolutionStrategyInfo.defaultScope(), MySharedPreference.class.getSimpleName(), myPreference.mySharedPreference );
-        verify( preferenceStore ).put( eq( scopeResolutionStrategyInfo.defaultScope() ), eq( MySharedPreference2.class.getSimpleName() ), same( mySharedPreference2 ) );
+        verify( preferenceStore, never() ).put( eq( scopeResolutionStrategyInfo.defaultScope() ), eq( MySharedPreference2.class.getSimpleName() ), same( mySharedPreference2 ) );
     }
 
     @Test

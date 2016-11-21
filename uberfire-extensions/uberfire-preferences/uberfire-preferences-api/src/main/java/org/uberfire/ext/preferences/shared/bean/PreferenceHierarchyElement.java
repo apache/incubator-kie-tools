@@ -54,7 +54,6 @@ public class PreferenceHierarchyElement<T> {
                                        final boolean shared,
                                        final boolean root,
                                        final String bundleKey ) {
-
         this( id, portablePreference, new ArrayList<>(), shared, root, bundleKey, new HashMap<>() );
     }
 
@@ -72,6 +71,11 @@ public class PreferenceHierarchyElement<T> {
         this.root = root;
         this.bundleKey = bundleKey;
         this.bundleKeyByProperty = bundleKeyByProperty;
+    }
+
+    public boolean isSelectable() {
+        final boolean hasProperties = bundleKeyByProperty != null && bundleKeyByProperty.size() > 0;
+        return hasProperties;
     }
 
     public boolean hasChildren() {

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.uberfire.client.annotations.DefaultPosition;
@@ -30,11 +31,10 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.central.hierarchy.HierarchyStructureView;
+import org.uberfire.ext.preferences.client.event.PreferencesCentralActionsConfigurationEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralPreSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.CompassPosition;
@@ -64,6 +64,8 @@ public class PreferencesCentralActionsScreen {
 
     private String adminPageScreenToGoBack;
 
+    private String perspectiveIdentifierToGoBackTo;
+
     @Inject
     public PreferencesCentralActionsScreen( final View view,
                                             final PlaceManager placeManager,
@@ -84,26 +86,29 @@ public class PreferencesCentralActionsScreen {
         view.init( this );
     }
 
-    @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        adminPageScreenToGoBack = placeRequest.getParameter( "screen", null );
+    public void initEvent( @Observes final PreferencesCentralActionsConfigurationEvent event ) {
+        adminPageScreenToGoBack = event.getAdminPageScreenToGoBack();
+        perspectiveIdentifierToGoBackTo = event.getPerspectiveIdentifierToGoBackTo();
     }
 
     public void fireSaveEvent() {
         preSaveEvent.fire( new PreferencesCentralPreSaveEvent() );
         saveEvent.fire( new PreferencesCentralSaveEvent() );
-        goBackToHome();
+        goBackToAdminPage();
     }
 
     public void fireCancelEvent() {
         undoChangesEvent.fire( new PreferencesCentralUndoChangesEvent() );
         notification.fire( new NotificationEvent( view.getChangesUndoneMessage(), NotificationEvent.NotificationType.DEFAULT ) );
-        goBackToHome();
+        goBackToAdminPage();
     }
 
-    private void goBackToHome() {
+    void goBackToAdminPage() {
         Map<String, String> params = new HashMap<>();
         params.put( "screen", adminPageScreenToGoBack );
+        if ( perspectiveIdentifierToGoBackTo != null ) {
+            params.put( "perspectiveIdentifierToGoBackTo", perspectiveIdentifierToGoBackTo );
+        }
         placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
     }
 

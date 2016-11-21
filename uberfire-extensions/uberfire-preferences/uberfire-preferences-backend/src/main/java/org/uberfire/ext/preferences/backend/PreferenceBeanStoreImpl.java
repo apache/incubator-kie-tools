@@ -133,7 +133,9 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         try {
             Class<U> clazz = portablePreference.getPojoClass();
             save( clazz, portablePreference, scope );
-            preferenceStore.put( scope, portablePreference.identifier(), portablePreference );
+            if ( portablePreference.isPersistable() ) {
+                preferenceStore.put( scope, portablePreference.identifier(), portablePreference );
+            }
         } catch ( IllegalAccessException e ) {
             throw new RuntimeException( e );
         }
@@ -245,14 +247,21 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
 
     @Override
     public PreferenceHierarchyElement<?> buildHierarchyStructureForPreference( String identifier ) {
+        return buildHierarchyStructureForPreference( identifier, defaultScopeResolutionStrategy.getInfo() );
+    }
+
+    @Override
+    public PreferenceHierarchyElement<?> buildHierarchyStructureForPreference( final String identifier,
+                                                                               final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
         BasePreferencePortable preference = getPortablePreferenceByIdentifier( identifier );
-        preference = load( preference );
+        preference = load( preference, scopeResolutionStrategyInfo );
 
         final PreferenceHierarchyElement<?> rootElement = buildHierarchyElement( preference,
                                                                                  null,
                                                                                  false,
                                                                                  true,
-                                                                                 preference.bundleKey() );
+                                                                                 preference.bundleKey(),
+                                                                                 scopeResolutionStrategyInfo );
 
         return rootElement;
     }
@@ -354,7 +363,9 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
         Class<T> clazz = (Class<T>) portablePreference.getPojoClass();
         try {
             save( clazz, (BasePreferencePortable<T>) portablePreference, scope );
-            preferenceStore.put( scope, portablePreference.identifier(), portablePreference );
+            if ( portablePreference.isPersistable() ) {
+                preferenceStore.put( scope, portablePreference.identifier(), portablePreference );
+            }
         } catch ( IllegalAccessException e ) {
             throw new RuntimeException( e );
         }
@@ -390,14 +401,17 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
                                                                      final PreferenceHierarchyElement<?> parent,
                                                                      final boolean shared,
                                                                      final boolean root,
-                                                                     final String bundleKey ) {
+                                                                     final String bundleKey,
+                                                                     final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
         PreferenceHierarchyElement<T> hierarchyElement = new PreferenceHierarchyElement<>( UUID.randomUUID().toString(),
                                                                                            portablePreference,
                                                                                            shared,
                                                                                            root,
                                                                                            bundleKey );
 
-        buildHierarchyElementForAnnotatedChildren( portablePreference, hierarchyElement );
+        buildHierarchyElementForAnnotatedChildren( portablePreference,
+                                                   hierarchyElement,
+                                                   scopeResolutionStrategyInfo );
 
         try {
             hierarchyElement.setPortablePreference( portablePreference );
@@ -422,7 +436,8 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
                                                                                                   hierarchyElement,
                                                                                                   propertyAnnotation.shared(),
                                                                                                   false,
-                                                                                                  propertyBundleKey );
+                                                                                                  propertyBundleKey,
+                                                                                                  scopeResolutionStrategyInfo );
 
                         hierarchyElement.getChildren().add( childElement );
                     } else {
@@ -442,16 +457,18 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
     }
 
     private <T> void buildHierarchyElementForAnnotatedChildren( final BasePreferencePortable<T> portablePreference,
-                                                                final PreferenceHierarchyElement<T> hierarchyElement ) {
+                                                                final PreferenceHierarchyElement<T> hierarchyElement,
+                                                                final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
         final List<BasePreferencePortable> annotatedChildren = getAnnotatedChildren( portablePreference.identifier() );
         if ( annotatedChildren != null ) {
             annotatedChildren.forEach( childPreference -> {
-                final BasePreferencePortable<?> loadedChild = load( childPreference );
+                final BasePreferencePortable<?> loadedChild = load( childPreference, scopeResolutionStrategyInfo );
                 final PreferenceHierarchyElement<?> childElement = buildHierarchyElement( loadedChild,
                                                                                           hierarchyElement,
                                                                                           false,
                                                                                           true,
-                                                                                          childPreference.bundleKey() );
+                                                                                          childPreference.bundleKey(),
+                                                                                          scopeResolutionStrategyInfo );
 
                 hierarchyElement.getChildren().add( childElement );
             } );

@@ -17,16 +17,24 @@
 package org.uberfire.ext.preferences.client.admin;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.ext.preferences.client.resources.i18n.Constants;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
 @WorkbenchPerspective(identifier = AdminPagePerspective.IDENTIFIER)
@@ -34,7 +42,15 @@ public class AdminPagePerspective {
 
     public static final String IDENTIFIER = "AdminPagePerspective";
 
+    @Inject
+    private TranslationService translationService;
+
+    @Inject
+    private PlaceManager placeManager;
+
     private PerspectiveDefinition perspective;
+
+    private String perspectiveIdentifierToGoBackTo = null;
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
@@ -47,6 +63,7 @@ public class AdminPagePerspective {
 
     @OnStartup
     public void onStartup( final PlaceRequest placeRequest ) {
+        perspectiveIdentifierToGoBackTo = placeRequest.getParameter( "perspectiveIdentifierToGoBackTo", null );
         perspective = createPerspectiveDefinition();
         configurePerspective( placeRequest );
     }
@@ -61,5 +78,23 @@ public class AdminPagePerspective {
     void configurePerspective( final PlaceRequest placeRequest ) {
         perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( AdminPagePresenter.IDENTIFIER,
                                                                                         placeRequest.getParameters() ) ) );
+    }
+
+    @WorkbenchMenu
+    public Menus getMenus() {
+        if ( perspectiveIdentifierToGoBackTo != null ) {
+            return MenuFactory
+                    .newTopLevelMenu( translationService.format( Constants.AdminPagePerspective_GoBackToThePreviousPage ) )
+                    .respondsWith( new Command() {
+                        @Override
+                        public void execute() {
+                            placeManager.goTo( perspectiveIdentifierToGoBackTo );
+                        }
+                    } )
+                    .endMenu()
+                    .build();
+        }
+
+        return null;
     }
 }
