@@ -58,6 +58,7 @@ public class PluginMediaServlet
     private static MediaServletURI mediaServletURI = new MediaServletURI( "plugins/" );
 
     private FileSystem fileSystem;
+
     private Path root;
 
     @Override
@@ -110,7 +111,7 @@ public class PluginMediaServlet
             filename = _filename;
         }
 
-        final Path mediaPath = root.resolve( filename.replace( pattern, "/" ) );
+        final Path mediaPath = resolve( filename.replace( pattern, "/" ) );
         if ( !ioService.exists( mediaPath ) ) {
             mime = "image/png";
             in = getClass().getResourceAsStream( "/nofound.png" );
@@ -153,9 +154,12 @@ public class PluginMediaServlet
         try {
             final String filename = req.getRequestURI().substring( req.getContextPath().length() );
             final String pluginName = filename.replace( pattern, "/" );
+
             if ( pluginName != null ) {
                 final FileItem fileItem = getFileItem( req );
-                final Path path = root.resolve( pluginName + "/media/" + fileItem.getName() );
+                final String fileName = FilenameUtils.getName( fileItem.getName() );
+
+                final Path path = resolve( pluginName + "/media/" + fileName );
 
                 if ( ioService.exists( path ) ) {
                     writeResponse( response, "FAIL - ALREADY EXISTS" );
@@ -177,5 +181,9 @@ public class PluginMediaServlet
             logError( e );
             writeResponse( response, "FAIL" );
         }
+    }
+
+    Path resolve( final String other ) {
+        return root.resolve( other );
     }
 }
