@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -31,7 +31,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
-@ApplicationScoped
+@Dependent
 public class RowContextMenu extends BaseMenu implements IsWidget,
                                                         RowContextMenuView.Presenter {
 

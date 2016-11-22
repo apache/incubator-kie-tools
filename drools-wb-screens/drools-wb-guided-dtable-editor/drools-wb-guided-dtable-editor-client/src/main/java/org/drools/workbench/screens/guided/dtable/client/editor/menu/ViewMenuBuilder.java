@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -29,7 +29,7 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-@ApplicationScoped
+@Dependent
 public class ViewMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuBuilder,
                                                          ViewMenuView.Presenter {
 
