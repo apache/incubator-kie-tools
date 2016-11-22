@@ -22,6 +22,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -35,9 +38,11 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.ext.wires.core.grids.client.demo.resources.i18n.WiresGridsDemoConstants;
+import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -64,6 +69,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperati
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectTopLeftCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.StringColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.MultiColouredTheme;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.RedTheme;
@@ -386,13 +392,65 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
                                                            new BaseGridRenderer( new RedTheme() ) {
                                                                @Override
                                                                public double getHeaderHeight() {
-                                                                   return 64.0;
+                                                                   return 96.0;
                                                                }
 
                                                                @Override
                                                                public double getHeaderRowHeight() {
                                                                    return 64.0;
                                                                }
+
+                                                               @Override
+                                                               public Group renderSelector( final double width,
+                                                                                            final double height,
+                                                                                            final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
+                                                                   final Group g = new Group();
+                                                                   final Bounds bounds = getSelectorBounds( width,
+                                                                                                            height,
+                                                                                                            renderingInformation );
+
+                                                                   final MultiPath selector = theme.getSelector()
+                                                                           .M( bounds.getX() + 0.5,
+                                                                               bounds.getY() + 0.5 )
+                                                                           .L( bounds.getX() + 0.5,
+                                                                               height )
+                                                                           .L( width,
+                                                                               height )
+                                                                           .L( width,
+                                                                               bounds.getY() + 0.5 )
+                                                                           .L( bounds.getX() + 0.5,
+                                                                               bounds.getY() + 0.5 )
+                                                                           .setListening( false );
+                                                                   g.add( selector );
+
+                                                                   final Text t = theme.getHeaderText();
+                                                                   t.setText( translationService.getTranslation( WiresGridsDemoConstants.GridWidget4_Selector_Caption ) );
+                                                                   t.setX( bounds.getWidth() / 2 );
+                                                                   t.setY( bounds.getY() - renderingInformation.getHeaderRowsYOffset() / 2 );
+                                                                   g.add( t );
+
+                                                                   return g;
+                                                               }
+
+                                                               private Bounds getSelectorBounds( final double width,
+                                                                                                 final double height,
+                                                                                                 final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
+                                                                   final BaseGridRendererHelper.RenderingBlockInformation bodyBlockInformation = renderingInformation.getBodyBlockInformation();
+                                                                   final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
+                                                                   double boundsX = 0.0;
+                                                                   double boundsY = renderingInformation.getHeaderRowsYOffset();
+                                                                   double boundsWidth = width;
+                                                                   double boundsHeight = height - renderingInformation.getHeaderRowsYOffset();
+                                                                   if ( renderingInformation.isFloatingHeader() ) {
+                                                                       boundsY = bodyBlockInformation.getHeaderY() + renderingInformation.getHeaderRowsYOffset();
+                                                                       boundsHeight = boundsHeight - bodyBlockInformation.getHeaderY() - renderingInformation.getHeaderRowsYOffset();
+                                                                   }
+                                                                   return new BaseBounds( boundsX,
+                                                                                          boundsY,
+                                                                                          boundsWidth,
+                                                                                          boundsHeight );
+                                                               }
+
                                                            } );
 
         //Add DOM Column - TextBox

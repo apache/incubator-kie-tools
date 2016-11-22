@@ -135,14 +135,24 @@ public class BaseGridRenderer implements GridRenderer {
                 continue;
             }
 
+            //Clip range to visible bounds
+            SelectedRange _selectedRange = selectedRange;
+            if ( rangeOriginUiRowIndex < minVisibleUiRowIndex ) {
+                final int dy = minVisibleUiRowIndex - rangeOriginUiRowIndex;
+                _selectedRange = new SelectedRange( selectedRange.getUiRowIndex() + dy,
+                                                    selectedRange.getUiColumnIndex(),
+                                                    selectedRange.getWidth(),
+                                                    selectedRange.getHeight() - dy );
+            }
+
             final Group cs = renderSelectedRange( model,
                                                   blockColumns,
                                                   minVisibleUiColumnIndex,
-                                                  selectedRange );
+                                                  _selectedRange );
             if ( cs != null ) {
                 final double csx = rendererHelper.getColumnOffset( blockColumns,
-                                                                   rangeOriginUiColumnIndex - minVisibleUiColumnIndex );
-                final double csy = rendererHelper.getRowOffset( rangeOriginUiRowIndex ) - rendererHelper.getRowOffset( minVisibleUiRowIndex );
+                                                                   _selectedRange.getUiColumnIndex() - minVisibleUiColumnIndex );
+                final double csy = rendererHelper.getRowOffset( _selectedRange.getUiRowIndex() ) - rendererHelper.getRowOffset( minVisibleUiRowIndex );
                 cs.setX( csx )
                         .setY( csy )
                         .setListening( false );

@@ -38,4 +38,7 @@ public interface WiresGridsDemoConstants {
     @TranslationKey(defaultValue = "")
     String Options_DeleteRow = "Options.DeleteRow";
 
+    @TranslationKey(defaultValue = "")
+    String GridWidget4_Selector_Caption = "GridWidget4.SelectorCaption";
+
 }
