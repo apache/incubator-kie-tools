@@ -213,6 +213,16 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                 times( 1 ) ).initialiseValidationAndVerification();
         verify( dtPresenter,
                 times( 1 ) ).initialiseAuditLog();
+
+        assertEquals( GuidedDecisionTableView.ROW_HEIGHT,
+                      dtPresenter.getUiModel().getRow( 0 ).getHeight(),
+                      0.0 );
+        assertEquals( GuidedDecisionTableView.ROW_HEIGHT,
+                      dtPresenter.getUiModel().getRow( 1 ).getHeight(),
+                      0.0 );
+        assertEquals( GuidedDecisionTableView.ROW_HEIGHT,
+                      dtPresenter.getUiModel().getRow( 2 ).getHeight(),
+                      0.0 );
     }
 
     @Test

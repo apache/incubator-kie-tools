@@ -1195,7 +1195,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     private void initialiseRow( final List<BaseColumn> columns,
                                 final List<DTCellValue52> row ) {
-        final GridRow uiModelRow = new BaseGridRow( 24 );
+        final GridRow uiModelRow = new BaseGridRow( GuidedDecisionTableView.ROW_HEIGHT );
         final int rowIndex = uiModel.getRowCount();
         uiModel.appendRow( uiModelRow );
 

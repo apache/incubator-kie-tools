@@ -25,6 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -75,7 +76,7 @@ public class RowSynchronizer extends BaseSynchronizer<RowMetaData, RowMetaData, 
         final List<DTCellValue52> modelRow = new ArrayList<DTCellValue52>();
         model.getData().add( modelRow );
 
-        final GridRow uiModelRow = new BaseGridRow();
+        final GridRow uiModelRow = new BaseGridRow( GuidedDecisionTableView.ROW_HEIGHT );
         uiModel.appendRow( uiModelRow );
 
         final int rowIndex = uiModel.getRowCount() - 1;
@@ -97,7 +98,7 @@ public class RowSynchronizer extends BaseSynchronizer<RowMetaData, RowMetaData, 
         model.getData().add( rowIndex,
                              modelRow );
 
-        final GridRow uiModelRow = new BaseGridRow();
+        final GridRow uiModelRow = new BaseGridRow( GuidedDecisionTableView.ROW_HEIGHT );
         uiModel.insertRow( rowIndex,
                            uiModelRow );
 

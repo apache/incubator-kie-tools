@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
@@ -39,6 +40,9 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
                       model.getData().size() );
         assertEquals( 1,
                       uiModel.getRowCount() );
+        assertEquals( GuidedDecisionTableView.ROW_HEIGHT,
+                      uiModel.getRow( 0 ).getHeight(),
+                      0.0 );
     }
 
     @Test
@@ -50,6 +54,12 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
                       model.getData().size() );
         assertEquals( 2,
                       uiModel.getRowCount() );
+        assertEquals( GuidedDecisionTableView.ROW_HEIGHT,
+                      uiModel.getRow( 0 ).getHeight(),
+                      0.0 );
+        assertEquals( GuidedDecisionTableView.ROW_HEIGHT,
+                      uiModel.getRow( 1 ).getHeight(),
+                      0.0 );
     }
 
     @Test
