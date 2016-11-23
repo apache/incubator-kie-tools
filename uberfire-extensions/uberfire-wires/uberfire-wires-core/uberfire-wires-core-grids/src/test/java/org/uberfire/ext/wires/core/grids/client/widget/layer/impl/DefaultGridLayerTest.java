@@ -15,7 +15,10 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.layer.impl;
 
+import java.util.Set;
+
 import com.ait.lienzo.client.core.mediator.Mediators;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
@@ -186,6 +189,48 @@ public class DefaultGridLayerTest {
                       gridLayer.getGridWidgets().size() );
         assertEquals( 0,
                       gridLayer.getGridWidgetConnectors().size() );
+    }
+
+    @Test
+    public void checkConnectorsVisibilityFollowPinnedModeStatus() {
+        final GridWidget gridWidget1 = makeGridWidget();
+        final GridColumn column1 = mock( GridColumn.class );
+        when( column1.isVisible() ).thenReturn( true );
+        gridWidget1.getModel().appendColumn( column1 );
+
+        final GridWidget gridWidget2 = makeGridWidget();
+        final GridColumn column2 = mock( GridColumn.class );
+        when( column2.isVisible() ).thenReturn( true );
+        when( column2.isLinked() ).thenReturn( true );
+        when( column2.getLink() ).thenReturn( column1 );
+        gridWidget2.getModel().appendColumn( column2 );
+
+        this.gridLayer.add( gridWidget1 );
+        this.gridLayer.add( gridWidget2 );
+
+        gridLayer.refreshGridWidgetConnectors();
+
+        checkConnectorsVisibility( true );
+
+        gridLayer.enterPinnedMode( gridWidget1,
+                                   new GridLayerRedrawManager.PrioritizedCommand( 0 ) {
+                                       @Override
+                                       public void execute() {
+                                           //Do nothing
+                                       }
+                                   } );
+
+        gridLayer.refreshGridWidgetConnectors();
+
+        checkConnectorsVisibility( false );
+    }
+
+    private void checkConnectorsVisibility( final boolean isVisible ) {
+        final Set<IPrimitive<?>> connectors = gridLayer.getGridWidgetConnectors();
+        assertEquals( 1,
+                      connectors.size() );
+        assertEquals( isVisible,
+                      connectors.iterator().next().isVisible() );
     }
 
 }

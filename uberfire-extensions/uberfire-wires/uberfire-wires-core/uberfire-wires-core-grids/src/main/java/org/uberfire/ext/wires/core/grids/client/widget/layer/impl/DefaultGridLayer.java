@@ -233,6 +233,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
                             if ( !gridWidgetConnectors.containsKey( connector ) ) {
                                 final Line line = new Line( sp,
                                                             ep )
+                                        .setVisible( !isGridPinned() )
                                         .setStrokeColor( ColorName.DARKGRAY )
                                         .setFillColor( ColorName.TAN )
                                         .setStrokeWidth( 2.0 );
