@@ -35,6 +35,8 @@
   <extend-property name="locale" values="pt_BR"/>
   <extend-property name="locale" values="zh_CN"/>
 
+  <collapse-property name="locale" values="*"/>
+
   <inherits name="org.jboss.errai.ui.UI" />
   <inherits name="org.jboss.errai.common.ErraiCommon" />
   <inherits name="org.jboss.errai.bus.ErraiBus" />
