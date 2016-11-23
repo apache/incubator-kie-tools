@@ -29,8 +29,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_SCRIPT;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_SCRIPT_LANGUAGE;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_SCRIPT;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_SCRIPT_LANGUAGE;
 
 @Portable
 @Bindable

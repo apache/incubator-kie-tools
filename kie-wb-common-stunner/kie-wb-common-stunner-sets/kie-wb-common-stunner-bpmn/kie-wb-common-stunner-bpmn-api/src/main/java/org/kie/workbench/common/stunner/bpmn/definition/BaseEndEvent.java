@@ -33,7 +33,7 @@ import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_GENERAL_SETTINGS;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
 @MorphBase( defaultType = EndNoneEvent.class
         /* TODO: Disabled morphing from end to start events for M1

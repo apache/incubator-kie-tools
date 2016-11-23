@@ -44,7 +44,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
 
 @Shape( factory = BasicShapesFactory.class, def = TaskShapeDef.class )
 @MorphBase( defaultType = NoneTask.class, targets = { ReusableSubprocess.class } )

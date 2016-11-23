@@ -35,8 +35,8 @@ import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BACKGROUND_SETTINGS;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_GENERAL_SETTINGS;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_BACKGROUND_SETTINGS;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
 @Shape( factory = BasicShapesFactory.class, def = SequenceFlowConnectorDef.class )
 public abstract class BaseConnector implements BPMNDefinition {

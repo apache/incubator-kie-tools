@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 import javax.validation.Valid;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_PROCESS_VARIABLES;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_PROCESS_VARIABLES;
 
 @Portable
 @Bindable

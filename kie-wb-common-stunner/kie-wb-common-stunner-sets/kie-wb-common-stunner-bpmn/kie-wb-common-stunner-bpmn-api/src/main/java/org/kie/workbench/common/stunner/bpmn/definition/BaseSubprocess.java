@@ -37,7 +37,7 @@ import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
 
 @Shape( factory = BasicShapesFactory.class, def = SubprocessShapeDef.class )
 @MorphBase( defaultType = ReusableSubprocess.class, targets = { BaseTask.class } )

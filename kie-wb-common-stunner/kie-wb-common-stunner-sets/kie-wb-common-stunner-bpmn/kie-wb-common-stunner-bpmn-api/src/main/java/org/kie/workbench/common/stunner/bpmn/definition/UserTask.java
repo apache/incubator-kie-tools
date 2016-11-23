@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 
 import javax.validation.Valid;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
 
 @Portable
 @Bindable

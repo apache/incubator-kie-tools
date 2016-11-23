@@ -22,7 +22,7 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.VariablesEditor;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
 
 @Portable
 @Bindable
