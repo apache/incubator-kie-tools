@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.AssignmentsType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.type.AssignmentsType;
 
 @Portable
 @Bindable

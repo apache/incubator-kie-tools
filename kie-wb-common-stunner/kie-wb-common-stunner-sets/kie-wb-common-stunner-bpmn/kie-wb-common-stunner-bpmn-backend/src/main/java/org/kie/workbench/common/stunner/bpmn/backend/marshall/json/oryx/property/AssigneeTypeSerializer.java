@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property;
 
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.AssigneeType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.type.AssigneeType;
 
 import javax.enterprise.context.ApplicationScoped;
 

@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.core.definition.property.type;
+package org.kie.workbench.common.stunner.bpmn.definition.property.type;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 
 @Portable
-public class AssignmentsType implements PropertyType {
+public class AssigneeType implements PropertyType {
 
-    public static final String name = "stunner.assignments";
+    public static final String name = "stunner.assignee";
 
     @Override
     public String getName() {
@@ -33,10 +33,10 @@ public class AssignmentsType implements PropertyType {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof AssignmentsType ) ) {
+        if ( !( o instanceof AssigneeType ) ) {
             return false;
         }
-        AssignmentsType that = ( AssignmentsType ) o;
+        AssigneeType that = ( AssigneeType ) o;
         if ( !name.equals( that.name ) ) {
             return false;
         }
@@ -50,7 +50,7 @@ public class AssignmentsType implements PropertyType {
 
     @Override
     public String toString() {
-        return "AssignmentsType{" +
+        return "AssigneeType{" +
                 "name='" + name + '\'' +
                 '}';
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.definition.property.type;
+package org.kie.workbench.common.stunner.bpmn.definition.property.type;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
