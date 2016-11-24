@@ -15,24 +15,33 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import javax.enterprise.event.Event;
+
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.events.NotificationEvent;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -41,11 +50,30 @@ public class NewProjectScreenTest {
     @Mock
     NewProjectScreen.View view;
 
+    @Spy
     @InjectMocks
     NewProjectScreen newProjectScreen;
 
     @Mock
+    BusyIndicatorView busyIndicatorView;
+
+    @Mock
+    Event<NotificationEvent> notificationEvent;
+
+    @Mock
+    TranslationService ts;
+
+    @Mock
+    AuthorizationManager authorizationManager;
+
+    @Mock
+    SessionInfo sessionInfo;
+
+    @Mock
     LibraryService libraryService;
+
+    @Mock
+    LibraryMonitor libraryMonitor;
 
     @Mock
     private OrganizationalUnit ou1;
@@ -60,12 +88,12 @@ public class NewProjectScreenTest {
     public void setup() {
         libraryServiceCaller = new CallerMock<>( libraryService );
         newProjectScreen.libraryService = libraryServiceCaller;
-    }
 
+        doNothing().when( newProjectScreen ).gotoAuthoring( any( KieProject.class ) );
+    }
 
     @Test
     public void loadTest() throws Exception {
-
         when( libraryService.getDefaultLibraryInfo() ).thenReturn( getDefaultLibraryMock() );
 
         newProjectScreen.load();
@@ -74,7 +102,13 @@ public class NewProjectScreenTest {
         verify( view, times( 2 ) ).addOrganizationUnit( any() );
         verify( view ).setOrganizationUnitSelected( ou2.getIdentifier() );
         assertEquals( ou2.getIdentifier(), newProjectScreen.selectOu );
+    }
 
+    @Test
+    public void projectCreationNotifiesLibraryMonitorTest() {
+        newProjectScreen.getSuccessCallback().callback( null );
+
+        verify( libraryMonitor ).setThereIsAtLeastOneProjectAccessible( true );
     }
 
     private LibraryInfo getDefaultLibraryMock() {

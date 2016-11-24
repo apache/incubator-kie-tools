@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -24,19 +28,18 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.InfoPopup;
 import org.kie.workbench.common.screens.library.client.util.LibraryBreadcrumbs;
 import org.kie.workbench.common.screens.library.client.util.LibraryParameters;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -46,10 +49,6 @@ import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.ActivityResourceType;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 @WorkbenchScreen( identifier = "NewProjectScreen" )
 public class NewProjectScreen {
@@ -95,6 +94,9 @@ public class NewProjectScreen {
 
     @Inject
     private SessionInfo sessionInfo;
+
+    @Inject
+    private LibraryMonitor libraryMonitor;
 
     private DefaultPlaceRequest backPlaceRequest;
 
@@ -180,16 +182,17 @@ public class NewProjectScreen {
         busyIndicatorView.hideBusyIndicator();
     }
 
-    private RemoteCallback<KieProject> getSuccessCallback() {
+    RemoteCallback<KieProject> getSuccessCallback() {
         return project -> {
+            libraryMonitor.setThereIsAtLeastOneProjectAccessible( true );
             hideLoadingBox();
             notifySuccess();
             gotoAuthoring( project );
         };
     }
 
-    private void gotoAuthoring( KieProject project ) {
-        if ( hasAccessToPerspective( PerspectiveIds.AUTHORING ) ) {
+    void gotoAuthoring( KieProject project ) {
+        if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
             setupBreadCrumbs( project );
             openProject( project );
         } else {
@@ -211,7 +214,7 @@ public class NewProjectScreen {
     }
 
     private void openProject( KieProject project ) {
-        placeManager.goTo( PerspectiveIds.AUTHORING );
+        placeManager.goTo( LibraryPlaces.AUTHORING );
         libraryContextSwitchEvent
                 .fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_SELECTED,
                                                       project.getIdentifier() ) );

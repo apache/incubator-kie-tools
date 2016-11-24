@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.library.client.util;
 
-public interface LibraryPlaces {
+package org.kie.workbench.common.screens.library.client.monitor;
 
-    String NEW_PROJECT_SCREEN = "NewProjectScreen";
-    String EMPTY_LIBRARY_SCREEN = "EmptyLibraryScreen";
-    String NEW_PROJECT_PERSPECTIVE = "NewProjectPerspective";
-    String LIBRARY_PERSPECTIVE = "LibraryPerspective";
-    String LIBRARY_SCREEN = "LibraryScreen";
-    String AUTHORING = "AuthoringPerspective";
+public interface LibraryMonitor {
+
+    void initialize();
+
+    boolean thereIsAtLeastOneProjectAccessible();
+
+    void setThereIsAtLeastOneProjectAccessible( final boolean thereIsAtLeastOneProjectAccessible );
 }

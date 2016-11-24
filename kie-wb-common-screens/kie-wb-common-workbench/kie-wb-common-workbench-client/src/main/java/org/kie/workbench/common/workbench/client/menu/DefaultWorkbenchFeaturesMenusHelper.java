@@ -33,6 +33,7 @@ import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
+import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
 import org.kie.workbench.common.widgets.client.menu.AboutMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.ResetPerspectivesMenuBuilder;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
@@ -46,6 +47,9 @@ import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.ConditionalPlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -81,6 +85,9 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     @Inject
     protected DefaultAdminPageHelper adminPageHelper;
 
+    @Inject
+    protected LibraryMonitor libraryMonitor;
+
     public List<? extends MenuItem> getHomeViews( final boolean socialEnabled ) {
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
         final List<MenuItem> result = new ArrayList<>( 1 );
@@ -114,9 +121,12 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     }
 
     public List<MenuItem> getAuthoringViews() {
+        final DefaultPlaceRequest libraryPlaceRequest = new DefaultPlaceRequest( LIBRARY );
+        final PlaceRequest authoringPlaceRequest = new ConditionalPlaceRequest( AUTHORING ).when( p -> libraryMonitor.thereIsAtLeastOneProjectAccessible() ).orElse( libraryPlaceRequest );
+
         final List<MenuItem> result = new ArrayList<>( 5 );
 
-        result.add( MenuFactory.newSimpleItem( constants.ProjectAuthoring() ).perspective( AUTHORING ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.ProjectAuthoring() ).place( authoringPlaceRequest ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.Contributors() ).perspective( CONTRIBUTORS ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.ArtifactRepository() ).perspective( GUVNOR_M2REPO ).endMenu().build().getItems().get( 0 ) );
         result.add( MenuFactory.newSimpleItem( constants.Administration() ).perspective( ADMINISTRATION ).endMenu().build().getItems().get( 0 ) );

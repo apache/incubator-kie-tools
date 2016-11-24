@@ -29,7 +29,6 @@ import org.kie.workbench.common.screens.library.client.util.LibraryDocks;
 import org.kie.workbench.common.screens.library.client.util.LibraryParameters;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.LibraryBreadCrumbToolbarPresenter;
-import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -169,10 +168,10 @@ public class LibraryScreen {
 
     private Command selectCommand( Project project ) {
         return () -> {
-            if ( hasAccessToPerspective( PerspectiveIds.AUTHORING ) ) {
+            if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
 
                 libraryBreadcrumbs.setupAuthoringBreadCrumbsForProject( project.getProjectName() );
-                placeManager.goTo( new DefaultPlaceRequest( PerspectiveIds.AUTHORING ) );
+                placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
                 libraryContextSwitchEvent
                         .fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_SELECTED,
                                                               project.getIdentifier() ) );
@@ -214,11 +213,11 @@ public class LibraryScreen {
     }
 
     public void importExample() {
-        if ( hasAccessToPerspective( PerspectiveIds.AUTHORING ) ) {
+        if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
 
             libraryBreadcrumbs.setupAuthoringBreadcrumbsForExample();
 
-            placeManager.goTo( new DefaultPlaceRequest( PerspectiveIds.AUTHORING ) );
+            placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
             libraryContextSwitchEvent
                     .fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_FROM_EXAMPLE ) );
         }

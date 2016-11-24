@@ -34,4 +34,6 @@ public interface LibraryService {
     Collection<OrganizationalUnit> getOrganizationalUnits();
 
     KieProject newProject( String projectName, String selectOu, String baseURL );
+
+    Boolean thereIsAProjectInTheWorkbench();
 }

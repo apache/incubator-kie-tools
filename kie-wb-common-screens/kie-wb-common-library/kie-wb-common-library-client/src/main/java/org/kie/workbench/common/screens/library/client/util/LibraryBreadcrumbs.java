@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.library.client.util;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.widgets.LibraryBreadCrumbToolbarPresenter;
-import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
@@ -54,19 +53,19 @@ public class LibraryBreadcrumbs {
     }
 
     public void setupAuthoringBreadCrumbsForProject( String projectName ) {
-        breadcrumbs.clearBreadCrumbsAndToolBars( PerspectiveIds.AUTHORING );
-        breadcrumbs.addBreadCrumb( PerspectiveIds.AUTHORING, ts.getTranslation( LibraryConstants.All_Projects ),
+        breadcrumbs.clearBreadCrumbsAndToolBars( LibraryPlaces.AUTHORING );
+        breadcrumbs.addBreadCrumb( LibraryPlaces.AUTHORING, ts.getTranslation( LibraryConstants.All_Projects ),
                                    new DefaultPlaceRequest( LibraryPlaces.LIBRARY_PERSPECTIVE ) );
         breadcrumbs
-                .addBreadCrumb( PerspectiveIds.AUTHORING, projectName,
-                                new DefaultPlaceRequest( PerspectiveIds.AUTHORING ) );
+                .addBreadCrumb( LibraryPlaces.AUTHORING, projectName,
+                                new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
 
     }
 
 
     public void setupAuthoringBreadcrumbsForExample() {
-        breadcrumbs.clearBreadCrumbsAndToolBars( PerspectiveIds.AUTHORING );
-        breadcrumbs.addBreadCrumb( PerspectiveIds.AUTHORING, ts.getTranslation( LibraryConstants.All_Projects ),
+        breadcrumbs.clearBreadCrumbsAndToolBars( LibraryPlaces.AUTHORING );
+        breadcrumbs.addBreadCrumb( LibraryPlaces.AUTHORING, ts.getTranslation( LibraryConstants.All_Projects ),
                                    new DefaultPlaceRequest( LibraryPlaces.LIBRARY_PERSPECTIVE ) );
 
     }

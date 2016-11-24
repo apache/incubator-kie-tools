@@ -56,6 +56,7 @@
   <inherits name="org.kie.workbench.common.widgets.decoratedgrid.KieWorkbenchDecoratedGridWidget"/>
   <inherits name="org.kie.workbench.common.widgets.decoratedgrid.KieWorkbenchDecoratedGridWidget"/>
   <inherits name="org.kie.workbench.common.screens.library.LibraryAPI"/>
+  <inherits name="org.kie.workbench.common.screens.library.LibraryClient"/>
 
   <!-- kie server -->
   <inherits name="org.kie.workbench.common.screens.server.management.ServerManagementAPI"/>

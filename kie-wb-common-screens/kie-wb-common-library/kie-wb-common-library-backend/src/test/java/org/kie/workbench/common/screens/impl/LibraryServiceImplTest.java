@@ -24,6 +24,7 @@ import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,8 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -40,7 +43,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.jgroups.util.Util.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -60,6 +63,12 @@ public class LibraryServiceImplTest {
 
     @Mock
     private LibraryPreferences preferences;
+
+    @Mock
+    private AuthorizationManager authorizationManager;
+
+    @Mock
+    private SessionInfo sessionInfo;
 
     @Mock
     private OrganizationalUnit ou1;
@@ -87,17 +96,21 @@ public class LibraryServiceImplTest {
         when( ou1.getIdentifier() ).thenReturn( "ou1" );
         when( ou2.getIdentifier() ).thenReturn( "ou2" );
         when( repo1.getAlias() ).thenReturn( "repo_created_by_user" );
+        when( repo1.getBranches() ).thenReturn( Arrays.asList( "repo1-branch1", "repo1-branch2" ) );
         when( repo2Default.getAlias() ).thenReturn( "ou2-repo-alias" );
         when( repo2Default.getRoot() ).thenReturn( mock( Path.class ) );
+        when( repo2Default.getBranches() ).thenReturn( Arrays.asList( "repo2-branch1" ) );
         when( ou2.getRepositories() ).thenReturn( Arrays.asList( repo1, repo2Default ) );
+
+        doReturn( true ).when( authorizationManager ).authorize( any( Repository.class ), any( User.class ) );
+        doReturn( false ).when( authorizationManager ).authorize( eq( repo1 ), any( User.class ) );
 
         projectsMock = new HashSet<>();
         projectsMock.add( mock( Project.class ) );
         projectsMock.add( mock( Project.class ) );
         projectsMock.add( mock( Project.class ) );
 
-        libraryService = new LibraryServiceImpl( ouService, repositoryService, kieProjectService, preferences );
-
+        libraryService = new LibraryServiceImpl( ouService, repositoryService, kieProjectService, preferences, authorizationManager, sessionInfo );
     }
 
     @Test
@@ -106,7 +119,6 @@ public class LibraryServiceImplTest {
         when( preferences.getOuIdentifier() ).thenReturn( "ou2" );
 
         assertEquals( ou2, libraryService.getDefaultOrganizationalUnit() );
-
     }
 
     @Test
@@ -119,7 +131,6 @@ public class LibraryServiceImplTest {
         libraryService.getDefaultOrganizationalUnit();
 
         verify( ouService ).createOrganizationalUnit( "new-ou", "owner", "group" );
-
     }
 
     @Test
@@ -133,7 +144,6 @@ public class LibraryServiceImplTest {
         assertEquals( repo2Default, defaultRepository );
         verify( repositoryService, never() )
                 .createRepository( any(), any(), any(), any() );
-
     }
 
     @Test
@@ -151,7 +161,6 @@ public class LibraryServiceImplTest {
                                    eq( "scheme" ),
                                    eq( repoAlias ),
                                    any( RepositoryEnvironmentConfigurations.class ) );
-
     }
 
     @Test
@@ -162,7 +171,6 @@ public class LibraryServiceImplTest {
         String repoAlias = ou1.getIdentifier() + "-" + preferences.getRepositoryAlias();
 
         assertEquals( repoAlias, libraryService.getDefaultRepositoryName( ou1 ) );
-
     }
 
     @Test
@@ -173,7 +181,6 @@ public class LibraryServiceImplTest {
 
         boolean managed = ( boolean ) conf.getConfigurationMap().get( EnvironmentParameters.MANAGED );
         assertTrue( managed );
-
     }
 
     @Test
@@ -187,7 +194,6 @@ public class LibraryServiceImplTest {
         libraryService.getProjects( ou2 );
 
         verify( kieProjectService ).getProjects( defaultRepository, preferences.getProjectDefaultBranch() );
-
     }
 
     @Test
@@ -233,7 +239,6 @@ public class LibraryServiceImplTest {
         assertEquals( ou1, defaultLibraryInfo.getDefaultOrganizationUnit() );
         assertEquals( ou2, defaultLibraryInfo.getSelectedOrganizationUnit() );
         assertEquals( ous, defaultLibraryInfo.getOrganizationUnits() );
-
     }
 
     @Test
@@ -277,7 +282,6 @@ public class LibraryServiceImplTest {
         assertEquals( preferences.getProjectGroupId(), gav.getGroupId() );
         assertEquals( "proj", gav.getArtifactId() );
         assertEquals( preferences.getProjectVersion(), gav.getVersion() );
-
     }
 
     @Test
@@ -286,6 +290,29 @@ public class LibraryServiceImplTest {
         libraryService.getPreferences();
 
         verify( preferences ).load();
+    }
 
+    @Test
+    public void thereIsNotAProjectInTheWorkbenchTest() {
+        final Boolean thereIsAProjectInTheWorkbench = libraryService.thereIsAProjectInTheWorkbench();
+
+        assertFalse( thereIsAProjectInTheWorkbench );
+
+        verify( kieProjectService, times( 1 ) ).getProjects( any( Repository.class ), anyString() );
+        verify( kieProjectService ).getProjects( repo2Default, "repo2-branch1" );
+    }
+
+    @Test
+    public void thereIsAProjectInTheWorkbenchTest() {
+        Set<Project> projects = new HashSet<>();
+        projects.add( mock( Project.class ) );
+        doReturn( projects ).when( kieProjectService ).getProjects( any( Repository.class ), anyString() );
+
+        final Boolean thereIsAProjectInTheWorkbench = libraryService.thereIsAProjectInTheWorkbench();
+
+        assertTrue( thereIsAProjectInTheWorkbench );
+
+        verify( kieProjectService, times( 1 ) ).getProjects( any( Repository.class ), anyString() );
+        verify( kieProjectService ).getProjects( repo2Default, "repo2-branch1" );
     }
 }

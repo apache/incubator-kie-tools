@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.screens.impl;
 
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
@@ -32,12 +38,8 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 @Service
 @ApplicationScoped
@@ -51,6 +53,10 @@ public class LibraryServiceImpl implements LibraryService {
 
     private LibraryPreferences preferences;
 
+    private AuthorizationManager authorizationManager;
+
+    private SessionInfo sessionInfo;
+
     public LibraryServiceImpl() {
     }
 
@@ -58,13 +64,16 @@ public class LibraryServiceImpl implements LibraryService {
     public LibraryServiceImpl( OrganizationalUnitService ouService,
                                RepositoryService repositoryService,
                                KieProjectService kieProjectService,
-                               LibraryPreferences preferences ) {
+                               LibraryPreferences preferences,
+                               AuthorizationManager authorizationManager,
+                               SessionInfo sessionInfo ) {
         this.ouService = ouService;
         this.repositoryService = repositoryService;
         this.kieProjectService = kieProjectService;
         this.preferences = preferences;
+        this.authorizationManager = authorizationManager;
+        this.sessionInfo = sessionInfo;
     }
-
 
     @Override
     public Collection<OrganizationalUnit> getOrganizationalUnits() {
@@ -85,7 +94,8 @@ public class LibraryServiceImpl implements LibraryService {
         return defaultOU.get();
     }
 
-    private Optional<OrganizationalUnit> getOU( String ouIdentifier, Collection<OrganizationalUnit> organizationalUnits ) {
+    private Optional<OrganizationalUnit> getOU( String ouIdentifier,
+                                                Collection<OrganizationalUnit> organizationalUnits ) {
         Optional<OrganizationalUnit> targetOU = organizationalUnits.stream()
                 .filter( p -> p.getIdentifier().equalsIgnoreCase( ouIdentifier ) ).findFirst();
         return targetOU;
@@ -97,7 +107,6 @@ public class LibraryServiceImpl implements LibraryService {
         return ouService.createOrganizationalUnit( preferences.getOuIdentifier(), preferences.getOuOwner(),
                                                    preferences.getOuGroupId() );
     }
-
 
     @Override
     public LibraryInfo getDefaultLibraryInfo() {
@@ -120,7 +129,6 @@ public class LibraryServiceImpl implements LibraryService {
         OrganizationalUnit defaultOU = getDefaultOrganizationalUnit();
         OrganizationalUnit selectedOU = getOU( selectedOuIdentifier, organizationalUnits ).get();
 
-
         LibraryInfo libraryInfo = new LibraryInfo(
                 defaultOU,
                 selectedOU,
@@ -133,7 +141,9 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public KieProject newProject( String projectName, String selectOu, String baseURL ) {
+    public KieProject newProject( String projectName,
+                                  String selectOu,
+                                  String baseURL ) {
         Collection<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
         OrganizationalUnit selectedOU = getOU( selectOu, organizationalUnits ).get();
         Repository repository = getDefaultRepository( selectedOU );
@@ -150,14 +160,26 @@ public class LibraryServiceImpl implements LibraryService {
         return kieProject;
     }
 
-    POM createPOM( String projectName, LibraryPreferences preferences, GAV gav ) {
+    @Override
+    public Boolean thereIsAProjectInTheWorkbench() {
+        return getOrganizationalUnits().stream()
+                .flatMap( organizationalUnit -> organizationalUnit.getRepositories().stream()
+                        .filter( repository -> authorizationManager.authorize( repository, sessionInfo.getIdentity() ) ) )
+                .flatMap( repository -> repository.getBranches().stream()
+                        .map( branch -> kieProjectService.getProjects( repository, branch ) ) )
+                .anyMatch( projects -> projects != null && !projects.isEmpty() );
+    }
+
+    POM createPOM( String projectName,
+                   LibraryPreferences preferences,
+                   GAV gav ) {
         return new POM( projectName, preferences.getProjectDescription(), gav );
     }
 
-    GAV createGAV( String projectName, LibraryPreferences preferences ) {
+    GAV createGAV( String projectName,
+                   LibraryPreferences preferences ) {
         return new GAV( preferences.getProjectGroupId(), projectName, preferences.getProjectVersion() );
     }
-
 
     Set<Project> getProjects( OrganizationalUnit ou ) {
 
@@ -193,7 +215,6 @@ public class LibraryServiceImpl implements LibraryService {
         return configuration;
     }
 
-
     String getDefaultRepositoryName( OrganizationalUnit ou ) {
         return ou.getIdentifier() + "-" + getPreferences().getRepositoryAlias();
     }
@@ -202,6 +223,5 @@ public class LibraryServiceImpl implements LibraryService {
         preferences.load();
         return preferences;
     }
-
 }
 

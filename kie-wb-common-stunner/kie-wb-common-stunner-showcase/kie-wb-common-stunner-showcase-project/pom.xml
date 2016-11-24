@@ -945,6 +945,11 @@
             <artifactId>kie-wb-common-library-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.kie.workbench.screens</groupId>
+            <artifactId>kie-wb-common-library-client</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -1054,6 +1059,7 @@
                         <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-server-ui-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-server-ui-client</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-library-api</compileSourcesArtifact>
+                        <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-library-client</compileSourcesArtifact>
                             
                         <!-- Kie Server needed by Exec Server UI -->
                         <compileSourcesArtifact>org.kie:kie-api</compileSourcesArtifact>

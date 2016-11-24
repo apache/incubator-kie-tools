@@ -16,13 +16,15 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.InfoPopup;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -33,10 +35,6 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 @WorkbenchScreen( identifier = LibraryPlaces.EMPTY_LIBRARY_SCREEN )
 public class EmptyLibraryScreen {
@@ -80,8 +78,8 @@ public class EmptyLibraryScreen {
     }
 
     public void importExample() {
-        if ( hasAccessToPerspective( PerspectiveIds.AUTHORING ) ) {
-            placeManager.goTo( new DefaultPlaceRequest( PerspectiveIds.AUTHORING ) );
+        if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
+            placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
             libraryContextSwitchEvent
                     .fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_FROM_EXAMPLE ) );
         } else {
