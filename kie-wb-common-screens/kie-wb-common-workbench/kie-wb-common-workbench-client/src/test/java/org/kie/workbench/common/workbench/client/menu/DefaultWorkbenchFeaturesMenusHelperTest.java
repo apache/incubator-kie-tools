@@ -93,7 +93,6 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         mockRoles();
         mockGroups();
         mockIocManager();
-        mockAdminPageHelper();
     }
 
     @Test
@@ -347,14 +346,6 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     private void mockIocManager() {
         doAnswer( invocationOnMock -> createSyncBeanDef( (Class<?>) invocationOnMock.getArguments()[ 0 ] ) )
                 .when( iocManager ).lookupBean( any( Class.class ) );
-    }
-
-    private void mockAdminPageHelper() {
-        doReturn( new Command() {
-            @Override
-            public void execute() {
-            }
-        } ).when( adminPageHelper ).getAdminToolCommand( anyString() );
     }
 
     private <T> SyncBeanDef<T> createSyncBeanDef( Class<T> clazz ) {

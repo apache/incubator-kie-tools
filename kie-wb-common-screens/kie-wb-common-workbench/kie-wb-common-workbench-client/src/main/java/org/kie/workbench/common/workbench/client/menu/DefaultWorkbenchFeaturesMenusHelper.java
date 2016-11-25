@@ -98,7 +98,7 @@ public class DefaultWorkbenchFeaturesMenusHelper {
                             .build().getItems().get( 0 ) );
 
         result.add( MenuFactory.newSimpleItem( constants.Admin() )
-                            .respondsWith( adminPageHelper.getAdminToolCommand( "root" ) )
+                            .perspective( ADMIN )
                             .endMenu()
                             .build().getItems().get( 0 ) );
 

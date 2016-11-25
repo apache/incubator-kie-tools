@@ -56,6 +56,7 @@ public class DefaultAdminPageHelper {
 
     public void setup() {
         adminPage.addScreen( "root", constants.Settings() );
+        adminPage.setDefaultScreen( "root" );
 
         adminPage.addTool( "root",
                            constants.Roles(),
@@ -113,13 +114,5 @@ public class DefaultAdminPageHelper {
                                  translationService.format( PreferencesConstants.LibraryPreferences_Title ),
                                  "fa-cubes",
                                  "preferences" );
-    }
-
-    public Command getAdminToolCommand( final String screen ) {
-        return () -> {
-            Map<String, String> params = new HashMap<>();
-            params.put( "screen", screen );
-            placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
-        };
     }
 }
