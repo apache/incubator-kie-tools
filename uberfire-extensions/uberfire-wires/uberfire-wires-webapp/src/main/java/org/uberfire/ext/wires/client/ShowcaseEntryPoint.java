@@ -131,9 +131,7 @@ public class ShowcaseEntryPoint {
         } ).endMenu().newTopLevelMenu( "Admin" ).respondsWith( new Command() {
             @Override
             public void execute() {
-                Map<String, String> params = new HashMap<>();
-                params.put( "screen", "root" );
-                placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
+                placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER ) );
             }
         } ).endMenu().newTopLevelMenu( "Logout" ).position( MenuPosition.RIGHT ).respondsWith( new Command() {
             @Override
