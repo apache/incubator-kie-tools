@@ -76,6 +76,8 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
     @Override
     public void setupMenu() {
         adminPage.addScreen( "root", AppConstants.INSTANCE.Settings() );
+        adminPage.setDefaultScreen( "root" );
+
         adminPage.addPreference( "root",
                                  "LibraryPreferences",
                                  AppConstants.INSTANCE.Library(),
@@ -96,11 +98,6 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                         Window.alert( "Default perspective not found." );
                     }
                 } )
-                .endMenu()
-                .newTopLevelMenu( MenuFactory.newSimpleItem( AppConstants.INSTANCE.AdminPreferences() )
-                                          .respondsWith( adminPageHelper.getAdminToolCommand( "root" ) )
-                                          .endMenu()
-                                          .build().getItems().get( 0 ) )
                 .endMenu()
                 .newTopLevelMenu( constants.Perspectives() )
                 .withItems( menusHelper.getPerspectivesMenuItems() )

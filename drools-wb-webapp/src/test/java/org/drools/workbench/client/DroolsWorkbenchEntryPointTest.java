@@ -80,7 +80,6 @@ public class DroolsWorkbenchEntryPointTest {
 
     @Before
     public void setup() {
-        when( adminPageHelper.getAdminToolCommand( "root" ) ).thenReturn( mock( Command.class ) );
         appConfigServiceCallerMock = new CallerMock<>( appConfigService );
         pmasCallerMock = new CallerMock<>( pmas );
 
