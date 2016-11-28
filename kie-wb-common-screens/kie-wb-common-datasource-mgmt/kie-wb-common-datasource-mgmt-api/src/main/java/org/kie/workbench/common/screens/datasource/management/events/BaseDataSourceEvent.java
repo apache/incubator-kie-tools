@@ -29,9 +29,6 @@ public abstract class BaseDataSourceEvent {
 
     private String identity;
 
-    protected BaseDataSourceEvent() {
-    }
-
     protected BaseDataSourceEvent( final DataSourceDef dataSourceDef,
             final Project project,
             final String sessionId,

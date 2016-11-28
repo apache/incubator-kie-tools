@@ -47,6 +47,7 @@ import org.kie.workbench.common.screens.datasource.management.util.DataSourceDef
 import org.kie.workbench.common.screens.datasource.management.util.MavenArtifactResolver;
 import org.kie.workbench.common.screens.datasource.management.util.URLConnectionFactory;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 
@@ -77,14 +78,14 @@ public class DataSourceDefEditorServiceImpl
             @Named("ioStrategy") IOService ioService,
             KieProjectService projectService,
             CommentedOptionFactory optionsFactory,
-            RenameService renameService,
+            PathNamingService pathNamingService,
             MavenArtifactResolver artifactResolver,
             DataSourceDefQueryService dataSourceDefQueryService,
             DriverDefEditorService driverDefService,
             Event<NewDataSourceEvent> newDataSourceEvent,
             Event<UpdateDataSourceEvent> updateDataSourceEvent,
             Event<DeleteDataSourceEvent> deleteDataSourceEvent ) {
-        super( runtimeManager, serviceHelper, ioService, projectService, optionsFactory, renameService, artifactResolver );
+        super( runtimeManager, serviceHelper, ioService, projectService, optionsFactory, pathNamingService, artifactResolver );
         this.dataSourceDefQueryService = dataSourceDefQueryService;
         this.driverDefService = driverDefService;
         this.newDataSourceEvent = newDataSourceEvent;
@@ -139,11 +140,11 @@ public class DataSourceDefEditorServiceImpl
 
     @Override
     protected void fireUpdateEvent( DataSourceDef def, Project project, DataSourceDef originalDef ) {
-        updateDataSourceEvent.fire( new UpdateDataSourceEvent( originalDef,
-                def,
+        updateDataSourceEvent.fire( new UpdateDataSourceEvent( def,
                 project,
                 optionsFactory.getSafeSessionId(),
-                optionsFactory.getSafeIdentityName() ) );
+                optionsFactory.getSafeIdentityName(),
+                originalDef ) );
     }
 
     @Override

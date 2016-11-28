@@ -20,13 +20,21 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceDefDeployer;
+import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceSettings;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DefaultDriverInitializer;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DriverDefDeployer;
+import org.kie.workbench.common.screens.datasource.management.backend.service.DefChangeHandler;
+import org.kie.workbench.common.screens.datasource.management.backend.service.DefResourceChangeObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
+
+import static org.kie.workbench.common.screens.datasource.management.util.ServiceUtil.*;
 
 /**
  * Initializations required by the data sources management system.
@@ -34,6 +42,8 @@ import org.uberfire.commons.services.cdi.StartupType;
 @ApplicationScoped
 @Startup( StartupType.BOOTSTRAP )
 public class DataSourceManagementBootstrap {
+
+    private static final Logger logger = LoggerFactory.getLogger( DataSourceManagementBootstrap.class );
 
     @Inject
     private DataSourceDefDeployer dataSourceDefDeployer;
@@ -44,8 +54,15 @@ public class DataSourceManagementBootstrap {
     @Inject
     private DefaultDriverInitializer driverInitializer;
 
+    @Inject
+    private DefResourceChangeObserver defResourceChangeObserver;
+
+    @Inject
+    private BeanManager beanManager;
+
     @PostConstruct
     public void init() {
+        initializeDefChangeHandler();
         driverInitializer.initializeDefaultDrivers();
         initializeDeployments();
     }
@@ -63,5 +80,25 @@ public class DataSourceManagementBootstrap {
                 dataSourceDefDeployer.deployGlobalDefs();
             }
         },  1 * 60 * 1000 );
+    }
+
+    /**
+     * Initializes the data source and drivers definitions change handler when configured.
+     */
+    private void initializeDefChangeHandler( ) {
+        logger.info( "Initializing data source definitions change handler" );
+        String defChangeHandlerName = getManagedProperty( DataSourceSettings.getInstance( ).getProperties( ),
+                DataSourceSettings.DATASOURCE_MANAGEMENT_PREFIX + ".DefChangeHandler" );
+        if ( defChangeHandlerName != null ) {
+            try {
+                DefChangeHandler defChangeHandler = ( DefChangeHandler ) getManagedBean( beanManager,
+                        defChangeHandlerName );
+                defResourceChangeObserver.setDefChangeHandler( defChangeHandler );
+            } catch ( Exception e ) {
+                logger.error( "An error was produced during defChangeHandler initialization: " + defChangeHandlerName, e );
+            }
+        } else {
+            logger.info( "defChangeHandler was not set" );
+        }
     }
 }

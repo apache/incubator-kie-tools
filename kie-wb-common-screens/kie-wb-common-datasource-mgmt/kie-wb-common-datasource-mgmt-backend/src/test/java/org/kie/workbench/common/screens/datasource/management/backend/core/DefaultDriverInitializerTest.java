@@ -24,9 +24,9 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.datasource.management.backend.core.DefaultDriverInitializer;
 import org.kie.workbench.common.screens.datasource.management.backend.core.impl.DefaultDriverInitializerImpl;
 import org.kie.workbench.common.screens.datasource.management.backend.service.DataSourceServicesHelper;
+import org.kie.workbench.common.screens.datasource.management.backend.service.DefRegistry;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
 import org.kie.workbench.common.screens.datasource.management.util.DriverDefSerializer;
 import org.mockito.Mock;
@@ -58,6 +58,9 @@ public class DefaultDriverInitializerTest {
     private DefaultDriverInitializer driverInitializer;
 
     @Mock
+    private DefRegistry defRegistry;
+
+    @Mock
     private Path globalPath;
 
     private org.uberfire.java.nio.file.Path globalNioPath;
@@ -71,6 +74,7 @@ public class DefaultDriverInitializerTest {
         when( globalPath.toURI() ).thenReturn( GLOBAL_URI );
         globalNioPath = Paths.convert( globalPath );
         when( serviceHelper.getGlobalDataSourcesContext() ).thenReturn( globalPath );
+        when( serviceHelper.getDefRegistry() ).thenReturn( defRegistry );
 
         setUpSystemDrivers();
         // create the expected drivers and the expected destination paths
@@ -95,6 +99,7 @@ public class DefaultDriverInitializerTest {
         for ( int i = 0; i < expectedDrivers.size(); i++ ) {
             expectedSource = DriverDefSerializer.serialize( expectedDrivers.get( i ) );
             verify( ioService, times( 1 ) ).write( globalNioPaths[ i ], expectedSource, commentedOption );
+            verify( defRegistry, times( 1 ) ).setEntry( Paths.convert( globalNioPaths[ i ] ), expectedDrivers.get( i ) );
         }
     }
 

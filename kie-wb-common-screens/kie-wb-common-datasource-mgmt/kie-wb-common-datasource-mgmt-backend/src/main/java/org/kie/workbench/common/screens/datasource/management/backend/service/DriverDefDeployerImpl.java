@@ -46,9 +46,10 @@ public class DriverDefDeployerImpl
 
     @Inject
     public DriverDefDeployerImpl( @Named("ioStrategy") IOService ioService,
-            DataSourceDefQueryService queryService,
-            DataSourceRuntimeManager runtimeManager ) {
-        super( ioService, queryService, runtimeManager );
+                                  DataSourceDefQueryService queryService,
+                                  DataSourceRuntimeManager runtimeManager,
+                                  DefRegistry defRegistry ) {
+        super( ioService, queryService, runtimeManager, defRegistry );
     }
 
     @Override
@@ -68,6 +69,7 @@ public class DriverDefDeployerImpl
             String source = ioService.readAllString( Paths.convert( defInfo.getPath() ) );
             DriverDef driverDef = DriverDefSerializer.deserialize( source );
             runtimeManager.deployDriver( driverDef, DeploymentOptions.createOrResync() );
+            defRegistry.setEntry( defInfo.getPath(), driverDef );
             logger.debug( "Driver was successfully deployed" );
         } catch ( Exception e ) {
             logger.error( "Driver deployment failed, defInfo: " + defInfo, e );

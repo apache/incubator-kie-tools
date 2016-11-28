@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datasource.management.service;
+package org.kie.workbench.common.screens.datasource.management.backend.service;
 
 import javax.enterprise.event.Event;
 
@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DeploymentOptions;
 import org.kie.workbench.common.screens.datasource.management.backend.core.UnDeploymentOptions;
-import org.kie.workbench.common.screens.datasource.management.backend.service.DataSourceDefEditorServiceImpl;
 import org.kie.workbench.common.screens.datasource.management.events.DeleteDataSourceEvent;
 import org.kie.workbench.common.screens.datasource.management.events.NewDataSourceEvent;
 import org.kie.workbench.common.screens.datasource.management.events.UpdateDataSourceEvent;
@@ -30,6 +29,8 @@ import org.kie.workbench.common.screens.datasource.management.model.DataSourceDe
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDefEditorContent;
 import org.kie.workbench.common.screens.datasource.management.model.Def;
 import org.kie.workbench.common.screens.datasource.management.model.DefEditorContent;
+import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefQueryService;
+import org.kie.workbench.common.screens.datasource.management.service.DriverDefEditorService;
 import org.kie.workbench.common.screens.datasource.management.util.DataSourceDefSerializer;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -68,7 +69,7 @@ public class DataSourceDefEditorServiceTest
         super.setup();
 
         editorService = new DataSourceDefEditorServiceImpl( runtimeManager,
-                serviceHelper, ioService, projectService, optionsFactory, renameService, artifactResolver,
+                serviceHelper, ioService, projectService, optionsFactory, pathNamingService, artifactResolver,
                 dataSourceDefQueryService, driverDefService, newDataSourceEvent, updateDataSourceEvent, deleteDataSourceEvent );
 
         dataSourceDef = new DataSourceDef();
@@ -149,7 +150,7 @@ public class DataSourceDefEditorServiceTest
             fail( e.getMessage() );
         }
         // 2) the update notification was fired.
-        verify( updateDataSourceEvent, times( 1 ) ).fire( new UpdateDataSourceEvent( originalDataSourceDef, dataSourceDef, project, SESSION_ID, IDENTITY ) );
+        verify( updateDataSourceEvent, times( 1 ) ).fire( new UpdateDataSourceEvent( dataSourceDef, project, SESSION_ID, IDENTITY, originalDataSourceDef ) );
     }
 
     @Override

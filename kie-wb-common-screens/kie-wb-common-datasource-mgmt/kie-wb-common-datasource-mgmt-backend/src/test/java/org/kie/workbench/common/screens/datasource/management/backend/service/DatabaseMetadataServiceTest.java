@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datasource.management.service;
+package org.kie.workbench.common.screens.datasource.management.backend.service;
 
 import java.sql.Connection;
 import java.util.List;
@@ -24,9 +24,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSource;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
-import org.kie.workbench.common.screens.datasource.management.backend.service.DatabaseMetadataServiceImpl;
 import org.kie.workbench.common.screens.datasource.management.metadata.DatabaseMetadata;
 import org.kie.workbench.common.screens.datasource.management.metadata.TableMetadata;
+import org.kie.workbench.common.screens.datasource.management.service.DatabaseMetadataService;
 import org.kie.workbench.common.screens.datasource.management.util.DatabaseMetadataUtil;
 import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;

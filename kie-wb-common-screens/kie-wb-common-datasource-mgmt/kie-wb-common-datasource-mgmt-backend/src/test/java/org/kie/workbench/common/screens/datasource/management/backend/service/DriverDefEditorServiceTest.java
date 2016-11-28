@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datasource.management.service;
+package org.kie.workbench.common.screens.datasource.management.backend.service;
 
 import java.net.URI;
 import java.net.URL;
@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DeploymentOptions;
 import org.kie.workbench.common.screens.datasource.management.backend.core.UnDeploymentOptions;
-import org.kie.workbench.common.screens.datasource.management.backend.service.DriverDefEditorServiceImpl;
 import org.kie.workbench.common.screens.datasource.management.events.DeleteDriverEvent;
 import org.kie.workbench.common.screens.datasource.management.events.NewDriverEvent;
 import org.kie.workbench.common.screens.datasource.management.events.UpdateDriverEvent;
@@ -65,7 +64,7 @@ public class DriverDefEditorServiceTest
         super.setup();
 
         editorService = new DriverDefEditorServiceImpl( runtimeManager,
-                serviceHelper, ioService, projectService, optionsFactory, renameService, artifactResolver,
+                serviceHelper, ioService, projectService, optionsFactory, pathNamingService, artifactResolver,
                 newDriverEvent, updateDriverEvent, deleteDriverEvent );
 
         driverDef = new DriverDef();
@@ -156,7 +155,7 @@ public class DriverDefEditorServiceTest
             fail ( e.getMessage() );
         }
         // 2) the update notification was fired.
-        verify( updateDriverEvent, times( 1 ) ).fire( new UpdateDriverEvent( originalDriverDef, driverDef, project, SESSION_ID, IDENTITY ) );
+        verify( updateDriverEvent, times( 1 ) ).fire( new UpdateDriverEvent( driverDef, project, SESSION_ID, IDENTITY, originalDriverDef ) );
     }
 
     @Override

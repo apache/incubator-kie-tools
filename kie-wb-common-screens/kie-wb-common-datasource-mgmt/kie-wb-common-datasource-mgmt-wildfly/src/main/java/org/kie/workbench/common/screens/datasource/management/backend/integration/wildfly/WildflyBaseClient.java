@@ -19,6 +19,8 @@ package org.kie.workbench.common.screens.datasource.management.backend.integrati
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -51,6 +53,11 @@ public abstract class WildflyBaseClient {
     private static final String ADMIN = PREFIX + ".admin";
     private static final String PASSWORD = PREFIX + ".password";
     private static final String REALM = PREFIX + ".realm";
+    private static final String PROFILE = PREFIX + ".profile";
+    private static final String SERVER_GROUP = PREFIX + ".serverGroup";
+    private static final String REFERENCE_SERVER_HOST = PREFIX + ".referenceServerHost";
+    private static final String REFERENCE_SERVER_NAME = PREFIX + ".referenceServerName";
+    private static final String JBOSS_SERVER_NAME = "jboss.server.name";
 
     protected static final String DEFAULT_HOST = "localhost";
     protected static final int DEFAULT_PORT = 9990;
@@ -63,27 +70,29 @@ public abstract class WildflyBaseClient {
     protected String admin;
     protected String password;
     protected String realm;
+    protected String profile;
+    protected String serverGroup;
+    protected String referenceServerHost;
+    protected String referenceServerName;
 
     public void loadConfig( Properties properties ) {
+        host = getManagedProperty( properties, HOST, DEFAULT_HOST );
+        String currentPort = null;
         try {
-
-            host = getManagedProperty( properties, HOST, DEFAULT_HOST );
-            String currentPort = null;
-            try {
-                currentPort = getManagedProperty( properties, PORT, String.valueOf( DEFAULT_PORT ) );
-                port = Integer.parseInt( currentPort );
-            } catch ( Exception e ) {
-                logger.error( "It was not possible to parse port configuration from: " + currentPort +
-                        " default port: " + DEFAULT_PORT + " will be used instead." );
-                port = DEFAULT_PORT;
-            }
-            admin = getManagedProperty( properties, ADMIN, DEFAULT_ADMIN );
-            password = getManagedProperty( properties, PASSWORD, DEFAULT_ADMIN_PASSWORD );
-            realm = getManagedProperty( properties, REALM, DEFAULT_REALM );
-
+            currentPort = getManagedProperty( properties, PORT, String.valueOf( DEFAULT_PORT ) );
+            port = Integer.parseInt( currentPort );
         } catch ( Exception e ) {
-            logger.error( "An error was produced during data source configuration file reading" );
+            logger.error( "It was not possible to parse port configuration from: " + currentPort +
+                    " default port: " + DEFAULT_PORT + " will be used instead." );
+            port = DEFAULT_PORT;
         }
+        admin = getManagedProperty( properties, ADMIN, DEFAULT_ADMIN );
+        password = getManagedProperty( properties, PASSWORD, DEFAULT_ADMIN_PASSWORD );
+        realm = getManagedProperty( properties, REALM, DEFAULT_REALM );
+        profile = getManagedProperty( properties, PROFILE, null );
+        serverGroup = getManagedProperty( properties, SERVER_GROUP, null );
+        referenceServerHost = getManagedProperty( properties, REFERENCE_SERVER_HOST, null );
+        referenceServerName = getManagedProperty( properties, REFERENCE_SERVER_NAME, null );
     }
 
     public ModelControllerClient createControllerClient( ) throws Exception {
@@ -175,6 +184,96 @@ public abstract class WildflyBaseClient {
                 logger.error( "An error was produced during ModelControllerClient closing: ", e );
             }
         }
+    }
+
+    public boolean isStandalone( ) {
+        return profile == null;
+    }
+
+    public String getReferenceServerName( ) {
+        if ( referenceServerName == null ) {
+            referenceServerName = System.getProperty( JBOSS_SERVER_NAME );
+        }
+        return referenceServerName;
+    }
+
+    public String getReferenceServerHost( ) {
+        if ( referenceServerHost == null ) {
+            String currentServer = getReferenceServerName( );
+            try {
+                List< String > hosts = getHosts( );
+                for ( String host : hosts ) {
+                    List< String > servers = getServers( host );
+                    if ( servers.contains( currentServer ) ) {
+                        referenceServerHost = host;
+                        break;
+                    }
+                }
+            } catch ( Exception e ) {
+                logger.error( "It was not possible to calculate the referenceServerHost for currentServer: "
+                        + currentServer, e );
+            }
+        }
+        return referenceServerHost;
+    }
+
+    public List< String > getHosts( ) throws Exception {
+        ArrayList< String > result = new ArrayList<>( );
+        ModelControllerClient client = null;
+        ModelNode response = null;
+
+        try {
+            // /:read-children-names(child-type=host)
+            ModelNode operation = new ModelNode( );
+            operation.get( OP ).set( "read-children-names" );
+            operation.get( "child-type" ).set( "host" );
+
+            client = createControllerClient( );
+            response = client.execute( operation );
+
+            if ( !isFailure( response ) ) {
+                if ( response.hasDefined( RESULT ) ) {
+                    List< ModelNode > nodes = response.get( RESULT ).asList( );
+                    for ( ModelNode node : nodes ) {
+                        result.add( node.asString( ) );
+                    }
+                }
+            }
+        } finally {
+            safeClose( client );
+            checkResponse( response );
+        }
+        return result;
+    }
+
+    public List< String > getServers( String host ) throws Exception {
+        ArrayList< String > result = new ArrayList<>( );
+        ModelControllerClient client = null;
+        ModelNode response = null;
+
+        try {
+            // /host=host1:read-children-names(child-type=server)
+            ModelNode operation = new ModelNode( );
+            operation.get( OP ).set( "read-children-names" );
+            operation.get( "child-type" ).set( "server" );
+            operation.get( OP_ADDR ).add( "host", host );
+
+            client = createControllerClient( );
+            response = client.execute( operation );
+
+            if ( !isFailure( response ) ) {
+                if ( response.hasDefined( RESULT ) ) {
+                    List< ModelNode > nodes = response.get( RESULT ).asList( );
+                    for ( ModelNode node : nodes ) {
+                        result.add( node.asString( ) );
+                    }
+                }
+            }
+        } finally {
+            safeClose( client );
+            checkResponse( response );
+        }
+        return result;
     }
 
     private String getErrorDescription( ModelNode response ) {

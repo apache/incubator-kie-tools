@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datasource.management.events;
 
 import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
 
@@ -24,19 +25,16 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
 public class NewDriverEvent
         extends BaseDriverEvent {
 
-    public NewDriverEvent() {
-    }
-
-    public NewDriverEvent( final DriverDef driverDef,
-            final Project project,
-            final String sessionId,
-            final String identity ) {
+    public NewDriverEvent( @MapsTo( "driverDef" ) final DriverDef driverDef,
+                           @MapsTo( "project" ) final Project project,
+                           @MapsTo( "sessionId" ) final String sessionId,
+                           @MapsTo( "identity" ) final String identity ) {
         super( driverDef, project, sessionId, identity );
     }
 
     public NewDriverEvent( final DriverDef driverDef,
-            final String sessionId,
-            final String identity ) {
-        super( driverDef, sessionId, identity );
+                           final String sessionId,
+                           final String identity ) {
+        this( driverDef, null, sessionId, identity );
     }
 }

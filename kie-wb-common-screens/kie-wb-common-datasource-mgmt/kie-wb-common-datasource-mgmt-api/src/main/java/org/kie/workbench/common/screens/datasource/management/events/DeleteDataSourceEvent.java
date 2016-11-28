@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datasource.management.events;
 
 import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
 
@@ -24,19 +25,16 @@ import org.kie.workbench.common.screens.datasource.management.model.DataSourceDe
 public class DeleteDataSourceEvent
         extends BaseDataSourceEvent {
 
-    public DeleteDataSourceEvent() {
-    }
-
-    public DeleteDataSourceEvent( final DataSourceDef dataSourceDef,
-            final Project project,
-            final String sessionId,
-            final String identity ) {
+    public DeleteDataSourceEvent( @MapsTo( "dataSourceDef" ) final DataSourceDef dataSourceDef,
+                                  @MapsTo( "project" ) final Project project,
+                                  @MapsTo( "sessionId" ) final String sessionId,
+                                  @MapsTo( "identity" ) final String identity ) {
         super( dataSourceDef, project, sessionId, identity );
     }
 
     public DeleteDataSourceEvent( final DataSourceDef dataSourceDef,
-            final String sessionId,
-            final String identity ) {
-        super( dataSourceDef, sessionId, identity );
+                                  final String sessionId,
+                                  final String identity ) {
+        this( dataSourceDef, null, sessionId, identity );
     }
 }

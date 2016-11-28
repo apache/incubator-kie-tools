@@ -36,15 +36,19 @@ public abstract class AbstractDefDeployer<T> implements DefDeployer {
 
     protected DataSourceRuntimeManager runtimeManager;
 
+    protected DefRegistry defRegistry;
+
     public AbstractDefDeployer() {
     }
 
     public AbstractDefDeployer( IOService ioService,
             DataSourceDefQueryService queryService,
-            DataSourceRuntimeManager runtimeManager ) {
+            DataSourceRuntimeManager runtimeManager,
+            DefRegistry defRegistry ) {
         this.ioService = ioService;
         this.queryService = queryService;
         this.runtimeManager = runtimeManager;
+        this.defRegistry = defRegistry;
     }
 
     @Override

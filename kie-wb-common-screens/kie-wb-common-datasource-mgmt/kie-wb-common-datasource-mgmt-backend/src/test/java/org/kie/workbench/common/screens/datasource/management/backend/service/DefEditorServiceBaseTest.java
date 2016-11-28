@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datasource.management.service;
+package org.kie.workbench.common.screens.datasource.management.backend.service;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
-import org.kie.workbench.common.screens.datasource.management.backend.service.AbstractDefEditorService;
-import org.kie.workbench.common.screens.datasource.management.backend.service.DataSourceServicesHelper;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDeploymentInfo;
 import org.kie.workbench.common.screens.datasource.management.model.Def;
 import org.kie.workbench.common.screens.datasource.management.model.DefEditorContent;
@@ -32,7 +30,7 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.editor.commons.service.RenameService;
+import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
@@ -60,6 +58,9 @@ public abstract class DefEditorServiceBaseTest {
     protected DataSourceServicesHelper serviceHelper;
 
     @Mock
+    protected DefRegistry defRegistry;
+
+    @Mock
     protected IOService ioService;
 
     @Mock
@@ -69,13 +70,16 @@ public abstract class DefEditorServiceBaseTest {
     protected CommentedOptionFactory optionsFactory;
 
     @Mock
-    protected RenameService renameService;
+    protected PathNamingService pathNamingService;
 
     @Mock
     protected MavenArtifactResolver artifactResolver;
 
     @Mock
     protected Path path;
+
+    @Mock
+    protected Path renamedPath;
 
     @Mock
     protected KieProject project;
@@ -92,6 +96,7 @@ public abstract class DefEditorServiceBaseTest {
     public void setup() {
         when ( optionsFactory.getSafeSessionId() ).thenReturn( SESSION_ID );
         when( optionsFactory.getSafeIdentityName() ).thenReturn( IDENTITY );
+        when ( serviceHelper.getDefRegistry() ).thenReturn( defRegistry );
     }
 
     protected abstract DefEditorContent getExpectedContent();
@@ -158,7 +163,9 @@ public abstract class DefEditorServiceBaseTest {
         //we wants that:
         // 1) the expected file was saved.
         verify( ioService, times( 1 ) ).write( eq( targetNioPath ), eq( source ), any( CommentedOption.class) );
-        //2) the definition was deployed, and 3) the notification was fired.
+        // 2) the definition was registered
+        verify( defRegistry, times( 1 ) ).setEntry( Paths.convert( targetNioPath ), getExpectedDef() );
+        // 3) the definition was deployed, and 4) the notification was fired.
         verifyCreateConditions( global );
     }
 
@@ -166,24 +173,11 @@ public abstract class DefEditorServiceBaseTest {
 
     @Test
     public void testSave() {
-        testSave( false );
-    }
-
-    @Test
-    public void testSaveWithNameModified() {
-        testSave( true );
-    }
-
-    protected void testSave( boolean nameModified ) {
-
-        Def originalDef = getExpectedDef();
+        //The name was not chanted.
+        getExpectedContent().getDef().setName( getOriginalDef().getName() );
         String originalSource = getOriginalDefString();
 
-        if ( !nameModified ) {
-            originalDef.setName( "dataSourceName" );
-        }
-
-        //expected target path
+        //expected path
         when( path.toURI() ).thenReturn( FILE_URI );
         org.uberfire.java.nio.file.Path targetNioPath = Paths.convert( path );
 
@@ -193,16 +187,42 @@ public abstract class DefEditorServiceBaseTest {
         editorService.save( path, getExpectedContent(), COMMENT );
 
         //we wants that:
-
-        //The expected file was saved.
-        //1) the expected file was saved
-        verify( optionsFactory, times( 1 ) ).makeCommentedOption( COMMENT );
+        // 1) previous definition was un-registered and the expected file was saved
+        verify( defRegistry, times( 1 ) ).invalidateCache( path );
         verify( ioService, times( 1 ) ).write( eq( targetNioPath ), eq( getExpectedDefString() ), any( CommentedOption.class ) );
+        verify( optionsFactory, times( 1 ) ).makeCommentedOption( COMMENT );
+        // 2) the new definition was registered.
+        verify( defRegistry, times( 1 ) ).setEntry( path, getExpectedDef() );
 
-        //2) the file was renamed if the name changed.
-        if ( nameModified ) {
-            verify( renameService, times( 1 ) ).rename( path, getExpectedDef().getName(), COMMENT );
-        }
+        // 3) the definition was deployed and 4) the notification was fired.
+        verifySaveConditions( );
+    }
+
+    @Test
+    public void testSaveWithNameModified() {
+        String originalSource = getOriginalDefString();
+        //expected path
+        when( path.toURI() ).thenReturn( FILE_URI );
+        org.uberfire.java.nio.file.Path targetNioPath = Paths.convert( path );
+
+        //rename path
+        when( renamedPath.toURI() ).thenReturn( FILE_URI );
+        when( pathNamingService.buildTargetPath( path, getExpectedDef().getName() ) ).thenReturn( renamedPath );
+        org.uberfire.java.nio.file.Path renamedNioPath = Paths.convert( renamedPath );
+
+        when ( ioService.readAllString( targetNioPath ) ).thenReturn( originalSource );
+        when ( projectService.resolveProject( path ) ).thenReturn( project );
+
+        editorService.save( path, getExpectedContent(), COMMENT );
+
+        //we wants that:
+        //1) previous definition was un-registered and the expected file was saved
+        verify( defRegistry, times( 1 ) ).invalidateCache( path );
+        verify( ioService, times( 1 ) ).write( eq( targetNioPath ), eq( getExpectedDefString() ), any( CommentedOption.class ) );
+        //2) the expected file was renamed and the new definition was registered.
+        verify( ioService, timeout( 1 ) ).move( eq( targetNioPath ), eq( renamedNioPath ), any( CommentedOption.class ) );
+        verify( optionsFactory, times( 2 ) ).makeCommentedOption( COMMENT );
+        verify( defRegistry, times( 1 ) ).setEntry( Paths.convert( Paths.convert( renamedPath ) ), getExpectedDef() );
 
         //3) the definition was deployed and 4) the notification was fired.
         verifySaveConditions( );
@@ -229,7 +249,10 @@ public abstract class DefEditorServiceBaseTest {
         editorService.delete( path, COMMENT );
 
         //we wants that:
-        //1) the file was deleted
+        //1) the file was deleted, and the definition was un-registered
+        verify( ioService, times( 1 ) ).delete( eq( Paths.convert( path ) ), any( CommentedOption.class ) );
+        verify( optionsFactory, times( 1 ) ).makeCommentedOption( COMMENT );
+        verify( defRegistry, times( 1 ) ).invalidateCache( path );
         //2) the definition was un-deployed, and 3) the delete notification was fired.
         verifyDeleteConditions();
     }

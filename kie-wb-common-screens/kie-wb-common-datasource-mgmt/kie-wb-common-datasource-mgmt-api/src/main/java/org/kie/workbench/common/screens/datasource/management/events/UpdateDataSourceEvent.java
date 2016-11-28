@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datasource.management.events;
 
 import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
 
@@ -25,27 +26,36 @@ public class UpdateDataSourceEvent extends BaseDataSourceEvent {
 
     private DataSourceDef originalDataSourceDef;
 
-    public UpdateDataSourceEvent() {
-    }
-
-    public UpdateDataSourceEvent( final DataSourceDef originalDataSourceDef,
-            final DataSourceDef dataSourceDef,
-            final Project project,
-            final String sessionId,
-            final String identity ) {
+    public UpdateDataSourceEvent( @MapsTo( "dataSourceDef" ) final DataSourceDef dataSourceDef,
+                                  @MapsTo( "project" ) final Project project,
+                                  @MapsTo( "sessionId" ) final String sessionId,
+                                  @MapsTo( "identity" ) final String identity,
+                                  @MapsTo( "originalDataSourceDef" ) final DataSourceDef originalDataSourceDef ) {
         super( dataSourceDef, project, sessionId, identity );
         this.originalDataSourceDef = originalDataSourceDef;
     }
 
     public UpdateDataSourceEvent( final DataSourceDef dataSourceDef,
-            final String sessionId,
-            final String identity,
-            final DataSourceDef originalDataSourceDef ) {
-        super( dataSourceDef, sessionId, identity );
-        this.originalDataSourceDef = originalDataSourceDef;
+                                  final String sessionId,
+                                  final String identity,
+                                  final DataSourceDef originalDataSourceDef ) {
+        this( dataSourceDef, null, sessionId, identity, originalDataSourceDef );
     }
 
-    public DataSourceDef getOriginalDataSourceDef() {
+    public UpdateDataSourceEvent( final DataSourceDef dataSourceDef,
+                                  final String sessionId,
+                                  final String identity ) {
+        this( dataSourceDef, sessionId, identity, null );
+    }
+
+    public UpdateDataSourceEvent( final DataSourceDef dataSourceDef,
+                                  final Project project,
+                                  final String sessionId,
+                                  final String identity ) {
+        this( dataSourceDef, project, sessionId, identity, null );
+    }
+
+    public DataSourceDef getOriginalDataSourceDef( ) {
         return originalDataSourceDef;
     }
 
@@ -54,7 +64,7 @@ public class UpdateDataSourceEvent extends BaseDataSourceEvent {
         if ( this == o ) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if ( o == null || getClass( ) != o.getClass( ) ) {
             return false;
         }
         if ( !super.equals( o ) ) {
@@ -68,10 +78,10 @@ public class UpdateDataSourceEvent extends BaseDataSourceEvent {
     }
 
     @Override
-    public int hashCode() {
-        int result = super.hashCode();
+    public int hashCode( ) {
+        int result = super.hashCode( );
         result = ~~result;
-        result = 31 * result + ( originalDataSourceDef != null ? originalDataSourceDef.hashCode() : 0 );
+        result = 31 * result + ( originalDataSourceDef != null ? originalDataSourceDef.hashCode( ) : 0 );
         result = ~~result;
         return result;
     }

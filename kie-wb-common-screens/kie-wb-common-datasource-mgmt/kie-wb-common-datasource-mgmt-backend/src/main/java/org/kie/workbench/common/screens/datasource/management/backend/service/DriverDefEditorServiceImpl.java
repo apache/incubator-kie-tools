@@ -47,6 +47,7 @@ import org.kie.workbench.common.screens.datasource.management.util.DriverDefSeri
 import org.kie.workbench.common.screens.datasource.management.util.MavenArtifactResolver;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 
@@ -71,12 +72,12 @@ public class DriverDefEditorServiceImpl
             @Named("ioStrategy") IOService ioService,
             KieProjectService projectService,
             CommentedOptionFactory optionsFactory,
-            RenameService renameService,
+            PathNamingService pathNamingService,
             MavenArtifactResolver artifactResolver,
             Event<NewDriverEvent> newDriverEvent,
             Event<UpdateDriverEvent> updateDriverEvent,
             Event<DeleteDriverEvent> deleteDriverEvent ) {
-        super( runtimeManager, serviceHelper, ioService, projectService, optionsFactory, renameService, artifactResolver );
+        super( runtimeManager, serviceHelper, ioService, projectService, optionsFactory, pathNamingService, artifactResolver );
         this.newDriverEvent = newDriverEvent;
         this.updateDriverEvent = updateDriverEvent;
         this.deleteDriverEvent = deleteDriverEvent;
@@ -129,11 +130,11 @@ public class DriverDefEditorServiceImpl
 
     @Override
     protected void fireUpdateEvent( DriverDef def, Project project, DriverDef originalDef ) {
-        updateDriverEvent.fire( new UpdateDriverEvent( originalDef,
-                def,
+        updateDriverEvent.fire( new UpdateDriverEvent( def,
                 project,
                 optionsFactory.getSafeSessionId(),
-                optionsFactory.getSafeIdentityName() ) );
+                optionsFactory.getSafeIdentityName(),
+                originalDef ) );
     }
 
     @Override

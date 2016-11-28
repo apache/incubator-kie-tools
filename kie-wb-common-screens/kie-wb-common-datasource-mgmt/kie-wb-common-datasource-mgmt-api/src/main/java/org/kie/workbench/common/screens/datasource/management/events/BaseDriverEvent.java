@@ -29,9 +29,6 @@ public abstract class BaseDriverEvent {
 
     private String identity;
 
-    protected BaseDriverEvent() {
-    }
-
     protected BaseDriverEvent( final DriverDef driverDef,
             final Project project,
             final String sessionId,

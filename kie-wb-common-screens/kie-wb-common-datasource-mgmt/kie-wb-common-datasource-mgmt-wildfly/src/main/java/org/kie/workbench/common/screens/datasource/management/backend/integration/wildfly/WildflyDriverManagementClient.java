@@ -76,6 +76,11 @@ public class WildflyDriverManagementClient
 
         ModelNode operation = new ModelNode();
         operation.get( OP ).set( "installed-drivers-list" );
+
+        if ( !isStandalone() && getReferenceServerHost() != null && getReferenceServerName() != null ) {
+            operation.get( OP_ADDR ).add( "host", getReferenceServerHost() );
+            operation.get( OP_ADDR ).add( "server", getReferenceServerName() );
+        }
         operation.get( OP_ADDR ).add( "subsystem", "datasources" );
 
         ModelControllerClient client = null;

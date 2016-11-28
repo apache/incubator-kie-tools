@@ -17,8 +17,17 @@
 package org.kie.workbench.common.screens.datasource.management.util;
 
 import java.util.Properties;
+import java.util.Set;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger( ServiceUtil.class );
 
     public static String getManagedProperty( Properties properties, String propertyName ) {
         return getManagedProperty( properties, propertyName, null );
@@ -36,5 +45,23 @@ public class ServiceUtil {
         return value == null || value.trim().length() == 0;
     }
 
+    public static Object getManagedBean( BeanManager beanManager, String beanName ) {
 
+        // Obtain the beans for the concrete impl to use.
+        Set<Bean<?>> beans = beanManager.getBeans( beanName );
+        if ( beans == null || beans.isEmpty() ) {
+            logger.warn( "Managed bean: " + beanName + " was not found." );
+            return null;
+        }
+
+        // Instantiate the service impl.
+        logger.info( "Getting reference to managed bean: " + beanName );
+        Bean bean = ( Bean ) beans.iterator().next();
+        if ( beans.size() > 1 ) {
+            logger.warn( "Multiple beans were found for beanName: " + beanName +
+                    "Using the first one found in the classpath with fully classified classname '" + bean.getBeanClass() );
+        }
+        CreationalContext context = beanManager.createCreationalContext( bean );
+        return beanManager.getReference( bean, bean.getBeanClass(), context );
+    }
 }

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datasource.management.events;
 
 import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
 
@@ -25,27 +26,36 @@ public class UpdateDriverEvent extends BaseDriverEvent {
 
     private DriverDef originalDriverDef;
 
-    public UpdateDriverEvent() {
-    }
-
-    public UpdateDriverEvent( final DriverDef originalDriverDef,
-            final DriverDef driverDef,
-            final Project project,
-            final String sessionId,
-            final String identity ) {
+    public UpdateDriverEvent( @MapsTo( "driverDef" ) final DriverDef driverDef,
+                              @MapsTo( "project" ) final Project project,
+                              @MapsTo( "sessionId" ) final String sessionId,
+                              @MapsTo( "identity" ) final String identity,
+                              @MapsTo( "originalDriverDef" ) final DriverDef originalDriverDef ) {
         super( driverDef, project, sessionId, identity );
         this.originalDriverDef = originalDriverDef;
     }
 
     public UpdateDriverEvent( final DriverDef driverDef,
-            final String sessionId,
-            final String identity,
-            final DriverDef originalDriverDef ) {
-        super( driverDef, sessionId, identity );
-        this.originalDriverDef = originalDriverDef;
+                              final String sessionId,
+                              final String identity,
+                              final DriverDef originalDriverDef ) {
+        this( driverDef, null, sessionId, identity, originalDriverDef );
     }
 
-    public DriverDef getOriginalDriverDef() {
+    public UpdateDriverEvent( final DriverDef driverDef,
+                              final String sessionId,
+                              final String identity ) {
+        this( driverDef, sessionId, identity, null );
+    }
+
+    public UpdateDriverEvent( final DriverDef driverDef,
+                              final Project project,
+                              final String sessionId,
+                              final String identity ) {
+        this( driverDef, project, sessionId, identity, null );
+    }
+
+    public DriverDef getOriginalDriverDef( ) {
         return originalDriverDef;
     }
 
@@ -54,7 +64,7 @@ public class UpdateDriverEvent extends BaseDriverEvent {
         if ( this == o ) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if ( o == null || getClass( ) != o.getClass( ) ) {
             return false;
         }
         if ( !super.equals( o ) ) {
@@ -67,10 +77,10 @@ public class UpdateDriverEvent extends BaseDriverEvent {
     }
 
     @Override
-    public int hashCode() {
-        int result = super.hashCode();
+    public int hashCode( ) {
+        int result = super.hashCode( );
         result = ~~result;
-        result = 31 * result + ( originalDriverDef != null ? originalDriverDef.hashCode() : 0 );
+        result = 31 * result + ( originalDriverDef != null ? originalDriverDef.hashCode( ) : 0 );
         result = ~~result;
         return result;
     }

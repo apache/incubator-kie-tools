@@ -72,6 +72,18 @@ public class WildflyDeploymentClient
 
             response = client.execute( operation );
 
+            if ( !isFailure( response ) && serverGroup != null ) {
+                operation = new ModelNode( );
+                operation.get( OP ).set( ADD );
+                operation.get( OP_ADDR ).add( SERVER_GROUP, serverGroup );
+                operation.get( OP_ADDR ).add( DEPLOYMENT, deploymentName );
+
+                operation.get( "name" ).set( deploymentName );
+                operation.get( "enabled" ).set( enabled );
+                operation.get( "runtime-name" ).set( runtimeName );
+                response = client.execute( operation );
+            }
+
         } finally {
             safeClose( client );
             checkResponse( response );
@@ -121,8 +133,17 @@ public class WildflyDeploymentClient
 
         try {
             client = createControllerClient();
+            ModelNode operation;
+            if ( serverGroup != null ) {
+                operation = new ModelNode( );
+                operation.get( OP ).set( DEPLOYMENT_REMOVE_OPERATION );
+                operation.get( OP_ADDR ).add( SERVER_GROUP, serverGroup );
+                operation.get( OP_ADDR ).add( DEPLOYMENT, deploymentName );
+                operation.get( "name" ).set( deploymentName );
+                response = client.execute( operation );
+            }
 
-            ModelNode operation = new ModelNode( );
+            operation = new ModelNode( );
             operation.get( OP ).set( DEPLOYMENT_REMOVE_OPERATION );
             operation.get( OP_ADDR ).add( DEPLOYMENT, deploymentName );
             operation.get( "name" ).set( deploymentName );

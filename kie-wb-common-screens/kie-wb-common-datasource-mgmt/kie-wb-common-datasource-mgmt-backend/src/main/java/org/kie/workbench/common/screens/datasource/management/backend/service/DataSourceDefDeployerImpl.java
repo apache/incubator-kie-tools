@@ -46,9 +46,10 @@ public class DataSourceDefDeployerImpl
 
     @Inject
     public DataSourceDefDeployerImpl( @Named("ioStrategy") IOService ioService,
-            DataSourceDefQueryService queryService,
-            DataSourceRuntimeManager runtimeManager ) {
-        super( ioService, queryService, runtimeManager );
+                                      DataSourceDefQueryService queryService,
+                                      DataSourceRuntimeManager runtimeManager,
+                                      DefRegistry defRegistry ) {
+        super( ioService, queryService, runtimeManager, defRegistry );
     }
 
     @Override
@@ -68,6 +69,7 @@ public class DataSourceDefDeployerImpl
             String source = ioService.readAllString( Paths.convert( defInfo.getPath() ) );
             DataSourceDef dataSourceDef = DataSourceDefSerializer.deserialize( source );
             runtimeManager.deployDataSource( dataSourceDef, DeploymentOptions.createOrResync() );
+            defRegistry.setEntry( defInfo.getPath(), dataSourceDef );
             logger.debug( "Data source was successfully deployed" );
         } catch ( Exception e ) {
             logger.error( "Data source deployment failed, defInfo: " + defInfo, e );

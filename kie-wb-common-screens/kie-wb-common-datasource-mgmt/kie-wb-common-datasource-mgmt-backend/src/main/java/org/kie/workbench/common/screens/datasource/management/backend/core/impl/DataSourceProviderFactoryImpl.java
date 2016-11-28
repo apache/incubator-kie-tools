@@ -16,22 +16,20 @@
 
 package org.kie.workbench.common.screens.datasource.management.backend.core.impl;
 
-import java.io.InputStream;
 import java.util.Properties;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceProvider;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceProviderFactory;
+import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceSettings;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DriverProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceSettings.*;
 import static org.kie.workbench.common.screens.datasource.management.util.ServiceUtil.*;
 
 /**
@@ -44,10 +42,6 @@ public class DataSourceProviderFactoryImpl
 
     private static final Logger logger = LoggerFactory.getLogger( DataSourceProviderFactoryImpl.class );
 
-    private static final String DATASOURCE_MANAGEMENT_PROPERTIES = "datasource-management.properties";
-
-    private static final String DATASOURCE_MANAGEMENT_PREFIX = "datasource.management";
-
     private static final String DATASOURCE_SERVICE = DATASOURCE_MANAGEMENT_PREFIX +".DataSourceProvider";
 
     private static final String DRIVER_SERVICE = DATASOURCE_MANAGEMENT_PREFIX + ".DriverProvider";
@@ -55,20 +49,18 @@ public class DataSourceProviderFactoryImpl
     @Inject
     private BeanManager beanManager;
 
-    private Properties properties;
-
     private DataSourceProvider dataSourceProvider;
 
     private DriverProvider driverService;
 
     @PostConstruct
     public void init() {
-        loadConfig();
+        Properties properties = DataSourceSettings.getInstance().getProperties();
 
         String serviceName = getManagedProperty( properties, DATASOURCE_SERVICE );
         if ( !isEmpty( serviceName ) ) {
             try {
-                dataSourceProvider = ( DataSourceProvider ) getManagedBean( serviceName );
+                dataSourceProvider = ( DataSourceProvider ) getManagedBean( beanManager, serviceName );
                 if ( dataSourceProvider == null ) {
                     logger.error( "It was not possible to get the reference to the data sources service: "
                             + serviceName + ". Data source services won't be available." );
@@ -86,7 +78,7 @@ public class DataSourceProviderFactoryImpl
         serviceName = getManagedProperty( properties, DRIVER_SERVICE );
         if ( !isEmpty( serviceName ) ) {
             try {
-                driverService = ( DriverProvider ) getManagedBean( serviceName );
+                driverService = ( DriverProvider ) getManagedBean( beanManager, serviceName );
                 if ( driverService == null ) {
                     logger.error( "It was not possible to get reference to the drivers service: "
                             + serviceName + ". Drivers services won't be available." );
@@ -107,7 +99,6 @@ public class DataSourceProviderFactoryImpl
         if ( driverService != null ) {
             logger.debug( "Drivers service was properly initialized."  );
         }
-
     }
 
     @Override
@@ -118,44 +109,5 @@ public class DataSourceProviderFactoryImpl
     @Override
     public DriverProvider getDriverProvider() {
         return driverService;
-    }
-
-    private Object getManagedBean( String beanName ) {
-
-        // Obtain the beans for the concrete impl to use.
-        Set<Bean<?>> beans = beanManager.getBeans( beanName );
-        if ( beans == null || beans.isEmpty() ) {
-            logger.warn( "Managed bean: " + beanName + " was not found." );
-            return null;
-        }
-
-        // Instantiate the service impl.
-        logger.info( "Getting reference to managed bean: " + beanName );
-        Bean bean = ( Bean ) beans.iterator().next();
-        if ( beans.size() > 1 ) {
-            logger.warn( "Multiple beans were found for beanName: " + beanName +
-                    "Using the first one found in the classpath with fully classified classname '" + bean.getBeanClass() );
-        }
-        CreationalContext context = beanManager.createCreationalContext( bean );
-        return beanManager.getReference( bean, bean.getBeanClass(), context );
-    }
-
-    private void loadConfig() {
-        InputStream inputStream =
-                DataSourceProviderFactoryImpl.class.getResourceAsStream( "/datasource-management.properties" );
-
-        properties = new Properties( );
-        if ( inputStream == null ) {
-            logger.warn( "Data source management configuration file: " + DATASOURCE_MANAGEMENT_PROPERTIES +
-            " was not found. Some features may be disabled in current installation.");
-            return;
-        }
-
-        try {
-            properties.load( inputStream );
-        } catch ( Exception e ) {
-            logger.error( "An error was produced during data source configuration file reading: " +
-            DATASOURCE_MANAGEMENT_PROPERTIES, e );
-        }
     }
 }

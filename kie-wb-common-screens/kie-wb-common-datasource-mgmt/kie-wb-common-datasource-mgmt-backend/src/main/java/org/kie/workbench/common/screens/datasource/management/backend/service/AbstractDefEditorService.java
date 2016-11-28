@@ -32,9 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.editor.commons.service.RenameService;
+import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -53,7 +52,7 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>,D e
 
     protected CommentedOptionFactory optionsFactory;
 
-    protected RenameService renameService;
+    protected PathNamingService pathNamingService;
 
     protected MavenArtifactResolver artifactResolver;
 
@@ -65,14 +64,14 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>,D e
             IOService ioService,
             KieProjectService projectService,
             CommentedOptionFactory optionsFactory,
-            RenameService renameService,
+            PathNamingService pathNamingService,
             MavenArtifactResolver artifactResolver ) {
         this.runtimeManager = runtimeManager;
         this.serviceHelper = serviceHelper;
         this.ioService = ioService;
         this.projectService = projectService;
         this.optionsFactory = optionsFactory;
-        this.renameService = renameService;
+        this.pathNamingService = pathNamingService;
         this.artifactResolver = artifactResolver;
     }
 
@@ -118,6 +117,7 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>,D e
         checkNotNull( "content", editorContent );
 
         Path newPath = path;
+        boolean onBatch = false;
         try {
             final D originalDef = deserializeDef( ioService.readAllString( Paths.convert( path ) ) );
             final String content = serializeDef( editorContent.getDef() );
@@ -128,17 +128,33 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>,D e
             }
             deploy( editorContent.getDef(), DeploymentOptions.create() );
 
-            ioService.write( Paths.convert( path ), content, optionsFactory.makeCommentedOption( comment ) );
+            final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+
+            ioService.startBatch( _path.getFileSystem() );
+            onBatch = true;
+
+            serviceHelper.getDefRegistry().invalidateCache( path );
+            ioService.write( _path, content, optionsFactory.makeCommentedOption( comment ) );
 
             if ( originalDef.getName() != null &&
                     !originalDef.getName().equals( editorContent.getDef().getName() ) ) {
-                newPath = renameService.rename( path, editorContent.getDef().getName(), comment );
+
+                final org.uberfire.java.nio.file.Path _target =
+                        Paths.convert( pathNamingService.buildTargetPath( path, editorContent.getDef().getName() ) );
+
+                ioService.move( _path, _target, optionsFactory.makeCommentedOption( comment ) );
+                newPath = Paths.convert( _target );
             }
+            serviceHelper.getDefRegistry().setEntry( newPath, editorContent.getDef() );
 
             fireUpdateEvent( editorContent.getDef(), editorContent.getProject(), originalDef );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
+        } finally {
+            if ( onBatch ) {
+                ioService.endBatch();
+            }
         }
         return newPath;
     }
@@ -179,30 +195,33 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>,D e
 
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
         final Path newPath = Paths.convert( nioPath );
-        boolean fileCreated = false;
 
         if ( ioService.exists( nioPath ) ) {
             throw new FileAlreadyExistsException( nioPath.toString() );
         }
 
         try {
-            ioService.startBatch( nioPath.getFileSystem() );
-
+            ioService.startBatch( nioPath.getFileSystem( ) );
             //create the file.
-            ioService.write( nioPath, content, new CommentedOption( optionsFactory.getSafeIdentityName() ) );
-            fileCreated = true;
+            ioService.write( nioPath, content, optionsFactory.makeCommentedOption( "" ) );
+            serviceHelper.getDefRegistry( ).setEntry( newPath, def );
+        } catch ( Exception e ) {
+            logger.error( "It was not possible to create: " + def.getName(), e );
+            ioService.endBatch();
+            throw ExceptionUtilities.handleException( e );
+        }
 
+        try {
+            //proceed with the deployment
             deploy( def, DeploymentOptions.create() );
-
         } catch ( Exception e1 ) {
-            logger.error( "It was not possible to create: {}", def.getName(), e1 );
-            if ( fileCreated ) {
-                //the file was created, but the deployment failed.
-                try {
-                    ioService.delete( nioPath );
-                } catch ( Exception e2 ) {
-                    logger.warn( "Removal of orphan definition file failed: {}", newPath, e2 );
-                }
+            logger.error( "It was not possible to create: " + def.getName(), e1 );
+            serviceHelper.getDefRegistry().invalidateCache( newPath );
+            //the file was created, but the deployment failed.
+            try {
+                ioService.delete( nioPath );
+            } catch ( Exception e2 ) {
+                logger.warn( "Removal of orphan definition file failed: " + newPath, e2 );
             }
             throw ExceptionUtilities.handleException( e1 );
         } finally {
@@ -225,7 +244,7 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>,D e
                 if ( deploymentInfo != null ) {
                     unDeploy( deploymentInfo, UnDeploymentOptions.forcedUnDeployment() );
                 }
-
+                serviceHelper.getDefRegistry().invalidateCache( path );
                 ioService.delete( Paths.convert( path ), optionsFactory.makeCommentedOption( comment ) );
                 fireDeleteEvent( def, project );
             } catch ( Exception e ) {

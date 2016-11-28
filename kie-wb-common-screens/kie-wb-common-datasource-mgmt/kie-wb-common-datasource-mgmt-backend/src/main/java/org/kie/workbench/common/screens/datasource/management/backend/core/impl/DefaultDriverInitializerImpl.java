@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datasource.management.backend.core.impl;
 
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -25,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceSettings;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DefaultDriverInitializer;
 import org.kie.workbench.common.screens.datasource.management.backend.service.DataSourceServicesHelper;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
@@ -86,22 +86,7 @@ public class DefaultDriverInitializerImpl
     }
 
     protected void initializeFromConfigFile() {
-        InputStream inputStream = DefaultDriverInitializerImpl.class.getResourceAsStream( "/datasource-management.properties" );
-        if ( inputStream != null ) {
-            try {
-                Properties properties = new Properties();
-                properties.load( inputStream );
-                initializeFromProperties( properties );
-            } catch ( Exception e ) {
-                logger.error( "It was not possible to read the configuration file.", e );
-            } finally {
-                try {
-                    inputStream.close();
-                } catch ( Exception e ) {
-                    logger.warn( "Configuration file close error.", e );
-                }
-            }
-        }
+        initializeFromProperties( DataSourceSettings.getInstance().getProperties() );
     }
 
     private void initializeFromProperties( Properties properties ) {
@@ -130,9 +115,11 @@ public class DefaultDriverInitializerImpl
                 try {
                     if ( !ioService.exists( targetPath ) ) {
                         source = DriverDefSerializer.serialize( driverDef );
+                        serviceHelper.getDefRegistry().setEntry( Paths.convert( targetPath ), driverDef );
                         ioService.write( targetPath, source, optionsFactory.makeCommentedOption( "system generated driver" ) );
                     }
                 } catch ( Exception e ) {
+                    serviceHelper.getDefRegistry().invalidateCache( Paths.convert( targetPath ) );
                     logger.error( "It was not possible to write driver definition {} in path {}. ", driverDef, targetPath );
                 }
             } else {

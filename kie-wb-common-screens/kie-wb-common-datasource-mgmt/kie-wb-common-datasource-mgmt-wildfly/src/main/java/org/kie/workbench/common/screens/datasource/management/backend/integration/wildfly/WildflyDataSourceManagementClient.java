@@ -41,6 +41,9 @@ public class WildflyDataSourceManagementClient
 
         ModelNode operation = new ModelNode();
         operation.get( OP ).set( ADD );
+        if ( profile != null ) {
+            operation.get( OP_ADDR ).add( "profile", profile );
+        }
         operation.get( OP_ADDR ).add( "subsystem", "datasources" );
 
         if ( dataSourceDef.getName() != null ) {
@@ -108,6 +111,9 @@ public class WildflyDataSourceManagementClient
         //Use a template for copying the datasource address
         ModelNode stepTemplate = new ModelNode();
         stepTemplate.get( OP ).set( "write-attribute" );
+        if ( profile != null ) {
+            stepTemplate.get( OP_ADDR ).add( "profile", profile );
+        }
         stepTemplate.get( OP_ADDR ).add( "subsystem", "datasources" );
         stepTemplate.get( OP_ADDR ).add( "data-source", name );
 
@@ -153,9 +159,13 @@ public class WildflyDataSourceManagementClient
             client = createControllerClient();
             ModelNode operation = new ModelNode();
 
+            ////profile=full/subsystem=datasources:read-children-resources(child-type=data-source)
             ///subsystem=datasources:read-children-resources(child-type=data-source)
             operation.get( OP ).set( "read-children-resources" );
             operation.get( "child-type" ).set( "data-source" );
+            if ( profile != null ) {
+                operation.get( OP_ADDR ).add( "profile", profile );
+            }
             operation.get( OP_ADDR ).add( "subsystem", "datasources" );
 
             response = client.execute( new OperationBuilder( operation ).build() );
@@ -206,6 +216,9 @@ public class WildflyDataSourceManagementClient
 
         ModelNode operation = new ModelNode( );
         operation.get( OP ).set( opName );
+        if ( profile != null ) {
+            operation.get( OP_ADDR ).add( "profile", profile );
+        }
         operation.get( OP_ADDR ).add( "subsystem", "datasources");
         operation.get( OP_ADDR ).add( "data-source", name );
 
@@ -231,6 +244,9 @@ public class WildflyDataSourceManagementClient
 
         ModelNode operation = new ModelNode( );
         operation.get( OP ).set( "remove" );
+        if ( profile != null ) {
+            operation.get( OP_ADDR ).add( "profile", profile );
+        }
         operation.get( OP_ADDR ).add( "subsystem", "datasources" );
         operation.get( OP_ADDR ).add( "data-source", name );
 
