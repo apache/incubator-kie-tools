@@ -16,32 +16,69 @@
 
 package org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.model.Person;
-import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
+import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.FieldConstraint;
 import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.JavaModel;
 import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
 @RunWith( MockitoJUnitRunner.class )
-public class NestedFormFormValuesProcessorImplTest extends AbstractFormValuesProcessorImplTest {
+public class NestedFormBackendFormRenderingContextManagerTest extends AbstractBackendFormRenderingContextManagerTest {
 
     protected Person model;
 
     @Test
+    public void testConstraintsExtraction() {
+        DynamicModelConstraints constraints = context.getRenderingContext().getModelConstraints().get( Person.class.getName() );
+
+        assertNotNull( "Constraints cannot be null", constraints );
+
+        assertFalse( "There should be field constraints", constraints.getFieldConstraints().isEmpty() );
+
+        assertEquals( "There should be 3 constraints", 3, constraints.getFieldConstraints().size() );
+
+        testFieldAnnotation( constraints, "id", Min.class.getName(), Max.class.getName() );
+        testFieldAnnotation( constraints, "name", NotNull.class.getName(), NotEmpty.class.getName() );
+        testFieldAnnotation( constraints, "birthday", NotNull.class.getName() );
+    }
+
+    protected void testFieldAnnotation( DynamicModelConstraints constraints, String fieldName, String... annotations ) {
+        List<FieldConstraint> fieldConstraints = constraints.getFieldConstraints().get( fieldName );
+
+        assertNotNull( "FieldConstraints cannot be null for '" + fieldName + "' field", fieldConstraints );
+        assertEquals( "There should be " + annotations.length + " constraints for '" + fieldName + "' field", annotations.length, fieldConstraints.size() );
+
+        for ( String annotation : annotations ) {
+            boolean present = fieldConstraints.stream().filter( constraint -> constraint.getAnnotationType().equals( annotation ) ).findFirst().isPresent();
+            assertTrue( "FieldConstraint must have annotation '" + annotation + "'", present );
+        }
+    }
+
+    @Test
     public void testReadNestedData() {
-        Map<String, Object> result = formValuesProcessor.readFormValues( renderingContext.getRootForm(),
-                                                                         formData,
-                                                                         context );
+        Map<String, Object> result = context.getRenderingContext().getModel();
+
+        assertFalse( "There should be some validations for model", context.getRenderingContext().getModelConstraints().isEmpty() );
 
         assertNotNull( "Result cannot be null ", result );
         assertTrue( "Result must contain only one entry", result.size() == 1 );
@@ -61,7 +98,6 @@ public class NestedFormFormValuesProcessorImplTest extends AbstractFormValuesPro
 
     @Test
     public void testWriteNestedModelWithExistingObject() {
-
         Date date = new Date();
         date.setTime( date.getTime() + 5000 );
 
@@ -74,10 +110,7 @@ public class NestedFormFormValuesProcessorImplTest extends AbstractFormValuesPro
 
         formValues.put( "person", personValues );
 
-        Map<String, Object> result = formValuesProcessor.writeFormValues( renderingContext.getRootForm(),
-                                                                          formValues,
-                                                                          context.getFormData(),
-                                                                          context );
+        Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
 
         assertNotNull( "Result cannot be null ", result );
         assertTrue( "Result must contain only one entry", result.size() == 1 );
@@ -112,7 +145,6 @@ public class NestedFormFormValuesProcessorImplTest extends AbstractFormValuesPro
 
             formData.remove( "person" );
 
-
             Map<String, Object> personValues = new HashMap<>();
             personValues.put( "id", 5555 );
             personValues.put( "name", "John" );
@@ -124,10 +156,7 @@ public class NestedFormFormValuesProcessorImplTest extends AbstractFormValuesPro
 
             formValues.put( "person", personValues );
 
-            Map<String, Object> result = formValuesProcessor.writeFormValues( renderingContext.getRootForm(),
-                                                                              formValues,
-                                                                              context.getFormData(),
-                                                                              context );
+            Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
 
             assertNotNull( "Result cannot be null ", result );
             assertTrue( "Result must contain only one entry", result.size() == 1 );
@@ -151,27 +180,23 @@ public class NestedFormFormValuesProcessorImplTest extends AbstractFormValuesPro
         }
     }
 
-
     @Override
-    protected MapModelRenderingContext generateRenderingContext() {
-        FormDefinition form = new FormDefinition();
-        FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Person.class.getName() ) );
+    protected FormDefinition[] getNestedForms() {
+        FormDefinition form = new FormDefinition( new JavaModel() {
+            @Override
+            public String getType() {
+                return Person.class.getName();
+            }
 
-        field.setName( "person" );
-        field.setBinding( "person" );
+            @Override
+            public String getName() {
+                return "person";
+            }
+        } );
 
-        SubFormFieldDefinition subForm = (SubFormFieldDefinition) field;
-        subForm.setNestedForm( Person.class.getName() );
-
-        form.getFields().add( field );
-
-        MapModelRenderingContext context = new MapModelRenderingContext();
-        context.setRootForm( form );
-
-        form = new FormDefinition();
         form.setId( Person.class.getName() );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
+        FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
         field.setName( "name" );
         field.setBinding( "name" );
         form.getFields().add( field );
@@ -186,9 +211,23 @@ public class NestedFormFormValuesProcessorImplTest extends AbstractFormValuesPro
         field.setBinding( "birthday" );
         form.getFields().add( field );
 
-        context.getAvailableForms().put( form.getId(), form );
+        return new FormDefinition[] { form };
+    }
 
-        return context;
+    @Override
+    protected FormDefinition getRootForm() {
+        FormDefinition form = new FormDefinition( () -> "root" );
+        FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Person.class.getName() ) );
+
+        field.setName( "person" );
+        field.setBinding( "person" );
+
+        SubFormFieldDefinition subForm = (SubFormFieldDefinition) field;
+        subForm.setNestedForm( Person.class.getName() );
+
+        form.getFields().add( field );
+
+        return form;
     }
 
     @Override

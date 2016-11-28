@@ -16,19 +16,37 @@
 
 package org.kie.workbench.common.forms.dynamic.service.shared.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.dynamic.service.shared.AbstractFormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
 
+/**
+ * FormRenderinigContext for dynamic data
+ */
 @Portable
 public class MapModelRenderingContext extends AbstractFormRenderingContext<Map<String, Object>> {
 
     public static final String FORM_ENGINE_OBJECT_IDX = "__FormEngine-ObjectIndex";
     public static final String FORM_ENGINE_EDITED_OBJECT = "__FormEngine-EditedObject";
 
+    public Map<String, DynamicModelConstraints> modelValidations = new HashMap<>();
+
     @Override
-    protected AbstractFormRenderingContext getNewInstance() {
-        return new MapModelRenderingContext();
+    protected MapModelRenderingContext getNewInstance() {
+        MapModelRenderingContext copy = new MapModelRenderingContext();
+        copy.setModelValidations( modelValidations );
+        return copy;
+    }
+
+    public Map<String, DynamicModelConstraints> getModelConstraints() {
+        return modelValidations;
+    }
+
+    public void setModelValidations( Map<String, DynamicModelConstraints> modelValidations ) {
+        this.modelValidations = modelValidations;
     }
 }

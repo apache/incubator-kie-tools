@@ -5,6 +5,9 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name="org.hibernate.validator.HibernateValidator"/>
+  <inherits name="org.jboss.errai.validation.Validation"/>
+
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
 
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient"/>

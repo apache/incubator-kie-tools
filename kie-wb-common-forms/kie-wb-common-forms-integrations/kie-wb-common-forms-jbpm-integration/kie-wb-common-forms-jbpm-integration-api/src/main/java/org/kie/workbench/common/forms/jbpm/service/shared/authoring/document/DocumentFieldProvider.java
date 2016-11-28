@@ -19,8 +19,7 @@ package org.kie.workbench.common.forms.jbpm.service.shared.authoring.document;
 
 import javax.enterprise.context.Dependent;
 
-import org.kie.workbench.common.forms.jbpm.model.authoring.document.DocumentFieldDefinition;
-import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.document.DocumentFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldTypeInfo;
 import org.kie.workbench.common.forms.service.impl.fieldProviders.BasicTypeFieldProvider;
 

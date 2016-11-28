@@ -21,9 +21,10 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.AbstractJBPMFormModel;
+import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 
 @Portable
-public class TaskFormModel extends AbstractJBPMFormModel<TaskVariable> {
+public class TaskFormModel extends AbstractJBPMFormModel {
 
     protected String processId;
 
@@ -31,14 +32,18 @@ public class TaskFormModel extends AbstractJBPMFormModel<TaskVariable> {
 
     protected String taskName;
 
+    protected String taskFormName;
+
     public TaskFormModel( @MapsTo( "processId" ) String processId,
                           @MapsTo( "taskId" ) String taskId,
                           @MapsTo( "taskName" ) String taskName,
-                          @MapsTo( "variables" ) List<TaskVariable> variables ) {
+                          @MapsTo( "taskFormName" ) String taskFormName,
+                          @MapsTo( "variables" ) List<JBPMVariable> variables ) {
         super( variables );
         this.processId = processId;
         this.taskId = taskId;
         this.taskName = taskName;
+        this.taskFormName = taskFormName;
     }
 
     @Override
@@ -68,5 +73,13 @@ public class TaskFormModel extends AbstractJBPMFormModel<TaskVariable> {
 
     public void setTaskName( String taskName ) {
         this.taskName = taskName;
+    }
+
+    public String getTaskFormName() {
+        return taskFormName;
+    }
+
+    public void setTaskFormName( String taskFormName ) {
+        this.taskFormName = taskFormName;
     }
 }

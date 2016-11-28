@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic;
 
+import java.io.Serializable;
+
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
-public interface FieldValueProcessor<F extends FieldDefinition, RAW_VALUE, FLAT_VALUE > {
+public interface FieldValueProcessor<F extends FieldDefinition, RAW_VALUE, FLAT_VALUE > extends Serializable {
 
     Class<F> getSupportedField();
 

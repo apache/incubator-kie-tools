@@ -16,11 +16,27 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling;
 
-public interface FormValidator {
+/**
+ * Component that validates the form state
+ */
+public interface FormValidator<MODEL> {
 
+    public static final String NESTED_PROPERTY_SEPARATOR = "_";
+
+    /**
+     * Sets the {@link FormFieldProvider} for the given rendered form
+     */
     void setFormFieldProvider( FormFieldProvider formFieldProvider );
 
-    boolean validate( Object model );
+    /**
+     * Validates the given form model
+     * @return True or false depending on the validations
+     */
+    boolean validate( MODEL model );
 
-    boolean validate( String propertyName, Object model );
+    /**
+     * Validates a specific field value.
+     * @return True or false depending on the validation
+     */
+    boolean validate( String fieldName, MODEL model );
 }

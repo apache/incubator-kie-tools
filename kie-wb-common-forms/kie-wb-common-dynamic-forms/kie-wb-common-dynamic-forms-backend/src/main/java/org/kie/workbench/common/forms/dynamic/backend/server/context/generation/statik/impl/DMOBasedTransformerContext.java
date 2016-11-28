@@ -89,11 +89,10 @@ public class DMOBasedTransformerContext implements TransformerContext<StaticMode
         Assert.notNull( "Model cannot be null", model );
 
         final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
-        ProjectDataModelOracle oracle = new ProjectDataModelOracleImpl();
 
         final ClassFactBuilder modelFactBuilder = new ClassFactBuilder( builder, model.getClass(), false, TypeSource.JAVA_PROJECT );
 
-        oracle = modelFactBuilder.getDataModelBuilder().build();
+        ProjectDataModelOracle oracle = modelFactBuilder.getDataModelBuilder().build();
 
         Map<String, FactBuilder> builders = new HashMap<>();
 

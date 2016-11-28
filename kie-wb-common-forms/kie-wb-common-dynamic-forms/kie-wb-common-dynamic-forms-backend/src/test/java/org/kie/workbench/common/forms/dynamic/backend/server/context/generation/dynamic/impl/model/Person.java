@@ -17,11 +17,25 @@
 package org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.model;
 
 import java.util.Date;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 public class Person {
+
+    @Min( 1 )
+    @Max( 20 )
     Integer id;
+
+    @NotNull
+    @NotEmpty
     String name;
+
     String lastName;
+
+    @NotNull
     Date birthday;
 
     public Person() {

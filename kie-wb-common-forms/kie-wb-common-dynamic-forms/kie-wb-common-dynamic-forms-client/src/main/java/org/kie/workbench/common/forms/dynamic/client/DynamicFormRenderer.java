@@ -27,6 +27,8 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
 import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
+import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGenerator;
+import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
@@ -60,17 +62,15 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
 
     private FormRenderingContext context;
 
-    private MapModelBindingHelper helper;
+    private FormHandlerGeneratorManager formHandlerGenerator;
 
     @Inject
     public DynamicFormRenderer( DynamicFormRendererView view,
                                 Caller<FormRenderingContextGeneratorService> transformerService,
-                                FormHandler formHandler,
-                                MapModelBindingHelper helper ) {
+                                FormHandlerGeneratorManager formHandlerGenerator ) {
         this.view = view;
         this.transformerService = transformerService;
-        this.formHandler = formHandler;
-        this.helper = helper;
+        this.formHandlerGenerator = formHandlerGenerator;
     }
 
     @PostConstruct
@@ -100,11 +100,7 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
 
         this.context = context;
 
-        if ( context instanceof MapModelRenderingContext && context.getParentContext() == null ) {
-            MapModelRenderingContext mapContext = (MapModelRenderingContext) context;
-            helper.initContext( mapContext );
-            ( (MapModelRenderingContext) context ).setModel(  mapContext.getModel() );
-        }
+        formHandler = formHandlerGenerator.getFormHandler( context );
 
         view.render( context );
         if ( context.getModel() != null ) {

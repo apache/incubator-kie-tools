@@ -79,4 +79,8 @@ public class SubFormWidget extends Composite implements TakesValue<Object>, IsNe
     public void setReadOnly( boolean readOnly ) {
         formRenderer.switchToMode( readOnly ? RenderMode.READ_ONLY_MODE : RenderMode.EDIT_MODE );
     }
+
+    public boolean isValid() {
+        return formRenderer.isValid();
+    }
 }

@@ -21,9 +21,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 
+import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
@@ -58,8 +58,8 @@ public class FieldChangeHandlerManagerImpl implements FieldChangeHandlerManager 
 
     @Override
     public void addFieldChangeHandler( String fieldName, FieldChangeHandler changeHandler ) {
-        assert fieldName != null;
-        assert changeHandler != null;
+        Assert.notNull( "FieldName cannot be null", fieldName );
+        Assert.notNull( "FieldChangeHandler cannot be null", changeHandler );
 
         FieldChangeProcessor executor = fieldExecutors.get( fieldName );
 

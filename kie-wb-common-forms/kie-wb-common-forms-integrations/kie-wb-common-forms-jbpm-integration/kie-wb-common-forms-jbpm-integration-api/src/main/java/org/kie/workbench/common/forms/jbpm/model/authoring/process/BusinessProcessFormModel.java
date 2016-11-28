@@ -21,9 +21,10 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.AbstractJBPMFormModel;
+import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 
 @Portable
-public class BusinessProcessFormModel extends AbstractJBPMFormModel<BusinesProcessVariable> {
+public class BusinessProcessFormModel extends AbstractJBPMFormModel {
 
     protected String processId;
 
@@ -31,7 +32,7 @@ public class BusinessProcessFormModel extends AbstractJBPMFormModel<BusinesProce
 
     public BusinessProcessFormModel( @MapsTo( "processId" ) String processId,
                                      @MapsTo( "processName" ) String processName,
-                                     @MapsTo( "variables" ) List<BusinesProcessVariable> variables ) {
+                                     @MapsTo( "variables" ) List<JBPMVariable> variables ) {
         super( variables );
         this.processId = processId;
         this.processName = processName;

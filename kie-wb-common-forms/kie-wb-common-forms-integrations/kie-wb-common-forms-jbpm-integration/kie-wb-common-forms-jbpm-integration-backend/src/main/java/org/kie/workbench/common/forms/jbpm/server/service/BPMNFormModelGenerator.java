@@ -17,10 +17,8 @@
 package org.kie.workbench.common.forms.jbpm.server.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.bpmn2.Definitions;
-import org.eclipse.bpmn2.FlowElementsContainer;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 
@@ -31,8 +29,4 @@ public interface BPMNFormModelGenerator {
     List<TaskFormModel> generateTaskFormModels( Definitions source );
 
     TaskFormModel generateTaskFormModel( Definitions source, String taskId );
-
-    TaskFormModel generateTaskFormModel( String taskId,
-                                         FlowElementsContainer container,
-                                         Map<String, String> variableDefinitions );
 }

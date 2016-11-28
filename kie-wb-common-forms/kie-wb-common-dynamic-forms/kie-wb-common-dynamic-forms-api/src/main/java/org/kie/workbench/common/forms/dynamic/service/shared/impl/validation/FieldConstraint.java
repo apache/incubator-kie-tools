@@ -14,38 +14,31 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.jbpm.model.authoring.process;
+package org.kie.workbench.common.forms.dynamic.service.shared.impl.validation;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 
 @Portable
-public class BusinesProcessVariable implements JBPMVariable {
+public class FieldConstraint {
+    private String annotationType;
 
-    protected String name;
-    protected String type;
+    private Map<String, Object> params = new HashMap();
 
-    public BusinesProcessVariable( @MapsTo( "name" ) String name, @MapsTo( "type" ) String type ) {
-        this.name = name;
-        this.type = type;
+    public FieldConstraint( @MapsTo( "annotationType" ) String annotationType,
+                            @MapsTo( "params" ) Map<String, Object> params ) {
+        this.annotationType = annotationType;
+        this.params = params;
     }
 
-    @Override
-    public String getName() {
-        return name;
+    public String getAnnotationType() {
+        return annotationType;
     }
 
-    public void setName( String name ) {
-        this.name = name;
-    }
-
-    @Override
-    public String getType() {
-        return type;
-    }
-
-    public void setType( String type ) {
-        this.type = type;
+    public Map<String, Object> getParams() {
+        return params;
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
@@ -30,6 +31,8 @@ public class BackendFormRenderingContextImpl implements BackendFormRenderingCont
     protected Map<String, Object> formData;
 
     protected ClassLoader classLoader;
+
+    protected Map<String, Object> attributes = new HashMap<>();
 
     public BackendFormRenderingContextImpl( Long timestamp,
                                             MapModelRenderingContext renderingContext,
@@ -56,8 +59,17 @@ public class BackendFormRenderingContextImpl implements BackendFormRenderingCont
         return formData;
     }
 
+    public void setFormData( Map<String, Object> formData ) {
+        this.formData = formData;
+    }
+
     @Override
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.kie.workbench.common.forms.model.FormModel;
 
-public interface JBPMFormModel<V extends JBPMVariable> extends FormModel {
+public interface JBPMFormModel extends FormModel {
 
-    List<V> getVariables();
+    List<JBPMVariable> getVariables();
 }

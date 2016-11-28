@@ -18,8 +18,18 @@ package org.kie.workbench.common.forms.processing.engine.handling;
 
 import java.util.Collection;
 
+/**
+ * Component that provides the FormFields
+ */
 public interface FormFieldProvider {
 
+    /**
+     * Retrieves the FormField identified by the given name
+     */
     FormField findFormField( String fieldName );
+
+    /**
+     * Retrieves all the available fields on the Form
+     */
     Collection<FormField> getAll();
 }

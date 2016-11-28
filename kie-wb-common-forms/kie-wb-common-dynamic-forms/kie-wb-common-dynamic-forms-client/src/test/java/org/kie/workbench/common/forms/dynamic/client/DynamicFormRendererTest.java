@@ -23,8 +23,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
+import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
@@ -32,7 +34,6 @@ import org.kie.workbench.common.forms.dynamic.test.util.TestFormGenerator;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
-import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -41,7 +42,7 @@ import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith( GwtMockitoTestRunner.class )
 public class DynamicFormRendererTest extends TestCase {
 
     private FieldLayoutComponent component;
@@ -72,7 +73,7 @@ public class DynamicFormRendererTest extends TestCase {
 
     @Before
     public void initTest() {
-        component = mock(FieldLayoutComponent.class);
+        component = mock( FieldLayoutComponent.class );
         view = mock( DynamicFormRenderer.DynamicFormRendererView.class );
         fieldRenderer = mock( FieldRenderer.class );
         formRenderingContextGeneratorService = mock( FormRenderingContextGeneratorService.class );
@@ -85,12 +86,15 @@ public class DynamicFormRendererTest extends TestCase {
             }
         } );
 
-        when( view.getFieldLayoutComponentForField( any( FieldDefinition.class) ) ).thenReturn( component );
+        when( view.getFieldLayoutComponentForField( any( FieldDefinition.class ) ) ).thenReturn( component );
 
         when( component.getFieldRenderer() ).thenReturn( fieldRenderer );
         when( fieldRenderer.getInputWidget() ).thenReturn( widget );
 
-        renderer = new TestDynamicFormRenderer( view, transformer, formHandler, helper );
+        FormHandlerGeneratorManager generatorManager = new FormHandlerGeneratorManager( context -> formHandler,
+                                                                                        context -> formHandler );
+
+        renderer = new TestDynamicFormRenderer( view, transformer, generatorManager );
         renderer.init();
         verify( view ).setPresenter( renderer );
         renderer.asWidget();
@@ -115,7 +119,7 @@ public class DynamicFormRendererTest extends TestCase {
         renderer.addFieldChangeHandler( "address", changeHandler );
 
         verify( formHandler ).addFieldChangeHandler( any() );
-        verify( formHandler, times(2) ).addFieldChangeHandler( anyString(), any() );
+        verify( formHandler, times( 2 ) ).addFieldChangeHandler( anyString(), any() );
 
         unBind();
     }

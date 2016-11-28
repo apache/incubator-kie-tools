@@ -32,9 +32,9 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.kie.workbench.common.forms.commons.layout.Dynamic;
 import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.fieldInitializers.FormAwareFieldInitializer;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.DynamicGenerator;
+import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.FormRenderingContextGenerator;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.StaticGenerator;
+import org.kie.workbench.common.forms.dynamic.service.shared.StaticContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
@@ -46,8 +46,8 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@StaticGenerator
-@DynamicGenerator
+@StaticContext
+@DynamicContext
 @Dependent
 public class FormRenderingContextGeneratorImpl implements FormRenderingContextGenerator<DMOBasedTransformerContext, StaticModelFormRenderingContext> {
 

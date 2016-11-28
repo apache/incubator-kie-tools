@@ -26,7 +26,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.service.FieldManager;
 import org.kie.workbench.common.forms.service.impl.AbstractFormModelHandler;
 
-public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel<? extends JBPMVariable>> extends AbstractFormModelHandler<M> {
+public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> extends AbstractFormModelHandler<M> {
 
     protected FieldManager fieldManager;
 

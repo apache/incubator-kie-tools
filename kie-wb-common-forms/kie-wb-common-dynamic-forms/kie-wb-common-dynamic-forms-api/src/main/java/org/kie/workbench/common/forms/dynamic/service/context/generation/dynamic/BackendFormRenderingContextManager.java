@@ -20,15 +20,19 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
+import org.kie.workbench.common.forms.model.FormDefinition;
 
 /**
  * Manager that handles
  */
 public interface BackendFormRenderingContextManager extends Serializable {
 
-    BackendFormRenderingContext registerContext( MapModelRenderingContext renderingContext,
+    BackendFormRenderingContext registerContext( FormDefinition rootForm,
                                                  Map<String, Object> formData,
-                                                 ClassLoader marshaller );
+                                                 ClassLoader classLoader,
+                                                 FormDefinition... nestedForms );
+
+    BackendFormRenderingContext updateContextData( long timestamp, Map<String, Object> formValues );
 
     BackendFormRenderingContext getContext( Long timestamp );
 

@@ -26,10 +26,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.jbpm.client.resources.i18n.Constants;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
-import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinesProcessVariable;
+import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
-import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskVariable;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
@@ -100,62 +99,61 @@ public class JBPMFormModelCreationPresenterTest {
     }
 
     protected void initFormModels() {
-        List<BusinesProcessVariable> processVariables = new ArrayList<>();
+        List<JBPMVariable> processVariables = new ArrayList<>();
 
-        BusinesProcessVariable variable = new BusinesProcessVariable( "name", String.class.getName() );
+        JBPMVariable variable = new JBPMVariable( "name", String.class.getName() );
         processVariables.add( variable );
-        variable = new BusinesProcessVariable( "age", Integer.class.getName() );
+        variable = new JBPMVariable( "age", Integer.class.getName() );
         processVariables.add( variable );
-        variable = new BusinesProcessVariable( "twitter", String.class.getName() );
+        variable = new JBPMVariable( "twitter", String.class.getName() );
         processVariables.add( variable );
-        variable = new BusinesProcessVariable( "offering", Integer.class.getName() );
+        variable = new JBPMVariable( "offering", Integer.class.getName() );
         processVariables.add( variable );
-        variable = new BusinesProcessVariable( "skills", String.class.getName() );
+        variable = new JBPMVariable( "skills", String.class.getName() );
         processVariables.add( variable );
-        variable = new BusinesProcessVariable( "mail", String.class.getName() );
+        variable = new JBPMVariable( "mail", String.class.getName() );
         processVariables.add( variable );
-        variable = new BusinesProcessVariable( "hr_score", Integer.class.getName() );
+        variable = new JBPMVariable( "hr_score", Integer.class.getName() );
         processVariables.add( variable );
-        variable = new BusinesProcessVariable( "tech_score", Integer.class.getName() );
+        variable = new JBPMVariable( "tech_score", Integer.class.getName() );
         processVariables.add( variable );
-        variable = new BusinesProcessVariable( "signed", Boolean.class.getName() );
+        variable = new JBPMVariable( "signed", Boolean.class.getName() );
         processVariables.add( variable );
 
         BusinessProcessFormModel processFormModel = new BusinessProcessFormModel( "hiring", "hiring", processVariables );
 
         TaskFormModel taskFormModel;
-        TaskVariable taskVariable;
+        JBPMVariable taskVariable;
         List<TaskFormModel> processTasks = new ArrayList<>();
-        List<TaskVariable> taskVariables = new ArrayList<>();
+        List<JBPMVariable> taskVariables = new ArrayList<>();
 
-        taskVariable = new TaskVariable( "name", String.class.getName(), "in_name", null );
+        taskVariable = new JBPMVariable( "name", String.class.getName() );
         taskVariables.add( taskVariable );
-        taskVariable = new TaskVariable( "age", Integer.class.getName(), null, "out_age" );
+        taskVariable = new JBPMVariable( "age", Integer.class.getName() );
         taskVariables.add( taskVariable );
-        taskVariable = new TaskVariable( "mail", String.class.getName(), null, "out_mail" );
+        taskVariable = new JBPMVariable( "mail", String.class.getName() );
         taskVariables.add( taskVariable );
-        taskVariable = new TaskVariable( "hr_score", Integer.class.getName(), null, "out_score" );
+        taskVariable = new JBPMVariable( "hr_score", Integer.class.getName() );
         taskVariables.add( taskVariable );
 
-        taskFormModel = new TaskFormModel( "hiring", "task", "HR Interview", taskVariables );
+        taskFormModel = new TaskFormModel( "hiring", "task", "HR Interview", "HRInterview-taskform", taskVariables );
         processTasks.add( taskFormModel );
 
-
         taskVariables = new ArrayList<>();
-        taskVariable = new TaskVariable( "name", String.class.getName(), "in_name", null );
+        taskVariable = new JBPMVariable( "name", String.class.getName() );
         taskVariables.add( taskVariable );
-        taskVariable = new TaskVariable( "age", Integer.class.getName(), "in_age", null );
+        taskVariable = new JBPMVariable( "age", Integer.class.getName() );
         taskVariables.add( taskVariable );
-        taskVariable = new TaskVariable( "mail", String.class.getName(), "in_mail", null );
+        taskVariable = new JBPMVariable( "mail", String.class.getName() );
         taskVariables.add( taskVariable );
-        taskVariable = new TaskVariable( "skills", String.class.getName(), null, "out_skills" );
+        taskVariable = new JBPMVariable( "skills", String.class.getName() );
         taskVariables.add( taskVariable );
-        taskVariable = new TaskVariable( "tech_score", Integer.class.getName(), null, "out_score" );
+        taskVariable = new JBPMVariable( "tech_score", Integer.class.getName() );
         taskVariables.add( taskVariable );
-        taskVariable = new TaskVariable( "twitter", Integer.class.getName(), null, "out_twitter" );
+        taskVariable = new JBPMVariable( "twitter", Integer.class.getName() );
         taskVariables.add( taskVariable );
 
-        taskFormModel = new TaskFormModel( "hiring", "task", "Tech Interview", taskVariables );
+        taskFormModel = new TaskFormModel( "hiring", "task", "Tech Interview", "TechInterview-taskform", taskVariables );
         processTasks.add( taskFormModel );
 
         JBPMProcessModel model = new JBPMProcessModel( processFormModel, processTasks );

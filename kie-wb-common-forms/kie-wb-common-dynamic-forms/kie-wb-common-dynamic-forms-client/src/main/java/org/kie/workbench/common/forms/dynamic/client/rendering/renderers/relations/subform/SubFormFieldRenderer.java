@@ -71,6 +71,11 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
     }
 
     @Override
+    protected boolean isContentValid() {
+        return subFormWidget.isValid();
+    }
+
+    @Override
     public String getName() {
         return "SubForm";
     }

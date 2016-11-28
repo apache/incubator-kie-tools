@@ -56,7 +56,7 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        FormValidatorImpl formValidator = new FormValidatorImpl( validator );
+        FormValidatorImpl formValidator = new FormValidatorImpl( new DefaultModelValidator( validator ) );
 
         formValidator.setFormFieldProvider( formFieldProvider );
 

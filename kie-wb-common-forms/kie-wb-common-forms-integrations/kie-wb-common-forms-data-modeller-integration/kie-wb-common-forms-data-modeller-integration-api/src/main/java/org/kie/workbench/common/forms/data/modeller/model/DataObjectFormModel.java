@@ -19,10 +19,10 @@ package org.kie.workbench.common.forms.data.modeller.model;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.model.IsJavaModel;
+import org.kie.workbench.common.forms.model.JavaModel;
 
 @Portable
-public class DataObjectFormModel implements FormModel, IsJavaModel {
+public class DataObjectFormModel implements FormModel, JavaModel {
 
     private String className;
 

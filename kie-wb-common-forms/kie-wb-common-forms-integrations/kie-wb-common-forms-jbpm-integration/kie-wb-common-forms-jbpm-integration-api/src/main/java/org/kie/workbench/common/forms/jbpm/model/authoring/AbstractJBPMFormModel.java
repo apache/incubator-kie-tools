@@ -18,20 +18,20 @@ package org.kie.workbench.common.forms.jbpm.model.authoring;
 
 import java.util.List;
 
-public abstract class AbstractJBPMFormModel<V extends JBPMVariable> implements JBPMFormModel<V> {
+public abstract class AbstractJBPMFormModel implements JBPMFormModel {
 
-    protected List<V> variables;
+    protected List<JBPMVariable> variables;
 
-    public AbstractJBPMFormModel( List<V> variables ) {
+    public AbstractJBPMFormModel( List<JBPMVariable> variables ) {
         this.variables = variables;
     }
 
     @Override
-    public List<V> getVariables() {
+    public List<JBPMVariable> getVariables() {
         return variables;
     }
 
-    public void setVariables( List<V> variables ) {
+    public void setVariables( List<JBPMVariable> variables ) {
         this.variables = variables;
     }
 }

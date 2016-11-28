@@ -65,6 +65,10 @@ public class JBPMFormModelCreationViewImpl extends Composite implements JBPMForm
                 } else if ( model instanceof TaskFormModel ) {
                     TaskFormModel taskFormModel = (TaskFormModel) model;
                     result = taskFormModel.getTaskName();
+
+                    if ( !taskFormModel.getTaskFormName().isEmpty() ) {
+                        result += " ( " + taskFormModel.getTaskFormName() + " )";
+                    }
                 }
             }
 

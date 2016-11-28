@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -59,6 +60,7 @@ public class BPMFinderServiceImpl implements BPMFinderService {
     private KieProjectService projectService;
 
     private BPMNFormModelGenerator bpmnFormModelGenerator;
+    private FileUtils fileUtils;
 
     @Inject
     public BPMFinderServiceImpl( @Named( "ioStrategy" ) IOService ioService,
@@ -69,20 +71,30 @@ public class BPMFinderServiceImpl implements BPMFinderService {
         this.bpmnFormModelGenerator = bpmnFormModelGenerator;
     }
 
+    @PostConstruct
+    public void init() {
+        fileUtils = FileUtils.getInstance();
+    }
+
     @Override
     public List<JBPMProcessModel> getAvailableProcessModels( Path path ) {
 
         Project project = projectService.resolveProject( path );
 
-        FileUtils utils = FileUtils.getInstance();
+        List<JBPMProcessModel> result = new ArrayList<>();
 
+        scannProcessesForType( project.getRootPath(), "bpmn2", result );
+        scannProcessesForType( project.getRootPath(), "bpmn", result );
+
+        return result;
+    }
+
+    protected void scannProcessesForType( Path path, String extension, List<JBPMProcessModel> models ) {
         List<org.uberfire.java.nio.file.Path> nioPaths = new ArrayList<>();
 
-        nioPaths.add( Paths.convert( project.getRootPath() ) );
+        nioPaths.add( Paths.convert( path ) );
 
-        Collection<FileUtils.ScanResult> processes = utils.scan( ioService, nioPaths, "bpmn2", true );
-
-        List<JBPMProcessModel> result = new ArrayList<>();
+        Collection<FileUtils.ScanResult> processes = fileUtils.scan( ioService, nioPaths, extension, true );
 
         for ( FileUtils.ScanResult process : processes ) {
             org.uberfire.java.nio.file.Path formPath = process.getFile();
@@ -117,11 +129,10 @@ public class BPMFinderServiceImpl implements BPMFinderService {
                 BusinessProcessFormModel processFormModel = bpmnFormModelGenerator.generateProcessFormModel( definitions );
                 List<TaskFormModel> taskModels = bpmnFormModelGenerator.generateTaskFormModels( definitions );
 
-                result.add( new JBPMProcessModel( processFormModel, taskModels ) );
+                models.add( new JBPMProcessModel( processFormModel, taskModels ) );
             } catch ( IOException e ) {
                 e.printStackTrace();
             }
         }
-        return result;
     }
 }

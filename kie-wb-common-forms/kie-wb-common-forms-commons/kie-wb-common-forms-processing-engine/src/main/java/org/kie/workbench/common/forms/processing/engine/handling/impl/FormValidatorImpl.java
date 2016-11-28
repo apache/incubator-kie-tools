@@ -16,30 +16,24 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling.impl;
 
-import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import javax.validation.Path;
-import javax.validation.Validator;
 
-import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.FormFieldProvider;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
+import org.kie.workbench.common.forms.processing.engine.handling.ModelValidator;
 
 @Dependent
 public class FormValidatorImpl implements FormValidator {
 
-    public static final String NESTED_PROPERTY_SEPARATOR = "_";
-
-    private Validator validator;
+    private ModelValidator modelValidator;
 
     private FormFieldProvider formFieldProvider;
 
     @Inject
-    public FormValidatorImpl( Validator validator ) {
-        this.validator = validator;
+    public FormValidatorImpl( ModelValidator modelValidator ) {
+        this.modelValidator = modelValidator;
     }
 
     @Override
@@ -48,48 +42,15 @@ public class FormValidatorImpl implements FormValidator {
 
         clearAllFieldErrors();
 
-        try {
-            Set<ConstraintViolation<Object>> result = validator.validate( model );
-
-            for ( ConstraintViolation<Object> constraintViolation : result ) {
-                FormField formField = findFormField( constraintViolation );
-                if ( formField == null ) {
-                    continue;
-                }
-                isValid = false;
-                formField.setError( constraintViolation.getMessage() );
-            }
-        } catch ( IllegalArgumentException ex ) {
-            GWT.log( "Error trying to validate model: model does not any validation constraint. " );
-        }
-
-        return isValid;
+        return modelValidator.validate( formFieldProvider.getAll(), model );
     }
 
     @Override
-    public boolean validate( String propertyName, Object model ) {
+    public boolean validate( String fieldName, Object model ) {
 
-        clearFieldError( propertyName );
+        clearFieldError( fieldName );
 
-        try {
-            Set<ConstraintViolation<Object>> result = validator.validate( model );
-
-            for ( ConstraintViolation<Object> constraintViolation : result ) {
-                if ( propertyName.equals( getFieldNameFromConstraint( constraintViolation,
-                        propertyName.contains( NESTED_PROPERTY_SEPARATOR ) ) ) ) {
-                    FormField formField = formFieldProvider.findFormField( propertyName );
-                    if ( formField == null ) {
-                        continue;
-                    }
-                    formField.setError( constraintViolation.getMessage() );
-                    return false;
-                }
-            }
-        } catch ( IllegalArgumentException ex ) {
-            GWT.log( "Error trying to validate model: model does not any validation constraint. " );
-        }
-
-        return true;
+        return modelValidator.validate( formFieldProvider.findFormField( fieldName ), model );
     }
 
     public void setFormFieldProvider( FormFieldProvider formFieldProvider ) {
@@ -109,26 +70,7 @@ public class FormValidatorImpl implements FormValidator {
         }
     }
 
-
-    private FormField findFormField( ConstraintViolation constraintViolation ) {
-        assert constraintViolation != null;
-
-        Path propertyPath = constraintViolation.getPropertyPath();
-
-        FormField field = formFieldProvider.findFormField( propertyPath.iterator().next().getName() );
-
-        if ( field == null ) {
-            String fieldName = propertyPath.toString().replace( ".", NESTED_PROPERTY_SEPARATOR );
-
-            field = formFieldProvider.findFormField( fieldName );
-        }
-        return field;
-    }
-
-    private String getFieldNameFromConstraint( ConstraintViolation<Object> constraintViolation, boolean includeNested ) {
-        if ( includeNested ) {
-            return constraintViolation.getPropertyPath().toString().replace( ".", "_" );
-        }
-        return constraintViolation.getPropertyPath().iterator().next().getName();
+    public void setModelValidator( ModelValidator modelValidator ) {
+        this.modelValidator = modelValidator;
     }
 }

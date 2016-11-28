@@ -19,38 +19,38 @@ package org.kie.workbench.common.forms.dynamic.backend.server.context.generation
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.inject.Instance;
 
+import org.junit.After;
 import org.junit.Before;
-import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.fieldProcessors.MultipleSubFormFieldValueProcessor;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.fieldProcessors.SubFormFieldValueProcessor;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContextManager;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.FieldValueProcessor;
-import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.model.Person;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.validation.impl.ContextModelConstraintsExtractorImpl;
+import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.FieldValueProcessor;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.service.mock.TestFieldManager;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public abstract class AbstractFormValuesProcessorImplTest {
+public abstract class AbstractBackendFormRenderingContextManagerTest {
 
     protected Instance<FieldValueProcessor<? extends FieldDefinition, ?, ?>> fieldValueProcessors;
 
     protected TestFieldManager fieldManager = new TestFieldManager();
 
-    protected FormValuesProcessorImpl formValuesProcessor;
+    private FormValuesProcessorImpl formValuesProcessor;
+
+    protected BackendFormRenderingContextManagerImpl contextManager;
 
     protected BackendFormRenderingContext context;
 
     protected ClassLoader classLoader;
 
     protected Map<String, Object> formData;
-
-    protected MapModelRenderingContext renderingContext;
 
     @Before
     public void initTest() {
@@ -62,19 +62,22 @@ public abstract class AbstractFormValuesProcessorImplTest {
 
         formValuesProcessor = new FormValuesProcessorImpl( fieldValueProcessors );
 
-        renderingContext = generateRenderingContext();
+        contextManager = new BackendFormRenderingContextManagerImpl( formValuesProcessor, new ContextModelConstraintsExtractorImpl() );
 
         formData = generateFormData();
 
         classLoader = mock( ClassLoader.class );
 
-        context = new BackendFormRenderingContextImpl( System.currentTimeMillis(),
-                                                       renderingContext,
-                                                       formData,
-                                                       classLoader );
+        long timestamp = contextManager.registerContext( getRootForm(), formData, classLoader, getNestedForms() ).getTimestamp();
+
+        context = contextManager.getContext( timestamp );
+
+        assertNotNull( "Context cannot be null", context );
     }
 
-    protected abstract MapModelRenderingContext generateRenderingContext();
+    protected abstract FormDefinition[] getNestedForms();
+
+    protected abstract FormDefinition getRootForm();
 
     protected abstract Map<String, Object> generateFormData();
 
@@ -92,5 +95,12 @@ public abstract class AbstractFormValuesProcessorImplTest {
                 // Swallow
             }
         }
+    }
+
+    @After
+    public void afterTest() {
+        contextManager.removeContext( context.getTimestamp() );
+
+        assertNull( "There shouldn't be any context", contextManager.getContext( context.getTimestamp() ) );
     }
 }

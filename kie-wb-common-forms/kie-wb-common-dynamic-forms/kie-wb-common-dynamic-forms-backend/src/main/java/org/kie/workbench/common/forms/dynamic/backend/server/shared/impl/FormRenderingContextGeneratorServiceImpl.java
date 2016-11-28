@@ -20,11 +20,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.DynamicGenerator;
+import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.FormRenderingContextGenerator;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.StaticGenerator;
+import org.kie.workbench.common.forms.dynamic.service.shared.StaticContext;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 
 @Dependent
@@ -35,8 +35,8 @@ public class FormRenderingContextGeneratorServiceImpl implements FormRenderingCo
     protected FormRenderingContextGenerator dynamicContextGenerator;
 
     @Inject
-    public FormRenderingContextGeneratorServiceImpl( @StaticGenerator FormRenderingContextGenerator<? extends TransformerContext<?>, ? extends FormRenderingContext> staticContextGenerator,
-                                                     @DynamicGenerator FormRenderingContextGenerator<? extends TransformerContext<?>, ? extends FormRenderingContext> dynamicContextGenerator ) {
+    public FormRenderingContextGeneratorServiceImpl( @StaticContext FormRenderingContextGenerator<? extends TransformerContext<?>, ? extends FormRenderingContext> staticContextGenerator,
+                                                     @DynamicContext FormRenderingContextGenerator<? extends TransformerContext<?>, ? extends FormRenderingContext> dynamicContextGenerator ) {
         // There could be two different context generator for static models & dynamic
         this.staticContextGenerator = staticContextGenerator;
         this.dynamicContextGenerator = dynamicContextGenerator;

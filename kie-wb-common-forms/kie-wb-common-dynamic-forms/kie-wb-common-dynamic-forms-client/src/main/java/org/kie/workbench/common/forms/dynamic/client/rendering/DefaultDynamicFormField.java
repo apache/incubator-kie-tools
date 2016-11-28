@@ -96,16 +96,17 @@ public abstract class DefaultDynamicFormField<F extends FieldDefinition, W exten
 
     @Override
     public void setError( String error ) {
-        if ( error == null || error.isEmpty() ) {
-            clearError();
-        } else {
-            if ( formGroup != null ) {
-                StyleHelper.addEnumStyleName( formGroup, ValidationState.ERROR );
-                StyleHelper.removeEnumStyleName( formGroup, ValidationState.NONE );
-            }
-            if ( helpBlock != null ) {
-                helpBlock.setInnerHTML( error );
-            }
+        if ( error == null ) {
+            error = "";
+        } else if ( !error.isEmpty() ) {
+            error = error.substring( 0, 1 ).toUpperCase() + error.substring( 1 );
+        }
+        if ( formGroup != null ) {
+            StyleHelper.addEnumStyleName( formGroup, ValidationState.ERROR );
+            StyleHelper.removeEnumStyleName( formGroup, ValidationState.NONE );
+        }
+        if ( helpBlock != null ) {
+            helpBlock.setInnerHTML( error );
         }
     }
 

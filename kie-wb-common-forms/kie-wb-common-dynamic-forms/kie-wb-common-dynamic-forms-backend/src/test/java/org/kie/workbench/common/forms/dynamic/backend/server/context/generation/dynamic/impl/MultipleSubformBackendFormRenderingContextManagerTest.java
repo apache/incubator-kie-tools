@@ -31,13 +31,14 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
+import org.kie.workbench.common.forms.model.JavaModel;
 import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
 @RunWith( MockitoJUnitRunner.class )
-public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesProcessorImplTest {
+public class MultipleSubformBackendFormRenderingContextManagerTest extends AbstractBackendFormRenderingContextManagerTest {
 
     protected SimpleDateFormat sdf = new SimpleDateFormat( "dd-MM-yyyy" );
 
@@ -49,9 +50,9 @@ public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesPr
     }
 
     protected Map<String, Object> doReadNestedData() {
-        Map<String, Object> result = formValuesProcessor.readFormValues( renderingContext.getRootForm(),
-                                                                         formData,
-                                                                         context );
+        Map<String, Object> result = context.getRenderingContext().getModel();
+
+        assertFalse( "There should be some validations for model", context.getRenderingContext().getModelConstraints().isEmpty() );
 
         assertNotNull( "Result cannot be null ", result );
         assertTrue( "Result must contain only one entry", result.size() == 1 );
@@ -79,9 +80,9 @@ public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesPr
 
     @Test
     public void testEditExistingObjects() {
-        Map<String, Object> existingValues = doReadNestedData();
+        Map<String, Object> formValues = doReadNestedData();
 
-        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) existingValues.get( "persons" );
+        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) formValues.get( "persons" );
 
         String[] names = new String[]{"Tyrion", "Jaime", "Cersei", "Tywin"};
 
@@ -93,10 +94,7 @@ public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesPr
             person.put( MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT, Boolean.TRUE );
         }
 
-        Map<String, Object> result = formValuesProcessor.writeFormValues( renderingContext.getRootForm(),
-                                                                          existingValues,
-                                                                          context.getFormData(),
-                                                                          context );
+        Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
 
         assertNotNull( "Result cannot be null ", result );
         assertTrue( "Result must contain only one entry", result.size() == 1 );
@@ -118,17 +116,14 @@ public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesPr
     @Test
     public void testRemovingExistingInstances() {
 
-        Map<String, Object> existingValues = doReadNestedData();
+        Map<String, Object> formValues = doReadNestedData();
 
-        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) existingValues.get( "persons" );
+        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) formValues.get( "persons" );
 
         personMaps.remove( 0 );
         personMaps.remove( 0 );
 
-        Map<String, Object> result = formValuesProcessor.writeFormValues( renderingContext.getRootForm(),
-                                                                          existingValues,
-                                                                          context.getFormData(),
-                                                                          context );
+        Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
 
         assertNotNull( "Result cannot be null ", result );
         assertTrue( "Result must contain only one entry", result.size() == 1 );
@@ -181,10 +176,7 @@ public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesPr
             personMaps.add( bran );
             personMaps.add( sansa );
 
-            Map<String, Object> result = formValuesProcessor.writeFormValues( renderingContext.getRootForm(),
-                                                                              formValues,
-                                                                              context.getFormData(),
-                                                                              context );
+            Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
 
             assertNotNull( "Result cannot be null ", result );
             assertTrue( "Result must contain only one entry", result.size() == 1 );
@@ -207,11 +199,22 @@ public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesPr
         }
     }
 
-
     @Override
-    protected MapModelRenderingContext generateRenderingContext() {
+    protected FormDefinition[] getNestedForms() {
 
-        FormDefinition creationForm = new FormDefinition();
+        JavaModel model = new JavaModel() {
+            @Override
+            public String getType() {
+                return Person.class.getName();
+            }
+
+            @Override
+            public String getName() {
+                return "person";
+            }
+        };
+
+        FormDefinition creationForm = new FormDefinition( model );
         creationForm.setId( "person-creation" );
 
         FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Long.class.getName() ) );
@@ -234,7 +237,7 @@ public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesPr
         field.setBinding( "birthday" );
         creationForm.getFields().add( field );
 
-        FormDefinition editionForm = new FormDefinition();
+        FormDefinition editionForm = new FormDefinition( model );
         editionForm.setId( "person-edition" );
 
         field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Long.class.getName() ) );
@@ -257,11 +260,15 @@ public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesPr
         field.setBinding( "birthday" );
         editionForm.getFields().add( field );
 
+        return new FormDefinition[] { creationForm, editionForm };
+    }
 
-        FormDefinition personListForm = new FormDefinition();
-        personListForm.setId( "form" );
+    @Override
+    protected FormDefinition getRootForm() {
+        FormDefinition form = new FormDefinition( () -> "root" );
+        form.setId( "form" );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Person.class.getName(),
+        FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Person.class.getName(),
                                                                                  true,
                                                                                  false ) );
         field.setName( "persons" );
@@ -269,17 +276,14 @@ public class MultipleSubformValuesProcessorImplTest extends AbstractFormValuesPr
 
         MultipleSubFormFieldDefinition multpleSubForm = (MultipleSubFormFieldDefinition) field;
 
-        multpleSubForm.setCreationForm( creationForm.getId() );
-        multpleSubForm.setEditionForm( editionForm.getId() );
+        multpleSubForm.setCreationForm( "person-creation" );
+        multpleSubForm.setEditionForm( "person-edition" );
 
-        personListForm.getFields().add( field );
+        form.getFields().add( field );
 
-        MapModelRenderingContext context = new MapModelRenderingContext();
-        context.setRootForm( personListForm );
-        context.getAvailableForms().put( creationForm.getId(), creationForm );
-        context.getAvailableForms().put( editionForm.getId(), editionForm );
+        form.setModel( () -> "default" );
 
-        return context;
+        return form;
     }
 
     @Override

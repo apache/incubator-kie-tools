@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -31,13 +30,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 
 @RunWith( MockitoJUnitRunner.class )
-public class SimpleFieldTypesFormValuesProcessorImplTest extends AbstractFormValuesProcessorImplTest {
+public class SimpleFieldTypesBackendFormRenderingContextManagerTest extends AbstractBackendFormRenderingContextManagerTest {
+
+    private Map<String, Object> contextData;
 
     @Test
     public void readSimpleData() {
-        Map<String, Object> result = formValuesProcessor.readFormValues( renderingContext.getRootForm(),
-                                                                         formData,
-                                                                         context );
+        Map<String, Object> result = context.getRenderingContext().getModel();
+
+        assertTrue( "There shouldn't be any validations", context.getRenderingContext().getModelConstraints().isEmpty() );
 
         assertNotNull( "Result cannot be null ", result );
         assertTrue( "Result cannot be empty ", !result.isEmpty() );
@@ -61,10 +62,9 @@ public class SimpleFieldTypesFormValuesProcessorImplTest extends AbstractFormVal
         formValues.put( "date", date );
         formValues.put( "boolean", Boolean.FALSE );
 
-        Map<String, Object> result = formValuesProcessor.writeFormValues( renderingContext.getRootForm(),
-                                                                          formValues,
-                                                                          context.getFormData(),
-                                                                          context );
+        assertTrue( "There shouldn't be any validations", context.getRenderingContext().getModelConstraints().isEmpty() );
+
+        Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
 
         assertNotNull( "Result cannot be null ", result );
         assertTrue( "Result cannot be empty ", !result.isEmpty() );
@@ -75,12 +75,17 @@ public class SimpleFieldTypesFormValuesProcessorImplTest extends AbstractFormVal
             assertEquals( "Processed value must be equal to formValue", value, result.get( key ) );
             assertNotEquals( "Processed value must not be equal to the original value",
                              value,
-                             context.getFormData().get( key ) );
+                             contextData.get( key ) );
         } );
     }
 
     @Override
-    protected MapModelRenderingContext generateRenderingContext() {
+    protected FormDefinition[] getNestedForms() {
+        return new FormDefinition[0];
+    }
+
+    @Override
+    protected FormDefinition getRootForm() {
         FormDefinition form = new FormDefinition();
         FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
 
@@ -90,7 +95,6 @@ public class SimpleFieldTypesFormValuesProcessorImplTest extends AbstractFormVal
         form.getFields().add( field );
 
         field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Integer.class.getName() ) );
-        ;
 
         field.setName( "integer" );
         field.setBinding( "integer" );
@@ -110,22 +114,18 @@ public class SimpleFieldTypesFormValuesProcessorImplTest extends AbstractFormVal
         field.setBinding( "boolean" );
 
         form.getFields().add( field );
-
-        MapModelRenderingContext context = new MapModelRenderingContext();
-        context.setRootForm( form );
-
-        return context;
+        return form;
     }
 
     @Override
     protected Map<String, Object> generateFormData() {
-        Map<String, Object> data = new HashMap<>();
+        contextData = new HashMap<>();
 
-        data.put( "string", "string" );
-        data.put( "integer", 1 );
-        data.put( "date", new Date() );
-        data.put( "boolean", Boolean.TRUE );
+        contextData.put( "string", "string" );
+        contextData.put( "integer", 1 );
+        contextData.put( "date", new Date() );
+        contextData.put( "boolean", Boolean.TRUE );
 
-        return data;
+        return contextData;
     }
 }

@@ -39,4 +39,8 @@ public interface FormField {
     void setError( String error );
 
     IsWidget getWidget();
+
+    default boolean isContentValid() {
+        return true;
+    };
 }

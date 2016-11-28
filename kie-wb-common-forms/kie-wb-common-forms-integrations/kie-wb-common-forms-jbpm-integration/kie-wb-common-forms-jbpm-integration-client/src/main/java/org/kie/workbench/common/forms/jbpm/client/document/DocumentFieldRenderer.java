@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.jbpm.model.authoring.document.DocumentFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.document.DocumentFieldDefinition;
 
 @Dependent
 public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition> {

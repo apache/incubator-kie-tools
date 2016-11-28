@@ -45,4 +45,9 @@ public interface BackendFormRenderingContext extends Serializable {
      * Class loader able to generate all the object instances required by the form
      */
     ClassLoader getClassLoader();
+
+    /**
+     * A Map to store attributes that are relevant for the client
+     */
+    Map<String, Object> getAttributes();
 }

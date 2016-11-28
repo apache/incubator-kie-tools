@@ -20,8 +20,8 @@ import org.jboss.errai.databinding.client.api.DataBinder;
 
 /**
  * @author Pere Fernandez <pefernan@redhat.com>
- *
- * Provides API to handle the input changes allowing to add callbacks and run field validations.
+ *         <p>
+ *         Provides API to handle the input changes allowing to add callbacks and run field validations.
  */
 public interface FormHandler<T> {
 
@@ -56,9 +56,8 @@ public interface FormHandler<T> {
     /**
      * Registers a new FormField to the FormHandler and sets up the Field Change engine for it,
      * The Field widget provided can binded to the form DataBinder depending on how the FormHandler has been setUp.
-     *
+     * <p>
      * Any of the setUp method's must be executed before register any FormField
-     *
      * @param formField The FormField, it must not be null.
      */
     void registerInput( FormField formField );
@@ -94,7 +93,9 @@ public interface FormHandler<T> {
      * @param fieldName The name of the field, if it is null the handler will be notified on any field change.
      * @param handler The handler, it must not be null.
      */
-    void addFieldChangeHandler( String fieldName, FieldChangeHandler handler );;
+    void addFieldChangeHandler( String fieldName, FieldChangeHandler handler );
+
+    ;
 
     /**
      * Sets the form widgets into readOnly mode

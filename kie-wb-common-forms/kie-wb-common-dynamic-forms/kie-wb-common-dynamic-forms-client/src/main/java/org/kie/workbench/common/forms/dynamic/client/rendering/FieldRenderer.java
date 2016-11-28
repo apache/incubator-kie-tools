@@ -75,6 +75,11 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
                     }
                     FieldRenderer.this.setReadOnly( readOnly );
                 }
+
+                @Override
+                public boolean isContentValid() {
+                    return FieldRenderer.this.isContentValid();
+                }
             };
 
             formField.setReadOnly( renderingContext.getRenderMode().equals( RenderMode.READ_ONLY_MODE ) );
@@ -110,6 +115,10 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
     public abstract String getSupportedCode();
 
     protected abstract void setReadOnly( boolean readOnly );
+
+    protected boolean isContentValid() {
+        return true;
+    }
 
     protected class FieldConfigStatus {
 

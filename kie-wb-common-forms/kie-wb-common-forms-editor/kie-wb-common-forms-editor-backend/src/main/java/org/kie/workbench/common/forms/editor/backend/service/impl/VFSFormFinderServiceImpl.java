@@ -26,7 +26,7 @@ import javax.inject.Named;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.IsJavaModel;
+import org.kie.workbench.common.forms.model.JavaModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -70,8 +70,8 @@ public class VFSFormFinderServiceImpl implements VFSFormFinderService {
             @Override
             public boolean accepts( FormDefinition form ) {
 
-                if ( form.getModel() instanceof IsJavaModel ) {
-                    return ((IsJavaModel) form.getModel()).getType().equals( typeName );
+                if ( form.getModel() instanceof JavaModel ) {
+                    return ((JavaModel) form.getModel()).getType().equals( typeName );
                 }
 
                 return false;

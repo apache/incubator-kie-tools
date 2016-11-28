@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import org.jboss.errai.databinding.client.PropertyType;
 import org.kie.workbench.common.forms.dynamic.client.helper.PropertyGenerator;
 import org.kie.workbench.common.forms.dynamic.model.document.DocumentData;
-import org.kie.workbench.common.forms.jbpm.model.authoring.document.DocumentFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.document.DocumentFieldDefinition;
 
 @Dependent
 public class DocumentPropertyGenerator implements PropertyGenerator<DocumentFieldDefinition> {

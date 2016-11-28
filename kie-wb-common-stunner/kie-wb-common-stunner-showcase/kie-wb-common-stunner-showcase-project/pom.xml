@@ -966,7 +966,7 @@
                     <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
                     <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
                     <draftCompile>true</draftCompile>
-                    <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+                    <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
                     <logLevel>INFO</logLevel>
                     <noServer>false</noServer>
                     <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
@@ -1060,7 +1060,7 @@
                         <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-server-ui-client</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-library-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-library-client</compileSourcesArtifact>
-                            
+
                         <!-- Kie Server needed by Exec Server UI -->
                         <compileSourcesArtifact>org.kie:kie-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.server:kie-server-api</compileSourcesArtifact>

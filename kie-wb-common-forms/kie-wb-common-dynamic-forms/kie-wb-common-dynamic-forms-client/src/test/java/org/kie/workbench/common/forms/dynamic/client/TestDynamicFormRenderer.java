@@ -18,6 +18,8 @@ package org.kie.workbench.common.forms.dynamic.client;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
+import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGenerator;
+import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 
@@ -27,7 +29,7 @@ public class TestDynamicFormRenderer extends DynamicFormRenderer {
 
     public TestDynamicFormRenderer( DynamicFormRendererView view,
                                     Caller<FormRenderingContextGeneratorService> transformerService,
-                                    FormHandler formHandler, MapModelBindingHelper helper ) {
-        super( view, transformerService, formHandler, helper );
+                                    FormHandlerGeneratorManager handlerGeneratorManager ) {
+        super( view, transformerService, handlerGeneratorManager );
     }
 }

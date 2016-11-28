@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -23,7 +24,7 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 /**
  * Component that processes the data from the jBPM engine to convert it into data
  */
-public interface FormValuesProcessor {
+public interface FormValuesProcessor extends Serializable {
 
     /**
      * Reads the raw data comming from the jBPM engine and converts all the Objects into a flat Map<String, Object>
