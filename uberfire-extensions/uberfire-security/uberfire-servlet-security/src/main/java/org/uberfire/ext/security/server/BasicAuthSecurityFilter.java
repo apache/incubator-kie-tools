@@ -106,7 +106,7 @@ public class BasicAuthSecurityFilter implements Filter {
 
         if ( authHead != null ) {
             final int index = authHead.indexOf( ' ' );
-            final String[] credentials = new String( Base64.decodeBase64( authHead.substring( index ) ), Charsets.UTF_8 ).split( ":" );
+            final String[] credentials = new String( Base64.decodeBase64( authHead.substring( index ) ), Charsets.UTF_8 ).split( ":", -1 );
 
             try {
                 authenticationService.login( credentials[ 0 ], credentials[ 1 ] );

@@ -17,11 +17,13 @@
 package org.uberfire.ext.security.server;
 
 import java.util.Calendar;
+
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.binary.Base64;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.junit.Test;
@@ -92,6 +94,24 @@ public class BasicAuthSecurityFilterTest {
         filter.doFilter(request, response, chain);
 
         verify(httpSession, never()).invalidate();
+    }
+    
+    @Test
+    public void testEmptyPassword() throws Exception {
+    	 
+    	 String username = "fakeUser";
+    	 String password = "";
+    	 
+    	 String authData = username + ":" + password;
+    	 String authEncoded = Base64.encodeBase64String(authData.getBytes());
+    	 
+         when(request.getHeader( "Authorization" )).thenReturn("Basic " + authEncoded);
+
+         final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+         filter.authenticationService = authenticationService;
+         filter.doFilter(request, response, chain);
+
+         verify(authenticationService, times(1)).login(username, password);
     }
 
     private class SessionProvider {
