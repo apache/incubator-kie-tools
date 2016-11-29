@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.backend.ApplicationFactoryManager;
@@ -457,6 +458,7 @@ public class BPMNDiagramMarshallerTest {
     }
 
     // TODO: Disabled @Test - As intermediate events has been disabled for M1
+    @Ignore
     @SuppressWarnings( "unchecked" )
     public void testUnmarshallNotBoundaryEvents() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_NOT_BOUNDARY_EVENTS );
@@ -484,6 +486,7 @@ public class BPMNDiagramMarshallerTest {
     }
 
     // TODO: Disabled @Test - As intermediate events has been disabled for M1
+    @Ignore
     @SuppressWarnings( "unchecked" )
     public void testUnmarshallBoundaryEvents() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_BOUNDARY_EVENTS );
@@ -591,6 +594,7 @@ public class BPMNDiagramMarshallerTest {
     }
 
     // TODO: Disabled @Test - As intermediate events has been disabled for M1
+    @Ignore
     public void testMarshallNotBoundaryEvents() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_NOT_BOUNDARY_EVENTS );
         String result = tested.marshall( diagram );
@@ -598,6 +602,7 @@ public class BPMNDiagramMarshallerTest {
     }
 
     // TODO: Disabled @Test - As intermediate events has been disabled for M1
+    @Ignore
     public void testMarshallBoundaryEvents() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_BOUNDARY_EVENTS );
         String result = tested.marshall( diagram );
@@ -784,6 +789,7 @@ public class BPMNDiagramMarshallerTest {
     }
 
     // TODO: Disabled @Test - As intermediate events has been disabled for M1
+    @Ignore
     public void testMarshallIntermediateTimerEvent() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall(BPMN_TIMER_EVENT);
         IntermediateTimerEvent timerEvent = null;

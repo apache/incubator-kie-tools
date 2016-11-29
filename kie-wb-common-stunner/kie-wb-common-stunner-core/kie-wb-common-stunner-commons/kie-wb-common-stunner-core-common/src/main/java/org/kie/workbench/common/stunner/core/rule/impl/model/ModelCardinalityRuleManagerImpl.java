@@ -25,10 +25,9 @@ import org.kie.workbench.common.stunner.core.rule.impl.violations.CardinalityMin
 import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
 
 import javax.enterprise.context.Dependent;
-import java.util.Set;
 
 @Dependent
-public class ModelCardinalityRuleManagerImpl extends AbstractCardinalityRuleManager<Set<String>, Integer>
+public class ModelCardinalityRuleManagerImpl extends AbstractCardinalityRuleManager
         implements ModelCardinalityRuleManager {
 
     private static final String NAME = "Domain Model Cardinality Rule Manager";
@@ -39,23 +38,27 @@ public class ModelCardinalityRuleManagerImpl extends AbstractCardinalityRuleMana
     }
 
     @Override
-    protected RuleViolations doEvaluate( final Set<String> labels,
-                                         final Integer candidatesCount,
-                                         final Operation operation ) {
+    public RuleViolations evaluate( final String label,
+                                     final int candidatesCount,
+                                     final Operation operation ) {
+        if ( rules.isEmpty() ) {
+            return new DefaultRuleViolations();
+        }
         final DefaultRuleViolations results = new DefaultRuleViolations();
         for ( CardinalityRule rule : rules ) {
-            if ( labels.contains( rule.getRole() ) ) {
+            if ( label.equals( rule.getRole() ) ) {
                 final long minOccurrences = rule.getMinOccurrences();
                 final long maxOccurrences = rule.getMaxOccurrences();
-                if ( candidatesCount < minOccurrences ) {
-                    results.addViolation( new CardinalityMinRuleViolation( labels.toString(), rule.getRole(), ( int ) minOccurrences, candidatesCount ) );
-                } else if ( maxOccurrences > -1 && candidatesCount > maxOccurrences ) {
-                    results.addViolation( new CardinalityMaxRuleViolation( labels.toString(), rule.getRole(), ( int ) maxOccurrences, candidatesCount ) );
+                final int count = operation.equals( Operation.NONE ) ? candidatesCount :
+                        ( operation.equals( Operation.ADD ) ? candidatesCount + 1 : candidatesCount - 1 );
+                if ( count < minOccurrences ) {
+                    results.addViolation( new CardinalityMinRuleViolation( label, rule.getRole(), ( int ) minOccurrences, candidatesCount ) );
+                } else if ( maxOccurrences > -1 && count > maxOccurrences ) {
+                    results.addViolation( new CardinalityMaxRuleViolation( label, rule.getRole(), ( int ) maxOccurrences, candidatesCount ) );
                 }
             }
         }
         return results;
-
     }
 
 }

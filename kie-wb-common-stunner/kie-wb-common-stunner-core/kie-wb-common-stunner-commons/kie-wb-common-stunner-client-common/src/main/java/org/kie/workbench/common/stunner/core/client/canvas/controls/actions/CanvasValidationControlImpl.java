@@ -59,7 +59,7 @@ public class CanvasValidationControlImpl
     @Override
     public void validate( final CanvasValidatorCallback validatorCallback ) {
         if ( null != canvasHandler ) {
-            final GraphRulesManager rulesManager = canvasHandler.getRuleManager();
+            final GraphRulesManager rulesManager = canvasHandler.getGraphRulesManager();
             canvasValidator
                     .withRulesManager( rulesManager )
                     .validate( canvasHandler, new CanvasValidatorCallback() {

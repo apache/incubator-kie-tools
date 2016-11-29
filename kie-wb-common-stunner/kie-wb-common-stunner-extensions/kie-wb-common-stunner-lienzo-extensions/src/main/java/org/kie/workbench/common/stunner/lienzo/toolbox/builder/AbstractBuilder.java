@@ -30,7 +30,8 @@ import java.util.List;
 
 public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister, ButtonGrid {
 
-    protected WiresShape shape;
+    protected final Layer layer;
+    protected final WiresShape shape;
     protected Shape<?> attachTo;
     protected Direction anchor;
     protected Direction towards;
@@ -40,7 +41,8 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
     protected int padding;
     protected int iconSize;
 
-    public AbstractBuilder( WiresShape shape ) {
+    public AbstractBuilder( Layer layer, WiresShape shape ) {
+        this.layer = layer;
         this.shape = shape;
     }
 
@@ -79,14 +81,13 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
 
     @Override
     public Button add( IPrimitive<?> iconShape ) {
-        return new ButtonBuilder( this.shape.getGroup().getLayer(), this, iconShape );
+        return new ButtonBuilder( this, iconShape );
     }
 
     @Override
     public abstract GridToolbox register();
 
     public static class ButtonBuilder implements Button {
-        private final Layer layer;
         private final AbstractBuilder builder;
         private final IPrimitive<?> shape;
         private int padding;
@@ -96,10 +97,8 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
         private ToolboxButtonEventHandler mouseEnterHandler;
         private ToolboxButtonEventHandler mouseExitHandler;
 
-        public ButtonBuilder( final Layer layer,
-                              final AbstractBuilder builder,
+        public ButtonBuilder( final AbstractBuilder builder,
                               final IPrimitive<?> shape ) {
-            this.layer = layer;
             this.builder = builder;
             this.shape = shape;
         }
@@ -140,7 +139,7 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
 
         @Override
         public ButtonsOrRegister end() {
-            builder.add( new ToolboxButton( layer, shape, padding, iconSize,
+            builder.add( new ToolboxButton( builder.layer, shape, padding, iconSize,
                     clickHandler, moveDownHandler, mouseEnterHandler, mouseExitHandler ) );
             return builder;
         }

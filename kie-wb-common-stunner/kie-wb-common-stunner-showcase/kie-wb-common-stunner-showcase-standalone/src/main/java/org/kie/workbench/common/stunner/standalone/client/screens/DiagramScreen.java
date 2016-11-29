@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
@@ -46,6 +48,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.lifecycle.*;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -55,9 +58,12 @@ import org.uberfire.workbench.model.menu.Menus;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.logging.Level.FINE;
 
 @Dependent
 @WorkbenchScreen( identifier = DiagramScreen.SCREEN_ID )
@@ -319,7 +325,15 @@ public class DiagramScreen {
 
     @OnFocus
     public void onFocus() {
+        if ( !isSameSession( canvasSessionManager.getCurrentSession() ) ) {
+            canvasSessionManager.open( session );
+        } else {
+            log( FINE, "Session already active, no action." );
+        }
+    }
 
+    private boolean isSameSession( final ClientSession other ) {
+        return null != other && null != session && other.equals( session );
     }
 
     @OnLostFocus
@@ -369,6 +383,14 @@ public class DiagramScreen {
 
     protected void showError( String message ) {
         log( Level.SEVERE, message );
+    }
+
+    void onSessionErrorEvent( @Observes OnSessionErrorEvent errorEvent ) {
+        if ( isSameSession( errorEvent.getSession() ) ) {
+            showError( errorEvent.getError().toString() );
+            // TODO executeWithConfirm( "An error happened [" + errorEvent.getError() + "]. Do you want" +
+            //         "to refresh the diagram (Last changes can be lost)? ", this::menu_refresh );
+        }
     }
 
     private void log( final Level level, final String message ) {

@@ -67,13 +67,10 @@ class CanvasCommandManagerImpl
         super.postAllow( context, command, result );
         if ( null != this.listener ) {
             listener.onAllow( context, command, result );
-
         }
         if ( null != result && null != isCanvasCommandAllowedEvent ) {
             isCanvasCommandAllowedEvent.fire( new CanvasCommandAllowedEvent( context, command, result ) );
-
         }
-
     }
 
     @Override
@@ -84,16 +81,13 @@ class CanvasCommandManagerImpl
         super.postExecute( context, command, result );
         if ( null != result && !CommandUtils.isError( result ) ) {
             draw( context );
-
         }
         if ( null != this.listener ) {
             listener.onExecute( context, command, result );
-
         }
         if ( null != result && null != canvasCommandExecutedEvent ) {
             canvasCommandExecutedEvent.fire( new CanvasCommandExecutedEvent( context, command, result ) );
         }
-
     }
 
     @Override
@@ -104,16 +98,13 @@ class CanvasCommandManagerImpl
         super.postUndo( context, command, result );
         if ( null != result && !CommandUtils.isError( result ) ) {
             draw( context );
-
         }
         if ( null != this.listener ) {
             listener.onUndo( context, command, result );
-
         }
         if ( null != canvasUndoCommandExecutedEvent ) {
             canvasUndoCommandExecutedEvent.fire( new CanvasUndoCommandExecutedEvent( context, command, result ) );
         }
-
     }
 
     @Override

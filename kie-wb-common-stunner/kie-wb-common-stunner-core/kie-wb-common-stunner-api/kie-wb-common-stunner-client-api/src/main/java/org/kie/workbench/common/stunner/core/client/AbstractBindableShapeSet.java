@@ -21,19 +21,19 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
-public abstract class AbstractBindableShapeSet implements ShapeSet<ShapeFactory<?, ?, ? extends Shape>> {
+public abstract class AbstractBindableShapeSet<F extends ShapeFactory> implements ShapeSet<F> {
 
     protected abstract Class<?> getDefinitionSetClass();
 
-    protected DefinitionManager definitionManager;
+    private final DefinitionManager definitionManager;
+    private final F factory;
 
     protected String description;
 
-    protected AbstractBindableShapeSet() {
-    }
-
-    public AbstractBindableShapeSet( final DefinitionManager definitionManager ) {
+    public AbstractBindableShapeSet( final DefinitionManager definitionManager,
+                                     final F factory ) {
         this.definitionManager = definitionManager;
+        this.factory = factory;
     }
 
     public void doInit() {
@@ -62,4 +62,8 @@ public abstract class AbstractBindableShapeSet implements ShapeSet<ShapeFactory<
         return BindableAdapterUtils.getDefinitionSetId( getDefinitionSetClass() );
     }
 
+    @Override
+    public F getShapeFactory() {
+        return factory;
+    }
 }

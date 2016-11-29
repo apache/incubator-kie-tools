@@ -20,7 +20,23 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.ConnectionRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+
+/**
+ * Manager for connection rules specific for Stunner's graph domain.
+ */
 
 public interface GraphConnectionRuleManager
-        extends ConnectionRuleManager<Edge<? extends View<?>, ? extends Node>, Node<? extends View<?>, ? extends Edge>> {
+        extends ConnectionRuleManager {
+
+    /**
+     * It checks connection rules and evaluates if the given connector candidate can be
+     * attached to the given/source node.
+     * @param edge The edge instance.
+     * @param incomingNode The incoming node.
+     * @param outgoingNode The outgoing node
+     */
+    RuleViolations evaluate( Edge<? extends View<?>, ? extends Node> edge,
+                             Node<? extends View<?>, ? extends Edge> outgoingNode,
+                             Node<? extends View<?>, ? extends Edge> incomingNode );
 }

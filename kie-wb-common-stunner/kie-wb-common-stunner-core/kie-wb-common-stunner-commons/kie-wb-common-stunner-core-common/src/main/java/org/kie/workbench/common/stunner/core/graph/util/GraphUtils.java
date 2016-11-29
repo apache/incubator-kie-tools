@@ -32,9 +32,10 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 @ApplicationScoped
 public class GraphUtils {
@@ -96,32 +97,58 @@ public class GraphUtils {
         return null;
     }
 
+    public static Map<String, Integer> getLabelsCount( final Graph<?, ? extends Node> target) {
+        return getLabelsCount( target, null );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public static Map<String, Integer> getLabelsCount( final Graph<?, ? extends Node> target,
+                                                       final Set<String> filter ) {
+        final Map<String, Integer> labels = new LinkedHashMap<>();
+        target.nodes().forEach( node -> {
+            final Set<String> nodeRoles = node.getLabels();
+            if ( null != nodeRoles ) {
+                nodeRoles
+                        .stream()
+                        .filter( role -> null == filter || filter.contains( role ) )
+                        .forEach( role -> {
+                            final Integer i = labels.get( role );
+                            labels.put( role, null != i ? i + 1 : 1 );
+                        } );
+            }
+        } );
+        return labels;
+    }
+
+    public int countDefinitionsById( final Graph<?, ? extends Node> target,
+                                         final String id ) {
+        final int[] count = { 0 };
+        target.nodes().forEach( node -> {
+            if ( getElementDefinitionId( node ).equals( id ) ) {
+                count[0]++;
+            }
+        } );
+        return count[0];
+    }
+
     public <T> int countDefinitions( final Graph<?, ? extends Node> target,
                                      final T definition ) {
         final String id = getDefinitionId( definition );
-        int count = 1;
-        for ( Node<? extends View, ? extends Edge> node : target.nodes() ) {
-            if ( getElementDefinitionId( node ).equals( id ) ) {
-                count++;
-            }
-        }
-        return count;
+        return countDefinitionsById( target, id );
     }
 
     public int countEdges( final String edgeId,
                            final List<? extends Edge> edges ) {
+        final int[] count = { 0 };
         if ( null != edges ) {
-            int c = 0;
-            for ( Edge e : edges ) {
-                final String eId = getElementDefinitionId( e );
+            edges.stream().forEach( edge -> {
+                final String eId = getElementDefinitionId( edge );
                 if ( null != eId && edgeId.equals( eId ) ) {
-                    c++;
+                    count[0]++;
                 }
-
-            }
-            return c;
+            } );
         }
-        return 0;
+        return count[0];
     }
 
     private <T> String getDefinitionId( final T definition ) {
@@ -146,7 +173,11 @@ public class GraphUtils {
     public static Element<?> getParent( final Node<?, Edge> element ) {
         final List<Edge> inEdges = element.getInEdges();
         if ( null != inEdges ) {
-            final Edge<Child, ?> childEdge = inEdges.stream().filter( edge -> ( edge instanceof Child ) ).findFirst().orElse( null );
+            final Edge<Child, ?> childEdge =
+                    inEdges.stream()
+                            .filter( edge -> ( edge instanceof Child ) )
+                            .findFirst()
+                            .orElse( null );
             if ( null != childEdge ) {
                 return childEdge.getSourceNode();
             }

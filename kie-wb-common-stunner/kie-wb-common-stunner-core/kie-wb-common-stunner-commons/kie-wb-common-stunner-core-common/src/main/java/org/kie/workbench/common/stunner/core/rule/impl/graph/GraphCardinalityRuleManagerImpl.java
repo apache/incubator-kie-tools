@@ -23,12 +23,15 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.CardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphCardinalityRuleManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import java.util.Map;
+import java.util.Set;
 
 @Dependent
 public class GraphCardinalityRuleManagerImpl extends AbstractGraphRuleManager<CardinalityRule, ModelCardinalityRuleManager>
@@ -62,9 +65,17 @@ public class GraphCardinalityRuleManagerImpl extends AbstractGraphRuleManager<Ca
     public RuleViolations evaluate( final Graph<?, ? extends Node> target,
                                     final Node<? extends View<?>, ? extends Edge> candidate,
                                     final Operation operation ) {
-        final int count = graphUtils.countDefinitions( target, candidate.getContent().getDefinition() );
-        return modelCardinalityRuleManager.evaluate( getLabels( candidate ), count, operation );
+        final Set<String> labels = candidate.getLabels();
+        final Map<String, Integer> graphLabelCount = GraphUtils.getLabelsCount( target, labels );
+        final DefaultRuleViolations results = new DefaultRuleViolations();
+        labels.stream().forEach( role -> {
+            final Integer i = graphLabelCount.get( role );
+            final RuleViolations violations =
+                    modelCardinalityRuleManager.evaluate( role, null != i ? i : 0, operation );
+            results.addViolations( violations );
 
+        } );
+        return results;
     }
 
 }

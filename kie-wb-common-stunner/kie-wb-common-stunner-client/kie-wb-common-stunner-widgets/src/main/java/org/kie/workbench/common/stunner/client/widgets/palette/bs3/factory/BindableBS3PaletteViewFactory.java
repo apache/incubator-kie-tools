@@ -38,7 +38,8 @@ public abstract class BindableBS3PaletteViewFactory<V extends IsWidget> implemen
     }
 
     @Override
-    public IsWidget getCategoryView( final String categoryId,
+    public IsWidget getCategoryView( final String defSetId,
+                                     final String categoryId,
                                      final int width,
                                      final int height ) {
         final Map.Entry<String, V> entry = getDCategoryViewEntry( categoryId );
@@ -52,7 +53,8 @@ public abstract class BindableBS3PaletteViewFactory<V extends IsWidget> implemen
     }
 
     @Override
-    public IsWidget getDefinitionView( final String defId,
+    public IsWidget getDefinitionView( final String defSetId,
+                                       final String defId,
                                        final int width,
                                        final int height ) {
         final Map.Entry<Class<?>, V> entry = getDefinitionViewEntry( defId );

@@ -18,19 +18,17 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.imp
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -38,6 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
@@ -47,6 +46,7 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -86,12 +86,14 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public boolean allows( final ElementBuildRequest<AbstractCanvasHandler> request ) {
         final double x = request.getX();
         final double y = request.getY();
         final Object definition = request.getDefinition();
         final Node<View<?>, Edge> parent = getParent( x, y );
         final Set<String> labels = clientDefinitionManager.adapters().forDefinition().getLabels( definition );
+        // Check containment rules.
         if ( null != parent ) {
             final Object parentDef = parent.getContent().getDefinition();
             final String parentId = clientDefinitionManager.adapters().forDefinition().getId( parentDef );
@@ -99,10 +101,16 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             if ( !isValid( containmentViolations ) ) {
                 return false;
             }
-
         }
-        final int count = graphUtils.countDefinitions( canvasHandler.getDiagram().getGraph(), definition );
-        final RuleViolations cardinalityViolations = modelCardinalityRuleManager.evaluate( labels, count, RuleManager.Operation.ADD );
+        // Check cardinality rules.
+        final Map<String, Integer> graphLabelCount = GraphUtils.getLabelsCount( canvasHandler.getDiagram().getGraph(), labels );
+        final DefaultRuleViolations cardinalityViolations = new DefaultRuleViolations();
+        labels.stream().forEach( role -> {
+            final Integer i = graphLabelCount.get( role );
+            final RuleViolations violations =
+                    modelCardinalityRuleManager.evaluate( role, null != i ? i : 0, RuleManager.Operation.ADD );
+            cardinalityViolations.addViolations( violations );
+        } );
         return isValid( cardinalityViolations );
     }
 
@@ -125,15 +133,13 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         } else {
             x = request.getX();
             y = request.getY();
-
         }
         final Object definition = request.getDefinition();
-        final ShapeFactory<?, AbstractCanvasHandler, ?> factory = request.getShapeFactory();
         // Notify processing starts.
         fireProcessingStarted();
         final Node<View<?>, Edge> parent = getParent( x, y );
         final Double[] childCoordinates = getChildCoordinates( parent, x, y );
-        getCommands( definition, factory, parent, childCoordinates[ 0 ], childCoordinates[ 1 ], new CommandsCallback() {
+        getCommands( definition, parent, childCoordinates[ 0 ], childCoordinates[ 1 ], new CommandsCallback() {
 
             @Override
             public void onComplete( final String uuid,
@@ -154,7 +160,6 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             }
 
         } );
-
     }
 
     @Override
@@ -173,7 +178,6 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     }
 
     public void getCommands( final Object definition,
-                             final ShapeFactory factory,
                              final Node<View<?>, Edge> parent,
                              final double x,
                              final double y,
@@ -183,67 +187,53 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         clientFactoryServices.newElement( uuid, defId, new ServiceCallback<Element>() {
             @Override
             public void onSuccess( final Element element ) {
-                getElementCommands( element, parent, factory, x, y, new CommandsCallback() {
+                getElementCommands( element, parent, x, y, new CommandsCallback() {
                     @Override
                     public void onComplete( final String uuid,
                                             final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
                         commandsCallback.onComplete( uuid, commands );
                     }
-
                     @Override
                     public void onError( final ClientRuntimeError error ) {
                         commandsCallback.onError( error );
                     }
-
                 } );
-                ;
-
             }
-
             @Override
             public void onError( final ClientRuntimeError error ) {
                 commandsCallback.onError( error );
             }
-
-            ;
-
         } );
-
     }
 
+    @SuppressWarnings( "unchecked" )
     public void getElementCommands( final Element element,
                                     final Node<View<?>, Edge> parent,
-                                    final ShapeFactory factory,
                                     final double x,
                                     final double y,
                                     final CommandsCallback commandsCallback ) {
         Command<AbstractCanvasHandler, CanvasViolation> command = null;
         if ( element instanceof Node ) {
             if ( null != parent ) {
-                command = canvasCommandFactory.ADD_CHILD_NODE( parent, ( Node ) element, factory );
-
+                command = canvasCommandFactory.ADD_CHILD_NODE( parent, ( Node ) element, getShapeSetId() );
             } else {
-                command = canvasCommandFactory.ADD_NODE( ( Node ) element, factory );
-
+                command = canvasCommandFactory.ADD_NODE( ( Node ) element, getShapeSetId() );
             }
-
         } else if ( element instanceof Edge && null != parent ) {
-            command = canvasCommandFactory.ADD_EDGE( parent, ( Edge ) element, factory );
-
+            command = canvasCommandFactory.ADD_CONNECTOR( parent, ( Edge ) element, 3, getShapeSetId() );
         } else {
             throw new RuntimeException( "Unrecognized element type for " + element );
-
         }
         // Execute both add element and move commands in batch, so undo will be done in batch as well.
         Command<AbstractCanvasHandler, CanvasViolation> moveCanvasElementCommand =
-                canvasCommandFactory.UPDATE_POSITION( element, x, y );
+                canvasCommandFactory.UPDATE_POSITION( ( Node<View<?>, Edge> ) element, x, y );
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commandList = new LinkedList<Command<AbstractCanvasHandler, CanvasViolation>>();
         commandList.add( command );
         commandList.add( moveCanvasElementCommand );
         commandsCallback.onComplete( element.getUUID(), commandList );
-
     }
 
+     @SuppressWarnings( "unchecked" )
     public Node<View<?>, Edge> getParent( final double _x,
                                           final double _y ) {
         if ( _x > -1 && _y > -1 ) {
@@ -251,7 +241,6 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             graphBoundsIndexer.setRootUUID( rootUUID ).build( canvasHandler.getDiagram().getGraph() );
             final Node<View<?>, Edge> r = graphBoundsIndexer.getAt( _x, _y );
             return r;
-
         }
         return null;
     }
@@ -278,6 +267,10 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
 
     protected boolean isValid( final RuleViolations violations ) {
         return !violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext();
+    }
+
+    protected String getShapeSetId() {
+        return canvasHandler.getDiagram().getMetadata().getShapeSetId();
     }
 
 }

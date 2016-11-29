@@ -928,8 +928,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         processLastRoundPropertyAdapter( set, roundEnv );
         processLastRoundRuleAdapter( set, roundEnv );
         processLastRoundMorphing( set, roundEnv );
-        processLastRoundShapeSetGenerator( set, roundEnv );
-        processLastRoundShapeFactoryGenerator( set, roundEnv );
+        processLastRoundShapesStuffGenerator( set, roundEnv );
         return true;
     }
 
@@ -1181,47 +1180,20 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
 
     }
 
-    private boolean processLastRoundShapeSetGenerator( Set<? extends TypeElement> set, RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundShapesStuffGenerator( Set<? extends TypeElement> set, RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
-            // Generate the Shape Set if annotation present.
-            if ( processingContext.getDefSetAnnotations().hasShapeSet() ) {
-                // Ensure only visible on client side.
-                final String packageName = getGeneratedPackageName() + ".client.shape";
-                final String className = getSetClassPrefix() + BindableAdapterUtils.SHAPE_SET_SUFFIX;
-                final String classFQName = packageName + "." + className;
-                messager.printMessage( Diagnostic.Kind.WARNING, "Starting ErraiBinderAdapter generation named " + classFQName );
-                final String defSetClassName = processingContext.getDefinitionSet().getClassName();
-                final StringBuffer ruleClassCode = shapeSetGenerator.generate(
-                        packageName,
-                        className,
-                        defSetClassName,
-                        messager );
-                writeCode( packageName,
-                        className,
-                        ruleClassCode );
-
-            }
-
-        } catch ( GenerationException ge ) {
-            final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
-        }
-        return true;
-
-    }
-
-    private boolean processLastRoundShapeFactoryGenerator( Set<? extends TypeElement> set, RoundEnvironment roundEnv ) throws Exception {
-        final Messager messager = processingEnv.getMessager();
-        try {
-            // Generate the Shape Set if annotation present.
-            if ( !processingContext.getDefinitionAnnotations().getShapeDefinitions().isEmpty() ) {
+            String shapeFactoryClassname = null;
+            // Generate the Shape Factory, if exist shape definitions.
+            if ( processingContext.getDefSetAnnotations().hasShapeSet() &&
+                    !processingContext.getDefinitionAnnotations().getShapeDefinitions().isEmpty() ) {
                 // Ensure only visible on client side.
                 final String packageName = getGeneratedPackageName() + ".client.shape";
                 final String className = getSetClassPrefix() + SHAPE_FACTORY_CLASSNAME;
-                final String classFQName = packageName + "." + className;
-                messager.printMessage( Diagnostic.Kind.WARNING, "Starting ErraiBinderAdapter generation named " + classFQName );
-                final StringBuffer ruleClassCode =
+                shapeFactoryClassname = packageName + "." + className;
+                messager.printMessage( Diagnostic.Kind.WARNING, "Starting Shape Factory bean generation " +
+                        "[" + shapeFactoryClassname + "]" );
+                final StringBuffer sfClassCode =
                         shapeFactoryGenerator.generate(
                                 packageName,
                                 className,
@@ -1229,16 +1201,29 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                                 messager );
                 writeCode( packageName,
                         className,
-                        ruleClassCode );
-
+                        sfClassCode );
+                // Generate the Shape Set if annotation present ( Ensure only visible on client side. ).
+                final String packageName2 = getGeneratedPackageName() + ".client.shape";
+                final String className2 = getSetClassPrefix() + BindableAdapterUtils.SHAPE_SET_SUFFIX;
+                final String classFQName2 = packageName2 + "." + className2;
+                messager.printMessage( Diagnostic.Kind.WARNING, "Starting Shape Set bean generation " +
+                        "[" + classFQName2 + "]" );
+                final String defSetClassName = processingContext.getDefinitionSet().getClassName();
+                final StringBuffer ssClassCode = shapeSetGenerator.generate(
+                        packageName2,
+                        className2,
+                        defSetClassName,
+                        shapeFactoryClassname,
+                        messager );
+                writeCode( packageName2,
+                        className2,
+                        ssClassCode );
             }
-
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
             processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
         }
         return true;
-
     }
 
     private String getGeneratedPackageName() {

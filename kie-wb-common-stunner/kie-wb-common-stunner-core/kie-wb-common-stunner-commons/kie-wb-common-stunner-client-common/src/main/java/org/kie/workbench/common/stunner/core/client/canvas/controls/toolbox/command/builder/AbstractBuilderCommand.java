@@ -72,7 +72,6 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
                                               final Element newElement,
                                               final Command callback ) {
         callback.execute();
-
     }
 
     @Override
@@ -86,7 +85,6 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
     public void click( final Context<AbstractCanvasHandler> context,
                        final Element element ) {
         super.click( context, element );
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -113,9 +111,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
                                     ( int ) y,
                                     proxyCallback
                             );
-
                 } );
-
             }
 
             @Override
@@ -173,6 +169,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
                 public void onSuccess( final String uuid ) {
                     log( Level.INFO, "Item build with UUID [" + uuid + "]" );
                     onItemBuilt( context, uuid );
+                    fireLoadingCompleted( context );
                 }
 
                 @Override
@@ -195,7 +192,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
 
     protected void onItemBuilt( final Context<AbstractCanvasHandler> context,
                                 final String uuid ) {
-        fireLoadingCompleted( context );
+        // Nothing to do by default.
     }
 
     @Override
@@ -206,7 +203,6 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
         if ( null != canvasHighlight ) {
             this.canvasHighlight.destroy();
             this.canvasHighlight = null;
-
         }
     }
 

@@ -88,6 +88,11 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         }};
     }
 
+    /**
+     * Builds a menu item with a clear icon and executes the given callback.
+     * Added alert message - the operation cannot be reverted.
+     * See <a>org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand</a>
+     */
     public MenuItem newClearItem( final Command command ) {
         return buildItem( buildClearItem( command ) );
     }
@@ -97,7 +102,9 @@ public class ProjectDiagramEditorMenuItemsBuilder {
             setSize( ButtonSize.SMALL );
             setIcon( IconType.ERASER );
             setTitle( "Clear" );
-            addClickHandler( clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command ) );
+            addClickHandler( clickEvent ->
+                    ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command,
+                            getConfirmMessage() + " This operation cannot be reverted." ) );
         }};
     }
 
@@ -214,16 +221,23 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private  void executeWithConfirm( final Command command ) {
+        this.executeWithConfirm( command, getConfirmMessage() );
+    }
+
+    private  void executeWithConfirm( final Command command,
+                                      final String message ) {
         final Command yesCommand = command::execute;
         final Command noCommand = () -> {
         };
-        final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup( getConfirmMessage(),
-                null, yesCommand, noCommand, noCommand );
+        final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup( getConfirmTitle(),
+                message, yesCommand, noCommand, noCommand );
         popup.show();
-
     }
 
-    // TODO: I18n.
+    private String getConfirmTitle() {
+        return "Confirm action";
+    }
+
     private String getConfirmMessage() {
         return "Are you sure?";
     }

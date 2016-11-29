@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
@@ -104,8 +105,10 @@ public class GraphValidatorImpl
 
                             } else if ( content instanceof View ) {
                                 // Evaluate containment rules for this edge.
-                                final Iterable<RuleViolation> cardinalityViolations = evaluateEdgeCardinality( rulesManager, edge );
-                                addViolations( edge, _violations, cardinalityViolations );
+                                final Iterable<RuleViolation> inCardinalityViolations = evaluateIncomingEdgeCardinality( rulesManager, edge );
+                                final Iterable<RuleViolation> outCardinalityViolations = evaluateOutgoingEdgeCardinality( rulesManager, edge );
+                                addViolations( edge, _violations, inCardinalityViolations );
+                                addViolations( edge, _violations, outCardinalityViolations );
 
                             } else if ( content instanceof Dock ) {
                                 final Node parent = edge.getSourceNode();
@@ -190,11 +193,8 @@ public class GraphValidatorImpl
                 final RuleViolation violation = it.next();
                 final GraphValidationViolation graphValidationViolation = new GraphValidationViolationImpl( element, violation );
                 result.add( graphValidationViolation );
-
             }
-
         }
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -226,16 +226,28 @@ public class GraphValidatorImpl
     }
 
     @SuppressWarnings( "unchecked" )
-    private Iterable<RuleViolation> evaluateEdgeCardinality( final GraphRulesManager rulesManager,
+    private Iterable<RuleViolation> evaluateIncomingEdgeCardinality( final GraphRulesManager rulesManager,
                                                              final Edge<? extends View, Node> edge ) {
         return rulesManager
                 .edgeCardinality()
                 .evaluate( ( Edge<? extends View<?>, Node> ) edge,
-                        edge.getSourceNode(),
                         edge.getTargetNode(),
-                        edge.getSourceNode() != null ? edge.getSourceNode().getOutEdges() : null,
-                        edge.getTargetNode() != null ? edge.getTargetNode().getInEdges() : null,
-                        RuleManager.Operation.ADD )
+                        edge.getTargetNode().getInEdges(),
+                        EdgeCardinalityRule.Type.INCOMING,
+                        RuleManager.Operation.NONE )
+                .violations();
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private Iterable<RuleViolation> evaluateOutgoingEdgeCardinality( final GraphRulesManager rulesManager,
+                                                                     final Edge<? extends View, Node> edge ) {
+        return rulesManager
+                .edgeCardinality()
+                .evaluate( ( Edge<? extends View<?>, Node> ) edge,
+                        edge.getSourceNode(),
+                        edge.getSourceNode().getOutEdges(),
+                        EdgeCardinalityRule.Type.OUTGOING,
+                        RuleManager.Operation.NONE )
                 .violations();
     }
 

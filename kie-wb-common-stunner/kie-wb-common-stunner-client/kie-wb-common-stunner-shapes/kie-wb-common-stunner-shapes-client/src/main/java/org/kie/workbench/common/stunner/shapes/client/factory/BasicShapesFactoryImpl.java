@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.shapes.client.factory;
 
-import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -32,7 +31,6 @@ import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.kie.workbench.common.stunner.shapes.client.*;
 import org.kie.workbench.common.stunner.shapes.client.view.*;
-import org.kie.workbench.common.stunner.shapes.client.view.glyph.ConnectorGlyph;
 import org.kie.workbench.common.stunner.shapes.client.view.icon.dynamics.DynamicIconShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.icon.statics.StaticIconShapeView;
 import org.kie.workbench.common.stunner.shapes.def.*;
@@ -50,11 +48,8 @@ public class BasicShapesFactoryImpl
         extends AbstractShapeDefFactory<Object, ShapeView, MutableShape<Object, ShapeView>, ShapeDef<Object>>
         implements BasicShapesFactory<Object, AbstractCanvasHandler> {
 
-    protected static final double DEFAULT_SIZE = 50;
-
     private final ShapeViewFactory shapeViewFactory;
     private final GlyphBuilderFactory glyphBuilderFactory;
-
 
     protected BasicShapesFactoryImpl() {
         this( null, null, null, null );
@@ -221,18 +216,14 @@ public class BasicShapesFactoryImpl
                            final double height ) {
         final ShapeDef<Object> shapeDef = getShapeDef( clazz );
         final GlyphDef<Object> glyphDef = shapeDef.getGlyphDef();
-        // TODO: Refactor this customization and remove from here? - Custom shape glyph for connectors.
-        if ( isConnector( shapeDef ) ) {
-            return new ConnectorGlyph( width, height, ColorName.BLACK.getColorString() );
-        }
         return glyphBuilderFactory
                 .getBuilder( glyphDef )
-                    .definitionType( clazz )
-                    .glyphDef( glyphDef )
-                    .factory( this )
-                    .height( height )
-                    .width( width )
-                        .build();
+                .definitionType( clazz )
+                .glyphDef( glyphDef )
+                .factory( this )
+                .height( height )
+                .width( width )
+                .build();
     }
 
 }

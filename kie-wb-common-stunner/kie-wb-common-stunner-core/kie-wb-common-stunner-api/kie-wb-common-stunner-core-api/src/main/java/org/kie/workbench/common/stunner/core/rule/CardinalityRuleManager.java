@@ -16,8 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
-public interface CardinalityRuleManager<A, B> extends RuleManager<CardinalityRule> {
-
-    RuleViolations evaluate( A labels, B candidates, Operation operation );
+/**
+ * Base manager type for cardinality rules.
+ *
+ * It checks cardinality rules and evaluates if the given candidate can be added or removed
+ * from the structure. Cardinality rules are role based.
+ *
+ * Each domain specific implementation can provide its own argument types to evaluate internally the rules.
+ * See <a>org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager</a>
+ * See <a>org.kie.workbench.common.stunner.core.rule.graph.GraphCardinalityRuleManager</a>
+ */
+public interface CardinalityRuleManager extends RuleManager<CardinalityRule> {
 
 }

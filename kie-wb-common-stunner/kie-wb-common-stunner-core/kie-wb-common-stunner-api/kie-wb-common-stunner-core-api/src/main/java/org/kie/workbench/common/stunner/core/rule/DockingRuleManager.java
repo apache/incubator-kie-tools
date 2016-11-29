@@ -16,8 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
-public interface DockingRuleManager<A, B> extends RuleManager<DockingRule> {
-
-    RuleViolations evaluate( A targetId, B candidateRoles );
+/**
+ * Base manager type for docking rules.
+ *
+ * It checks cardinality rules and evaluates if the given candidate can be dock into another node.
+ * Docking rules are role based.
+ *
+ * Each domain specific implementation can provide its own argument types to evaluate internally the rules.
+ * See <a>org.kie.workbench.common.stunner.core.rule.model.ModelDockingRuleManager</a>
+ * See <a>org.kie.workbench.common.stunner.core.rule.graph.GraphDockingRuleManager</a>
+ */
+public interface DockingRuleManager extends RuleManager<DockingRule> {
 
 }

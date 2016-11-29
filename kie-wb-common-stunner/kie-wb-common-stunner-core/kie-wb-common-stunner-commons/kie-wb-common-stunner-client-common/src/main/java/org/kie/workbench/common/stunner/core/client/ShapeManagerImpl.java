@@ -20,7 +20,6 @@ import com.google.gwt.safehtml.shared.SafeUri;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -35,7 +34,6 @@ public class ShapeManagerImpl implements ShapeManager {
     protected SyncBeanManager beanManager;
     protected DefinitionManager definitionManager;
     private final List<ShapeSet<?>> shapeSets = new LinkedList<>();
-    private final List<ShapeFactory> shapeFactories = new LinkedList<>();
     private final List<ShapeSetThumbProvider> thumbProviders = new LinkedList<>();
 
     protected ShapeManagerImpl() {
@@ -51,7 +49,6 @@ public class ShapeManagerImpl implements ShapeManager {
     @PostConstruct
     public void init() {
         initShapeSets();
-        initShapeFactories();
         initThumbProviders();
     }
 
@@ -61,16 +58,6 @@ public class ShapeManagerImpl implements ShapeManager {
         for ( SyncBeanDef<ShapeSet> beanDef : beanDefs ) {
             ShapeSet shapeSet = beanDef.getInstance();
             shapeSets.add( shapeSet );
-        }
-
-    }
-
-    private void initShapeFactories() {
-        shapeFactories.clear();
-        Collection<SyncBeanDef<ShapeFactory>> beanDefs = beanManager.lookupBeans( ShapeFactory.class );
-        for ( SyncBeanDef<ShapeFactory> beanDef : beanDefs ) {
-            ShapeFactory shapeSet = beanDef.getInstance();
-            shapeFactories.add( shapeSet );
         }
 
     }
@@ -112,16 +99,6 @@ public class ShapeManagerImpl implements ShapeManager {
                 }
             }
 
-        }
-        return null;
-    }
-
-    @Override
-    public ShapeFactory getFactory( final String definitionId ) {
-        for ( final ShapeFactory factory : shapeFactories ) {
-            if ( factory.accepts( definitionId ) ) {
-                return factory;
-            }
         }
         return null;
     }

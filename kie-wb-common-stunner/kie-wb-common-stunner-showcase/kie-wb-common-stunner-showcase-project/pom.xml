@@ -664,6 +664,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Validation -->
+        <dependency>
+            <groupId>org.jboss.errai</groupId>
+            <artifactId>errai-validation</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>

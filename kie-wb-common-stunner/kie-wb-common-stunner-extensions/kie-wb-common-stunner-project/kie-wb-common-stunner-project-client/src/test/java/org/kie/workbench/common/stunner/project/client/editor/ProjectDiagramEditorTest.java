@@ -130,6 +130,7 @@ public class ProjectDiagramEditorTest {
         when( sessionCommandFactory.newRefreshSessionCommand() ).thenReturn( sessionRefreshCommand );
         when( clientSessionManager.newFullSession() ).thenReturn( fullSession );
         when( clientSessionPresenter.getView() ).thenReturn( clientSessionPresenterView );
+        when( clientSessionPresenter.setDisplayErrors( anyBoolean() ) ).thenReturn( clientSessionPresenter );
         this.tested = new ProjectDiagramEditorStub( view, placeManager, errorPopupPresenter,
                 changeTitleNotificationEvent, savePopUpPresenter, resourceType, projectDiagramServices,
                 clientSessionManager, clientSessionPresenter, paletteFactory, sessionUtils,

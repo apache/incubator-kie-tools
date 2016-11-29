@@ -59,7 +59,6 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteWidgetFactory<Definiti
             BS3PaletteViewFactory factory = defSet.getInstance();
             viewFactories.add( factory );
         }
-
     }
 
     @Override
@@ -68,25 +67,22 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteWidgetFactory<Definiti
     }
 
     @Override
-    protected void beforeBindPalette( final DefinitionSetPalette paletteDefinition ) {
-        super.beforeBindPalette( paletteDefinition );
+    protected void beforeBindPalette( final DefinitionSetPalette paletteDefinition,
+                                      final String shapeSetId) {
+        super.beforeBindPalette( paletteDefinition, shapeSetId );
         final String defSetId = paletteDefinition.getDefinitionSetId();
         BS3PaletteViewFactory viewFactory = getViewFactory( defSetId );
         if ( null == viewFactory ) {
             viewFactory = new BS3PaletteGlyphViewFactory( shapeManager );
-
         }
         palette.setViewFactory( viewFactory );
-
     }
 
     private BS3PaletteViewFactory getViewFactory( final String defSetId ) {
         for ( final BS3PaletteViewFactory factory : viewFactories ) {
             if ( factory.accepts( defSetId ) ) {
                 return factory;
-
             }
-
         }
         return null;
     }

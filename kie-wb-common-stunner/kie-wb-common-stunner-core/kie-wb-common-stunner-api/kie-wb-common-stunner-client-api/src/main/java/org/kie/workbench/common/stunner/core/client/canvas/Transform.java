@@ -25,17 +25,17 @@ public interface Transform {
     /**
      * Returns the cartesian coordinates for the current translation, if any.
      */
-    double[] getTranslate();
+    Point2D getTranslate();
 
     /**
      * Returns the values for the current scale on each cartesian axis, if any.
      */
-    double[] getScale();
+    Point2D getScale();
 
     /**
      * Returns the cartesian coordinates resulting after applying this
      * instance' transforms.
      */
-    double[] transform( double x, double y );
+    Point2D transform( double x, double y );
 
 }

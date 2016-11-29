@@ -34,7 +34,7 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
 
     private final static Map<String, Icon> CATEGORY_VIEWS = new HashMap<String, Icon>() {{
         put( Categories.ACTIVITIES, getIcon( IconType.SQUARE ) );
-        put( Categories.LANES, getIcon( IconType.CLONE ) );
+        put( Categories.LANES, getIcon( IconType.COPY ) );
         put( Categories.GATEWAYS, getIcon( IconType.ASTERISK ) );
         put( Categories.EVENTS, getIcon( IconType.CIRCLE ) );
         put( Categories.CONNECTING_OBJECTS, getIcon( IconType.LONG_ARROW_RIGHT ) );

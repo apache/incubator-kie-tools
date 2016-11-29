@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -127,6 +128,12 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
         paletteCategories.clear();
         paletteCategory.clear();
         floatingView.hide();
+    }
+
+    @Override
+    protected ShapeFactory getShapeFactory() {
+        final DefinitionSetPalette palette = paletteDefinition;
+        return shapeManager.getDefaultShapeSet( palette.getDefinitionSetId() ).getShapeFactory();
     }
 
     @Override
@@ -332,12 +339,12 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     }
 
     IsWidget getCategoryView( final String id ) {
-        return viewFactory.getCategoryView( id, CATEGORIES_ICON_WIDTH, CATEGORIES_ICON_HEIGHT );
+        return viewFactory.getCategoryView( paletteDefinition.getDefinitionSetId(), id, CATEGORIES_ICON_WIDTH, CATEGORIES_ICON_HEIGHT );
     }
 
 
     IsWidget getDefinitionView( final String id ) {
-        return viewFactory.getDefinitionView( id, ( int ) getIconSize(), ( int ) getIconSize() );
+        return viewFactory.getDefinitionView( paletteDefinition.getDefinitionSetId(), id, ( int ) getIconSize(), ( int ) getIconSize() );
     }
 
     @Override

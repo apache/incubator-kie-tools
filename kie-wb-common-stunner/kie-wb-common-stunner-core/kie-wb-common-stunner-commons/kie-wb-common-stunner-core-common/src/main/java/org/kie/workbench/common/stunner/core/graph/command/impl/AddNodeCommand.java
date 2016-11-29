@@ -22,66 +22,44 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 /**
- * A Command to add a node into a graph
+ * A Command to add a node as a child for the main graph instance.
+ * It check parent cardinality rules and containment rules as we..
  */
 @Portable
-public final class AddNodeCommand extends AbstractGraphCommand {
-
-    private final Node candidate;
+public final class AddNodeCommand extends RegisterNodeCommand {
 
     public AddNodeCommand( @MapsTo( "candidate" ) Node candidate ) {
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                candidate );
-    }
-
-    @Override
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
-        return check( context );
-    }
-
-    @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> results = check( context );
-        if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Graph<?, Node> graph = getGraph( context );
-            graph.addNode( candidate );
-            getMutableIndex( context ).addNode( candidate );
-        }
-        return results;
+        super( candidate );
     }
 
     @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
+        final CommandResult<RuleViolation> parentResult = super.check( context );
+        final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
+        parentResult.getViolations().forEach( builder::addViolation );
         final Graph<?, Node> graph = getGraph( context );
         final Collection<RuleViolation> containmentRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( graph, candidate ).violations();
-        final Collection<RuleViolation> cardinalityRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager().cardinality().evaluate( graph, candidate, RuleManager.Operation.ADD ).violations();
-        return new GraphCommandResultBuilder( new ArrayList<RuleViolation>( 2 ) {{
-            addAll( containmentRuleViolations );
-            addAll( cardinalityRuleViolations );
-        }} ).build();
+                ( Collection<RuleViolation> ) context.getRulesManager()
+                        .containment()
+                        .evaluate( graph, getCandidate() ).violations();
+        builder.addViolations( containmentRuleViolations );
+        return builder.build();
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final SafeDeleteNodeCommand undoCommand = new SafeDeleteNodeCommand( candidate );
+        final SafeDeleteNodeCommand undoCommand = new SafeDeleteNodeCommand( getCandidate() );
         return undoCommand.execute( context );
     }
 
     @Override
     public String toString() {
-        return "AddNodeCommand [candidate=" + candidate.getUUID() + "]";
+        return "AddNodeCommand [candidate=" + getCandidate().getUUID() + "]";
     }
 }

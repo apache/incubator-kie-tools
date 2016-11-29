@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.DragBounds;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public abstract class AbstractShapeView<T> extends WiresShape
@@ -90,7 +91,7 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
-    public double[] getShapeAbsoluteLocation() {
+    public Point2D getShapeAbsoluteLocation() {
         return WiresUtils.getAbsolute( getContainer() );
     }
 

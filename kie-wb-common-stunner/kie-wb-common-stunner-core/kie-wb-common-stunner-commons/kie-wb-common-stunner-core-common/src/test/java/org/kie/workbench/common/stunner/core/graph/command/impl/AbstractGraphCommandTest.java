@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.graph.*;
@@ -96,8 +97,8 @@ public abstract class AbstractGraphCommandTest {
         when( containmentRuleManager.evaluate( any( Element.class ), any( Element.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
         when( connectionRuleManager.evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
         when( cardinalityRuleManager.evaluate( any( Graph.class ), any( Node.class ), any( RuleManager.Operation.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
-        when( edgeCardinalityRuleManager.evaluate( any( Edge.class ), any( Node.class ), any( Node.class ),
-                any( List.class ), any( List.class ), any( RuleManager.Operation.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
+        when( edgeCardinalityRuleManager.evaluate( any( Edge.class ), any( Node.class ),
+                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
         when( dockingRuleManager.evaluate( any( Element.class ), any( Element.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
     }
 

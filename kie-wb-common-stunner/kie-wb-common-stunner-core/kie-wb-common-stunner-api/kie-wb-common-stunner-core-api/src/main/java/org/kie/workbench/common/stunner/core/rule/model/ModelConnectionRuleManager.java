@@ -17,8 +17,24 @@
 package org.kie.workbench.common.stunner.core.rule.model;
 
 import org.kie.workbench.common.stunner.core.rule.ConnectionRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 
 import java.util.Set;
 
-public interface ModelConnectionRuleManager extends ConnectionRuleManager<String, Set<String>> {
+/**
+ * Manager for connection rules specific for the Stunner's domain model.
+ */
+public interface ModelConnectionRuleManager extends ConnectionRuleManager {
+
+    /**
+     * It checks connection rules and evaluates if the given connector candidate identifier can
+     * be attached to the given source/target node.
+     * @param edgeId The connector definition's identifier.
+     * @param outgoingLabels The roles/labels for the outgoing node.
+     * @param incomingLabels The roles/labels for the incoming node.
+     */
+    RuleViolations evaluate( String edgeId,
+                             Set<String> outgoingLabels,
+                             Set<String> incomingLabels );
+
 }

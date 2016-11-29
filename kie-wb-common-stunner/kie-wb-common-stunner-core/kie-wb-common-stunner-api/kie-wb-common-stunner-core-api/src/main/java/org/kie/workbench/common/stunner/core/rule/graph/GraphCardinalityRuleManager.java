@@ -21,8 +21,24 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.CardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 
+/**
+ * Manager for cardinality rules specific for Stunner's graph domain.
+ */
 public interface GraphCardinalityRuleManager
-        extends CardinalityRuleManager<Graph<?, ? extends Node>, Node<? extends View<?>, ? extends Edge>> {
+        extends CardinalityRuleManager {
+
+    /**
+     *  It checks cardinality rules and evaluates if the given candidate node can be added or removed
+     * from the graph.
+     * @param graph The graph.
+     * @param candidates The node to add or remove.
+     * @param operation Add or remove
+     */
+    RuleViolations evaluate( Graph<?, ? extends Node> graph,
+                             Node<? extends View<?>, ? extends Edge> candidates,
+                             Operation operation );
+
 
 }

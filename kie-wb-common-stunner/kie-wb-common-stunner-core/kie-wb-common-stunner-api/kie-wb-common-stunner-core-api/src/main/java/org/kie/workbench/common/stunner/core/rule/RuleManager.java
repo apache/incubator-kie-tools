@@ -19,12 +19,10 @@ package org.kie.workbench.common.stunner.core.rule;
 public interface RuleManager<R extends Rule> {
 
     /**
-     * Rules are applied against an unmodified Graph/Model to check whether the proposed mutated state is valid.
-     * This is deliberate to avoid, for example, costly "undo" operations if we were to mutate the state
-     * first and then validate. An invalidate state would need to be reverted. If we decided to change
-     * this we'd need to mutate the graph state first and then validate the whole graph.
+     * Common operation types.
      */
     enum Operation {
+        NONE,
         ADD,
         DELETE
     }

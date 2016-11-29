@@ -115,7 +115,7 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
                                                 final Element newElement ) {
         final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
         final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        final ShapeFactory<?, ?, ?> edgeFactory = getShapeManager().getFactory( edgeId );
+        final ShapeFactory<?, ?, ?> edgeFactory = getFactory( context.getCanvasHandler() );
         return new ConnectorDragProxy.Item() {
             @Override
             public Edge<View<?>, Node> getEdge() {

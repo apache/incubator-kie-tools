@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.lienzo.toolbox;
 
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.shared.core.types.Direction;
@@ -26,7 +27,8 @@ import java.util.List;
 
 public class StaticToolbox extends AbstractToolbox {
 
-    private StaticToolbox( final WiresShape shape,
+    private StaticToolbox( final Layer layer,
+                           final WiresShape shape,
                            final Shape<?> attachTo,
                            final Direction anchor,
                            final Direction towards,
@@ -35,18 +37,18 @@ public class StaticToolbox extends AbstractToolbox {
                            final int padding,
                            final int iconSize,
                            final List<ToolboxButton> buttons ) {
-        super( shape, attachTo, anchor, towards, rows, cols, padding, iconSize, buttons );
+        super( layer, shape, attachTo, anchor, towards, rows, cols, padding, iconSize, buttons );
     }
 
     public static class StaticToolboxBuilder extends AbstractBuilder {
 
-        public StaticToolboxBuilder( final WiresShape shape ) {
-            super( shape );
+        public StaticToolboxBuilder( final Layer layer, final WiresShape shape ) {
+            super( layer, shape );
         }
 
         @Override
         public GridToolbox register() {
-            return new StaticToolbox( this.shape, this.attachTo, this.anchor, this.towards, this.rows, this.cols,
+            return new StaticToolbox( this.layer, this.shape, this.attachTo, this.anchor, this.towards, this.rows, this.cols,
                     this.padding, this.iconSize, this.buttons );
         }
 

@@ -33,6 +33,6 @@ public interface ToolboxControlProvider<C extends CanvasHandler, T> {
 
     ToolboxBuilder.Direction getTowards();
 
-    List<ToolboxCommand<?, ?>> getCommands( C context, T item );
+    List<ToolboxCommand<C, ?>> getCommands( C context, T item );
 
 }

@@ -26,6 +26,10 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class GraphCommandFactory {
 
+    public AddNodeCommand ADD_NODE( final Node candidate ) {
+        return new AddNodeCommand( candidate );
+    }
+
     @SuppressWarnings( "unchecked" )
     public AddChildNodeCommand ADD_CHILD_NODE( final Node parent,
                                                final Node candidate ) {
@@ -47,65 +51,29 @@ public class GraphCommandFactory {
     }
 
     @SuppressWarnings( "unchecked" )
-    public SafeDeleteNodeCommand SAFE_DELETE_NODE( final Node candidate ) {
-        return new SafeDeleteNodeCommand( candidate );
+    public AddConnectorCommand ADD_CONNECTOR( final Node target, final Edge edge, final int magnetIdx ) {
+        return new AddConnectorCommand( target, edge, magnetIdx );
     }
 
     @SuppressWarnings( "unchecked" )
-    public AddEdgeCommand ADD_EDGE( final Node target, final Edge edge ) {
-        return new AddEdgeCommand( target, edge );
-    }
-
-    public AddNodeCommand ADD_NODE( final Node candidate ) {
-        return new AddNodeCommand( candidate );
-    }
-
-    public ClearGraphCommand CLEAR_GRAPH() {
-        return new ClearGraphCommand( "" );
-    }
-
-    public ClearGraphCommand CLEAR_GRAPH( final String rootUUID ) {
-        return new ClearGraphCommand( rootUUID );
+    public SetChildNodeCommand SET_CHILD_NODE( final Node parent, final Node candidate ) {
+        return new SetChildNodeCommand( parent, candidate );
     }
 
     @SuppressWarnings( "unchecked" )
-    public AddChildEdgeCommand ADD_CHILD_EDGE( final Node parent, final Node candidate ) {
-        return new AddChildEdgeCommand( parent, candidate );
+    public SetParentNodeCommand SET_PARENT_NODE( final Node parent, final Node candidate ) {
+        return new SetParentNodeCommand( parent, candidate );
     }
 
     @SuppressWarnings( "unchecked" )
-    public AddParentEdgeCommand ADD_PARENT_EDGE( final Node parent, final Node candidate ) {
-        return new AddParentEdgeCommand( parent, candidate );
+    public DockNodeCommand DOCK_NODE( final Node parent, final Node candidate ) {
+        return new DockNodeCommand( parent, candidate );
     }
 
-    @SuppressWarnings( "unchecked" )
-    public DeleteChildEdgeCommand DELETE_CHILD_EDGE( final Node parent, final Node candidate ) {
-        return new DeleteChildEdgeCommand( parent, candidate );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public DeleteParentEdgeCommand DELETE_PARENT_EDGE( final Node parent, final Node candidate ) {
-        return new DeleteParentEdgeCommand( parent, candidate );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public AddDockEdgeCommand ADD_DOCK_EDGE( final Node parent, final Node candidate ) {
-        return new AddDockEdgeCommand( parent, candidate );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public DeleteDockEdgeCommand DELETE_DOCK_EDGE( final Node parent, final Node candidate ) {
-        return new DeleteDockEdgeCommand( parent, candidate );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public DeleteEdgeCommand DELETE_EDGE( final Edge<? extends View, Node> edge ) {
-        return new DeleteEdgeCommand( edge );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public DeleteNodeCommand DELETE_NODE( final Node candidate ) {
-        return new DeleteNodeCommand( candidate );
+    public MorphNodeCommand MORPH_NODE( final Node<Definition, Edge> candidate,
+                                        final MorphDefinition morphDefinition,
+                                        final String morphTarget ) {
+        return new MorphNodeCommand( candidate, morphDefinition, morphTarget );
     }
 
     public SetConnectionSourceNodeCommand SET_SOURCE_NODE( final Node<? extends View<?>, Edge> sourceNode,
@@ -133,10 +101,42 @@ public class GraphCommandFactory {
         return new UpdateElementPropertyValueCommand( element, propertyId, value );
     }
 
-    public MorphNodeCommand MORPH_NODE( final Node<Definition, Edge> candidate,
-                                        final MorphDefinition morphDefinition,
-                                        final String morphTarget ) {
-        return new MorphNodeCommand( candidate, morphDefinition, morphTarget );
+    @SuppressWarnings( "unchecked" )
+    public SafeDeleteNodeCommand SAFE_DELETE_NODE( final Node candidate ) {
+        return new SafeDeleteNodeCommand( candidate );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public DeleteNodeCommand DELETE_NODE( final Node candidate ) {
+        return new DeleteNodeCommand( candidate );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public RemoveChildCommand REMOVE_CHILD( final Node parent, final Node candidate ) {
+        return new RemoveChildCommand( parent, candidate );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public RemoveParentCommand REMOVE_PARENT( final Node parent, final Node candidate ) {
+        return new RemoveParentCommand( parent, candidate );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public UnDockNodeCommand UNDOCK_NODE( final Node parent, final Node candidate ) {
+        return new UnDockNodeCommand( parent, candidate );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public DeleteConnectorCommand DELETE_CONNECTOR( final Edge<? extends View, Node> edge ) {
+        return new DeleteConnectorCommand( edge );
+    }
+
+    public ClearGraphCommand CLEAR_GRAPH() {
+        return new ClearGraphCommand( "" );
+    }
+
+    public ClearGraphCommand CLEAR_GRAPH( final String rootUUID ) {
+        return new ClearGraphCommand( rootUUID );
     }
 
 }

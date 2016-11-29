@@ -40,16 +40,18 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 @Portable
 @Bindable
 @Definition( graphFactory = EdgeFactory.class, builder = SequenceFlow.SequenceFlowBuilder.class )
-// *** Connection rules ****
+// *** Connection rules for sequence flows ****
 @CanConnect( startRole = "sequence_start", endRole = "sequence_end" )
 @CanConnect( startRole = "choreography_sequence_start", endRole = "choreography_sequence_end" )
 @CanConnect( startRole = "Exclusive_Eventbased_Gateway", endRole = "FromEventbasedGateway" )
 @CanConnect( startRole = "EventbasedGateway", endRole = "FromEventbasedGateway" )
 // **** Cardinality rules for connectors ****
-// No incoming connections for start events.
+// No incoming sequence flows for start events.
 @EdgeOccurrences( role = "Startevents_all", type = EdgeOccurrences.EdgeType.INCOMING, max = 0 )
-// No outgoing connections for end events.
+// No outgoing sequence flows for end events.
 @EdgeOccurrences( role = "Endevents_all", type = EdgeOccurrences.EdgeType.OUTGOING, max = 0 )
+// A single outgoing sequence flows for messageflow_start roles, such as Tasks or Subprocess.
+@EdgeOccurrences( role = "messageflow_start", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1 )
 public class SequenceFlow extends BaseConnector {
 
     @Title

@@ -31,7 +31,7 @@ public class CardinalityMaxRuleViolation extends AbstractCardinalityRuleViolatio
 
     @Override
     public String getMessage() {
-        return "Labels ['" + target + "'] can have a maximum '" + restrictedOccurrences + "' of '" + candidate + "' roles. Found '" + currentOccurrences + "'.";
+        return "Label ['" + target + "'] can have a maximum '" + restrictedOccurrences + "' of '" + candidate + "' roles. Found '" + currentOccurrences + "'.";
     }
 
 }

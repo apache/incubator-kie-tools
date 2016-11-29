@@ -18,10 +18,11 @@ package org.kie.workbench.common.stunner.client.widgets.actions;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateCanvasElementPropertyCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.Session;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.command.impl.UpdateCanvasElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.components.actions.AbstractNameEditBox;
 import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -100,7 +101,7 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
             final Object def = element.getContent().getDefinition();
             final String nameId = definitionUtils.getNameIdentifier( def );
             if ( null != nameId ) {
-                UpdateCanvasElementPropertyCommand command = canvasCommandFactory.UPDATE_PROPERTY( element, nameId, this.nameValue );
+                UpdateElementPropertyCommand command = canvasCommandFactory.UPDATE_PROPERTY( element, nameId, this.nameValue );
                 canvasCommandManager.execute( canvasHandler, command );
 
             }

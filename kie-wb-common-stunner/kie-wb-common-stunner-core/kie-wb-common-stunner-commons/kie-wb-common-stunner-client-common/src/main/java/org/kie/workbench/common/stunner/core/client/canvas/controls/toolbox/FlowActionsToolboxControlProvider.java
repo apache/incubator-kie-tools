@@ -42,6 +42,18 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A toolbox control provider implementation that provides buttons to create new elements
+ * and update the graph structure.
+ *
+ * It provides buttons for:
+ * - Creating a new connection from the source element.
+ *   It looks for the default connector type and creates a button for it.
+ * - Creating new nodes after the source element.
+ *   As could be many target nodes that can be placed after the source one, as rules are evaluating and passing,
+ *   to avoid big amount of buttons on the toolbox, it just creates a button for each of
+ *   the base morph types that match all the given targets.
+ */
 @Dependent
 public class FlowActionsToolboxControlProvider extends AbstractToolboxControlProvider {
 
@@ -95,52 +107,53 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public List<ToolboxCommand<?, ?>> getCommands( final AbstractCanvasHandler context,
+    public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands( final AbstractCanvasHandler context,
                                                    final Element item ) {
-        final Diagram diagram = context.getDiagram();
-        final String defSetId = diagram.getMetadata().getDefinitionSetId();
-        if ( item.getContent() instanceof Definition ) {
-            final Definition definitionContent = ( Definition ) item.getContent();
-            final List<ToolboxCommand<?, ?>> commands = new LinkedList<>();
+        try {
+            final Node<Definition<Object>, Edge> node = ( Node<Definition<Object>, Edge> ) item;
+            final Diagram diagram = context.getDiagram();
+            final String defSetId = diagram.getMetadata().getDefinitionSetId();
+            final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = new LinkedList<>();
+            // Look for the default connector type and create a button for it.
             // TODO: Handle all response pages.
-            final Set<String> allowedConnectorIds = commonLookups.getConnectionRulesAllowedEdges( defSetId, definitionContent.getDefinition(), 0, 10 );
+            final Set<String> allowedConnectorIds =
+                    commonLookups.getAllowedConnectors( context.getModelRulesManager(), defSetId, node, 0, 10 );
             if ( null != allowedConnectorIds && !allowedConnectorIds.isEmpty() ) {
                 for ( final String allowedConnectorId : allowedConnectorIds ) {
-                    final NewConnectorCommand<?> newConnectorCommand = defaultToolboxCommandFactory.newConnectorCommand();
+                    final NewConnectorCommand<?> newConnectorCommand =
+                            defaultToolboxCommandFactory.newConnectorCommand();
                     newConnectorCommand.setEdgeIdentifier( allowedConnectorId );
                     commands.add( newConnectorCommand );
-
                 }
-
             }
+            // If default connector type is provided, new nodes can be created as well, so
+            // look for the allowed nodes that can be placed as button but gropuing them by their
+            // morph base type ( this avoid having large number of buttons on the toolbox ).
             final String defaultConnectorId = definitionUtils.getDefaultConnectorId( defSetId );
             if ( null != defaultConnectorId ) {
                 // TODO: Handle all response pages.
                 final Set<String> allowedMorphDefaultDefinitionIds =
                         commonLookups.getAllowedMorphDefaultDefinitions(
+                                context.getModelRulesManager(),
                                 defSetId,
                                 diagram.getGraph(),
                                 ( Node<? extends Definition<Object>, ? extends Edge> ) item,
-                                defaultConnectorId,
-                                0,
-                                10
+                                defaultConnectorId, 0, 10
                         );
                 if ( null != allowedMorphDefaultDefinitionIds && !allowedMorphDefaultDefinitionIds.isEmpty() ) {
                     for ( final String allowedDefId : allowedMorphDefaultDefinitionIds ) {
                         final NewNodeCommand newNodeCommand = defaultToolboxCommandFactory.newNodeCommand();
                         newNodeCommand.setDefinitionIdentifier( allowedDefId );
                         commands.add( newNodeCommand );
-
                     }
-
                 }
-
             }
             return commands;
-
+        } catch ( final Exception e ) {
+            LOGGER.log( Level.FINEST, "Discarded item [" + item.getUUID() + "] for flow action toolbox controls " +
+                    "as it's not a node." );
         }
         return null;
-
     }
 
     private void log( final String message ) {

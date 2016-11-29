@@ -16,23 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl;
 
-import org.kie.workbench.common.stunner.core.rule.*;
+import org.kie.workbench.common.stunner.core.rule.DockingRule;
+import org.kie.workbench.common.stunner.core.rule.DockingRuleManager;
+import org.kie.workbench.common.stunner.core.rule.Rule;
 
-public abstract class AbstractDockingRuleManager<A, B> extends AbstractRuleManager<DockingRule> implements DockingRuleManager<A, B> {
-
-    protected abstract RuleViolations doEvaluate( A targetId, B candidateRoles );
+public abstract class AbstractDockingRuleManager<A, B> extends AbstractRuleManager<DockingRule> implements DockingRuleManager {
 
     @Override
     public boolean supports( final Rule rule ) {
         return rule instanceof DockingRule;
-    }
-
-    @Override
-    public RuleViolations evaluate( final A targetId, final B candidateRoles ) {
-        if ( rules.isEmpty() ) {
-            return new DefaultRuleViolations();
-        }
-        return doEvaluate( targetId, candidateRoles );
     }
 
 }

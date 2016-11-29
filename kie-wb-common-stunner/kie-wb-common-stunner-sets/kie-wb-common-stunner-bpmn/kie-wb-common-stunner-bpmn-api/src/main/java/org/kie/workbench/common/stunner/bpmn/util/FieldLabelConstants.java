@@ -16,6 +16,19 @@
 package org.kie.workbench.common.stunner.bpmn.util;
 
 public final class FieldLabelConstants {
+    public static final String FIELDDEF_ID = "ID";
+    public static final String FIELDDEF_NAME = "Name";
+    public static final String FIELDDEF_BACKGROUND_AND_BORDERS = "Background and Borders";
+    public static final String FIELDDEF_FONT = "Font";
+    public static final String FIELDDEF_RADIUS = "Radius";
+    public static final String FIELDDEF_ICON_TYPE = "Icon Type";
+    public static final String FIELDDEF_WIDTH = "Width";
+    public static final String FIELDDEF_HEIGHT = "Height";
+    public static final String FIELDDEF_OUTER_RADIUS = "Outer Radius";
+    public static final String FIELDDEF_INNER_RADIUS = "Inner Radius";
+    public static final String FIELDDEF_BACKGROUND_COLOR = "Background Color";
+    public static final String FIELDDEF_BORDER_COLOR = "Border Color";
+    public static final String FIELDDEF_BORDER_SIZE = "Border Size";
     public static final String FIELDDEF_CATCH_EVENT_ATTRIBUTES = "Catch Event Attributes";
     public static final String FIELDDEF_ACTORS = "Actors";
     public static final String FIELDDEF_ASSIGNED_TO = "Assigned To";
@@ -33,9 +46,7 @@ public final class FieldLabelConstants {
     public static final String FIELDDEF_FONT_SETTINGS = "Font";
     public static final String FIELDDEF_GENERAL_SETTINGS = "General";
     public static final String FIELDDEF_GROUPS = "Groups";
-    public static final String FIELDDEF_ID = "ID";
     public static final String FIELDDEF_IMPLEMENTATION_EXECUTION = "Implementation/Execution";
-    public static final String FIELDDEF_NAME = "Name";
     public static final String FIELDDEF_PACKAGE = "Package";
     public static final String FIELDDEF_PRIORITY = "Priority";
     public static final String FIELDDEF_PROCESS_SETTINGS = "Process";

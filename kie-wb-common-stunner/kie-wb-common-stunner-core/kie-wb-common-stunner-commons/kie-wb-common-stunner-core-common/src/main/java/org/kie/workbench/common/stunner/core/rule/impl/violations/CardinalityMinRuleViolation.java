@@ -31,7 +31,7 @@ public class CardinalityMinRuleViolation extends AbstractCardinalityRuleViolatio
 
     @Override
     public String getMessage() {
-        return " Labels ['" + target + "'] require a minimum '" + restrictedOccurrences + "' of '" + candidate + "' roles. Found '" + currentOccurrences + "'.";
+        return " Label ['" + target + "'] require a minimum '" + restrictedOccurrences + "' of '" + candidate + "' roles. Found '" + currentOccurrences + "'.";
     }
 
 }

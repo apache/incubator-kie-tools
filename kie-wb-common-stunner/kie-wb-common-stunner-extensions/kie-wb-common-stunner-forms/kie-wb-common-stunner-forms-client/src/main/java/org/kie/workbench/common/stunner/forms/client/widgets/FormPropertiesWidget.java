@@ -24,19 +24,22 @@ import org.jboss.errai.databinding.client.HasProperties;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.uberfire.mvp.Command;
 
@@ -251,7 +254,7 @@ public class FormPropertiesWidget implements IsWidget {
                               final double x,
                               final double y ) {
         final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCanvasCommandManager();
-        commandManager.execute( getCanvasHandler(), commandFactory.UPDATE_POSITION( element, x, y ) );
+        commandManager.execute( getCanvasHandler(), commandFactory.UPDATE_POSITION( ( Node<View<?>, Edge> ) element, x, y ) );
 
     }
 

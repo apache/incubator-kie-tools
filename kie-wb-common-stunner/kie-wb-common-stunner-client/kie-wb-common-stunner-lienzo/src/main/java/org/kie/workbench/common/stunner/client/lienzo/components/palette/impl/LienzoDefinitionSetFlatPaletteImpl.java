@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -81,6 +82,16 @@ public class LienzoDefinitionSetFlatPaletteImpl
 
         }
 
+    }
+
+    @Override
+    protected ShapeFactory getShapeFactory() {
+        final ShapeFactory f = super.getShapeFactory();
+        if ( null == f ) {
+            final DefinitionSetPalette definitionSetPalette = ( DefinitionSetPalette ) paletteDefinition;
+            return shapeManager.getDefaultShapeSet( definitionSetPalette.getDefinitionSetId() ).getShapeFactory();
+        }
+        return f;
     }
 
     @Override

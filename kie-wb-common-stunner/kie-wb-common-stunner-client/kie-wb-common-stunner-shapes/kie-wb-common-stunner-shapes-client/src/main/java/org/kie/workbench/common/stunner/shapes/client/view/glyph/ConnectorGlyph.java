@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.glyph.AbstractL
 
 public final class ConnectorGlyph extends AbstractLienzoShapeGlyph {
 
-    public ConnectorGlyph( final double width, final double height, final String color ) {
+    public ConnectorGlyph( final String color, final double width, final double height ) {
         super( new Group(), width, height );
         build( width, height, color );
     }

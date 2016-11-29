@@ -17,31 +17,30 @@ package org.kie.workbench.common.stunner.core.client.canvas;
 
 public class TransformImpl implements Transform {
 
-    private final double[] translate;
-    private final double[] scale;
+    private final Point2D translate;
+    private final Point2D scale;
 
-    TransformImpl( final double[] translate, final double[] scale ) {
+    TransformImpl( final Point2D translate, final Point2D scale ) {
         this.translate = translate;
         this.scale = scale;
     }
 
     @Override
-    public double[] getTranslate() {
+    public Point2D getTranslate() {
         return translate;
     }
 
     @Override
-    public double[] getScale() {
+    public Point2D getScale() {
         return scale;
     }
 
     @Override
-    public double[] transform( final double x,
+    public Point2D transform( final double x,
                                final double y ) {
-        return new double[] {
-                ( x * scale[0] ) + translate[0],
-                ( y * scale[1] ) + translate[1]
-
-        };
+        return new Point2D(
+                ( x * scale.getX() ) + translate.getX(),
+                ( y * scale.getY() ) + translate.getY()
+        );
     }
 }

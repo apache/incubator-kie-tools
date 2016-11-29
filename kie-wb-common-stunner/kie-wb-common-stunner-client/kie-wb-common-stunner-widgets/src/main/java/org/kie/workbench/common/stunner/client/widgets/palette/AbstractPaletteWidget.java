@@ -42,6 +42,8 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
         this.view = view;
     }
 
+    protected abstract ShapeFactory getShapeFactory();
+
     public abstract double getIconSize();
 
     @Override
@@ -97,16 +99,14 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
                                      final double y ) {
         if ( null != itemDropCallback ) {
             final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition( definitionId );
-            final ShapeFactory<?, ?, ? extends Shape> factory = getFactory( definitionId );
+            final ShapeFactory<?, ?, ? extends Shape> factory = getShapeFactory();
             // Fire the callback as shape dropped onto the target canvas.
             itemDropCallback.onDropItem( definition, factory, x, y );
-
         }
-
     }
 
     public Glyph<?> getShapeGlyph( final String definitionId ) {
-        return getFactory( definitionId ).glyph( definitionId, getIconSize(), getIconSize() );
+        return getShapeFactory().glyph( definitionId, getIconSize(), getIconSize() );
     }
 
     @Override

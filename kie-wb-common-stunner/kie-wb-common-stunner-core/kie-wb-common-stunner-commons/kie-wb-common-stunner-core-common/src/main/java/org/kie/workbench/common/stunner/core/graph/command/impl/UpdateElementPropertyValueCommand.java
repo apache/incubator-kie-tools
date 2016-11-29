@@ -61,12 +61,7 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     }
 
     @Override
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
-        return check( context );
-    }
-
-    @Override
-    protected CommandResult<RuleViolation> doCheck( GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> check( GraphCommandExecutionContext context ) {
         checkNodeNotNull( context );
         return GraphCommandResultBuilder.SUCCESS;
     }

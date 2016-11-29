@@ -23,14 +23,24 @@ import java.util.Collection;
 
 public interface ShapeManager {
 
+    /**
+     * Returns the available Shape Sets.
+     */
     Collection<ShapeSet<?>> getShapeSets();
 
-    ShapeSet<?> getShapeSet( String id );
+    /**
+     * Returns the Shape Set instance by its identifier.
+     */
+    ShapeSet<?> getShapeSet( String shapeSetId );
 
+    /**
+     * Returns the default Shape Set instance for the given Definition Set identifier.
+     */
     ShapeSet<?> getDefaultShapeSet( String definitionSetId );
 
-    ShapeFactory getFactory( String definitionId );
-
+    /**
+     * Returns the uri for the default icon for the given Definition Set.
+     */
     SafeUri getThumbnail( String definitionSetId );
 
 }

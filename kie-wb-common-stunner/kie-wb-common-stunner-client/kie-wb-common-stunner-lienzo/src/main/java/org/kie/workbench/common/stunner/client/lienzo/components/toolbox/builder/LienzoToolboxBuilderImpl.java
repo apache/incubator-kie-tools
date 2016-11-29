@@ -18,8 +18,10 @@ package org.kie.workbench.common.stunner.client.lienzo.components.toolbox.builde
 
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.toolbox.LienzoToolbox;
 import org.kie.workbench.common.stunner.client.lienzo.components.toolbox.LienzoToolboxButtonGrid;
+import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButton;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -30,6 +32,7 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.event.ToolboxButtonEventH
 public class LienzoToolboxBuilderImpl
         implements LienzoToolboxBuilder<LienzoToolboxBuilderImpl> {
 
+    private Layer layer;
     private LienzoToolbox toolbox;
     private On on;
     private ButtonGrid buttonGrid;
@@ -38,9 +41,17 @@ public class LienzoToolboxBuilderImpl
     private int iconSize = 12;
 
     @Override
+    public LienzoToolboxBuilderImpl forLayer( final Layer layer ) {
+        this.layer = layer;
+        return this;
+    }
+
+    @Override
     public LienzoToolboxBuilderImpl forView( final ShapeView<?> view ) {
         if ( view instanceof WiresShape ) {
-            on = Toolboxes.staticToolBoxFor( ( WiresShape ) view );
+            final LienzoLayer lienzoLayerImpl = ( LienzoLayer ) this.layer;
+            final com.ait.lienzo.client.core.shape.Layer lienzoLayer = lienzoLayerImpl.getLienzoLayer();
+            on = Toolboxes.staticToolBoxFor( lienzoLayer, ( WiresShape ) view );
             if ( view instanceof HasEventHandlers ) {
                 final HasEventHandlers<?, Shape<?>> hasEventHandlers = ( HasEventHandlers ) view;
                 if ( null != hasEventHandlers.getAttachableShape() ) {

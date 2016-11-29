@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.ArgumentCaptor;
@@ -81,8 +82,8 @@ public class UpdateElementPropertyValueCommandTest extends AbstractGraphCommandT
         verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
         verify( cardinalityRuleManager, times( 0 ) ).evaluate( any( Graph.class ), any( Node.class ), any( RuleManager.Operation.class ) );
         verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ),
-                any( List.class ), any( List.class ), any( RuleManager.Operation.class ) );
+        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
+                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
         verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
     }
 

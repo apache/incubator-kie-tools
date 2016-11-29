@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.Ab
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.*;
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
@@ -32,7 +33,6 @@ import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationViolation;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -56,6 +56,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.logging.Level.FINE;
 
 // TODO: i18n.
 public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor {
@@ -141,7 +143,11 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         // Create a new full control session.
         session = ( AbstractClientFullSession ) clientSessionManager.newFullSession();
         // Initialize the session presenter.
-        clientSessionPresenter.initialize( session, getCanvasWidth(), getCanvasHeight() );
+        clientSessionPresenter
+                .setDisplayErrors( true )
+                .initialize( session,
+                        getCanvasWidth(),
+                        getCanvasHeight() );
         // Use the session presenter's view.
         getView().setWidget( clientSessionPresenter.getView() );
         // Initialize toolbar's commands.
@@ -317,7 +323,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionRefreshCommand.execute( new ClientSessionCommand.Callback<Diagram>() {
             @Override
             public void onSuccess( final Diagram result ) {
-                log( Level.FINE, "Diagram refresh successful." );
+                log( FINE, "Diagram refresh successful." );
                 hideLoadingViews();
             }
 
@@ -349,6 +355,12 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     protected void doFocus() {
+        log( FINE, "Focusing Stunner Project Diagram Editor..." );
+        if ( !isSameSession( clientSessionManager.getCurrentSession() ) ) {
+            clientSessionManager.open( session );
+        } else {
+            log( FINE, "Session already active, no action." );
+        }
     }
 
     protected void doLostFocus() {
@@ -356,10 +368,14 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     void onSessionErrorEvent( @Observes OnSessionErrorEvent errorEvent ) {
-        if ( null != session && session.equals( errorEvent.getSession() ) ) {
+        if ( isSameSession( errorEvent.getSession() ) ) {
             executeWithConfirm( "An error happened [" + errorEvent.getError() + "]. Do you want" +
                     "to refresh the diagram (Last changes can be lost)? ", this::menu_refresh );
         }
+    }
+
+    private boolean isSameSession( final ClientSession other ) {
+        return null != other && null != session && other.equals( session );
     }
 
     public String getTitleText() {
@@ -456,10 +472,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected ProjectDiagram getDiagram() {
         return null != clientSessionPresenter.getCanvasHandler() ? ( ProjectDiagram ) clientSessionPresenter.getCanvasHandler().getDiagram() : null;
-    }
-
-    private Graph getGraph() {
-        return null != getDiagram() ? getDiagram().getGraph() : null;
     }
 
     private  void executeWithConfirm( final String message, final Command command ) {

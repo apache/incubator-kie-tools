@@ -16,8 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
-public interface EdgeCardinalityRuleManager<A, B, C> extends RuleManager<EdgeCardinalityRule> {
-
-    RuleViolations evaluate( A edgeId, B outLabels, B inLabels, C outEdgesCount, C inEdgesCount, Operation operation );
+/**
+ * Base manager type for connector/s cardinality rules.
+ *
+ * It checks cardinality rules and evaluates if the given candidate connector can be added or removed
+ * from the structure. Cardinality rules are role/id based.
+ *
+ * Each domain specific implementation can provide its own argument types to evaluate internally the rules.
+ * See <a>org.kie.workbench.common.stunner.core.rule.model.ModelEdgeCardinalityRuleManager</a>
+ * See <a>org.kie.workbench.common.stunner.core.rule.graph.GraphEdgeCardinalityRuleManager</a>
+ */
+public interface EdgeCardinalityRuleManager extends RuleManager<EdgeCardinalityRule> {
 
 }

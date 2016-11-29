@@ -16,23 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl;
 
-import org.kie.workbench.common.stunner.core.rule.*;
+import org.kie.workbench.common.stunner.core.rule.ConnectionRule;
+import org.kie.workbench.common.stunner.core.rule.ConnectionRuleManager;
+import org.kie.workbench.common.stunner.core.rule.Rule;
 
-public abstract class AbstractConnectionRuleManager<A, B> extends AbstractRuleManager<ConnectionRule> implements ConnectionRuleManager<A, B> {
-
-    protected abstract RuleViolations doEvaluate( A edgeId, B outgoingLabels, B incomingLabels );
+public abstract class AbstractConnectionRuleManager extends AbstractRuleManager<ConnectionRule> implements ConnectionRuleManager {
 
     @Override
     public boolean supports( final Rule rule ) {
         return rule instanceof ConnectionRule;
-    }
-
-    @Override
-    public RuleViolations evaluate( A edgeId, B outgoingLabels, B incomingLabels ) {
-        if ( rules.isEmpty() ) {
-            return new DefaultRuleViolations();
-        }
-        return doEvaluate( edgeId, outgoingLabels, incomingLabels );
     }
 
 }

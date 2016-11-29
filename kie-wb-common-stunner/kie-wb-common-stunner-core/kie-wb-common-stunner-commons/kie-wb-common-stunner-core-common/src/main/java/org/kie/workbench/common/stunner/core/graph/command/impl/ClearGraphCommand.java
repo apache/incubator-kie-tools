@@ -28,9 +28,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import java.util.Iterator;
 
 /**
- * A Command to clear all elements in a graph
- * <p>
- * TODO: Undo.
+ * A Command to clear all elements in the graph structure
+ * TODO: Undo not supported yet.
  */
 @Portable
 public final class ClearGraphCommand extends AbstractGraphCommand {
@@ -42,14 +41,9 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
     }
 
     @Override
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
-        return check( context );
-    }
-
-    @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> results = check( context );
+        final CommandResult<RuleViolation> results = allow( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
             final Graph<?, Node> graph = getGraph( context );
             if ( hasRootUUID() ) {
@@ -74,7 +68,7 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
         return results;
     }
 
-    protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
         if ( hasRootUUID() ) {
             checkNodeNotNull( context, rootUUID );
         }
@@ -83,7 +77,11 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
 
     @Override
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        throw new UnsupportedOperationException( "Clear graph command undo is still not supported. " );
+        throw new UnsupportedOperationException( "Undo pperation for Clear Graph Command is still not supported. " );
+    }
+
+    public String getRootUUID() {
+        return rootUUID;
     }
 
     private boolean hasRootUUID() {

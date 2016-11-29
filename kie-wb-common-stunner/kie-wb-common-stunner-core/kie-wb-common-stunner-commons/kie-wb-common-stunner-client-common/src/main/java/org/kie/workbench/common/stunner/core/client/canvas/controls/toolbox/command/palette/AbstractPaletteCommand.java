@@ -32,10 +32,8 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Pal
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButton;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -53,24 +51,20 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
 
     private final I icon;
 
-    protected ClientFactoryService clientFactoryServices;
-    protected CommonLookups commonLookups;
-    protected ShapeManager shapeManager;
-    protected DefinitionsPaletteBuilder definitionsPaletteBuilder;
-    protected Palette<HasPaletteItems<? extends GlyphPaletteItem>> palette;
-    protected NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory;
-    protected NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl;
-    protected GraphBoundsIndexer graphBoundsIndexer;
+    protected final ClientFactoryService clientFactoryServices;
+    protected final CommonLookups commonLookups;
+    protected final ShapeManager shapeManager;
+    protected final DefinitionsPaletteBuilder definitionsPaletteBuilder;
+    protected final Palette<HasPaletteItems<? extends GlyphPaletteItem>> palette;
+    protected final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory;
+    protected final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl;
+    protected final GraphBoundsIndexer graphBoundsIndexer;
 
     protected AbstractCanvasHandler canvasHandler;
     protected CanvasHighlight canvasHighlight;
     protected Node<? extends Definition<Object>, ? extends Edge> sourceNode;
     protected boolean paletteVisible;
     protected String elementUUID;
-
-    protected AbstractPaletteCommand() {
-        this( null, null, null, null, null, null, null, null, null );
-    }
 
     public AbstractPaletteCommand( final ClientFactoryService clientFactoryServices,
                                    final CommonLookups commonLookups,
@@ -96,19 +90,18 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
     protected abstract Set<String> getDefinitions();
 
     protected abstract void onItemSelected( final String definitionId,
-                                            final ShapeFactory<?, ?, ?> factory,
                                             final double x,
                                             final double y );
 
     @Override
-    public I getIcon( final double width, final double height ) {
+    public I getIcon( final AbstractCanvasHandler context, final double width, final double height ) {
         return icon;
     }
 
     // TODO: I18n.
     @Override
     public String getTitle() {
-        return "Creates a new node";
+        return "- Empty title -";
     }
 
     @Override
@@ -147,13 +140,11 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                         @Override
                         public void onSuccess( final DefinitionsPalette paletteDefinition ) {
                             initializeView( paletteDefinition, context );
-
                         }
 
                         @Override
                         public void onError( final ClientRuntimeError error ) {
                             log( Level.SEVERE, error.toString() );
-
                         }
 
                     } );
@@ -165,6 +156,7 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
     @SuppressWarnings( "unchecked" )
     private void initializeView( final DefinitionsPalette paletteDefinition,
                                  Context<AbstractCanvasHandler> context ) {
+        beforeBindPalette( paletteDefinition, context );
         palette
                 .bind( paletteDefinition )
                 .onItemHover( AbstractPaletteCommand.this::_onItemHover )
@@ -173,6 +165,11 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                 .onItemMouseDown( AbstractPaletteCommand.this::_onItemMouseDown );
         // Use the relative coordinates (x/y) as palette gets added into same canvas' layer as the toolbox.
         showPaletteViewAt( context.getX(), context.getY() );
+    }
+
+    protected void beforeBindPalette( final DefinitionsPalette paletteDefinition,
+                                      Context<AbstractCanvasHandler> context ) {
+        // Nothing to do by default.
     }
 
     protected void showPaletteViewAt( final double x,
@@ -196,7 +193,6 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                                   final double itemY ) {
         // TODO
         return true;
-
     }
 
     private boolean _onItemHover( final String id,
@@ -206,13 +202,11 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                                   final double itemY ) {
         canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.POINTER );
         return true;
-
     }
 
     private boolean _onItemOut( final String id ) {
         canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
         return true;
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -221,8 +215,7 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                                       final double mouseY,
                                       final double itemX,
                                       final double itemY ) {
-        final ShapeFactory<?, ?, ?> factory = shapeManager.getFactory( id );
-        onItemSelected( id, factory, mouseX, mouseY );
+        onItemSelected( id, mouseX, mouseY );
         return true;
     }
 
@@ -236,15 +229,6 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
         this.nodeBuilderControl.disable();
         this.graphBoundsIndexer.destroy();
         this.canvasHighlight.destroy();
-        this.clientFactoryServices = null;
-        this.commonLookups = null;
-        this.shapeManager = null;
-        this.definitionsPaletteBuilder = null;
-        this.palette = null;
-        this.nodeDragProxyFactory = null;
-        this.nodeBuilderControl = null;
-        this.graphBoundsIndexer = null;
-
     }
 
     protected abstract PaletteView getPaletteView();

@@ -17,11 +17,11 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.drag;
 
 import org.kie.workbench.common.stunner.core.client.canvas.*;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Session;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -30,7 +30,9 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
@@ -98,7 +100,7 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
                     final double y = shape.getShapeView().getShapeY();
                     CommandResult<CanvasViolation> result = canvasCommandManager
                             .execute( canvasHandler, canvasCommandFactory
-                                    .UPDATE_POSITION( element, x, y ) );
+                                    .UPDATE_POSITION( ( Node<View<?>, Edge> ) element, x, y ) );
                     if ( CommandUtils.isError( result ) ) {
                         // TODO: DragContext#reset
                     }
@@ -124,15 +126,15 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
                                        final double[] shapeSize ) {
         final int mw = canvasHandler.getCanvas().getWidth();
         final int mh = canvasHandler.getCanvas().getHeight();
-        final double[] sa = shapeView.getShapeAbsoluteLocation();
-        LOGGER.log( Level.FINE, "Ensuring drag constraints for absolute coordinates at [" + sa[ 0 ] + ", " + sa[ 1 ] + "]" );
+        final Point2D sa = shapeView.getShapeAbsoluteLocation();
+        LOGGER.log( Level.FINE, "Ensuring drag constraints for absolute coordinates at [" + sa.getX() + ", " + sa.getY() + "]" );
         final double ax = mw - shapeSize[0];
         final double ay = mh - shapeSize[1];
-        final boolean xb = sa[ 0 ] >= ax || sa[ 0 ] < 0;
-        final boolean yb = sa[ 1 ] >= ay || sa[ 1 ] < 0;
+        final boolean xb = sa.getX() >= ax || sa.getX() < 0;
+        final boolean yb = sa.getY() >= ay || sa.getY() < 0;
         if ( xb || yb ) {
-            final double tx = sa[ 0 ] >= ax ? ax : ( sa[ 0 ] < 0 ? 0 : sa[ 0 ] );
-            final double ty = sa[ 1 ] >= ay ? ay : ( sa[ 1 ] < 0 ? 0 : sa[ 1 ] );
+            final double tx = sa.getX() >= ax ? ax : ( sa.getX() < 0 ? 0 : sa.getX() );
+            final double ty = sa.getY() >= ay ? ay : ( sa.getY() < 0 ? 0 : sa.getY() );
             LOGGER.log( Level.FINE, "Setting constraint coordinates at [" + tx + ", " + ty + "]" );
             shapeView.setShapeX( tx );
             shapeView.setShapeY( ty );

@@ -39,14 +39,6 @@ public class ShapeUtils {
         return GWT.getModuleBaseURL() + path;
     }
 
-    public static ShapeFactory getDefaultShapeFactory( final AbstractCanvasHandler context,
-                                                       final Element<? extends Definition<?>> element ) {
-        final ClientDefinitionManager manager = context.getClientDefinitionManager();
-        final Object def = element.getContent().getDefinition();
-        final String id = manager.adapters().forDefinition().getId( def );
-        return context.getShapeManager().getFactory( id );
-    }
-
     @SuppressWarnings( "unchecked" )
     public static void applyConnections( final Edge<?, ?> edge,
                                          final CanvasHandler canvasHandler,

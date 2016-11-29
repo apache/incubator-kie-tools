@@ -33,7 +33,11 @@ public class GraphContainmentRuleManagerImpl extends AbstractGraphRuleManager<Co
 
     private static final String NAME = "Graph Containment Rule Manager";
 
-    ModelContainmentRuleManager modelContainmentRuleManager;
+    private final ModelContainmentRuleManager modelContainmentRuleManager;
+
+    protected GraphContainmentRuleManagerImpl() {
+        this( null, null );
+    }
 
     @Inject
     public GraphContainmentRuleManagerImpl( final DefinitionManager definitionManager,
@@ -54,9 +58,9 @@ public class GraphContainmentRuleManagerImpl extends AbstractGraphRuleManager<Co
 
     @Override
     public RuleViolations evaluate( final Element<?> target,
-                                    final Element<? extends Definition<?>> candidateRoles ) {
+                                    final Element<? extends Definition<?>> candidate ) {
         final String targetId = getElementDefinitionId( target );
-        return modelContainmentRuleManager.evaluate( targetId, getLabels( candidateRoles ) );
+        return modelContainmentRuleManager.evaluate( targetId, getLabels( candidate ) );
 
     }
 

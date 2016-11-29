@@ -20,10 +20,12 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -31,14 +33,15 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public abstract class AbstractGraphCommand implements Command<GraphCommandExecutionContext, RuleViolation> {
 
-    protected abstract CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context );
+    protected abstract CommandResult<RuleViolation> check( final GraphCommandExecutionContext context );
 
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
+    @Override
+    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
         // Check if rules are present.
         if ( null == context.getRulesManager() ) {
             return GraphCommandResultBuilder.SUCCESS;
         }
-        return doCheck( context );
+        return check( context );
     }
 
     @SuppressWarnings( "unchecked" )

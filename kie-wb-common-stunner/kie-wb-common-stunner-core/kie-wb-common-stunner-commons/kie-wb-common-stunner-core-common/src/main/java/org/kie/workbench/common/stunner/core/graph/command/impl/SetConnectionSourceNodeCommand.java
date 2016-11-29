@@ -24,11 +24,11 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -68,14 +68,9 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     }
 
     @Override
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
-        return check( context );
-    }
-
-    @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> results = check( context );
+        final CommandResult<RuleViolation> results = allow( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
             final Node<?, Edge> sourceNode = getSourceNode( context );
             final Edge<? extends View, Node> edge = getEdge( context );
@@ -96,27 +91,42 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
         final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) getSourceNode( context );
-        final Node<View<?>, Edge> targetNode = ( Node<View<?>, Edge> ) getTargetNode( context );
         final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) getEdge( context );
+        final GraphCommandResultBuilder resultBuilder = new GraphCommandResultBuilder();
         final Collection<RuleViolation> connectionRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager()
-                        .connection().evaluate( edge, sourceNode, targetNode  ).violations();
-        final Collection<RuleViolation> cardinalityRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager()
-                        .edgeCardinality()
-                        .evaluate( edge,
-                                sourceNode,
-                                targetNode,
-                                sourceNode != null ? sourceNode.getOutEdges() : null,
-                                targetNode != null ? targetNode.getInEdges() : null,
-                                RuleManager.Operation.ADD )
-                        .violations();
-        return new GraphCommandResultBuilder( new ArrayList<RuleViolation>( 2 ) {{
-            addAll( connectionRuleViolations );
-            addAll( cardinalityRuleViolations );
-        }} ).build();
+                        .connection().evaluate( edge, sourceNode, targetNode ).violations();
+        resultBuilder.addViolations( connectionRuleViolations );
+        final Node<View<?>, Edge> currentSource = edge.getSourceNode();
+        // If the edge has an outoutgoing source node, check cardinality for removing it.
+        if ( null != currentSource ) {
+            final Collection<RuleViolation> cardinalityRuleViolations =
+                    ( Collection<RuleViolation> ) context.getRulesManager()
+                            .edgeCardinality()
+                            .evaluate( edge,
+                                    currentSource,
+                                    currentSource.getOutEdges(),
+                                    EdgeCardinalityRule.Type.OUTGOING,
+                                    RuleManager.Operation.DELETE )
+                            .violations();
+            resultBuilder.addViolations( cardinalityRuleViolations );
+        }
+        // If the new source node exist, evaluate cardinality rules for this edge.
+        if ( null != sourceNode ) {
+            final Collection<RuleViolation> cardinalityRuleViolations =
+                    ( Collection<RuleViolation> ) context.getRulesManager()
+                            .edgeCardinality()
+                            .evaluate( edge,
+                                    sourceNode,
+                                    sourceNode.getOutEdges(),
+                                    EdgeCardinalityRule.Type.OUTGOING,
+                                    RuleManager.Operation.ADD )
+                            .violations();
+            resultBuilder.addViolations( cardinalityRuleViolations );
+        }
+        return resultBuilder.build();
     }
 
     @Override
@@ -129,7 +139,7 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings( "unchecked" )
-    private Node<? extends View<?>, Edge> getTargetNode( final GraphCommandExecutionContext context ) {
+    public Node<? extends View<?>, Edge> getTargetNode( final GraphCommandExecutionContext context ) {
         if ( null == targetNode ) {
             targetNode = getEdge( context ).getTargetNode();
         }
@@ -137,18 +147,38 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings( "unchecked" )
-    private Node<? extends View<?>, Edge> getSourceNode( final GraphCommandExecutionContext context ) {
+    public Node<? extends View<?>, Edge> getSourceNode( final GraphCommandExecutionContext context ) {
         if ( null == sourceNode ) {
             sourceNode = ( Node<? extends View<?>, Edge> ) getNode( context, sourceNodeUUID );
         }
         return sourceNode;
     }
 
-    private Edge<? extends View, Node> getEdge( final GraphCommandExecutionContext context ) {
+    public Edge<? extends View, Node> getEdge( final GraphCommandExecutionContext context ) {
         if ( null == this.edge ) {
             this.edge = getViewEdge( context, edgeUUID );
         }
         return this.edge;
+    }
+
+    public Node<? extends View<?>, Edge> getSourceNode() {
+        return sourceNode;
+    }
+
+    public Edge<? extends View, Node> getEdge() {
+        return edge;
+    }
+
+    public Node<? extends View<?>, Edge> getTargetNode() {
+        return targetNode;
+    }
+
+    public Integer getMagnetIndex() {
+        return magnetIndex;
+    }
+
+    public Integer getLastSourceMagnetIndex() {
+        return lastMagnetIndex;
     }
 
     @Override

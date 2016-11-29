@@ -37,6 +37,8 @@ public interface LienzoGlyphItemsPalette<I extends HasPaletteItems<? extends Gly
 
     }
 
+    LienzoGlyphItemsPalette<I, V> setShapeSetId( String shapeSetId );
+
     List<GlyphPaletteItem> getItems();
 
     GlyphPaletteItem getItem( int pos );

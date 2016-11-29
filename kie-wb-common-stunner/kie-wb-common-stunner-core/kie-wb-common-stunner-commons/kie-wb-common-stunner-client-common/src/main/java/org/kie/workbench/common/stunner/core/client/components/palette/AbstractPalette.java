@@ -205,8 +205,4 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
 
     }
 
-    protected ShapeFactory getFactory( final String id ) {
-        return shapeManager.getFactory( id );
-    }
-
 }

@@ -61,7 +61,6 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                   final I icon ) {
         super( clientFactoryServices, commonLookups, shapeManager, definitionsPaletteBuilder, palette,
                 nodeDragProxyFactory, nodeBuilderControl, graphBoundsIndexer, icon );
-
     }
 
     protected abstract String getDefinitionSetIdentifier();
@@ -71,16 +70,23 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
     @Override
     @SuppressWarnings( "unchecked" )
     protected Set<String> getDefinitions() {
-        // TODO: Handle all response buckets/pages.
-        return commonLookups.getAllowedDefinitions( getDefinitionSetIdentifier(),
-                canvasHandler.getDiagram().getGraph(), this.sourceNode, getEdgeIdentifier(), 0, 10 );
-
+        // TODO: Finish this implementation & Handle all response buckets/pages. Currently no palettes
+        // are used on toolbox ( no implementation for this class )
+        final Set<Object> allowedDefinitions =
+                commonLookups.getAllowedTargetDefinitions(
+                        canvasHandler.getModelRulesManager(),
+                        getDefinitionSetIdentifier(),
+                        canvasHandler.getDiagram().getGraph(),
+                        this.sourceNode,
+                        getEdgeIdentifier(),
+                        0,
+                        10 );
+        return null;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     protected void onItemSelected( final String definitionId,
-                                   final ShapeFactory<?, ?, ?> factory,
                                    final double x,
                                    final double y ) {
         clientFactoryServices.newElement( UUID.uuid(), getEdgeIdentifier(), new ServiceCallback<Element>() {
@@ -90,40 +96,41 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                 final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) edgeItem;
                 // Manually set the source node as the drag def will need it.
                 edge.setSourceNode( sourceNode );
+                final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
+                final ShapeFactory<?, AbstractCanvasHandler, ?> shapeFactory =
+                        shapeManager.getShapeSet( ssid ).getShapeFactory();
                 clientFactoryServices.newElement( UUID.uuid(), definitionId, new ServiceCallback<Element>() {
-
                     @Override
                     public void onSuccess( final Element nodeItem ) {
                         final Node<View<?>, Edge> node = ( Node<View<?>, Edge> ) nodeItem;
-                        final ShapeFactory<?, AbstractCanvasHandler, ?> nodeShapeFactory = shapeManager.getFactory( definitionId );
-                        final ShapeFactory<?, AbstractCanvasHandler, ?> edgeShapeFactory = shapeManager.getFactory( getEdgeIdentifier() );
-                        final NodeDragProxy.Item<AbstractCanvasHandler> item = new NodeDragProxy.Item<AbstractCanvasHandler>() {
-                            @Override
-                            public Node<View<?>, Edge> getNode() {
-                                return node;
-                            }
+                        final NodeDragProxy.Item<AbstractCanvasHandler> item =
+                                new NodeDragProxy.Item<AbstractCanvasHandler>() {
+                                    @Override
+                                    public Node<View<?>, Edge> getNode() {
+                                        return node;
+                                    }
 
-                            @Override
-                            public ShapeFactory<?, AbstractCanvasHandler, ?> getNodeShapeFactory() {
-                                return nodeShapeFactory;
-                            }
+                                    @Override
+                                    public ShapeFactory<?, AbstractCanvasHandler, ?> getNodeShapeFactory() {
+                                        return shapeFactory;
+                                    }
 
-                            @Override
-                            public Edge<View<?>, Node> getInEdge() {
-                                return edge;
-                            }
+                                    @Override
+                                    public Edge<View<?>, Node> getInEdge() {
+                                        return edge;
+                                    }
 
-                            @Override
-                            public Node<View<?>, Edge> getInEdgeSourceNode() {
-                                return edge.getSourceNode();
-                            }
+                                    @Override
+                                    public Node<View<?>, Edge> getInEdgeSourceNode() {
+                                        return edge.getSourceNode();
+                                    }
 
-                            @Override
-                            public ShapeFactory<?, AbstractCanvasHandler, ?> getInEdgeShapeFactory() {
-                                return edgeShapeFactory;
-                            }
+                                    @Override
+                                    public ShapeFactory<?, AbstractCanvasHandler, ?> getInEdgeShapeFactory() {
+                                        return shapeFactory;
+                                    }
 
-                        };
+                                };
                         nodeBuilderControl.enable( canvasHandler );
                         canvasHighlight = new CanvasHighlight( canvasHandler );
                         graphBoundsIndexer.build( canvasHandler.getDiagram().getGraph() );
@@ -149,9 +156,7 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
 
                                         } else {
                                             canvasHighlight.unhighLight();
-
                                         }
-
                                     }
 
                                     @Override
@@ -168,19 +173,15 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                             public void onSuccess( final String uuid ) {
                                                 nodeBuilderControl.disable();
                                                 canvasHighlight.unhighLight();
-
                                             }
 
                                             @Override
                                             public void onError( final ClientRuntimeError error ) {
                                                 log( Level.SEVERE, error.toString() );
-
                                             }
-
                                         } );
 
                                     }
-
                                 } );
 
                     }
@@ -190,7 +191,6 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                         log( Level.SEVERE, error.toString() );
                     }
                 } );
-
             }
 
             @Override

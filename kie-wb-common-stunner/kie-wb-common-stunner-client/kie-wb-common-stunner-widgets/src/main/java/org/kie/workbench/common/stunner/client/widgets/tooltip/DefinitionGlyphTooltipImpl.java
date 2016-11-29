@@ -81,7 +81,9 @@ public class DefinitionGlyphTooltipImpl
     }
 
     @Override
-    public DefinitionGlyphTooltipImpl showGlyph( final String definitionId,
+    @SuppressWarnings( "unchecked" )
+    public DefinitionGlyphTooltipImpl showGlyph( final String defSetId,
+                                                 final String definitionId,
                                                  final double x,
                                                  final double y,
                                                  final double width,
@@ -89,7 +91,7 @@ public class DefinitionGlyphTooltipImpl
                                                  final GlyphTooltip.Direction direction ) {
         final String title = getTitle( definitionId );
         if ( null != title ) {
-            final ShapeFactory<?, ?, ?> factory = shapeManager.getFactory( definitionId );
+            final ShapeFactory<?, ?, ?> factory = shapeManager.getDefaultShapeSet( defSetId ).getShapeFactory();
             final Glyph glyph = factory.glyph( definitionId, width, height );
             this.show( glyph, getTitleToShow( title ), x, y, direction );
 

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
+
 /**
  * The view for a shape instance.
  * @param <T> The view type.
@@ -50,7 +52,7 @@ public interface ShapeView<T> {
      * Returns the absolute cartesian coordinate values for both X and Y axis..
      * This coordinate is not relative to the shape's parents, if any, neither current layer transforms.
      */
-    double[] getShapeAbsoluteLocation();
+    Point2D getShapeAbsoluteLocation();
 
     /**
      * Set the cartesian coordinate value on the X axis.

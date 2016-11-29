@@ -24,6 +24,4 @@ public interface ElementBuildRequest<H extends CanvasHandler> extends BuildReque
 
     Object getDefinition();
 
-    ShapeFactory<?, H, ?> getShapeFactory();
-
 }

@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.util.LienzoImageDat
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
@@ -154,19 +155,19 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
     }
 
     @Override
-    protected double[] getTranslate() {
-        return new double[] {
+    protected Point2D getTranslate() {
+        return new Point2D(
                 layer.getAbsoluteTransform().getTranslateX(),
                 layer.getAbsoluteTransform().getTranslateY()
-        };
+        );
     }
 
     @Override
-    protected double[] getScale() {
-        return new double[] {
+    protected Point2D getScale() {
+        return new Point2D(
                 layer.getAbsoluteTransform().getScaleX(),
                 layer.getAbsoluteTransform().getScaleY()
-        };
+        );
     }
 
 }

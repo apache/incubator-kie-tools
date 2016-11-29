@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -76,8 +77,26 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
         assertEquals( CommandResult.Type.INFO, result.getType() );
         verify( connectionRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( source ), eq( node ) );
-        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( source ), eq( node ),
-                any( List.class ), any( List.class ), eq( RuleManager.Operation.ADD ) );
+        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( lastTargetNode ),
+                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( node ),
+                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.ADD ) );
+        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    public void testAllowNoRules() {
+        when( graphCommandExecutionContext.getRulesManager() ).thenReturn( null );
+        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
+        assertEquals( CommandResult.Type.INFO, result.getType() );
+        verify( connectionRuleManager, times( 0 ) ).evaluate( eq( edge ), eq( source ), eq( node ) );
+        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( eq( edge ), eq( lastTargetNode ),
+                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( eq( edge ), eq( node ),
+                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.ADD ) );
         verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
         verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
         verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
@@ -90,8 +109,10 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
         assertEquals( CommandResult.Type.INFO, result.getType() );
         verify( connectionRuleManager, times( 1 ) ).evaluate( eq( edge ), any( Node.class ), any( Node.class ) );
-        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), any( Node.class ), any( Node.class ),
-                any( List.class ), any( List.class ), eq( RuleManager.Operation.ADD ) );
+        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( lastTargetNode ),
+                any( List.class ), any( EdgeCardinalityRule.Type.class ), eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( eq( edge ), any( Node.class ),
+                any( List.class ), any( EdgeCardinalityRule.Type.class ), eq( RuleManager.Operation.ADD ) );
         verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
         verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
         verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
@@ -107,6 +128,14 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         when( lastTargetNode.getInEdges() ).thenReturn( lastTargetInEdges );
         when( node.getInEdges() ).thenReturn( targetInEdges );
         CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
+        verify( connectionRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( source ), eq( node ) );
+        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( lastTargetNode ),
+                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.DELETE) );
+        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( node ),
+                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.ADD ) );
+        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
         assertEquals( CommandResult.Type.INFO, result.getType() );
         verify( lastTargetInEdges, times( 1 ) ).remove( eq( edge ) );
         verify( targetInEdges, times( 1 ) ).add( eq( edge ) );

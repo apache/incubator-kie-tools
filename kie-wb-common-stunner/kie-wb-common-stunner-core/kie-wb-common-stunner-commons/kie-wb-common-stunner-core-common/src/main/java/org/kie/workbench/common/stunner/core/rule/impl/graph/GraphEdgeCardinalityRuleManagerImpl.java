@@ -60,34 +60,17 @@ public class GraphEdgeCardinalityRuleManagerImpl extends AbstractGraphRuleManage
 
     @Override
     public RuleViolations evaluate( final Edge<? extends View<?>, Node> edge,
-                                    final Node<? extends View<?>, Edge> outNode,
-                                    final Node<? extends View<?>, Edge> inNode,
-                                    final List<? extends Edge> outEdges,
-                                    final List<? extends Edge> inEdges,
+                                    final Node<? extends View<?>, Edge> node,
+                                    final List<? extends Edge> edges,
+                                    final EdgeCardinalityRule.Type ruleType,
                                     final Operation operation ) {
         // The edge defintiion's identifier.
         final String edgeId = getElementDefinitionId( edge );
-        // Outgoing count.
-        final int outCount = graphUtils.countEdges( edgeId, outEdges );
-        // Incoming count.
-        final int inCount = graphUtils.countEdges( edgeId, inEdges );
-        return modelEdgeCardinalityRuleManager.evaluate( edgeId, getLabels( outNode ), getLabels( inNode ), outCount, inCount, operation );
+        // Edge count.
+        final int count = graphUtils.countEdges( edgeId, edges );
+        // Delegate to the domain model cardinality rule manager.
+        return modelEdgeCardinalityRuleManager.evaluate( edgeId, getLabels( node ), count, ruleType, operation );
 
-    }
-
-    private int count( final String edgeId, final List<? extends Edge> edges, final Operation operation ) {
-        if ( null != edges ) {
-            int c = ( operation.equals( Operation.ADD ) ? 1 : -1 );
-            for ( Edge e : edges ) {
-                final String eId = getElementDefinitionId( e );
-                if ( null != eId && edgeId.equals( eId ) ) {
-                    c++;
-                }
-
-            }
-            return c;
-        }
-        return 0;
     }
 
 }

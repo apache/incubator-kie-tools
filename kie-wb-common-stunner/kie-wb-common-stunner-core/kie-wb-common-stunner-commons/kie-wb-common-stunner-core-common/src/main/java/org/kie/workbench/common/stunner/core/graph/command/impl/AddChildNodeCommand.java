@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -71,18 +70,23 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
 
     @SuppressWarnings( "unchecked" )
     protected void initialize( final GraphCommandExecutionContext context ) {
+        super.initialize( context );
         final Node<?, Edge> parent = getParent( context );
-        this.addCommand( new AddNodeCommand( candidate ) );
+        this.addCommand( new RegisterNodeCommand( candidate ) );
         if ( null != x && null != y ) {
             this.addCommand( new UpdateElementPositionCommand( candidate, x, y ) );
         }
-        this.addCommand( new AddChildEdgeCommand( parent, candidate ) );
+        this.addCommand( new SetChildNodeCommand( parent, candidate ) );
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> doAllowCheck( final GraphCommandExecutionContext context,
-                                                         final Command<GraphCommandExecutionContext, RuleViolation> command ) {
+    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
+        ensureInitialized( context );
+        // Check if rules are present.
+        if ( null == context.getRulesManager() ) {
+            return GraphCommandResultBuilder.SUCCESS;
+        }
         final Node<?, Edge> parent = getParent( context );
         final Collection<RuleViolation> containmentRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( parent, candidate ).violations();
@@ -102,9 +106,30 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
         return parent;
     }
 
+    public Node<?, Edge> getParent() {
+        return parent;
+    }
+
+    public Node getCandidate() {
+        return candidate;
+    }
+
+    public Double getX() {
+        return x;
+    }
+
+    public Double getY() {
+        return y;
+    }
+
     @Override
     public String toString() {
         return "AddChildNodeCommand [parent=" + parentUUID + ", candidate=" + candidate.getUUID() + "]";
+    }
+
+    @Override
+    protected boolean delegateRulesContextToChildren() {
+        return false;
     }
 
 }

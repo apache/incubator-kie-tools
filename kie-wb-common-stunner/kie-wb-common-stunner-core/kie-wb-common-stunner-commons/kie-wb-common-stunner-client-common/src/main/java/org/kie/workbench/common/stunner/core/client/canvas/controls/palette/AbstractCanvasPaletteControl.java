@@ -168,9 +168,8 @@ public abstract class AbstractCanvasPaletteControl
 
             @Override
             public void onSuccess( final java.lang.Object def ) {
-                final ShapeFactory factory = shapeManager.getFactory( id );
                 final ElementBuildRequest<AbstractCanvasHandler> request =
-                        new ElementBuildRequestImpl( itemX, itemY, def, factory );
+                        new ElementBuildRequestImpl( itemX, itemY, def );
                 elementBuilderControl.build( request, new BuilderControl.BuildCallback() {
 
                     @Override

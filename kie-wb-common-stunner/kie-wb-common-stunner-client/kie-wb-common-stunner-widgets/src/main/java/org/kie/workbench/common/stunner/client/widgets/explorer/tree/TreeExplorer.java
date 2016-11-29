@@ -164,13 +164,13 @@ public class TreeExplorer implements IsWidget {
                 if ( null == parent ) {
                     final TreeExplorerItem item = treeExplorerItemInstances.get();
                     view.addItem( node.getUUID(), item.asWidget(), expand );
-                    item.show( node );
+                    item.show( getShapeSetId(), node );
 
                 } else {
                     int[] parentsIdx = getParentsIdx( levelIdx, level );
                     final TreeExplorerItem item = treeExplorerItemInstances.get();
                     view.addItem( node.getUUID(), item.asWidget(), expand, parentsIdx );
-                    item.show( node );
+                    item.show( getShapeSetId(), node );
 
                 }
 
@@ -249,6 +249,10 @@ public class TreeExplorer implements IsWidget {
         return canvasHandler != null && canvasHandler.equals( _canvasHandler );
     }
 
+    private String getShapeSetId() {
+        return canvasHandler.getDiagram().getMetadata().getShapeSetId();
+    }
+    @SuppressWarnings( "unchecked" )
     private void showEventGraph( final AbstractCanvasHandlerEvent canvasHandlerEvent ) {
         doShow( canvasHandlerEvent.getCanvasHandler().getDiagram().getGraph() );
     }

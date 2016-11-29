@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Dependent
-public class ModelConnectionRuleManagerImpl extends AbstractConnectionRuleManager<String, Set<String>> implements ModelConnectionRuleManager {
+public class ModelConnectionRuleManagerImpl extends AbstractConnectionRuleManager implements ModelConnectionRuleManager {
 
     private static final String NAME = "Domain Model Connection Rule Manager";
 
@@ -39,9 +39,12 @@ public class ModelConnectionRuleManagerImpl extends AbstractConnectionRuleManage
     }
 
     @Override
-    protected RuleViolations doEvaluate( final String edgeId,
-                                         final Set<String> outgoingLabels,
-                                         final Set<String> incomingLabels ) {
+    public RuleViolations evaluate( final String edgeId,
+                                    final Set<String> outgoingLabels,
+                                    final Set<String> incomingLabels ) {
+        if ( rules.isEmpty() ) {
+            return new DefaultRuleViolations();
+        }
         final DefaultRuleViolations results = new DefaultRuleViolations();
         final Set<Pair<String, String>> couples = new HashSet<Pair<String, String>>();
         for ( ConnectionRule rule : rules ) {

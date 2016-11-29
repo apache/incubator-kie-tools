@@ -34,6 +34,8 @@ public abstract class AbstractClientSessionPresenter<S extends AbstractClientSes
     private final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent;
     private final V view;
     private S session;
+    private boolean displayNotifications;
+    private boolean displayErrors;
 
     public AbstractClientSessionPresenter( final AbstractClientSessionManager clientSessionManager,
                                            final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
@@ -41,6 +43,8 @@ public abstract class AbstractClientSessionPresenter<S extends AbstractClientSes
         this.clientSessionManager = clientSessionManager;
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
         this.view = view;
+        this.displayErrors = false;
+        this.displayNotifications = false;
     }
 
     protected abstract void doDisposeSession();
@@ -49,7 +53,7 @@ public abstract class AbstractClientSessionPresenter<S extends AbstractClientSes
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public void initialize( final S session,
+    public ClientSessionPresenter<AbstractCanvas, AbstractCanvasHandler, S, V> initialize( final S session,
                             final int width,
                             final int height ) {
         this.session = session;
@@ -74,12 +78,12 @@ public abstract class AbstractClientSessionPresenter<S extends AbstractClientSes
             }
 
         } );
-
+        return this;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public void open( Diagram diagram, Command callback ) {
+    public ClientSessionPresenter<AbstractCanvas, AbstractCanvasHandler, S, V> open( Diagram diagram, Command callback ) {
         // Notify processing starts.
         fireProcessingStarted();
         // Open the session & Draw the graph on the canvas.
@@ -90,11 +94,24 @@ public abstract class AbstractClientSessionPresenter<S extends AbstractClientSes
         // Notify processing ends.
         fireProcessingCompleted();
         sessionDiagramOpenedEvent.fire( new SessionDiagramOpenedEvent( session ) );
+        return this;
     }
 
     @Override
     public AbstractCanvasHandler getCanvasHandler() {
         return session.getCanvasHandler();
+    }
+
+    @Override
+    public ClientSessionPresenter<AbstractCanvas, AbstractCanvasHandler, S, V> setDisplayErrors( final boolean showErrors ) {
+        this.displayErrors = showErrors;
+        return this;
+    }
+
+    @Override
+    public ClientSessionPresenter<AbstractCanvas, AbstractCanvasHandler, S, V> setDisplayNotifications( final boolean showNotifications ) {
+        this.displayNotifications = showNotifications;
+        return this;
     }
 
     public void disposeSession() {
@@ -112,6 +129,14 @@ public abstract class AbstractClientSessionPresenter<S extends AbstractClientSes
 
     public V getView() {
         return view;
+    }
+
+    protected boolean isDisplayNotifications() {
+        return displayNotifications;
+    }
+
+    protected boolean isDisplayErrors() {
+        return displayErrors;
     }
 
     protected S getSession() {

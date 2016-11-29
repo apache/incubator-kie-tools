@@ -16,11 +16,19 @@
 package org.kie.workbench.common.stunner.client.widgets.session.presenter.impl;
 
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
+import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.ClientSessionPresenter;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationFailEvent;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationSuccessEvent;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -32,6 +40,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 /**
  * Session presenter implementation that handles a session by displaying the loading and canvas views.
  */
+// TODO: i18n.
 @Dependent
 public class ClientSessionPresenterImpl
         extends AbstractClientSessionPresenter<AbstractClientSession, ClientSessionPresenter.View> {
@@ -68,5 +77,36 @@ public class ClientSessionPresenterImpl
             pauseSession();
         }
     }
+
+    void onGraphCommandExecuted( @Observes CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent ) {
+        if ( accepts( commandExecutedEvent.getCanvasHandler() ) ) {
+            final CommandResult<CanvasViolation> result = commandExecutedEvent.getResult();
+            if ( isDisplayErrors() && CommandUtils.isError( result ) ) {
+                getView().showError( result.toString() );
+            } else if ( isDisplayNotifications() && !CommandUtils.isError( result ) ) {
+                getView().showMessage( result.toString() );
+            }
+        }
+    }
+
+    void onCanvasValidationSuccessEvent( @Observes CanvasValidationSuccessEvent validationSuccessEvent ) {
+        if ( isDisplayNotifications() && accepts( validationSuccessEvent.getEntity() ) ) {
+            getView().showMessage( "Validation successful" );
+        }
+    }
+
+    void onCanvasValidationFailEvent( @Observes CanvasValidationFailEvent validationFailEvent ) {
+        if ( isDisplayErrors() && accepts( validationFailEvent.getEntity() ) ) {
+            getView().showError( "Validation failed" );
+        }
+    }
+
+    private boolean accepts( final CanvasHandler handler ) {
+        return null != getSession()
+                && null != getSession().getCanvasHandler()
+                && getSession().getCanvasHandler().equals( handler );
+    }
+
+
 
 }

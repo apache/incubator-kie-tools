@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
 
 import javax.validation.Valid;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
 
 @Portable
 @Bindable

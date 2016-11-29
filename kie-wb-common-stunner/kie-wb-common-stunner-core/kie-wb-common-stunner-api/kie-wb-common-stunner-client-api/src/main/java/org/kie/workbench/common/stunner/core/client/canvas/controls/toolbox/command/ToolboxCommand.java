@@ -26,7 +26,7 @@ public interface ToolboxCommand<H extends CanvasHandler, I> {
         ENABLED, DISABLED;
     }
 
-    I getIcon( double width, double height );
+    I getIcon( H context, double width, double height );
 
     String getTitle();
 

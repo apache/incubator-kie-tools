@@ -55,19 +55,19 @@ public abstract class AbstractRulesManager<C extends ContainmentRuleManager,
     @SuppressWarnings( "unchecked" )
     public RuleManager addRule( final Rule rule ) {
         if ( connectionRuleManager.supports( rule ) ) {
-            connectionRuleManager.addRule( rule );
+            connectionRuleManager.addRule( ( ConnectionRule ) rule );
 
         } else if ( containmentRuleManager.supports( rule ) ) {
-            containmentRuleManager.addRule( rule );
+            containmentRuleManager.addRule( ( ContainmentRule ) rule );
 
         } else if ( cardinalityRuleManager.supports( rule ) ) {
-            cardinalityRuleManager.addRule( rule );
+            cardinalityRuleManager.addRule( ( CardinalityRule ) rule );
 
         } else if ( edgeCardinalityRuleManager.supports( rule ) ) {
-            edgeCardinalityRuleManager.addRule( rule );
+            edgeCardinalityRuleManager.addRule( ( EdgeCardinalityRule ) rule );
 
         } else if ( dockingRuleManager.supports( rule ) ) {
-            dockingRuleManager.addRule( rule );
+            dockingRuleManager.addRule( ( DockingRule ) rule );
 
         }
         return this;

@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.el
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.element.LienzoGlyphPaletteItemViewImpl;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.element.LienzoPaletteElementView;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.palette.ClientPaletteUtils;
@@ -33,14 +34,19 @@ import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<? extends GlyphPaletteItem>, V extends LienzoPaletteView>
         extends AbstractLienzoPalette<I, V>
         implements LienzoGlyphItemsPalette<I, V> {
 
+    private static Logger LOGGER = Logger.getLogger( AbstractLienzoGlyphItemsPalette.class.getName() );
+
     protected DefinitionGlyphTooltip<Group> definitionGlyphTooltip;
     protected GlyphTooltipCallback glyphTooltipCallback;
     protected final List<LienzoPaletteElementView> itemViews = new LinkedList<LienzoPaletteElementView>();
+    private ShapeFactory shapeFactory;
 
     protected AbstractLienzoGlyphItemsPalette() {
         this( null, null, null );
@@ -51,6 +57,12 @@ public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<
                                             final V view ) {
         super( shapeManager, view );
         this.definitionGlyphTooltip = definitionGlyphTooltip;
+    }
+
+    @Override
+    public LienzoGlyphItemsPalette<I, V> setShapeSetId( final String shapeSetId ) {
+        this.shapeFactory = shapeManager.getShapeSet( shapeSetId ).getShapeFactory();
+        return this;
     }
 
     @Override
@@ -95,17 +107,25 @@ public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<
     protected void addGlyphItemIntoView( final GlyphPaletteItem item,
                                          final PaletteGrid grid ) {
         final Glyph<Group> glyph = getGlyph( item.getDefinitionId(), grid.getIconSize(), grid.getIconSize() );
-        final LienzoGlyphPaletteItemView paletteItemView = new LienzoGlyphPaletteItemViewImpl( item, getView(), glyph );
-        itemViews.add( paletteItemView );
-        view.add( paletteItemView );
+        if ( null != glyph ) {
+            final LienzoGlyphPaletteItemView paletteItemView = new LienzoGlyphPaletteItemViewImpl( item, getView(), glyph );
+            itemViews.add( paletteItemView );
+            view.add( paletteItemView );
+        } else {
+            LOGGER.log( Level.WARNING, "Could not create glyph for [" + item.getDefinitionId() + "]" );
+        }
     }
 
     @SuppressWarnings( "unchecked" )
     protected Glyph<Group> getGlyph( final String id,
                                      final double width,
                                      final double height ) {
-        final ShapeFactory shapeFactory = getFactory( id );
-        return shapeFactory.glyph( id, width, height );
+        final ShapeFactory shapeFactory = getShapeFactory();
+        if ( null != shapeFactory ) {
+            return shapeFactory.glyph( id, width, height );
+        }
+        LOGGER.log( Level.SEVERE, "No shape factory available." );
+        return null;
     }
 
     @SuppressWarnings( "unchecked" )
@@ -204,6 +224,10 @@ public abstract class AbstractLienzoGlyphItemsPalette<I extends HasPaletteItems<
             definitionGlyphTooltip.hide();
         }
         return true;
+    }
+
+    protected ShapeFactory getShapeFactory() {
+        return shapeFactory;
     }
 
     protected void doExpandCollapse() {

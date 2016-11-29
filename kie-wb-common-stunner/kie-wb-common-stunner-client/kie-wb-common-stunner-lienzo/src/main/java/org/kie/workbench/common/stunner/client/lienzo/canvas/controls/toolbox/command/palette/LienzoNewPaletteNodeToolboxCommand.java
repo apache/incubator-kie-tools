@@ -25,8 +25,10 @@ import org.kie.workbench.common.stunner.client.lienzo.util.SVGUtils;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.palette.NewPaletteNodeCommand;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
@@ -60,7 +62,14 @@ public abstract class LienzoNewPaletteNodeToolboxCommand extends NewPaletteNodeC
                 .setPadding( 5 )
                 .setLayout( LienzoPalette.Layout.VERTICAL );
         ( ( AbstractLienzoGlyphItemsPalette ) getLienzoPalette() ).getDefinitionGlyphTooltip().setPrefix( "Click to create a " );
+    }
 
+    @Override
+    protected void beforeBindPalette( final DefinitionsPalette paletteDefinition,
+                                      final Context<AbstractCanvasHandler> context ) {
+        super.beforeBindPalette( paletteDefinition, context );
+        final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
+        getLienzoPalette().setShapeSetId( ssid );
     }
 
     @Override
@@ -75,7 +84,7 @@ public abstract class LienzoNewPaletteNodeToolboxCommand extends NewPaletteNodeC
         return getLienzoPalette().getView();
     }
 
-    protected LienzoPalette getLienzoPalette() {
-        return ( LienzoPalette ) palette;
+    protected LienzoGlyphsHoverPalette getLienzoPalette() {
+        return ( LienzoGlyphsHoverPalette ) palette;
     }
 }

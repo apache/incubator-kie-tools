@@ -47,7 +47,7 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
 
     @Override
     public CommandResult<V> allow( T context ) {
-        checkInitialized( context );
+        ensureInitialized( context );
         final List<CommandResult<V>> results = new LinkedList<>();
         for ( final Command<T, V> command : commands ) {
             final CommandResult<V> result = doAllow( context, command );
@@ -97,7 +97,18 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
     }
 
     protected void initialize( T context ) {
-        // Nothing to do by default.
+        // Nothing to do by default. Implementation can add commands here.
+    }
+
+    protected void ensureInitialized( T context ) {
+        if ( !initialized ) {
+            initialize( context );
+            this.initialized = true;
+        }
+    }
+
+    public List<Command<T, V>> getCommands() {
+        return commands;
     }
 
     private CommandResult<V> buildResult( final List<CommandResult<V>> results ) {
@@ -126,17 +137,6 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
         final List<CommandResult<V>> results = new LinkedList<>();
         commandStack.stream().forEach( command -> results.add( doUndo( context, command ) ) );
         return buildResult( results );
-    }
-
-    private void checkInitialized( T context ) {
-        if ( !initialized ) {
-            initialize( context );
-            this.initialized = true;
-        }
-    }
-
-    public List<Command<T, V>> getCommands() {
-        return commands;
     }
 
 }

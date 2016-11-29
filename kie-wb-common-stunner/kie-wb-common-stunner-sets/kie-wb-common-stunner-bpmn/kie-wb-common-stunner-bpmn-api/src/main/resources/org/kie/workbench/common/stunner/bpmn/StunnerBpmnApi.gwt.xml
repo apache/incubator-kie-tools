@@ -22,8 +22,6 @@
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
 	<inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesApi"/>
-	<!-- For now BPMN depends on the BasicSet as it's using some icons.-->
-	<inherits name="org.kie.workbench.common.stunner.basicset.StunnerBasicSetApi"/>
 
 	<source path="definition"/>
 	<source path="factory"/>

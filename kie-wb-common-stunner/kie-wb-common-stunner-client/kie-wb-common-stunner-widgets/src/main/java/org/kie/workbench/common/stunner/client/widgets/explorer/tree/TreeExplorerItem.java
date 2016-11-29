@@ -74,10 +74,11 @@ public class TreeExplorerItem implements IsWidget {
     }
 
     @SuppressWarnings( "unchecked" )
-    public void show( final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> element ) {
+    public void show( final String shapeSetId,
+                      final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> element ) {
         final Object definition = element.getContent().getDefinition();
         final String defId = definitionUtils.getDefinitionManager().adapters().forDefinition().getId( definition );
-        final ShapeFactory factory = shapeManager.getFactory( defId );
+        final ShapeFactory factory = shapeManager.getShapeSet( shapeSetId ).getShapeFactory();
         view.setUUID( element.getUUID() )
                 .setName( getItemText( element ) )
                 .setGlyph( factory.glyph( defId, 25, 25 ) );

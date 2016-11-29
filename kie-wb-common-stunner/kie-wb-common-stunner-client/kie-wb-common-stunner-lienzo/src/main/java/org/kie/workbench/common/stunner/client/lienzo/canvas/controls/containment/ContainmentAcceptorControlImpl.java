@@ -23,11 +23,11 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.AbstractCo
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Session;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -66,12 +66,12 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
 
     @Override
     protected Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand( final Node parent, final Node child ) {
-        return canvasCommandFactory.ADD_CHILD_EDGE( parent, child );
+        return canvasCommandFactory.SET_CHILD_NODE( parent, child );
     }
 
     @Override
     protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand( final Node parent, final Node child ) {
-        return canvasCommandFactory.DELETE_CHILD_EDGE( parent, child );
+        return canvasCommandFactory.REMOVE_CHILD( parent, child );
     }
 
     private final IContainmentAcceptor CONTAINMENT_ACCEPTOR = new IContainmentAcceptor() {

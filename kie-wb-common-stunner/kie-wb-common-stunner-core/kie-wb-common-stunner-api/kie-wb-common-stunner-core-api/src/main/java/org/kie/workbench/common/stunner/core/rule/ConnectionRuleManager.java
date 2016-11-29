@@ -16,8 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
-public interface ConnectionRuleManager<A, B> extends RuleManager<ConnectionRule> {
+/**
+ * Base manager type for connection rules.
+ *
+ * It checks connection rules and evaluates if the given connector candidate can attached to
+ * the source/target node/s.
+ *
+ * Each domain specific implementation can provide its own argument types to evaluate internally the rules.
+ * See <a>org.kie.workbench.common.stunner.core.rule.model.ModelConnectionRuleManager</a>
+ * See <a>org.kie.workbench.common.stunner.core.rule.graph.GraphConnectionRuleManager</a>
+ */
 
-    RuleViolations evaluate( A edgeId, B outgoingLabels, B incomingLabels );
+public interface ConnectionRuleManager extends RuleManager<ConnectionRule> {
 
 }

@@ -24,6 +24,12 @@ public interface DefinitionGlyphTooltip<G> extends GlyphTooltip<G> {
 
     DefinitionGlyphTooltip<G> showTooltip( String definitionId, double x, double y, GlyphTooltip.Direction direction );
 
-    DefinitionGlyphTooltip<G> showGlyph( String definitionId, double x, double y, double width, double height, GlyphTooltip.Direction direction );
+    DefinitionGlyphTooltip<G> showGlyph( String defSetId,
+                                         String definitionId,
+                                         double x,
+                                         double y,
+                                         double width,
+                                         double height,
+                                         GlyphTooltip.Direction direction );
 
 }

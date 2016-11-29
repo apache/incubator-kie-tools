@@ -26,24 +26,26 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
 @Generated( "${generatedByClassName}" )
 @ApplicationScoped
-public class ${className} extends ${parentClassName} {
+public class ${className} extends ${parentClassName}<${shapeFactoryClassName}> {
 
-protected ${className}() {
-}
+    protected ${className}() {
+        this( null, null );
+    }
 
-@Inject
-public ${className}( final DefinitionManager definitionManager) {
-super( definitionManager );
-}
+    @Inject
+    public ${className}( final DefinitionManager definitionManager,
+                         final ${shapeFactoryClassName} factory ) {
+        super( definitionManager,factory );
+    }
 
-@PostConstruct
-public void init() {
-super.doInit();
-}
+    @PostConstruct
+    public void init() {
+        super.doInit();
+    }
 
-@Override
-protected Class<?> getDefinitionSetClass() {
-return ${defSetClass}.class;
-}
+    @Override
+    protected Class<?> getDefinitionSetClass() {
+        return ${defSetClass}.class;
+    }
 
 }

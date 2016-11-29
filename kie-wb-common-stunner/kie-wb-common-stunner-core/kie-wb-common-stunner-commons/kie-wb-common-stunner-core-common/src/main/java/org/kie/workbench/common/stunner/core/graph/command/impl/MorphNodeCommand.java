@@ -56,14 +56,9 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
     }
 
     @Override
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
-        return check( context );
-    }
-
-    @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> results = check( context );
+        final CommandResult<RuleViolation> results = allow( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
             final DefinitionManager definitionManager = context.getDefinitionManager();
             final Object currentDef = candidate.getContent().getDefinition();
@@ -96,7 +91,7 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
         // TODO: check rules before morphing?
         return GraphCommandResultBuilder.SUCCESS;
     }

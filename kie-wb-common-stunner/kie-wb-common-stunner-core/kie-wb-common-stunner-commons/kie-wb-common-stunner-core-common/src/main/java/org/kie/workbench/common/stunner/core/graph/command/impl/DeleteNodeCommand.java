@@ -18,114 +18,34 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A Command to delete a node from a graph.
+ * A Command to delete graph a child node.
  * Does not take care about node'edges neither children nodes.
  */
 @Portable
-public final class DeleteNodeCommand extends AbstractGraphCommand {
+public final class DeleteNodeCommand extends DeregisterNodeCommand {
 
     private static Logger LOGGER = Logger.getLogger( DeleteNodeCommand.class.getName() );
 
-    private final String uuid;
-    private transient Node<?, Edge> node;
-    private transient Node<?, Edge> removed;
-
     public DeleteNodeCommand( @MapsTo( "uuid" ) String uuid ) {
-        this.uuid = PortablePreconditions.checkNotNull( "uuid",
-                uuid );
-        this.removed = null;
+       super( uuid );
     }
 
-    public DeleteNodeCommand( Node<?, Edge> node ) {
-        this( node.getUUID() );
-        this.node = node;
-    }
-
-    @Override
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
-        return check( context );
-    }
-
-    @Override
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        CommandResult<RuleViolation> results = check( context );
-        if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            LOGGER.log( Level.FINE, "Executing..." );
-            final Graph<?, Node> graph = getGraph( context );
-            final Node<?, Edge> candidate = getCandidate( context );
-            this.removed = candidate;
-            graph.removeNode( candidate.getUUID() );
-            getMutableIndex( context ).removeNode( candidate );
-            LOGGER.log( Level.FINE, "Node [" + uuid + " removed from strcture and index." );
-        }
-        return results;
-    }
-
-    @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> doCheck( final GraphCommandExecutionContext context ) {
-        // Check node exist on the index.
-        checkCandidateNotNull( context );
-        // And check it really exist on the graph storage as well.
-        final Graph<?, Node> graph = getGraph( context );
-        final Node<View<?>, Edge> candidate = ( Node<View<?>, Edge> ) getCandidate( context );
-        boolean isNodeInGraph = false;
-        for ( Object node : graph.nodes() ) {
-            if ( node.equals( candidate ) ) {
-                isNodeInGraph = true;
-                break;
-            }
-        }
-        if ( isNodeInGraph ) {
-            final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
-            final Collection<RuleViolation> cardinalityRuleViolations =
-                    ( Collection<RuleViolation> ) context.getRulesManager()
-                            .cardinality()
-                            .evaluate( graph,
-                                    candidate,
-                                    RuleManager.Operation.DELETE )
-                            .violations();
-            builder.addViolations( cardinalityRuleViolations );
-            return builder.build();
-        }
-        throw new BadCommandArgumentsException( this, uuid, "No node found for UUID" );
+    public DeleteNodeCommand( final Node<?, Edge> node ) {
+        super( node );
     }
 
     @Override
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final AddNodeCommand undoCommand = new AddNodeCommand( removed );
+        final AddNodeCommand undoCommand = new AddNodeCommand( getRemoved() );
         return undoCommand.execute( context );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    private Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
-        if ( null == node ) {
-            node = getNode( context, uuid );
-        }
-        return node;
-    }
-
-    private Node<?, Edge> checkCandidateNotNull( final GraphCommandExecutionContext context ) {
-        final Node<?, Edge> e = getCandidate( context );
-        if ( null == e ) {
-            throw new BadCommandArgumentsException( this, uuid, "Node not found for [" + uuid + "]." );
-        }
-        return e;
     }
 
     @Override

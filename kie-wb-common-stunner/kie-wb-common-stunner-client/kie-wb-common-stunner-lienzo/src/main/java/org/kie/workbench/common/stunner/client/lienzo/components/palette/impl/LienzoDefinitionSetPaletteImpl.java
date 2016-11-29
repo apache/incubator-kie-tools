@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -41,7 +42,7 @@ public class LienzoDefinitionSetPaletteImpl
         extends AbstractLienzoGlyphItemsPalette<DefinitionSetPalette, LienzoHoverPaletteView>
         implements LienzoDefinitionSetPalette {
 
-    LienzoGlyphsHoverPalette glyphsFloatingPalette;
+    private final LienzoGlyphsHoverPalette glyphsFloatingPalette;
 
     private final List<GlyphPaletteItem> items = new LinkedList<>();
 
@@ -108,7 +109,9 @@ public class LienzoDefinitionSetPaletteImpl
     @Override
     protected void doBind() {
         items.clear();
-        final DefinitionSetPalette definitionSetPalette = ( DefinitionSetPalette ) paletteDefinition;
+        final DefinitionSetPalette definitionSetPalette = paletteDefinition;
+        final String ssid = shapeManager.getDefaultShapeSet( paletteDefinition.getDefinitionSetId() ).getId();
+        glyphsFloatingPalette.setShapeSetId( ssid );
         final List<DefinitionPaletteCategory> categories = definitionSetPalette.getItems();
         if ( null != categories && !categories.isEmpty() ) {
             final PaletteGrid grid = getGrid();

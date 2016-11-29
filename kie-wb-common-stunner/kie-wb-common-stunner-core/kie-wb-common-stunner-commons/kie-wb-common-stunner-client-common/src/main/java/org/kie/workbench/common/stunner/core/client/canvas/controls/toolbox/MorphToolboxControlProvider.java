@@ -34,6 +34,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A toolbox control provider implementation that provides buttons for each of the target
+ * types in which source node can morph into.
+ */
 @Dependent
 public class MorphToolboxControlProvider extends AbstractToolboxControlProvider {
 
@@ -82,10 +86,11 @@ public class MorphToolboxControlProvider extends AbstractToolboxControlProvider 
     }
 
     @Override
-    public List<ToolboxCommand<?, ?>> getCommands( final AbstractCanvasHandler context,
+    @SuppressWarnings( "unchecked" )
+    public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands( final AbstractCanvasHandler context,
                                                    final Element item ) {
         return !hasMorphTargets( item ) ? null :
-                new ArrayList<ToolboxCommand<?, ?>>( 1 ) {{
+                new ArrayList<ToolboxCommand<AbstractCanvasHandler, ?>>( 1 ) {{
                     add( morphCommand );
                 }};
     }

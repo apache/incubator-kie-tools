@@ -52,15 +52,16 @@ public class CanvasCommandResultBuilder extends CommandResultBuilder<CanvasViola
         this.setType( commandResult.getType() );
         // Translate violations.
         final Iterable<RuleViolation> violations = commandResult.getViolations();
-        final Iterator<RuleViolation> violationsIt = violations.iterator();
-        while ( violationsIt.hasNext() ) {
-            final RuleViolation ruleViolation = violationsIt.next();
-            final CanvasViolation canvasViolation =
-                    new CanvasViolationImpl.CanvasViolationBuilder( ruleViolation )
-                            .build();
-            addViolation( canvasViolation );
+        if ( null != violations ) {
+            final Iterator<RuleViolation> violationsIt = violations.iterator();
+            while ( violationsIt.hasNext() ) {
+                final RuleViolation ruleViolation = violationsIt.next();
+                final CanvasViolation canvasViolation =
+                        new CanvasViolationImpl.CanvasViolationBuilder( ruleViolation )
+                                .build();
+                addViolation( canvasViolation );
+            }
         }
-
     }
 
     @Override

@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.imp
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequestImpl;
@@ -27,7 +28,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.Session;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -81,14 +81,13 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
         if ( null != canvasHandler ) {
             final CanvasHandler context = buildCanvasShapeEvent.getCanvasHandler();
             if ( null != context && context.equals( canvasHandler ) ) {
-                final ShapeFactory factory = buildCanvasShapeEvent.getShapeFactory();
                 final Object definition = buildCanvasShapeEvent.getDefinition();
                 final double x = buildCanvasShapeEvent.getX();
                 final double y = buildCanvasShapeEvent.getY();
                 final double _x = x >= 0 ? x - canvasHandler.getCanvas().getAbsoluteX() : -1;
                 final double _y = y >= 0 ? y - canvasHandler.getCanvas().getAbsoluteY() : -1;
                 final ElementBuildRequest<AbstractCanvasHandler> request =
-                        new ElementBuildRequestImpl( _x, _y, definition, factory );
+                        new ElementBuildRequestImpl( _x, _y, definition );
                 ObserverBuilderControl.this.build( request, new BuildCallback() {
                     @Override
                     public void onSuccess( final String uuid ) {

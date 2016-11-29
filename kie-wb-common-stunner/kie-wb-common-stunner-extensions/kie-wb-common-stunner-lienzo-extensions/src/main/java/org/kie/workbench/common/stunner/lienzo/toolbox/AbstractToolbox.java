@@ -46,6 +46,7 @@ public abstract class AbstractToolbox implements GridToolbox {
 
     private static final Flows.BooleanOp XYWH_OP = any( Attribute.X, Attribute.Y, Attribute.WIDTH, Attribute.HEIGHT );
 
+    protected final Layer layer;
     protected final WiresShape shape;
     protected final Direction anchor;
     protected final Direction towards;
@@ -69,7 +70,7 @@ public abstract class AbstractToolbox implements GridToolbox {
             registerButton( button );
             group.add( button.getShape().getGroup() );
         }
-        this.shape.getGroup().getLayer().add( group );
+        getLayer().add( group );
         reposition();
         initHandlers();
         batch();
@@ -170,10 +171,11 @@ public abstract class AbstractToolbox implements GridToolbox {
     }
 
     Layer getLayer() {
-        return shape.getGroup().getLayer();
+        return layer;
     }
 
-    protected AbstractToolbox( final WiresShape shape,
+    protected AbstractToolbox( final Layer layer,
+                               final WiresShape shape,
                                final Shape<?> attachTo,
                                final Direction anchor,
                                final Direction towards,
@@ -182,6 +184,7 @@ public abstract class AbstractToolbox implements GridToolbox {
                                final int padding,
                                final int iconSize,
                                final List<ToolboxButton> buttons ) {
+        this.layer = layer;
         this.shape = shape;
         this.anchor = anchor;
         this.towards = towards;
@@ -200,7 +203,7 @@ public abstract class AbstractToolbox implements GridToolbox {
     }
 
     private void batch() {
-        this.shape.getGroup().getLayer().batch();
+        this.getLayer().batch();
     }
 
 }

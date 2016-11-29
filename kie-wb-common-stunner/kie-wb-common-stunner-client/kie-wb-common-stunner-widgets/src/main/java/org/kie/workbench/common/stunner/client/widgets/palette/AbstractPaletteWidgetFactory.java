@@ -51,8 +51,9 @@ public abstract class AbstractPaletteWidgetFactory<I extends PaletteDefinition, 
     }
 
     @Override
-    protected void beforeBindPalette( final I paletteDefinition ) {
-        super.beforeBindPalette( paletteDefinition );
+    protected void beforeBindPalette( final I paletteDefinition,
+                                      final String shapeSetId ) {
+        super.beforeBindPalette( paletteDefinition, shapeSetId );
         if ( null != canvasHandler ) {
             palette.onItemDrop( ( definition, factory, x, y ) ->
                     buildCanvasShapeEvent.fire( new BuildCanvasShapeEvent( ( AbstractCanvasHandler ) canvasHandler,

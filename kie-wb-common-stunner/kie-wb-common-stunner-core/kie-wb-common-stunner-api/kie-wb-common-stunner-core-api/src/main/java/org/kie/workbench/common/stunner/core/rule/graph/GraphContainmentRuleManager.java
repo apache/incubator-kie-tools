@@ -19,7 +19,19 @@ package org.kie.workbench.common.stunner.core.rule.graph;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.ContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 
-public interface GraphContainmentRuleManager extends ContainmentRuleManager<Element<?>, Element<? extends Definition<?>>> {
+/**
+ * Manager for containment rules specific for Stunner's graph domain.
+ */
+public interface GraphContainmentRuleManager extends ContainmentRuleManager {
+
+    /**
+     * It checks containment rules and evaluates if the given candidate role can be added or removed
+     * into/from another node.
+     * @param parent The parent node.
+     * @param candidate The roles for the candidate child node.
+     */
+    RuleViolations evaluate( Element<?> parent, Element<? extends Definition<?>> candidate );
 
 }

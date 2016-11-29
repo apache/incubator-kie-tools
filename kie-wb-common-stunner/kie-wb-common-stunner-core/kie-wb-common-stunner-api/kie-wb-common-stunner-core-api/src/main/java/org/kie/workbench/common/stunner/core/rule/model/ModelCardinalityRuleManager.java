@@ -17,9 +17,20 @@
 package org.kie.workbench.common.stunner.core.rule.model;
 
 import org.kie.workbench.common.stunner.core.rule.CardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 
-import java.util.Set;
+/**
+ * Manager for cardinality rules specific for the Stunner's domain model.
+ */
+public interface ModelCardinalityRuleManager extends CardinalityRuleManager {
 
-public interface ModelCardinalityRuleManager extends CardinalityRuleManager<Set<String>, Integer> {
+    /**
+     *  It checks cardinality rules and evaluates if the given candidate role can be added or removed
+     * as the given count value .for this role.
+     * @param label The role/label to add or remove.
+     * @param count The count value for this roles.
+     * @param operation Add or remove
+     */
+    RuleViolations evaluate( String label, int count, Operation operation );
 
 }

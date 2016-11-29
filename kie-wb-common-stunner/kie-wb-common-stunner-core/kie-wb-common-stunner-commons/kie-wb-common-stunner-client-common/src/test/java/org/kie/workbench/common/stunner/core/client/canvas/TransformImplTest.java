@@ -25,8 +25,8 @@ import static org.junit.Assert.assertEquals;
 @RunWith( MockitoJUnitRunner.class )
 public class TransformImplTest {
 
-    private static final double[] translate = new double[] { 10, 20 };
-    private static final double[] scale = new double[] { 2, 5 };
+    private static final Point2D translate = new Point2D( 10, 20 );
+    private static final Point2D scale = new Point2D( 2, 5 );
 
     private TransformImpl tested;
 
@@ -37,24 +37,24 @@ public class TransformImplTest {
 
     @Test
     public void testGetTranslate() {
-        final double[] t = tested.getTranslate();
+        final Point2D t = tested.getTranslate();
         assertEquals( translate, t );
     }
 
     @Test
     public void testGetScale() {
-        final double[] s = tested.getScale();
+        final Point2D s = tested.getScale();
         assertEquals( scale, s );
     }
 
     @Test
     public void testTranform() {
-        final double[] t = tested.transform( 1, 1 );
-        assertEquals( 12, t[0], 0 );
-        assertEquals( 25, t[1], 0 );
-        final double[] t1 = tested.transform( 2, 2 );
-        assertEquals( 14, t1[0], 0 );
-        assertEquals( 30, t1[1], 0 );
+        final Point2D t = tested.transform( 1, 1 );
+        assertEquals( 12, t.getX(), 0 );
+        assertEquals( 25, t.getY(), 0 );
+        final Point2D t1 = tested.transform( 2, 2 );
+        assertEquals( 14, t1.getX(), 0 );
+        assertEquals( 30, t1.getY(), 0 );
     }
 
 }

@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Dependent
-public class ModelContainmentRuleManagerImpl extends AbstractContainmentRuleManager<String, Set<String>> implements ModelContainmentRuleManager {
+public class ModelContainmentRuleManagerImpl extends AbstractContainmentRuleManager implements ModelContainmentRuleManager {
 
     private static final String NAME = "Domain Model Containment Rule Manager";
 
@@ -38,8 +38,11 @@ public class ModelContainmentRuleManagerImpl extends AbstractContainmentRuleMana
     }
 
     @Override
-    protected RuleViolations doEvaluate( final String targetId,
-                                         final Set<String> candidateRoles ) {
+    public RuleViolations evaluate( final String targetId,
+                                    final Set<String> candidateRoles ) {
+        if ( rules.isEmpty() ) {
+            return new DefaultRuleViolations();
+        }
         final DefaultRuleViolations results = new DefaultRuleViolations();
         for ( ContainmentRule rule : rules ) {
             if ( rule.getId().equals( targetId ) ) {

@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -159,7 +160,7 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     }
 
     @Override
-    public double[] getShapeAbsoluteLocation() {
+    public Point2D getShapeAbsoluteLocation() {
         return WiresUtils.getAbsolute( getGroup() );
     }
 
@@ -237,28 +238,28 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     @Override
     @SuppressWarnings( "unchecked" )
     public T moveToTop() {
-        getGroup().moveToTop();
+        getLine().moveToTop();
         return ( T ) this;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     public T moveToBottom() {
-        getGroup().moveToBottom();
+        getLine().moveToBottom();
         return ( T ) this;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     public T moveUp() {
-        getGroup().moveUp();
+        getLine().moveUp();
         return ( T ) this;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     public T moveDown() {
-        getGroup().moveDown();
+        getLine().moveDown();
         return ( T ) this;
     }
 
@@ -280,7 +281,7 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     @SuppressWarnings( "unchecked" )
     public T hideControlPoints() {
         if ( null != getControl() ) {
-            getControl().hideControlPoints();
+            setStrokeWidth( getStrokeWidth() / 2 );
         }
         return ( T ) this;
     }

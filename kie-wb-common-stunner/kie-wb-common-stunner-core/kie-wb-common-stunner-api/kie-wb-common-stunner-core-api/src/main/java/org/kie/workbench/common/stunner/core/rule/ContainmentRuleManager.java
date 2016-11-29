@@ -16,8 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
-public interface ContainmentRuleManager<A, B> extends RuleManager<ContainmentRule> {
-
-    RuleViolations evaluate( A targetId, B candidateRoles );
+/**
+ * Base manager type for containment rules.
+ *
+ * It checks containment rules and evaluates if the given candidate can be added or removed
+ * into/from other nodes. Containment rules are role based.
+ *
+ * Each domain specific implementation can provide its own argument types to evaluate internally the rules.
+ * See <a>org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager</a>
+ * See <a>org.kie.workbench.common.stunner.core.rule.graph.GraphContainmentRuleManager</a>
+ */
+public interface ContainmentRuleManager extends RuleManager<ContainmentRule> {
 
 }

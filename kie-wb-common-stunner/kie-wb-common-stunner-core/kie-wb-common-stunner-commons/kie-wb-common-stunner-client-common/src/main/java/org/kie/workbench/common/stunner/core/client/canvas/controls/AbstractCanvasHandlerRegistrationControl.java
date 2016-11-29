@@ -49,13 +49,11 @@ public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractC
             final ViewHandler<?> handler = entry.getValue();
             doDeregisterHandler( shape, handler );
         }
-
     }
 
     @Override
     public void deregister( final Element element ) {
         handlers.remove( element.getUUID() );
-
     }
 
     protected void doDeregisterHandler( final Shape shape,
@@ -64,12 +62,10 @@ public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractC
             final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shape.getShapeView();
             hasEventHandlers.removeHandler( handler );
         }
-
     }
 
     public void deregisterAll() {
         handlers.clear();
-
     }
 
     protected boolean checkEventContext( final AbstractCanvasHandlerEvent canvasHandlerEvent ) {

@@ -34,7 +34,7 @@ public class ContainmentRuleViolation extends AbstractRuleViolation {
 
     @Override
     public String getMessage() {
-        return "The '" + graph + "' only cannot contain the labels ['" + candidate + "'].";
+        return "The '" + graph + "' cannot contain the labels ['" + candidate + "'].";
     }
 
 }

@@ -17,9 +17,9 @@ package org.kie.workbench.common.stunner.core.client.canvas;
 
 public abstract class AbstractLayer<T, S, A> implements Layer<T, S ,A> {
 
-    protected abstract double[] getTranslate();
+    protected abstract Point2D getTranslate();
 
-    protected abstract double[] getScale();
+    protected abstract Point2D getScale();
 
     @Override
     public Transform getTransform() {

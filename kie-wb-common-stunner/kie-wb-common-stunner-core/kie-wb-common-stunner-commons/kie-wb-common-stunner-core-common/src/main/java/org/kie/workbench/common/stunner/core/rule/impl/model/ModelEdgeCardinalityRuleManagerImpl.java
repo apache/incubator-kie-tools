@@ -30,7 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Dependent
-public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinalityRuleManager<String, Set<String>, Integer>
+public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinalityRuleManager
         implements ModelEdgeCardinalityRuleManager {
 
     private static Logger LOGGER = Logger.getLogger( ModelEdgeCardinalityRuleManagerImpl.class.getName() );
@@ -43,41 +43,38 @@ public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinality
     }
 
     @Override
-    protected RuleViolations doEvaluate( final String edgeId,
-                                         final Set<String> outLabels,
-                                         final Set<String> inLabels,
-                                         final Integer outEdgesCount,
-                                         final Integer inEdgesCount,
+    public RuleViolations evaluate( final String edgeId,
+                                         final Set<String> labels,
+                                         final int count,
+                                         final EdgeCardinalityRule.Type ruleType,
                                          final Operation operation ) {
         LOGGER.log( Level.FINE, "Evaluating edge cardinality rules with arguments "
                 + "[edgeId=" + edgeId
-                + ", outLabels=" + outLabels
-                + ", inLabels=" + inLabels
-                + ", outEdgesCount=" + outEdgesCount
-                + ", inEdgesCount=" + inEdgesCount
+                + ", labels=" + labels
+                + ", count=" + count
+                + ", ruleType=" + ruleType
                 + ", operation=" + operation + "]" );
+        if ( rules.isEmpty() ) {
+            return new DefaultRuleViolations();
+        }
         final DefaultRuleViolations results = new DefaultRuleViolations();
         for ( EdgeCardinalityRule rule : rules ) {
             final int minOccurrences = rule.getMinOccurrences();
             final int maxOccurrences = rule.getMaxOccurrences();
             final EdgeCardinalityRule.Type type = rule.getType();
-            if ( EdgeCardinalityRule.Type.OUTGOING.equals( type ) && outLabels != null && outLabels.contains( rule.getRole() ) ) {
-                if ( outEdgesCount < minOccurrences ) {
-                    results.addViolation( new CardinalityMinRuleViolation( outLabels.toString(), rule.getId(), ( int ) minOccurrences, outEdgesCount ) );
-                } else if ( maxOccurrences > -1 && outEdgesCount > maxOccurrences ) {
-                    results.addViolation( new CardinalityMaxRuleViolation( outLabels.toString(), rule.getId(), ( int ) maxOccurrences, outEdgesCount ) );
-                }
-            } else if ( EdgeCardinalityRule.Type.INCOMING.equals( type ) && inLabels != null && inLabels.contains( rule.getRole() ) ) {
-                if ( inEdgesCount < minOccurrences ) {
-                    results.addViolation( new CardinalityMinRuleViolation( inLabels.toString(), rule.getId(), ( int ) minOccurrences, inEdgesCount ) );
-                } else if ( maxOccurrences > -1 && inEdgesCount > maxOccurrences ) {
-                    results.addViolation( new CardinalityMaxRuleViolation( inLabels.toString(), rule.getId(), ( int ) maxOccurrences, inEdgesCount ) );
+            if ( ruleType.equals( type ) && labels != null && labels.contains( rule.getRole() ) ) {
+                final int _count = operation.equals( Operation.NONE ) ? count :
+                        ( operation.equals( Operation.ADD ) ? count + 1 :
+                                ( count > 0 ? count - 1  : 0  )
+                        );
+                if ( _count  < minOccurrences ) {
+                    results.addViolation( new CardinalityMinRuleViolation( labels.toString(), rule.getName(), ( int ) minOccurrences, count ) );
+                } else if ( maxOccurrences > -1 && _count  > maxOccurrences ) {
+                    results.addViolation( new CardinalityMaxRuleViolation( labels.toString(), rule.getName(), ( int ) maxOccurrences, count ) );
                 }
             }
-
         }
         return results;
-
     }
 
 }

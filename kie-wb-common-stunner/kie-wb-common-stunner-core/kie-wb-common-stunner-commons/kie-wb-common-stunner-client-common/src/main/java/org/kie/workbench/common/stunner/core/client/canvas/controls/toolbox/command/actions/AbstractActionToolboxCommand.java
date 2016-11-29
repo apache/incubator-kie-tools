@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.AbstractToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
@@ -38,7 +39,7 @@ public abstract class AbstractActionToolboxCommand<I> extends AbstractToolboxCom
     }
 
     @Override
-    public I getIcon( final double width, final double height ) {
+    public I getIcon( final AbstractCanvasHandler context, final double width, final double height ) {
         return icon;
     }
 
@@ -51,11 +52,11 @@ public abstract class AbstractActionToolboxCommand<I> extends AbstractToolboxCom
         final double ay = context.getCanvasHandler().getCanvas().getView().getAbsoluteY();
         // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
         // using current transform attributes to obtain the right absolute position on the screen.
-        final double[] t = transform.transform( context.getX(), context.getY() );
+        final Point2D t = transform.transform( context.getX(), context.getY() );
         glyphTooltip
                 .show( getTitle(),
-                        ax + t[0] + 20,
-                        ay + t[1],
+                        ax + t.getX() + 20,
+                        ay + t.getY(),
                         GlyphTooltip.Direction.WEST );
     }
 

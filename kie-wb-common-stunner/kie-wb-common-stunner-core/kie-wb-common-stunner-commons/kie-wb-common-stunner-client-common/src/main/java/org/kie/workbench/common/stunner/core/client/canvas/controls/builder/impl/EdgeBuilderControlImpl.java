@@ -20,21 +20,17 @@ import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.EdgeBuildRequest;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Session;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.util.EdgeMagnetsHelper;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -122,13 +118,10 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
 
         }
         final Object edgeDef = edge.getContent().getDefinition();
-        final String edgeDefId = clientDefinitionManager.adapters().forDefinition().getId( edgeDef );
-        final ShapeFactory factory = shapeManager.getFactory( edgeDefId );
-
+        final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
         final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
                 new CompositeCommandImpl.CompositeCommandBuilder()
-                .addCommand( commandFactory.ADD_EDGE( inNode, edge, factory )  )
-                .addCommand( commandFactory.SET_SOURCE_NODE( inNode, edge, magnetIndexes[ 0 ] ) );
+                .addCommand( commandFactory.ADD_CONNECTOR( inNode, edge, magnetIndexes[ 0 ], ssid )  );
         if ( null != outNode ) {
             commandBuilder.addCommand( commandFactory.SET_TARGET_NODE( outNode, edge, magnetIndexes[ 1 ] ) );
         }

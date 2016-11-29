@@ -92,9 +92,9 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
             @Override
             public void onSuccess( final I paletteDefinition ) {
                 applyGrid( grid );
-                beforeBindPalette( paletteDefinition );
+                beforeBindPalette( paletteDefinition, shapeSetId );
                 palette.bind( paletteDefinition );
-                afterBindPalette( paletteDefinition );
+                afterBindPalette( paletteDefinition, shapeSetId );
 
             }
 
@@ -107,10 +107,12 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
         return palette;
     }
 
-    protected void beforeBindPalette( final I paletteDefinition ) {
+    protected void beforeBindPalette( final I paletteDefinition,
+                                      final String shapeSetId ) {
     }
 
-    protected void afterBindPalette( final I paletteDefinition ) {
+    protected void afterBindPalette( final I paletteDefinition,
+                                     final String shapeSetId ) {
     }
 
     private ShapeSet getShapeSet( final String id ) {

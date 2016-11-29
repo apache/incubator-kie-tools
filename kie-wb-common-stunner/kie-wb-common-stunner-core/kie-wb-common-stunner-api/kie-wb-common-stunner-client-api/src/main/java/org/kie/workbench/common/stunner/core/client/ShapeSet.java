@@ -40,4 +40,9 @@ public interface ShapeSet<F extends ShapeFactory> {
      */
     String getDefinitionSetId();
 
+    /**
+     * The shapes factory instance for this set.
+     */
+    F getShapeFactory();
+
 }

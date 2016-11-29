@@ -19,10 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
-import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -48,7 +47,8 @@ public class FormPropertiesWidgetTest {
     private static final String ROOT_UUID = "root1";
 
     @Mock DefinitionUtils definitionUtils;
-    @Mock CanvasCommandFactory commandFactory;
+    @Mock
+    CanvasCommandFactory commandFactory;
     @Mock DynamicFormRenderer formRenderer;
     @Mock Event<FormPropertiesOpened> propertiesOpenedEvent;
     @Mock AbstractClientFullSession session;

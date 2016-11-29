@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.builder;
 
+import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButton;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButtonGrid;
@@ -34,6 +35,8 @@ public interface ToolboxBuilder<T, G extends ToolboxButtonGrid, V> {
         SOUTH_WEST,
         NORTH_WEST;
     }
+
+    T forLayer( Layer layer );
 
     T forView( ShapeView<?> view );
 

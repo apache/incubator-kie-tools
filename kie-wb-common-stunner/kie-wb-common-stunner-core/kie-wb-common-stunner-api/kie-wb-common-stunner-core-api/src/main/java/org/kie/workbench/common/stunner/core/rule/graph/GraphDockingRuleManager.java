@@ -19,7 +19,19 @@ package org.kie.workbench.common.stunner.core.rule.graph;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.DockingRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 
-public interface GraphDockingRuleManager extends DockingRuleManager<Element<?>, Element<? extends Definition<?>>> {
+/**
+ * Manager for docking rules specific for Stunner's graph domain.
+ */
+public interface GraphDockingRuleManager extends DockingRuleManager {
+
+    /**
+     * It checks docking rules and evaluates if the given candidate can be dock into another parent.
+     *
+     * @param parent The parent node.
+     * @param candidate The candidate to be dock into parent.
+     */
+    RuleViolations evaluate( Element<?> parent, Element<? extends Definition<?>> candidate );
 
 }

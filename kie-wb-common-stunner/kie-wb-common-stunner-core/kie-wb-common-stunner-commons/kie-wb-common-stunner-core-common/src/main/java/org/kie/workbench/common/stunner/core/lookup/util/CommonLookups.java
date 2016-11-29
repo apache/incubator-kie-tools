@@ -33,32 +33,32 @@ import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionReprese
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupRequestImpl;
-import org.kie.workbench.common.stunner.core.rule.CardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.ConnectionRule;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.Rule;
+import org.kie.workbench.common.stunner.core.rule.*;
+import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An utils class that provides common used look-ups and other logic for querying the domain model and the rules model,
  * that is used along the application.
  * <p>
- * // TODO: Cache.
+ * // TODO: Some kind of cache to avoid frequently used lookups? Consider performance and memory, this class
+ * is shared on both server and client sides.
  */
 @ApplicationScoped
 public class CommonLookups {
 
-    DefinitionUtils definitionUtils;
-    DefinitionLookupManager definitionLookupManager;
-    RuleLookupManager ruleLookupManager;
-    GraphUtils graphUtils;
-    FactoryManager factoryManager;
+    private static Logger LOGGER = Logger.getLogger( CommonLookups.class.getName() );
+
+    private final DefinitionUtils definitionUtils;
+    private final DefinitionLookupManager definitionLookupManager;
+    private final RuleLookupManager ruleLookupManager;
+    private final GraphUtils graphUtils;
+    private final FactoryManager factoryManager;
 
     protected CommonLookups() {
         this( null, null, null, null, null );
@@ -80,8 +80,9 @@ public class CommonLookups {
     /**
      * Returns the allowed edge definition identifiers that can be added as outgoing edges for the given source node.
      */
-    public <T> Set<String> getAllowedConnectors( final String defSetId,
-                                                 final Node<? extends Definition<T>, ? extends Edge> sourceNode,
+    public <T> Set<String> getAllowedConnectors( final ModelRulesManager modelRulesManager,
+                                                 final String defSetId,
+                                                 final Node<Definition<T>, Edge> sourceNode,
                                                  final int page,
                                                  final int pageSize ) {
         final Set<String> result = new LinkedHashSet<>();
@@ -89,41 +90,59 @@ public class CommonLookups {
             final T definition = sourceNode.getContent().getDefinition();
             final Set<String> connectionAllowedEdges = getConnectionRulesAllowedEdges( defSetId, definition, page, pageSize );
             if ( null != connectionAllowedEdges && !connectionAllowedEdges.isEmpty() ) {
-                for ( final String allowedEdgeId : connectionAllowedEdges ) {
+                connectionAllowedEdges.stream().forEach( allowedEdgeId -> {
                     final int edgeCount = countOutgoingEdges( sourceNode, allowedEdgeId );
-                    final boolean isOutEdgeCardinalityRuleAllowed
-                            = isOutEdgeCardinalityRuleAllowed( defSetId,
-                            sourceNode.getContent().getDefinition(),
-                            allowedEdgeId, edgeCount );
-                    if ( isOutEdgeCardinalityRuleAllowed ) {
+                    final RuleViolations oev = modelRulesManager
+                            .edgeCardinality()
+                            .evaluate( allowedEdgeId, sourceNode.getLabels(), edgeCount,
+                            EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.ADD );
+                    final boolean oeCardinalityAllowed = pass( oev );
+                    LOGGER.log( Level.FINE, "Outgoing edge cardinality rules evaluation " +
+                            "result = [" + oeCardinalityAllowed + "]" );
+                    if ( oeCardinalityAllowed ) {
                         result.add( allowedEdgeId );
                     }
-                }
-
+                } );
             }
 
         }
         return result;
     }
 
-    public <T> Set<String> getAllowedMorphDefaultDefinitions( final String defSetId,
+    /**
+     * Returns the allowed definition identifiers that can be used as target node for the given source node and
+     * the given edge (connector) identifier.
+     * This method only returns the definition identifiers that are considered the default types for its morph type,
+     * it does NOT return all the identifiers for all the allowed target definitions.
+     * <p>
+     * TODO: Handle several result pages.
+     */
+    public <T> Set<String> getAllowedMorphDefaultDefinitions( final ModelRulesManager modelRulesManager,
+                                                              final String defSetId,
                                                               final Graph<?, ? extends Node> graph,
                                                               final Node<? extends Definition<T>, ? extends Edge> sourceNode,
                                                               final String edgeId,
                                                               final int page,
                                                               final int pageSize ) {
-        final Set<String> allowedDefinitions = getAllowedDefinitions( defSetId, graph, sourceNode, edgeId, page, pageSize );
-        if ( null != allowedDefinitions && !allowedDefinitions.isEmpty() ) {
-            final Set<String> result = new HashSet<>( allowedDefinitions.size() );
-            for ( final String defId : allowedDefinitions ) {
-                // TODO: Avoid new instances here.
-                final Object definition = factoryManager.newDefinition( defId );
+        final Set<Object> allowedDefinitions =
+                getAllowedTargetDefinitions( modelRulesManager, defSetId, graph, sourceNode, edgeId, page, pageSize );
+        LOGGER.log( Level.FINE, "Target definitions allowed " +
+                "for [" + sourceNode + "] and using the " +
+                "connector [" + edgeId + "] " +
+                "ARE [" + allowedDefinitions + "]" );
+        if ( null != allowedDefinitions ) {
+            final Set<String> result = new LinkedHashSet<>();
+            allowedDefinitions.stream().forEach( definition -> {
+                final String defId = getDefinitionManager().adapters().forDefinition().getId( definition );
                 final MorphDefinition morphDefinition = definitionUtils.getMorphDefinition( definition );
                 final boolean hasMorphBase = null != morphDefinition;
                 final String id = hasMorphBase ? morphDefinition.getDefault() : defId;
                 result.add( id );
-
-            }
+            } );
+            LOGGER.log( Level.FINE, "Target definitions group by morph base type allowed " +
+                    "for [" + sourceNode + "] and using the " +
+                    "connector [" + edgeId + "] " +
+                    "ARE [" + result + "]" );
             return result;
 
         }
@@ -133,54 +152,101 @@ public class CommonLookups {
     /**
      * Returns the allowed definition identifiers that can be used as target node for the given source node and
      * the given edge (connector) identifier.
+     * <p>
+     * TODO: Handle several result pages.
      */
-    public <T> Set<String> getAllowedDefinitions( final String defSetId,
-                                                  final Graph<?, ? extends Node> graph,
-                                                  final Node<? extends Definition<T>, ? extends Edge> sourceNode,
-                                                  final String edgeId,
-                                                  final int page,
-                                                  final int pageSize ) {
-        final Set<String> result = new LinkedHashSet<>();
+    public <T> Set<Object> getAllowedTargetDefinitions( final ModelRulesManager modelRulesManager,
+                                                        final String defSetId,
+                                                        final Graph<?, ? extends Node> graph,
+                                                        final Node<? extends Definition<T>, ? extends Edge> sourceNode,
+                                                        final String edgeId,
+                                                        final int page,
+                                                        final int pageSize ) {
         if ( null != defSetId && null != graph && null != sourceNode && null != edgeId ) {
             final T definition = sourceNode.getContent().getDefinition();
-            final Set<String> allowedTargetRoles = getConnectionRulesAllowedTargets( defSetId, definition, edgeId, page, pageSize );
-            if ( null != allowedTargetRoles && !allowedTargetRoles.isEmpty() ) {
-                final Set<String> allowedTargetRoles2 = new LinkedHashSet<>();
-                for ( final String s : allowedTargetRoles ) {
-                    final boolean isCardinalityAllowed = isCardinalitySatisfied( defSetId, graph, definition );
-                    if ( isCardinalityAllowed ) {
-                        allowedTargetRoles2.add( s );
+            LOGGER.log( Level.FINE, "*** Checking the target definitions allowed " +
+                    "for [" + definition + "] and using the " +
+                    "connector [" + edgeId + "] ***" );
+            // Check outgoing connectors cardinality for the source node ( plus the new one to be added ).
+            final int outConnectorsCount = countOutgoingEdges( sourceNode, edgeId );
+            LOGGER.log( Level.FINE, "The source node has  " + outConnectorsCount + "] outgoing connections." );
+            final RuleViolations oev = modelRulesManager.edgeCardinality().evaluate( edgeId, sourceNode.getLabels(), outConnectorsCount,
+                    EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.ADD );
+            final boolean oeCardinalityAllowed = pass( oev );
+            LOGGER.log( Level.FINE, "Outgoing edge cardinality rules evaluation " +
+                    "result = [" + oeCardinalityAllowed + "]" );
+            if ( oeCardinalityAllowed ) {
+                // Obtain allowed target roles that pass connection rules.
+                final Set<String> allowedConnectionRoles =
+                        getConnectionRulesAllowedTargets( defSetId, definition, edgeId, page, pageSize );
+                LOGGER.log( Level.FINE, "Allowed target roles that pass connection rules " +
+                        "ARE [" + allowedConnectionRoles + "]" );
+                if ( null != allowedConnectionRoles ) {
+                    // Obtain a first set of candidate Defintiion identifiers.
+                    final Set<String> allowedDefinitions = getDefinitions( defSetId, allowedConnectionRoles );
+                    LOGGER.log( Level.FINE, "Allowed target definitions that pass connection rules " +
+                            "ARE [" + allowedConnectionRoles + "]" );
+                    if ( null != allowedDefinitions ) {
+                        final Map<String, Integer> graphLabelCount =
+                                GraphUtils.getLabelsCount( graph, allowedConnectionRoles );
+                        final int inConnectorsCount = countIncomingEdges( sourceNode, edgeId );
+                        final Set<Object> result = new LinkedHashSet<>();
+                        allowedDefinitions
+                                .stream()
+                                .forEach( defId -> {
+                                    final Object targetDefinition = createDefinition( defId );
+                                    if ( null != targetDefinition ) {
+                                        final Set<String> targetDefinitionRoles =
+                                                getDefinitionManager()
+                                                        .adapters()
+                                                        .forDefinition()
+                                                        .getLabels( targetDefinition );
+                                        // Check cardinality for each of the roles for this potential target node.
+                                        final boolean hasCardinalityViolations = targetDefinitionRoles
+                                                .stream()
+                                                .filter( role -> {
+                                                    final Integer i = graphLabelCount.get( role );
+                                                    final RuleViolations violations =
+                                                            modelRulesManager
+                                                                    .cardinality()
+                                                                    .evaluate( role, null != i ? i : 0,
+                                                                            RuleManager.Operation.ADD );
+                                                    return !pass( violations );
+                                                } )
+                                                .findFirst()
+                                                .isPresent();
+                                        LOGGER.log( Level.FINE, "Cardinality rules evaluation " +
+                                                "result = [" + hasCardinalityViolations + "]" );
+                                        if ( !hasCardinalityViolations ) {
+                                            // Check incoming connector cardinality for each the target node.
+                                            final RuleViolations iev = modelRulesManager
+                                                    .edgeCardinality()
+                                                    .evaluate( edgeId, targetDefinitionRoles, inConnectorsCount,
+                                                    EdgeCardinalityRule.Type.INCOMING, RuleManager.Operation.ADD );
+                                            final boolean ieCardinalityAllowed = pass( iev );
+                                            LOGGER.log( Level.FINE, "Incoming edge cardinality rules evaluation " +
+                                                    "result = [" + ieCardinalityAllowed + "]" );
+                                            if ( ieCardinalityAllowed ) {
+                                                // This potential node can be used as target one, as it passes all rule checks.
+                                                result.add( targetDefinition );
+                                            }
+                                        }
+                                    }
+                                } );
+                        return result;
                     }
-
                 }
-                if ( !allowedTargetRoles2.isEmpty() ) {
-                    final Set<String> allowedTargetRoles3 = new LinkedHashSet<>();
-                    for ( final String s : allowedTargetRoles2 ) {
-                        final HashSet<String> hs = new HashSet<String>( 1 ) {{
-                            add( s );
-                        }};
-                        final boolean isInEdgeCardinalityRuleAllowed
-                                = isInEdgeCardinalityRuleAllowed( defSetId,
-                                hs, edgeId );
-                        if ( isInEdgeCardinalityRuleAllowed ) {
-                            allowedTargetRoles3.add( s );
-                        }
-
-                    }
-                    return getDefinitions( defSetId, allowedTargetRoles3 );
-
-                }
-
             }
-
         }
-        return result;
+        return null;
     }
 
     /**
      * Returns all the Definition Set's definition identifiers that contains the given labels.
+     * <p>
+     * TODO: Handle several result pages.
      */
-    public Set<String> getDefinitions( final String defSetId, final Set<String> labels ) {
+    private Set<String> getDefinitions( final String defSetId, final Set<String> labels ) {
         if ( null != labels && !labels.isEmpty() ) {
             final DefinitionLookupRequest request =
                     new DefinitionLookupRequestImpl.Builder()
@@ -206,9 +272,11 @@ public class CommonLookups {
 
     /**
      * Returns the allowed edge identifiers that satisfy connection rules for the given
-     * source definition ( domain model object, not a graph node ).
+     * source definition.
+     *
+     * @oaram sourceDefinition The domain model object ( not a graph element ).
      */
-    public <T> Set<String> getConnectionRulesAllowedEdges( final String defSetId,
+    private <T> Set<String> getConnectionRulesAllowedEdges( final String defSetId,
                                                            final T sourceDefinition,
                                                            final int page,
                                                            final int pageSize ) {
@@ -226,10 +294,12 @@ public class CommonLookups {
     }
 
     /**
-     * Returns the allowed definitions identifiers that satisfy connection rules for a given source
+     * Returns the allowed ROLES that satisfy connection rules for a given source
      * definition ( domain model object, not a node ).and the given edge (connector) identifier.
+     * <p>
+     * TODO: Handle several result pages.
      */
-    public <T> Set<String> getConnectionRulesAllowedTargets( final String defSetId,
+    private  <T> Set<String> getConnectionRulesAllowedTargets( final String defSetId,
                                                              final T sourceDefinition,
                                                              final String edgeId,
                                                              final int page,
@@ -243,49 +313,12 @@ public class CommonLookups {
                 if ( null != connections && !connections.isEmpty() ) {
                     for ( final ConnectionRule.PermittedConnection connection : connections ) {
                         result.add( connection.getEndRole() );
-
                     }
-
                 }
-
             }
             return result;
         }
         return null;
-    }
-
-    /**
-     * Check if cardinality rules satisfy that a given definition ( domain model object, not a node ).can be added into a graph
-     * TODO: Delegate to  the @Model RulesManager.
-     */
-    public <T> boolean isCardinalitySatisfied( final String defSetId,
-                                               final Graph<?, ? extends Node> target,
-                                               final T sourceDefinition ) {
-        final Set<String> defLabels = getDefinitionLabels( sourceDefinition );
-        final RuleLookupRequest request =
-                new RuleLookupRequestImpl.Builder()
-                        .definitionSetId( defSetId )
-                        .type( RuleLookupRequestImpl.Builder.RuleType.CARDINALITY )
-                        .roleIn( defLabels )
-                        .page( 0 )
-                        .pageSize( 100 )
-                        .build();
-        final LookupManager.LookupResponse<Rule> response = ruleLookupManager.lookup( request );
-        final List<Rule> rules = response.getResults();
-        if ( null != rules && !rules.isEmpty() ) {
-            final int count = graphUtils.countDefinitions( target, sourceDefinition );
-            for ( final Rule rule : rules ) {
-                final CardinalityRule cr = ( CardinalityRule ) rule;
-                final int max = cr.getMaxOccurrences();
-                if ( max == 0 || max >= count ) {
-                    return false;
-                }
-
-            }
-
-        }
-        return true;
-
     }
 
     private <T> List<Rule> lookupConnectionRules( final String defSetId,
@@ -303,80 +336,37 @@ public class CommonLookups {
                     .pageSize( pageSize );
             if ( null != edgeId ) {
                 builder.id( edgeId );
-
             }
             final RuleLookupRequest request = builder.build();
             final LookupManager.LookupResponse<Rule> response = ruleLookupManager.lookup( request );
             return response.getResults();
-
         }
         return null;
     }
 
-    private <T> boolean isInEdgeCardinalityRuleAllowed( final String defSetId,
-                                                        final Set<String> defLabels,
-                                                        final String edgeId ) {
-        return isEdgeCardinalityRuleAllowed( defSetId, defLabels, edgeId,
-                RuleLookupRequestImpl.Builder.EdgeType.INCOMING, 0 );
-
-    }
-
-    private <T> boolean isOutEdgeCardinalityRuleAllowed( final String defSetId,
-                                                         final T sourceDefinition,
-                                                         final String edgeId,
-                                                         final int edgesCount ) {
-        final Set<String> defLabels = getDefinitionLabels( sourceDefinition );
-        return isEdgeCardinalityRuleAllowed( defSetId, defLabels, edgeId,
-                RuleLookupRequestImpl.Builder.EdgeType.OUTGOING, edgesCount );
-
-    }
-
-    private <T> boolean isEdgeCardinalityRuleAllowed( final String defSetId,
-                                                      final Set<String> defLabels,
-                                                      final String edgeId,
-                                                      final RuleLookupRequestImpl.Builder.EdgeType edgeType,
-                                                      final int edgesCount ) {
-        if ( null != defSetId ) {
-            final RuleLookupRequest request =
-                    new RuleLookupRequestImpl.Builder()
-                            .definitionSetId( defSetId )
-                            .type( RuleLookupRequestImpl.Builder.RuleType.EDGECARDINALITY )
-                            .edgeType( edgeType )
-                            .roleIn( defLabels )
-                            .id( edgeId )
-                            .page( 0 )
-                            .pageSize( 100 )
-                            .build();
-            final LookupManager.LookupResponse<Rule> response = ruleLookupManager.lookup( request );
-            final List<Rule> rules = response.getResults();
-            // TODO: Delegate to the @Model RulesManager?
-            if ( null != rules && !rules.isEmpty() ) {
-                for ( final Rule rule : rules ) {
-                    final EdgeCardinalityRule cr = ( EdgeCardinalityRule ) rule;
-                    final int max = cr.getMaxOccurrences();
-                    if ( max == 0 || max >= edgesCount ) {
-                        return false;
-                    }
-
-                }
-
-            }
-            return true;
-
-        }
-        return false;
+    private <T> int countIncomingEdges( final Node<? extends Definition<T>, ? extends Edge> sourceNode,
+                                        final String edgeId ) {
+        final List<? extends Edge> edges = sourceNode.getInEdges();
+        return graphUtils.countEdges( edgeId, edges );
     }
 
     private <T> int countOutgoingEdges( final Node<? extends Definition<T>, ? extends Edge> sourceNode,
                                         final String edgeId ) {
         final List<? extends Edge> edges = sourceNode.getOutEdges();
         return graphUtils.countEdges( edgeId, edges );
-
     }
 
     private <T> Set<String> getDefinitionLabels( final T definition ) {
         return getDefinitionManager().adapters().forDefinition().getLabels( definition );
+    }
 
+    private boolean pass( final RuleViolations violations ) {
+        return null == violations || !violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext();
+    }
+
+    private Object createDefinition( final String defId ) {
+        // TODO: Avoid new instances here.
+        return factoryManager.newDefinition( defId );
     }
 
     private DefinitionManager getDefinitionManager() {

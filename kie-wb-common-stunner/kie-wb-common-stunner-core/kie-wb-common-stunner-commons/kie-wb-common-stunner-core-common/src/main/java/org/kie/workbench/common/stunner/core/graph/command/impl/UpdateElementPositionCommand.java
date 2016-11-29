@@ -69,12 +69,7 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     }
 
     @Override
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
-        return check( context );
-    }
-
-    @Override
-    protected CommandResult<RuleViolation> doCheck( GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> check( GraphCommandExecutionContext context ) {
         checkNodeNotNull( context );
         return GraphCommandResultBuilder.SUCCESS;
     }
@@ -121,6 +116,18 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
         final UpdateElementPositionCommand undoCommand =
                 new UpdateElementPositionCommand( checkNodeNotNull( context ), oldX, oldY );
         return undoCommand.execute( context );
+    }
+
+    public Double getX() {
+        return x;
+    }
+
+    public Double getY() {
+        return y;
+    }
+
+    public Node<?, Edge> getNode() {
+        return node;
     }
 
     public Double getOldX() {

@@ -40,14 +40,19 @@ public class LienzoDefinitionSetPaletteFactoryImpl
                                                   final Instance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
                                                   final LienzoDefinitionSetPalette palette ) {
         super( shapeManager, beanManager, defaultPaletteDefinitionFactoryInstance, palette );
-
     }
 
     @PostConstruct
     @SuppressWarnings( "unchecked" )
     public void init() {
         super.init();
+    }
 
+    @Override
+    protected void beforeBindPalette( final DefinitionSetPalette paletteDefinition,
+                                      final String shapeSetId ) {
+        super.beforeBindPalette( paletteDefinition, shapeSetId );
+        palette.setShapeSetId( shapeSetId );
     }
 
     @Override

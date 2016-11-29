@@ -53,10 +53,10 @@ public class GraphDockingRuleManagerImpl extends AbstractGraphRuleManager<Dockin
     }
 
     @Override
-    public RuleViolations evaluate( final Element<?> target,
-                                    final Element<? extends Definition<?>> candidateRoles ) {
-        final String targetId = getElementDefinitionId( target );
-        return modelDockingRuleManager.evaluate( targetId, getLabels( candidateRoles ) );
+    public RuleViolations evaluate( final Element<?> parent,
+                                    final Element<? extends Definition<?>> candidate ) {
+        final String targetId = getElementDefinitionId( parent );
+        return modelDockingRuleManager.evaluate( targetId, getLabels( candidate ) );
 
     }
 

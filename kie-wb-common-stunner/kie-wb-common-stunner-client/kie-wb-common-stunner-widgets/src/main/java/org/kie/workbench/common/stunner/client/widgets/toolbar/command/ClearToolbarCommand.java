@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+// TODO: I18n.
 @Dependent
 public class ClearToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, ClearSessionCommand> {
 
@@ -47,7 +48,6 @@ public class ClearToolbarCommand extends AbstractToolbarSessionCommand<AbstractC
         return null;
     }
 
-    // TODO: I18n.
     @Override
     public String getTooltip() {
         return "Clear diagram";
@@ -56,6 +56,15 @@ public class ClearToolbarCommand extends AbstractToolbarSessionCommand<AbstractC
     @Override
     protected boolean requiresConfirm() {
         return true;
+    }
+
+    /**
+     * Added alert message - the operation cannot be reverted.
+     * See <a>org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand</a>
+     */
+    @Override
+    protected String getConfirmMessage() {
+        return super.getConfirmMessage() + " This operation cannot be reverted.";
     }
 
     @Override

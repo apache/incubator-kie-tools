@@ -34,6 +34,7 @@ public class BindableShapeSetGenerator extends AbstractBindableAdapterGenerator 
     public StringBuffer generate( String packageName,
                                   String className,
                                   String defSetClassName,
+                                  String shapeFactoryClassName,
                                   Messager messager ) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
@@ -46,6 +47,8 @@ public class BindableShapeSetGenerator extends AbstractBindableAdapterGenerator 
                 AbstractBindableShapeSet.class.getName() );
         root.put( "defSetClass",
                 defSetClassName );
+        root.put( "shapeFactoryClassName",
+                shapeFactoryClassName );
         //Generate code
         return writeTemplate( packageName, className, root, messager );
     }

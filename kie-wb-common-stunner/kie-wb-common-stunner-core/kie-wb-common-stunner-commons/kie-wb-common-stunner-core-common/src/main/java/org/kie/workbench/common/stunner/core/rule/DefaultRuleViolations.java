@@ -26,6 +26,13 @@ public class DefaultRuleViolations implements RuleViolations {
 
     private List<RuleViolation> violations = new LinkedList<RuleViolation>();
 
+    public DefaultRuleViolations addViolations( final RuleViolations violations ) {
+        if ( null != violations ) {
+            violations.violations().forEach( this::addViolation );
+        }
+        return this;
+    }
+
     public DefaultRuleViolations addViolation( final RuleViolation violation ) {
         violations.add( violation );
         return this;

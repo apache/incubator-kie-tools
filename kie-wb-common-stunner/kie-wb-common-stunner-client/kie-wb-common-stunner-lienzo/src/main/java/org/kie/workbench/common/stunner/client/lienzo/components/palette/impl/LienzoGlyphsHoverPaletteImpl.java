@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;

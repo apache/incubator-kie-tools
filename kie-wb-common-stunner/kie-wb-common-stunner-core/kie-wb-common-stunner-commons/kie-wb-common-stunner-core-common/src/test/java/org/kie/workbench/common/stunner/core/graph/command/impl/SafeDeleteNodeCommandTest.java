@@ -22,9 +22,11 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -79,11 +81,11 @@ public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
         assertNotNull( commands );
         assertTrue( 1 == commands.size() );
         Command command1 = commands.get( 0 );
-        assertTrue( command1 instanceof DeleteNodeCommand  );
+        assertTrue( command1 instanceof DeregisterNodeCommand );
         assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( cardinalityRuleManager, times( 1 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ),
-                any( List.class ), any( List.class ), any( RuleManager.Operation.class ) );
+        verify( cardinalityRuleManager, times( 2 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
+                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
         verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
         verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
         verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
@@ -97,13 +99,27 @@ public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
         List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull( commands );
         assertTrue( 3 == commands.size() );
-        assertTrue( contains( commands, DeleteNodeCommand.class ) );
-        assertTrue( contains( commands, DeleteEdgeCommand.class ) );
+        assertTrue( contains( commands, DeregisterNodeCommand.class ) );
+        assertTrue( contains( commands, DeleteConnectorCommand.class ) );
         assertTrue( contains( commands, SafeDeleteNodeCommand.class ) );
         assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( cardinalityRuleManager, times( 3 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ),
-                any( List.class ), any( List.class ), any( RuleManager.Operation.class ) );
+        verify( cardinalityRuleManager, times( 4 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager, times( 2 ) ).evaluate( any( Edge.class ), any( Node.class ),
+                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
+        verify( connectionRuleManager, times( 2 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
+        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    public void testAllowNoRules() {
+        when( graphCommandExecutionContext.getRulesManager() ).thenReturn( null );
+        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
+        assertEquals( CommandResult.Type.INFO, result.getType() );
+        verify( cardinalityRuleManager, times( 0 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
+                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
         verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
         verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
         verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );

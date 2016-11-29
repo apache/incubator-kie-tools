@@ -38,8 +38,11 @@ public class ModelDockingRuleManagerImpl extends AbstractDockingRuleManager<Stri
     }
 
     @Override
-    protected RuleViolations doEvaluate( final String targetId,
-                                         final Set<String> candidateRoles ) {
+    public RuleViolations evaluate( final String targetId,
+                                     final Set<String> candidateRoles ) {
+        if ( rules.isEmpty() ) {
+            return new DefaultRuleViolations();
+        }
         final DefaultRuleViolations results = new DefaultRuleViolations();
         for ( DockingRule rule : rules ) {
             if ( rule.getId().equals( targetId ) ) {
@@ -52,7 +55,6 @@ public class ModelDockingRuleManagerImpl extends AbstractDockingRuleManager<Stri
         }
         results.addViolation( new ContainmentRuleViolation( targetId, candidateRoles.toString() ) );
         return results;
-
     }
 
 }

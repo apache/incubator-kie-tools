@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.components.drag.ConnectorDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
@@ -203,8 +204,8 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
         }
 
         @Override
-        public double[] getShapeAbsoluteLocation() {
-            return new double[ 0 ];
+        public Point2D getShapeAbsoluteLocation() {
+            return new Point2D( 0, 0 );
         }
 
         @Override

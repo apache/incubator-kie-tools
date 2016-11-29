@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.com
 
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyDownEvent;
@@ -64,10 +65,11 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public I getIcon( final double width,
+    public I getIcon( final AbstractCanvasHandler context,
+                      final double width,
                       final double height ) {
         if ( null == iconView ) {
-            final ShapeFactory factory = getFactory();
+            final ShapeFactory factory = getFactory( context );
             // TODO: Review why glyphs result smaller than expected. Adding some padding pixels here.
             final Glyph<I> glyph = factory.glyph( getGlyphDefinitionId(), width + 6, height + 6 );
             this.iconView = glyph.getGroup();
@@ -79,17 +81,17 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
     public void mouseEnter( final Context<AbstractCanvasHandler> context,
                             final Element element ) {
         super.mouseEnter( context, element );
-        if ( null != getFactory() ) {
+        if ( null != getFactory( context.getCanvasHandler() ) ) {
             final Transform transform = context.getCanvasHandler().getCanvas().getLayer().getTransform();
             final double ax = context.getCanvasHandler().getCanvas().getView().getAbsoluteX();
             final double ay = context.getCanvasHandler().getCanvas().getView().getAbsoluteY();
             // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
             // using current transform attributes to obtain the right absolute position on the screen.
-            final double[] t = transform.transform( context.getX(), context.getY() );
+            final Point2D t = transform.transform( context.getX(), context.getY() );
             glyphTooltip
                     .showTooltip( getGlyphDefinitionId(),
-                            ax + t[0] + 20,
-                            ay + t[1],
+                            ax + t.getX() + 20,
+                            ay + t.getY(),
                             GlyphTooltip.Direction.WEST );
         }
     }
@@ -101,9 +103,12 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
         glyphTooltip.hide();
     }
 
-    protected ShapeFactory getFactory() {
+    protected ShapeFactory getFactory( final AbstractCanvasHandler context ) {
         if ( null == factory ) {
-            factory = shapeManager.getFactory( getGlyphDefinitionId() );
+            final String ssid = context.getDiagram().getMetadata().getShapeSetId();
+            factory = shapeManager
+                    .getShapeSet( ssid )
+                    .getShapeFactory();
         }
         return factory;
     }
@@ -131,6 +136,13 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
                 AbstractElementBuilderCommand.this.onComplete( context, element, item, x1, y1 );
             }
         };
+    }
+
+    @Override
+    protected void onItemBuilt( final Context<AbstractCanvasHandler> context,
+                                final String uuid ) {
+        super.onItemBuilt( context, uuid );
+        glyphTooltip.hide();
     }
 
     protected void clearDragProxy() {

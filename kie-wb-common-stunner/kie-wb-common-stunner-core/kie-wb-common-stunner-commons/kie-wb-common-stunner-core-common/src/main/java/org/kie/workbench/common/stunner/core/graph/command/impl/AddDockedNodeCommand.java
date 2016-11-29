@@ -18,12 +18,9 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -52,14 +49,9 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
     }
 
     protected void initialize( final GraphCommandExecutionContext context ) {
-        this.addCommand( new AddNodeCommand( candidate ) )
-                .addCommand( new AddDockEdgeCommand( getParent( context ), candidate ) );
-    }
-
-    @Override
-    protected CommandResult<RuleViolation> doAllowCheck( final GraphCommandExecutionContext context,
-                                                         final Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        return command.allow( context );
+        super.initialize( context );
+        this.addCommand( new RegisterNodeCommand( candidate ) )
+                .addCommand( new DockNodeCommand( getParent( context ), candidate ) );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -75,4 +67,8 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
         return "AddDockedNodeCommand [parent=" + parentUUID + ", candidate=" + candidate.getUUID() + "]";
     }
 
+    @Override
+    protected boolean delegateRulesContextToChildren() {
+        return true;
+    }
 }

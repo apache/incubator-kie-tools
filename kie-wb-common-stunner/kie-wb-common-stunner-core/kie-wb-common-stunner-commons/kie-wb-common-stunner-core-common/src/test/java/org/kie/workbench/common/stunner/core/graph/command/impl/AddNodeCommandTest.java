@@ -22,10 +22,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+import org.kie.workbench.common.stunner.core.rule.*;
 import org.kie.workbench.common.stunner.core.rule.impl.violations.ContainmentRuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -61,8 +58,8 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
         verify( containmentRuleManager, times( 1 ) ).evaluate( eq( graph ), eq( node ) );
         verify( cardinalityRuleManager, times( 1 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.ADD ) );
         verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ),
-                any( List.class ), any( List.class ), any( RuleManager.Operation.class ) );
+        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
+                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
         verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
     }
 

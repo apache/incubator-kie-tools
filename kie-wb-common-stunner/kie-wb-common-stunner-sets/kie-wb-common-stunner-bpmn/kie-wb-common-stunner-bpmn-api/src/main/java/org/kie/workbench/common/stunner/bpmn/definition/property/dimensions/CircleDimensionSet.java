@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_RADIUS;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
 
 @Portable
 @Bindable

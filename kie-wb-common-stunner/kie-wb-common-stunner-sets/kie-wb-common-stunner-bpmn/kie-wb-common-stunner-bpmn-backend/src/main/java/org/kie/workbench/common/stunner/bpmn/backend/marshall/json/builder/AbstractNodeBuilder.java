@@ -132,9 +132,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                     }
                 }
             }
-
         }
-
     }
 
     private double getRadius( double width, double height ) {
@@ -164,9 +162,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                         double x = dCoords[ 0 ];
                         double y = dCoords[ 1 ];
                         commands.add( context.getCommandFactory().UPDATE_POSITION( docked, x, y ) );
-
                     }
-
                 } else {
                     // Create the outgoing edge.
                     Edge edge = ( Edge ) outgoingBuilder.build( context );
@@ -179,13 +175,9 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                 if ( !commands.isEmpty() ) {
                     for ( Command<GraphCommandExecutionContext, RuleViolation> command : commands ) {
                         doExecuteCommand( context, command );
-
                     }
-
                 }
-
             }
-
         }
         // Children connections.
         if ( childNodeIds != null && !childNodeIds.isEmpty() ) {
@@ -199,17 +191,12 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                     // Command - Create the child node and the parent-child relationship.
                     Node childNode = ( Node ) childNodeBuilder.build( context );
                     command = context.getCommandFactory().ADD_CHILD_NODE( node, childNode );
-
                 }
                 if ( null != command ) {
                     doExecuteCommand( context, command );
-
                 }
-
             }
-
         }
-
     }
 
     private boolean doExecuteCommand( BuilderContext context,

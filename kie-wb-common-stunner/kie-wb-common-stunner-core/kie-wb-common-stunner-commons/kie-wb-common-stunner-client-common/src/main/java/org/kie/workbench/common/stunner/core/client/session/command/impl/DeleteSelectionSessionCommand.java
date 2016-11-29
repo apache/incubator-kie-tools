@@ -17,11 +17,11 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.command.factory.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
@@ -78,7 +78,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
                         element = canvasHandler.getGraphIndex().getEdge( selectedItemUUID );
                         if ( element != null ) {
                             log( Level.FINE, "Deleting edge with id " + element.getUUID() );
-                            canvasCommandManager.execute( canvasHandler, canvasCommandFactory.DELETE_EDGE( ( Edge ) element ) );
+                            canvasCommandManager.execute( canvasHandler, canvasCommandFactory.DELETE_CONNECTOR( ( Edge ) element ) );
                         }
                     } else {
                         log( Level.FINE, "Deleting node with id " + element.getUUID() );

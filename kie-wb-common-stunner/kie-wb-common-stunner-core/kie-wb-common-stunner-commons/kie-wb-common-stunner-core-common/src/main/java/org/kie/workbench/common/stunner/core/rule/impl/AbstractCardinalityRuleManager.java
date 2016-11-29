@@ -16,23 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl;
 
-import org.kie.workbench.common.stunner.core.rule.*;
+import org.kie.workbench.common.stunner.core.rule.CardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.CardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.Rule;
 
-public abstract class AbstractCardinalityRuleManager<A, B> extends AbstractRuleManager<CardinalityRule> implements CardinalityRuleManager<A, B> {
-
-    protected abstract RuleViolations doEvaluate( A labels, B candidatesCount, Operation operation );
+public abstract class AbstractCardinalityRuleManager extends AbstractRuleManager<CardinalityRule> implements CardinalityRuleManager {
 
     @Override
     public boolean supports( final Rule rule ) {
         return rule instanceof CardinalityRule;
-    }
-
-    @Override
-    public RuleViolations evaluate( A labels, B candidatesCount, Operation operation ) {
-        if ( rules.isEmpty() ) {
-            return new DefaultRuleViolations();
-        }
-        return doEvaluate( labels, candidatesCount, operation );
     }
 
 }

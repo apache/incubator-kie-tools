@@ -33,6 +33,15 @@ import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * A toolbox control provider implementation that provides buttons for common actions that
+ * can be executed for the source element.
+ *
+ * It provides buttons for:
+ * - Removing the element.
+ * - Moving the shape up on the canvas index.
+ * - Moving the shape down on the canvas index.
+ */
 @Dependent
 public class ActionsToolboxControlProvider extends AbstractToolboxControlProvider {
 
@@ -80,9 +89,10 @@ public class ActionsToolboxControlProvider extends AbstractToolboxControlProvide
     }
 
     @Override
-    public List<ToolboxCommand<?, ?>> getCommands( final AbstractCanvasHandler context,
+    @SuppressWarnings( "unchecked" )
+    public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands( final AbstractCanvasHandler context,
                                                    final Element item ) {
-        return new LinkedList<ToolboxCommand<?, ?>>() {{
+        return new LinkedList<ToolboxCommand<AbstractCanvasHandler, ?>>() {{
             add( removeToolboxCommand );
             add( moveShapeUpToolboxCommand );
             add( moveShapeDownToolboxCommand );

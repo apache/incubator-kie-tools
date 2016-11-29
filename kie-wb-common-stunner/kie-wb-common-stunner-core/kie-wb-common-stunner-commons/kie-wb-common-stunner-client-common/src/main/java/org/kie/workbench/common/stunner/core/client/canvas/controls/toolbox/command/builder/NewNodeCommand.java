@@ -242,7 +242,6 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
                                 final String uuid ) {
         super.onItemBuilt( context, uuid );
         fireElementSelectedEvent( elementSelectedEvent, context.getCanvasHandler(), uuid );
-
     }
 
     @Override
@@ -294,9 +293,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
                                                 final Element newElement ) {
         final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
         final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        final String edgeId = getDefinitionId( edge.getContent().getDefinition() );
-        final ShapeFactory<?, AbstractCanvasHandler, ?> nodeShapeFactory = getShapeManager().getFactory( definitionId );
-        final ShapeFactory<?, AbstractCanvasHandler, ?> edgeShapeFactory = getShapeManager().getFactory( edgeId );
+        final ShapeFactory<?, AbstractCanvasHandler, ?> shapeFactory = getFactory( context.getCanvasHandler() );
         return new NodeDragProxy.Item<AbstractCanvasHandler>() {
             @Override
             public Node<View<?>, Edge> getNode() {
@@ -305,7 +302,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
 
             @Override
             public ShapeFactory<?, AbstractCanvasHandler, ?> getNodeShapeFactory() {
-                return nodeShapeFactory;
+                return shapeFactory;
             }
 
             @Override
@@ -320,7 +317,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
 
             @Override
             public ShapeFactory<?, AbstractCanvasHandler, ?> getInEdgeShapeFactory() {
-                return edgeShapeFactory;
+                return shapeFactory;
             }
 
         };

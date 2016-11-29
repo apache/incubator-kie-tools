@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.lienzo.toolbox;
 
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -75,7 +76,8 @@ public class HoverToolbox extends AbstractToolbox {
 
     }
 
-    private HoverToolbox( final WiresShape shape,
+    private HoverToolbox( final Layer layer,
+                          final WiresShape shape,
                           final Shape<?> attachTo,
                           final Direction anchor,
                           final Direction towards,
@@ -84,7 +86,7 @@ public class HoverToolbox extends AbstractToolbox {
                           final int padding,
                           final int iconSize,
                           final List<ToolboxButton> buttons ) {
-        super( shape, attachTo, anchor, towards, rows, cols, padding, iconSize, buttons );
+        super( layer, shape, attachTo, anchor, towards, rows, cols, padding, iconSize, buttons );
     }
 
     @Override
@@ -98,13 +100,13 @@ public class HoverToolbox extends AbstractToolbox {
 
     public static class HoverToolboxBuilder extends AbstractBuilder {
 
-        public HoverToolboxBuilder( WiresShape shape ) {
-            super( shape );
+        public HoverToolboxBuilder( Layer layer, WiresShape shape ) {
+            super( layer,shape );
         }
 
         @Override
         public GridToolbox register() {
-            return new HoverToolbox( this.shape, this.attachTo, this.anchor, this.towards, this.rows, this.cols,
+            return new HoverToolbox( this.layer, this.shape, this.attachTo, this.anchor, this.towards, this.rows, this.cols,
                     this.padding, this.iconSize, this.buttons );
         }
 

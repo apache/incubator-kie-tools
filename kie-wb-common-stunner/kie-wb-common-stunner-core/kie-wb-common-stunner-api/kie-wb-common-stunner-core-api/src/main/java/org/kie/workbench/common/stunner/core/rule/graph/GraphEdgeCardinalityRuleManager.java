@@ -19,13 +19,32 @@ package org.kie.workbench.common.stunner.core.rule.graph;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 
 import java.util.List;
 
+/**
+ * Manager for connector's cardinality rules specific for Stunner's graph domain.
+ */
 public interface GraphEdgeCardinalityRuleManager
-        extends EdgeCardinalityRuleManager<Edge<? extends View<?>, Node>,
-        Node<? extends View<?>, Edge>,
-        List<? extends Edge>> {
+        extends EdgeCardinalityRuleManager {
+
+    /**
+     * It checks cardinality rules and evaluates if the given connector candidate added or removed into the structure.
+     *
+     * @param edge The connector.
+     * @param candidate The candidate node.
+     * @param count The current connector's count for the node.
+     * @param ruleType if it's an incoming or outgoing connection.
+     * @param operation Can be adding a new connector, removing an existing one, or NONE, eg: just to validate rules
+     *                  against current structure.
+     */
+    RuleViolations evaluate( Edge<? extends View<?>, Node> edge,
+                             Node<? extends View<?>, Edge> candidate,
+                             List<? extends Edge> count,
+                             EdgeCardinalityRule.Type ruleType,
+                             Operation operation );
 
 }

@@ -17,9 +17,21 @@
 package org.kie.workbench.common.stunner.core.rule.model;
 
 import org.kie.workbench.common.stunner.core.rule.ContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 
 import java.util.Set;
 
-public interface ModelContainmentRuleManager extends ContainmentRuleManager<String, Set<String>> {
+/**
+ * Manager for containment rules specific for the Stunner's domain model.
+ */
+public interface ModelContainmentRuleManager extends ContainmentRuleManager {
+
+    /**
+     * It checks containment rules and evaluates if the given candidate role can be added or removed
+     * into/from another node.
+     * @param targetId The parent node definition's identifier.
+     * @param candidateRoles The roles for the candidate child node.
+     */
+    RuleViolations evaluate( String targetId, Set<String> candidateRoles );
 
 }
