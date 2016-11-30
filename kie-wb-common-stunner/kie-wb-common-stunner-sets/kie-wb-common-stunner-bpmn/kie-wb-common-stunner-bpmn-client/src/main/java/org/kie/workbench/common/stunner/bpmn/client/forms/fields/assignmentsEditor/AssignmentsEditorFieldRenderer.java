@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ContextUtils;
-import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldDefinition;
 
 @Dependent
@@ -42,10 +42,10 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
 
     @Override
     public void initInputWidget() {
-        assignmentsEditor.setUserTask( null );
+        assignmentsEditor.setBPMNModel( null );
         Object model = ContextUtils.getModel( renderingContext );
-        if ( model instanceof UserTask ) {
-            assignmentsEditor.setUserTask( ( UserTask ) model );
+        if ( model instanceof BPMNDefinition ) {
+            assignmentsEditor.setBPMNModel( ( BPMNDefinition ) model );
         }
     }
 

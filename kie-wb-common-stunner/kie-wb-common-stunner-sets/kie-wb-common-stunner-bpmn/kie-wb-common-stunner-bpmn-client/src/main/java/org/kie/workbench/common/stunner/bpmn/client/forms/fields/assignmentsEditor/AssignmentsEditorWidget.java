@@ -36,7 +36,9 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
@@ -57,12 +59,12 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     private TextBox assignmentsTextBox;
 
     @Inject
-    private ActivityDataIOEditor activityDataIOEditor;
+    protected ActivityDataIOEditor activityDataIOEditor;
 
     @Inject
     ClientSessionManager canvasSessionManager;
 
-    private UserTask userTask;
+    private BPMNDefinition bpmnModel;
 
     protected String assignmentsInfo;
 
@@ -96,8 +98,8 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         }
     }
 
-    protected void setUserTask( UserTask userTask ) {
-        this.userTask = userTask;
+    protected void setBPMNModel( BPMNDefinition bpmnModel ) {
+        this.bpmnModel = bpmnModel;
     }
 
     protected void initTextBox() {
@@ -114,20 +116,17 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
 
     public void showAssignmentsDialog() {
         String taskName = "Task";
-        if ( userTask != null ) {
-            if ( userTask.getGeneral() != null && userTask.getGeneral().getName() != null &&
-                    userTask.getGeneral().getName().getValue() != null && userTask.getGeneral().getName().getValue().length() > 0 ) {
-                taskName = userTask.getGeneral().getName().getValue();
+        if ( bpmnModel != null && bpmnModel instanceof BaseTask ) {
+            BaseTask task = ( BaseTask ) bpmnModel;
+            if ( task.getGeneral() != null && task.getGeneral().getName() != null &&
+                    task.getGeneral().getName().getValue() != null && task.getGeneral().getName().getValue().length() > 0 ) {
+                taskName = task.getGeneral().getName().getValue();
             }
         }
         Map<String, String> assignmentsProperties = parseAssignmentsInfo();
-//        Window.alert("assignmentsInfo = " + assignmentsInfo + "\ndatainputset = " + assignmentsProperties.get("datainputset") +
-//                "\ndataoutputset = " + assignmentsProperties.get("dataoutputset")
-//                + "\nassignments = " + assignmentsProperties.get("assignments"));
         ActivityDataIOEditor.GetDataCallback callback = new ActivityDataIOEditor.GetDataCallback() {
             @Override
             public void getData( String assignmentDataJson ) {
-//                Window.alert("assignmentData = " + assignmentDataJson);
                 AssignmentData assignmentData = Marshalling.fromJSON( assignmentDataJson, AssignmentData.class );
                 String assignmentsInfoString = createAssignmentsInfoString( assignmentData );
                 setValue( assignmentsInfoString, true );
@@ -148,31 +147,30 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                                   final String disallowedpropertynames,
                                   final ActivityDataIOEditor.GetDataCallback callback ) {
         activityDataIOEditor.setCallback( callback );
-        String inputvars = null;
         boolean hasInputVars = false;
         boolean isSingleInputVar = false;
+        boolean hasOutputVars = false;
+        boolean isSingleOutputVar = false;
+        if (bpmnModel instanceof UserTask) {
+            hasInputVars = true;
+            isSingleInputVar = false;
+            hasOutputVars = true;
+            isSingleOutputVar = false;
+        }
+
+        String inputvars = null;
         if ( datainput != null ) {
             inputvars = datainput;
-            hasInputVars = true;
-            isSingleInputVar = true;
         }
         if ( datainputset != null ) {
             inputvars = datainputset;
-            hasInputVars = true;
-            isSingleInputVar = false;
         }
         String outputvars = null;
-        boolean hasOutputVars = false;
-        boolean isSingleOutputVar = false;
         if ( dataoutput != null ) {
             outputvars = dataoutput;
-            hasOutputVars = true;
-            isSingleOutputVar = true;
         }
         if ( dataoutputset != null ) {
             outputvars = dataoutputset;
-            hasOutputVars = true;
-            isSingleOutputVar = false;
         }
         AssignmentData assignmentData = new AssignmentData( inputvars, outputvars, processvars, assignments, datatypes, disallowedpropertynames );
         assignmentData.setVariableCountsString( hasInputVars, isSingleInputVar, hasOutputVars, isSingleOutputVar );
@@ -275,7 +273,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     }
 
     protected String getDisallowedPropertyNames() {
-        if ( userTask instanceof UserTask ) {
+        if ( bpmnModel instanceof UserTask ) {
             return "GroupId,Skippable,Comment,Description,Priority,Content,TaskName,Locale,CreatedBy,NotCompletedReassign,NotStartedReassign,NotCompletedNotify,NotStartedNotify";
         } else {
             return "";
