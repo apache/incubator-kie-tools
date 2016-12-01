@@ -40,10 +40,12 @@ public abstract class AbstractGenerator {
             throw new NoClassDefFoundError( "Failing for testing purposes" );
         }
         try {
-            config = new Configuration();
-            config.setClassForTemplateLoading( getClass(),
-                    "templates" );
-            config.setObjectWrapper( new DefaultObjectWrapper() );
+            synchronized (AbstractGenerator.class) {
+                config = new Configuration();
+                config.setClassForTemplateLoading( getClass(),
+                        "templates" );
+                config.setObjectWrapper( new DefaultObjectWrapper() );
+            }
         } catch (NoClassDefFoundError ex) {
             if (ex.getCause() == null) {
                 ex.initCause( INITIALIZER_EXCEPTION );
