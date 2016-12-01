@@ -32,8 +32,8 @@ import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.commons.uuid.UUID;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.ext.wires.core.api.shapes.UUID;
 import org.uberfire.mvp.PlaceRequest;
 
 public class DecisionTableAnalyzerBuilder {
