@@ -58,11 +58,11 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
 
     @Override
     public LibraryPreferences defaultValue( final LibraryPreferences defaultValue ) {
-        defaultValue.ouIdentifier = "default-ou";
+        defaultValue.ouIdentifier = "myteam";
         defaultValue.ouOwner = "admin";
         defaultValue.ouGroupId = "org.default";
         defaultValue.ouAlias = "Team";
-        defaultValue.repositoryAlias = "default-repo";
+        defaultValue.repositoryAlias = "myrepo";
         defaultValue.repositoryDefaultScheme = "git";
         defaultValue.projectGroupId = "org.default";
         defaultValue.projectVersion = "1.0.0";
