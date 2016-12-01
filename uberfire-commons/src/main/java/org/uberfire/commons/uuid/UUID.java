@@ -20,10 +20,15 @@
  * and open the template in the editor.
  */
 
-package org.uberfire.ext.wires.core.api.shapes;
+package org.uberfire.commons.uuid;
 
+/**
+ * Can be used to make UUID Strings.
+ */
 public class UUID {
-	private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray(); 
+
+	private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+
 	/**
 	 * Generate a random uuid of the specified length. Example: uuid(15) returns
 	 * "VcydxgltxrVZSTV"
@@ -34,6 +39,7 @@ public class UUID {
 	public static String uuid(int len) {
 		return uuid(len, CHARS.length);
 	}
+
 	/**
 	 * Generate a random uuid of the specified length, and radix. Examples:
 	 * <ul>
@@ -60,6 +66,7 @@ public class UUID {
 		return new String(uuid);
 	}
 	/**
+	 *
 	 * Generate a RFC4122, version 4 ID. Example:
 	 * "92329D39-6F5C-4520-ABFC-AAB64544E172"
 	 */

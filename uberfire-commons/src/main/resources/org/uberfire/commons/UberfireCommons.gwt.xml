@@ -21,6 +21,7 @@
 
   <source path='data'/>
   <source path='lifecycle'/>
+  <source path='uuid'/>
 
   <source path='validation'>
     <exclude name='Preconditions.java'/>

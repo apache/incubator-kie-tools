@@ -28,7 +28,7 @@ import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 import org.uberfire.ext.wires.core.api.magnets.Magnet;
-import org.uberfire.ext.wires.core.api.shapes.UUID;
+import org.uberfire.commons.uuid.UUID;
 import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 
 public class DefaultMagnet extends Circle implements Magnet<Circle> {

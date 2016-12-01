@@ -33,6 +33,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.uuid.UUID;
 import org.uberfire.ext.wires.core.api.selection.RequiresSelectionManager;
 import org.uberfire.ext.wires.core.api.selection.SelectionManager;
 
