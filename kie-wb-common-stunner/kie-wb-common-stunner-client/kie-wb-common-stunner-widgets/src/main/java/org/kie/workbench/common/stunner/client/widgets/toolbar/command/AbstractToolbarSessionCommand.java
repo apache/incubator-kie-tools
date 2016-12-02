@@ -135,7 +135,11 @@ public abstract class AbstractToolbarSessionCommand<S extends ClientSession, C e
         }
         AbstractToolbarSessionCommand that = ( AbstractToolbarSessionCommand ) o;
         return uuid.equals( that.uuid );
+    }
 
+    @Override
+    public int hashCode() {
+        return uuid == null ? 0 : ~~uuid.hashCode();
     }
 
     public String getUuid() {

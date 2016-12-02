@@ -111,6 +111,11 @@ public class VariableRow {
     }
 
     @Override
+    public int hashCode() {
+        return ~~ (int) (id ^ (id >>> 32));
+    }
+
+    @Override
     public String toString() {
         return "VariableRow [variableType=" + variableType.toString() + ", name=" + name + ", dataType=" + dataType + ", customDataType=" + customDataType + "]";
     }

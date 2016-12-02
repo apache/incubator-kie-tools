@@ -62,7 +62,11 @@ public abstract class AbstractPaletteItem implements PaletteItem {
             return false;
         }
         AbstractPaletteItem that = ( AbstractPaletteItem ) o;
-        return itemId.equals( that.itemId );
+        return itemId != null && itemId.equals(that.itemId);
     }
 
+    @Override
+    public int hashCode() {
+        return itemId == null ? 0 : ~~itemId.hashCode();
+    }
 }

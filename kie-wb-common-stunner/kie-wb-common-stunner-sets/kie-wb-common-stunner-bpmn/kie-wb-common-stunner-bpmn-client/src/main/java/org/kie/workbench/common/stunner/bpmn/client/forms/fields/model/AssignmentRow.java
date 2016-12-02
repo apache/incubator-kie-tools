@@ -133,6 +133,11 @@ public class AssignmentRow {
     }
 
     @Override
+    public int hashCode() {
+        return ~~ (int) (id ^ (id >>> 32));
+    }
+
+    @Override
     public String toString() {
         return "Assignment [name=" + name + ", variableType=" + variableType.toString() + ", dataType=" + dataType + ", customDataType=" + customDataType + ", processVar=" + processVar + ", constant=" + constant + "]";
     }

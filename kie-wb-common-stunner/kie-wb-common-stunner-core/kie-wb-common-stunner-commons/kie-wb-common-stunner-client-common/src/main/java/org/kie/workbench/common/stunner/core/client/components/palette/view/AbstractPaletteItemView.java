@@ -41,7 +41,11 @@ public abstract class AbstractPaletteItemView<I extends PaletteItem, V>
             return false;
         }
         AbstractPaletteItemView that = ( AbstractPaletteItemView ) o;
-        return item.getId().equals( that.item.getId() );
+        return item != null && item.getId().equals( that.item.getId() );
     }
 
+    @Override
+    public int hashCode() {
+        return item.getId() == null ? 0 : ~~item.getId().hashCode();
+    }
 }

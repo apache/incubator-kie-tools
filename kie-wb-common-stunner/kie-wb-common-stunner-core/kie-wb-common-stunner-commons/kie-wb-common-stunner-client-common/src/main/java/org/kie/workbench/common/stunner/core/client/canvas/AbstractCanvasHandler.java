@@ -16,6 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
@@ -53,12 +63,6 @@ import org.kie.workbench.common.stunner.core.rule.Rule;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class AbstractCanvasHandler<D extends Diagram, C extends AbstractCanvas>
         implements CanvasHandler<D, C>, HasCanvasListeners<CanvasElementListener> {
@@ -515,6 +519,11 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         }
         AbstractCanvasHandler that = ( AbstractCanvasHandler ) o;
         return uuid.equals( that.uuid );
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid == null ? 0 : ~~uuid.hashCode();
     }
 
     @Override

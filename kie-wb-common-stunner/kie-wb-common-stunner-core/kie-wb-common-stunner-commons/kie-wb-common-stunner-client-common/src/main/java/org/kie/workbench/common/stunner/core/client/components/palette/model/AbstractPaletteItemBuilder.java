@@ -62,7 +62,11 @@ public abstract class AbstractPaletteItemBuilder<B, I> implements PaletteItemBui
             return false;
         }
         AbstractPaletteItemBuilder that = ( AbstractPaletteItemBuilder ) o;
-        return id.equals( that.id );
+        return id != null && id.equals( that.id );
     }
 
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : ~~id.hashCode();
+    }
 }

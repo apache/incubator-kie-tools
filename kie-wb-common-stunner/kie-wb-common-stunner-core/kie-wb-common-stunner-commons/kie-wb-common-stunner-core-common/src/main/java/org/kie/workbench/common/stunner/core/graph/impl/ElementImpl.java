@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.graph.impl;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.uberfire.commons.validation.PortablePreconditions;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Portable
 public class ElementImpl<C> implements Element<C> {
@@ -80,6 +80,11 @@ public class ElementImpl<C> implements Element<C> {
         }
         ElementImpl that = ( ElementImpl ) o;
         return uuid.equals( that.uuid );
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid == null ? 0 : ~~uuid.hashCode();
     }
 
     @Override

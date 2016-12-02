@@ -67,7 +67,11 @@ public abstract class AbstractDiagram<G extends Graph, S extends Metadata> imple
             return false;
         }
         Diagram that = ( Diagram ) o;
-        return name.equals( that.getName() );
+        return name != null && name.equals( that.getName() );
     }
 
+    @Override
+    public int hashCode() {
+        return name == null ? 0 : ~~name.hashCode();
+    }
 }

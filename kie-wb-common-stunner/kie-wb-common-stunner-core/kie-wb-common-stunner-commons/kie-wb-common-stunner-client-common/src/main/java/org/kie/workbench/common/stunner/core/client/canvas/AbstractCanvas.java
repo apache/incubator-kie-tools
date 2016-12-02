@@ -16,6 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
@@ -29,14 +37,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLoadingObs
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.util.UUID;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * For Lienzo's based Canvas.
@@ -373,7 +373,11 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         }
         AbstractCanvas that = ( AbstractCanvas ) o;
         return uuid.equals( that.uuid );
+    }
 
+    @Override
+    public int hashCode() {
+        return uuid == null ? 0 : ~~uuid.hashCode();
     }
 
     public void setLoadingObserverCallback( final CanvasLoadingObserver.Callback loadingObserverCallback ) {

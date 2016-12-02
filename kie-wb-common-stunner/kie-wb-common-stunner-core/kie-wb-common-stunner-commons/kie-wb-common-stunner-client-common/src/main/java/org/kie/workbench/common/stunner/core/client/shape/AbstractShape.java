@@ -16,14 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
-import org.kie.workbench.common.stunner.core.client.shape.view.*;
+import java.util.logging.Logger;
+
+import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-
-import java.util.logging.Logger;
 
 /**
  * A base shape impl for handling contents of node graph elements.
@@ -223,6 +227,11 @@ public abstract class AbstractShape<W, E extends Node<View<W>, Edge>, V extends 
             return false;
         }
         AbstractShape that = ( AbstractShape ) o;
-        return uuid.equals( that.uuid );
+        return uuid != null && uuid.equals( that.uuid );
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid == null ? 0 : ~~uuid.hashCode();
     }
 }

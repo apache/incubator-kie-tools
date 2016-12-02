@@ -97,6 +97,11 @@ public class AssigneeRow {
     }
 
     @Override
+    public int hashCode() {
+        return ~~ (int) (id ^ (id >>> 32));
+    }
+
+    @Override
     public String toString() {
         return "AssigneeRow [name=" + name + ",customName=" + customName + "]";
     }

@@ -170,6 +170,11 @@ public abstract class AbstractClientSession implements ClientSession<AbstractCan
         return uuid.equals( that.uuid );
     }
 
+    @Override
+    public int hashCode() {
+        return uuid == null ? 0 : ~~uuid.hashCode();
+    }
+
     public boolean isOpened() {
         return isOpened;
     }
