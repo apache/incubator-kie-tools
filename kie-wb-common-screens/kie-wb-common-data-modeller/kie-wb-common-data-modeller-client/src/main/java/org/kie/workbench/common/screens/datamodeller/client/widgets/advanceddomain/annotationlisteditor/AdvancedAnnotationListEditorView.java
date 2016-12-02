@@ -16,12 +16,9 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationlisteditor;
 
-import java.util.List;
-import java.util.Map;
-
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationlisteditor.item.AnnotationListItem;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
-import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSource;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberView;
@@ -33,20 +30,6 @@ public interface AdvancedAnnotationListEditorView
     interface Presenter {
 
         void onAddAnnotation();
-
-        void onDeleteAnnotation( Annotation annotation );
-
-        void onEditValuePair( Annotation annotation, String valuePair );
-
-        void onClearValuePair( Annotation annotation, String valuePair );
-
-        void addClearValuePairHandler( ClearValuePairHandler clearValuePairHandler );
-
-        void addDeleteAnnotationHandler( DeleteAnnotationHandler deleteAnnotationHandler );
-
-        void addValuePairChangeHandler( ValuePairChangeHandler valuePairChangeHandler );
-
-        void addAddAnnotationHandler( AddAnnotationHandler addAnnotationHandler );
 
     }
 
@@ -62,6 +45,12 @@ public interface AdvancedAnnotationListEditorView
 
     }
 
+    interface EditValuePairHandler {
+
+        void onEditValuePair( Annotation annotation, String valuePair );
+
+    }
+
     interface ValuePairChangeHandler {
 
         void onValuePairChange( String annotationClassName, String valuePairName, Object newValue );
@@ -73,11 +62,19 @@ public interface AdvancedAnnotationListEditorView
 
     }
 
-    void loadAnnotations( List<Annotation> annotations, Map<String, AnnotationSource> annotationSources );
+    interface CollapseChangeHandler {
 
-    void removeAnnotation( Annotation annotation );
+        void onCollapseChange();
+
+    }
+
+    void addItem( AnnotationListItem listItem );
+
+    void removeItem( AnnotationListItem listItem );
 
     void showYesNoDialog( String message, Command yesCommand, Command noCommand, Command cancelCommand );
+
+    void showYesNoDialog( String message, Command cancelCommand );
 
     void invokeCreateAnnotationWizard( final Callback<Annotation> callback,
             KieProject kieProject,

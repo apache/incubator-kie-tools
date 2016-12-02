@@ -72,7 +72,6 @@ public class JPADataObjectFieldEditor
 
     @PostConstruct
     protected void init(){
-        view.setLastOpenAccordionGroupTitle( "" );
         loadPropertyEditor();
     }
 
@@ -95,7 +94,6 @@ public class JPADataObjectFieldEditor
     protected void loadDataObjectField( DataObject dataObject, ObjectProperty objectField ) {
         clear();
         setReadonly( true );
-        view.setLastOpenAccordionGroupTitle( "" );
         if ( dataObject != null && objectField != null ) {
             this.dataObject = dataObject;
             this.objectField = objectField;
@@ -105,12 +103,6 @@ public class JPADataObjectFieldEditor
             updateGeneratedValueField( objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION ) );
             updateSequenceGeneratorField( objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_SEQUENCE_GENERATOR_ANNOTATION ) );
             updateRelationshipField( getCurrentRelationshipAnnotation( objectField ) );
-
-            if ( objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ID_ANNOTATION ) != null ) {
-                view.setLastOpenAccordionGroupTitle( Constants.INSTANCE.persistence_domain_fieldEditor_identifier_category() );
-            } else if ( getCurrentRelationshipAnnotation( objectField ) != null ) {
-                view.setLastOpenAccordionGroupTitle( Constants.INSTANCE.persistence_domain_fieldEditor_relationship_category() );
-            }
 
             setReadonly( getContext() == null || getContext().isReadonly() );
         }

@@ -43,8 +43,6 @@ public interface JPADataObjectEditorView
 
     void loadPropertyEditorCategories( List<PropertyEditorCategory> categories );
 
-    void setLastOpenAccordionGroupTitle( String accordionGroupTitle );
-
     void showYesNoCancelPopup( String title,
             String message,
             Command yesCommand,

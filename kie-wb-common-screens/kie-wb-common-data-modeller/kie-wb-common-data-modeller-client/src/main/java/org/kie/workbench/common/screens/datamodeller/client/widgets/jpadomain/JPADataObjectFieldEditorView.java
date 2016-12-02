@@ -56,8 +56,5 @@ public interface JPADataObjectFieldEditorView
 
     String RELATIONSHIP_TYPE_FIELD = "RELATIONSHIP_TYPE_FIELD";
 
-    void loadPropertyEditorCategories( List<PropertyEditorCategory> categories );
-
-    void setLastOpenAccordionGroupTitle( String accordionGroupTitle );
-
+    void loadPropertyEditorCategories( List< PropertyEditorCategory > categories );
 }

@@ -68,11 +68,6 @@ public class JPADataObjectFieldEditorViewImpl
     }
 
     @Override
-    public void setLastOpenAccordionGroupTitle( String accordionGroupTitle ) {
-        propertyEditor.setLastOpenAccordionGroupTitle( accordionGroupTitle );
-    }
-
-    @Override
     public void loadPropertyEditorCategories( List<PropertyEditorCategory> categories ) {
         propertyEditor.handle( new PropertyEditorEvent( getCurrentEditorEventId(), categories ) );
     }

@@ -16,17 +16,20 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationlisteditor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationlisteditor.item.AnnotationListItem;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorPopup;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorPopupView;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
@@ -59,13 +62,19 @@ public class AdvancedAnnotationListEditor
 
     private AdvancedAnnotationListEditorView.AddAnnotationHandler addAnnotationHandler;
 
-    private SyncBeanManager iocManager;
-
     private Caller<DataModelerService> modelerService;
+
+    private Instance<ValuePairEditorPopup> valuePairEditorInstance;
+
+    private Instance<AnnotationListItem> itemInstance;
 
     private Map<String, AnnotationSource> annotationSources;
 
     private List<Annotation> annotations;
+
+    private Map< Annotation, AnnotationListItem > annotationItems = new HashMap< Annotation, AnnotationListItem >( );
+
+    private Map< String, Boolean > annotationStatus = new HashMap< String, Boolean >( );
 
     private KieProject project;
 
@@ -73,14 +82,22 @@ public class AdvancedAnnotationListEditor
 
     private boolean readonly = false;
 
+    private Command deleteAnnotationCommand;
+
+    private Command noActionCommand;
+
+    private Callback<Annotation> addAnnotationCallback;
+
     @Inject
     public AdvancedAnnotationListEditor( AdvancedAnnotationListEditorView view,
-                                        Caller<DataModelerService> modelerService,
-                                        SyncBeanManager iocManager ) {
+                                         Caller<DataModelerService> modelerService,
+                                         Instance<ValuePairEditorPopup> valuePairEditorInstance,
+                                         Instance<AnnotationListItem> itemInstance ) {
         this.view = view;
         view.init( this );
         this.modelerService = modelerService;
-        this.iocManager = iocManager;
+        this.valuePairEditorInstance = valuePairEditorInstance;
+        this.itemInstance = itemInstance;
     }
 
     @Override
@@ -103,8 +120,46 @@ public class AdvancedAnnotationListEditor
         }
     }
 
-    public void loadAnnotations( List<Annotation> annotations, Map<String, AnnotationSource> annotationSources ) {
-        view.loadAnnotations( annotations, annotationSources );
+    public void loadAnnotations( List< Annotation > annotations, Map< String, AnnotationSource > annotationSources ) {
+        view.clear( );
+        clearListItems();
+        this.annotationSources = annotationSources;
+        if ( annotations != null ) {
+            for ( Annotation annotation : annotations ) {
+                final Annotation currentAnnotation = annotation;
+                final AnnotationListItem annotationListItem = createListItem();
+                annotationListItem.loadAnnotation( annotation, annotationSources != null ?
+                        annotationSources.get( annotation.getClassName( ) ) : null );
+                annotationListItem.setCollapsed( !isExpanded( annotation.getClassName( ) ) );
+                annotationListItem.setDeleteAnnotationHandler( new AdvancedAnnotationListEditorView.DeleteAnnotationHandler( ) {
+                    @Override
+                    public void onDeleteAnnotation( Annotation annotation ) {
+                        AdvancedAnnotationListEditor.this.onDeleteAnnotation( annotation );
+                    }
+                } );
+                annotationListItem.setClearValuePairHandler( new AdvancedAnnotationListEditorView.ClearValuePairHandler( ) {
+                    @Override
+                    public void onClearValuePair( Annotation annotation, String valuePair ) {
+                        AdvancedAnnotationListEditor.this.onClearValuePair( annotation, valuePair );
+                    }
+                } );
+                annotationListItem.setEditValuePairHandler( new AdvancedAnnotationListEditorView.EditValuePairHandler( ) {
+                    @Override
+                    public void onEditValuePair( Annotation annotation, String valuePair ) {
+                        AdvancedAnnotationListEditor.this.onEditValuePair( annotation, valuePair );
+                    }
+                } );
+                annotationListItem.setCollapseChangeHandler( new AdvancedAnnotationListEditorView.CollapseChangeHandler( ) {
+                    @Override
+                    public void onCollapseChange( ) {
+                        AdvancedAnnotationListEditor.this.onCollapseChange( currentAnnotation, annotationListItem.isCollapsed() );
+                    }
+                } );
+                annotationListItem.setReadonly( readonly );
+                annotationItems.put( annotation, annotationListItem );
+                view.addItem( annotationListItem );
+            }
+        }
     }
 
     public boolean isReadonly() {
@@ -114,51 +169,67 @@ public class AdvancedAnnotationListEditor
     public void setReadonly( boolean readonly ) {
         this.readonly = readonly;
         view.setReadonly( readonly );
+        for ( AnnotationListItem annotationListItem : annotationItems.values() ) {
+            annotationListItem.setReadonly( readonly );
+        }
     }
 
     @Override
     public void onAddAnnotation() {
-        view.invokeCreateAnnotationWizard( new Callback<Annotation>() {
-            @Override
-            public void callback( Annotation annotation ) {
-                if ( annotation != null && addAnnotationHandler != null ) {
-                    addAnnotationHandler.onAddAnnotation( annotation );
-                }
-            }
-        }, project, elementType );
+        view.invokeCreateAnnotationWizard( getAddAnnotationCallback(), project, elementType );
     }
 
-    @Override
-    public void onDeleteAnnotation( final Annotation annotation ) {
+    protected Callback<Annotation> getAddAnnotationCallback() {
+        if ( addAnnotationCallback == null ) {
+            addAnnotationCallback = new Callback< Annotation >( ) {
+                @Override
+                public void callback( Annotation annotation ) {
+                    if ( annotation != null && addAnnotationHandler != null ) {
+                        addAnnotationHandler.onAddAnnotation( annotation );
+                    }
+                }
+            };
+        }
+        return addAnnotationCallback;
+    }
+
+    protected void onDeleteAnnotation( final Annotation annotation ) {
         String message = Constants.INSTANCE.advanced_domain_annotation_list_editor_message_confirm_annotation_deletion(
                 annotation.getClassName(),
                 ( elementType != null ? elementType.name() : " object/field" ) );
         view.showYesNoDialog( message,
-                new Command() {
-                    @Override
-                    public void execute() {
-                        if ( deleteAnnotationHandler != null ) {
-                            deleteAnnotationHandler.onDeleteAnnotation( annotation );
-                        }
-                    }
-                },
-                new Command() {
-                    @Override
-                    public void execute() {
-                        //do nothing
-                    }
-                },
-                new Command() {
-                    @Override
-                    public void execute() {
-                        //do nothing.
-                    }
-                }
-        );
+                getDeleteAnnotationCommand( annotation ),
+                getNoActionCommand(),
+                getNoActionCommand() );
     }
 
-    @Override
-    public void onEditValuePair( Annotation annotation, String valuePair ) {
+    protected Command getDeleteAnnotationCommand( final Annotation annotation ) {
+        if ( deleteAnnotationCommand == null ) {
+            deleteAnnotationCommand = new Command( ) {
+                @Override
+                public void execute( ) {
+                    if ( deleteAnnotationHandler != null ) {
+                        deleteAnnotationHandler.onDeleteAnnotation( annotation );
+                    }
+                }
+            };
+        }
+        return deleteAnnotationCommand;
+    }
+
+    protected Command getNoActionCommand() {
+        if ( noActionCommand == null ) {
+            noActionCommand = new Command() {
+                @Override
+                public void execute() {
+                    //do nothing
+                }
+            };
+        }
+        return noActionCommand;
+    }
+
+    protected void onEditValuePair( Annotation annotation, String valuePair ) {
         ValuePairEditorPopup valuePairEditor = createValuePairEditor( annotation, valuePair );
         if ( valuePairEditor.isGenericEditor() ) {
             AnnotationSource annotationSource = annotationSources.get( annotation.getClassName() );
@@ -170,8 +241,7 @@ public class AdvancedAnnotationListEditor
         valuePairEditor.show();
     }
 
-    @Override
-    public void onClearValuePair( Annotation annotation, String valuePair ) {
+    protected void onClearValuePair( Annotation annotation, String valuePair ) {
 
         AnnotationDefinition annotationDefinition = annotation.getAnnotationDefinition();
         AnnotationValuePairDefinition valuePairDefinition = annotationDefinition.getValuePair( valuePair );
@@ -179,43 +249,44 @@ public class AdvancedAnnotationListEditor
             //if the value pair has no default value, it should be applied wherever the annotation is applied, if not
             //the resulting code won't compile.
             String message = Constants.INSTANCE.advanced_domain_annotation_list_editor_message_value_pair_has_no_default_value( valuePair,  annotation.getClassName() );
-            view.showYesNoDialog( message, null, null, new Command() {
-                @Override
-                public void execute() {
-                    //do nothing
-                }
-            } );
+            view.showYesNoDialog( message, getNoActionCommand() );
         } else if ( clearValuePairHandler != null ) {
             clearValuePairHandler.onClearValuePair( annotation, valuePair );
         }
     }
 
-    @Override
+    protected void onCollapseChange( Annotation currentAnnotation, boolean collapsed ) {
+        setExpanded( currentAnnotation.getClassName( ), !collapsed );
+    }
+
     public void addDeleteAnnotationHandler( AdvancedAnnotationListEditorView.DeleteAnnotationHandler deleteAnnotationHandler ) {
         this.deleteAnnotationHandler = deleteAnnotationHandler;
     }
 
-    @Override
     public void addClearValuePairHandler( AdvancedAnnotationListEditorView.ClearValuePairHandler clearValuePairHandler ) {
         this.clearValuePairHandler = clearValuePairHandler;
     }
 
-    @Override
     public void addValuePairChangeHandler( AdvancedAnnotationListEditorView.ValuePairChangeHandler valuePairChangeHandler ) {
         this.valuePairChangeHandler = valuePairChangeHandler;
     }
 
-    @Override
     public void addAddAnnotationHandler( AdvancedAnnotationListEditorView.AddAnnotationHandler addAnnotationHandler ) {
         this.addAnnotationHandler = addAnnotationHandler;
     }
 
     public void clear() {
         view.clear();
+        clearListItems();
     }
 
     public void removeAnnotation( Annotation annotation ) {
-        view.removeAnnotation( annotation );
+        AnnotationListItem listItem = annotationItems.get( annotation );
+        if ( listItem != null ) {
+            view.removeItem( listItem );
+            annotationItems.remove( annotation );
+            dispose( listItem );
+        }
     }
 
     private RemoteCallback<AnnotationSourceResponse> getLoadAnnotationSourcesSuccessCallback() {
@@ -223,14 +294,12 @@ public class AdvancedAnnotationListEditor
         return new RemoteCallback<AnnotationSourceResponse>() {
             @Override
             public void callback( AnnotationSourceResponse annotationSourceResponse ) {
-                view.clear();
-                annotationSources = annotationSourceResponse.getAnnotationSources();
-                view.loadAnnotations( annotations, annotationSourceResponse.getAnnotationSources() );
+                loadAnnotations( annotations, annotationSourceResponse.getAnnotationSources() );
             }
         };
     }
 
-    private void doValuePairChange( final ValuePairEditorPopup valuePairEditor, final Object value ) {
+    protected void doValuePairChange( final ValuePairEditorPopup valuePairEditor, final Object value ) {
 
         if ( valuePairEditor.isGenericEditor() ) {
             String strValue = value != null ? value.toString() : null;
@@ -242,6 +311,11 @@ public class AdvancedAnnotationListEditor
         } else {
             applyValuePairChange( valuePairEditor, value );
         }
+    }
+
+    protected void doValuePairNoAction( final ValuePairEditorPopup valuePairEditor ) {
+        valuePairEditor.hide();
+        dispose( valuePairEditor );
     }
 
     private RemoteCallback<AnnotationParseResponse> getValuePairChangeSuccessCallback(
@@ -288,7 +362,7 @@ public class AdvancedAnnotationListEditor
     }
 
     private ValuePairEditorPopup createValuePairEditor( Annotation annotation, String valuePair ) {
-        final ValuePairEditorPopup valuePairEditor = iocManager.lookupBean( ValuePairEditorPopup.class ).getInstance();
+        final ValuePairEditorPopup valuePairEditor = createValuePairEditor();
         valuePairEditor.init( annotation.getClassName(), annotation.getAnnotationDefinition().getValuePair( valuePair ) );
         valuePairEditor.addPopupHandler( new ValuePairEditorPopupView.ValuePairEditorPopupHandler() {
 
@@ -299,14 +373,12 @@ public class AdvancedAnnotationListEditor
 
             @Override
             public void onCancel() {
-                valuePairEditor.hide();
-                dispose( valuePairEditor );
+                doValuePairNoAction( valuePairEditor );
             }
 
             @Override
             public void onClose() {
-                valuePairEditor.hide();
-                dispose( valuePairEditor );
+                doValuePairNoAction( valuePairEditor );
             }
 
         } );
@@ -314,8 +386,39 @@ public class AdvancedAnnotationListEditor
         return valuePairEditor;
     }
 
-    private void dispose( ValuePairEditorPopup valuePairEditor ) {
-        iocManager.destroyBean( valuePairEditor );
+    @PreDestroy
+    protected void destroy() {
+        clearListItems();
     }
 
+    protected AnnotationListItem createListItem() {
+        return itemInstance.get();
+    }
+
+    private void clearListItems() {
+        for ( AnnotationListItem item : annotationItems.values() ) {
+            dispose( item );
+        }
+        annotationItems.clear();
+    }
+
+    private void dispose( AnnotationListItem listItem ) {
+        itemInstance.destroy( listItem );
+    }
+
+    protected ValuePairEditorPopup createValuePairEditor() {
+        return valuePairEditorInstance.get();
+    }
+
+    private void dispose( ValuePairEditorPopup valuePairEditor ) {
+        valuePairEditorInstance.destroy( valuePairEditor );
+    }
+
+    private boolean isExpanded( String annotation ) {
+        return annotationStatus.get( annotation ) != null ? annotationStatus.get( annotation ) : false;
+    }
+
+    private void setExpanded( String annotation, boolean expanded ) {
+        annotationStatus.put( annotation, expanded );
+    }
 }

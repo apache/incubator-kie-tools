@@ -82,7 +82,6 @@ public class JPADataObjectEditor
 
     @PostConstruct
     protected void init() {
-        view.setLastOpenAccordionGroupTitle( getEntityCategoryName() );
         loadPropertyEditor();
     }
 
