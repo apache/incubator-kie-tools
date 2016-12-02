@@ -166,6 +166,10 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         this.validatorInstance = validatorInstance;
     }
 
+    public Map<String, ModelField[]> getFilteredFactTypes() {
+        return filteredModelFields;
+    }
+
     @Override
     public void init( final Path resourcePath ) {
         this.resourcePath = PortablePreconditions.checkNotNull( "resourcePath",
