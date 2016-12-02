@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyTreeMap;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMap;
+import org.drools.workbench.services.verifier.api.client.maps.KeyTreeMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
 import org.drools.workbench.services.verifier.api.client.index.select.Listen;
@@ -28,17 +28,17 @@ import org.drools.workbench.services.verifier.api.client.index.select.Select;
 
 public class ObjectTypes {
 
-    public final KeyTreeMap<ObjectType> typesMap = new KeyTreeMap<>( ObjectType.keyDefinitions() );
+    public final KeyTreeMap<ObjectType> map = new KeyTreeMap<>( ObjectType.keyDefinitions() );
 
-    public ObjectTypes( final Collection<ObjectType> typesMap ) {
-        for ( final ObjectType objectType : typesMap ) {
+    public ObjectTypes( final Collection<ObjectType> map ) {
+        for ( final ObjectType objectType : map ) {
             add( objectType );
         }
 
     }
 
-    public ObjectTypes( final ObjectType[] typesMap ) {
-        this( Arrays.asList( typesMap ) );
+    public ObjectTypes( final ObjectType[] map ) {
+        this( Arrays.asList( map ) );
     }
 
     public ObjectTypes() {
@@ -46,7 +46,7 @@ public class ObjectTypes {
     }
 
     public void merge( final ObjectTypes patterns ) {
-        this.typesMap.merge( patterns.typesMap );
+        this.map.merge( patterns.map );
     }
 
     public Where<ObjectTypesSelect, ObjectTypesListen> where( final Matcher matcher ) {
@@ -65,7 +65,7 @@ public class ObjectTypes {
 
     public void add( final ObjectType... objectTypes ) {
         for ( final ObjectType objectType : objectTypes ) {
-            this.typesMap.put( objectType );
+            this.map.put( objectType );
         }
     }
 
@@ -73,7 +73,7 @@ public class ObjectTypes {
             extends Select<ObjectType> {
 
         public ObjectTypesSelect( final Matcher matcher ) {
-            super( typesMap.get( matcher.getKeyDefinition() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
 
@@ -96,7 +96,7 @@ public class ObjectTypes {
             extends Listen<ObjectType> {
 
         public ObjectTypesListen( final Matcher matcher ) {
-            super( typesMap.get( matcher.getKeyDefinition() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
     }

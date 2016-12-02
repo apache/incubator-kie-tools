@@ -17,7 +17,7 @@ package org.drools.workbench.services.verifier.api.client.index;
 
 import java.util.Collection;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyTreeMap;
+import org.drools.workbench.services.verifier.api.client.maps.KeyTreeMap;
 
 public class FieldsBase<T extends FieldBase> {
 

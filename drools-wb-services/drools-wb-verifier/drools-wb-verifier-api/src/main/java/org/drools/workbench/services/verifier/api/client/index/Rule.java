@@ -15,16 +15,16 @@
  */
 package org.drools.workbench.services.verifier.api.client.index;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.keys.IndexKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
+import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.UpdatableKey;
 import org.drools.workbench.services.verifier.api.client.index.matchers.ComparableMatchers;
-import org.drools.workbench.services.verifier.api.client.cache.util.HasIndex;
-import org.drools.workbench.services.verifier.api.client.cache.util.HasKeys;
-import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
-import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatchers;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasIndex;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
 
 public class Rule
         implements Comparable<Rule>,

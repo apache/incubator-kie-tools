@@ -18,7 +18,7 @@ package org.drools.workbench.services.verifier.api.client.index;
 import java.util.HashMap;
 import java.util.List;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 
 public class MapBy<KeyType, ValueType> {

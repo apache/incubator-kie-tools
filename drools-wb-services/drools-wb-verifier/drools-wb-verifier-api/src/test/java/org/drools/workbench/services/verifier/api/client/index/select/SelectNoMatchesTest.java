@@ -17,12 +17,12 @@ package org.drools.workbench.services.verifier.api.client.index.select;
 
 import java.util.Collection;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyTreeMap;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.KeyTreeMap;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.AnalyzerConfigurationMock;
-import org.drools.workbench.services.verifier.api.client.cache.util.HasKeys;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
 import org.drools.workbench.services.verifier.api.client.index.matchers.ExactMatcher;
 import org.junit.Before;
 import org.junit.Test;

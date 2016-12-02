@@ -18,8 +18,8 @@ package org.drools.workbench.services.verifier.api.client.index.keys;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyChangeListener;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.KeyChangeListener;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 
 public class UpdatableKey<T>
         extends Key {

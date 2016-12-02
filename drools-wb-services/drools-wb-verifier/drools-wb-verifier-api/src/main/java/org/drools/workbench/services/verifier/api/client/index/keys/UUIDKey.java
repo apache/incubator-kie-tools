@@ -17,9 +17,9 @@ package org.drools.workbench.services.verifier.api.client.index.keys;
 
 import java.util.ArrayList;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.RetractHandler;
-import org.drools.workbench.services.verifier.api.client.cache.util.HasKeys;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.RetractHandler;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
 
 public class UUIDKey
         extends Key {

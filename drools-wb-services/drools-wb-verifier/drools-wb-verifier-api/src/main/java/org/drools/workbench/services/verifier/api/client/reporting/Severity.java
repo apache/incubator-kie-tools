@@ -16,6 +16,11 @@
 
 package org.drools.workbench.services.verifier.api.client.reporting;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+@Portable
 public enum Severity {
-    ERROR, WARNING, NOTE
+    ERROR,
+    WARNING,
+    NOTE
 }

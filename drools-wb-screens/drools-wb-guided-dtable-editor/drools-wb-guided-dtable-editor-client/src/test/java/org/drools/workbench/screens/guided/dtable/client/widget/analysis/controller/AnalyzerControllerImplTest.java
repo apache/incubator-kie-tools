@@ -31,6 +31,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.Inser
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.mvp.PlaceManager;
 
 import static org.mockito.Mockito.*;
 
@@ -43,11 +44,15 @@ public class AnalyzerControllerImplTest {
     @Mock
     EventBus eventBus;
 
+    @Mock
+    private PlaceManager placeManager;
+
     private AnalyzerControllerImpl controller;
 
     @Before
     public void setUp() throws Exception {
         controller = new AnalyzerControllerImpl( analyzer,
+                                                 placeManager,
                                                  eventBus );
     }
 
@@ -73,7 +78,7 @@ public class AnalyzerControllerImplTest {
     @Test
     public void start() throws Exception {
         controller.initialiseAnalysis();
-        verify( analyzer ).start();
+        verify( analyzer ).activate();
     }
 
     @Test

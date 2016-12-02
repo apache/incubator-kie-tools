@@ -63,6 +63,10 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-html5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
     <dependency>
@@ -76,6 +80,10 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-jaxrs-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
@@ -117,10 +125,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-wires-core-api</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
@@ -135,6 +139,11 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-verifier-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-verifier-client</artifactId>
     </dependency>
 
     <dependency>

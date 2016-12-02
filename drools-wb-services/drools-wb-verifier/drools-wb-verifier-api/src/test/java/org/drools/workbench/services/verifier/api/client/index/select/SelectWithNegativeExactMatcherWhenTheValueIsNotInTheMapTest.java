@@ -19,11 +19,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.workbench.services.verifier.api.client.AnalyzerConfigurationMock;
-import org.drools.workbench.services.verifier.api.client.cache.util.HasKeys;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyTreeMap;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMap;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMapFactory;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.KeyTreeMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMapFactory;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;

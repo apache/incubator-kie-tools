@@ -128,6 +128,15 @@ public class AnalysisReportScreenViewImpl
     @Override
     public void onResize() {
         setHeight( getParent().getOffsetHeight() + "px" );
-        setWidth( ( getParent().getOffsetWidth() - 15 ) + "px" );
+        setWidth( getWidth() + "px" );
+    }
+
+    private int getWidth() {
+        final int width = getParent().getOffsetWidth() - 15;
+        if ( width < 0 ) {
+            return 0;
+        } else {
+            return width;
+        }
     }
 }

@@ -16,20 +16,12 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.Date;
+import java.util.logging.Logger;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.DTableUpdateManager;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.DtableRuleInspectorCache;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.builders.IndexBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
-import org.drools.workbench.services.verifier.api.client.checks.base.CheckRunner;
-import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
-import org.drools.workbench.services.verifier.api.client.configuration.DateTimeFormatProvider;
-import org.drools.workbench.services.verifier.api.client.index.Index;
-import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
+import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
+import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.commons.uuid.UUID;
@@ -38,10 +30,17 @@ import org.uberfire.mvp.PlaceRequest;
 
 public class DecisionTableAnalyzerBuilder {
 
+    private static final Logger LOGGER = Logger.getLogger( "DTable Analyzer" );
+
     protected PlaceRequest placeRequest;
     protected AsyncPackageDataModelOracle oracle;
     protected GuidedDecisionTable52 model;
     protected AnalysisReportScreen analysisReportScreen;
+    protected DTableUpdateManagerImpl updateManager;
+    private AnalysisReporter analysisReporter;
+    private DecisionTableAnalyzer decisionTableAnalyzer;
+    private VerifierWebWorkerConnectionImpl webWorker;
+    private FieldTypeProducer fieldTypeProducer;
 
     public DecisionTableAnalyzerBuilder withPlaceRequest( final PlaceRequest placeRequest ) {
         this.placeRequest = placeRequest;
@@ -50,6 +49,7 @@ public class DecisionTableAnalyzerBuilder {
 
     public DecisionTableAnalyzerBuilder withOracle( final AsyncPackageDataModelOracle oracle ) {
         this.oracle = oracle;
+        fieldTypeProducer = new FieldTypeProducer( oracle );
         return this;
     }
 
@@ -72,117 +72,44 @@ public class DecisionTableAnalyzerBuilder {
                                             model );
         PortablePreconditions.checkNotNull( "analysisReportScreen",
                                             analysisReportScreen );
-
-        return getInnerBuilder().build();
+        return getDTableAnalyzer();
     }
 
-    protected InnerBuilder getInnerBuilder() {
-        return new InnerBuilder( new CheckRunner() );
+    private VerifierWebWorkerConnectionImpl getWebWorker() {
+        if ( webWorker == null ) {
+            webWorker = new VerifierWebWorkerConnectionImpl( new Initialize( UUID.uuid(),
+                                                                             model,
+                                                                             new ModelMetaDataEnhancer( model ).getHeaderMetaData(),
+                                                                             fieldTypeProducer.getFactTypes(),
+                                                                             ApplicationPreferences.getDroolsDateFormat() ),
+                                                             getAnalysisReporter() );
+        }
+        return webWorker;
     }
 
-    public CacheBuilder getCacheBuilder() {
-        return new CacheBuilder();
+    protected AnalysisReporter getAnalysisReporter() {
+        if ( analysisReporter == null ) {
+            analysisReporter = new AnalysisReporter( placeRequest,
+                                                     analysisReportScreen );
+        }
+        return analysisReporter;
     }
 
-    public UpdateManagerBuilder getUpdateManagerBuilder( final CheckRunner checkRunner ) {
-        return new UpdateManagerBuilder( checkRunner );
+    public DTableUpdateManagerImpl getUpdateManager() {
+        if ( this.updateManager == null ) {
+            this.updateManager = new DTableUpdateManagerImpl( getWebWorker(),
+                                                              fieldTypeProducer );
+        }
+        return this.updateManager;
     }
 
-    public class CacheBuilder {
-        private final AnalyzerConfiguration configuration;
-        private DtableRuleInspectorCache cache;
-        private ColumnUtilities columnUtilities;
-        private Index index;
 
-        public CacheBuilder() {
-            configuration = new AnalyzerConfiguration( new DateTimeFormatProvider() {
-                @Override
-                public String format( final Date dateValue ) {
-                    return DateTimeFormat.getFormat( ApplicationPreferences.getDroolsDateFormat() )
-                            .format( dateValue );
-                }
-            },
-                                                       new UUIDKeyProvider() {
-                                                           @Override
-                                                           protected String newUUID() {
-                                                               return UUID.uuid();
-                                                           }
-                                                       } );
+    private DecisionTableAnalyzer getDTableAnalyzer() {
+        if ( decisionTableAnalyzer == null ) {
+            decisionTableAnalyzer = new DecisionTableAnalyzer( model,
+                                                               getUpdateManager(),
+                                                               getWebWorker() );
         }
-
-        public DtableRuleInspectorCache buildCache() {
-            if ( cache == null ) {
-                cache = new DtableRuleInspectorCache( getUtils(),
-                                                      model,
-                                                      getIndex(),
-                                                      configuration );
-            }
-            return cache;
-        }
-
-        protected Index getIndex() {
-            if ( index == null ) {
-                index = new IndexBuilder( model,
-                                          getUtils(),
-                                          configuration ).build();
-            }
-            return index;
-        }
-
-        protected ColumnUtilities getUtils() {
-            if ( columnUtilities == null ) {
-                columnUtilities = new ColumnUtilities( model,
-                                                       oracle );
-            }
-            return columnUtilities;
-        }
-    }
-
-    public class UpdateManagerBuilder
-            extends CacheBuilder {
-
-        protected final CheckRunner checkRunner;
-        protected DTableUpdateManager updateManager;
-
-
-        public UpdateManagerBuilder( final CheckRunner checkRunner ) {
-            this.checkRunner = checkRunner;
-        }
-
-        public DTableUpdateManager buildUpdateManager() {
-            if ( updateManager == null ) {
-                updateManager = new DTableUpdateManager( getIndex(),
-                                                         model,
-                                                         buildCache(),
-                                                         checkRunner );
-            }
-            return updateManager;
-        }
-    }
-
-    public class InnerBuilder
-            extends UpdateManagerBuilder {
-
-        private AnalysisReporter analysisReporter;
-
-        public InnerBuilder( final CheckRunner checkRunner ) {
-            super( checkRunner );
-        }
-
-        private DecisionTableAnalyzer build() {
-            return new DecisionTableAnalyzer( getAnalysisReporter(),
-                                              model,
-                                              buildCache(),
-                                              buildUpdateManager(),
-                                              checkRunner );
-        }
-
-        protected AnalysisReporter getAnalysisReporter() {
-            if ( analysisReporter == null ) {
-                analysisReporter = new AnalysisReporter( placeRequest,
-                                                         analysisReportScreen );
-            }
-            return analysisReporter;
-        }
+        return decisionTableAnalyzer;
     }
 }

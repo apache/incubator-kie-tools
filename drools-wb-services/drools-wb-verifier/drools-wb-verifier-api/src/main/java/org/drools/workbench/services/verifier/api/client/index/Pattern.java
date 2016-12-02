@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.services.verifier.api.client.index;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.HasKeys;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatchers;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public class Pattern

@@ -18,15 +18,17 @@ package org.drools.workbench.services.verifier.api.client;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.drools.workbench.services.verifier.api.client.configuration.DateTimeFormatProvider;
-import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.DateTimeFormatProvider;
+import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
+import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
 
 public class AnalyzerConfigurationMock
         extends AnalyzerConfiguration {
 
     public AnalyzerConfigurationMock() {
-        super( new DateTimeFormatProvider() {
+        super( "UUID",
+               new DateTimeFormatProvider() {
                    @Override
                    public String format( final Date dateValue ) {
                        return new SimpleDateFormat( "dd-MMM-yyyy" ).format( dateValue );
@@ -40,6 +42,7 @@ public class AnalyzerConfigurationMock
                    protected String newUUID() {
                        return Long.toString( index-- );
                    }
-               } );
+               },
+               RunnerType.JAVA );
     }
 }

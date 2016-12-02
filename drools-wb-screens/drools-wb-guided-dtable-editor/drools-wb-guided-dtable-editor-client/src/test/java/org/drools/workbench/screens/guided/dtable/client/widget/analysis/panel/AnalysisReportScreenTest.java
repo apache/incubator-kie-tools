@@ -16,13 +16,15 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.services.verifier.api.client.Status;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
+import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Before;
@@ -35,7 +37,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.Util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -61,12 +62,18 @@ public class AnalysisReportScreenTest {
 
     private ListDataProvider dataProvider;
 
+    @Mock
+    private PlaceRequest place;
+
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws
+                        Exception {
 
         screen = new AnalysisReportScreen( view,
                                            placeManager,
                                            issueSelectedEvent );
+
+        screen.setCurrentPlace( place );
 
         verify( view ).setPresenter( screen );
         verify( view ).setUpDataProvider( listDataProviderArgumentCaptor.capture() );
@@ -74,58 +81,104 @@ public class AnalysisReportScreenTest {
     }
 
     @Test
-    public void testShowReport() throws Exception {
-        Issue issue1 = new Issue( Severity.WARNING, "something", mock( ExplanationProvider.class ) );
+    public void testShowReport() throws
+                                 Exception {
+        Issue issue1 = new Issue( Severity.WARNING,
+                                  ExplanationType.DEFICIENT_ROW,
+                                  Collections.emptySet() );
         screen.showReport( getAnalysis( issue1 ) );
 
         verify( placeManager ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
 
-        assertEquals( 1, dataProvider.getList().size() );
-        assertTrue( dataProvider.getList().contains( issue1 ) );
+        assertEquals( 1,
+                      dataProvider.getList()
+                              .size() );
+        assertTrue( dataProvider.getList()
+                            .contains( issue1 ) );
 
-        Issue issue2 = new Issue( Severity.ERROR, "something else 1", mock( ExplanationProvider.class ) );
-        Issue issue3 = new Issue( Severity.WARNING, "something else 2", mock( ExplanationProvider.class ) );
-        screen.showReport( getAnalysis( issue2, issue3 ) );
+        Issue issue2 = new Issue( Severity.ERROR,
+                                  ExplanationType.CONFLICTING_ROWS,
+                                  Collections.emptySet() );
+        Issue issue3 = new Issue( Severity.WARNING,
+                                  ExplanationType.SINGLE_HIT_LOST,
+                                  Collections.emptySet() );
+        screen.showReport( getAnalysis( issue2,
+                                        issue3 ) );
 
-        verify( placeManager, times( 2 ) ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
+        verify( placeManager,
+                times( 2 ) ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
 
         verify( view ).showIssue( issue1 );
 
-        assertEquals( 2, dataProvider.getList().size() );
-        assertFalse( dataProvider.getList().contains( issue1 ) );
-        assertTrue( dataProvider.getList().contains( issue2 ) );
-        assertTrue( dataProvider.getList().contains( issue3 ) );
+        assertEquals( 2,
+                      dataProvider.getList()
+                              .size() );
+        assertFalse( dataProvider.getList()
+                             .contains( issue1 ) );
+        assertTrue( dataProvider.getList()
+                            .contains( issue2 ) );
+        assertTrue( dataProvider.getList()
+                            .contains( issue3 ) );
     }
 
     @Test
-    public void testDoNotShowIfThereAreNoIssues() throws Exception {
+    public void testDoNotShowIfThereAreNoIssues() throws
+                                                  Exception {
         screen.showReport( getAnalysis() );
 
-        assertEquals( 0, dataProvider.getList().size() );
+        assertEquals( 0,
+                      dataProvider.getList()
+                              .size() );
 
-        verify( view, never() ).showIssue( any( Issue.class ) );
-        verify( placeManager, never() ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
+        verify( view,
+                never() ).showIssue( any( Issue.class ) );
+        verify( placeManager,
+                never() ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
         verify( placeManager ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
     }
 
     @Test
-    public void testShowEverythingOnce() throws Exception {
+    public void testShowEverythingOnce() throws
+                                         Exception {
 
-        Issue issue2 = new Issue( Severity.WARNING, "we are one", mock( ExplanationProvider.class ) );
-        Issue issue3 = new Issue( Severity.WARNING, "we are one", mock( ExplanationProvider.class ) );
-        Issue issue4 = new Issue( Severity.WARNING, "we are one", mock( ExplanationProvider.class ), getMockRuleInspector( 1 ), getMockRuleInspector( 2 ), getMockRuleInspector( 3 ) );
-        Issue issue5 = new Issue( Severity.WARNING, "we are one", mock( ExplanationProvider.class ), getMockRuleInspector( 1 ), getMockRuleInspector( 2 ), getMockRuleInspector( 3 ) );
-        screen.showReport( getAnalysis( issue2, issue3, issue4, issue5 ) );
+        Issue issue2 = new Issue( Severity.WARNING,
+                                  ExplanationType.REDUNDANT_ROWS,
+                                  Collections.emptySet() );
+        Issue issue3 = new Issue( Severity.WARNING,
+                                  ExplanationType.REDUNDANT_ROWS,
+                                  Collections.emptySet() );
+        Issue issue4 = new Issue( Severity.WARNING,
+                                  ExplanationType.REDUNDANT_ROWS,
+                                  new HashSet<>( Arrays.asList( 1,
+                                                                2,
+                                                                3 ) ) );
+        Issue issue5 = new Issue( Severity.WARNING,
+                                  ExplanationType.REDUNDANT_ROWS,
+                                  new HashSet<>( Arrays.asList( 1,
+                                                                2,
+                                                                3 ) ) );
+        screen.showReport( getAnalysis( issue2,
+                                        issue3,
+                                        issue4,
+                                        issue5 ) );
 
-        assertEquals( 2, dataProvider.getList().size() );
+        assertEquals( 2,
+                      dataProvider.getList()
+                              .size() );
 
     }
 
     @Test
-    public void testOnSelect() throws Exception {
-        Issue issue1 = new Issue( Severity.WARNING, "something", mock( ExplanationProvider.class ) );
-        Issue issue2 = new Issue( Severity.WARNING, "something else", mock( ExplanationProvider.class ) );
-        screen.showReport( getAnalysis( issue1, issue2 ) );
+    public void testOnSelect() throws
+                               Exception {
+        Issue issue1 = new Issue( Severity.WARNING,
+                                  ExplanationType.REDUNDANT_ROWS,
+                                  Collections.emptySet() );
+        Issue issue2 = new Issue( Severity.WARNING,
+                                  ExplanationType.SINGLE_HIT_LOST,
+                                  Collections.emptySet() );
+        screen.showReport( getAnalysis( issue1,
+                                        issue2 ) );
 
         verify( issueSelectedEvent,
                 times( 1 ) ).fire( issueSelectedEventCaptor.capture() );
@@ -143,24 +196,35 @@ public class AnalysisReportScreenTest {
     }
 
     @Test
-    public void testShowStatus() throws Exception {
-        screen.showStatus( new Status( 1, 2, 3 ) );
+    public void testShowStatus() throws
+                                 Exception {
+        screen.showStatus( new Status( "UUID",
+                                       1,
+                                       2,
+                                       3 ) );
 
-        verify( view ).showStatusTitle( 1, 2, 3 );
+        verify( view ).showStatusTitle( 1,
+                                        2,
+                                        3 );
     }
 
     @Test
-    public void testClose() throws Exception {
+    public void testThePlaceInReportIsNotActive() throws
+                                                  Exception {
 
-        screen.close();
-        verify( placeManager ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
+        screen.showReport( getAnalysis( PlaceRequest.NOWHERE ) );
+
+        verify( view,
+                never() ).showStatusComplete();
     }
 
     @Test
-    public void testNoIssuesShowNothing() throws Exception {
+    public void testNoIssuesShowNothing() throws
+                                          Exception {
         screen.showReport( getAnalysis() );
 
-        verify( view, never() ).showIssue( any( Issue.class ) );
+        verify( view,
+                never() ).showIssue( any( Issue.class ) );
         verify( view ).clearIssue();
 
         verify( issueSelectedEvent,
@@ -170,7 +234,8 @@ public class AnalysisReportScreenTest {
     }
 
     private AnalysisReport getAnalysis( Issue... issues ) {
-        return getAnalysis( mock( PlaceRequest.class ), issues );
+        return getAnalysis( place,
+                            issues );
     }
 
     private AnalysisReport getAnalysis( PlaceRequest place,

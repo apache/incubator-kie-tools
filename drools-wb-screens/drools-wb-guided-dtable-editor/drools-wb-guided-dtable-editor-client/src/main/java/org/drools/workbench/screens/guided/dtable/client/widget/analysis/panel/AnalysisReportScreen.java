@@ -17,9 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -34,6 +32,8 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
@@ -43,12 +43,14 @@ public class AnalysisReportScreen {
 
     public static final String IDENTIFIER = "org.drools.workbench.AnalysisReportScreen";
 
+    private static final Logger LOGGER = Logger.getLogger( "DTable Analyzer" );
+
     private AnalysisReportScreenView view;
     private PlaceManager placeManager;
-    private Event<IssueSelectedEvent> issueSelectedEvent;
 
+    private Event<IssueSelectedEvent> issueSelectedEvent;
     private final ListDataProvider<Issue> dataProvider = new ListDataProvider<Issue>();
-    private AnalysisReport currentReport;
+    private PlaceRequest currentPlace;
 
     public AnalysisReportScreen() {
     }
@@ -65,21 +67,21 @@ public class AnalysisReportScreen {
         view.setUpDataProvider( dataProvider );
     }
 
-    public void close() {
-        placeManager.closePlace( IDENTIFIER );
+    @OnClose
+    public void onClose() {
+        dataProvider.flush();
+        view.clearIssue();
     }
 
     public void showReport( final AnalysisReport report ) {
-        view.showStatusComplete();
+        LOGGER.finest( "Received report for: " + report.getPlace().getPath() );
 
-        currentReport = report;
-
-        if ( !report.getAnalysisData()
-                .isEmpty() ) {
-            placeManager.goTo( IDENTIFIER );
-        } else {
-            placeManager.closePlace( IDENTIFIER );
+        if ( !report.getPlace()
+                .equals( currentPlace ) ) {
+            return;
         }
+
+        view.showStatusComplete();
 
         dataProvider.setList( getIssues( report ) );
 
@@ -93,45 +95,27 @@ public class AnalysisReportScreen {
                     .get( 0 );
             onSelect( issue );
         }
+
+        if ( !report.getAnalysisData()
+                .isEmpty() ) {
+            LOGGER.finest( "goto " + IDENTIFIER );
+            placeManager.goTo( IDENTIFIER );
+            LOGGER.finest( "went " + IDENTIFIER );
+        } else {
+            LOGGER.finest( "close " + IDENTIFIER );
+            placeManager.closePlace( IDENTIFIER );
+            LOGGER.finest( "closed " + IDENTIFIER );
+        }
+
+    }
+
+    public void setCurrentPlace( final PlaceRequest place ) {
+        LOGGER.info( "Activating place: " + place.getPath() );
+        currentPlace = place;
     }
 
     private ArrayList<Issue> getIssues( final AnalysisReport report ) {
-        final TreeSet<Issue> issues = new TreeSet<>( new Comparator<Issue>() {
-            @Override
-            public int compare( final Issue issue,
-                                final Issue other ) {
-                int compareToSeverity = issue.getSeverity().compareTo( other.getSeverity() );
-
-                if ( compareToSeverity == 0 ) {
-                    int compareToTitle = issue.getTitle().compareTo( other.getTitle() );
-                    if ( compareToTitle == 0 ) {
-                        return compareRowNumbers( issue.getRowNumbers(),
-                                                  other.getRowNumbers() );
-                    } else {
-                        return compareToTitle;
-                    }
-                } else {
-                    return compareToSeverity;
-                }
-
-            }
-
-            private int compareRowNumbers( final Set<Integer> rowNumbers,
-                                           final Set<Integer> other ) {
-                if ( rowNumbers.equals( other ) ) {
-                    return 0;
-                } else {
-                    for ( Integer a : rowNumbers ) {
-                        for ( Integer b : other ) {
-                            if ( a < b ) {
-                                return -1;
-                            }
-                        }
-                    }
-                    return 1;
-                }
-            }
-        } );
+        final IssuesSet issues = new IssuesSet();
         for ( final Issue issue : report.getAnalysisData() ) {
             issues.add( issue );
         }
@@ -159,7 +143,8 @@ public class AnalysisReportScreen {
     }
 
     void fireIssueSelectedEvent( final Issue issue ) {
-        issueSelectedEvent.fire( new IssueSelectedEvent( currentReport.getPlace(),
+        LOGGER.finest( "issue.debug: " + issue.getDebugMessage() );
+        issueSelectedEvent.fire( new IssueSelectedEvent( currentPlace,
                                                          issue ) );
     }
 

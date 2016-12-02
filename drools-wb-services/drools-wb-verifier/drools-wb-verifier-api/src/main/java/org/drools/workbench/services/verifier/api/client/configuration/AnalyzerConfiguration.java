@@ -19,18 +19,27 @@ import java.util.Date;
 
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
-import org.drools.workbench.services.verifier.api.client.cache.util.HasKeys;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
 
 public class AnalyzerConfiguration {
 
-    private DateTimeFormatProvider dateTimeFormatter;
-
     private final UUIDKeyProvider uuidKeyProvider;
+    private String webWorkerUUID;
+    private DateTimeFormatProvider dateTimeFormatter;
+    private RunnerType runnerType;
 
-    public AnalyzerConfiguration( final DateTimeFormatProvider dateTimeFormatter,
-                                  final UUIDKeyProvider uuidKeyProvider ) {
+    public AnalyzerConfiguration( final String webWorkerUUID,
+                                  final DateTimeFormatProvider dateTimeFormatter,
+                                  final UUIDKeyProvider uuidKeyProvider,
+                                  final RunnerType runnerType ) {
+        this.webWorkerUUID = webWorkerUUID;
         this.dateTimeFormatter = dateTimeFormatter;
         this.uuidKeyProvider = uuidKeyProvider;
+        this.runnerType = runnerType;
+    }
+
+    public String getWebWorkerUUID() {
+        return webWorkerUUID;
     }
 
     public UUIDKey getUUID( final HasKeys hasKeys ) {
@@ -39,6 +48,10 @@ public class AnalyzerConfiguration {
 
     public String formatDate( final Date dateValue ) {
         return dateTimeFormatter.format( dateValue );
+    }
+
+    public RunnerType getRunnerType() {
+        return runnerType;
     }
 }
 

@@ -18,12 +18,11 @@ package org.drools.workbench.services.verifier.api.client.index.select;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMapChangeHandler;
-import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMap;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMapChangeHandler;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class Listen<T>
         extends Select<T> {
@@ -41,8 +40,9 @@ public class Listen<T>
         super( map,
                matcher );
 
-        checkNotNull( "map",
-                      map );
+        PortablePreconditions.checkNotNull( "map",
+                                            map );
+
         map.addChangeListener( new MultiMapChangeHandler<Value, T>() {
             @Override
             public void onChange( final ChangeSet<Value, T> changeSet ) {

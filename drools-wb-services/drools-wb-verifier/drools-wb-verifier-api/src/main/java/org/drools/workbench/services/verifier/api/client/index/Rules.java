@@ -17,7 +17,7 @@ package org.drools.workbench.services.verifier.api.client.index;
 
 import java.util.Collection;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.IndexedKeyTreeMap;
+import org.drools.workbench.services.verifier.api.client.maps.IndexedKeyTreeMap;
 import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
 import org.drools.workbench.services.verifier.api.client.index.select.Listen;
 import org.drools.workbench.services.verifier.api.client.index.select.Select;

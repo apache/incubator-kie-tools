@@ -36,6 +36,7 @@
     <url-pattern>/uf_security_check</url-pattern>
     <url-pattern>*.erraiBus</url-pattern>
     <url-pattern>/org.drools.workbench.DroolsWorkbench/*</url-pattern>
+    <url-pattern>/verifier/*</url-pattern>
   </filter-mapping>
 
   <filter>
@@ -103,6 +104,15 @@
   <servlet-mapping>
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>VerifierWebWorkerServlet</servlet-name>
+    <servlet-class>org.drools.workbench.services.verifier.plugin.backend.VerifierWebWorkerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>VerifierWebWorkerServlet</servlet-name>
+    <url-pattern>/verifier/*</url-pattern>
   </servlet-mapping>
 
   <servlet>

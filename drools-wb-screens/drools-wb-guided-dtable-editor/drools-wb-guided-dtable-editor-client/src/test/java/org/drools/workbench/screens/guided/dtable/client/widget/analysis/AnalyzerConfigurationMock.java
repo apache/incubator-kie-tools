@@ -20,6 +20,7 @@ import java.util.Date;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.configuration.DateTimeFormatProvider;
+import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
 
 public class AnalyzerConfigurationMock
@@ -27,7 +28,8 @@ public class AnalyzerConfigurationMock
 
 
     public AnalyzerConfigurationMock() {
-        super( new DateTimeFormatProvider() {
+        super( "UUID",
+               new DateTimeFormatProvider() {
                    @Override
                    public String format( final Date dateValue ) {
                        return DateTimeFormat.getFormat( "dd-MMM-yyyy" )
@@ -42,6 +44,7 @@ public class AnalyzerConfigurationMock
                    protected String newUUID() {
                        return Long.toString( index-- );
                    }
-               } );
+               },
+               RunnerType.JAVA );
     }
 }

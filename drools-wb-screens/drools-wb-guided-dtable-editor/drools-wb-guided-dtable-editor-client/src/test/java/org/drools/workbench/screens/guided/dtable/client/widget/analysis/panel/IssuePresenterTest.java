@@ -16,60 +16,69 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import com.google.gwt.safehtml.shared.SafeHtml;
-import org.drools.workbench.services.verifier.api.client.reporting.Explanation;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.Util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(GwtMockitoTestRunner.class)
 public class IssuePresenterTest {
 
     private IssuePresenter screen;
     private IssuePresenterView view;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws
+                        Exception {
         view = mock( IssuePresenterView.class );
         screen = new IssuePresenter( view );
     }
 
     @Test
-    public void testShow() throws Exception {
+    public void testShow() throws
+                           Exception {
 
-        Issue issue = new Issue( Severity.WARNING, "some title", new ExplanationProvider() {
-            @Override
-            public SafeHtml toHTML() {
-                return new Explanation()
-                        .addParagraph( "explanation" )
-                        .toHTML();
-            }
-        }, getMockRuleInspector( 0 ), getMockRuleInspector( 1 ), getMockRuleInspector( 2 ) );
+        Issue issue = new Issue( Severity.WARNING,
+                                 ExplanationType.REDUNDANT_ROWS,
+                                 new HashSet<>( Arrays.asList( 1,
+                                                               2,
+                                                               3 ) )
+        );
 
 
         screen.show( issue );
 
-        verify( view ).setIssueTitle( "some title" );
+        verify( view ).setIssueTitle( "RedundantRows" );
         ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass( SafeHtml.class );
         verify( view ).setExplanation( safeHtmlArgumentCaptor.capture() );
-        assertEquals( "<p>explanation</p>", safeHtmlArgumentCaptor.getValue().asString() );
+        assertEquals( "<p>MissingRangeP1(2)</p>",
+                      safeHtmlArgumentCaptor.getValue()
+                              .asString() );
         verify( view ).setLines( "1, 2, 3" );
     }
 
     @Test
-    public void testClear() throws Exception {
+    public void testClear() throws
+                            Exception {
         screen.clear();
 
         verify( view ).setIssueTitle( "" );
         ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass( SafeHtml.class );
         verify( view ).setExplanation( safeHtmlArgumentCaptor.capture() );
-        assertEquals( "", safeHtmlArgumentCaptor.getValue().asString() );
+        assertEquals( "",
+                      safeHtmlArgumentCaptor.getValue()
+                              .asString() );
         verify( view ).hideLines();
         verify( view ).setLines( "" );
     }

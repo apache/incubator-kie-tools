@@ -19,11 +19,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMapFactory;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMapFactory;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
 import org.drools.workbench.services.verifier.api.client.index.matchers.ExactMatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -20,15 +20,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMapFactory;
+import org.drools.workbench.services.verifier.api.client.index.keys.Value;
+import org.drools.workbench.services.verifier.api.client.index.matchers.ExactMatcher;
 import org.drools.workbench.services.verifier.api.client.index.matchers.FromMatcher;
 import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
 import org.drools.workbench.services.verifier.api.client.index.matchers.ToMatcher;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMap;
-import org.drools.workbench.services.verifier.api.client.index.keys.Value;
-import org.drools.workbench.services.verifier.api.client.index.matchers.ExactMatcher;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMapFactory;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 
 public class Select<T> {
 
@@ -37,11 +38,10 @@ public class Select<T> {
 
     public Select( final MultiMap<Value, T, List<T>> map,
                    final Matcher matcher ) {
-        checkNotNull( "matcher",
-                      matcher );
-
-        this.map = map;
-        this.matcher = matcher;
+        this.map = checkNotNull( "map",
+                                 map );
+        this.matcher = checkNotNull( "matcher",
+                                     matcher );
     }
 
     public T first() {

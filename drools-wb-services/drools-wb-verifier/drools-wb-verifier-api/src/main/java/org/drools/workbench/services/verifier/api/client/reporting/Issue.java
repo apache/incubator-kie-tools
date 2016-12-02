@@ -16,41 +16,33 @@
 
 package org.drools.workbench.services.verifier.api.client.reporting;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
-import org.drools.workbench.services.verifier.api.client.cache.inspectors.RuleInspector;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
+@Portable
 public class Issue {
 
-    public static final Issue EMPTY = new Issue();
+    public static final Issue EMPTY = new Issue( );
 
     private final Severity severity;
-    private final HashSet<RuleInspector> ruleInspectors = new HashSet<>();
+    private final Set<Integer> rowNumbers;
+    private ExplanationType explanationType;
+    private String debugMessage;
 
-    private final String              title;
-    private final ExplanationProvider explanationProvider;
+    public Issue() {
+        severity=null;
+        rowNumbers=new HashSet<>();
+    }
 
-    public Issue( final Severity severity,
-                  final String title,
-                  final ExplanationProvider explanationProvider,
-                  final RuleInspector... ruleInspectors ) {
+    public Issue( @MapsTo("severity") final Severity severity,
+                  @MapsTo("explanationType") final ExplanationType explanationType,
+                  @MapsTo("rowNumbers") final Set<Integer> rowNumbers ) {
         this.severity = severity;
-        this.title = title;
-        this.explanationProvider = explanationProvider;
-        this.ruleInspectors.addAll( Arrays.asList( ruleInspectors ) );
-    }
-
-    private Issue() {
-        severity = null;
-        explanationProvider = null;
-        title = null;
-    }
-
-    public boolean hasIssue() {
-        return title != null;
+        this.explanationType = explanationType;
+        this.rowNumbers = rowNumbers;
     }
 
     public Severity getSeverity() {
@@ -58,26 +50,18 @@ public class Issue {
     }
 
     public Set<Integer> getRowNumbers() {
-        Set<Integer> rowNumbers = new HashSet<>();
-
-        for ( RuleInspector ruleInspector : ruleInspectors ) {
-            rowNumbers.add( ruleInspector.getRowIndex() + 1 );
-        }
-
         return rowNumbers;
     }
 
-    public String getTitle() {
-        return title;
+    public ExplanationType getExplanationType() {
+        return explanationType;
     }
 
-    @Override
-    public String toString() {
-        return title;
+    public String getDebugMessage() {
+        return debugMessage;
     }
 
-
-    public SafeHtml getExplanationHTML() {
-        return explanationProvider.toHTML();
+    public void setDebugMessage( final String debugMessage ) {
+        this.debugMessage = debugMessage;
     }
 }

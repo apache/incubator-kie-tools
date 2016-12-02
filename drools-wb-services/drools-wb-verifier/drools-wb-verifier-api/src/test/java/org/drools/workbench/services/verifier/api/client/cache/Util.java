@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 

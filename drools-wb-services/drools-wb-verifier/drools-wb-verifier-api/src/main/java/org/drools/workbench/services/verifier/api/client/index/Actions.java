@@ -17,12 +17,12 @@ package org.drools.workbench.services.verifier.api.client.index;
 
 import java.util.Collection;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyTreeMap;
 import org.drools.workbench.services.verifier.api.client.index.matchers.KeyMatcher;
 import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
 import org.drools.workbench.services.verifier.api.client.index.select.Listen;
 import org.drools.workbench.services.verifier.api.client.index.select.Select;
 import org.drools.workbench.services.verifier.api.client.index.matchers.ExactMatcher;
+import org.drools.workbench.services.verifier.api.client.maps.KeyTreeMap;
 
 public class Actions {
 

@@ -17,11 +17,11 @@ package org.drools.workbench.services.verifier.api.client.index;
 
 import java.util.ArrayList;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.Values;
-import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.matchers.FieldMatchers;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public class FieldAction
@@ -43,8 +43,10 @@ public class FieldAction
                values,
                configuration );
 
-        this.field = PortablePreconditions.checkNotNull( "field", field );
-        this.dataType = PortablePreconditions.checkNotNull( "dataType", dataType );
+        this.field = PortablePreconditions.checkNotNull( "field",
+                                                         field );
+        this.dataType = PortablePreconditions.checkNotNull( "dataType",
+                                                            dataType );
     }
 
     public static FieldMatchers field() {

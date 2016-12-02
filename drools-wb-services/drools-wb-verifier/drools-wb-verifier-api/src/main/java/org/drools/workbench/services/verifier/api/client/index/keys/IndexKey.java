@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.services.verifier.api.client.index.keys;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 
 public class IndexKey
         extends Key {

@@ -18,11 +18,11 @@ package org.drools.workbench.services.verifier.api.client.index;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMap;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
 import org.drools.workbench.services.verifier.api.client.index.select.Listen;
 import org.drools.workbench.services.verifier.api.client.index.select.Select;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
 
 public class Fields
         extends FieldsBase<Field> {

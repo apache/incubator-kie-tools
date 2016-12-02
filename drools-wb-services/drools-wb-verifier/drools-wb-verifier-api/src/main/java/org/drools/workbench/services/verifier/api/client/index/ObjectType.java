@@ -15,13 +15,12 @@
  */
 package org.drools.workbench.services.verifier.api.client.index;
 
-import org.drools.workbench.services.verifier.api.client.index.keys.Key;
-import org.drools.workbench.services.verifier.api.client.cache.util.HasKeys;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatchers;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
 
 public class ObjectType
         implements HasKeys {
@@ -36,8 +35,7 @@ public class ObjectType
 
     public ObjectType( final String type,
                        final AnalyzerConfiguration configuration ) {
-        this.type = PortablePreconditions.checkNotNull( "type",
-                                                        type );
+        this.type = type;
         this.uuidKey = configuration.getUUID( this );
     }
 

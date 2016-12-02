@@ -16,12 +16,16 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller;
 
+import java.util.logging.Logger;
+
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public class AnalyzerControllerImpl
@@ -34,13 +38,20 @@ public class AnalyzerControllerImpl
                    InsertRowEvent.Handler,
                    AfterColumnInserted.Handler {
 
+    private static final Logger LOGGER = Logger.getLogger( "DTable Analyzer" );
 
     private final DecisionTableAnalyzer decisionTableAnalyzer;
+    private PlaceManager placeManager;
 
     public AnalyzerControllerImpl( final DecisionTableAnalyzer decisionTableAnalyzer,
+                                   final PlaceManager placeManager,
                                    final EventBus eventBus ) {
-        this.decisionTableAnalyzer = PortablePreconditions.checkNotNull( "decisionTableAnalyzer", decisionTableAnalyzer );
-        PortablePreconditions.checkNotNull( "eventBus", eventBus );
+        this.decisionTableAnalyzer = PortablePreconditions.checkNotNull( "decisionTableAnalyzer",
+                                                                         decisionTableAnalyzer );
+        this.placeManager = PortablePreconditions.checkNotNull( "placeManager",
+                                                                placeManager );
+        PortablePreconditions.checkNotNull( "eventBus",
+                                            eventBus );
 
         eventBus.addHandler( ValidateEvent.TYPE,
                              this );
@@ -61,12 +72,15 @@ public class AnalyzerControllerImpl
 
     @Override
     public void initialiseAnalysis() {
-        decisionTableAnalyzer.start();
+        LOGGER.info( "Initializing analysis." );
+        decisionTableAnalyzer.activate();
     }
 
     @Override
     public void terminateAnalysis() {
+        LOGGER.info( "Terminating analysis." );
         decisionTableAnalyzer.terminate();
+        placeManager.closePlace( AnalysisReportScreen.IDENTIFIER );
     }
 
     @Override

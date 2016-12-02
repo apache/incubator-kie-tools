@@ -74,7 +74,7 @@ public interface AnalysisConstants
 
     String DeficientRowsP2();
 
-    String ImpossibleMatchNote1P1( int rowNumber,
+    String ImpossibleMatchNote1P1( String rowNumber,
                                    String factField,
                                    String factType );
 
@@ -122,8 +122,8 @@ public interface AnalysisConstants
 
     String SingleHitLost();
 
-    String SingleHitP1( int row1,
-                        int row2 );
+    String SingleHitP1( String row1,
+                        String row2 );
 
     String AnalysisComplete();
 

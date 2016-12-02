@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,39 +30,48 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.mockito.Mock;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerProviderTest {
 
     @GwtMock
     DateTimeFormat dateTimeFormat;
 
+
     @Mock
     private AnalysisReportScreen analysisReportScreen;
 
+    @Mock
+    private PlaceManager placeManager;
+
     @Test
-    public void defaultAnalyserSetting() throws Exception {
+    public void defaultAnalyserSetting() throws
+                                         Exception {
 
         final Map<String, String> preferences = new HashMap<>();
         preferences.put( ApplicationPreferences.DATE_FORMAT,
                          "dd-MMM-yyyy" );
         ApplicationPreferences.setUp( preferences );
 
-        assertTrue( new DecisionTableAnalyzerProvider( analysisReportScreen ).newAnalyzer( mock( PlaceRequest.class ),
-                                                                                           mock( AsyncPackageDataModelOracle.class ),
+
+        assertTrue( new DecisionTableAnalyzerProvider( analysisReportScreen,
+                                                       placeManager ).newAnalyzer( mock( PlaceRequest.class ),
+                                                                                           mock( AsyncPackageDataModelOracleImpl.class ),
                                                                                            mock( GuidedDecisionTable52.class ),
                                                                                            mock( EventBus.class ) ) instanceof AnalyzerControllerImpl );
 
     }
 
     @Test
-    public void verificationDisabledWithSetting() throws Exception {
+    public void verificationDisabledWithSetting() throws
+                                                  Exception {
         final Map<String, String> preferences = new HashMap<String, String>() {{
             put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
                  "true" );
@@ -73,15 +81,17 @@ public class DecisionTableAnalyzerProviderTest {
 
         ApplicationPreferences.setUp( preferences );
 
-        assertFalse( new DecisionTableAnalyzerProvider( analysisReportScreen ).newAnalyzer( mock( PlaceRequest.class ),
-                                                                                            mock( AsyncPackageDataModelOracle.class ),
+        assertFalse( new DecisionTableAnalyzerProvider( analysisReportScreen,
+                                                        placeManager  ).newAnalyzer( mock( PlaceRequest.class ),
+                                                                                            mock( AsyncPackageDataModelOracleImpl.class ),
                                                                                             mock( GuidedDecisionTable52.class ),
                                                                                             mock( EventBus.class ) ) instanceof AnalyzerControllerImpl );
 
     }
 
     @Test
-    public void verificationEnabledWithSetting() throws Exception {
+    public void verificationEnabledWithSetting() throws
+                                                 Exception {
         final Map<String, String> preferences = new HashMap<String, String>() {{
             put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
                  "false" );
@@ -91,8 +101,9 @@ public class DecisionTableAnalyzerProviderTest {
 
         ApplicationPreferences.setUp( preferences );
 
-        assertTrue( new DecisionTableAnalyzerProvider( analysisReportScreen ).newAnalyzer( mock( PlaceRequest.class ),
-                                                                                           mock( AsyncPackageDataModelOracle.class ),
+        assertTrue( new DecisionTableAnalyzerProvider( analysisReportScreen,
+                                                       placeManager  ).newAnalyzer( mock( PlaceRequest.class ),
+                                                                                           mock( AsyncPackageDataModelOracleImpl.class ),
                                                                                            mock( GuidedDecisionTable52.class ),
                                                                                            mock( EventBus.class ) ) instanceof AnalyzerControllerImpl );
 

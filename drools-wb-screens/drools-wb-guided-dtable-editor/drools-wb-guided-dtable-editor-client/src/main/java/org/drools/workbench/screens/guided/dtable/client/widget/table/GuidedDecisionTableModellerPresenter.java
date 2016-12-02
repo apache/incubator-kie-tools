@@ -341,8 +341,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         for ( GuidedDecisionTableView.Presenter p : getAvailableDecisionTables() ) {
             if ( p.equals( dtPresenter ) ) {
                 p.initialiseAnalysis();
-            } else {
-                p.terminateAnalysis();
             }
         }
 

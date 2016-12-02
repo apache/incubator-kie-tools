@@ -35,7 +35,8 @@ public class Field
                fieldType,
                name,
                configuration );
-        this.objectField = PortablePreconditions.checkNotNull( "objectField", objectField );
+        this.objectField = PortablePreconditions.checkNotNull( "objectField",
+                                                               objectField );
     }
 
     public ObjectField getObjectField() {

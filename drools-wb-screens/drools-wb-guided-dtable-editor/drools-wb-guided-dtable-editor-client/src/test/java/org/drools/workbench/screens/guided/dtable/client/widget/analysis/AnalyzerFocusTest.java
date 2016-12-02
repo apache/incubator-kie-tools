@@ -17,48 +17,42 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.testutil.AnalyzerProvider;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+import org.mockito.ArgumentCaptor;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AnalyzerFocusTest {
 
-    private AnalyzerProvider analyzerProvider;
-
-    @GwtMock
-    DateTimeFormat dateTimeFormat;
-
-    @Before
-    public void setUp() throws Exception {
-        Map<String, String> preferences = new HashMap<>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT,
-                         "dd-MMM-yyyy" );
-        ApplicationPreferences.setUp( preferences );
-
-        analyzerProvider = new AnalyzerProvider();
-    }
-
     @Test
     public void testOnFocus() throws Exception {
-        DecisionTableAnalyzer analyzer = analyzerProvider.makeAnalyser( new GuidedDecisionTable52() );
-        analyzer.analyze( Collections.emptyList() );
+        final VerifierWebWorkerConnection connection = mock( VerifierWebWorkerConnection.class );
+        final DTableUpdateManagerImpl updateManager = mock( DTableUpdateManagerImpl.class );
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        final DecisionTableAnalyzer decisionTableAnalyzer = new DecisionTableAnalyzer( model,
+                                                                                       updateManager,
+                                                                                       connection );
+        final List<Coordinate> updates = Collections.emptyList();
+        decisionTableAnalyzer.analyze( updates );
 
-        analyzerProvider.clearAnalysisReport();
+        final ArgumentCaptor<List> argumentCaptor = ArgumentCaptor.forClass( List.class );
 
-        analyzer.start();
+        verify( updateManager ).update( eq( model ),
+                                        argumentCaptor.capture() );
 
-        assertNotNull( analyzerProvider.getAnalysisReport() );
+        assertTrue( argumentCaptor.getValue()
+                            .isEmpty() );
+
+        decisionTableAnalyzer.activate();
+
+        verify( connection ).activate();
     }
 }

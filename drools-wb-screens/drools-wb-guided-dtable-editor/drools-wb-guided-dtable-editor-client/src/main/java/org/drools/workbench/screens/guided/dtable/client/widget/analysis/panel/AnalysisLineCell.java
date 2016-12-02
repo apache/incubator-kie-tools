@@ -24,6 +24,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 
@@ -52,7 +53,7 @@ public class AnalysisLineCell
         safeHtmlBuilder.append( TEMPLATE.text( getStyleName( issue.getSeverity() ),
                                                getIcon( issue.getSeverity() ),
                                                getLineNumbers( issue.getRowNumbers() ),
-                                               issue.getTitle() ) );
+                                               ExplanationProvider.toTitle( issue ) ) );
     }
 
     private SafeHtml getLineNumbers( final Set<Integer> rowNumbers ) {

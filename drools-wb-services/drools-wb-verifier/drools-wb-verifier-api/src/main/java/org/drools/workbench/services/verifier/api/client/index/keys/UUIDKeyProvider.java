@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.services.verifier.api.client.index.keys;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.HasKeys;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
 
 public abstract class UUIDKeyProvider {
 

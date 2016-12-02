@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 
 public class IssuePresenter
@@ -40,12 +41,13 @@ public class IssuePresenter
     }
 
     public void show( final Issue issue ) {
-        if ( issue.getTitle() == null ) {
-            view.setIssueTitle( issue.getTitle() );
+        final String title = ExplanationProvider.toTitle( issue );
+        if ( title == null ) {
+            view.setIssueTitle( title );
         } else {
-            view.setIssueTitle( issue.getTitle() );
+            view.setIssueTitle( title );
         }
-        view.setExplanation( issue.getExplanationHTML() );
+        view.setExplanation( ExplanationProvider.toHTML( issue ) );
         view.setLines( makeRowNumbers( issue ) );
     }
 

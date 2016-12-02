@@ -20,13 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.uberfire.mvp.PlaceRequest;
 
 public class AnalysisReport {
 
-    private final ArrayList<Issue> issues = new ArrayList<Issue>();
-    private PlaceRequest place;
+    private final ArrayList<Issue> issues = new ArrayList<>();
+    private final PlaceRequest place;
 
     public AnalysisReport( final PlaceRequest place ) {
         this.place = place;
@@ -60,7 +61,7 @@ public class AnalysisReport {
             builder.append( "\n" );
         } else {
             for ( Issue issue : issues ) {
-                builder.append( issue.getExplanationHTML() );
+                builder.append( ExplanationProvider.toHTML( issue ) );
                 builder.append( "\n" );
             }
         }

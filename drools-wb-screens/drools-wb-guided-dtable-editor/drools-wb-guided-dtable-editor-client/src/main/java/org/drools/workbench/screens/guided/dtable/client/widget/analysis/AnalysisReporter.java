@@ -20,13 +20,15 @@ import java.util.Set;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
+import org.drools.workbench.services.verifier.api.client.Reporter;
 import org.drools.workbench.services.verifier.api.client.Status;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.uberfire.mvp.PlaceRequest;
 
-public class AnalysisReporter {
+public class AnalysisReporter
+        implements Reporter {
 
-    private PlaceRequest         place;
+    private PlaceRequest place;
     private AnalysisReportScreen reportScreen;
 
     public AnalysisReporter( final PlaceRequest place,
@@ -35,21 +37,24 @@ public class AnalysisReporter {
         this.reportScreen = reportScreen;
     }
 
-
     public void sendReport( final AnalysisReport report ) {
         reportScreen.showReport( report );
     }
 
+    @Override
     public void sendReport( final Set<Issue> issues ) {
         sendReport( new AnalysisReport( place,
                                         issues ) );
     }
 
+    @Override
     public void sendStatus( final Status status ) {
         reportScreen.showStatus( status );
     }
 
-    public void close() {
-        reportScreen.close();
+    @Override
+    public void activate() {
+        reportScreen.setCurrentPlace( place );
     }
+
 }

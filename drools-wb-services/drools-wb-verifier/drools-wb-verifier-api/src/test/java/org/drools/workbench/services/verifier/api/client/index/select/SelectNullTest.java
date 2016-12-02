@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.services.verifier.api.client.index.select;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMapFactory;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMapFactory;
 import org.junit.Test;
 
 public class SelectNullTest {

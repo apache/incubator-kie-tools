@@ -479,8 +479,6 @@ public class GuidedDecisionTableModellerPresenterTest {
 
         verify( dtPresenter1,
                 times( 1 ) ).initialiseAnalysis();
-        verify( dtPresenter2,
-                times( 1 ) ).terminateAnalysis();
         verify( presenter,
                 times( 1 ) ).refreshDefinitionsPanel( eq( dtPresenter1 ) );
         verify( view,
@@ -519,8 +517,6 @@ public class GuidedDecisionTableModellerPresenterTest {
 
         verify( dtPresenter1,
                 times( 1 ) ).initialiseAnalysis();
-        verify( dtPresenter2,
-                times( 1 ) ).terminateAnalysis();
         verify( presenter,
                 times( 1 ) ).refreshDefinitionsPanel( eq( dtPresenter1 ) );
         verify( view,

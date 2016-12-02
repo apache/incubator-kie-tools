@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.services.verifier.api.client.index.select;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.MultiMapChangeHandler;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMapChangeHandler;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
 

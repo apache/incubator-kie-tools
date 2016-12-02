@@ -18,16 +18,16 @@ package org.drools.workbench.services.verifier.api.client.index;
 
 import java.util.Iterator;
 
-import org.drools.workbench.services.verifier.api.client.index.keys.UpdatableKey;
-import org.drools.workbench.services.verifier.api.client.cache.util.HasKeys;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
+import org.drools.workbench.services.verifier.api.client.index.keys.UpdatableKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.index.keys.Values;
 import org.drools.workbench.services.verifier.api.client.index.matchers.ComparableMatchers;
 import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatchers;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public abstract class Condition<T extends Comparable>
@@ -55,14 +55,18 @@ public abstract class Condition<T extends Comparable>
                       final ConditionSuperType superType,
                       final Values<T> values,
                       final AnalyzerConfiguration configuration ) {
+        PortablePreconditions.checkNotNull( "values",
+                                            values );
+        PortablePreconditions.checkNotNull( "configuration",
+                                            configuration );
+
         this.column = PortablePreconditions.checkNotNull( "column",
                                                           column );
         this.superType = PortablePreconditions.checkNotNull( "superType",
                                                              superType );
         this.uuidKey = configuration.getUUID( this );
         this.valueKey = new UpdatableKey<>( VALUE,
-                                            PortablePreconditions.checkNotNull( "values",
-                                                                                values ) );
+                                            values );
         resetValues();
     }
 

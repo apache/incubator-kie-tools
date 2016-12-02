@@ -27,16 +27,20 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.A
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 public class DecisionTableAnalyzerProvider {
 
     private final AnalysisReportScreen analysisReportScreen;
+    private PlaceManager placeManager;
 
     @Inject
-    public DecisionTableAnalyzerProvider( final AnalysisReportScreen analysisReportScreen ) {
+    public DecisionTableAnalyzerProvider( final AnalysisReportScreen analysisReportScreen,
+                                          final PlaceManager placeManager ) {
         this.analysisReportScreen = analysisReportScreen;
+        this.placeManager = placeManager;
     }
 
     public AnalyzerController newAnalyzer( final PlaceRequest placeRequest,
@@ -50,6 +54,7 @@ public class DecisionTableAnalyzerProvider {
                                                        .withOracle( oracle )
                                                        .withModel( model )
                                                        .build(),
+                                               placeManager,
                                                eventBus );
         } else {
             return makePlaceHolder();

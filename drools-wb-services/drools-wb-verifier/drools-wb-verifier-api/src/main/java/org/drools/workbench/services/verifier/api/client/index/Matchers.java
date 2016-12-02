@@ -15,10 +15,10 @@
  */
 package org.drools.workbench.services.verifier.api.client.index;
 
+import org.drools.workbench.services.verifier.api.client.index.matchers.ExactMatcher;
 import org.drools.workbench.services.verifier.api.client.index.matchers.KeyMatcher;
 import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
-import org.drools.workbench.services.verifier.api.client.index.matchers.ExactMatcher;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 
 public class Matchers
         extends KeyMatcher {

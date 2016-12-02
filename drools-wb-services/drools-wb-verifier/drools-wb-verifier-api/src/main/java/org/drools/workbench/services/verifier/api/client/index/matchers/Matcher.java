@@ -15,11 +15,11 @@
  */
 package org.drools.workbench.services.verifier.api.client.index.matchers;
 
-import org.drools.workbench.services.verifier.api.client.cache.util.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 
 public class Matcher {
 
-    protected KeyDefinition keyDefinition;
+    protected final KeyDefinition keyDefinition;
 
     public Matcher( final KeyDefinition keyDefinition ) {
         this.keyDefinition = keyDefinition;
