@@ -85,11 +85,9 @@ public class DocumentFieldValueProcessor implements FieldValueProcessor<Document
 
             try {
                 String id = UUID.randomUUID().toString();
-                Document doc = new DocumentImpl( id,
-                                                 documentData.getFileName(),
+                Document doc = new DocumentImpl( documentData.getFileName(),
                                                  content.length(),
-                                                 new Date( content.lastModified() ),
-                                                 "" );
+                                                 new Date( content.lastModified() ) );
                 doc.setContent( getFileContent( content ) );
                 uploadedDocumentManager.removeFile( documentData.getContentId() );
                 return doc;

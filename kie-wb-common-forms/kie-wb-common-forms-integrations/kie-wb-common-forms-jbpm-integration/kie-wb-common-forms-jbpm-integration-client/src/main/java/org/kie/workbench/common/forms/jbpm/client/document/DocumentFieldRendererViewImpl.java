@@ -80,7 +80,7 @@ public class DocumentFieldRendererViewImpl extends Composite implements Document
         uploader.setName( "document" );
         documentForm.setEncoding( FormPanel.ENCODING_MULTIPART );
         documentForm.setMethod( FormPanel.METHOD_POST );
-        documentForm.setAction( "FormsDocumentServlet" );
+        documentForm.setAction( "/documentUploadServlet" );
         formEncoder.addUtf8Charset( documentForm );
         documentForm.add( uploader );
         documentForm.addSubmitCompleteHandler( event -> {

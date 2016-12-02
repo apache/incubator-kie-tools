@@ -32,7 +32,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.kie.workbench.common.forms.dynamic.model.document.DocumentData;
 import org.uberfire.server.BaseUploadServlet;
 
-@WebServlet( name = "FormsDocumentServlet", urlPatterns = "FormsDocumentServlet")
+@WebServlet( name = "FormsDocumentServlet", urlPatterns = "/documentUploadServlet")
 public class FormsDocumentServlet extends BaseUploadServlet {
 
     @Inject
