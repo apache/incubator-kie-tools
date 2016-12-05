@@ -499,7 +499,13 @@
 
         <dependency>
             <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-bpmn-project</artifactId>
+            <artifactId>kie-wb-common-stunner-bpmn-project-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.workbench.stunner</groupId>
+            <artifactId>kie-wb-common-stunner-bpmn-project-client</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -1097,7 +1103,8 @@
                         <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-basicset-client</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-client</compileSourcesArtifact>
-                        <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-project</compileSourcesArtifact>
+                        <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-project-api</compileSourcesArtifact>
+                        <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-project-client</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
                         <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-project-api</compileSourcesArtifact>

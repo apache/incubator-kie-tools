@@ -66,7 +66,7 @@
   <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectClient"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
   <inherits name="org.kie.workbench.common.stunner.basicset.StunnerBasicSetClient"/>
-  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnProject"/>
+  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnProjectClient"/>
 
   <!-- Form modeler.-->
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
