@@ -56,7 +56,7 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
+        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
 
     }
 
@@ -111,6 +111,8 @@ public class DecisionTableAnalyzerTest
         fireUpAnalyzer();
 
         assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport(), 2 );
 
     }
@@ -147,6 +149,8 @@ public class DecisionTableAnalyzerTest
         fireUpAnalyzer();
 
         assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 2 );
 
     }
@@ -211,6 +215,7 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
+        assertDoesNotContain( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
     }
 
@@ -233,6 +238,8 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
+        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 2 );
+        assertDoesNotContain( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 2 );
 

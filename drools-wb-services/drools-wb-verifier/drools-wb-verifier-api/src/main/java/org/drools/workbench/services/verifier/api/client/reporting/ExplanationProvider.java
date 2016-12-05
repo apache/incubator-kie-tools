@@ -137,6 +137,11 @@ public class ExplanationProvider {
                         .addParagraph( AnalysisConstants.INSTANCE.SingleHitP1( singleHitLostIssue.getFirstItem(),
                                                                                singleHitLostIssue.getSecondItem() ))
                         .toHTML();
+            case EMPTY_RULE:
+                return new Explanation()
+                        .addParagraph( AnalysisConstants.INSTANCE.ProvideAtLeastOneConditionAndOneActionForTheRule() )
+                        .toHTML();
+
             default:
                 return new SafeHtml() {
                     @Override
@@ -194,6 +199,8 @@ public class ExplanationProvider {
                 return AnalysisConstants.INSTANCE.MissingRangeTitle();
             case SINGLE_HIT_LOST:
                 return                        AnalysisConstants.INSTANCE.SingleHitLost();
+            case EMPTY_RULE:
+                return AnalysisConstants.INSTANCE.EmptyRule();
             default:
                 return "---";
         }

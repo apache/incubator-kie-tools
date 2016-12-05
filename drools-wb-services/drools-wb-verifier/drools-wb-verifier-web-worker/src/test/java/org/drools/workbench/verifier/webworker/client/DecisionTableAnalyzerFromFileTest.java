@@ -134,7 +134,8 @@ public class DecisionTableAnalyzerFromFileTest {
         analyzer.analyze();
 
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
-                            "SingleHitLost" );
+                            "SingleHitLost",
+                            "EmptyRule" );
     }
 
     @Test
@@ -215,7 +216,8 @@ public class DecisionTableAnalyzerFromFileTest {
         analyzer.resetChecks();
         analyzer.analyze();
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
-                            "SingleHitLost" );
+                            "SingleHitLost",
+                            "EmptyRule" );
         now = System.currentTimeMillis();
         System.out.println( "Initial analysis took.. " + ( now - baseline ) + " ms" );
         baseline = now;
@@ -232,7 +234,8 @@ public class DecisionTableAnalyzerFromFileTest {
                 .update( table52,
                          updates );
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
-                            "SingleHitLost" );
+                            "SingleHitLost",
+                            "EmptyRule" );
         now = System.currentTimeMillis();
         System.out.println( "Partial analysis took.. " + ( now - baseline ) + " ms" );
     }
@@ -251,7 +254,8 @@ public class DecisionTableAnalyzerFromFileTest {
         analyzer.analyze();
 
         assertOnlyContains( analyzerProvider.getAnalysisReport(),
-                            "SingleHitLost" );
+                            "SingleHitLost",
+                            "EmptyRule" );
         long baseline = System.currentTimeMillis();
 
         for ( int iterations = 0; iterations < 10; iterations++ ) {
@@ -269,7 +273,8 @@ public class DecisionTableAnalyzerFromFileTest {
             System.out.println( "Partial analysis took.. " + ( now - baseline ) + " ms" );
             baseline = now;
             assertOnlyContains( analyzerProvider.getAnalysisReport(),
-                                "SingleHitLost" );
+                                "SingleHitLost",
+                                "EmptyRule" );
         }
     }
 

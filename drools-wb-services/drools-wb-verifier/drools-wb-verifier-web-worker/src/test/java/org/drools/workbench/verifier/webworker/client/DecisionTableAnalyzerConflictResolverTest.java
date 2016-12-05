@@ -60,7 +60,7 @@ public class DecisionTableAnalyzerConflictResolverTest
 
         fireUpAnalyzer();
 
-        assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
+        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 1);
 
     }
 

@@ -127,4 +127,8 @@ public interface AnalysisConstants
 
     String AnalysisComplete();
 
+    String EmptyRule();
+
+    String ProvideAtLeastOneConditionAndOneActionForTheRule();
+
 }

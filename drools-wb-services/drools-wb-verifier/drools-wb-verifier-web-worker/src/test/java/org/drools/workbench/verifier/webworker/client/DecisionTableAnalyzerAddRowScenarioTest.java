@@ -49,9 +49,11 @@ public class DecisionTableAnalyzerAddRowScenarioTest
                    DataType.DataTypes.BOOLEAN );
 
         final Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
-        assertContains( "SingleHitLost",
-                        analysisReport );
-        assertEquals( 1,
+        assertOnlyContains( analysisReport,
+                            "SingleHitLost",
+                            "EmptyRule" );
+        assertContains( "EmptyRule", analysisReport, 2 );
+        assertEquals( 2,
                       analysisReport.size() );
     }
 

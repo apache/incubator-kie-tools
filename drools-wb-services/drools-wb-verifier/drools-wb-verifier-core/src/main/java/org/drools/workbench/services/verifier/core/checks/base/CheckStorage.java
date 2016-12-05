@@ -22,17 +22,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
-import org.drools.workbench.services.verifier.api.client.maps.MultiSet;
-import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.checks.DetectDeficientRowsCheck;
+import org.drools.workbench.services.verifier.core.checks.DetectEmptyRowCheck;
+import org.drools.workbench.services.verifier.core.checks.DetectMissingConditionCheck;
+import org.drools.workbench.services.verifier.core.checks.DetectRedundantConditionsCheck;
 import org.drools.workbench.services.verifier.core.checks.DetectImpossibleMatchCheck;
 import org.drools.workbench.services.verifier.core.checks.DetectMissingActionCheck;
-import org.drools.workbench.services.verifier.core.checks.DetectMissingConditionCheck;
 import org.drools.workbench.services.verifier.core.checks.DetectMultipleValuesForOneActionCheck;
 import org.drools.workbench.services.verifier.core.checks.DetectRedundantActionCheck;
-import org.drools.workbench.services.verifier.core.checks.DetectRedundantConditionsCheck;
 import org.drools.workbench.services.verifier.core.checks.RangeCheck;
+import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
+import org.drools.workbench.services.verifier.api.client.maps.MultiSet;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 
 public class CheckStorage {
 
@@ -64,6 +65,7 @@ public class CheckStorage {
         final HashSet<Check> checkList = new HashSet<Check>();
         checkList.add( new DetectImpossibleMatchCheck( ruleInspector ) );
         checkList.add( new DetectMultipleValuesForOneActionCheck( ruleInspector ) );
+        checkList.add( new DetectEmptyRowCheck( ruleInspector ) );
         checkList.add( new DetectMissingActionCheck( ruleInspector ) );
         checkList.add( new DetectMissingConditionCheck( ruleInspector ) );
         checkList.add( new DetectDeficientRowsCheck( ruleInspector,

@@ -32,5 +32,6 @@ public enum ExplanationType {
     SUBSUMPTANT_ROWS,
     MISSING_RANGE,
     SINGLE_HIT_LOST,
+    EMPTY_RULE
 
 }
