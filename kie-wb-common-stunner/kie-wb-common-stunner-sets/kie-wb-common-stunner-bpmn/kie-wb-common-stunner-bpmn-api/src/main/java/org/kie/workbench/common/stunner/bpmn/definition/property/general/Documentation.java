@@ -25,8 +25,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 
-import javax.validation.constraints.NotNull;
-
 @Portable
 @Bindable
 @Property
@@ -52,7 +50,6 @@ public class Documentation implements BPMNProperty {
     public static final transient String defaultValue = "";
 
     @Value
-    @NotNull
     private String value = defaultValue;
 
     public Documentation() {

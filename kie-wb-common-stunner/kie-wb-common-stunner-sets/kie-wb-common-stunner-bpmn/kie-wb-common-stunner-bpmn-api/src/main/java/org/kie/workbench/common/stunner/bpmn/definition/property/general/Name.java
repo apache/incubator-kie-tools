@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.general;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
@@ -24,8 +23,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
-
-import javax.validation.constraints.NotNull;
 
 @Portable
 @Bindable
@@ -51,8 +48,6 @@ public class Name implements BPMNProperty {
     public static final transient String defaultValue = "";
 
     @Value
-    @NotNull
-    @NotEmpty
     private String value = defaultValue;
 
     public Name() {
