@@ -18,45 +18,33 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.CONNECTOR;
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.RESIZE;
-import static com.ait.lienzo.shared.core.types.EventPropagationMode.FIRST_ANCESTOR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
+import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
+import com.ait.lienzo.client.core.shape.wires.event.*;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.*;
+import static com.ait.lienzo.shared.core.types.EventPropagationMode.FIRST_ANCESTOR;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeTest
@@ -107,7 +95,6 @@ public class WiresShapeTest
         assertEquals(IDockingAcceptor.ALL, tested.getDockingAcceptor());
         assertEquals(path, tested.getPath());
         assertEquals(0, tested.getChildShapes().size());
-        // TODO: review com.ait.lienzo.client.core.types.BoundingBoxJSO is it possible to rewrite to plan Java?
         verify(layoutContainer).setOffset(any(Point2D.class));
         verify(layoutContainer).setSize(anyDouble(), anyDouble());
         verify(layoutContainer).execute();
@@ -118,13 +105,6 @@ public class WiresShapeTest
     }
 
     @Test
-    public void testXCoordinate()
-    {
-        tested.setX(100);
-        assertEquals(100, tested.getGroup().getX(), 0);
-    }
-
-    @Test
     public void testSetDraggable()
     {
         tested.setDraggable(false);
@@ -132,6 +112,25 @@ public class WiresShapeTest
 
         tested.setDraggable(true);
         assertTrue(tested.getGroup().isDraggable());
+    }
+
+    @Test
+    public void testDraggableHandlers()
+    {
+        WiresShape.WiresShapeHandler handler = mock( WiresShape.WiresShapeHandler.class );
+        tested.addWiresShapeHandler( handlerRegistrationManager, handler );
+        verify(group, times(1)).addNodeMouseDownHandler(any(NodeMouseDownHandler.class));
+        verify(group, times(1)).addNodeMouseUpHandler(any(NodeMouseUpHandler.class));
+        verify(group, times(1)).setDragConstraints(any(DragConstraintEnforcer.class));
+        verify(group, times(1)).addNodeDragEndHandler(any(NodeDragEndHandler.class));
+        verify(handlerRegistrationManager, times(3)).register(any(HandlerRegistration.class));
+    }
+
+    @Test
+    public void testXCoordinate()
+    {
+        tested.setX(100);
+        assertEquals(100, tested.getGroup().getX(), 0);
     }
 
     @Test

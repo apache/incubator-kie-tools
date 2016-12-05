@@ -18,21 +18,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
@@ -40,19 +25,21 @@ import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartHandler;
-import com.ait.lienzo.client.core.shape.wires.event.WiresMoveEvent;
-import com.ait.lienzo.client.core.shape.wires.event.WiresMoveHandler;
+import com.ait.lienzo.client.core.shape.wires.event.*;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresContainerTest
@@ -89,6 +76,12 @@ public class WiresContainerTest
         assertEquals(IDockingAcceptor.ALL, tested.getDockingAcceptor());
         assertEquals(parentContainer, tested.getContainer());
         assertEquals(0, tested.getChildShapes().size());
+    }
+
+    @Test
+    public void testSetDraggable()
+    {
+        tested.setDraggable( true );
         verify(handlerRegistrationManager, times(5)).register(any(HandlerRegistrationManager.class));
         verify(parentContainer, times(1)).setAttributesChangedBatcher(eq(attributesChangedBatcher));
         verify(parentContainer, times(1)).addNodeDragStartHandler(any(NodeDragStartHandler.class));
@@ -199,7 +192,7 @@ public class WiresContainerTest
     @Test
     public void testWiresDragStartHandler()
     {
-        WiresContainer handledContainer = createWithRealHandlers();
+        WiresContainer handledContainer = createWithRealHandlers().setDraggable( true );
         Group group = handledContainer.getGroup();
         final Point2D result = new Point2D(0, 0);
         handledContainer.addWiresDragStartHandler(new WiresDragStartHandler()
@@ -220,7 +213,7 @@ public class WiresContainerTest
     @Test
     public void testWiresDragMoveHandler()
     {
-        WiresContainer handledContainer = createWithRealHandlers();
+        WiresContainer handledContainer = createWithRealHandlers().setDraggable( true );
         Group group = handledContainer.getGroup();
         final Point2D result = new Point2D(0, 0);
         handledContainer.addWiresDragMoveHandler(new WiresDragMoveHandler()
@@ -241,8 +234,7 @@ public class WiresContainerTest
     @Test
     public void testWiresDragEndHandler()
     {
-        WiresContainer handledContainer = createWithRealHandlers();
-        Group group = handledContainer.getGroup();
+        WiresContainer handledContainer = createWithRealHandlers().setDraggable( true );        Group group = handledContainer.getGroup();
         final Point2D result = new Point2D(0, 0);
         handledContainer.addWiresDragEndHandler(new WiresDragEndHandler()
         {
