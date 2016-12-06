@@ -175,6 +175,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
             {
                 dxy.setX(dxy.getX() + dx).setY(dxy.getY() + dy);
             }
+
         }
 
         return true;

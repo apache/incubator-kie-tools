@@ -22,13 +22,13 @@ public interface IConnectionAcceptor
 
     public static final IConnectionAcceptor NONE = new DefaultConnectionAcceptor(false);
 
-    public boolean acceptHead(WiresConnection head, WiresMagnet magnet);
-
-    public boolean acceptTail(WiresConnection tail, WiresMagnet magnet);
-
     public boolean headConnectionAllowed(WiresConnection head, WiresShape shape);
 
     public boolean tailConnectionAllowed(WiresConnection tail, WiresShape shape);
+
+    public boolean acceptHead(WiresConnection head, WiresMagnet magnet);
+
+    public boolean acceptTail(WiresConnection tail, WiresMagnet magnet);
 
     public static class DefaultConnectionAcceptor implements IConnectionAcceptor
     {
@@ -62,5 +62,6 @@ public interface IConnectionAcceptor
         {
             return m_defaultValue;
         }
+
     }
 }

@@ -222,15 +222,14 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
             if (intersection != null)
             {
                 BoundingBox box = m_shape.getPath().getBoundingBox();
-
                 double newX = absLoc.getX() + intersection.getX() - (box.getWidth() / 2);
                 double newY = absLoc.getY() + intersection.getY() - (box.getHeight() / 2);
-
                 dxy.setX(newX - m_shapeStartX).setY(newY - m_shapeStartY);
+                return true;
             }
         }
-        return true;
 
+        return false;
     }
 
     private void restoreBody()

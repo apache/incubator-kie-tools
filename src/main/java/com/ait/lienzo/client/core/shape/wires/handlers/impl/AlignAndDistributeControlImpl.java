@@ -578,9 +578,10 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
         AlignAndDistribute.AlignAndDistributeMatches matches = m_alignAndDistribute.findNearestMatches(this, m_left, m_hCenter, m_right, m_top, m_vCenter, m_bottom);
 
+        boolean recapture = false;
+
         if (m_alignAndDistribute.isSnap())
         {
-            boolean recapture = false;
 
             double xOffset = m_startLeft;
             double yOffset = m_startTop;
@@ -669,7 +670,8 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         {
             m_alignAndDistributeMatchesCallback.call(matches);
         }
-        return true;
+
+        return recapture;
     }
 
     @Override

@@ -46,5 +46,6 @@ public interface IContainmentAcceptor
         {
             return m_defaultValue;
         }
+
     }
 }

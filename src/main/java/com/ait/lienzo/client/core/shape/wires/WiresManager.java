@@ -18,13 +18,8 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingAndContainmentControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.*;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlFactoryImpl;
 import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -151,26 +146,11 @@ public final class WiresManager
     public WiresShapeControl register(final WiresShape shape, final boolean addIntoIndex)
     {
 
-        final Group group = shape.getGroup();
-
         shape.setContainmentAcceptor(m_containmentAcceptor);
 
         shape.setDockingAcceptor(m_dockingAcceptor);
 
-        WiresShape.WiresShapeHandler handler = new WiresShape.WiresShapeHandler(shape, this);
-
-        HandlerRegistrationManager registrationManager = createHandlerRegistrationManager();
-
-        registrationManager.register(group.addNodeMouseDownHandler(handler));
-
-        registrationManager.register(group.addNodeMouseUpHandler(handler));
-
-        registrationManager.register(group.addNodeDragEndHandler(handler));
-
-        group.setDragConstraints(handler);
-
-        // Shapes added to the canvas layer by default.
-        getLayer().add(shape);
+        final WiresShape.WiresShapeHandler handler = new WiresShape.WiresShapeHandlerImpl(shape, this);
 
         final WiresDockingAndContainmentControl dockingAndContainmentControl = getControlFactory().newDockingAndContainmentControl(shape, this);
         handler.setDockingAndContainmentControl(dockingAndContainmentControl);
@@ -184,7 +164,14 @@ public final class WiresManager
 
         }
 
-        final String uuid = getShapeUUID(shape);
+        final HandlerRegistrationManager registrationManager = createHandlerRegistrationManager();
+
+        shape.addWiresShapeHandler( registrationManager, handler );
+
+        // Shapes added to the canvas layer by default.
+        getLayer().add(shape);
+
+        final String uuid = shape.uuid();
         m_shapesMap.put(uuid, shape);
         m_shapeHandlersMap.put(uuid, registrationManager);
 
@@ -193,7 +180,7 @@ public final class WiresManager
 
     public void deregister(final WiresShape shape)
     {
-        final String uuid = getShapeUUID(shape);
+        final String uuid = shape.uuid();
         removeHandlers(uuid);
         removeFromIndex(shape);
         shape.destroy();
@@ -205,18 +192,13 @@ public final class WiresManager
     {
         connector.setConnectionAcceptor(m_connectionAcceptor);
 
-        WiresConnector.WiresConnectorHandler handler = new WiresConnector.WiresConnectorHandler(connector, this);
-
-        final Group group = connector.getGroup();
-        final String uuid = group.uuid();
+        final String uuid = connector.uuid();
 
         final HandlerRegistrationManager m_registrationManager = createHandlerRegistrationManager();
 
-        m_registrationManager.register(group.addNodeDragStartHandler(handler));
+        final WiresConnector.WiresConnectorHandler handler = new WiresConnector.WiresConnectorHandlerImpl(connector, this);
 
-        m_registrationManager.register(group.addNodeDragMoveHandler(handler));
-
-        m_registrationManager.register(group.addNodeDragEndHandler(handler));
+        connector.setWiresConnectorHandler( m_registrationManager, handler );
 
         getConnectorList().add(connector);
         m_shapeHandlersMap.put(uuid, m_registrationManager);
@@ -228,7 +210,7 @@ public final class WiresManager
 
     public void deregister(final WiresConnector connector)
     {
-        final String uuid = getConnectorUUID(connector);
+        final String uuid = connector.uuid();
         removeHandlers(uuid);
         connector.destroy();
         getConnectorList().remove(connector);
@@ -323,16 +305,6 @@ public final class WiresManager
     HandlerRegistrationManager createHandlerRegistrationManager()
     {
         return new HandlerRegistrationManager();
-    }
-
-    private static String getShapeUUID(final WiresShape shape)
-    {
-        return shape.getGroup().uuid();
-    }
-
-    private static String getConnectorUUID(final WiresConnector connector)
-    {
-        return connector.getGroup().uuid();
     }
 
 }

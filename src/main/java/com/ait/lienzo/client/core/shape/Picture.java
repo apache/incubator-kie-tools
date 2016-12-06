@@ -78,15 +78,15 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
      * <li>category
      * </ul>
-     * 
+     *
      * @param url
-     * @param listening When set to false, the Picture can't be dragged or picked,
-     *      but it will be drawn faster and use less memory.
      */
     public Picture(String url)
     {
         super(ShapeType.PICTURE, url, true, LienzoCore.get().getDefaultImageSelectionMode());
 
+        onLoaded(createPictureLoader());
+
         getImageProxy().load(url);
     }
 
@@ -104,13 +104,37 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * </ul>
      * 
      * @param url
-     * @param listening When set to false, the Picture can't be dragged or picked,
-     *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(String url, PictureLoadedHandler loadedHandler)
     {
         super(ShapeType.PICTURE, url, true, LienzoCore.get().getDefaultImageSelectionMode());
 
+        onLoaded( loadedHandler );
+
+        getImageProxy().load(url);
+    }
+
+    /**
+     * Creates a Picture from a URL.
+     * The following attributes are defaulted:
+     * <ul>
+     * <li>clippedImageStartX - 0
+     * <li>clippedImageStartY - 0
+     * <li>clippedImageWidth - 0 (means: use image width)
+     * <li>clippedImageHeight - 0 (means: use image height)
+     * <li>clippedImageDestinationWidth - 0 (means: use clippedImageWidth)
+     * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
+     * <li>category
+     * </ul>
+     * 
+     * @param url
+     */
+    public Picture(String url, PictureLoadedHandler loadedHandler, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    {
+        super(ShapeType.PICTURE, url, true, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
+
         getImageProxy().setFilters(filter, filters);
 
         getImageProxy().load(url);
@@ -130,13 +154,13 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * </ul>
      * 
      * @param url
-     * @param listening When set to false, the Picture can't be dragged or picked,
-     *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, ImageSelectionMode mode)
+    public Picture(String url, PictureLoadedHandler loadedHandler, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, url, true, mode);
 
+        onLoaded( loadedHandler );
+
         getImageProxy().load(url);
     }
 
@@ -154,62 +178,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * </ul>
      * 
      * @param url
-     * @param listening When set to false, the Picture can't be dragged or picked,
-     *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(String url, PictureLoadedHandler loadedHandler, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, true, mode);
 
-        getImageProxy().setFilters(filter, filters);
-
-        getImageProxy().load(url);
-    }
-
-    /**
-     * Creates a Picture from a URL.
-     * The following attributes are defaulted:
-     * <ul>
-     * <li>clippedImageStartX - 0
-     * <li>clippedImageStartY - 0
-     * <li>clippedImageWidth - 0 (means: use image width)
-     * <li>clippedImageHeight - 0 (means: use image height)
-     * <li>clippedImageDestinationWidth - 0 (means: use clippedImageWidth)
-     * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
-     * <li>category
-     * </ul>
-     * 
-     * @param url
-     * @param listening When set to false, the Picture can't be dragged or picked,
-     *      but it will be drawn faster and use less memory.
-     */
-    public Picture(String url, boolean listening)
-    {
-        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
-
-        getImageProxy().load(url);
-    }
-
-    /**
-     * Creates a Picture from a URL.
-     * The following attributes are defaulted:
-     * <ul>
-     * <li>clippedImageStartX - 0
-     * <li>clippedImageStartY - 0
-     * <li>clippedImageWidth - 0 (means: use image width)
-     * <li>clippedImageHeight - 0 (means: use image height)
-     * <li>clippedImageDestinationWidth - 0 (means: use clippedImageWidth)
-     * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
-     * <li>category
-     * </ul>
-     * 
-     * @param url
-     * @param listening When set to false, the Picture can't be dragged or picked,
-     *      but it will be drawn faster and use less memory.
-     */
-    public Picture(String url, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
-    {
-        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
+        onLoaded( loadedHandler );
 
         getImageProxy().setFilters(filter, filters);
 
@@ -233,9 +207,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, boolean listening, ImageSelectionMode mode)
+    public Picture(String url, PictureLoadedHandler loadedHandler, boolean listening)
     {
-        super(ShapeType.PICTURE, url, listening, mode);
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         getImageProxy().load(url);
     }
@@ -257,9 +233,65 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(String url, PictureLoadedHandler loadedHandler, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    {
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
+
+        getImageProxy().setFilters(filter, filters);
+
+        getImageProxy().load(url);
+    }
+
+    /**
+     * Creates a Picture from a URL.
+     * The following attributes are defaulted:
+     * <ul>
+     * <li>clippedImageStartX - 0
+     * <li>clippedImageStartY - 0
+     * <li>clippedImageWidth - 0 (means: use image width)
+     * <li>clippedImageHeight - 0 (means: use image height)
+     * <li>clippedImageDestinationWidth - 0 (means: use clippedImageWidth)
+     * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
+     * <li>category
+     * </ul>
+     * 
+     * @param url
+     * @param listening When set to false, the Picture can't be dragged or picked,
+     *      but it will be drawn faster and use less memory.
+     */
+    public Picture(String url, PictureLoadedHandler loadedHandler, boolean listening, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, url, listening, mode);
+
+        onLoaded( loadedHandler );
+
+        getImageProxy().load(url);
+    }
+
+    /**
+     * Creates a Picture from a URL.
+     * The following attributes are defaulted:
+     * <ul>
+     * <li>clippedImageStartX - 0
+     * <li>clippedImageStartY - 0
+     * <li>clippedImageWidth - 0 (means: use image width)
+     * <li>clippedImageHeight - 0 (means: use image height)
+     * <li>clippedImageDestinationWidth - 0 (means: use clippedImageWidth)
+     * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
+     * <li>category
+     * </ul>
+     * 
+     * @param url
+     * @param listening When set to false, the Picture can't be dragged or picked,
+     *      but it will be drawn faster and use less memory.
+     */
+    public Picture(String url, PictureLoadedHandler loadedHandler, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    {
+        super(ShapeType.PICTURE, url, listening, mode);
+
+        onLoaded( loadedHandler );
 
         getImageProxy().setFilters(filter, filters);
 
@@ -283,9 +315,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int sx, int sy, int sw, int sh, boolean listening)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, boolean listening)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -315,9 +349,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -349,9 +385,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
     */
-    public Picture(String url, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, url, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -381,9 +419,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -411,9 +451,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -443,9 +485,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -477,9 +521,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, url, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -509,9 +555,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
     */
-    public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -547,9 +595,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int dw, int dh, boolean listening)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int dw, int dh, boolean listening)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageDestinationWidth(dw);
 
@@ -575,9 +625,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageDestinationWidth(dw);
 
@@ -605,9 +657,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int dw, int dh, boolean listening, ImageSelectionMode mode)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int dw, int dh, boolean listening, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, url, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageDestinationWidth(dw);
 
@@ -633,9 +687,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
     */
-    public Picture(String url, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(String url, PictureLoadedHandler loadedHandler, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageDestinationWidth(dw);
 
@@ -658,39 +714,63 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
      * <li>category
      * </ul>
-     * 
+     *
      * @param resource ImageResource
-     * @param listening When set to false, the Picture can't be dragged or picked,
-     *      but it will be drawn faster and use less memory.
      */
     public Picture(ImageResource resource)
     {
         super(ShapeType.PICTURE, resource, true, LienzoCore.get().getDefaultImageSelectionMode());
 
+        onLoaded(createPictureLoader());
+
         getImageProxy().load(resource);
     }
 
     /**
-    * Creates a Picture from an ImageResource.
-    * The following attributes are defaulted:
-    * <ul>
-    * <li>clippedImageStartX - 0
-    * <li>clippedImageStartY - 0
-    * <li>clippedImageWidth - 0 (means: use image width)
-    * <li>clippedImageHeight - 0 (means: use image height)
-    * <li>clippedImageDestinationWidth - 0 (means: use clippedImageWidth)
-    * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
-    * <li>category
-    * </ul>
-    * 
-    * @param resource ImageResource
-    * @param listening When set to false, the Picture can't be dragged or picked,
-    *      but it will be drawn faster and use less memory.
-    */
-    public Picture(ImageResource resource, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+     * Creates a Picture from an ImageResource.
+     * The following attributes are defaulted:
+     * <ul>
+     * <li>clippedImageStartX - 0
+     * <li>clippedImageStartY - 0
+     * <li>clippedImageWidth - 0 (means: use image width)
+     * <li>clippedImageHeight - 0 (means: use image height)
+     * <li>clippedImageDestinationWidth - 0 (means: use clippedImageWidth)
+     * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
+     * <li>category
+     * </ul>
+     * 
+     * @param resource ImageResource
+     */
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler)
     {
         super(ShapeType.PICTURE, resource, true, LienzoCore.get().getDefaultImageSelectionMode());
 
+        onLoaded( loadedHandler );
+
+        getImageProxy().load(resource);
+    }
+
+    /**
+    * Creates a Picture from an ImageResource.
+    * The following attributes are defaulted:
+    * <ul>
+    * <li>clippedImageStartX - 0
+    * <li>clippedImageStartY - 0
+    * <li>clippedImageWidth - 0 (means: use image width)
+    * <li>clippedImageHeight - 0 (means: use image height)
+    * <li>clippedImageDestinationWidth - 0 (means: use clippedImageWidth)
+    * <li>clippedImageDestinationHeight - 0 (means: use clippedImageHeight)
+    * <li>category
+    * </ul>
+    * 
+    * @param resource ImageResource
+    */
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    {
+        super(ShapeType.PICTURE, resource, true, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
+
         getImageProxy().setFilters(filter, filters);
 
         getImageProxy().load(resource);
@@ -710,12 +790,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * </ul>
      * 
      * @param resource ImageResource
-     * @param listening When set to false, the Picture can't be dragged or picked,
-     *      but it will be drawn faster and use less memory.
      */
-    public Picture(ImageResource resource, ImageSelectionMode mode)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, resource, true, mode);
+
+        onLoaded( loadedHandler );
 
         getImageProxy().load(resource);
     }
@@ -734,12 +814,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * </ul>
      * 
      * @param resource ImageResource
-     * @param listening When set to false, the Picture can't be dragged or picked,
-     *      but it will be drawn faster and use less memory.
      */
-    public Picture(ImageResource resource, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, true, mode);
+
+        onLoaded( loadedHandler );
 
         getImageProxy().setFilters(filter, filters);
 
@@ -763,9 +843,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
     */
-    public Picture(ImageResource resource, boolean listening)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, boolean listening)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         getImageProxy().load(resource);
     }
@@ -787,9 +869,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(ImageResource resource, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         getImageProxy().setFilters(filter, filters);
 
@@ -813,9 +897,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(ImageResource resource, boolean listening, ImageSelectionMode mode)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, boolean listening, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
+
+        onLoaded( loadedHandler );
 
         getImageProxy().load(resource);
     }
@@ -837,9 +923,11 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
     */
-    public Picture(ImageResource resource, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
+
+        onLoaded( loadedHandler );
 
         getImageProxy().setFilters(filter, filters);
 
@@ -861,12 +949,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param sh clippedImageHeight
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, boolean listening)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -894,12 +982,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param sh clippedImageHeight
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -929,12 +1017,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param sh clippedImageHeight
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -962,12 +1050,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param sh clippedImageHeight
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -994,12 +1082,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param dh clippedImageDestinationHeight (0 means: use clippedImageHeight)
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -1028,12 +1116,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param dh clippedImageDestinationHeight (0 means: use clippedImageHeight)
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -1064,12 +1152,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param dh clippedImageDestinationHeight (0 means: use clippedImageHeight)
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -1098,12 +1186,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param dh clippedImageDestinationHeight (0 means: use clippedImageHeight)
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageStartX(sx);
 
@@ -1137,12 +1225,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param dh clippedImageDestinationHeight (0 means: use clippedImageHeight)
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int dw, int dh, boolean listening)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int dw, int dh, boolean listening)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageDestinationWidth(dw);
 
@@ -1166,12 +1254,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     * @param dh clippedImageDestinationHeight (0 means: use clippedImageHeight)
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
-    * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-    *      the Pictures in a category are loaded.  Null means: use the default category.
     */
-    public Picture(ImageResource resource, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
+
+        onLoaded( loadedHandler );
 
         setClippedImageDestinationWidth(dw);
 
@@ -1197,12 +1285,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param dh clippedImageDestinationHeight (0 means: use clippedImageHeight)
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int dw, int dh, boolean listening, ImageSelectionMode mode)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int dw, int dh, boolean listening, ImageSelectionMode mode)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageDestinationWidth(dw);
 
@@ -1226,12 +1314,12 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * @param dh clippedImageDestinationHeight (0 means: use clippedImageHeight)
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
-     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
-     *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Picture(ImageResource resource, PictureLoadedHandler loadedHandler, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
+
+        onLoaded( loadedHandler );
 
         setClippedImageDestinationWidth(dw);
 
@@ -1455,7 +1543,6 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
      * Returns the y coordinate of the picture's clip region. 
      * The default value is 0.
      * 
-     * @param sy
      * @return Picture this picture
      */
     public Picture setClippedImageStartY(int clippedImageStartY)
@@ -1583,19 +1670,6 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
         return this;
     }
 
-    public Picture onLoaded(final PictureLoadedHandler handler)
-    {
-        getImageProxy().setImageShapeLoadedHandler(new ImageShapeLoadedHandler<Picture>()
-        {
-            @Override
-            public void onImageShapeLoaded(Picture picture)
-            {
-                handler.onPictureLoaded(picture);
-            }
-        });
-        return this;
-    }
-
     public Picture reFilter(final PictureFilteredHandler handler)
     {
         getImageProxy().reFilter(new ImageShapeFilteredHandler<Picture>()
@@ -1706,23 +1780,38 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
             {
                 self.getImageProxy().load(self.getURL());
 
-                self.onLoaded(new PictureLoadedHandler()
-                {
-                    @Override
-                    public void onPictureLoaded(Picture picture)
-                    {
-                        if (picture.isLoaded() && picture.isVisible())
-                        {
-                            Layer layer = picture.getLayer();
-
-                            if ((null != layer) && (null != layer.getViewport()))
-                            {
-                                layer.batch();
-                            }
-                        }
-                    }
-                });
+                self.onLoaded(self.createPictureLoader());
             }
         }
     }
+
+    private PictureLoadedHandler createPictureLoader() {
+        return new PictureLoadedHandler() {
+            @Override
+            public void onPictureLoaded( Picture picture ) {
+                if (picture.isLoaded() && picture.isVisible())
+                {
+                    Layer layer = picture.getLayer();
+
+                    if ((null != layer) && (null != layer.getViewport()))
+                    {
+                        layer.batch();
+                    }
+                }
+            }
+        };
+    }
+
+    private void onLoaded( final PictureLoadedHandler handler)
+    {
+        getImageProxy().setImageShapeLoadedHandler(new ImageShapeLoadedHandler<Picture>()
+        {
+            @Override
+            public void onImageShapeLoaded(Picture picture)
+            {
+                handler.onPictureLoaded(picture);
+            }
+        });
+    }
+
 }

@@ -35,48 +35,49 @@ public abstract class ImageLoader
 
         image.setVisible(false);
 
-        if (isValidDataURL(url))
+        final boolean isValidDataURL = isValidDataURL( url );
+
+        final String crossOrigin =
+                isValidDataURL && ( url.startsWith("http:") || (url.startsWith("https:")) ) ? "" : null;
+
+        if ( null != crossOrigin )
         {
-            RootPanel.get().add(image);
+            setCrossOrigin(element, crossOrigin);
+        }
+
+        image.addLoadHandler(new LoadHandler()
+        {
+            @Override
+            public final void onLoad(final LoadEvent event)
+            {
+                doImageElementLoadAndRetry( element, image, crossOrigin, url );
+            }
+        });
+
+        image.addErrorHandler(new ErrorHandler()
+        {
+            @Override
+            public final void onError(final ErrorEvent event)
+            {
+                RootPanel.get().remove(image);
+
+                onImageElementError("Image " + url + " failed to load");
+            }
+        });
+
+
+        RootPanel.get().add(image);
+
+        if ( isValidDataURL ) {
+
+            image.setUrl(url);
+
+        } else {
 
             element.setSrc(url);
 
-            onImageElementLoad(element);
         }
-        else
-        {
-            String anon = "";
 
-            if (url.startsWith("http:") || (url.startsWith("https:")))
-            {
-                anon = "anonymous";
-
-                setCrossOrigin(element, anon);
-            }
-            final String orig = anon;
-
-            image.addLoadHandler(new LoadHandler()
-            {
-                @Override
-                public final void onLoad(final LoadEvent event)
-                {
-                    doImageElementLoadAndRetry(element, image, orig, url);
-                }
-            });
-            image.addErrorHandler(new ErrorHandler()
-            {
-                @Override
-                public final void onError(final ErrorEvent event)
-                {
-                    RootPanel.get().remove(image);
-
-                    onImageElementError("Image " + url + " failed to load");
-                }
-            });
-            RootPanel.get().add(image);
-
-            image.setUrl(url);
-        }
     }
 
     private final void doImageElementLoadAndRetry(final ImageElement elem, final Image image, final String orig, final String url)
@@ -172,7 +173,9 @@ public abstract class ImageLoader
 		image.onerror = function() {
 			self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onFailure()();
 		};
-		image.crossOrigin = orig;
+		if ( undefined != orig ) {
+            image.crossOrigin = orig;
+        }
 		image.src = url;
     }-*/;
 
