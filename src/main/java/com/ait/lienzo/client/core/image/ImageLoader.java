@@ -35,25 +35,22 @@ public abstract class ImageLoader
 
         image.setVisible(false);
 
-        final boolean isValidDataURL = isValidDataURL( url );
+        final boolean isValidDataURL = isValidDataURL(url);
 
-        final String crossOrigin =
-                isValidDataURL && ( url.startsWith("http:") || (url.startsWith("https:")) ) ? "" : null;
+        final String crossOrigin = isValidDataURL && (url.startsWith("http:") || (url.startsWith("https:"))) ? "" : null;
 
-        if ( null != crossOrigin )
+        if (null != crossOrigin)
         {
             setCrossOrigin(element, crossOrigin);
         }
-
         image.addLoadHandler(new LoadHandler()
         {
             @Override
             public final void onLoad(final LoadEvent event)
             {
-                doImageElementLoadAndRetry( element, image, crossOrigin, url );
+                doImageElementLoadAndRetry(element, image, crossOrigin, url);
             }
         });
-
         image.addErrorHandler(new ErrorHandler()
         {
             @Override
@@ -64,20 +61,16 @@ public abstract class ImageLoader
                 onImageElementError("Image " + url + " failed to load");
             }
         });
-
-
         RootPanel.get().add(image);
 
-        if ( isValidDataURL ) {
-
+        if (isValidDataURL)
+        {
             image.setUrl(url);
-
-        } else {
-
-            element.setSrc(url);
-
         }
-
+        else
+        {
+            element.setSrc(url);
+        }
     }
 
     private final void doImageElementLoadAndRetry(final ImageElement elem, final Image image, final String orig, final String url)
@@ -173,9 +166,9 @@ public abstract class ImageLoader
 		image.onerror = function() {
 			self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onFailure()();
 		};
-		if ( undefined != orig ) {
-            image.crossOrigin = orig;
-        }
+		if (undefined != orig) {
+			image.crossOrigin = orig;
+		}
 		image.src = url;
     }-*/;
 

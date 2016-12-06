@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ahome-it</groupId>
 	<artifactId>lienzo-core</artifactId>
-	<version>2.0.278-RELEASE</version>
+	<version>2.0.279-RELEASE</version>
 	<dependencies>
 		<dependency>
 			<groupId>com.ahome-it</groupId>
@@ -84,4 +84,5 @@
 		</plugins>
 	</build>
 
+	<packaging>maven-plugin</packaging>
 </project>
