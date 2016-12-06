@@ -18,43 +18,23 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
-import com.ait.lienzo.client.core.event.NodeDragStartHandler;
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
-import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
-import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
-import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
-import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresManagerTest
@@ -106,22 +86,15 @@ public class WiresManagerTest
         WiresManager spied = spy(tested);
         HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
-        Group group = new Group();
-        Group shapeGroup = spy(group);
-        WiresShape shape = mock(WiresShape.class);
-        when(shape.getGroup()).thenReturn(shapeGroup);
-
+        WiresShape s = new WiresShape( new MultiPath().rect( 0, 0, 10, 10 ) );
+        WiresShape shape = spy( s );
         WiresShapeControl shapeControl = spied.register(shape);
-
         assertNotNull(shapeControl);
-        assertNotNull(tested.getShape(group.uuid()));
+        assertNotNull(tested.getShape(shape.uuid()));
         verify(shape, times(1)).setContainmentAcceptor(eq(containmentAcceptor));
         verify(shape, times(1)).setDockingAcceptor(eq(dockingAcceptor));
-        verify(shapeGroup, times(1)).addNodeMouseDownHandler(any(NodeMouseDownHandler.class));
-        verify(shapeGroup, times(1)).addNodeMouseUpHandler(any(NodeMouseUpHandler.class));
-        verify(shapeGroup, times(1)).setDragConstraints(any(DragConstraintEnforcer.class));
-        verify(shapeGroup, times(1)).addNodeDragEndHandler(any(NodeDragEndHandler.class));
-        verify(layer, times(1)).add(eq(shapeGroup));
+        verify(shape, times(1)).addWiresShapeHandler(eq( handlerRegistrationManager ), any(WiresShape.WiresShapeHandler.class));
+        verify(layer, times(1)).add(eq(shape.getGroup()));
         verify(handlerRegistrationManager, times(3)).register(any(HandlerRegistration.class));
     }
 
@@ -133,17 +106,15 @@ public class WiresManagerTest
         doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
         Group group = new Group();
         String gUUID = group.uuid();
-        Group shapeGroup = spy(group);
-        WiresShape shape = mock(WiresShape.class);
-        when(shape.getGroup()).thenReturn(shapeGroup);
-
+        WiresShape s = new WiresShape( new MultiPath().rect( 0, 0, 10, 10 ) );
+        WiresShape shape = spy( s );
         spied.register(shape);
         spied.deregister(shape);
-
         assertNull(tested.getShape(gUUID));
         verify(handlerRegistrationManager, times(1)).removeHandler();
         verify(shape, times(1)).destroy();
-        verify(layer, times(1)).remove(any(IPrimitive.class));
+        // TODO: Review unnecessary calls.
+        verify(layer, times(3)).remove(eq(s.getGroup()));
     }
 
     @Test
@@ -164,26 +135,13 @@ public class WiresManagerTest
         doReturn(line).when(connector).getLine();
         doReturn(head).when(connector).getHead();
         doReturn(tail).when(connector).getTail();
-
+        doReturn(group.uuid()).when(connector).uuid();
         WiresConnectorControl connectorControl = spied.register(connector);
-
         assertNotNull(connectorControl);
         assertFalse(spied.getConnectorList().isEmpty());
         verify(connector, times(1)).setConnectionAcceptor(eq(connectionAcceptor));
+        verify(connector, times(1)).setWiresConnectorHandler(eq(handlerRegistrationManager), any(WiresConnector.WiresConnectorHandler.class));
         verify(connector, times(1)).addToLayer(eq(layer));
-        verify(handlerRegistrationManager, times(3)).register(any(HandlerRegistration.class));
-        verify(shapeGroup, times(1)).addNodeDragStartHandler(any(NodeDragStartHandler.class));
-        verify(shapeGroup, times(1)).addNodeDragMoveHandler(any(NodeDragMoveHandler.class));
-        verify(shapeGroup, times(1)).addNodeDragEndHandler(any(NodeDragEndHandler.class));
-        verify(line, times(1)).addNodeMouseEnterHandler(any(NodeMouseEnterHandler.class));
-        verify(line, times(1)).addNodeMouseExitHandler(any(NodeMouseExitHandler.class));
-        verify(line, times(1)).addNodeMouseClickHandler(any(NodeMouseClickHandler.class));
-        verify(head, times(1)).addNodeMouseEnterHandler(any(NodeMouseEnterHandler.class));
-        verify(head, times(1)).addNodeMouseExitHandler(any(NodeMouseExitHandler.class));
-        verify(head, times(1)).addNodeMouseClickHandler(any(NodeMouseClickHandler.class));
-        verify(tail, times(1)).addNodeMouseEnterHandler(any(NodeMouseEnterHandler.class));
-        verify(tail, times(1)).addNodeMouseExitHandler(any(NodeMouseExitHandler.class));
-        verify(tail, times(1)).addNodeMouseClickHandler(any(NodeMouseClickHandler.class));
     }
 
     @Test
@@ -202,10 +160,9 @@ public class WiresManagerTest
         doReturn(line).when(connector).getLine();
         doReturn(head).when(connector).getHead();
         doReturn(tail).when(connector).getTail();
-
+        doReturn(group.uuid()).when(connector).uuid();
         spied.register(connector);
         spied.deregister(connector);
-
         assertTrue(spied.getConnectorList().isEmpty());
         verify(handlerRegistrationManager, times(1)).removeHandler();
         verify(connector, times(1)).destroy();
