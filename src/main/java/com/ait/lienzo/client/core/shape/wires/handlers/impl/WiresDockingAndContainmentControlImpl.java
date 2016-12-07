@@ -112,7 +112,7 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         m_picker = new ColorMapBackedPicker( m_layer.getChildShapes(),
                                              m_layer.getLayer().getScratchPad(),
                                              m_shape,
-                                             m_shape.getDockingAcceptor().acceptDocking( m_parent, m_shape ),
+                                             m_shape.getDockingAcceptor().dockingAllowed( m_parent, m_shape ),
                                              m_shape.getDockingAcceptor().getHotspotSize() );
 
         if (m_parent != null && m_parent instanceof WiresShape)
