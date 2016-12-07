@@ -41,41 +41,41 @@ import com.ait.lienzo.client.core.util.Geometry;
 public class WiresDockingAndContainmentControlImpl implements WiresDockingAndContainmentControl
 {
 
-    private WiresShape           m_shape;
+    protected WiresShape           m_shape;
 
-    private WiresContainer       m_parent;
+    protected WiresContainer       m_parent;
 
-    private WiresLayer           m_layer;
+    protected WiresLayer           m_layer;
 
-    private WiresManager         m_wiresManager;
+    protected ColorMapBackedPicker m_picker;
 
-    private String               m_priorFill;
+    private WiresManager           m_wiresManager;
 
-    private boolean              m_priorFillChanged;
+    private String                 m_priorFill;
 
-    private FillGradient         m_priorFillGradient;
+    private boolean                m_priorFillChanged;
 
-    private double               m_priorAlpha;
+    private FillGradient           m_priorFillGradient;
 
-    private PickerPart           m_parentPart;
+    private double                 m_priorAlpha;
 
-    private MultiPath            m_path;
+    private PickerPart             m_parentPart;
 
-    private double               m_mouseStartX;
+    private MultiPath              m_path;
 
-    private double               m_mouseStartY;
+    protected double               m_mouseStartX;
 
-    private double               m_shapeStartCenterX;
+    protected double               m_mouseStartY;
 
-    private double               m_shapeStartCenterY;
+    private double                 m_shapeStartCenterX;
 
-    private double               m_shapeStartX;
+    private double                 m_shapeStartCenterY;
 
-    private double               m_shapeStartY;
+    private double                 m_shapeStartX;
 
-    private boolean              m_startDocked;
+    private double                 m_shapeStartY;
 
-    private ColorMapBackedPicker m_picker;
+    private boolean                m_startDocked;
 
     public WiresDockingAndContainmentControlImpl( WiresShape shape, WiresManager wiresManager)
     {
@@ -94,10 +94,6 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
 
     @Override
     public void dragStart( final Context context ) {
-
-        m_picker = new ColorMapBackedPicker(m_layer.getChildShapes(), m_layer.getLayer().getScratchPad(), m_shape, true,
-                m_shape.getDockingAcceptor().getHotspotSize() );
-
         Point2D absShapeLoc = WiresUtils.getLocation( m_shape.getPath() );
         BoundingBox box = m_shape.getPath().getBoundingBox();
         m_shapeStartX = absShapeLoc.getX();
@@ -109,7 +105,16 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         m_mouseStartX = context.getX();
         m_mouseStartY = context.getY();
 
+        m_startDocked = false;
+
         m_parent = m_shape.getParent();
+
+        m_picker = new ColorMapBackedPicker( m_layer.getChildShapes(),
+                                             m_layer.getLayer().getScratchPad(),
+                                             m_shape,
+                                             m_shape.getDockingAcceptor().acceptDocking( m_parent, m_shape ),
+                                             m_shape.getDockingAcceptor().getHotspotSize() );
+
         if (m_parent != null && m_parent instanceof WiresShape)
         {
             if (m_shape.getDockedTo() == null)
@@ -291,7 +296,7 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         }
     }
 
-    private void addShapeToParent()
+    protected void addShapeToParent()
     {
         Point2D absLoc = WiresUtils.getLocation( m_shape.getGroup() );
 
@@ -315,19 +320,17 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
                     restoreBody();
                 }
 
-                m_shape.removeFromParent();
-
                 if (m_parent == m_layer)
                 {
-                    m_shape.getGroup().setLocation(absLoc);
+                    m_parent.getLayoutHandler().add( m_shape,  m_parent, absLoc );
                 }
                 else
                 {
-                    Point2D trgAbsOffset = WiresUtils.getLocation( m_parent.getGroup() );
-
-                    m_shape.getGroup().setX(absLoc.getX() - trgAbsOffset.getX()).setY(absLoc.getY() - trgAbsOffset.getY());
+                    final Point2D trgAbsOffset = WiresUtils.getLocation( m_parent.getGroup() );
+                    final Point2D relativeLoc = new Point2D( absLoc.getX() - trgAbsOffset.getX(),
+                                                             absLoc.getY() - trgAbsOffset.getY());
+                    m_parent.getLayoutHandler().add( m_shape,  m_parent, relativeLoc );
                 }
-                m_parent.add(m_shape);
 
                 m_shape.setDockedTo(null);
 

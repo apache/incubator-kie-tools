@@ -29,40 +29,59 @@ import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public class ColorMapBackedPicker
 {
-    private final ImageData                  m_imageData;
+    public static final ColorKeyRotor        m_colorKeyRotor = new ColorKeyRotor();
 
     private final NFastStringMap<PickerPart> m_colorMap = new NFastStringMap<>();
 
-    public static final ColorKeyRotor        m_colorKeyRotor = new ColorKeyRotor();
+    private ImageData                        m_imageData;
 
-    private final boolean                    m_addHotspots;
+    private boolean                          m_addHotspots;
 
-    private final double                     m_borderWidth;
+    private double                           m_borderWidth;
 
     public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, WiresShape shapeToSkip)
     {
         this(shapes, scratchPad, shapeToSkip, false, 0);
     }
 
-    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, WiresShape shapeToSkip, boolean addHotspots, double borderWidth)
+    public ColorMapBackedPicker( NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, final WiresShape shapeToSkip, boolean addHotspots, double borderWidth )
     {
+        final NFastArrayList<WiresShape> shapesToSkip = new NFastArrayList<>(  );
+        shapesToSkip.add( shapeToSkip );
+        init( shapes,
+              scratchPad,
+              shapesToSkip,
+              addHotspots,
+              borderWidth);
+    }
+
+    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, NFastArrayList<WiresShape> shapesToSkip, boolean addHotspots, double borderWidth)
+    {
+        init( shapes,
+              scratchPad,
+              shapesToSkip,
+              addHotspots,
+              borderWidth);
+    }
+
+    private void init(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, NFastArrayList<WiresShape> shapesToSkip, boolean addHotspots, double borderWidth) {
         this.m_addHotspots = addHotspots;
         this.m_borderWidth = borderWidth;
         scratchPad.clear();
 
         Context2D ctx = scratchPad.getContext();
 
-        addShapes(ctx, shapes, shapeToSkip);
+        addShapes(ctx, shapes, shapesToSkip);
 
         this.m_imageData = ctx.getImageData(0, 0, scratchPad.getWidth(), scratchPad.getHeight());
     }
 
-    private void addShapes(Context2D ctx, NFastArrayList<WiresShape> shapes, WiresShape shapeToSkip)
+    private void addShapes(Context2D ctx, NFastArrayList<WiresShape> shapes, NFastArrayList<WiresShape> shapesToSkip)
     {
         for (int j = 0; j < shapes.size(); j++)
         {
             WiresShape prim = shapes.get(j);
-            if (prim == shapeToSkip)
+            if ( shapesToSkip.contains( prim ) )
             {
                 continue;
             }
@@ -80,7 +99,7 @@ public class ColorMapBackedPicker
 
             if (prim.getChildShapes() != null && !prim.getChildShapes().isEmpty())
             {
-                addShapes(ctx, prim.getChildShapes(), shapeToSkip);
+                addShapes(ctx, prim.getChildShapes(), shapesToSkip);
             }
         }
     }

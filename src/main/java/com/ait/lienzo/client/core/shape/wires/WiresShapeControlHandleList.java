@@ -336,6 +336,9 @@ public class WiresShapeControlHandleList implements IControlHandleList
 
         // For now, move path to bottom to make controls and magnets visible.
         m_wires_shape.getPath().moveToBottom();
+
+        // Layout content whilst resizing
+        m_wires_shape.getLayoutHandler().requestLayout( m_wires_shape );
     }
 
     private Point2DArray getControlPointsArray()

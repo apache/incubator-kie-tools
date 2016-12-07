@@ -55,6 +55,8 @@ public class WiresContainer
 
     private boolean                          m_dragging;
 
+    private ILayoutHandler                   m_layoutHandler       = ILayoutHandler.NONE;
+
     private final IAttributesChangedBatcher  attributesChangedBatcher;
 
     private final HandlerRegistrationManager m_registrationManager;
@@ -125,6 +127,16 @@ public class WiresContainer
         m_dockingAcceptor = dockingAcceptor;
     }
 
+    public ILayoutHandler getLayoutHandler()
+    {
+        return m_layoutHandler;
+    }
+
+    public void setLayoutHandler( ILayoutHandler layoutHandler )
+    {
+        this.m_layoutHandler = layoutHandler;
+    }
+
     public void add(WiresShape shape)
     {
         if (shape.getParent() == this)
@@ -146,6 +158,8 @@ public class WiresContainer
         {
             shape.getMagnets().shapeMoved();
         }
+
+        getLayoutHandler().requestLayout( this );
     }
 
     public void remove(WiresShape shape)
@@ -158,6 +172,8 @@ public class WiresContainer
 
             shape.setParent(null);
         }
+
+        getLayoutHandler().requestLayout( this );
     }
 
     public void setDockedTo(WiresContainer dockedTo)
