@@ -45,13 +45,9 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 /**
  * Handler for the creation of new Items that require a Name and Path
  */
-public abstract class DefaultNewResourceHandler implements NewResourceHandler,
-                                                           PackageContextProvider {
+public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     protected final List<Pair<String, ? extends IsWidget>> extensions = new LinkedList<Pair<String, ? extends IsWidget>>();
-
-    @Inject
-    protected PackageListBox packagesListBox;
 
     @Inject
     protected ProjectContext context;
@@ -74,14 +70,12 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
     //Package-protected constructor for tests. In an ideal world we'd move to Constructor injection
     //however that would require every sub-class of this abstract class to also have Constructor
     //injection.. and that's a lot of refactoring just to be able to test.
-    DefaultNewResourceHandler( final PackageListBox packagesListBox,
-                               final ProjectContext context,
+    DefaultNewResourceHandler( final ProjectContext context,
                                final Caller<KieProjectService> projectService,
                                final Caller<ValidationService> validationService,
                                final PlaceManager placeManager,
                                final Event<NotificationEvent> notificationEvent,
                                final BusyIndicatorView busyIndicatorView ) {
-        this.packagesListBox = packagesListBox;
         this.context = context;
         this.projectService = projectService;
         this.validationService = validationService;
@@ -94,27 +88,14 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
         //Zero argument constructor for CDI proxies
     }
 
-    @PostConstruct
-    private void setupExtensions() {
-        this.extensions.add( Pair.newPair( CommonConstants.INSTANCE.ItemPathSubheading(),
-                                           packagesListBox ) );
-    }
-
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        this.packagesListBox.setContext( context,
-                                         true );
         return this.extensions;
     }
 
     @Override
     public void validate( final String baseFileName,
                           final ValidatorWithReasonCallback callback ) {
-        if ( packagesListBox.getSelectedPackage() == null ) {
-            ErrorPopup.showMessage( CommonConstants.INSTANCE.MissingPath() );
-            callback.onFailure();
-            return;
-        }
 
         final String fileName = buildFileName( baseFileName,
                                                getResourceType() );
@@ -129,6 +110,11 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
                 }
             }
         } ).isFileNameValid( fileName );
+    }
+
+    @Override
+    public ProjectContext getProjectContext() {
+        return context;
     }
 
     @Override
@@ -148,11 +134,6 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
                 newResourcePresenter.show( DefaultNewResourceHandler.this );
             }
         };
-    }
-
-    @Override
-    public Package getPackage() {
-        return packagesListBox.getSelectedPackage();
     }
 
     protected String buildFileName( final String baseFileName,

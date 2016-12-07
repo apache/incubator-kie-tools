@@ -16,75 +16,197 @@
 
 package org.kie.workbench.common.widgets.client.handlers;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.guvnor.common.services.project.model.Package;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.ModalHeader;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidgetsConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
-@WithClassesToStub(ModalHeader.class)
-@RunWith(GwtMockitoTestRunner.class)
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.*;
+
+@WithClassesToStub ( ModalHeader.class )
+@RunWith ( GwtMockitoTestRunner.class )
 public class NewResourceViewTest {
+
+    private static final String HANDLER_DESCRIPTION = "Handler Description";
 
     @Mock
     private NewResourcePresenter presenter;
 
-    @InjectMocks
-    private NewResourceView view;
+    @Mock
+    private Style handlerExtensionsGroupStyle;
 
-    private ArgumentCaptor<ValidatorWithReasonCallback> callbackCaptor = ArgumentCaptor.forClass(ValidatorWithReasonCallback.class);
+    @GwtMock
+    private PackageListBox packageListBox;
+
+    @GwtMock
+    private BaseModal modal;
+
+    @InjectMocks
+    private NewResourceViewImpl view;
+
+    @Mock
+    private NewResourceHandler handler;
+
+    private ArgumentCaptor<ValidatorWithReasonCallback> callbackCaptor = ArgumentCaptor.forClass( ValidatorWithReasonCallback.class );
 
     @Before
     public void setUp() {
-        view.init(presenter);
+        view.fileNameTextBox = mock( TextBox.class );
+        view.fileNameHelpInline = mock( HelpBlock.class );
+        view.translationService = mock( TranslationService.class );
+        view.packageHelpInline = mock( HelpBlock.class );
+        view.handlerExtensions = mock( FlowPanel.class );
+        view.fileTypeLabel = mock( FormLabel.class );
+        view.modal = modal;
+        view.packageListBox = packageListBox;
+        view.init( presenter );
+
+        when( view.handlerExtensionsGroup.getStyle() ).thenReturn( handlerExtensionsGroupStyle );
+
+        when( handler.getDescription() ).thenReturn( HANDLER_DESCRIPTION );
     }
 
-    /* Test that regular input is validated, ... */
+    @Test
+    public void testModalView() {
+        view.show();
+
+        verify( modal ).show();
+
+        view.hide();
+
+        verify( modal ).hide();
+    }
 
     @Test
-    public void validateOnOKButtonClick_regularFileName() {
-        when(view.fileNameTextBox.getText()).thenReturn("mock");
+    public void testSetHandlerWithoutExtensions() {
+        view.setActiveHandler( handler );
+
+        verify( view.fileTypeLabel ).setText( HANDLER_DESCRIPTION );
+        verify( packageListBox ).setContext( any(), anyBoolean() );
+        verify( view.handlerExtensions ).clear();
+        verify( handlerExtensionsGroupStyle ).setDisplay( Style.Display.NONE );
+        verify( view.handlerExtensions, never() ).add( any() );
+    }
+
+    @Test
+    public void testSetHandlerWithExtensions() {
+        IsWidget extension = mock( IsWidget.class );
+        List<Pair<String, ? extends IsWidget>> extensions = new ArrayList<>();
+
+        extensions.add( new Pair<>( "", extension ) );
+
+        when( handler.getExtensions() ).thenReturn( extensions );
+
+        view.setActiveHandler( handler );
+
+        verify( view.fileTypeLabel ).setText( HANDLER_DESCRIPTION );
+        verify( packageListBox ).setContext( any(), anyBoolean() );
+        verify( view.handlerExtensions ).clear();
+        verify( handlerExtensionsGroupStyle ).setDisplay( Style.Display.BLOCK );
+        verify( view.handlerExtensions ).add( extension );
+    }
+
+    @Test
+    public void testOnOkButton_successfulValidation() {
+        when( packageListBox.getSelectedPackage() ).thenReturn( mock( Package.class ) );
+
+        when( view.fileNameTextBox.getText() ).thenReturn( "mock" );
+
         view.onOKButtonClick();
-        verify(presenter).validate(anyString(), any(ValidatorWithReasonCallback.class));
-    }
 
-    /* ... that any kind of 'empty' input gets caught even before validation and results in error state and message. */
+        validateClearErrors();
 
-    @Test
-    public void validateOnOKButtonClick_nullFileName() {
-        when(view.fileNameTextBox.getText()).thenReturn(null);
-        testOnOKButtonClick_emptyFileNames();
+        verify( presenter ).validate( anyString(), any( ValidatorWithReasonCallback.class ) );
     }
 
     @Test
-    public void validateOnOKButtonClick_emptyFileName() {
-        when(view.fileNameTextBox.getText()).thenReturn("");
-        testOnOKButtonClick_emptyFileNames();
+    public void testOnOKButton_nullFileNameValidationFailure() {
+        testFileNameFailure( null );
     }
 
     @Test
-    public void validateOnOKButtonClick_whitespaceFileName() {
-        when(view.fileNameTextBox.getText()).thenReturn("\t");
-        testOnOKButtonClick_emptyFileNames();
+    public void testOnOKButton_emptyFileNameValidationFailure() {
+        testFileNameFailure( "" );
     }
 
-    private void testOnOKButtonClick_emptyFileNames() {
+    @Test
+    public void testOnOKButton_whiteSpaceFileNameValidationFailure() {
+        testFileNameFailure( " " );
+    }
+
+    protected void testFileNameFailure( String fileName ) {
+        when( view.fileNameTextBox.getText() ).thenReturn( fileName );
+
         view.onOKButtonClick();
-        verify(view.fileNameGroup).setValidationState(ValidationState.ERROR);
-        verify(view.fileNameHelpInline).setText(anyString());
-        verify(presenter, never()).validate(anyString(), any(ValidatorWithReasonCallback.class));
+
+        validateClearErrors();
+
+        verify( view.fileNameGroup ).addClassName( ValidationState.ERROR.getCssName() );
+        verify( view.fileNameHelpInline ).setText( anyString() );
+        verify( view.translationService ).getTranslation( KieWorkbenchWidgetsConstants.NewResourceViewFileNameIsMandatory );
+
+        verify( packageListBox, never() ).getSelectedPackage();
+
+        verify( view.packageGroup, never() ).addClassName( ValidationState.ERROR.getCssName() );
+        verify( view.packageHelpInline, never() ).setText( anyString() );
+        verify( view.translationService, never() ).getTranslation( KieWorkbenchWidgetsConstants.NewResourceViewMissingPath );
+
+        verify( presenter, never() ).validate( anyString(), any( ValidatorWithReasonCallback.class ) );
+    }
+
+    @Test
+    public void testOnOKButton_packageValidationFailure() {
+
+        when( packageListBox.getSelectedPackage() ).thenReturn( null );
+        when( view.fileNameTextBox.getText() ).thenReturn( "mock" );
+
+        view.onOKButtonClick();
+
+        validateClearErrors();
+
+        verify( view.fileNameGroup, never() ).addClassName( ValidationState.ERROR.getCssName() );
+        verify( view.fileNameHelpInline, never() ).setText( anyString() );
+        verify( view.translationService, never() ).getTranslation( KieWorkbenchWidgetsConstants.NewResourceViewFileNameIsMandatory );
+
+        verify( packageListBox ).getSelectedPackage();
+
+        verify( view.packageGroup ).addClassName( ValidationState.ERROR.getCssName() );
+        verify( view.packageHelpInline ).setText( anyString() );
+        verify( view.translationService ).getTranslation( KieWorkbenchWidgetsConstants.NewResourceViewMissingPath );
+
+        verify( presenter, never() ).validate( anyString(), any( ValidatorWithReasonCallback.class ) );
+    }
+
+    protected void validateClearErrors() {
+        verify( view.fileNameGroup ).removeClassName( ValidationState.ERROR.getCssName() );
+        verify( view.fileNameHelpInline ).clearError();
+        verify( view.packageGroup ).removeClassName( ValidationState.ERROR.getCssName() );
+        verify( view.packageHelpInline ).clearError();
     }
 
     /* If validation fails, no item is created, the callback should also set the error state ... */
@@ -92,33 +214,36 @@ public class NewResourceViewTest {
     @Test
     public void callbackOnValidationFailure_noReason() {
         getCallback().onFailure();
-        verify(view.fileNameGroup).setValidationState(ValidationState.ERROR);
-        verify(presenter, never()).makeItem(anyString());
+        verify( view.fileNameGroup, never() ).addClassName( ValidationState.ERROR.getCssName() );
+        verify( presenter, never() ).makeItem( anyString() );
     }
 
     /* and show any reason given. */
 
     @Test
     public void callbackOnValidationFailure_withReason() {
-        getCallback().onFailure("mock reason");
-        verify(view.fileNameGroup).setValidationState(ValidationState.ERROR);
-        verify(view.fileNameHelpInline).setText("mock reason");
-        verify(presenter, never()).makeItem(anyString());
+        getCallback().onFailure( "mock reason" );
+        verify( view.fileNameGroup ).addClassName( ValidationState.ERROR.getCssName() );
+        verify( view.fileNameHelpInline ).setText( "mock reason" );
+        verify( presenter, never() ).makeItem( anyString() );
     }
 
     /* Whereas successful validation results in item being created. */
 
     @Test
     public void callbackOnValidationsuccess() {
+        when( packageListBox.getSelectedPackage() ).thenReturn( mock( Package.class ) );
         getCallback().onSuccess();
-        verify(view.fileNameGroup).setValidationState(ValidationState.NONE);
-        verify(presenter).makeItem(anyString());
+        verify( view.fileNameGroup ).removeClassName( ValidationState.ERROR.getCssName() );
+        verify( presenter ).makeItem( anyString() );
     }
 
     private ValidatorWithReasonCallback getCallback() {
-        when(view.fileNameTextBox.getText()).thenReturn("mock");
+        when( view.fileNameTextBox.getText() ).thenReturn( "mock" );
+        when( packageListBox.getSelectedPackage() ).thenReturn( mock( Package.class ) );
+
         view.onOKButtonClick();
-        verify(presenter).validate(anyString(), callbackCaptor.capture());
+        verify( presenter ).validate( anyString(), callbackCaptor.capture() );
 
         return callbackCaptor.getValue();
     }

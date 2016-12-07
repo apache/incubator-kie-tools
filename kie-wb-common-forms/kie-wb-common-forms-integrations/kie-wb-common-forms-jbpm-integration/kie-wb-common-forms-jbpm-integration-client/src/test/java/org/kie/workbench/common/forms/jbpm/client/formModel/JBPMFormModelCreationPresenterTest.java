@@ -25,17 +25,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.jbpm.client.resources.i18n.Constants;
+import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
+import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith ( GwtMockitoTestRunner.class )
 public class JBPMFormModelCreationPresenterTest {
 
     private BPMFinderService finderService;
@@ -46,9 +49,11 @@ public class JBPMFormModelCreationPresenterTest {
 
     private Path path;
 
-    private JBPMFormModelCreationPresenter presenter;
+    private JBPMFormModelCreationPresenterManager presenter;
 
-    private List<JBPMProcessModel> formModels = new ArrayList<>(  );
+    private NewResourcePresenter newResourcePresenter;
+
+    private List<JBPMProcessModel> formModels = new ArrayList<>();
 
     private TranslationService translationService;
 
@@ -69,7 +74,9 @@ public class JBPMFormModelCreationPresenterTest {
 
         translationService = mock( TranslationService.class );
 
-        presenter = new JBPMFormModelCreationPresenter( finderServiceCallerMock, view, translationService );
+        newResourcePresenter = mock( NewResourcePresenter.class );
+
+        presenter = new JBPMFormModelCreationPresenterManager( finderServiceCallerMock, view, translationService, newResourcePresenter );
     }
 
     @Test
@@ -79,23 +86,42 @@ public class JBPMFormModelCreationPresenterTest {
         presenter.reset();
         verify( view ).reset();
 
-        presenter.asWidget();
-
-        verify( view ).asWidget();
-
         presenter.init( path );
 
         presenter.getLabel();
-        translationService.getTranslation( Constants.Process );
+        verify( translationService ).getTranslation( Constants.Process );
 
         verify( finderService ).getAvailableProcessModels( path );
         verify( view ).setProcessModels( formModels );
 
-        presenter.isValid();
-        verify( view ).isValid();
+        presenter.setModel( new JBPMFormModel() {
+            @Override
+            public String getFormName() {
+                return "testFormName";
+            }
 
-        presenter.getFormModel();
-        verify( view ).getSelectedFormModel();
+            @Override
+            public List<JBPMVariable> getVariables() {
+                return null;
+            }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+        } );
+
+        verify( newResourcePresenter ).setResourceName( "testFormName" );
+
+        presenter.reset();
+
+        verify( newResourcePresenter, times( 2 ) ).setResourceName( "" );
+
+        boolean isValid = presenter.isValid();
+
+        assertTrue( isValid );
+        verify( translationService, never() ).getTranslation( Constants.InvalidFormModel );
+
     }
 
     protected void initFormModels() {

@@ -53,10 +53,6 @@ public class NewPackageHandlerTest {
         handler = new NewPackageHandler(mock(Caller.class),
                                         new CallerMock<>(validationService),
                                         mock(AnyResourceTypeDefinition.class)) {
-            @Override
-            public Package getPackage() {
-                return mockpkg;
-            }
         };
     }
 
@@ -66,8 +62,8 @@ public class NewPackageHandlerTest {
 
         handler.validate("mockpkg", callback);
 
-        verify(callback).onFailure();
-        verify(callback, never()).onFailure(anyString());
+        verify(callback, never()).onFailure();
+        verify(callback ).onFailure(anyString());
         verify(callback, never()).onSuccess();
     }
 

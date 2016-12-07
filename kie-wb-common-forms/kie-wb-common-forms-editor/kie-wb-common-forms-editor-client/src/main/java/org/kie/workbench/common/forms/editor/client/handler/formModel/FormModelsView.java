@@ -19,15 +19,11 @@ package org.kie.workbench.common.forms.editor.client.handler.formModel;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.editor.client.handler.formModel.container.FormModelCreationContainer;
 
 public interface FormModelsView extends IsWidget {
 
-    void setCreationViews( List<FormModelCreationView> creationViews );
-
-    boolean isValid();
-
-    FormModel getFormModel();
+    void setCreationViews( List<FormModelCreationContainer> creationViews );
 
     void reset();
 }

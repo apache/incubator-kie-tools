@@ -94,20 +94,21 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        this.packagesListBox.setContext( context,
-                                         true );
-
         formModelsPresenter.initialize( context.getActiveProject().getRootPath() );
 
-        return extensions;
+        return super.getExtensions();
     }
 
     @Override
     public void validate( String baseFileName, ValidatorWithReasonCallback callback ) {
-        if ( !formModelsPresenter.isValid() ) {
-            callback.onFailure( "Wrong FormModel configuration" );
+
+        boolean isValid = formModelsPresenter.isValid();
+
+        if ( !isValid ) {
+            callback.onFailure();
+        } else {
+            super.validate( baseFileName, callback );
         }
-        super.validate( baseFileName, callback );
     }
 
     @Override

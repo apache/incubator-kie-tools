@@ -88,4 +88,7 @@ public interface FormEditorConstants {
 
     @TranslationKey( defaultValue = "" )
     String FieldPropertiesRendererViewImplFieldBinding = "FieldPropertiesRendererViewImpl.fieldBinding";
+
+    @TranslationKey( defaultValue = "" )
+    String DefaultFormModelLabel = "DefaultFormModel.label";
 }

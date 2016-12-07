@@ -14,24 +14,24 @@
  *  limitations under the License.
  */
 
-package org.kie.workbench.common.widgets.client.handlers;
+package org.kie.workbench.common.forms.editor.client.handler.formModel.container;
 
-import org.guvnor.common.services.project.model.Package;
 import org.uberfire.client.mvp.UberElement;
 
-public interface NewResourceView
-        extends
-        UberElement<NewResourcePresenter> {
+public interface FormModelCreationContainerView extends UberElement<FormModelCreationContainerView.Presenter> {
 
-    void show();
+    interface Presenter {
 
-    void hide();
+        UberElement getCreationView();
 
-    void setActiveHandler( final NewResourceHandler activeHandler );
+        String getFormModelLabel();
 
-    Package getSelectedPackage();
+        void selectManager();
+    }
 
-    void setTitle( String title );
+    void hideCreationView();
 
-    void setResourceName( String resourceName );
+    void showCreationView();
+
+    void select();
 }

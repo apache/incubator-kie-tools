@@ -14,24 +14,17 @@
  *  limitations under the License.
  */
 
-package org.kie.workbench.common.widgets.client.handlers;
+package org.kie.workbench.common.forms.editor.client.handler.formModel;
 
-import org.guvnor.common.services.project.model.Package;
-import org.uberfire.client.mvp.UberElement;
+import org.kie.workbench.common.forms.editor.client.handler.formModel.container.FormModelCreationContainer;
 
-public interface NewResourceView
-        extends
-        UberElement<NewResourcePresenter> {
+/**
+ * Defines a callback called when a {@link FormModelCreationContainer} is selected
+ */
+public interface SelectModelCreatorManagerCallback {
 
-    void show();
-
-    void hide();
-
-    void setActiveHandler( final NewResourceHandler activeHandler );
-
-    Package getSelectedPackage();
-
-    void setTitle( String title );
-
-    void setResourceName( String resourceName );
+    /**
+     * Selects the given container
+     */
+    void selectContainerCallback( FormModelCreationContainer container );
 }

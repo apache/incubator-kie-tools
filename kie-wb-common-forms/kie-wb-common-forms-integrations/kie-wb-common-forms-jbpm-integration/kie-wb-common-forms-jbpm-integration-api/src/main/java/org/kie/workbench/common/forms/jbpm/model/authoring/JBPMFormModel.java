@@ -22,5 +22,7 @@ import org.kie.workbench.common.forms.model.FormModel;
 
 public interface JBPMFormModel extends FormModel {
 
+    String getFormName();
+
     List<JBPMVariable> getVariables();
 }

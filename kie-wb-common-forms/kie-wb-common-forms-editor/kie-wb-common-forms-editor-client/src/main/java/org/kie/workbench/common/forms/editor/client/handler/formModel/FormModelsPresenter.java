@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.editor.client.handler.formModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -25,57 +26,88 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.api.Assert;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.kie.workbench.common.forms.editor.client.handler.formModel.container.FormModelCreationContainer;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @Dependent
 public class FormModelsPresenter implements IsWidget {
 
     protected FormModelsView view;
 
-    protected List<FormModelCreationView> creationViews = new ArrayList();
+    protected List<FormModelCreationContainer> containers;
+
+    protected FormModelCreationContainer currentManager;
+
+    protected ManagedInstance<FormModelCreationContainer> containerInstance;
+
+    protected ManagedInstance<FormModelCreationViewManager> modelManagerInstance;
 
     @Inject
-    public FormModelsPresenter( FormModelsView view ) {
+    public FormModelsPresenter( FormModelsView view,
+                                ManagedInstance<FormModelCreationContainer> containerInstance,
+                                ManagedInstance<FormModelCreationViewManager> modelManagerInstance) {
         this.view = view;
+        this.containerInstance = containerInstance;
+        this.modelManagerInstance = modelManagerInstance;
     }
 
     @PostConstruct
     protected void init() {
-        creationViews = registerCreationViews();
+        containers = getRegisteredCreationManagers();
 
-        creationViews.sort( ( o1, o2 ) -> o1.getPriority() - o2.getPriority() );
+        containers.sort( Comparator.comparingInt( o -> o.getCreationViewManager().getPriority() ) );
 
-        view.setCreationViews( creationViews );
+        view.setCreationViews( containers );
     }
 
-    protected List<FormModelCreationView> registerCreationViews() {
-        List<FormModelCreationView> creationViews = new ArrayList();
+    protected List<FormModelCreationContainer> getRegisteredCreationManagers() {
+        List<FormModelCreationContainer> registeredContainers = new ArrayList<>();
 
-        Collection<SyncBeanDef<FormModelCreationView>> viewDefs = IOC.getBeanManager().lookupBeans( FormModelCreationView.class );
+        modelManagerInstance.forEach( modelManager -> {
+            FormModelCreationContainer container = containerInstance.get();
 
-        viewDefs.forEach( viewDef -> creationViews.add( viewDef.newInstance() ) );
+            container.setup( modelManager, this::selectContainer );
 
-        return creationViews;
+            registeredContainers.add( container );
+        } );
+
+        return registeredContainers;
     }
 
     public void initialize( Path projectPath ) {
         view.reset();
-        creationViews.forEach( view -> {
-            view.reset();
-            view.init( projectPath );
+
+        currentManager = containers.get( 0 );
+        currentManager.showCreationView();
+
+        containers.forEach( container -> {
+            container.initData( projectPath );
         } );
     }
 
-
     public boolean isValid() {
-        return view.isValid();
+        return currentManager.isValid();
     }
 
     public FormModel getFormModel() {
-        return view.getFormModel();
+        return currentManager.getCreationViewManager().getFormModel();
+    }
+
+    public void selectContainer( FormModelCreationContainer container ) {
+        PortablePreconditions.checkNotNull( "container", container );
+
+        if ( currentManager != null ) {
+            currentManager.hideCreationView();
+        }
+        currentManager = container;
+        currentManager.showCreationView();
+
     }
 
     @Override

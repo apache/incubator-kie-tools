@@ -47,7 +47,6 @@ public class DefaultNewResourceHandlerTest {
 
     private DefaultNewResourceHandler handler;
 
-    private PackageListBox packagesListBox;
     private ProjectContext context;
     private KieProjectService projectService;
     private Caller<KieProjectService> projectServiceCaller;
@@ -59,7 +58,6 @@ public class DefaultNewResourceHandlerTest {
 
     @Before
     public void setup() {
-        packagesListBox = mock( PackageListBox.class );
         context = mock( ProjectContext.class );
         projectService = mock( KieProjectService.class );
         projectServiceCaller = new CallerMock<KieProjectService>( projectService );
@@ -69,8 +67,7 @@ public class DefaultNewResourceHandlerTest {
         notificationEvent = new EventSourceMock<NotificationEvent>();
         busyIndicatorView = mock( BusyIndicatorView.class );
 
-        handler = new DefaultNewResourceHandler( packagesListBox,
-                                                 context,
+        handler = new DefaultNewResourceHandler( context,
                                                  projectServiceCaller,
                                                  validationServiceCaller,
                                                  placeManager,
@@ -107,7 +104,6 @@ public class DefaultNewResourceHandlerTest {
     public void testValidateValidFileName() {
         final org.guvnor.common.services.project.model.Package pkg = mock( Package.class );
         final ValidatorWithReasonCallback callback = mock( ValidatorWithReasonCallback.class );
-        when( packagesListBox.getSelectedPackage() ).thenReturn( pkg );
         when( validationService.isFileNameValid( "filename.suffix" ) ).thenReturn( true );
 
         handler.validate( "filename",
@@ -125,7 +121,6 @@ public class DefaultNewResourceHandlerTest {
     public void testValidateInvalidFileName() {
         final org.guvnor.common.services.project.model.Package pkg = mock( Package.class );
         final ValidatorWithReasonCallback callback = mock( ValidatorWithReasonCallback.class );
-        when( packagesListBox.getSelectedPackage() ).thenReturn( pkg );
         when( validationService.isFileNameValid( "filename.suffix" ) ).thenReturn( false );
 
         handler.validate( "filename",

@@ -19,9 +19,7 @@ package org.kie.workbench.common.forms.processing.engine.handling;
 import org.jboss.errai.databinding.client.api.DataBinder;
 
 /**
- * @author Pere Fernandez <pefernan@redhat.com>
- *         <p>
- *         Provides API to handle the input changes allowing to add callbacks and run field validations.
+ * Provides API to handle the input changes allowing to add callbacks and run field validations.
  */
 public interface FormHandler<T> {
 

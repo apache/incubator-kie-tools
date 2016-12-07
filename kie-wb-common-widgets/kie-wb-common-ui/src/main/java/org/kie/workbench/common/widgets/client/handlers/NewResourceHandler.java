@@ -84,6 +84,20 @@ public interface NewResourceHandler {
                    final ValidatorWithReasonCallback callback );
 
     /**
+     * Returns the actual ProjectContext
+     * @return the actual ProjectContext
+     */
+    ProjectContext getProjectContext();
+
+    /**
+     * Indicates if the NewResourceHandler can create the assets on the default package
+     * @return
+     */
+    default boolean supportsDefaultPackage() {
+        return true;
+    }
+
+    /**
      * Indicates if the NewResourceHandler can create a resource to this path
      * @return
      */
@@ -96,5 +110,4 @@ public interface NewResourceHandler {
      * @return
      */
     Command getCommand( final NewResourcePresenter newResourcePresenter );
-
 }

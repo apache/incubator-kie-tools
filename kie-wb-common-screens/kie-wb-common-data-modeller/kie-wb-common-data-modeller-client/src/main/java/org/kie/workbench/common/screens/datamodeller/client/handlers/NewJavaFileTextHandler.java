@@ -99,14 +99,6 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        this.packagesListBox.setContext( context,
-                false );
-        return this.extensions;
-    }
-
-
-    @Override
     public void create( final org.guvnor.common.services.project.model.Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
@@ -129,11 +121,6 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     @Override
     public void validate( final String javaFileName,
                           final ValidatorWithReasonCallback callback ) {
-        if ( packagesListBox.getSelectedPackage() == null ) {
-            ErrorPopup.showMessage( CommonConstants.INSTANCE.MissingPath() );
-            callback.onFailure();
-            return;
-        }
 
         validationService.call( new RemoteCallback<Boolean>() {
             @Override
@@ -153,5 +140,10 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
             options.restoreOptionsDefaults();
         }
         return super.getCommand( newResourcePresenter );
+    }
+
+    @Override
+    public boolean supportsDefaultPackage() {
+        return false;
     }
 }

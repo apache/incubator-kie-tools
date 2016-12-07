@@ -76,11 +76,6 @@ public class NewPackageHandler
     @Override
     public void validate( final String packageName,
                           final ValidatorWithReasonCallback callback ) {
-        if ( getPackage() == null ) {
-            Window.alert( CommonConstants.INSTANCE.MissingPath() );
-            callback.onFailure();
-            return;
-        }
 
         validationService.call( new RemoteCallback<Boolean>() {
             @Override

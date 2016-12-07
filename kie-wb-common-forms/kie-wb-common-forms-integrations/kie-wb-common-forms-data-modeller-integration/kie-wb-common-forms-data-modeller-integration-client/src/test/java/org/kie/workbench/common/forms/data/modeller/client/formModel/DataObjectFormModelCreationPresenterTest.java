@@ -30,9 +30,10 @@ import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderServ
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith ( GwtMockitoTestRunner.class )
 public class DataObjectFormModelCreationPresenterTest {
 
     private DataObjectFinderService finderService;
@@ -43,9 +44,9 @@ public class DataObjectFormModelCreationPresenterTest {
 
     private Path path;
 
-    private DataObjectFormModelCreationPresenter presenter;
+    private DataObjectFormModelCreationPresenterManager presenter;
 
-    private List<DataObjectFormModel> formModels = new ArrayList<>(  );
+    private List<DataObjectFormModel> formModels = new ArrayList<>();
 
     private TranslationService translationService;
 
@@ -69,7 +70,7 @@ public class DataObjectFormModelCreationPresenterTest {
 
         translationService = mock( TranslationService.class );
 
-        presenter = new DataObjectFormModelCreationPresenter( finderServiceCallerMock, view, translationService );
+        presenter = new DataObjectFormModelCreationPresenterManager( finderServiceCallerMock, view, translationService );
     }
 
     @Test
@@ -79,23 +80,20 @@ public class DataObjectFormModelCreationPresenterTest {
         presenter.reset();
         verify( view ).reset();
 
-        presenter.asWidget();
-
-        verify( view ).asWidget();
-
         presenter.init( path );
 
         presenter.getLabel();
-        translationService.getTranslation( DataModellerIntegrationConstants.DataObject );
+        verify( translationService ).getTranslation( DataModellerIntegrationConstants.DataObject );
 
         verify( finderService ).getAvailableDataObjects( path );
         verify( view ).setFormModels( formModels );
 
-        presenter.isValid();
-        verify( view ).isValid();
+        boolean valid = presenter.isValid();
+
+        assertFalse( valid );
+        verify( translationService ).getTranslation( DataModellerIntegrationConstants.InvalidDataObject );
 
         presenter.getFormModel();
-        verify( view ).getSelectedFormModel();
+        verify( view, times( 2 ) ).getSelectedFormModel();
     }
-
 }

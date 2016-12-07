@@ -22,4 +22,7 @@ public interface DataModellerIntegrationConstants {
 
     @TranslationKey( defaultValue = "Data Object")
     String DataObject = "DataObjectFormModelCreationPresenter.DataObject";
+
+    @TranslationKey( defaultValue = "There's no Data Object selected")
+    public static final String InvalidDataObject = "DataObjectFormModelCreationPresenter.InvalidDataObject";
 }

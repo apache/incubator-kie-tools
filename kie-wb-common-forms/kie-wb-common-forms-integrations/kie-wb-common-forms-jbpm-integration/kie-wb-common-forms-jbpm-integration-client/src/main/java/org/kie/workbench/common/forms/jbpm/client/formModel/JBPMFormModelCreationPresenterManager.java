@@ -17,21 +17,23 @@
 package org.kie.workbench.common.forms.jbpm.client.formModel;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModelCreationView;
+import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModelCreationViewManager;
 import org.kie.workbench.common.forms.jbpm.client.resources.i18n.Constants;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
+import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UberElement;
 
 @Dependent
-public class JBPMFormModelCreationPresenter implements FormModelCreationView<JBPMFormModel> {
+public class JBPMFormModelCreationPresenterManager implements FormModelCreationViewManager<JBPMFormModel>, JBPMFormModelCreationView.Presenter {
 
     protected Caller<BPMFinderService> finderService;
 
@@ -39,13 +41,24 @@ public class JBPMFormModelCreationPresenter implements FormModelCreationView<JBP
 
     protected TranslationService translationService;
 
+    protected NewResourcePresenter newResourcePresenter;
+
+    private JBPMFormModel model;
+
     @Inject
-    public JBPMFormModelCreationPresenter( Caller<BPMFinderService> finderService,
-                                           JBPMFormModelCreationView view,
-                                           TranslationService translationService ) {
+    public JBPMFormModelCreationPresenterManager( Caller<BPMFinderService> finderService,
+                                                  JBPMFormModelCreationView view,
+                                                  TranslationService translationService,
+                                                  NewResourcePresenter newResourcePresenter ) {
         this.finderService = finderService;
         this.view = view;
         this.translationService = translationService;
+        this.newResourcePresenter = newResourcePresenter;
+    }
+
+    @PostConstruct
+    public void init() {
+        view.init( this );
     }
 
     @Override
@@ -57,16 +70,22 @@ public class JBPMFormModelCreationPresenter implements FormModelCreationView<JBP
     public void init( Path projectPath ) {
         finderService.call( dataObjectFormModels -> view.setProcessModels( (List<JBPMProcessModel>) dataObjectFormModels ) ).getAvailableProcessModels(
                 projectPath );
+        model = null;
     }
 
     @Override
     public JBPMFormModel getFormModel() {
-        return view.getSelectedFormModel();
+        return model;
     }
 
     @Override
     public boolean isValid() {
-        return view.isValid();
+        if ( model == null ) {
+            view.setErrorMessage( translationService.getTranslation( Constants.InvalidFormModel ) );
+            return false;
+        }
+        view.clearValidationErrors();
+        return true;
     }
 
     @Override
@@ -77,10 +96,23 @@ public class JBPMFormModelCreationPresenter implements FormModelCreationView<JBP
     @Override
     public void reset() {
         view.reset();
+        newResourcePresenter.setResourceName( "" );
     }
 
     @Override
-    public Widget asWidget() {
-        return view.asWidget();
+    public UberElement getView() {
+        return view;
+    }
+
+    @Override
+    public void setModel( JBPMFormModel model ) {
+
+        this.model = model;
+
+        if ( model != null ) {
+            newResourcePresenter.setResourceName( model.getFormName() );
+        } else {
+            newResourcePresenter.setResourceName( "" );
+        }
     }
 }

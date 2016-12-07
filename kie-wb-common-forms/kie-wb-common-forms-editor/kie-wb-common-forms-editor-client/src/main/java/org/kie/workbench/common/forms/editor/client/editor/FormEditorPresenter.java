@@ -17,25 +17,24 @@
 package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-import org.kie.workbench.common.forms.editor.client.editor.preview.PreviewFormPresenter;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.FormEditorService;
+import org.kie.workbench.common.forms.model.DefaultFormModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -57,8 +56,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @WorkbenchEditor( identifier = "FormEditor", supportedTypes = {FormDefinitionResourceType.class} )
@@ -228,7 +225,9 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     private void loadAvailableFields( FormModelerContent content ) {
-        if ( content.getAvailableFields() == null ) return;
+        if ( content.getDefinition().getModel() instanceof DefaultFormModel || content.getAvailableFields() == null ) {
+            return;
+        }
 
         for ( String modelName : content.getAvailableFields().keySet() ) {
             List<FieldDefinition> availableFields = content.getAvailableFields().get( modelName );
@@ -286,7 +285,9 @@ public class FormEditorPresenter extends KieEditor {
                 if ( layoutFieldComponent != null ) {
                     layoutFieldComponent.init( editorContext.getRenderingContext(), field );
                     layoutEditor
-                            .addDraggableComponentToGroup( getFormDefinition().getModel().getName(), field.getId(), layoutFieldComponent );
+                            .addDraggableComponentToGroup( getFormDefinition().getModel().getName(),
+                                                           field.getId(),
+                                                           layoutFieldComponent );
                 }
             }
         }

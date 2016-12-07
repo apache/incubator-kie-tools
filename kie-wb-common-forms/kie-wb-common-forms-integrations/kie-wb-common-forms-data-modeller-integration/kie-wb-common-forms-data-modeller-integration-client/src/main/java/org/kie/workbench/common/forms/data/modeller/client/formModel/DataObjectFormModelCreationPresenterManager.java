@@ -17,20 +17,22 @@
 package org.kie.workbench.common.forms.data.modeller.client.formModel;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.data.modeller.client.resources.i18n.DataModellerIntegrationConstants;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
-import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModelCreationView;
+import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModelCreationViewManager;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UberElement;
 
 @Dependent
-public class DataObjectFormModelCreationPresenter implements FormModelCreationView<DataObjectFormModel> {
+public class DataObjectFormModelCreationPresenterManager implements FormModelCreationViewManager<DataObjectFormModel>, DataObjectFormModelCreationView.Presenter {
 
     protected Caller<DataObjectFinderService> finderService;
 
@@ -39,22 +41,27 @@ public class DataObjectFormModelCreationPresenter implements FormModelCreationVi
     protected TranslationService translationService;
 
     @Inject
-    public DataObjectFormModelCreationPresenter( Caller<DataObjectFinderService> finderService,
-                                                 DataObjectFormModelCreationView view,
-                                                 TranslationService translationService ) {
+    public DataObjectFormModelCreationPresenterManager( Caller<DataObjectFinderService> finderService,
+                                                        DataObjectFormModelCreationView view,
+                                                        TranslationService translationService ) {
         this.finderService = finderService;
         this.view = view;
         this.translationService = translationService;
     }
 
+    @PostConstruct
+    public void initialize() {
+        view.init( this );
+    }
+
     @Override
     public int getPriority() {
-        return 0;
+        return 1;
     }
 
     @Override
     public void init( Path projectPath ) {
-        finderService.call( dataObjectFormModels -> view.setFormModels( (List<DataObjectFormModel>)dataObjectFormModels ) ).getAvailableDataObjects(
+        finderService.call( dataObjectFormModels -> view.setFormModels( (List<DataObjectFormModel>) dataObjectFormModels ) ).getAvailableDataObjects(
                 projectPath );
     }
 
@@ -65,7 +72,12 @@ public class DataObjectFormModelCreationPresenter implements FormModelCreationVi
 
     @Override
     public boolean isValid() {
-        return view.isValid();
+        if ( getFormModel() == null ) {
+            view.setErrorMessage( translationService.getTranslation( DataModellerIntegrationConstants.InvalidDataObject ) );
+            return false;
+        }
+        view.clearValidationErrors();
+        return true;
     }
 
     @Override
@@ -79,7 +91,7 @@ public class DataObjectFormModelCreationPresenter implements FormModelCreationVi
     }
 
     @Override
-    public Widget asWidget() {
-        return view.asWidget();
+    public UberElement getView() {
+        return view;
     }
 }

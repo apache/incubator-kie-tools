@@ -130,8 +130,6 @@ public interface CommonConstants
 
     String ItemUndefinedPath();
 
-    String MissingPath();
-
     String ItemRestored();
 
     String AddAnOptionalCheckInComment();
@@ -283,9 +281,9 @@ public interface CommonConstants
     String Basic();
 
     String View_Mode();
-    
+
     String Language_Selector();
-    
+
     String All_Perspectives_View_Mode();
 
     String Reimport();

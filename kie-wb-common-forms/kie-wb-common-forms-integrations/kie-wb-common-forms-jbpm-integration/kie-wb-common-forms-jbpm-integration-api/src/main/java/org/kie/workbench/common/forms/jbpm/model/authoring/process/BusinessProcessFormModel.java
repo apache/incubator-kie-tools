@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.AbstractJBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
+import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 
 @Portable
 public class BusinessProcessFormModel extends AbstractJBPMFormModel {
@@ -57,5 +58,10 @@ public class BusinessProcessFormModel extends AbstractJBPMFormModel {
 
     public void setProcessName( String processName ) {
         this.processName = processName;
+    }
+
+    @Override
+    public String getFormName() {
+        return processId + BPMNVariableUtils.TASK_FORM_SUFFIX;
     }
 }

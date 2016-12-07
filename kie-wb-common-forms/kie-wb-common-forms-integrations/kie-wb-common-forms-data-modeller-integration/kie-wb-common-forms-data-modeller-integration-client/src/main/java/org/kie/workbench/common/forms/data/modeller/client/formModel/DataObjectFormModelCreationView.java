@@ -18,17 +18,22 @@ package org.kie.workbench.common.forms.data.modeller.client.formModel;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
+import org.uberfire.client.mvp.UberElement;
 
-public interface DataObjectFormModelCreationView extends IsWidget {
+public interface DataObjectFormModelCreationView extends UberElement<DataObjectFormModelCreationView.Presenter> {
+
+    interface Presenter {
+
+    }
 
     void setFormModels( List<DataObjectFormModel> formModels );
 
     DataObjectFormModel getSelectedFormModel();
 
-    boolean isValid();
-
     void reset();
 
+    void setErrorMessage( String translation );
+
+    void clearValidationErrors();
 }

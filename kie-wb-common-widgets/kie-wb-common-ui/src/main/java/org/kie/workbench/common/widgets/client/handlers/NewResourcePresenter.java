@@ -20,33 +20,25 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.Package;
-import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
-import org.uberfire.client.mvp.UberView;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidgetsConstants;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 
 @ApplicationScoped
 public class NewResourcePresenter {
 
-    public interface View
-            extends
-            UberView<NewResourcePresenter> {
+    private NewResourceView view;
 
-        void show();
-
-        void hide();
-
-        void setActiveHandler( final NewResourceHandler activeHandler );
-
-        void setTitle( String title );
-
-    }
-
-    @Inject
-    private View view;
+    private final TranslationService translationService;
 
     private NewResourceHandler activeHandler = null;
+
+    @Inject
+    public NewResourcePresenter( NewResourceView view, TranslationService translationService ) {
+        this.view = view;
+        this.translationService = translationService;
+    }
 
     @PostConstruct
     private void setup() {
@@ -58,7 +50,7 @@ public class NewResourcePresenter {
                                                             handler );
         view.show();
         view.setActiveHandler( activeHandler );
-        view.setTitle( NewItemPopupConstants.INSTANCE.popupTitle() + " " + getActiveHandlerDescription() );
+        view.setTitle( translationService.getTranslation( KieWorkbenchWidgetsConstants.NewResourceViewPopupTitle ) + " " + getActiveHandlerDescription() );
     }
 
     public void validate( final String fileName,
@@ -71,11 +63,7 @@ public class NewResourcePresenter {
 
     public void makeItem( final String fileName ) {
         if ( activeHandler != null ) {
-            Package activePackage = null;
-            if ( activeHandler instanceof PackageContextProvider ) {
-                activePackage = ( (PackageContextProvider) activeHandler ).getPackage();
-            }
-            activeHandler.create( activePackage,
+            activeHandler.create( view.getSelectedPackage(),
                                   fileName,
                                   NewResourcePresenter.this );
         }
@@ -93,4 +81,7 @@ public class NewResourcePresenter {
         }
     }
 
+    public void setResourceName( String resourceName ) {
+        view.setResourceName( resourceName );
+    }
 }

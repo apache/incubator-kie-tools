@@ -16,27 +16,13 @@
 
 package org.kie.workbench.common.forms.model;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class DefaultFormModel implements FormModel {
-    private String description;
-
-    public DefaultFormModel( @MapsTo( "description" ) String description ) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription( String description ) {
-        this.description = description;
-    }
 
     @Override
     public String getName() {
-        return description;
+        return "default";
     }
 }

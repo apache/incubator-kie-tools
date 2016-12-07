@@ -18,17 +18,22 @@ package org.kie.workbench.common.forms.jbpm.client.formModel;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
+import org.uberfire.client.mvp.UberElement;
 
-public interface JBPMFormModelCreationView extends IsWidget {
+public interface JBPMFormModelCreationView extends UberElement<JBPMFormModelCreationView.Presenter> {
+
+    interface Presenter {
+
+        void setModel( JBPMFormModel model );
+    }
 
     void setProcessModels( List<JBPMProcessModel> processModels );
 
-    JBPMFormModel getSelectedFormModel();
-
-    boolean isValid();
-
     void reset();
+
+    void clearValidationErrors();
+
+    void setErrorMessage( String errorMessage );
 }

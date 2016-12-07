@@ -32,18 +32,18 @@ public class TaskFormModel extends AbstractJBPMFormModel {
 
     protected String taskName;
 
-    protected String taskFormName;
+    protected String formName;
 
     public TaskFormModel( @MapsTo( "processId" ) String processId,
                           @MapsTo( "taskId" ) String taskId,
                           @MapsTo( "taskName" ) String taskName,
-                          @MapsTo( "taskFormName" ) String taskFormName,
+                          @MapsTo( "formName" ) String formName,
                           @MapsTo( "variables" ) List<JBPMVariable> variables ) {
         super( variables );
         this.processId = processId;
         this.taskId = taskId;
         this.taskName = taskName;
-        this.taskFormName = taskFormName;
+        this.formName = formName;
     }
 
     @Override
@@ -75,11 +75,12 @@ public class TaskFormModel extends AbstractJBPMFormModel {
         this.taskName = taskName;
     }
 
-    public String getTaskFormName() {
-        return taskFormName;
+    @Override
+    public String getFormName() {
+        return formName;
     }
 
-    public void setTaskFormName( String taskFormName ) {
-        this.taskFormName = taskFormName;
+    public void setFormName( String formName ) {
+        this.formName = formName;
     }
 }

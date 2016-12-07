@@ -74,7 +74,7 @@ public class DynamicBPMNFormGeneratorImpl implements DynamicBPMNFormGenerator {
 
     @Override
     public Collection<FormDefinition> generateTaskForms( TaskFormModel model, ClassLoader classLoader ) {
-        return createFormDefinition( model.getTaskFormName(), model.getTaskFormName(), model, classLoader );
+        return createFormDefinition( model.getFormName(), model.getFormName(), model, classLoader );
     }
 
     protected Collection<FormDefinition> createFormDefinition( String id,
