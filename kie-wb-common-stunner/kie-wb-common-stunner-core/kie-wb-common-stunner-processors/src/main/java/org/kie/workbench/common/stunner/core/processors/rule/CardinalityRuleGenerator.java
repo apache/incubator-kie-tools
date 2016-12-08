@@ -23,8 +23,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.AllowedOccurrences;
 import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
 import org.uberfire.annotations.processors.AbstractGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.relocated.freemarker.template.Template;
-import org.uberfire.relocated.freemarker.template.TemplateException;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;

@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.processors;
 
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.relocated.freemarker.template.Configuration;
-import org.uberfire.relocated.freemarker.template.DefaultObjectWrapper;
-import org.uberfire.relocated.freemarker.template.Template;
-import org.uberfire.relocated.freemarker.template.TemplateException;
 
 import javax.annotation.processing.Messager;
 import javax.tools.Diagnostic;

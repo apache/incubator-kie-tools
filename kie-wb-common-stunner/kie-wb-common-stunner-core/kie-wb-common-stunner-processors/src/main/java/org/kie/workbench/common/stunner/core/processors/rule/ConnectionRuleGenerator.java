@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.processors.rule;
 
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.kie.workbench.common.stunner.core.processors.MainProcessor;
 import org.kie.workbench.common.stunner.core.processors.ProcessingContext;
 import org.kie.workbench.common.stunner.core.processors.ProcessingRule;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.uberfire.annotations.processors.AbstractGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.relocated.freemarker.template.Template;
-import org.uberfire.relocated.freemarker.template.TemplateException;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
