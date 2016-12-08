@@ -16,9 +16,7 @@
 package org.drools.workbench.jcr2vfsmigration.vfsImport.asset;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -33,7 +31,6 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
@@ -59,7 +56,6 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
     @Inject
     private DataModelerService modelerService;
 
-    private Map<String, String> orderedBaseTypes = new TreeMap<String, String>();
     private Map<String, AnnotationDefinition> annotationDefinitions;
 
     @Override
@@ -77,7 +73,6 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
 
         KieProject project = projectService.resolveProject( path );
 
-        initBasePropertyTypes();
         initAnnotationDefinitions();
 
         if ( project == null ) {
@@ -111,12 +106,10 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
                 String fieldName = objProp.getName();
                 String fieldType = objProp.getType();
                 boolean isMultiple = false;
-                boolean isBaseType = isBaseType( fieldType );
 
                 ObjectProperty property = new ObjectPropertyImpl( fieldName,
                                                                   fieldType,
                                                                   isMultiple );
-                property.setBaseType( isBaseType );
                 dataObject.addProperty( property );
             }
 
@@ -142,20 +135,7 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
         return path;
     }
 
-    private void initBasePropertyTypes() {
-        List<PropertyType> baseTypes = modelerService.getBasePropertyTypes();
-        if ( baseTypes != null ) {
-            for ( PropertyType type : baseTypes ) {
-                orderedBaseTypes.put( type.getName(), type.getClassName() );
-            }
-        }
-    }
-
     private void initAnnotationDefinitions() {
         annotationDefinitions = modelerService.getAnnotationDefinitions();
-    }
-
-    private Boolean isBaseType( String type ) {
-        return orderedBaseTypes.containsValue( type );
     }
 }
