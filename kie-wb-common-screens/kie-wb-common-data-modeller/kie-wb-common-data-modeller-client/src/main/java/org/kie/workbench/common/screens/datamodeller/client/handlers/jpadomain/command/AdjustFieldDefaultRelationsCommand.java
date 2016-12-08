@@ -64,7 +64,7 @@ public class AdjustFieldDefaultRelationsCommand extends AbstractDataModelCommand
 
     @Override
     public void execute() {
-        //this if is not optimized just to read clearly what's defaulted in each case.
+        //this is not optimized just to read clearly what's defaulted in each case.
         //user added annotations that do not belong to the JPA by default managed annotations set remains untouched
 
         List<String> defaultCascadeType = new ArrayList<String>( 1 );
@@ -79,7 +79,8 @@ public class AdjustFieldDefaultRelationsCommand extends AbstractDataModelCommand
             removeManyToOne();
             removeElementCollection();
 
-        } else if ( getContext().getHelper().isBaseType( field.getClassName() ) ) {
+        } else if ( getContext().getHelper().isBaseType( field.getClassName() ) ||
+                getContext().getDataModel().isEnum( field.getClassName() ) ) {
 
             //when a java lang type is set relation annotations should be removed.
             removeOneToOne();

@@ -40,7 +40,4 @@ public interface ObjectProperty extends HasName, HasClassName, HasAnnotations, H
 
     void setClassName( String className );
 
-    //TODO check this method is here just because off the TO refactoring, this should probably be removed.
-    void setBaseType( boolean baseType );
-
 }

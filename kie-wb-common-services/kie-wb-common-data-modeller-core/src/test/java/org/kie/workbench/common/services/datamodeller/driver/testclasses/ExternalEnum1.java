@@ -1,11 +1,11 @@
-/**
+/*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.datamodeller.core;
+package org.kie.workbench.common.services.datamodeller.driver.testclasses;
 
-import java.util.List;
-
-public interface JavaType extends HasAnnotations, HasName, HasPackageName, HasClassName, HasVisibility {
-
-    boolean isClass();
-
-    boolean isEnum();
-
-    boolean isInterface();
-
-    boolean isAnnotation();
-
-    JavaTypeKind getTypeKind();
-
-    JavaType getEnclosingType();
-
-    List<JavaType> getNestedTypes();
-
+/**
+ * Helper class for testing the loading of external dependencies information provided by the DMO into a data model.
+ */
+public enum ExternalEnum1 {
+    VALUE1, VALUE2
 }

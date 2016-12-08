@@ -41,7 +41,8 @@ public class NewFieldPopupTest {
 
         DataModelerContext context = DataModelerEditorsTestHelper.createTestContext();
         List<Pair<String, String>> expectedTypeOptions = DataModelerUtils.buildFieldTypeOptions( context.getBaseTypes(),
-                context.getDataModel().getDataObjects(), context.getDataModel().getExternalClasses(), false );
+                context.getDataModel().getDataObjects(), context.getDataModel().getJavaEnums(),
+                context.getDataModel().getExternalClasses(), context.getDataModel().getDependencyJavaEnums(), false );
 
         NewFieldPopup newFieldPopup = new NewFieldPopup( view );
         newFieldPopup.init( context );

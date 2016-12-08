@@ -59,20 +59,36 @@ public interface DataModel {
 
     DataObject removeDataObject( String className, ObjectSource source );
 
-    //TODO this method was added for refactoring purposes, check if this I should maintain this method
-    int getId();
+    JavaEnum addJavaEnum( JavaEnum javaEnum );
 
-    //TODO this method was added for refactoring purposes, check if this I should maintain this method
-    public List<DataObject> getExternalClasses();
+    JavaEnum addJavaEnum( JavaEnum javaEnum, ObjectSource source );
 
+    JavaEnum removeJavaEnum( String className );
+
+    JavaEnum getJavaEnum( String className );
+
+    List<JavaEnum> getJavaEnums();
+
+    List<DataObject> getExternalClasses();
+
+    List<JavaEnum> getDependencyJavaEnums();
 
     /**
+     * Checks if a class is defined within the model or comes form a dependency.
      *
-     * @param className
+     * @param className A qualified class name.
      *
      * @return  true if the given class name is an imported class.
      */
     boolean isExternal( String className );
 
+    /**
+     * Checks if class is a java enum.
+     *
+     * @param className A qualified class name.
+     *
+     * @return true if the given class is a java enum, false in any other case.
+     */
+    boolean isEnum( String className );
 
 }

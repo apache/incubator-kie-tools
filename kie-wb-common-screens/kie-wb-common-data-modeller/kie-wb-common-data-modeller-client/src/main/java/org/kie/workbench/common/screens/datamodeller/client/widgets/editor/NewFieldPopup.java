@@ -51,7 +51,9 @@ public class NewFieldPopup
         if ( context != null && context.getDataModel() != null ) {
             typeList = DataModelerUtils.buildFieldTypeOptions( context.getHelper().getOrderedBaseTypes().values(),
                     context.getDataModel().getDataObjects(),
+                    context.getDataModel().getJavaEnums(),
                     context.getDataModel().getExternalClasses(),
+                    context.getDataModel().getDependencyJavaEnums(),
                     false );
         } else {
             typeList = new ArrayList<Pair<String, String>>();

@@ -180,10 +180,6 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
         this.visibility = visibility;
     }
 
-    @Override public void setBaseType( boolean baseType ) {
-        //do nothing
-    }
-
     @Override public boolean equals( Object o ) {
         if ( this == o ) {
             return true;

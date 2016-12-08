@@ -29,6 +29,8 @@ import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomain
 import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.JavaEnum;
+import org.kie.workbench.common.services.datamodeller.core.JavaType;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.uberfire.backend.vfs.Path;
@@ -289,19 +291,24 @@ public class DataModelerUtils {
 
     public static List<Pair<String, String>> buildFieldTypeOptions( final Collection<PropertyType> baseTypes,
             final Collection<DataObject> dataObjects,
+            final Collection<JavaEnum> javaEnum,
             final Collection<DataObject> externalClasses,
+            final Collection<JavaEnum> externalEnums,
             final boolean includeEmptyItem ) {
-        return buildFieldTypeOptions( baseTypes, dataObjects, externalClasses, null, includeEmptyItem );
+        return buildFieldTypeOptions( baseTypes, dataObjects, javaEnum, externalClasses, externalEnums, null, includeEmptyItem );
     }
 
     public static List<Pair<String, String>> buildFieldTypeOptions( final Collection<PropertyType> baseTypes,
             final Collection<DataObject> dataObjects,
+            final Collection<JavaEnum> javaEnums,
             final Collection<DataObject> externalClasses,
+            final Collection<JavaEnum> externalEnums,
             final String selectedType,
             final boolean includeEmptyItem ) {
 
         List<Pair<String, String>> typeList = new ArrayList<Pair<String, String>>( );
-
+        Collection<JavaType> javaTypes = new ArrayList<JavaType>( );
+        Collection<JavaType> externalJavaTypes = new ArrayList<JavaType>( );
         SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
         SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
         Map<String, PropertyType> orderedBaseTypes = new TreeMap<String, PropertyType>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
@@ -326,22 +333,39 @@ public class DataModelerUtils {
             }
         }
 
+        // collect all model types, ordered
         if ( dataObjects != null ) {
-            // collect all model types, ordered
-            for ( DataObject dataObject : dataObjects ) {
-                String className = dataObject.getClassName();
-                String classLabel = DataModelerUtils.getDataObjectFullLabel( dataObject );
-                sortedModelTypeNames.put( classLabel, className );
-                if ( selectedType != null && selectedType.equals( className ) ) {
-                    selectedTypeIncluded = true;
-                }
+            javaTypes.addAll( dataObjects );
+        }
+        if ( javaEnums != null ) {
+            javaTypes.addAll( javaEnums );
+        }
+        for ( JavaType javaType : javaTypes ) {
+            String className = javaType.getClassName();
+            String classLabel;
+
+            if ( javaType instanceof DataObject ) {
+                classLabel = DataModelerUtils.getDataObjectFullLabel( (DataObject) javaType );
+            } else {
+                classLabel = javaType.getClassName();
+            }
+            sortedModelTypeNames.put( classLabel, className );
+            if ( selectedType != null && selectedType.equals( className ) ) {
+                selectedTypeIncluded = true;
             }
         }
 
         // collect external types, ordered
         if ( externalClasses != null ) {
-            for ( DataObject externalDataObject : externalClasses ) {
-                String extClass = externalDataObject.getClassName();
+            externalJavaTypes.addAll( externalClasses );
+        }
+        if ( externalEnums != null ) {
+            externalJavaTypes.addAll( externalEnums );
+        }
+
+        if ( externalClasses != null ) {
+            for ( JavaType externalJavaType : externalJavaTypes ) {
+                String extClass = externalJavaType.getClassName();
                 sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
                 if ( selectedType != null && selectedType.equals( extClass ) ) {
                     selectedTypeIncluded = true;
@@ -351,7 +375,7 @@ public class DataModelerUtils {
 
         //check selectedType isn't present
         if ( selectedType != null && !selectedTypeIncluded && !baseTypesByClassName.containsKey( selectedType ) ) {
-            //uncommon case. A field was loaded but the class isn't within the model or externall classes.
+            //uncommon case. A field was loaded but the class isn't within the model or external classes.
 
             String extClass = selectedType;
             sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );

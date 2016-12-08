@@ -149,7 +149,7 @@ public class DriverUtils {
 
             Class<?> clazz = classTypeResolver.resolveType( type.getName() );
 
-            if ( clazz.isEnum() || clazz.isAnonymousClass() || clazz.isLocalClass() || clazz.isMemberClass() ) {
+            if ( clazz.isAnonymousClass() || clazz.isLocalClass() || clazz.isMemberClass() ) {
                 return false;
             }
 

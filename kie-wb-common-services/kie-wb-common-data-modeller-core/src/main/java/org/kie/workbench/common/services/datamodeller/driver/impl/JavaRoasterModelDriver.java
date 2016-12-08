@@ -42,6 +42,7 @@ import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.Import;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
+import org.jboss.forge.roaster.model.source.JavaEnumSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 import org.jboss.forge.roaster.model.source.ParameterSource;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
@@ -57,6 +58,7 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaClassImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.JavaEnumImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
@@ -180,35 +182,26 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 }
                 try {
                     JavaType<?> javaType = Roaster.parse( fileContent );
-                    final boolean isClass = javaType.isClass();
-                    final boolean vetoed = ( isClass ? isVetoed( javaType ) : false );
-                    if ( isClass && !vetoed ) {
+                    final boolean isManaged = isManagedJavaType( javaType );
+                    final boolean vetoed = ( isManaged ? isVetoed( javaType ) : false );
+                    if ( isManaged && !vetoed ) {
                         if ( javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty() ) {
                             //if a file has parsing errors it will be skipped.
                             addSyntaxErrors( result, scanResult.getFile(), javaType.getSyntaxErrors() );
+                        } else if ( javaType.isEnum() ) {
+                            loadFromJavaEnum( ( JavaEnumSource ) javaType, scanResult.getFile(), dataModel, result);
                         } else {
-                            try {
-                                //try to load the data object.
-                                Pair<DataObject, List<ObjectProperty>> pair = parseDataObject( ( JavaClassSource ) javaType );
-                                if ( pair.getK1() != null ) {
-                                    dataModel.addDataObject( pair.getK1() );
-                                    result.setClassPath( pair.getK1().getClassName(), Paths.convert( scanResult.getFile() ) );
-                                    result.setUnmanagedProperties( pair.getK1().getClassName(), pair.getK2() );
-                                }
-                            } catch ( ModelDriverException e ) {
-                                logger.error( "An error was produced when file: " + scanResult.getFile() + " was being loaded into a DataObject.", e );
-                                addModelDriverError( result, scanResult.getFile(), e );
-                            }
+                            loadFromJavaClass( ( JavaClassSource ) javaType, scanResult.getFile(), dataModel, result );
                         }
                     } else if ( vetoed ) {
                         logger.debug( "The class, {}, in the file, {}, was vetoed and will be skipped.",
                                       javaType.getQualifiedName(),
                                       scanResult.getFile() );
                     } else {
-                        logger.debug( "No Class definition was found for file: " + scanResult.getFile() + ", it will be skipped." );
+                        logger.debug( "File: " + scanResult.getFile() + " do not contain a managed java type, it will be skipped." );
                     }
                 } catch ( Exception e ) {
-                    //Unexpected parsing o model loading exception.
+                    //Unexpected parsing or model loading exception.
                     logger.error( errorMessage( MODEL_LOAD_GENERIC_ERROR, javaRootPath.toUri() ), e );
                     throw new ModelDriverException( errorMessage( MODEL_LOAD_GENERIC_ERROR, javaRootPath.toUri() ), e );
                 }
@@ -226,7 +219,40 @@ public class JavaRoasterModelDriver implements ModelDriver {
     }
 
     private boolean isAccepted( final Method<?, ?> method) {
-        return filterHolder.getMethodFilters().stream().anyMatch( filter -> filter.accept( method ) );
+        return filterHolder.getMethodFilters( ).stream( ).anyMatch( filter -> filter.accept( method ) );
+    }
+
+    private boolean isManagedJavaType( final JavaType<?> javaType ) {
+        return javaType.isClass() || javaType.isEnum();
+    }
+
+    private void loadFromJavaClass( JavaClassSource javaClassSource,
+            Path file, DataModel dataModel, ModelDriverResult result ) {
+        try {
+            Pair<DataObject, List<ObjectProperty>> pair = parseDataObject( javaClassSource );
+            if ( pair.getK1() != null ) {
+                dataModel.addDataObject( pair.getK1() );
+                result.setClassPath( pair.getK1().getClassName(), Paths.convert( file ) );
+                result.setUnmanagedProperties( pair.getK1().getClassName(), pair.getK2() );
+            }
+        } catch ( ModelDriverException e ) {
+            logger.error( "An error was produced when file: " + file + " was being loaded into a DataObject.", e );
+            addModelDriverError( result, file, e );
+        }
+    }
+
+    private void loadFromJavaEnum( JavaEnumSource javaEnumSource,
+            Path file, DataModel dataModel, ModelDriverResult result ) {
+
+        String className = javaEnumSource.getName();
+        String packageName = javaEnumSource.getPackage();
+
+        Visibility visibility = DriverUtils.buildVisibility( javaEnumSource.getVisibility() );
+
+        JavaEnumImpl javaEnum = new JavaEnumImpl( packageName, className, visibility );
+
+        dataModel.addJavaEnum( javaEnum );
+        result.setClassPath( javaEnum.getClassName(), Paths.convert( file ) );
     }
 
     public ModelDriverResult loadDataObject( final String source, final Path path ) throws ModelDriverException {

@@ -25,6 +25,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.Method;
+import org.kie.workbench.common.services.datamodeller.core.JavaEnum;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.Parameter;
 import org.kie.workbench.common.services.datamodeller.core.Type;
@@ -155,6 +156,10 @@ public class DataModelerAssert {
         }
     }
 
+    public static void assertEqualsJavaEnum( JavaEnum javaEnum1, JavaEnum javaEnum2 ) {
+        assertEquals( javaEnum1.getClassName(), javaEnum2.getClassName() );
+    }
+
     public static void assertEqualsAnnotationValuePair( AnnotationValuePairDefinition valuePairDefinition1, AnnotationValuePairDefinition valuePairDefinition2 ) {
         if ( valuePairDefinition1 != null ) {
             assertNotNull( valuePairDefinition2 );
@@ -261,4 +266,3 @@ public class DataModelerAssert {
     }
 
 }
-

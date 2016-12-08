@@ -339,7 +339,9 @@ public class MainDataObjectFieldEditor
 
             List<Pair<String, String>> typeList = DataModelerUtils.buildFieldTypeOptions( getContext().getHelper().getOrderedBaseTypes().values(),
                     getDataModel().getDataObjects(),
+                    getDataModel().getJavaEnums(),
                     getDataModel().getExternalClasses(),
+                    getDataModel().getDependencyJavaEnums(),
                     currentFieldType,
                     false );
             view.initTypeList( typeList, currentFieldType, false );
