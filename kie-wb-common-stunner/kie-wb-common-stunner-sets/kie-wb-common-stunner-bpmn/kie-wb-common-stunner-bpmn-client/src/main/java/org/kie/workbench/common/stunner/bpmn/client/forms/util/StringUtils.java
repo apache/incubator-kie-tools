@@ -118,4 +118,17 @@ public class StringUtils {
         return URL.decodeQueryString( s );
     }
 
+    /**
+     * Create display name for a datatype, e.g. for "org.test.Person", returns "Person [org.test]"
+     *
+     * @param dataType
+     * @return
+     */
+    public static String createDataTypeDisplayName( String dataType ) {
+        int i = dataType.lastIndexOf( '.' );
+        StringBuilder formattedDataType = new StringBuilder();
+        formattedDataType.append( dataType.substring( i + 1 ) );
+        formattedDataType.append(" [").append( dataType.substring( 0, i ) ).append("]");
+        return formattedDataType.toString();
+    }
 }

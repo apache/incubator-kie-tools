@@ -16,10 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,21 +34,29 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.jboss.errai.bus.client.api.BusErrorCallback;
+import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.marshalling.client.Marshalling;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 @Templated
@@ -63,6 +75,9 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
 
     @Inject
     ClientSessionManager canvasSessionManager;
+
+    @Inject
+    protected Event<NotificationEvent> notification;
 
     private BPMNDefinition bpmnModel;
 
@@ -115,15 +130,35 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     }
 
     public void showAssignmentsDialog() {
-        String taskName = "Task";
-        if ( bpmnModel != null && bpmnModel instanceof BaseTask ) {
-            BaseTask task = ( BaseTask ) bpmnModel;
-            if ( task.getGeneral() != null && task.getGeneral().getName() != null &&
-                    task.getGeneral().getName().getValue() != null && task.getGeneral().getName().getValue().length() > 0 ) {
-                taskName = task.getGeneral().getName().getValue();
-            }
-        }
-        Map<String, String> assignmentsProperties = parseAssignmentsInfo();
+        // Get data types to show the editor
+        getDataTypes( );
+    }
+
+    protected void getDataTypes() {
+
+        final String simpleDataTypes = "Boolean:Boolean,Float:Float,Integer:Integer,Object:Object,String:String";
+        MessageBuilder.createCall(
+                new RemoteCallback< List<String> >() {
+                    public void callback( List<String> dataTypes ) {
+                        String formattedDataTypes = formatDataTypes( dataTypes );
+                        String allDataTypes = simpleDataTypes + "," + formattedDataTypes;
+                        showDataIOEditor( allDataTypes.toString() );
+                    }
+                },
+                new BusErrorCallback() {
+                    public boolean error(Message message, Throwable t) {
+                        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(), NotificationEvent.NotificationType.ERROR ) );
+                        showDataIOEditor( simpleDataTypes );
+                        return false;
+                    }
+                },
+                DataTypesService.class).getDataTypeNames();
+    }
+
+
+    public void showDataIOEditor( final String datatypes ) {
+        String taskName = getTaskName();
+
         ActivityDataIOEditor.GetDataCallback callback = new ActivityDataIOEditor.GetDataCallback() {
             @Override
             public void getData( String assignmentDataJson ) {
@@ -132,21 +167,19 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                 setValue( assignmentsInfoString, true );
             }
         };
-        showDataIOEditor( taskName, null, assignmentsProperties.get( "datainputset" ), null, assignmentsProperties.get( "dataoutputset" ),
-                getProcessVariables(), assignmentsProperties.get( "assignments" ), getDataTypes(), getDisallowedPropertyNames(), callback );
-    }
-
-    public void showDataIOEditor( final String taskName,
-                                  final String datainput,
-                                  final String datainputset,
-                                  final String dataoutput,
-                                  final String dataoutputset,
-                                  final String processvars,
-                                  final String assignments,
-                                  final String datatypes,
-                                  final String disallowedpropertynames,
-                                  final ActivityDataIOEditor.GetDataCallback callback ) {
         activityDataIOEditor.setCallback( callback );
+
+        String processvars = getProcessVariables();
+
+        Map<String, String> assignmentsProperties = parseAssignmentsInfo();
+        String datainput = assignmentsProperties.get( "datainput" );
+        String datainputset = assignmentsProperties.get( "datainputset" );
+        String dataoutput = assignmentsProperties.get( "dataoutput" );
+        String dataoutputset = assignmentsProperties.get( "dataoutputset" );
+        String assignments = assignmentsProperties.get( "assignments" );
+
+        String disallowedpropertynames = getDisallowedPropertyNames();
+
         boolean hasInputVars = false;
         boolean isSingleInputVar = false;
         boolean hasOutputVars = false;
@@ -184,6 +217,18 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         activityDataIOEditor.show();
     }
 
+    protected String getTaskName() {
+        String taskName = "Task";
+        if ( bpmnModel != null && bpmnModel instanceof BaseTask ) {
+            BaseTask task = ( BaseTask ) bpmnModel;
+            if ( task.getGeneral() != null && task.getGeneral().getName() != null &&
+                    task.getGeneral().getName().getValue() != null && task.getGeneral().getName().getValue().length() > 0 ) {
+                taskName = task.getGeneral().getName().getValue();
+            }
+        }
+        return taskName;
+    }
+
     protected String getProcessVariables() {
         Diagram diagram = canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram();
         Iterator<Element> it = diagram.getGraph().nodes().iterator();
@@ -204,9 +249,23 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         return null;
     }
 
-    protected String getDataTypes() {
-        // TODO: get dataTypes from server to add to these simple types
-        return "String:String, Integer:Integer, Boolean:Boolean, Float:Float, Object:Object";
+    protected String formatDataTypes( List<String> dataTypes ) {
+        StringBuilder sb = new StringBuilder();
+        if ( dataTypes != null && !dataTypes.isEmpty() ) {
+            List<String> formattedDataTypes = new ArrayList<String>( dataTypes.size() );
+            for (String dataType : dataTypes ) {
+                int i = dataType.lastIndexOf( '.' );
+                StringBuilder formattedDataType = new StringBuilder( StringUtils.createDataTypeDisplayName( dataType ) );
+                formattedDataType.append(":").append(dataType);
+                formattedDataTypes.add( formattedDataType.toString() );
+            }
+            Collections.sort( formattedDataTypes );
+            for (String formattedDataType:formattedDataTypes ) {
+                sb.append( formattedDataType ).append( ',' );
+            }
+            sb.setLength( sb.length() - 1 );
+        }
+        return sb.toString();
     }
 
     protected Map<String, String> parseAssignmentsInfo() {

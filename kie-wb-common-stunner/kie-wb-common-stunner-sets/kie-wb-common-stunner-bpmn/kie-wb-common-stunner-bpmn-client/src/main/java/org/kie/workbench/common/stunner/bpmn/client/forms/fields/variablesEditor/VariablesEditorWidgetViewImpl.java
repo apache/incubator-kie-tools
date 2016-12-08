@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEdito
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -35,13 +37,20 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.bus.client.api.BusErrorCallback;
+import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.widget.ListWidget;
 import org.jboss.errai.ui.client.widget.Table;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -93,18 +102,74 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
 
     @Override
     public void setValue( String value, boolean fireEvents ) {
+        if ( dataTypes == null ) {
+            getDataTypes( value, fireEvents );
+        } else {
+            doSetValue( value, fireEvents );
+        }
+    }
+
+    protected void doSetValue( String value, boolean fireEvents ) {
         String oldValue = sVariables;
         sVariables = value;
-        // TODO: get DataTypes from server
-        if ( dataTypes == null ) {
-            dataTypes = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "String" ) );
-            dataTypeDisplayNames = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "String" ) );
-            presenter.setDataTypes( dataTypes, dataTypeDisplayNames );
-        }
         initView();
         if ( fireEvents ) {
             ValueChangeEvent.fireIfNotEqual( this, oldValue, sVariables );
         }
+    }
+
+    protected void setDataTypes( final List<String> dataTypes, final List<String> dataTypeDisplayNames ) {
+        this.dataTypes = dataTypes;
+        this.dataTypeDisplayNames = dataTypeDisplayNames;
+        presenter.setDataTypes( dataTypes, dataTypeDisplayNames );
+    }
+
+    protected void getDataTypes( final  String value, final boolean fireEvents ) {
+        final List<String> simpleDataTypes = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "String" ) );
+        final List<String> simpleDataTypeDisplayNames = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "String" ) );
+        MessageBuilder.createCall(
+                new RemoteCallback< List<String> >() {
+                    public void callback( List<String> serverDataTypes ) {
+                        List<List<String>> mergedDataTypes = mergeDataTypes( simpleDataTypes, simpleDataTypeDisplayNames, serverDataTypes );
+                        setDataTypes( mergedDataTypes.get( 0 ), mergedDataTypes.get( 1 ) );
+                        doSetValue( value, fireEvents);
+                    };
+                },
+                new BusErrorCallback() {
+                    public boolean error( Message message, Throwable t) {
+                        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(), NotificationEvent.NotificationType.ERROR ) );
+                        setDataTypes( simpleDataTypes, simpleDataTypeDisplayNames );
+                        doSetValue( value, fireEvents);
+                        return false;
+                    }
+                },
+                DataTypesService.class).getDataTypeNames();
+    }
+
+
+    private List<List<String>> mergeDataTypes( List<String> simpleDataTypes, List<String> simpleDataTypeDisplayNames, List<String> serverDataTypes ) {
+        List<List<String>> results = new ArrayList<List<String>> ( 2 );
+        List<String> allDataTypes = new ArrayList<String>();
+        List<String> allDataTypeDisplayNames = new ArrayList<String>();
+        allDataTypes.addAll( simpleDataTypes );
+        allDataTypeDisplayNames.addAll( simpleDataTypeDisplayNames );
+
+        // Create sorted map with DataTypeDisplayNames as the keys
+        Map<String, String> mapServerDataTypeDisplayNames = new TreeMap<String, String>();
+        for ( String serverDataType : serverDataTypes ) {
+            mapServerDataTypeDisplayNames.put( StringUtils.createDataTypeDisplayName( serverDataType ), serverDataType );
+        }
+
+        // Add DataTypes in order sorted by DataTypeDisplayNames
+        for ( Map.Entry<String, String> entry : mapServerDataTypeDisplayNames.entrySet() ) {
+            allDataTypes.add( entry.getValue() );
+            allDataTypeDisplayNames.add( entry.getKey() );
+        }
+
+        results.add( allDataTypes );
+        results.add( allDataTypeDisplayNames );
+
+        return results;
     }
 
     @Override

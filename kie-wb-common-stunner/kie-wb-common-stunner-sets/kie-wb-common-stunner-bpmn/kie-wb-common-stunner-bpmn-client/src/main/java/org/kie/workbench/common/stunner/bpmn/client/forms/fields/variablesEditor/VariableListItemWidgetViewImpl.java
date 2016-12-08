@@ -126,14 +126,14 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
 
     @Override
     public void setListBoxModelValue( final ValueListBox<String> listBox, String value ) {
-        setDataType( value );
+        setDataTypeDisplayName( value );
     }
 
     @Override
     public String getModelValue( final ValueListBox<String> listBox ) {
         String value = getCustomDataType();
         if ( value == null || value.isEmpty() ) {
-            value = getDataType();
+            value = getDataTypeDisplayName();
         }
         return value;
     }
@@ -191,13 +191,13 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     }
 
     @Override
-    public String getDataType() {
-        return getModel().getDataType();
+    public String getDataTypeDisplayName() {
+        return getModel().getDataTypeDisplayName();
     }
 
     @Override
-    public void setDataType( String dataType ) {
-        getModel().setDataType( dataType );
+    public void setDataTypeDisplayName( String dataTypeDisplayName ) {
+        getModel().setDataTypeDisplayName( dataTypeDisplayName );
     }
 
     @Override
@@ -241,8 +241,8 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
         if ( cdt != null && !cdt.isEmpty() ) {
             customDataType.setValue( cdt );
             dataType.setValue( cdt );
-        } else if ( getDataType() != null ) {
-            dataType.setValue( getDataType() );
+        } else if ( getDataTypeDisplayName() != null ) {
+            dataType.setValue( getDataTypeDisplayName() );
         }
     }
 

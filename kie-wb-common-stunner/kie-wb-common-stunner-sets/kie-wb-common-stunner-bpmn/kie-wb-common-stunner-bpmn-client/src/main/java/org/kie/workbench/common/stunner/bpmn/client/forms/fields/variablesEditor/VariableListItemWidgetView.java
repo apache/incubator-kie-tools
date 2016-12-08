@@ -38,9 +38,9 @@ public interface VariableListItemWidgetView extends HasModel<VariableRow> {
 
     VariableType getVariableType();
 
-    String getDataType();
+    String getDataTypeDisplayName();
 
-    void setDataType( String dataType );
+    void setDataTypeDisplayName( String dataTypeDisplayName );
 
     String getCustomDataType();
 

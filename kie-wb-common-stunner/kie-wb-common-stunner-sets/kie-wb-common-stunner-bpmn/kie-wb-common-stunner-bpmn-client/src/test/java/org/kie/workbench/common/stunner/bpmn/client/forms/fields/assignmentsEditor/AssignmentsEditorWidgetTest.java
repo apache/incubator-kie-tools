@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
@@ -33,7 +35,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -51,6 +52,7 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     public static final String DATA_INPUT_SET = "input1:com.test.Employee,input2:String,input3:String,input4:String,Skippable";
     public static final String DATA_OUTPUT_SET = "output1:com.test.Employee,output2:String";
     public static final String ASSIGNMENTS = "[din]employee->input1,[din]input2=ab%7Ccd%7Cef,[din]input3=yes,[din]input4=%22Hello%22+then+%22Goodbye%22,[dout]output1->employee,[dout]output2->reason";
+    public static final List<String> DATATYPES = new ArrayList<String>( Arrays.asList("myorg.myproject1.Cardboard", "yourorg.materials.Paper", "org.documents.Articles" ) );
 
     @GwtMock
     private AssignmentsEditorWidget widget;
@@ -74,33 +76,6 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     private ArgumentCaptor<String> taskNameCaptor;
 
     @Captor
-    private ArgumentCaptor<String> datainputCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> datainputsetCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> dataoutputCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> dataoutputsetCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> processvarsCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> assignmentsCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> datatypesCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> disallowedpropertynamesCaptor;
-
-    @Captor
-    private ArgumentCaptor<ActivityDataIOEditor.GetDataCallback> callbackCaptor;
-
-    @Captor
     private ArgumentCaptor<Boolean> hasInputVarsCaptor;
 
     @Captor
@@ -122,14 +97,17 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         doCallRealMethod().when( widget ).getVariableCountsString( anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString() );
         doCallRealMethod().when( widget ).showAssignmentsDialog();
-        doCallRealMethod().when( widget ).showDataIOEditor( anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyObject() );
+        doCallRealMethod().when( widget ).showDataIOEditor( anyString() );
         doCallRealMethod().when( widget ).setBPMNModel( any( BPMNDefinition.class ) );
+        doCallRealMethod().when( widget ).formatDataTypes( any( List.class ) );
+        doCallRealMethod().when( widget ).getTaskName();
         when( userTask.getGeneral() ).thenReturn( taskGeneralSet );
         when( taskGeneralSet.getName() ).thenReturn( taskName );
         when( taskName.getValue() ).thenReturn( TASK_NAME );
         doCallRealMethod().when( activityDataIOEditor ).configureDialog( anyString(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean() );
+
+        widget.setBPMNModel( userTask );
     }
 
     @After
@@ -164,29 +142,12 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
 
         widget.showAssignmentsDialog();
 
-        verify( widget ).showDataIOEditor( taskNameCaptor.capture(), datainputCaptor.capture(), datainputsetCaptor.capture(),
-                dataoutputCaptor.capture(), dataoutputsetCaptor.capture(), processvarsCaptor.capture(),
-                assignmentsCaptor.capture(), datatypesCaptor.capture(), disallowedpropertynamesCaptor.capture(),
-                callbackCaptor.capture() );
-        assertEquals( TASK_NAME, taskNameCaptor.getValue() );
-        assertEquals( null, datainputCaptor.getValue() );
-        assertEquals( DATA_INPUT_SET, datainputsetCaptor.getValue() );
-        assertEquals( null, dataoutputCaptor.getValue() );
-        assertEquals( DATA_OUTPUT_SET, dataoutputsetCaptor.getValue() );
-        assertEquals( null, processvarsCaptor.getValue() );
-        assertEquals( ASSIGNMENTS, assignmentsCaptor.getValue() );
-        assertEquals( null, datatypesCaptor.getValue() );
-        assertEquals( null, disallowedpropertynamesCaptor.getValue() );
-        assertTrue( callbackCaptor.getValue() instanceof ActivityDataIOEditor.GetDataCallback );
-
+        verify( widget ).getDataTypes( );
     }
 
     @Test
     public void testShowDataIOEditor() {
-        widget.setBPMNModel( userTask );
-
-        widget.showDataIOEditor( TASK_NAME, null, DATA_INPUT_SET, null, DATA_OUTPUT_SET,
-                null, ASSIGNMENTS, null, null, null );
+        widget.showDataIOEditor( null );
 
         verify ( activityDataIOEditor ).configureDialog( taskNameCaptor.capture(),
                 hasInputVarsCaptor.capture(), isSingleInputVarCaptor.capture(),
@@ -198,5 +159,16 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         assertEquals( false, isSingleOutputVarCaptor.getValue() );
     }
 
+    @Test
+    public void testFormatDataTypes() {
+        String formattedDataTypes = widget.formatDataTypes( DATATYPES );
+        assertEquals( "Articles [org.documents]:org.documents.Articles,Cardboard [myorg.myproject1]:myorg.myproject1.Cardboard,Paper [yourorg.materials]:yourorg.materials.Paper",  formattedDataTypes);
+    }
+
+    @Test
+    public void testGetTaskName() {
+        String taskName = widget.getTaskName();
+        assertEquals( TASK_NAME, taskName);
+    }
 }
 

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 
+import java.util.Map;
+
 import org.jboss.errai.databinding.client.api.Bindable;
 
 @Bindable
@@ -27,7 +29,7 @@ public class VariableRow {
 
     private Variable.VariableType variableType = Variable.VariableType.PROCESS;
 
-    private String dataType;
+    private String dataTypeDisplayName;
 
     private String customDataType;
 
@@ -39,19 +41,24 @@ public class VariableRow {
         this.id = lastId++;
     }
 
-    public VariableRow( Variable.VariableType variableType, String name, String dataType, String customDataType ) {
+    public VariableRow( Variable.VariableType variableType, String name, String dataTypeDisplayName, String customDataType ) {
         this.id = lastId++;
         this.variableType = variableType;
         this.name = name;
-        this.dataType = dataType;
+        this.dataTypeDisplayName = dataTypeDisplayName;
         this.customDataType = customDataType;
     }
 
-    public VariableRow( Variable variable ) {
+    public VariableRow( Variable variable, Map<String, String> mapDataTypeNamesToDisplayNames ) {
         this.id = lastId++;
         this.variableType = variable.getVariableType();
         this.name = variable.getName();
-        this.dataType = variable.getDataType();
+        if ( variable.getDataType() != null && mapDataTypeNamesToDisplayNames.containsKey( variable.getDataType() )) {
+            this.dataTypeDisplayName = mapDataTypeNamesToDisplayNames.get( variable.getDataType() );
+        }
+        else {
+            this.dataTypeDisplayName = variable.getDataType();
+        }
         this.customDataType = variable.getCustomDataType();
     }
 
@@ -79,12 +86,12 @@ public class VariableRow {
         this.name = name;
     }
 
-    public String getDataType() {
-        return dataType;
+    public String getDataTypeDisplayName() {
+        return dataTypeDisplayName;
     }
 
-    public void setDataType( String dataType ) {
-        this.dataType = dataType;
+    public void setDataTypeDisplayName( String dataTypeDisplayName ) {
+        this.dataTypeDisplayName = dataTypeDisplayName;
     }
 
     public String getCustomDataType() {
@@ -117,7 +124,7 @@ public class VariableRow {
 
     @Override
     public String toString() {
-        return "VariableRow [variableType=" + variableType.toString() + ", name=" + name + ", dataType=" + dataType + ", customDataType=" + customDataType + "]";
+        return "VariableRow [variableType=" + variableType.toString() + ", name=" + name + ", dataTypeDisplayName=" + dataTypeDisplayName + ", customDataType=" + customDataType + "]";
     }
 
 }

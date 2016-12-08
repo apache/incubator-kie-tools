@@ -62,4 +62,9 @@ public class StringUtilsTest {
     public void testCreateUnquotedConstant() throws Exception {
         assertEquals( " abc ", StringUtils.createUnquotedConstant( "\" abc \"" ) );
     }
+
+    @Test
+    public void testCreateDataTypeDisplayName() throws Exception {
+        assertEquals( "Chairs [com.test]", StringUtils.createDataTypeDisplayName( "com.test.Chairs" ) );
+    }
 }

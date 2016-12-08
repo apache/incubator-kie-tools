@@ -88,8 +88,8 @@ public class VariableListItemWidgetTest {
         Mockito.doCallRealMethod().when( widget ).setTextBoxModelValue( any( TextBox.class ), anyString() );
         Mockito.doCallRealMethod().when( widget ).setListBoxModelValue( any( ValueListBox.class ), anyString() );
         Mockito.doCallRealMethod().when( widget ).getModelValue( any( ValueListBox.class ) );
-        Mockito.doCallRealMethod().when( widget ).setDataType( anyString() );
-        Mockito.doCallRealMethod().when( widget ).getDataType();
+        Mockito.doCallRealMethod().when( widget ).setDataTypeDisplayName( anyString() );
+        Mockito.doCallRealMethod().when( widget ).getDataTypeDisplayName();
         Mockito.doCallRealMethod().when( widget ).setCustomDataType( anyString() );
         Mockito.doCallRealMethod().when( widget ).getCustomDataType();
         Mockito.doCallRealMethod().when( widget ).setDataTypes( any( ListBoxValues.class ) );
@@ -116,14 +116,14 @@ public class VariableListItemWidgetTest {
 
     @Test
     public void testSetTextBoxModelValue() {
-        widget.setTextBoxModelValue( customDataType, "abc" );
-        verify( widget, times( 1 ) ).setCustomDataType( "abc" );
+        widget.setTextBoxModelValue( customDataType, "com.test.Pencil" );
+        verify( widget, times( 1 ) ).setCustomDataType( "com.test.Pencil" );
     }
 
     @Test
     public void testSetListBoxModelValue() {
-        widget.setListBoxModelValue( dataType, "abc" );
-        verify( widget, times( 1 ) ).setDataType( "abc" );
+        widget.setListBoxModelValue( dataType, "Paper [org.stationery" );
+        verify( widget, times( 1 ) ).setDataTypeDisplayName( "Paper [org.stationery" );
     }
 
     @Test
@@ -132,7 +132,7 @@ public class VariableListItemWidgetTest {
         widget.setModel( new VariableRow() );
         verify( deleteButton ).setIcon( IconType.TRASH );
         verify( widget ).getCustomDataType();
-        verify( widget ).getDataType();
+        verify( widget ).getDataTypeDisplayName();
     }
 
     @Test
@@ -149,7 +149,7 @@ public class VariableListItemWidgetTest {
     public void testSetGetDataType() {
         String sDataType = "Boolean";
         widget.setListBoxModelValue( widget.dataType, sDataType );
-        String returnedDataType1 = widget.getDataType();
+        String returnedDataType1 = widget.getDataTypeDisplayName();
         assertEquals( sDataType, returnedDataType1 );
         String returnedDataType2 = widget.getModelValue( widget.dataType );
         assertEquals( sDataType, returnedDataType2 );

@@ -18,7 +18,9 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEdito
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,18 +77,19 @@ public class VariablesEditorFieldRendererTest {
 
     @Test
     public void testDeserializeVariables() {
-        List<String> dataTypes = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "String" ) );
-        List<String> dataTypeDisplayNames = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "String" ) );
+        List<String> dataTypes = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "org.veg.Potato", "String" ) );
+        List<String> dataTypeDisplayNames = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Potato [org.veg]", "Object", "String" ) );
+
         variablesEditor.setDataTypes( dataTypes, dataTypeDisplayNames );
         List<VariableRow> variableRows = variablesEditor.deserializeVariables( "var1:String,var2:Integer,var3:org.stuff.Potato" );
         assertEquals( 3, variableRows.size() );
         VariableRow var = variableRows.get( 0 );
         assertEquals( "var1", var.getName() );
-        assertEquals( "String", var.getDataType() );
+        assertEquals( "String", var.getDataTypeDisplayName() );
         assertEquals( Variable.VariableType.PROCESS, var.getVariableType() );
         var = variableRows.get( 1 );
         assertEquals( "var2", var.getName() );
-        assertEquals( "Integer", var.getDataType() );
+        assertEquals( "Integer", var.getDataTypeDisplayName() );
         assertEquals( Variable.VariableType.PROCESS, var.getVariableType() );
         var = variableRows.get( 2 );
         assertEquals( "var3", var.getName() );
@@ -96,12 +99,18 @@ public class VariablesEditorFieldRendererTest {
 
     @Test
     public void testSerializeVariables() {
+        Map<String, String> mapDataTypeDisplayNamesToNames = new HashMap<String, String>( );
+        mapDataTypeDisplayNamesToNames.put( "String", "String");
+        mapDataTypeDisplayNamesToNames.put( "Integer", "Integer");
+        mapDataTypeDisplayNamesToNames.put( "Potato [org.veg]", "org.veg.Potato");
+        variablesEditor.mapDataTypeDisplayNamesToNames = mapDataTypeDisplayNamesToNames;
+
         List<VariableRow> variableRows = new ArrayList<VariableRow>();
         variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var1", "String", null ) );
         variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var2", "Integer", null ) );
-        variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var3", "org.stuff.Potato", null ) );
+        variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var3", "org.veg.Potato", null ) );
         String s = variablesEditor.serializeVariables( variableRows );
-        assertEquals( "var1:String,var2:Integer,var3:org.stuff.Potato", s );
+        assertEquals( "var1:String,var2:Integer,var3:org.veg.Potato", s );
     }
 
     @Test

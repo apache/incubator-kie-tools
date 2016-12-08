@@ -61,6 +61,8 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Enter_type();
 
+    String Error_retrieving_datatypes();
+
     String Invalid_character_in_name();
 
     String Name();

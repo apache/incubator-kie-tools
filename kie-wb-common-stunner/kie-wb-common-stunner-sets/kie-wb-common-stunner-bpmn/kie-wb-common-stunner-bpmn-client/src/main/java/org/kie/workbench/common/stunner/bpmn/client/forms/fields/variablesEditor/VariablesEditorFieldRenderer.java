@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEditor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -40,6 +42,10 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     private List<String> dataTypes = new ArrayList<String>();
 
     private List<String> dataTypeDisplayNames = new ArrayList<String>();
+
+    Map<String, String> mapDataTypeNamesToDisplayNames = null;
+
+    Map<String, String> mapDataTypeDisplayNamesToNames = null;
 
     ListBoxValues dataTypeListBoxValues;
 
@@ -102,10 +108,29 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     public void setDataTypes( List<String> dataTypes, List<String> dataTypeDisplayNames ) {
         this.dataTypes = dataTypes;
         this.dataTypeDisplayNames = dataTypeDisplayNames;
+        this.mapDataTypeNamesToDisplayNames = createMapDataTypeNamesToDisplayNames( dataTypes, dataTypeDisplayNames );
+        this.mapDataTypeDisplayNamesToNames = createMapDataTypeDisplayNamesToNames( dataTypes, dataTypeDisplayNames );
         dataTypeListBoxValues = new ListBoxValues( VariableListItemWidgetView.CUSTOM_PROMPT, "Edit" + " ", dataTypesTester() );
         dataTypeListBoxValues.addValues( dataTypeDisplayNames );
         view.setVariablesDataTypes( dataTypeListBoxValues );
     }
+
+    private Map<String,String> createMapDataTypeNamesToDisplayNames( List<String> dataTypes, List<String> dataTypeDisplayNames ) {
+        Map<String,String> mapDataTypeNamesToDisplayNames = new HashMap<String, String>();
+        for ( int i = 0; i <  dataTypeDisplayNames.size(); i++ ) {
+            mapDataTypeNamesToDisplayNames.put( dataTypes.get( i ), dataTypeDisplayNames.get( i ) );
+        }
+        return mapDataTypeNamesToDisplayNames;
+    }
+
+    private Map<String,String> createMapDataTypeDisplayNamesToNames( List<String> dataTypes, List<String> dataTypeDisplayNames ) {
+        Map<String,String> mapDataTypeDisplayNamesToNames = new HashMap<String, String>();
+        for ( int i = 0; i <  dataTypes.size(); i++ ) {
+            mapDataTypeDisplayNamesToNames.put( dataTypeDisplayNames.get( i ), dataTypes.get( i ) );
+        }
+        return mapDataTypeDisplayNamesToNames;
+    }
+
 
     @Override
     public void notifyModelChanged() {
@@ -121,7 +146,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
                 if ( !v.isEmpty() ) {
                     Variable var = Variable.deserialize( v, Variable.VariableType.PROCESS, dataTypes );
                     if ( var != null && var.getName() != null && !var.getName().isEmpty() ) {
-                        variableRows.add( new VariableRow( var ) );
+                        variableRows.add( new VariableRow( var, mapDataTypeNamesToDisplayNames ) );
                     }
                 }
             }
@@ -134,7 +159,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         List<Variable> variables = new ArrayList<Variable>();
         for ( VariableRow row : variableRows ) {
             if ( row.getName() != null && row.getName().length() > 0 ) {
-                variables.add( new Variable( row ) );
+                variables.add( new Variable( row, mapDataTypeDisplayNamesToNames ) );
             }
         }
         return StringUtils.getStringForList( variables );
@@ -173,14 +198,12 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     @Override
     public ListBoxValues.ValueTester dataTypesTester() {
         return new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString( String userValue ) {
-                // TODO
-                //if (variablesData != null) {
-                //    return variablesData.getDataTypeDisplayNameForUserString(userValue);
-                //} else {
-                //    return null;
-                //}
-                return null;
+            public String getNonCustomValueForUserString( String dataTypeDisplayName ) {
+                if ( mapDataTypeNamesToDisplayNames != null && mapDataTypeNamesToDisplayNames.containsKey( dataTypeDisplayName )) {
+                    return mapDataTypeNamesToDisplayNames.get( dataTypeDisplayName );
+                } else {
+                    return null;
+                }
             }
         };
     }

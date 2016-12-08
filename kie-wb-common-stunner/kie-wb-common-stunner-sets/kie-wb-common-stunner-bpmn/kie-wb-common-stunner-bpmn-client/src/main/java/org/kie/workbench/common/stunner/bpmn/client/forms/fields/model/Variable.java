@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class Variable {
 
@@ -50,10 +51,14 @@ public class Variable {
         this.customDataType = customDataType;
     }
 
-    public Variable( VariableRow row ) {
+    public Variable( VariableRow row, Map<String, String> mapDataTypeDisplayNamesToNames  ) {
         this.name = row.getName();
         this.variableType = row.getVariableType();
-        this.dataType = row.getDataType();
+        if ( row.getDataTypeDisplayName() != null && mapDataTypeDisplayNamesToNames.containsKey( row.getDataTypeDisplayName() ) ) {
+            this.dataType = mapDataTypeDisplayNamesToNames.get( row.getDataTypeDisplayName() );
+        } else {
+            this.dataType = row.getDataTypeDisplayName();
+        }
         this.customDataType = row.getCustomDataType();
     }
 

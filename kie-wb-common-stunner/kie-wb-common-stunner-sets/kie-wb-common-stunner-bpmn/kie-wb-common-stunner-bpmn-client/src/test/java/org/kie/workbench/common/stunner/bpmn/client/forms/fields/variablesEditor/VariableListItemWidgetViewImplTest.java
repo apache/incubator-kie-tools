@@ -106,8 +106,8 @@ public class VariableListItemWidgetViewImplTest {
         doCallRealMethod().when( view ).getModelValue( any( ValueListBox.class ) );
         doCallRealMethod().when( view ).setTextBoxModelValue( any( TextBox.class ), anyString() );
         doCallRealMethod().when( view ).setListBoxModelValue( any( ValueListBox.class ), anyString() );
-        doCallRealMethod().when( view ).getDataType();
-        doCallRealMethod().when( view ).setDataType( anyString() );
+        doCallRealMethod().when( view ).getDataTypeDisplayName();
+        doCallRealMethod().when( view ).setDataTypeDisplayName( anyString() );
         doCallRealMethod().when( view ).getVariableType();
         doCallRealMethod().when( view ).setParentWidget( any( VariablesEditorWidgetView.Presenter.class ) );
         doCallRealMethod().when( view ).isDuplicateName( anyString() );
@@ -121,7 +121,7 @@ public class VariableListItemWidgetViewImplTest {
         VariableRow row = new VariableRow();
         row.setName( VARIABLE_NAME );
         row.setCustomDataType( CUST_DATA_TYPE_NAME );
-        row.setDataType( null );
+        row.setDataTypeDisplayName( null );
         row.setVariableType( Variable.VariableType.PROCESS );
         doReturn( row ).when( variableRow ).getModel();
         view.setModel( row );
@@ -136,7 +136,7 @@ public class VariableListItemWidgetViewImplTest {
         VariableRow row = new VariableRow();
         row.setName( VARIABLE_NAME );
         row.setCustomDataType( null );
-        row.setDataType( DATA_TYPE_NAME );
+        row.setDataTypeDisplayName( DATA_TYPE_NAME );
         row.setVariableType( Variable.VariableType.PROCESS );
         doReturn( row ).when( variableRow ).getModel();
         view.setModel( row );
@@ -156,9 +156,9 @@ public class VariableListItemWidgetViewImplTest {
 
     @Test
     public void testSetListBoxModelValueDataType() {
-        assertNull( view.getModel().getDataType() );
+        assertNull( view.getModel().getDataTypeDisplayName() );
         view.setListBoxModelValue( dataType, "abc" );
-        assertEquals( "abc", view.getModel().getDataType() );
+        assertEquals( "abc", view.getModel().getDataTypeDisplayName() );
         assertNull( view.getModel().getCustomDataType() );
         assertEquals( "abc", view.getModelValue( dataType ) );
     }
