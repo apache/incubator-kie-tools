@@ -19,11 +19,14 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.services.verifier.api.client.index.BRLAction;
 import org.drools.workbench.services.verifier.plugin.client.DTableUpdateManager;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -75,7 +78,8 @@ public class DecisionTableAnalyzer {
     }
 
     private int getColumnIndex( final BaseColumn baseColumn ) {
-        final int indexOf = model.getExpandedColumns()
+        List<BaseColumn> cols = model.getExpandedColumns();
+        final int indexOf = cols
                 .indexOf( baseColumn );
         if ( indexOf < 0 ) {
             if ( baseColumn instanceof BRLConditionColumn ) {
@@ -91,6 +95,19 @@ public class DecisionTableAnalyzer {
                 }
 
                 throw new IllegalArgumentException( "Could not find BRLConditionColumn: " + baseColumn.toString() );
+            } if ( baseColumn instanceof BRLActionColumn) {
+
+                for ( final BaseColumn column : model.getExpandedColumns() ) {
+                    if ( column instanceof BRLActionVariableColumn) {
+                        if ( ( (BRLActionColumn) baseColumn ).getChildColumns()
+                                .contains( column ) ) {
+                            return model.getExpandedColumns()
+                                    .indexOf( column );
+                        }
+                    }
+                }
+
+                throw new IllegalArgumentException( "Could not find BRLActionColumn: " + baseColumn.toString() );
             } else if ( baseColumn instanceof BRLVariableColumn ) {
                 return model.getExpandedColumns()
                         .indexOf( model.getBRLColumn( (BRLVariableColumn) baseColumn ) );
