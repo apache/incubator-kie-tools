@@ -192,10 +192,6 @@ public class RuleInspectorCache {
         return ruleInspectors.get( getRule( (int) row ) );
     }
 
-    public Collection<RuleInspector> allRuleInspectors() {
-        return ruleInspectors.values();
-    }
-
     public AnalyzerConfiguration getConfiguration() {
         return configuration;
     }

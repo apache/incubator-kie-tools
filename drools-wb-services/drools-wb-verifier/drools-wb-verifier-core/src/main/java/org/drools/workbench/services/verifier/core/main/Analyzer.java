@@ -80,7 +80,7 @@ public class Analyzer {
 
         final Set<Issue> unorderedIssues = new HashSet<>();
 
-        for ( final RuleInspector ruleInspector : cache.allRuleInspectors() ) {
+        for ( final RuleInspector ruleInspector : cache.all() ) {
             for ( final Check check : ruleInspector.getChecks() ) {
                 if ( check.hasIssues() ) {
                     unorderedIssues.add( check.getIssue() );
