@@ -143,7 +143,7 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
                                                                                diffs );
         final boolean isFieldTypeUpdated = BaseColumnFieldDiffImpl.hasChanged( ConditionCol52.FIELD_FIELD_TYPE,
                                                                                diffs );
-        final boolean isConstraintValueTypeUpdated = BaseColumnFieldDiffImpl.hasChanged( ConditionCol52.FIELD_VALUE_LIST,
+        final boolean isConstraintValueTypeUpdated = BaseColumnFieldDiffImpl.hasChanged( ConditionCol52.FIELD_CONSTRAINT_VALUE_TYPE,
                                                                                          diffs );
 
         if ( isFactTypeUpdated || isFactFieldUpdated || isFieldTypeUpdated || isConstraintValueTypeUpdated ) {

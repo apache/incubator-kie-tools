@@ -540,7 +540,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         condition.setOperator( "==" );
 
         modelSynchronizer.appendColumn( pattern,
-                condition );
+                                        condition );
 
         final Pattern52 editedPattern = new Pattern52();
         editedPattern.setBoundName( "$a" );
@@ -553,24 +553,138 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         editedCondition.setOperator( "!=" );
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
-                condition,
-                editedPattern,
-                editedCondition );
+                                                                          condition,
+                                                                          editedPattern,
+                                                                          editedCondition );
         assertEquals( 1,
-                diffs.size() );
+                      diffs.size() );
         verify( pattern ).diff( editedPattern );
         verify( condition ).diff( editedCondition );
 
         assertEquals( 3,
-                model.getExpandedColumns().size() );
+                      model.getExpandedColumns().size() );
         assertEquals( 1,
-                model.getConditions().size() );
+                      model.getConditions().size() );
         assertEquals( 1,
-                model.getConditionPattern( "$a" ).getChildColumns().size() );
+                      model.getConditionPattern( "$a" ).getChildColumns().size() );
 
         assertEquals( 3,
-                uiModel.getColumns().size() );
+                      uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
+    }
+
+    @Test
+    public void checkAddToValueListPreservesData() throws ModelSynchronizer.MoveColumnVetoException {
+        //Single Pattern, single Condition
+        final Pattern52 pattern = spy( new Pattern52() );
+        pattern.setBoundName( "$a" );
+        pattern.setFactType( "Applicant" );
+
+        final ConditionCol52 condition = spy( new ConditionCol52() );
+        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        condition.setHeader( "col1" );
+        condition.setFactField( "name" );
+        condition.setOperator( "==" );
+        condition.setValueList( "A,B,C" );
+
+        modelSynchronizer.appendColumn( pattern,
+                                        condition );
+        modelSynchronizer.appendRow();
+        modelSynchronizer.appendRow();
+        modelSynchronizer.appendRow();
+        uiModel.setCell( 0, 2, new BaseGridCellValue<>( "A" ) );
+        uiModel.setCell( 1, 2, new BaseGridCellValue<>( "B" ) );
+        uiModel.setCell( 2, 2, new BaseGridCellValue<>( "C" ) );
+
+        final Pattern52 editedPattern = new Pattern52();
+        editedPattern.setBoundName( "$a" );
+        editedPattern.setFactType( "Applicant" );
+
+        final ConditionCol52 editedCondition = new ConditionCol52();
+        editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        editedCondition.setHeader( "col1" );
+        editedCondition.setFactField( "name" );
+        editedCondition.setOperator( "==" );
+        editedCondition.setValueList( "A,B,C,D" );
+
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
+                                                                          condition,
+                                                                          editedPattern,
+                                                                          editedCondition );
+        assertEquals( 1,
+                      diffs.size() );
+        verify( pattern ).diff( editedPattern );
+        verify( condition ).diff( editedCondition );
+
+        assertEquals( ConditionCol52.FIELD_VALUE_LIST,
+                      diffs.get( 0 ).getFieldName() );
+        assertEquals( "A",
+                      uiModel.getCell( 0, 2 ).getValue().getValue().toString() );
+        assertEquals( "B",
+                      uiModel.getCell( 1, 2 ).getValue().getValue().toString() );
+        assertEquals( "C",
+                      uiModel.getCell( 2, 2 ).getValue().getValue().toString() );
+        assertEquals( "A",
+                      model.getData().get( 0 ).get( 2 ).getStringValue() );
+        assertEquals( "B",
+                      model.getData().get( 1 ).get( 2 ).getStringValue() );
+        assertEquals( "C",
+                      model.getData().get( 2 ).get( 2 ).getStringValue() );
+    }
+
+    @Test
+    public void checkRemoveFromValueListClearsData() throws ModelSynchronizer.MoveColumnVetoException {
+        //Single Pattern, single Condition
+        final Pattern52 pattern = spy( new Pattern52() );
+        pattern.setBoundName( "$a" );
+        pattern.setFactType( "Applicant" );
+
+        final ConditionCol52 condition = spy( new ConditionCol52() );
+        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        condition.setHeader( "col1" );
+        condition.setFactField( "name" );
+        condition.setOperator( "==" );
+        condition.setValueList( "A,B,C" );
+
+        modelSynchronizer.appendColumn( pattern,
+                                        condition );
+        modelSynchronizer.appendRow();
+        modelSynchronizer.appendRow();
+        modelSynchronizer.appendRow();
+        uiModel.setCell( 0, 2, new BaseGridCellValue<>( "A" ) );
+        uiModel.setCell( 1, 2, new BaseGridCellValue<>( "B" ) );
+        uiModel.setCell( 2, 2, new BaseGridCellValue<>( "C" ) );
+
+        final Pattern52 editedPattern = new Pattern52();
+        editedPattern.setBoundName( "$a" );
+        editedPattern.setFactType( "Applicant" );
+
+        final ConditionCol52 editedCondition = new ConditionCol52();
+        editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        editedCondition.setHeader( "col1" );
+        editedCondition.setFactField( "name" );
+        editedCondition.setOperator( "==" );
+        editedCondition.setValueList( "A" );
+
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
+                                                                          condition,
+                                                                          editedPattern,
+                                                                          editedCondition );
+        assertEquals( 1,
+                      diffs.size() );
+        verify( pattern ).diff( editedPattern );
+        verify( condition ).diff( editedCondition );
+
+        assertEquals( ConditionCol52.FIELD_VALUE_LIST,
+                      diffs.get( 0 ).getFieldName() );
+        assertEquals( "A",
+                      uiModel.getCell( 0, 2 ).getValue().getValue().toString() );
+        assertNull( uiModel.getCell( 1, 2 ) );
+        assertNull( uiModel.getCell( 2, 2 ) );
+        assertEquals( "A",
+                      model.getData().get( 0 ).get( 2 ).getStringValue() );
+        assertFalse( model.getData().get( 1 ).get( 2 ).hasValue() );
+        assertFalse( model.getData().get( 2 ).get( 2 ).hasValue() );
     }
 
     @Test

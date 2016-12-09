@@ -189,7 +189,7 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
         for ( List<DTCellValue52> row : this.model.getData() ) {
             final DTCellValue52 dcv = row.get( columnIndex );
             if ( clearExistingValues && !values.contains( dcv.getStringValue() ) ) {
-                row.remove( columnIndex );
+                dcv.clearValues();
             }
         }
     }
