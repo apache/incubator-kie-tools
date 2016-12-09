@@ -69,6 +69,21 @@ public class IssuePresenterTest {
     }
 
     @Test
+    public void testShowEmptyIssue() throws
+            Exception {
+
+        screen.show( Issue.EMPTY );
+
+        verify( view ).setIssueTitle( "---" );
+        ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass( SafeHtml.class );
+        verify( view ).setExplanation( safeHtmlArgumentCaptor.capture() );
+        assertEquals( "---",
+                safeHtmlArgumentCaptor.getValue()
+                        .asString() );
+        verify( view ).setLines( "" );
+    }
+
+    @Test
     public void testClear() throws
                             Exception {
         screen.clear();

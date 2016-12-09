@@ -22,6 +22,15 @@ import org.drools.workbench.services.verifier.api.client.resources.i18n.Analysis
 public class ExplanationProvider {
 
     public static SafeHtml toHTML( final Issue issue ) {
+        if ( issue == Issue.EMPTY ) {
+            return new SafeHtml() {
+                @Override
+                public String asString() {
+                    return "---";
+                }
+            };
+        }
+
         switch ( issue.getExplanationType() ) {
             case CONFLICTING_ROWS:
                 return new Explanation()
@@ -169,6 +178,10 @@ public class ExplanationProvider {
     }
 
     public static String toTitle( final Issue issue ) {
+        if ( issue == Issue.EMPTY ) {
+            return "---";
+        }
+
         switch ( issue.getExplanationType() ) {
             case CONFLICTING_ROWS:
                 return AnalysisConstants.INSTANCE.ConflictingRows();
@@ -198,7 +211,7 @@ public class ExplanationProvider {
             case MISSING_RANGE:
                 return AnalysisConstants.INSTANCE.MissingRangeTitle();
             case SINGLE_HIT_LOST:
-                return                        AnalysisConstants.INSTANCE.SingleHitLost();
+                return AnalysisConstants.INSTANCE.SingleHitLost();
             case EMPTY_RULE:
                 return AnalysisConstants.INSTANCE.EmptyRule();
             default:

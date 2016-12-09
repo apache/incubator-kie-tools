@@ -32,7 +32,7 @@ public class Issue {
     private ExplanationType explanationType;
     private String debugMessage;
 
-    public Issue() {
+    private Issue() {
         severity=null;
         rowNumbers=new HashSet<>();
     }

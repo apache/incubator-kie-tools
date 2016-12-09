@@ -42,11 +42,7 @@ public class IssuePresenter
 
     public void show( final Issue issue ) {
         final String title = ExplanationProvider.toTitle( issue );
-        if ( title == null ) {
-            view.setIssueTitle( title );
-        } else {
-            view.setIssueTitle( title );
-        }
+        view.setIssueTitle( title );
         view.setExplanation( ExplanationProvider.toHTML( issue ) );
         view.setLines( makeRowNumbers( issue ) );
     }
