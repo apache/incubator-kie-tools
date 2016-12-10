@@ -331,9 +331,11 @@ public class WiresShapeControlHandleListTest
     {
         MultiPath path = mock(MultiPath.class);
         LayoutContainer container = mock(LayoutContainer.class);
+        ILayoutHandler layoutHandler = mock(ILayoutHandler.class);
 
         when(shape.getPath()).thenReturn(path);
         when(shape.getLayoutContainer()).thenReturn(container);
+        when(shape.getLayoutHandler()).thenReturn( layoutHandler );
 
         BoundingBox box = mock(BoundingBox.class);
         when(path.getBoundingBox()).thenReturn(box);

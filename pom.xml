@@ -28,7 +28,7 @@
   <properties>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.com.ahomeit.lienzo>2.0.278-RELEASE</version.com.ahomeit.lienzo>
+    <version.com.ahomeit.lienzo>2.0.279-RELEASE</version.com.ahomeit.lienzo>
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
     <version.junit>4.11</version.junit>
     <version.org.mockito>1.9.5</version.org.mockito>
