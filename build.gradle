@@ -90,7 +90,7 @@ sourceSets {
 }
 
 dependencies {
-    compile(group: 'com.ahome-it', name: 'lienzo-core', version: '2.0.278-RELEASE')
+    compile(group: 'com.ahome-it', name: 'lienzo-core', version: '2.0.280-RELEASE')
     compile(group: 'com.google.gwt', name: 'gwt-dev', version: '2.7.0')
     compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0')
     compile(group: 'junit', name: 'junit', version: '4.11')

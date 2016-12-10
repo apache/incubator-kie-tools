@@ -27,7 +27,7 @@ Before setup, please confirm these two pre-requisites:
 You can check it [here](./pom.xml). If you use older lienzo versions, you can hit with class signature incompatibilities. 
  Ensure your dependency tree resolves:
  
-        com.ahome-it:lienzo-core:2.0.277-RELEASE
+        com.ahome-it:lienzo-core:2.0.280-RELEASE
 
 Build
 =====
@@ -48,13 +48,13 @@ Add this dependency into your `pom.xml`:
             <dependency>
               <groupId>com.ahome-it</groupId>
               <artifactId>lienzo-tests</artifactId>
-              <version>1.0.0-RC3</version>
+              <version>1.0.0-RC4</version>
               <scope>test</scope>
             </dependency>
             
 Or for gradle:
 
-	    compile(group: 'com.ahome-it', name: 'lienzo-tests', version: '1.0.0-RC3')
+	    compile(group: 'com.ahome-it', name: 'lienzo-tests', version: '1.0.0-RC4')
 	
 
 2.- Use the JUnit runner `LienzoMockitoTestRunner` in your test case:          
@@ -279,7 +279,7 @@ Use the testing artifact version supported for a concrete Lienzo-Core release:
         Lienzo-Core            Lienzzo-Tests
         ************************************
         2.0.275-RELEASE          1.0.0-RC2
-        2.0.277-RELEASE (+)      current
+        2.0.280-RELEASE (+)      current
         
 NOTE: Symbol "+" indicates from the given version until latest stable release one.               
 

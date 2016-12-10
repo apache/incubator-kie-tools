@@ -29,6 +29,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
@@ -52,10 +57,6 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeControlHandleListTest
@@ -132,13 +133,13 @@ public class WiresShapeControlHandleListTest
         verify(shape).addWiresDragMoveHandler(any(WiresDragMoveHandler.class));
         verify(shape).addWiresDragEndHandler(any(WiresDragEndHandler.class));
 
-        IPrimitive[] primitives = new IPrimitive[]{primitive0, primitive1, primitive2, primitive3};
-        for (IPrimitive primitive : primitives) {
+        IPrimitive<?>[] primitives = new IPrimitive<?>[]{primitive0, primitive1, primitive2, primitive3};
+        for (IPrimitive<?> primitive : primitives) {
             verifyNodeHandlers(primitive);
         }
     }
 
-    private void verifyNodeHandlers(IPrimitive primitive) {
+    private void verifyNodeHandlers(IPrimitive<?> primitive) {
         // TODO: check correctness of Handler (probably needs pure Java realization of NFastArrayList)
         verify(primitive).addNodeDragStartHandler(any(NodeDragStartHandler.class));
         verify(primitive).addNodeDragMoveHandler(any(NodeDragMoveHandler.class));
