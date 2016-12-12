@@ -23,6 +23,7 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.verifier.webworker.client.testutil.ExtendedGuidedDecisionTableBuilder;
 import org.drools.workbench.verifier.webworker.client.testutil.LimitedGuidedDecisionTableBuilder;
 import org.junit.Test;
@@ -61,6 +62,27 @@ public class DecisionTableAnalyzerTest
     }
 
     @Test
+    public void testMultipleEmptyRows() throws Exception {
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                new ArrayList<Import>(),
+                "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
+                .withData( new Object[][]{ { 1, "description", "" },
+                                           { 2, "description", "" }
+                                         } )
+                .buildTable();
+
+        fireUpAnalyzer();
+
+        assertEquals( 4, analyzerProvider.getAnalysisReport().size() );
+        assertContains( AnalysisConstants.INSTANCE.EmptyRule(), analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( AnalysisConstants.INSTANCE.EmptyRule(), analyzerProvider.getAnalysisReport(), 2 );
+        assertOnlyContains( analyzerProvider.getAnalysisReport(),
+                            AnalysisConstants.INSTANCE.EmptyRule(),
+                            AnalysisConstants.INSTANCE.SingleHitLost() );
+    }
+
+    @Test
     public void testRuleHasNoAction() throws Exception {
         table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                           new ArrayList<Import>(),
@@ -72,6 +94,23 @@ public class DecisionTableAnalyzerTest
         fireUpAnalyzer();
 
         assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
+
+    }
+
+    @Test
+    public void testMultipleRuleHasNoActions() throws Exception {
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                new ArrayList<Import>(),
+                "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+                .withData( new Object[][]{ { 1, "description", 0 },
+                                           { 2, "description", 1 } } )
+                .buildTable();
+
+        fireUpAnalyzer();
+
+        assertContains( AnalysisConstants.INSTANCE.RuleHasNoAction(), analyzerProvider.getAnalysisReport(), 1 );
+        assertContains( AnalysisConstants.INSTANCE.RuleHasNoAction(), analyzerProvider.getAnalysisReport(), 2 );
 
     }
 

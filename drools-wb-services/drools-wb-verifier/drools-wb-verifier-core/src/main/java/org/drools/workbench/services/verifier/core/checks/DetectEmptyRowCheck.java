@@ -16,15 +16,11 @@
 
 package org.drools.workbench.services.verifier.core.checks;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.checks.base.SingleCheck;
-import org.drools.workbench.services.verifier.api.client.reporting.Explanation;
 import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
-import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -41,13 +37,14 @@ public class DetectEmptyRowCheck
         hasIssues = false;
 
         hasIssues = !ruleInspector.atLeastOneConditionHasAValue() && !ruleInspector.atLeastOneActionHasAValue();
+
     }
 
     @Override
     public Issue getIssue() {
         Issue issue = new Issue( Severity.WARNING,
                                  ExplanationType.EMPTY_RULE,
-                                 new HashSet<Integer>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) ) );
+                                 new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) ) );
 
         return issue;
     }

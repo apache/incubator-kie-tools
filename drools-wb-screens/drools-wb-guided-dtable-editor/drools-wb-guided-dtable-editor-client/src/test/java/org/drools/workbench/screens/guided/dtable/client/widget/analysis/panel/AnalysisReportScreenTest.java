@@ -122,6 +122,50 @@ public class AnalysisReportScreenTest {
     }
 
     @Test
+    public void testMergeEmptyRules() throws
+            Exception {
+        testMerge( ExplanationType.EMPTY_RULE );
+
+    }
+
+    @Test
+    public void testMergeMissingAction() throws
+            Exception {
+        testMerge( ExplanationType.MISSING_ACTION );
+
+    }
+
+    @Test
+    public void testMergeMissingRestriction() throws
+            Exception {
+        testMerge( ExplanationType.MISSING_RESTRICTION );
+
+    }
+
+    private void testMerge( ExplanationType type ) {
+        Issue issue1 = new Issue( Severity.WARNING,
+                type,
+                new HashSet<>( Arrays.asList( 1 ) ) );
+
+        Issue issue2 = new Issue( Severity.WARNING,
+                type,
+                new HashSet<>( Arrays.asList( 2 ) ) );
+        screen.showReport( getAnalysis( issue1, issue2 ) );
+
+        verify( placeManager ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
+
+        assertEquals( 1, dataProvider.getList().size() );
+
+        Issue issue = (Issue) dataProvider.getList().get(0);
+
+        assertEquals( Severity.WARNING, issue.getSeverity() );
+        assertEquals( type, issue.getExplanationType() );
+        assertEquals( new HashSet<>( Arrays.asList( 1, 2 ) ), issue.getRowNumbers() );
+
+        verify( view ).showIssue( issue );
+    }
+
+    @Test
     public void testDoNotShowIfThereAreNoIssues() throws
                                                   Exception {
         screen.showReport( getAnalysis() );

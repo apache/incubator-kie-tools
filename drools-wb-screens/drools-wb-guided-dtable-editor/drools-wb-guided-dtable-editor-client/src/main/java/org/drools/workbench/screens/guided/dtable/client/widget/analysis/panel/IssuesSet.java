@@ -16,16 +16,27 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
 import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
+import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 
 public class IssuesSet
         extends TreeSet<Issue> {
 
-    public IssuesSet() {
+    private Set<ExplanationType> MERGEABLE_ISSUES = EnumSet.of(
+        ExplanationType.EMPTY_RULE,
+        ExplanationType.MISSING_RESTRICTION,
+        ExplanationType.MISSING_ACTION
+    );
+
+    public IssuesSet( List<Issue> issues ) {
         super( new Comparator<Issue>() {
             @Override
             public int compare( final Issue issue,
@@ -65,5 +76,27 @@ public class IssuesSet
                 }
             }
         } );
+
+        addAll( MERGEABLE_ISSUES.stream()
+                                .map( typeToMerge -> mergeIssues( issues, typeToMerge ) )
+                                .filter( Optional::isPresent ).map( Optional::get ).collect( Collectors.toSet() ) );
+
+        addAll( issues.stream()
+                      .filter( issue -> !MERGEABLE_ISSUES.contains( issue.getExplanationType() ) )
+                      .collect( Collectors.toSet() ) );
+    }
+
+    private Optional<Issue> mergeIssues( List<Issue> issues, ExplanationType typeToMerge ) {
+        Set<Issue> issuesToMerge = issues.stream()
+                                         .filter( issue -> issue.getExplanationType() == typeToMerge )
+                                         .collect( Collectors.toSet() );
+
+        Set<Integer> affectedRows = issuesToMerge.stream()
+                                                 .flatMap( issue -> issue.getRowNumbers().stream() )
+                                                 .collect( Collectors.toSet() );
+
+        return issuesToMerge.stream()
+                            .findFirst() // Will be Optional.empty() if no issue of "typeToMerge" was present
+                            .map( issue -> new Issue( issue.getSeverity(), typeToMerge, affectedRows ) );
     }
 }

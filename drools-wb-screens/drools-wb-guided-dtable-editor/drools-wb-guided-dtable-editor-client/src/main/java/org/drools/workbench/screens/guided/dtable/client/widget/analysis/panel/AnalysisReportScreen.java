@@ -115,11 +115,7 @@ public class AnalysisReportScreen {
     }
 
     private ArrayList<Issue> getIssues( final AnalysisReport report ) {
-        final IssuesSet issues = new IssuesSet();
-        for ( final Issue issue : report.getAnalysisData() ) {
-            issues.add( issue );
-        }
-        return new ArrayList<>( issues );
+        return new ArrayList<>( new IssuesSet( report.getAnalysisData() ) );
     }
 
     @DefaultPosition
