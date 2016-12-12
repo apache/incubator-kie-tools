@@ -346,7 +346,6 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_PROCESSPROPERTIES );
         assertDiagram( diagram, 4 );
         assertEquals( "BPSimple", diagram.getMetadata().getTitle() );
-        BPMNGeneralSet generalProperties = null;
         DiagramSet diagramProperties = null;
         Iterator < Element > it = nodesIterator( diagram );
         while ( it.hasNext() ) {
@@ -355,16 +354,15 @@ public class BPMNDiagramMarshallerTest {
                 Object oDefinition = ( ( View ) element.getContent() ).getDefinition();
                 if ( oDefinition instanceof BPMNDiagram ) {
                     BPMNDiagram bpmnDiagram = ( BPMNDiagram ) oDefinition;
-                    generalProperties = bpmnDiagram.getGeneral();
                     diagramProperties = bpmnDiagram.getDiagramSet();
                     break;
                 }
             }
         }
-        assertEquals( "BPSimple", generalProperties.getName().getValue() );
+        assertEquals( "BPSimple", diagramProperties.getName().getValue() );
         assertEquals( "\n" +
                 "        This is a simple process\n" +
-                "    ", generalProperties.getDocumentation().getValue() );
+                "    ", diagramProperties.getDocumentation().getValue() );
         assertEquals( "JDLProj.BPSimple", diagramProperties.getId().getValue() );
         assertEquals( "org.jbpm", diagramProperties.getPackageProperty().getValue() );
         assertEquals( Boolean.valueOf( true ), diagramProperties.getExecutable().getValue() );

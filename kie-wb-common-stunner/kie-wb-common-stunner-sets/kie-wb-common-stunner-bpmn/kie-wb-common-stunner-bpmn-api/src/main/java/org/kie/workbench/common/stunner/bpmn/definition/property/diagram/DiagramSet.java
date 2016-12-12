@@ -20,8 +20,10 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.metaModel.TextArea;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
@@ -32,23 +34,34 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
 @Portable
 @Bindable
 @PropertySet
-public class DiagramSet implements BPMNPropertySet {
+public class DiagramSet {
 
-    @Name
-    public static final transient String propertySetName = "BPMN Diagram";
+    @org.kie.workbench.common.stunner.core.definition.annotation.Name
+    public static final transient String propertySetName = "BPMN Process";
 
     @Property
-    @FieldDef( label = FIELDDEF_ID, property = "value" )
+    @FieldDef(label = FIELDDEF_NAME, property = "value", position = 0)
+    @Valid
+    private Name name;
+
+    @Property
+    @FieldDef(label = FIELDDEF_DOCUMENTATION, property = "value", position = 1)
+    @TextArea(rows = 3)
+    @Valid
+    private Documentation documentation;
+
+    @Property
+    @FieldDef( label = FIELDDEF_ID, property = "value", position = 2)
     @Valid
     private Id id;
 
     @Property
-    @FieldDef( label = FIELDDEF_PACKAGE, property = "value" )
+    @FieldDef( label = FIELDDEF_PACKAGE, property = "value", position = 3 )
     @Valid
     private Package packageProperty;
 
     @Property
-    @FieldDef( label = FIELDDEF_VERSION, property = "value" )
+    @FieldDef( label = FIELDDEF_VERSION, property = "value", position = 4 )
     @Valid
     private Version version;
 
@@ -56,32 +69,58 @@ public class DiagramSet implements BPMNPropertySet {
     private Executable executable;
 
     public DiagramSet() {
-        this( new Id(), new Package(),
+        this( new Name(), new Documentation(),
+                new Id(), new Package(),
                 new Version(), new Executable() );
     }
 
-    public DiagramSet( @MapsTo( "id" ) Id id,
+    public DiagramSet( @MapsTo( "name" ) Name name,
+                       @MapsTo( "documentation" ) Documentation documentation,
+                       @MapsTo( "id" ) Id id,
                        @MapsTo( "packageProperty" ) Package packageProperty,
                        @MapsTo( "version" ) Version version,
                        @MapsTo( "executable" ) Executable executable ) {
+        this.name = name;
+        this.documentation = documentation;
         this.id = id;
         this.packageProperty = packageProperty;
         this.version = version;
         this.executable = executable;
     }
 
-    public DiagramSet( String id,
+    public DiagramSet( String name,
+                       String documentation,
+                       String id,
                        String packageProperty,
                        String version,
                        Boolean executable ) {
+        this.name = new Name( name );
+        this.documentation = new Documentation( documentation );
         this.id = new Id( id );
         this.packageProperty = new Package( packageProperty );
         this.version = new Version( version );
         this.executable = new Executable( executable );
     }
 
+    public DiagramSet( String name ) {
+        this.name = new Name( name );
+        this.documentation = new Documentation();
+        this.id = new Id();
+        this.packageProperty = new Package();
+        this.version = new Version();
+        this.executable = new Executable();
+    }
+
     public String getPropertySetName() {
         return propertySetName;
+    }
+
+    public Name getName() {
+        return name;
+    }
+
+    public Documentation getDocumentation() {
+        return documentation;
     }
 
     public Id getId() {
@@ -100,6 +139,14 @@ public class DiagramSet implements BPMNPropertySet {
         return executable;
     }
 
+    public void setName(Name name) {
+        this.name = name;
+    }
+
+    public void setDocumentation(Documentation documentation) {
+        this.documentation = documentation;
+    }
+
     public void setId( Id id ) {
         this.id = id;
     }
@@ -108,9 +155,7 @@ public class DiagramSet implements BPMNPropertySet {
         this.packageProperty = packageProperty;
     }
 
-    public void setVersion( Version version ) {
-        this.version = version;
-    }
+    public void setVersion( Version version ) { this.version = version; }
 
     public void setExecutable( Executable executable ) {
         this.executable = executable;

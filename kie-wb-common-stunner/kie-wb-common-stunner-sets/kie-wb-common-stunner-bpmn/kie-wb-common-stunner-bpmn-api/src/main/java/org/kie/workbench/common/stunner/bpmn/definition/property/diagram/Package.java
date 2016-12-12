@@ -45,10 +45,10 @@ public class Package implements BPMNProperty {
     @Type
     public static final PropertyType type = new StringType();
 
-    @DefaultValue
-    public static final transient String defaultValue = null;
-
     public static final String DEFAULT_PACKAGE = "org.jbpm";
+
+    @DefaultValue
+    public static final transient String defaultValue = "";
 
     @Value
     private String value = defaultValue;

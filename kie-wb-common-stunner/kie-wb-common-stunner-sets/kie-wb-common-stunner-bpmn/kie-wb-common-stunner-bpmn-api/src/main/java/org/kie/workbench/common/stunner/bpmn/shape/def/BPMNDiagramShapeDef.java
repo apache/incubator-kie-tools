@@ -67,7 +67,7 @@ public final class BPMNDiagramShapeDef
 
     @Override
     public String getNamePropertyValue( final BPMNDiagram element ) {
-        return element.getGeneral().getName().getValue();
+        return element.getDiagramSet().getName().getValue();
     }
 
     @Override

@@ -202,7 +202,7 @@ public class BPMNDiagramMarshaller implements DiagramMarshaller<Graph, Metadata,
     }
 
     private static String getTitle( BPMNDiagram diagram ) {
-        final String title = diagram.getGeneral().getName().getValue();
+        final String title = diagram.getDiagramSet().getName().getValue();
         return title != null && title.trim().length() > 0 ? title : "-- Untitled BPMN2 diagram --";
     }
 

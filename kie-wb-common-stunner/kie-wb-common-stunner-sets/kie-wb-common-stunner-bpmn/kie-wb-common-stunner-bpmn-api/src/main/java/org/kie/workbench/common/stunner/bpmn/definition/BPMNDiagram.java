@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -25,7 +29,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.shape.def.BPMNDiagramShapeDef;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -39,6 +42,7 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
+
 
 import javax.validation.Valid;
 import java.util.HashSet;
@@ -63,17 +67,12 @@ public class BPMNDiagram implements BPMNDefinition {
     public static final transient String description = "BPMN Diagram";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
-    @Valid
-    private BPMNGeneralSet general;
-
-    @PropertySet
-    @FieldDef( label = FIELDDEF_PROCESS_SETTINGS, position = 1 )
+    @FieldDef( label = FIELDDEF_PROCESS_SETTINGS, position = 0 )
     @Valid
     private DiagramSet diagramSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_DATA, position = 2 )
+    @FieldDef( label = FIELDDEF_DATA, position = 1 )
     @Valid
     protected ProcessData processData;
 
@@ -104,8 +103,7 @@ public class BPMNDiagram implements BPMNDefinition {
 
         @Override
         public BPMNDiagram build() {
-            return new BPMNDiagram( new BPMNGeneralSet(""),
-                    new DiagramSet(),
+            return new BPMNDiagram( new DiagramSet( "" ),
                     new ProcessData(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
@@ -117,13 +115,11 @@ public class BPMNDiagram implements BPMNDefinition {
     public BPMNDiagram() {
     }
 
-    public BPMNDiagram( @MapsTo( "general" ) BPMNGeneralSet general,
-                        @MapsTo( "diagramSet" ) DiagramSet diagramSet,
+    public BPMNDiagram( @MapsTo( "diagramSet" ) DiagramSet diagramSet,
                         @MapsTo( "processData" ) ProcessData processData,
                         @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                         @MapsTo( "fontSet" ) FontSet fontSet,
                         @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet ) {
-        this.general = general;
         this.diagramSet = diagramSet;
         this.processData = processData;
         this.backgroundSet = backgroundSet;
@@ -151,10 +147,6 @@ public class BPMNDiagram implements BPMNDefinition {
         return diagramSet;
     }
 
-    public BPMNGeneralSet getGeneral() {
-        return general;
-    }
-
     public RectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }
@@ -173,10 +165,6 @@ public class BPMNDiagram implements BPMNDefinition {
 
     public FontSet getFontSet() {
         return fontSet;
-    }
-
-    public void setGeneral( BPMNGeneralSet general ) {
-        this.general = general;
     }
 
     public void setDiagramSet( DiagramSet diagramSet ) {

@@ -75,7 +75,7 @@ public class BPMNProjectDiagramFactory
             diagram.getDiagramSet().getId().setValue( projectName + name );
         }
         final String p = diagram.getDiagramSet().getPackageProperty().getValue();
-        if (  null == p ) {
+        if (  null == p || p.isEmpty() ) {
             String metadataPackage = metadata.getProjectPackage();
             if ( metadataPackage == null || metadataPackage.isEmpty() ) {
                 diagram.getDiagramSet().getPackageProperty().setValue( diagram.getDiagramSet().getPackageProperty().DEFAULT_PACKAGE );
@@ -83,9 +83,9 @@ public class BPMNProjectDiagramFactory
                 diagram.getDiagramSet().getPackageProperty().setValue( metadata.getProjectPackage() );
             }
         }
-        final String diagramName = diagram.getGeneral().getName().getValue();
+        final String diagramName = diagram.getDiagramSet().getName().getValue();
         if ( null == diagramName || diagramName.isEmpty() ) {
-            diagram.getGeneral().getName().setValue( name );
+            diagram.getDiagramSet().getName().setValue( name );
         }
     }
 
