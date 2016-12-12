@@ -227,8 +227,10 @@ public abstract class BaseSynchronizer<A extends Synchronizer.MetaData, U extend
         } else if ( dataType == DataType.DataTypes.BOOLEAN ) {
             if ( defaultValue == null ) {
                 dcv = new DTCellValue52( false );
+            } else if ( defaultValue.getBooleanValue() == null ) {
+                dcv = new DTCellValue52( false );
             } else {
-                dcv = new DTCellValue52( defaultValue );
+                dcv = new DTCellValue52( defaultValue.getBooleanValue() );
             }
 
         } else {
