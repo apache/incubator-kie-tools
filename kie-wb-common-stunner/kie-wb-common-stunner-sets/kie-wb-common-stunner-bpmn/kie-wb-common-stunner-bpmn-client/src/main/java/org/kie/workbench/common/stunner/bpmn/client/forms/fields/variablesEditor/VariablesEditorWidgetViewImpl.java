@@ -105,14 +105,16 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
         if ( dataTypes == null ) {
             getDataTypes( value, fireEvents );
         } else {
-            doSetValue( value, fireEvents );
+            doSetValue( value, fireEvents, false );
         }
     }
 
-    protected void doSetValue( String value, boolean fireEvents ) {
+    protected void doSetValue( String value, boolean fireEvents, boolean initializeView ) {
         String oldValue = sVariables;
         sVariables = value;
-        initView();
+        if ( initializeView ) {
+            initView();
+        }
         if ( fireEvents ) {
             ValueChangeEvent.fireIfNotEqual( this, oldValue, sVariables );
         }
@@ -132,14 +134,14 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
                     public void callback( List<String> serverDataTypes ) {
                         List<List<String>> mergedDataTypes = mergeDataTypes( simpleDataTypes, simpleDataTypeDisplayNames, serverDataTypes );
                         setDataTypes( mergedDataTypes.get( 0 ), mergedDataTypes.get( 1 ) );
-                        doSetValue( value, fireEvents);
+                        doSetValue( value, fireEvents, true );
                     };
                 },
                 new BusErrorCallback() {
                     public boolean error( Message message, Throwable t) {
                         notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(), NotificationEvent.NotificationType.ERROR ) );
                         setDataTypes( simpleDataTypes, simpleDataTypeDisplayNames );
-                        doSetValue( value, fireEvents);
+                        doSetValue( value, fireEvents, true);
                         return false;
                     }
                 },
