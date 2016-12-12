@@ -82,6 +82,9 @@ public abstract class BaseEnumSingleSelectUiColumn<T, MVW extends ListBox, SVW e
                                                          final StringBuilder sb = new StringBuilder();
                                                          if ( enumLookups.containsKey( convertedValue ) ) {
                                                              sb.append( enumLookups.get( convertedValue ) );
+                                                         } else {
+                                                             presenter.getView().getModel().deleteCell( context.getRowIndex(),
+                                                                                                        context.getColumnIndex() );
                                                          }
                                                          return sb.toString();
                                                      }
