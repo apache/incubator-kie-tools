@@ -418,6 +418,12 @@ public class ProjectScreenViewImpl
     }
 
     @Override
+    public void setDeploymentDescriptorEnabled(final Boolean enabled) {
+        deploymentDescriptorButton.setVisible(enabled);
+        deploymentsHeader.setVisible(enabled);
+    }
+
+    @Override
     public void setGAVCheckDisabledSetting( Boolean disabled ) {
         this.isGAVCheckDisabled = disabled;
 

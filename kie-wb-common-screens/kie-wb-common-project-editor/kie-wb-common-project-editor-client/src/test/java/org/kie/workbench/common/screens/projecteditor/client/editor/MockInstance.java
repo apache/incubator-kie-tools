@@ -17,21 +17,19 @@
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.Iterator;
 import javax.enterprise.inject.Instance;
 
-import org.uberfire.client.mvp.LockManager;
-
-public class MockLockManagerInstances implements Instance<LockManager> {
+public class MockInstance<T> implements Instance<T> {
 
     @Override
-    public Instance<LockManager> select( final Annotation... annotations ) {
+    public Instance<T> select( final Annotation... annotations ) {
         return null;
     }
 
     @Override
-    public <U extends LockManager> Instance<U> select( final Class<U> aClass,
-                                                       final Annotation... annotations ) {
+    public <U extends T> Instance<U> select( final Class<U> aClass, final Annotation... annotations) {
         return null;
     }
 
@@ -46,17 +44,17 @@ public class MockLockManagerInstances implements Instance<LockManager> {
     }
 
     @Override
-    public void destroy( final LockManager lockManager ) {
+    public void destroy( final T lockManager ) {
 
     }
 
     @Override
-    public Iterator<LockManager> iterator() {
-        return null;
+    public Iterator<T> iterator() {
+        return Collections.emptyIterator();
     }
 
     @Override
-    public LockManager get() {
+    public T get() {
         return null;
     }
 

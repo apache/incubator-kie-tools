@@ -49,6 +49,7 @@ import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
+import org.uberfire.client.mvp.LockManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
@@ -61,6 +62,7 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.mockito.Mockito.*;
 
@@ -90,7 +92,9 @@ public abstract class ProjectScreenPresenterTestBase {
     @Spy
     protected ProjectContext           context                     = new ProjectContext();
     @Spy
-    protected MockLockManagerInstances lockManagerInstanceProvider = new MockLockManagerInstances();
+    protected MockInstance<LockManager> lockManagerInstanceProvider = new MockInstance();
+    @Spy
+    protected MockInstance<ResourceTypeDefinition> resourceTypeDefinitions = new MockInstance();
     @GwtMock
     @SuppressWarnings( "unused" )
     private   ButtonGroup           buildOptions;
@@ -167,6 +171,7 @@ public abstract class ProjectScreenPresenterTestBase {
         when( project.getProjectName() ).thenReturn( "project" );
         when( project.getPomXMLPath() ).thenReturn( pomPath );
         when( project.getPom() ).thenReturn( pom );
+        when( project.getRootPath() ).thenReturn( mock(Path.class) );
         when( pomPath.getFileName() ).thenReturn( "pom.xml" );
         when( context.getActiveProject() ).thenReturn( project );
     }
@@ -201,7 +206,8 @@ public abstract class ProjectScreenPresenterTestBase {
                                                 deletePopUpPresenter,
                                                 savePopUpPresenter,
                                                 gavPreferences,
-                                                projectScopedResolutionStrategySupplier ) {
+                                                projectScopedResolutionStrategySupplier,
+                                                resourceTypeDefinitions) {
 
             @Override
             protected Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> getBuildExtensions() {

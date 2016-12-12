@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -46,7 +48,6 @@ import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.guvnor.common.services.project.security.ProjectAction;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -72,7 +73,6 @@ import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectN
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
@@ -101,7 +101,6 @@ import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
-import org.uberfire.ext.preferences.client.admin.AdminPagePresenter;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -120,12 +119,15 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter
         implements ProjectScreenView.Presenter {
+
+    public static final String KIE_DEPLOYMENT_DESCRIPTOR_XML = "kie-deployment-descriptor.xml";
 
     private ProjectScreenView         view;
     private User                      user;
@@ -185,9 +187,9 @@ public class ProjectScreenPresenter
 
     protected SavePopUpPresenter savePopUpPresenter;
 
-    private GAVPreferences gavPreferences;
+    private Path kieDeploymentDescriptoPath;
 
-    private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
+    private Instance<ResourceTypeDefinition> resourceTypes;
 
     //Used by ErrorCallback for "Build" operation.
     private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndDeployGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
@@ -237,7 +239,8 @@ public class ProjectScreenPresenter
                                    final DeletePopUpPresenter deletePopUpPresenter,
                                    final SavePopUpPresenter savePopUpPresenter,
                                    final GAVPreferences gavPreferences,
-                                   final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier ) {
+                                   final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier,
+                                   final Instance<ResourceTypeDefinition> resourceTypes  ) {
 
         this.view = view;
         this.user = user;
@@ -271,9 +274,6 @@ public class ProjectScreenPresenter
         this.deletePopUpPresenter = deletePopUpPresenter;
         this.savePopUpPresenter = savePopUpPresenter;
 
-        this.gavPreferences = gavPreferences;
-        this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
-
         projectContextChangeHandle = workbenchContext.addChangeHandler( new ProjectContextChangeHandler() {
             @Override
             public void onChange() {
@@ -301,6 +301,12 @@ public class ProjectScreenPresenter
         };
 
         this.deploymentScreenPopupView = deploymentScreenPopupView;
+
+        this.resourceTypes = resourceTypes;
+    }
+
+    protected boolean isDeploymentDescritorEditorAvailable(final Stream<ResourceTypeDefinition> resourceTypes, final Path path){
+        return resourceTypes.anyMatch( r -> r.accept(path) && KIE_DEPLOYMENT_DESCRIPTOR_XML.equals(r.getPrefix() + "." + r.getSuffix()) );
     }
 
 
@@ -437,6 +443,7 @@ public class ProjectScreenPresenter
     private void showCurrentProjectInfoIfAny( final KieProject project ) {
         if ( project != null && !project.equals( this.project ) ) {
             this.project = project;
+            this.kieDeploymentDescriptoPath = PathFactory.newPath(KIE_DEPLOYMENT_DESCRIPTOR_XML, project.getRootPath().toURI() + "/src/main/resources/META-INF/" + KIE_DEPLOYMENT_DESCRIPTOR_XML);
             setupPathToPomXML();
             init();
         }
@@ -471,6 +478,8 @@ public class ProjectScreenPresenter
                         view.setImportsMetadataUnlockHandler( getUnlockHandler( model.getProjectImportsMetaData().getPath() ) );
 
                         view.setRepositories( model.getRepositories() );
+
+                        view.setDeploymentDescriptorEnabled( isDeploymentDescritorEditorAvailable(StreamSupport.stream(resourceTypes.spliterator(), false), kieDeploymentDescriptoPath) );
 
                         view.hideBusyIndicator();
                         originalHash = model.hashCode();
@@ -1221,8 +1230,7 @@ public class ProjectScreenPresenter
 
     @Override
     public void onDeploymentDescriptorSelected() {
-        placeManager.goTo( PathFactory.newPath( "kie-deployment-descriptor.xml",
-                                                project.getRootPath().toURI() + "/src/main/resources/META-INF/kie-deployment-descriptor.xml" ) );
+        placeManager.goTo(kieDeploymentDescriptoPath);
     }
 
     @Override

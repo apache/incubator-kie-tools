@@ -131,6 +131,8 @@ public interface ProjectScreenView
 
     ButtonGroup getBuildButtons();
 
+    void setDeploymentDescriptorEnabled(final Boolean enabled);
+
     void setGAVCheckDisabledSetting( Boolean disabled );
 
     void showNoProjectSelected();

@@ -61,6 +61,8 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.type.AnyResourceTypeDefinition;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -114,6 +116,18 @@ public class ProjectScreenPresenterTest
                 times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
         verify( view,
                 times( 1 ) ).hideBusyIndicator();
+    }
+
+    @Test
+    public void testIsDeploymentDescritorEditorAvailable() {
+        final ResourceTypeDefinition editor = mock(ResourceTypeDefinition.class);
+        when(editor.getPrefix()).thenReturn("kie-deployment-descriptor");
+        when(editor.getSuffix()).thenReturn("xml");
+        when(editor.accept(any(Path.class))).thenReturn(true);
+
+        assertFalse(presenter.isDeploymentDescritorEditorAvailable(Arrays.<ResourceTypeDefinition>asList(new AnyResourceTypeDefinition()).stream(), mock(Path.class)));
+
+        assertTrue(presenter.isDeploymentDescritorEditorAvailable(Arrays.<ResourceTypeDefinition>asList(new AnyResourceTypeDefinition(), editor).stream(), mock(Path.class)));
     }
 
     @Test
