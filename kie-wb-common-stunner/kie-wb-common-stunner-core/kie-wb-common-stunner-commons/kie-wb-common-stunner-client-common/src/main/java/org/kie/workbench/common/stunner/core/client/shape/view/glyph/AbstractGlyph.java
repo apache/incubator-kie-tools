@@ -29,16 +29,9 @@ public abstract class AbstractGlyph<G> implements Glyph<G> {
         this.height = height;
     }
 
-    protected abstract G doCopy();
-
     @Override
     public G getGroup() {
         return group;
-    }
-
-    @Override
-    public G copy() {
-        return doCopy();
     }
 
     @Override

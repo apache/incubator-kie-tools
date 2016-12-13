@@ -26,11 +26,6 @@ public interface Glyph<G> {
     G getGroup();
 
     /**
-     * Copy this glyph.
-     */
-    G copy();
-
-    /**
      * Get the glyph's width
      */
     double getWidth();

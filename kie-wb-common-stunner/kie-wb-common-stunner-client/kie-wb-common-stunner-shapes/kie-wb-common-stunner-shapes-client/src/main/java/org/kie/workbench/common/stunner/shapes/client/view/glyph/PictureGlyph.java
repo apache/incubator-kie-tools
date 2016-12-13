@@ -17,6 +17,8 @@ package org.kie.workbench.common.stunner.shapes.client.view.glyph;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Picture;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.glyph.AbstractLienzoShapeGlyph;
 
 import static org.kie.workbench.common.stunner.shapes.client.util.BasicShapesUtils.scalePicture;
@@ -33,10 +35,17 @@ public final class PictureGlyph extends AbstractLienzoShapeGlyph {
     private void build( final String uri,
                         final double width,
                         final double height ) {
+        final Rectangle decorator = new Rectangle( width, height )
+                .setCornerRadius( 5 )
+                .setFillColor( ColorName.LIGHTGREY )
+                .setFillAlpha( 0.2d );
+        new Picture( uri, picture -> {
+            scalePicture( picture, width, height );
+            group.remove( decorator );
+            group.add( picture );
 
-        final Picture picture = new Picture( uri );
-        scalePicture( picture, width, height );
-        group.add( picture );
+        } );
+        group.add( decorator );
     }
 
 }

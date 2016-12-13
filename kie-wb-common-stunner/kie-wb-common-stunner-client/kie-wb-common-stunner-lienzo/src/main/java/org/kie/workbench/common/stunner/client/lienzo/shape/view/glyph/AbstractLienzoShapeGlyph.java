@@ -27,9 +27,4 @@ public abstract class AbstractLienzoShapeGlyph extends AbstractGlyph<Group> {
         super( group, width, height );
     }
 
-    @Override
-    protected Group doCopy() {
-        return group.copy();
-    }
-
 }

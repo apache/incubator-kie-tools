@@ -28,7 +28,7 @@ public class LienzoPanelUtils {
         final com.ait.lienzo.client.widget.LienzoPanel panel = new LienzoPanel( width, height );
         final Layer layer = new Layer();
         panel.add( layer.setTransformable( true ) );
-        layer.add( ( IPrimitive<?> ) glyph.copy() );
+        layer.add( ( IPrimitive<?> ) glyph.getGroup() );
         return panel;
     }
 

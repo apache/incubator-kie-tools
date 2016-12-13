@@ -44,7 +44,7 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Group> {
                       final Callback callback ) {
         final double proxyWidth = shapeGlyph.getWidth();
         final double proxyHeight = shapeGlyph.getHeight();
-        final Group dragShape = shapeGlyph.copy();
+        final Group dragShape = shapeGlyph.getGroup();
         dragShape.setX( proxyWidth / 2 );
         dragShape.setY( proxyHeight / 2 );
         final LienzoPanel dragProxyPanel = new LienzoPanel( ( ( int ) proxyWidth * 2 ),

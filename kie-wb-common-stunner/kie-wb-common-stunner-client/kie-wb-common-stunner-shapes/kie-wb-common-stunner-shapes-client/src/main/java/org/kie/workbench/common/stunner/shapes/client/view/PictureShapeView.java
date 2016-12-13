@@ -37,9 +37,12 @@ public class PictureShapeView<T extends PictureShapeView>
                 .rect( 0, 0, width, height )
                 .setStrokeAlpha( 0 )
                 .setFillAlpha( 0 ) );
-        this.picture = new Picture( uri );
-        scalePicture( picture, width, height );
-        addChild( picture );
+        new Picture( uri, picture1 -> {
+            this.picture = picture1;
+            scalePicture( picture1, width, height );
+            addChild( picture1 );
+            refresh();
+        } );
         super.setResizable( false );
     }
 
