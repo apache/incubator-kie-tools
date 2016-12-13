@@ -32,14 +32,9 @@ public class StencilActionBuilder {
     public ActionShape build( final NodeMouseClickHandler clickHandler,
                               final ImageResource img ) {
         final Rectangle bounding = getBoundingImage( clickHandler );
-        final Picture icon = new Picture( img,
-                                          WIDTH_PICTURE,
-                                          HEIGHT_PICTURE,
-                                          false );
-
         final ActionShape shape = new ActionShape();
-        shape.setPicture( icon );
         shape.setBounding( bounding );
+        new Picture( img, shape::setPicture, WIDTH_PICTURE, HEIGHT_PICTURE, false );
         return shape;
     }
 
