@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.service;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -47,5 +48,10 @@ public interface GuidedDecisionTableEditorService
     GuidedDecisionTableEditorContent loadContent( final Path path );
 
     PackageDataModelOracleBaselinePayload loadDataModel( final Path path );
+
+    Path saveAndUpdateGraphEntries( final Path resource,
+                                    final GuidedDecisionTable52 model,
+                                    final Metadata metadata,
+                                    final String comment );
 
 }

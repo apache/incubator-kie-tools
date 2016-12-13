@@ -343,10 +343,10 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
 
         service.call( getSaveSuccessCallback( dtPresenter,
                                               model.hashCode() ),
-                      new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                               model,
-                                                                               metadata,
-                                                                               commitMessage );
+                      new HasBusyIndicatorDefaultErrorCallback( view ) ).saveAndUpdateGraphEntries( path,
+                                                                                                    model,
+                                                                                                    metadata,
+                                                                                                    commitMessage );
     }
 
     @Override

@@ -29,10 +29,14 @@ import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
+import org.drools.workbench.screens.guided.dtable.type.GuidedDTableGraphResourceTypeDefinition;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
@@ -47,11 +51,15 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleB
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.backend.version.VersionRecordService;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
@@ -68,6 +76,9 @@ public class GuidedDecisionTableEditorServiceImpl
     private DataModelService dataModelService;
     private WorkItemsEditorService workItemsService;
     private KieProjectService projectService;
+    private VersionRecordService versionRecordService;
+    private GuidedDecisionTableGraphEditorService dtableGraphService;
+    private GuidedDTableGraphResourceTypeDefinition dtableGraphType;
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
     private GenericValidator genericValidator;
     private CommentedOptionFactory commentedOptionFactory;
@@ -85,6 +96,9 @@ public class GuidedDecisionTableEditorServiceImpl
                                                  final DataModelService dataModelService,
                                                  final WorkItemsEditorService workItemsService,
                                                  final KieProjectService projectService,
+                                                 final VersionRecordService versionRecordService,
+                                                 final GuidedDecisionTableGraphEditorService dtableGraphService,
+                                                 final GuidedDTableGraphResourceTypeDefinition dtableGraphType,
                                                  final Event<ResourceOpenedEvent> resourceOpenedEvent,
                                                  final GenericValidator genericValidator,
                                                  final CommentedOptionFactory commentedOptionFactory,
@@ -96,6 +110,9 @@ public class GuidedDecisionTableEditorServiceImpl
         this.dataModelService = dataModelService;
         this.workItemsService = workItemsService;
         this.projectService = projectService;
+        this.versionRecordService = versionRecordService;
+        this.dtableGraphService = dtableGraphService;
+        this.dtableGraphType = dtableGraphType;
         this.resourceOpenedEvent = resourceOpenedEvent;
         this.genericValidator = genericValidator;
         this.commentedOptionFactory = commentedOptionFactory;
@@ -217,6 +234,63 @@ public class GuidedDecisionTableEditorServiceImpl
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    @Override
+    public Path saveAndUpdateGraphEntries( final Path resource,
+                                           final GuidedDecisionTable52 model,
+                                           final Metadata metadata,
+                                           final String comment ) {
+        try {
+            ioService.startBatch( Paths.convert( resource ).getFileSystem() );
+
+            save( resource,
+                  model,
+                  metadata,
+                  comment );
+
+            updateGraphElementPaths( resource,
+                                     getLatestVersionPath( resource ) );
+
+            return resource;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        } finally {
+            ioService.endBatch();
+        }
+    }
+
+    private Path getLatestVersionPath( final Path path ) {
+        final List<VersionRecord> versions = versionRecordService.load( Paths.convert( path ) );
+        final String versionUri = versions.get( versions.size() - 1 ).uri();
+        return PathFactory.newPathBasedOn( path.getFileName(),
+                                           versionUri,
+                                           path );
+    }
+
+    private void updateGraphElementPaths( final Path source,
+                                          final Path destination ) {
+        ioService.newDirectoryStream( getParentFolder( source ),
+                                      new FileExtensionFilter( dtableGraphType.getSuffix() ) ).forEach( ( path ) -> updateGraphElementPath( source,
+                                                                                                                                            destination,
+                                                                                                                                            Paths.convert( path ) ) );
+    }
+
+    private org.uberfire.java.nio.file.Path getParentFolder( final Path path ) {
+        org.uberfire.java.nio.file.Path nioFolderPath = Paths.convert( path );
+        return Files.isDirectory( nioFolderPath ) ? nioFolderPath : nioFolderPath.getParent();
+    }
+
+    private void updateGraphElementPath( final Path source,
+                                         final Path destination,
+                                         final Path graphPath ) {
+        final GuidedDecisionTableEditorGraphModel dtGraphModel = dtableGraphService.load( graphPath );
+        final Set<GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry> dtGraphEntries = dtGraphModel.getEntries();
+        dtGraphEntries.stream().filter( ( e ) -> e.getPathHead().equals( source ) ).forEach( ( e ) -> e.setPathVersion( destination ) );
+        ioService.write( Paths.convert( graphPath ),
+                         GuidedDTGraphXMLPersistence.getInstance().marshal( dtGraphModel ),
+                         commentedOptionFactory.makeCommentedOption( "Updated Path version for [" + source.toURI() + "] to [" + destination.toURI() + "]." ) );
     }
 
     @Override

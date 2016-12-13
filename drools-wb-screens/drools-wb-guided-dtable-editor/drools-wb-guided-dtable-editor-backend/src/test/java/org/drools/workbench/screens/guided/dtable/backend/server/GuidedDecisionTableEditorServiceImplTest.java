@@ -16,7 +16,11 @@
 
 package org.drools.workbench.screens.guided.dtable.backend.server;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.enterprise.event.Event;
@@ -25,8 +29,12 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
+import org.drools.workbench.screens.guided.dtable.type.GuidedDTableGraphResourceTypeDefinition;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
+import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
@@ -43,11 +51,17 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.backend.version.VersionRecordService;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
+import org.uberfire.ext.editor.commons.version.impl.PortableVersionRecord;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -80,6 +94,12 @@ public class GuidedDecisionTableEditorServiceImplTest {
     private KieProjectService projectService;
 
     @Mock
+    private VersionRecordService versionRecordService;
+
+    @Mock
+    private GuidedDecisionTableGraphEditorService dtableGraphService;
+
+    @Mock
     private Event<ResourceOpenedEvent> resourceOpenedEvent = new EventSourceMock<>();
 
     @Mock
@@ -100,10 +120,21 @@ public class GuidedDecisionTableEditorServiceImplTest {
     @Mock
     private org.guvnor.common.services.project.model.Package pkg;
 
-    private GuidedDTableResourceTypeDefinition type = new GuidedDTableResourceTypeDefinition();
+    @Mock
+    private FileSystem fileSystem;
+
+    @Mock
+    private FileSystemProvider fileSystemProvider;
+
+    @Mock
+    private BasicFileAttributes basicFileAttributes;
+
+    private GuidedDTableResourceTypeDefinition dtType = new GuidedDTableResourceTypeDefinition();
+    private GuidedDTableGraphResourceTypeDefinition dtGraphType = new GuidedDTableGraphResourceTypeDefinition();
     private GuidedDecisionTableEditorServiceImpl service;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         service = new GuidedDecisionTableEditorServiceImpl( ioService,
                                                             copyService,
@@ -112,6 +143,9 @@ public class GuidedDecisionTableEditorServiceImplTest {
                                                             dataModelService,
                                                             workItemsService,
                                                             projectService,
+                                                            versionRecordService,
+                                                            dtableGraphService,
+                                                            dtGraphType,
                                                             resourceOpenedEvent,
                                                             genericValidator,
                                                             commentedOptionFactory,
@@ -127,12 +161,16 @@ public class GuidedDecisionTableEditorServiceImplTest {
         when( pkg.getPackageMainResourcesPath() ).thenReturn( PathFactory.newPath( "mypackage",
                                                                                    "default://project/src/main/resources" ) );
 
+        when( fileSystem.provider() ).thenReturn( fileSystemProvider );
+        when( fileSystemProvider.readAttributes( any( org.uberfire.java.nio.file.Path.class ),
+                                                 any( Class.class ) ) ).thenReturn( basicFileAttributes );
+        when( basicFileAttributes.isRegularFile() ).thenReturn( true );
     }
 
     @Test
     public void checkCreate() {
         final Path context = mock( Path.class );
-        final String fileName = "filename." + type.getSuffix();
+        final String fileName = "filename." + dtType.getSuffix();
         final GuidedDecisionTable52 content = new GuidedDecisionTable52();
         final String comment = "comment";
 
@@ -148,7 +186,7 @@ public class GuidedDecisionTableEditorServiceImplTest {
                                     any( String.class ),
                                     any( CommentedOption.class ) );
 
-        assertTrue( p.toURI().contains( "src/main/resources/mypackage/filename." + type.getSuffix() ) );
+        assertTrue( p.toURI().contains( "src/main/resources/mypackage/filename." + dtType.getSuffix() ) );
         assertEquals( "mypackage",
                       content.getPackageName() );
     }
@@ -212,6 +250,73 @@ public class GuidedDecisionTableEditorServiceImplTest {
 
         assertEquals( "mypackage",
                       model.getPackageName() );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkSaveAndUpdateGraphEntries() {
+        //Setup Decision Table
+        final Path path = mock( Path.class );
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        final Metadata metadata = mock( Metadata.class );
+        final String comment = "comment";
+        final String headPathUri = "default://project/src/main/resources/mypackage/dtable.gdst";
+        final String versionPathUri = "default://0123456789@project/src/main/resources/mypackage/dtable.gdst";
+        when( path.toURI() ).thenReturn( headPathUri );
+        when( path.getFileName() ).thenReturn( "dtable.gdst" );
+
+        //Setup Decision Table versions
+        final List<VersionRecord> versions = new ArrayList<>();
+        versions.add( new PortableVersionRecord( "0123456789",
+                                                 "manstis",
+                                                 "manstis@email.com",
+                                                 "comment",
+                                                 Calendar.getInstance().getTime(),
+                                                 versionPathUri ) );
+        when( versionRecordService.load( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( versions );
+
+        //Setup Decision Table Graph
+        final URI dtGraphPathUri = URI.create( "default://project/src/main/resources/mypackage/graph1.gdst-set" );
+        final org.uberfire.java.nio.file.Path dtGraphPath = mock( org.uberfire.java.nio.file.Path.class );
+        when( dtGraphPath.toUri() ).thenReturn( dtGraphPathUri );
+        when( dtGraphPath.getFileName() ).thenReturn( dtGraphPath );
+        when( dtGraphPath.getFileSystem() ).thenReturn( fileSystem );
+
+        final List<org.uberfire.java.nio.file.Path> dtGraphPaths = new ArrayList<>();
+        dtGraphPaths.add( dtGraphPath );
+
+        when( ioService.newDirectoryStream( any( org.uberfire.java.nio.file.Path.class ),
+                                            any( FileExtensionFilter.class ) ) ).thenReturn( new MockDirectoryStream( dtGraphPaths ) );
+
+        final GuidedDecisionTableEditorGraphModel dtGraphModel = new GuidedDecisionTableEditorGraphModel();
+        dtGraphModel.getEntries().add( new GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry( path,
+                                                                                                              path ) );
+        when( dtableGraphService.load( any( Path.class ) ) ).thenReturn( dtGraphModel );
+
+        //Test save
+        service.saveAndUpdateGraphEntries( path,
+                                           model,
+                                           metadata,
+                                           comment );
+
+        verify( ioService,
+                times( 1 ) ).startBatch( any( FileSystem.class ) );
+
+        verify( ioService,
+                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
+                                    any( String.class ),
+                                    any( Map.class ),
+                                    any( CommentedOption.class ) );
+
+        verify( ioService,
+                times( 1 ) ).endBatch();
+
+        assertEquals( "mypackage",
+                      model.getPackageName() );
+        assertEquals( 1,
+                      dtGraphModel.getEntries().size() );
+        assertEquals( versions.get( 0 ).uri(),
+                      dtGraphModel.getEntries().iterator().next().getPathVersion().toURI() );
     }
 
     @Test

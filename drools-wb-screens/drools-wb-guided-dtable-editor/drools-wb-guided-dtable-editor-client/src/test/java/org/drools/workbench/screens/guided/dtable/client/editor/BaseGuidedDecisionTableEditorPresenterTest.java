@@ -411,10 +411,10 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final ArgumentCaptor<Metadata> metadataCaptor = ArgumentCaptor.forClass( Metadata.class );
 
         verify( dtService,
-                times( 1 ) ).save( eq( path ),
-                                   modelCaptor.capture(),
-                                   metadataCaptor.capture(),
-                                   eq( commitMessage ) );
+                times( 1 ) ).saveAndUpdateGraphEntries( eq( path ),
+                                                        modelCaptor.capture(),
+                                                        metadataCaptor.capture(),
+                                                        eq( commitMessage ) );
         assertNotNull( modelCaptor.getValue() );
         assertEquals( dtPresenter.getModel(),
                       modelCaptor.getValue() );
