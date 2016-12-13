@@ -172,32 +172,27 @@ public abstract class BaseGuidedDecisionTreeShape<T extends Node> extends WiresB
     protected Group setupControl( final ImageResource resource,
                                   final Command command ) {
         final Group controlGroup = new Group();
-        final Picture picture = new Picture( resource,
-                                             false );
-        picture.onLoaded( new PictureLoadedHandler() {
-
-            @Override
-            public void onPictureLoaded( Picture picture ) {
-                //This is a hack for Lienzo 1.2 (and possibly 2.x?). There is a bug in Picture when
-                //we want to add it to Lienzo's SelectionLayer. We work around it here by adding
-                //the Picture to a Group containing a "near invisible" Rectangle that we use to
-                //capture the NodeMouseClickEvents.
-                final double offsetX = -picture.getImageData().getWidth() / 2;
-                final double offsetY = -picture.getImageData().getHeight() / 2;
-                final Rectangle selector = new Rectangle( picture.getImageData().getWidth(),
-                                                          picture.getImageData().getHeight() );
-                selector.setFillColor( Color.rgbToBrowserHexColor( 255,
-                                                                   255,
-                                                                   255 ) );
-                selector.setAlpha( 0.01 );
-                selector.setLocation( new Point2D( offsetX,
-                                                   offsetY ) );
-                picture.setLocation( new Point2D( offsetX,
-                                                  offsetY ) );
-                controlGroup.add( picture );
-                controlGroup.add( selector );
-            }
-        } );
+        new Picture( resource, picture1 -> {
+            //This is a hack for Lienzo 1.2 (and possibly 2.x?). There is a bug in Picture when
+            //we want to add it to Lienzo's SelectionLayer. We work around it here by adding
+            //the Picture to a Group containing a "near invisible" Rectangle that we use to
+            //capture the NodeMouseClickEvents.
+            final double offsetX = -picture1.getImageData().getWidth() / 2;
+            final double offsetY = -picture1.getImageData().getHeight() / 2;
+            final Rectangle selector = new Rectangle( picture1.getImageData().getWidth(),
+                    picture1.getImageData().getHeight() );
+            selector.setFillColor( Color.rgbToBrowserHexColor( 255,
+                    255,
+                    255 ) );
+            selector.setAlpha( 0.01 );
+            selector.setLocation( new Point2D( offsetX,
+                    offsetY ) );
+            picture1.setLocation( new Point2D( offsetX,
+                    offsetY ) );
+            controlGroup.add( picture1 );
+            controlGroup.add( selector );
+        },
+        false );
 
         controlGroup.addNodeMouseClickHandler( new NodeMouseClickHandler() {
             @Override
