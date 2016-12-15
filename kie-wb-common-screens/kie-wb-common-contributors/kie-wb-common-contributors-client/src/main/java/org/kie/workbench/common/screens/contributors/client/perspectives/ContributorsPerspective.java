@@ -17,8 +17,12 @@ package org.kie.workbench.common.screens.contributors.client.perspectives;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.util.Layouts;
@@ -26,16 +30,13 @@ import org.uberfire.client.util.Layouts;
 /**
  * This perspective display some indicators about the commit activity around the available GIT repositories
  */
-@Dependent
+@Templated
 @WorkbenchPerspective(identifier = "ContributorsPerspective")
-public class ContributorsPerspective extends FlowPanel {
+public class ContributorsPerspective implements IsElement {
 
+    @Inject
+    @DataField
     @WorkbenchPanel(parts = "ContributorsScreen")
-    FlowPanel contributors = new FlowPanel();
+    Div contributors;
 
-    @PostConstruct
-    void doLayout() {
-        Layouts.setToFillParent( contributors );
-        add( contributors );
-    }
 }
