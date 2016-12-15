@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1874,20 +1874,20 @@ public class Bpmn2JsonMarshaller {
     private void correctEventNodeSize( BPMNShape shape ) {
         BaseElement element = shape.getBpmnElement();
         if ( element instanceof Event ) {
-//			// do not "fix" events as they shape is circle - leave bounds as is
+//             // do not "fix" events as they shape is circle - leave bounds as is
 //          Bounds bounds = shape.getBounds();
-//			float width = bounds.getWidth();
-//			float height = bounds.getHeight();
-//			if (width != 30 || height != 30) {
-//				bounds.setWidth(30);
-//				bounds.setHeight(30);
-//				float x = bounds.getX();
-//				float y = bounds.getY();
-//    			x = x - ((30 - width)/2);
-//    			y = y - ((30 - height)/2);
-//				bounds.setX(x);
-//				bounds.setY(y);
-//			}
+//             float width = bounds.getWidth();
+//             float height = bounds.getHeight();
+//             if (width != 30 || height != 30) {
+//                  bounds.setWidth(30);
+//                  bounds.setHeight(30);
+//                  float x = bounds.getX();
+//                  float y = bounds.getY();
+//                  x = x - ((30 - width)/2);
+//                  y = y - ((30 - height)/2);
+//                  bounds.setX(x);
+//                  bounds.setY(y);
+//             }
         } else if ( element instanceof Gateway ) {
             Bounds bounds = shape.getBounds();
             float width = bounds.getWidth();

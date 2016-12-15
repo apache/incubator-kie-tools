@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1136,10 +1136,10 @@ public class Bpmn2JsonUnmarshaller {
                                         for ( ItemAwareElement iae : sourceRef ) {
                                             String[] iaeParts = iae.getId().split( "\\." );
                                             if ( iaeParts.length > 1 ) {
-//                								FormalExpression dataInputTransformationExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
-//                								dataInputTransformationExpression.setBody(iae.getId());
-//                								input.setTransformation(dataInputTransformationExpression);
-//                    		                    iae.setId(iaeParts[0]);
+//                                                     FormalExpression dataInputTransformationExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
+//                                                     dataInputTransformationExpression.setBody(iae.getId());
+//                                                     input.setTransformation(dataInputTransformationExpression);
+//                                                iae.setId(iaeParts[0]);
                                             }
                                         }
                                     }
@@ -1154,10 +1154,10 @@ public class Bpmn2JsonUnmarshaller {
                                     if ( targetEle != null ) {
                                         String[] targetEleParts = targetEle.getId().split( "\\." );
                                         if ( targetEleParts.length > 1 ) {
-//                							FormalExpression dataOutputTransformationExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
-//                							dataOutputTransformationExpression.setBody(targetEle.getId());
-//            								output.setTransformation(dataOutputTransformationExpression);
-//                		                    targetEle.setId(targetEleParts[0]);
+//                                                FormalExpression dataOutputTransformationExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
+//                                                dataOutputTransformationExpression.setBody(targetEle.getId());
+//                                                output.setTransformation(dataOutputTransformationExpression);
+//                                           targetEle.setId(targetEleParts[0]);
                                         }
                                     }
                                 }
@@ -3225,12 +3225,12 @@ public class Bpmn2JsonUnmarshaller {
                     ( ( Lane ) baseElt ).getFlowNodeRefs().add( ( FlowNode ) child );
                 }
                 // no support for child-lanes at this point
-//        		else if (child instanceof Lane) {
-//        			if (((Lane) baseElt).getChildLaneSet() == null) {
-//        				((Lane) baseElt).setChildLaneSet(Bpmn2Factory.eINSTANCE.createLaneSet());
-//        			}
-//        			((Lane) baseElt).getChildLaneSet().getLanes().add((Lane) child);
-//        		}
+//                  else if (child instanceof Lane) {
+//                       if (((Lane) baseElt).getChildLaneSet() == null) {
+//                            ((Lane) baseElt).setChildLaneSet(Bpmn2Factory.eINSTANCE.createLaneSet());
+//                       }
+//                       ((Lane) baseElt).getChildLaneSet().getLanes().add((Lane) child);
+//                  }
                 else if ( child instanceof Artifact ) {
                     _artifacts.add( ( Artifact ) child );
                 } else {
@@ -3653,20 +3653,20 @@ public class Bpmn2JsonUnmarshaller {
                 uniformDistributionType.setMin( Double.valueOf( properties.get( "min" ) ) );
                 processingTimeParam.getParameterValue().add( uniformDistributionType );
                 // random distribution not supported in bpsim 1.0
-//        	} else if(properties.get("distributiontype").equals("random")) {
-//        		RandomDistributionType randomDistributionType = BpsimFactory.eINSTANCE.createRandomDistributionType();
-//        		randomDistributionType.setMax(Double.valueOf(properties.get("max")));
-//        		randomDistributionType.setMin(Double.valueOf(properties.get("min")));
-//        		processingTimeParam.getParameterValue().add(randomDistributionType);
+//             } else if(properties.get("distributiontype").equals("random")) {
+//                  RandomDistributionType randomDistributionType = BpsimFactory.eINSTANCE.createRandomDistributionType();
+//                  randomDistributionType.setMax(Double.valueOf(properties.get("max")));
+//                  randomDistributionType.setMin(Double.valueOf(properties.get("min")));
+//                  processingTimeParam.getParameterValue().add(randomDistributionType);
             } else if ( properties.get( "distributiontype" ).equals( "poisson" ) ) {
                 PoissonDistributionType poissonDistributionType = BpsimFactory.eINSTANCE.createPoissonDistributionType();
                 poissonDistributionType.setMean( Double.valueOf( properties.get( "mean" ) ) );
                 processingTimeParam.getParameterValue().add( poissonDistributionType );
             }
             // individual time unit not supported in bpsim 1.0
-//        	if(properties.get("timeunit") != null) {
-//        		timeParams.setTimeUnit(TimeUnit.getByName(properties.get("timeunit")));
-//        	}
+//             if(properties.get("timeunit") != null) {
+//                  timeParams.setTimeUnit(TimeUnit.getByName(properties.get("timeunit")));
+//             }
             if ( properties.get( "waittime" ) != null ) {
                 Parameter waittimeParam = BpsimFactory.eINSTANCE.createParameter();
                 FloatingParameterType waittimeParamValue = BpsimFactory.eINSTANCE.createFloatingParameterType();
@@ -4928,20 +4928,20 @@ public class Bpmn2JsonUnmarshaller {
                 uniformDistributionType.setMin( Double.valueOf( properties.get( "min" ) ) );
                 processingTimeParam.getParameterValue().add( uniformDistributionType );
                 // random distribution not supported in bpsim 1.0
-//        	} else if(properties.get("distributiontype").equals("random")) {
-//        		RandomDistributionType randomDistributionType = BpsimFactory.eINSTANCE.createRandomDistributionType();
-//        		randomDistributionType.setMax(Double.valueOf(properties.get("max")));
-//        		randomDistributionType.setMin(Double.valueOf(properties.get("min")));
-//        		processingTimeParam.getParameterValue().add(randomDistributionType);
+//             } else if(properties.get("distributiontype").equals("random")) {
+//                  RandomDistributionType randomDistributionType = BpsimFactory.eINSTANCE.createRandomDistributionType();
+//                  randomDistributionType.setMax(Double.valueOf(properties.get("max")));
+//                  randomDistributionType.setMin(Double.valueOf(properties.get("min")));
+//                  processingTimeParam.getParameterValue().add(randomDistributionType);
             } else if ( properties.get( "distributiontype" ).equals( "poisson" ) ) {
                 PoissonDistributionType poissonDistributionType = BpsimFactory.eINSTANCE.createPoissonDistributionType();
                 poissonDistributionType.setMean( Double.valueOf( properties.get( "mean" ) ) );
                 processingTimeParam.getParameterValue().add( poissonDistributionType );
             }
             // individual time unit not supported in bpsim 1.0
-//        	if(properties.get("timeunit") != null) {
-//        		timeParams.setTimeUnit(TimeUnit.getByName(properties.get("timeunit")));
-//        	}
+//             if(properties.get("timeunit") != null) {
+//                  timeParams.setTimeUnit(TimeUnit.getByName(properties.get("timeunit")));
+//             }
             if ( properties.get( "waittime" ) != null ) {
                 Parameter waittimeParam = BpsimFactory.eINSTANCE.createParameter();
                 FloatingParameterType waittimeParamValue = BpsimFactory.eINSTANCE.createFloatingParameterType();
@@ -5261,20 +5261,20 @@ public class Bpmn2JsonUnmarshaller {
                 uniformDistributionType.setMin( Double.valueOf( properties.get( "min" ) ) );
                 processingTimeParam.getParameterValue().add( uniformDistributionType );
                 // random distribution not supported in bpsim 1.0
-//        	} else if(properties.get("distributiontype").equals("random")) {
-//        		RandomDistributionType randomDistributionType = BpsimFactory.eINSTANCE.createRandomDistributionType();
-//        		randomDistributionType.setMax(Double.valueOf(properties.get("max")));
-//        		randomDistributionType.setMin(Double.valueOf(properties.get("min")));
-//        		processingTimeParam.getParameterValue().add(randomDistributionType);
+//             } else if(properties.get("distributiontype").equals("random")) {
+//                  RandomDistributionType randomDistributionType = BpsimFactory.eINSTANCE.createRandomDistributionType();
+//                  randomDistributionType.setMax(Double.valueOf(properties.get("max")));
+//                  randomDistributionType.setMin(Double.valueOf(properties.get("min")));
+//                  processingTimeParam.getParameterValue().add(randomDistributionType);
             } else if ( properties.get( "distributiontype" ).equals( "poisson" ) ) {
                 PoissonDistributionType poissonDistributionType = BpsimFactory.eINSTANCE.createPoissonDistributionType();
                 poissonDistributionType.setMean( Double.valueOf( properties.get( "mean" ) ) );
                 processingTimeParam.getParameterValue().add( poissonDistributionType );
             }
             // individual time unit not supported in bpsim 1.0
-//        	if(properties.get("timeunit") != null) {
-//        		timeParams.setTimeUnit(TimeUnit.getByName(properties.get("timeunit")));
-//        	}
+//             if(properties.get("timeunit") != null) {
+//                  timeParams.setTimeUnit(TimeUnit.getByName(properties.get("timeunit")));
+//             }
             if ( properties.get( "waittime" ) != null ) {
                 Parameter waittimeParam = BpsimFactory.eINSTANCE.createParameter();
                 FloatingParameterType waittimeParamValue = BpsimFactory.eINSTANCE.createFloatingParameterType();
