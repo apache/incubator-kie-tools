@@ -24,7 +24,7 @@ import java.util.Set;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.services.verifier.api.client.Status;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Before;
@@ -84,7 +84,7 @@ public class AnalysisReportScreenTest {
     public void testShowReport() throws
                                  Exception {
         Issue issue1 = new Issue( Severity.WARNING,
-                                  ExplanationType.DEFICIENT_ROW,
+                                  CheckType.DEFICIENT_ROW,
                                   Collections.emptySet() );
         screen.showReport( getAnalysis( issue1 ) );
 
@@ -97,10 +97,10 @@ public class AnalysisReportScreenTest {
                             .contains( issue1 ) );
 
         Issue issue2 = new Issue( Severity.ERROR,
-                                  ExplanationType.CONFLICTING_ROWS,
+                                  CheckType.CONFLICTING_ROWS,
                                   Collections.emptySet() );
         Issue issue3 = new Issue( Severity.WARNING,
-                                  ExplanationType.SINGLE_HIT_LOST,
+                                  CheckType.SINGLE_HIT_LOST,
                                   Collections.emptySet() );
         screen.showReport( getAnalysis( issue2,
                                         issue3 ) );
@@ -124,25 +124,25 @@ public class AnalysisReportScreenTest {
     @Test
     public void testMergeEmptyRules() throws
             Exception {
-        testMerge( ExplanationType.EMPTY_RULE );
+        testMerge( CheckType.EMPTY_RULE );
 
     }
 
     @Test
     public void testMergeMissingAction() throws
             Exception {
-        testMerge( ExplanationType.MISSING_ACTION );
+        testMerge( CheckType.MISSING_ACTION );
 
     }
 
     @Test
     public void testMergeMissingRestriction() throws
             Exception {
-        testMerge( ExplanationType.MISSING_RESTRICTION );
+        testMerge( CheckType.MISSING_RESTRICTION );
 
     }
 
-    private void testMerge( ExplanationType type ) {
+    private void testMerge( CheckType type ) {
         Issue issue1 = new Issue( Severity.WARNING,
                 type,
                 new HashSet<>( Arrays.asList( 1 ) ) );
@@ -159,7 +159,7 @@ public class AnalysisReportScreenTest {
         Issue issue = (Issue) dataProvider.getList().get(0);
 
         assertEquals( Severity.WARNING, issue.getSeverity() );
-        assertEquals( type, issue.getExplanationType() );
+        assertEquals( type, issue.getCheckType() );
         assertEquals( new HashSet<>( Arrays.asList( 1, 2 ) ), issue.getRowNumbers() );
 
         verify( view ).showIssue( issue );
@@ -186,18 +186,18 @@ public class AnalysisReportScreenTest {
                                          Exception {
 
         Issue issue2 = new Issue( Severity.WARNING,
-                                  ExplanationType.REDUNDANT_ROWS,
+                                  CheckType.REDUNDANT_ROWS,
                                   Collections.emptySet() );
         Issue issue3 = new Issue( Severity.WARNING,
-                                  ExplanationType.REDUNDANT_ROWS,
+                                  CheckType.REDUNDANT_ROWS,
                                   Collections.emptySet() );
         Issue issue4 = new Issue( Severity.WARNING,
-                                  ExplanationType.REDUNDANT_ROWS,
+                                  CheckType.REDUNDANT_ROWS,
                                   new HashSet<>( Arrays.asList( 1,
                                                                 2,
                                                                 3 ) ) );
         Issue issue5 = new Issue( Severity.WARNING,
-                                  ExplanationType.REDUNDANT_ROWS,
+                                  CheckType.REDUNDANT_ROWS,
                                   new HashSet<>( Arrays.asList( 1,
                                                                 2,
                                                                 3 ) ) );
@@ -216,10 +216,10 @@ public class AnalysisReportScreenTest {
     public void testOnSelect() throws
                                Exception {
         Issue issue1 = new Issue( Severity.WARNING,
-                                  ExplanationType.REDUNDANT_ROWS,
+                                  CheckType.REDUNDANT_ROWS,
                                   Collections.emptySet() );
         Issue issue2 = new Issue( Severity.WARNING,
-                                  ExplanationType.SINGLE_HIT_LOST,
+                                  CheckType.SINGLE_HIT_LOST,
                                   Collections.emptySet() );
         screen.showReport( getAnalysis( issue1,
                                         issue2 ) );

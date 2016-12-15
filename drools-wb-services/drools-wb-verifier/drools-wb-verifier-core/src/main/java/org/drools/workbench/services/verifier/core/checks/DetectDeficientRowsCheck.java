@@ -17,10 +17,10 @@
 package org.drools.workbench.services.verifier.core.checks;
 
 import java.util.Arrays;
-
 import java.util.HashSet;
+
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.cache.RuleInspectorCache;
@@ -42,7 +42,8 @@ public class DetectDeficientRowsCheck
                                                 .getUuidKey() ) && !other.isEmpty();
                    }
                },
-               configuration );
+               configuration,
+               CheckType.DEFICIENT_ROW );
     }
 
     @Override
@@ -76,7 +77,7 @@ public class DetectDeficientRowsCheck
     @Override
     public Issue getIssue() {
         Issue issue = new Issue( Severity.WARNING,
-                                 ExplanationType.DEFICIENT_ROW,
+                                 checkType,
                                  new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
         );
 

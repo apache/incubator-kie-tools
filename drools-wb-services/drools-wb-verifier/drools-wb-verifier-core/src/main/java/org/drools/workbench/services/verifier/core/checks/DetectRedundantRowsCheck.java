@@ -13,59 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.workbench.services.verifier.core.checks;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
-import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspectorDumper;
 import org.drools.workbench.services.verifier.core.checks.base.PairCheck;
 
-public class DetectRedundantRowsCheck {
+public class DetectRedundantRowsCheck
+        extends PairCheck {
 
-    public static PairCheck.IssueType check( final RuleInspector ruleInspector,
-                                             final RuleInspector other ) {
+    private CheckType issueType = null;
+
+    private boolean allowRedundancyReporting = true;
+    private boolean allowSubsumptionReporting = true;
+
+    public DetectRedundantRowsCheck( final RuleInspector ruleInspector,
+                                     final RuleInspector other ) {
+        super( ruleInspector,
+               other );
+    }
+
+    @Override
+    public Issue getIssue() {
+        return new Issue( Severity.WARNING,
+                          issueType,
+                          new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1,
+                                                        other.getRowIndex() + 1 ) )
+        );
+    }
+
+    @Override
+    public boolean isActive( final CheckWhiteList whiteList ) {
+
+        allowRedundancyReporting = whiteList.getAllowedCheckTypes()
+                .contains( CheckType.REDUNDANT_ROWS );
+
+        allowSubsumptionReporting = whiteList.getAllowedCheckTypes()
+                .contains( CheckType.SUBSUMPTANT_ROWS );
+
+        return allowRedundancyReporting || allowSubsumptionReporting;
+    }
+
+    @Override
+    public void check() {
+
+        hasIssues = false;
 
         if ( other.atLeastOneActionHasAValue() ) {
 
             final boolean subsumes = ruleInspector.subsumes( other );
 
-            if ( subsumes && other.subsumes( ruleInspector ) ) {
-                return PairCheck.IssueType.REDUNDANCY;
-            } else if ( subsumes ) {
-                return PairCheck.IssueType.REDUNDANCY;
+            if ( allowRedundancyReporting && subsumes && other.subsumes( ruleInspector ) ) {
+                hasIssues = true;
+                issueType = CheckType.REDUNDANT_ROWS;
+            } else if ( allowSubsumptionReporting && subsumes ) {
+                hasIssues = true;
+                issueType = CheckType.SUBSUMPTANT_ROWS;
             }
         }
-
-        return PairCheck.IssueType.EMPTY;
     }
-
-    public static Issue getIssue( final RuleInspector ruleInspector,
-                                  final RuleInspector other,
-                                  final PairCheck.IssueType status ) {
-
-        Issue issue = new Issue( Severity.WARNING,
-                                 getExplanationType( status ),
-                                 new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1, other.getRowIndex() + 1 ) )
-        );
-
-        return issue;
-    }
-
-    private static ExplanationType getExplanationType( final PairCheck.IssueType status ) {
-        switch ( status ) {
-            case REDUNDANCY:
-                return ExplanationType.REDUNDANT_ROWS;
-            case SUBSUMPTION:
-                return ExplanationType.SUBSUMPTANT_ROWS;
-            default:
-                return null;
-        }
-    }
-
 }

@@ -16,20 +16,21 @@
 
 package org.drools.workbench.services.verifier.core.checks;
 
-import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
-import org.drools.workbench.services.verifier.core.checks.base.SingleCheck;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
-import org.drools.workbench.services.verifier.api.client.reporting.Issue;
-import org.drools.workbench.services.verifier.api.client.reporting.Severity;
-
 import java.util.Arrays;
 import java.util.HashSet;
+
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
+import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
+import org.drools.workbench.services.verifier.core.checks.base.SingleCheck;
 
 public class DetectEmptyRowCheck
         extends SingleCheck {
 
     public DetectEmptyRowCheck(final RuleInspector ruleInspector ) {
-        super( ruleInspector );
+        super( ruleInspector,
+               CheckType.EMPTY_RULE );
     }
 
     @Override
@@ -37,15 +38,12 @@ public class DetectEmptyRowCheck
         hasIssues = false;
 
         hasIssues = !ruleInspector.atLeastOneConditionHasAValue() && !ruleInspector.atLeastOneActionHasAValue();
-
     }
 
     @Override
     public Issue getIssue() {
-        Issue issue = new Issue( Severity.WARNING,
-                                 ExplanationType.EMPTY_RULE,
-                                 new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) ) );
-
-        return issue;
+        return new Issue( Severity.WARNING,
+                          checkType,
+                          new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) ) );
     }
 }

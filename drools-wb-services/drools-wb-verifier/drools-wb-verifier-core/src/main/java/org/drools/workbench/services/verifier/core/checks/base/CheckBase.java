@@ -22,9 +22,6 @@ abstract class CheckBase
     protected boolean hasIssues = false;
 
     @Override
-    public abstract void check();
-
-    @Override
     public boolean hasIssues() {
         return hasIssues;
     }

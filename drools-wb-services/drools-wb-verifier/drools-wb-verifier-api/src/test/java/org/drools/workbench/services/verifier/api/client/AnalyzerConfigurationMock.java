@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
 import org.drools.workbench.services.verifier.api.client.configuration.DateTimeFormatProvider;
 import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
@@ -43,6 +44,7 @@ public class AnalyzerConfigurationMock
                        return Long.toString( index-- );
                    }
                },
+               CheckWhiteList.newDefault(),
                RunnerType.JAVA );
     }
 }

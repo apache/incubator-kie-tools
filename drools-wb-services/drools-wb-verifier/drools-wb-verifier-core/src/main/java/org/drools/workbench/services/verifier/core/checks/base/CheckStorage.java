@@ -19,35 +19,28 @@ package org.drools.workbench.services.verifier.core.checks.base;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import org.drools.workbench.services.verifier.core.checks.DetectDeficientRowsCheck;
-import org.drools.workbench.services.verifier.core.checks.DetectEmptyRowCheck;
-import org.drools.workbench.services.verifier.core.checks.DetectMissingConditionCheck;
-import org.drools.workbench.services.verifier.core.checks.DetectRedundantConditionsCheck;
-import org.drools.workbench.services.verifier.core.checks.DetectImpossibleMatchCheck;
-import org.drools.workbench.services.verifier.core.checks.DetectMissingActionCheck;
-import org.drools.workbench.services.verifier.core.checks.DetectMultipleValuesForOneActionCheck;
-import org.drools.workbench.services.verifier.core.checks.DetectRedundantActionCheck;
-import org.drools.workbench.services.verifier.core.checks.RangeCheck;
-import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.api.client.maps.MultiSet;
-import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 
+/**
+ * Stores the Checks. When a rule is added or removed, makes sure that all the necessary relations are added or removed.
+ */
 public class CheckStorage {
 
-    private final PairChecks pairChecks = new PairChecks();
+    private final PairCheckStorage pairCheckStorage = new PairCheckStorage();
     private final MultiSet<RuleInspector, Check> ruleInspectorChecks = new MultiSet<>();
     private final MultiSet<RuleInspector, OneToManyCheck> oneToManyChecks = new MultiSet<>();
-    private AnalyzerConfiguration configuration;
+    private final CheckFactory checkFactory;
 
-    public CheckStorage( final AnalyzerConfiguration configuration ) {
-        this.configuration = configuration;
+    public CheckStorage( final CheckFactory checkFactory ) {
+        this.checkFactory = checkFactory;
     }
 
-    public Set<Check> makeSingleRowChecks( final RuleInspector ruleInspector ) {
-        final HashSet<Check> checks = makeSingleChecks( ruleInspector );
+    private Set<Check> makeSingleRowChecks( final RuleInspector ruleInspector ) {
+        final Set<Check> checks = checkFactory.makeSingleChecks( ruleInspector );
 
         for ( final Check check : checks ) {
             if ( check instanceof OneToManyCheck ) {
@@ -61,58 +54,36 @@ public class CheckStorage {
         return checks;
     }
 
-    protected HashSet<Check> makeSingleChecks( final RuleInspector ruleInspector ) {
-        final HashSet<Check> checkList = new HashSet<Check>();
-        checkList.add( new DetectImpossibleMatchCheck( ruleInspector ) );
-        checkList.add( new DetectMultipleValuesForOneActionCheck( ruleInspector ) );
-        checkList.add( new DetectEmptyRowCheck( ruleInspector ) );
-        checkList.add( new DetectMissingActionCheck( ruleInspector ) );
-        checkList.add( new DetectMissingConditionCheck( ruleInspector ) );
-        checkList.add( new DetectDeficientRowsCheck( ruleInspector,
-                                                     configuration ) );
-        checkList.add( new RangeCheck( ruleInspector,
-                                       configuration ) );
-        checkList.add( new DetectRedundantActionCheck( ruleInspector ) );
-        checkList.add( new DetectRedundantConditionsCheck( ruleInspector ) );
-        return checkList;
-    }
-
-    public HashSet<Check> makePairRowChecks( final RuleInspector ruleInspector,
-                                             final Collection<RuleInspector> all ) {
+    private HashSet<Check> makePairRowChecks( final RuleInspector ruleInspector,
+                                              final Collection<RuleInspector> all ) {
         final HashSet<Check> checks = new HashSet<>();
+
         for ( final RuleInspector other : all ) {
             if ( !ruleInspector.equals( other ) ) {
-                checks.add( makePairRowCheck( ruleInspector,
-                                              other ) );
+                final Optional<PairCheckBundle> pairCheckList = checkFactory.makePairRowCheck( ruleInspector,
+                                                                                               other );
+                if ( pairCheckList.isPresent() ) {
+                    checks.add( pairCheckList.get() );
+                    pairCheckStorage.add( pairCheckList.get() );
+                }
             }
         }
 
         return checks;
     }
 
-    private Check makePairRowCheck( final RuleInspector ruleInspector,
-                                    final RuleInspector other ) {
-        final PairCheck pairCheck = new PairCheck( ruleInspector,
-                                                   other );
-        pairChecks.add( pairCheck );
-        return pairCheck;
-
-    }
-
     public Set<Check> getChecks( final RuleInspector ruleInspector ) {
         final HashSet<Check> result = new HashSet<>();
-        final Collection<Check> ruleInspectorChecks = getRuleInspectorChecks( ruleInspector );
-        result.addAll( ruleInspectorChecks );
-        final Collection<PairCheck> referencingChecks = getReferencingChecks( ruleInspector );
-        result.addAll( referencingChecks );
-        final List<OneToManyCheck> c = oneToManyChecks.allValues();
-        result.addAll( c );
+
+        result.addAll( getRuleInspectorChecks( ruleInspector ) );
+        result.addAll( getReferencingChecks( ruleInspector ) );
+        result.addAll( oneToManyChecks.allValues() );
 
         return result;
     }
 
-    private Collection<PairCheck> getReferencingChecks( final RuleInspector ruleInspector ) {
-        final Collection<PairCheck> checks = pairChecks.get( ruleInspector );
+    private Collection<PairCheckBundle> getReferencingChecks( final RuleInspector ruleInspector ) {
+        final Collection<PairCheckBundle> checks = pairCheckStorage.get( ruleInspector );
         if ( checks == null ) {
             return Collections.EMPTY_LIST;
         } else {
@@ -132,8 +103,9 @@ public class CheckStorage {
 
     public Set<Check> remove( final RuleInspector ruleInspector ) {
         final HashSet<Check> result = new HashSet<>();
+
         result.addAll( removeRuleInspectorChecks( ruleInspector ) );
-        result.addAll( pairChecks.remove( ruleInspector ) );
+        result.addAll( pairCheckStorage.remove( ruleInspector ) );
         result.addAll( removeOneToMany( ruleInspector ) );
 
         return result;
@@ -166,13 +138,15 @@ public class CheckStorage {
         makePairRowChecks( ruleInspector,
                            knownRuleInspectors );
 
-
         for ( final RuleInspector other : knownRuleInspectors ) {
             if ( !other.equals( ruleInspector ) ) {
                 // Add pair inspector for old values.
-                final PairCheck pairCheck = new PairCheck( other,
-                                                           ruleInspector );
-                pairChecks.add( pairCheck );
+
+                final Optional<PairCheckBundle> pairCheckList = checkFactory.makePairRowCheck( other,
+                                                                                               ruleInspector );
+                if ( pairCheckList.isPresent() ) {
+                    pairCheckStorage.add( pairCheckList.get() );
+                }
             }
         }
     }

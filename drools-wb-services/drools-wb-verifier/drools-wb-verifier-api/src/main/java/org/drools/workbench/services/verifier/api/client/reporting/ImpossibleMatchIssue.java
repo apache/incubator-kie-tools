@@ -32,7 +32,7 @@ public class ImpossibleMatchIssue
     private String ruleId;
 
     public ImpossibleMatchIssue( @MapsTo("severity") final Severity severity,
-                                 @MapsTo("explanationType") final ExplanationType explanationType,
+                                 @MapsTo("checkType") final CheckType checkType,
                                  @MapsTo("ruleId") final String ruleId,
                                  @MapsTo("fieldFactType") final String fieldFactType,
                                  @MapsTo("fieldName") final String fieldName,
@@ -40,7 +40,7 @@ public class ImpossibleMatchIssue
                                  @MapsTo("conflictingItem") final String conflictingItem,
                                  @MapsTo("rowNumbers") final Integer... rowNumbers ) {
         super( severity,
-               explanationType,
+               checkType,
                new HashSet<>( Arrays.asList( rowNumbers ) )
              );
 

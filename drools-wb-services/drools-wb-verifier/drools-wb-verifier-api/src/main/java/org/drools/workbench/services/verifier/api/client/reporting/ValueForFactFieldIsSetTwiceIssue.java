@@ -30,14 +30,14 @@ public class ValueForFactFieldIsSetTwiceIssue
     private final String secondItem;
 
     public ValueForFactFieldIsSetTwiceIssue( @MapsTo("severity") final Severity severity,
-                                             @MapsTo("explanationType") final ExplanationType explanationType,
+                                             @MapsTo("checkType") final CheckType checkType,
                                              @MapsTo("boundName") final String boundName,
                                              @MapsTo("name") final String name,
                                              @MapsTo("firstItem") final String firstItem,
                                              @MapsTo("secondItem") final String secondItem,
                                              @MapsTo("rowNumbers") final Set<Integer> rowNumbers ) {
         super( severity,
-               explanationType,
+               checkType,
                rowNumbers );
 
         this.boundName = boundName;

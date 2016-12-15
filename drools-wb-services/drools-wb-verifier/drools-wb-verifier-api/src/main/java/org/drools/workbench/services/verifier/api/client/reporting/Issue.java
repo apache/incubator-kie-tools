@@ -29,19 +29,19 @@ public class Issue {
 
     private final Severity severity;
     private final Set<Integer> rowNumbers;
-    private ExplanationType explanationType;
+    private CheckType checkType;
     private String debugMessage;
 
     private Issue() {
-        severity=null;
-        rowNumbers=new HashSet<>();
+        severity = null;
+        rowNumbers = new HashSet<>();
     }
 
     public Issue( @MapsTo("severity") final Severity severity,
-                  @MapsTo("explanationType") final ExplanationType explanationType,
+                  @MapsTo("checkType") final CheckType checkType,
                   @MapsTo("rowNumbers") final Set<Integer> rowNumbers ) {
         this.severity = severity;
-        this.explanationType = explanationType;
+        this.checkType = checkType;
         this.rowNumbers = rowNumbers;
     }
 
@@ -53,8 +53,8 @@ public class Issue {
         return rowNumbers;
     }
 
-    public ExplanationType getExplanationType() {
-        return explanationType;
+    public CheckType getCheckType() {
+        return checkType;
     }
 
     public String getDebugMessage() {

@@ -30,14 +30,14 @@ public class RedundantConditionsIssue
     private final String secondItem;
 
     public RedundantConditionsIssue( @MapsTo("severity") final Severity severity,
-                                     @MapsTo("explanationType") final ExplanationType explanationType,
+                                     @MapsTo("checkType") final CheckType checkType,
                                      @MapsTo("factType") final String factType,
                                      @MapsTo("name") final String name,
                                      @MapsTo("firstItem") final String firstItem,
                                      @MapsTo("secondItem") final String secondItem,
                                      @MapsTo("rowNumbers") final Set<Integer> rowNumbers ) {
         super( severity,
-               explanationType,
+               checkType,
                rowNumbers );
 
         this.factType = factType;

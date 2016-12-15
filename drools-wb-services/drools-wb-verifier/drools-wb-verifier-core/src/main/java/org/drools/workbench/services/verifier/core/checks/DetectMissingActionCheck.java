@@ -17,9 +17,9 @@
 package org.drools.workbench.services.verifier.core.checks;
 
 import java.util.Arrays;
-
 import java.util.HashSet;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
@@ -29,7 +29,8 @@ public class DetectMissingActionCheck
         extends SingleCheck {
 
     public DetectMissingActionCheck( final RuleInspector ruleInspector ) {
-        super( ruleInspector );
+        super( ruleInspector,
+               CheckType.MISSING_ACTION );
     }
 
     @Override
@@ -43,11 +44,9 @@ public class DetectMissingActionCheck
 
     @Override
     public Issue getIssue() {
-        Issue issue = new Issue( Severity.WARNING,
-                                 ExplanationType.MISSING_ACTION,
-                                 new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
+        return new Issue( Severity.WARNING,
+                          checkType,
+                          new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
         );
-
-        return issue;
     }
 }

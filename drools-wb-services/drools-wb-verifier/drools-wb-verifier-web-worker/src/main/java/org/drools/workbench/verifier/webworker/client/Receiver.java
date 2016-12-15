@@ -23,7 +23,6 @@ import org.drools.workbench.services.verifier.api.client.configuration.RunnerTyp
 import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Issues;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
 import org.drools.workbench.services.verifier.core.main.Reporter;
 import org.drools.workbench.services.verifier.plugin.client.api.DeleteColumns;
@@ -34,8 +33,8 @@ import org.drools.workbench.services.verifier.plugin.client.api.RemoveRule;
 import org.drools.workbench.services.verifier.plugin.client.api.RequestStatus;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
 import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerException;
-import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerLogMessage;
 import org.drools.workbench.services.verifier.plugin.client.builders.BuildException;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class Receiver {
 
@@ -73,12 +72,23 @@ public class Receiver {
     }
 
     private void removeRule( final RemoveRule removeRule ) {
-        getUpdateManager().removeRule( removeRule.getDeletedRow() );
+        try {
+            getUpdateManager().removeRule( removeRule.getDeletedRow() );
+        } catch ( final Exception e ) {
+            poster.post( new WebWorkerException( "Failed to remove a rule: " +
+                                                         e.getMessage() ) );
+        }
     }
 
     private void deleteColumns( final DeleteColumns deleteColumns ) {
-        getUpdateManager().deleteColumns( deleteColumns.getFirstColumnIndex(),
-                                          deleteColumns.getNumberOfColumns() );
+        try {
+            getUpdateManager().deleteColumns( deleteColumns.getFirstColumnIndex(),
+                                              deleteColumns.getNumberOfColumns() );
+        } catch ( final Exception e ) {
+            poster.post( new WebWorkerException( "Deleting columns failed: " +
+                                                         e.getMessage() ) );
+        }
+
     }
 
     private void update( final Update update ) {
@@ -86,7 +96,8 @@ public class Receiver {
             getUpdateManager().update( update.getModel(),
                                        update.getCoordinates() );
         } catch ( final UpdateException e ) {
-            poster.post( new WebWorkerException( e.getMessage() ) );
+            poster.post( new WebWorkerException( "Dtable update failed: " +
+                                                         e.getMessage() ) );
         }
     }
 
@@ -103,7 +114,8 @@ public class Receiver {
                                           newColumn.getFactTypes(),
                                           newColumn.getColumnIndex() );
         } catch ( final BuildException buildException ) {
-            poster.post( new WebWorkerException( buildException.getMessage() ) );
+            poster.post( new WebWorkerException( "Adding a new column failed: " +
+                                                         buildException.getMessage() ) );
         }
     }
 
@@ -114,7 +126,8 @@ public class Receiver {
                                          makeRule.getFactTypes(),
                                          makeRule.getIndex() );
         } catch ( final BuildException buildException ) {
-            poster.post( new WebWorkerException( buildException.getMessage() ) );
+            poster.post( new WebWorkerException( "Rule Creation failed: " +
+                                                         buildException.getMessage() ) );
         }
     }
 
@@ -152,7 +165,8 @@ public class Receiver {
             analyzer.analyze();
 
         } catch ( final BuildException e ) {
-            poster.post( new WebWorkerException( e.getMessage() ) );
+            poster.post( new WebWorkerException( "Initialization failed: " +
+                                                         e.getMessage() ) );
         }
     }
 }

@@ -31,7 +31,7 @@ public class ExplanationProvider {
             };
         }
 
-        switch ( issue.getExplanationType() ) {
+        switch ( issue.getCheckType() ) {
             case CONFLICTING_ROWS:
                 return new Explanation()
                         .addParagraph( AnalysisConstants.INSTANCE.ConflictingRowsP1() )
@@ -131,7 +131,7 @@ public class ExplanationProvider {
 
             case REDUNDANT_ROWS:
             case SUBSUMPTANT_ROWS:
-                getExplanation( issue.getExplanationType() );
+                getExplanation( issue.getCheckType() );
 
             case MISSING_RANGE:
                 return new Explanation()
@@ -161,8 +161,8 @@ public class ExplanationProvider {
         }
     }
 
-    private static Explanation getExplanation( final ExplanationType explanationType ) {
-        switch ( explanationType ) {
+    private static Explanation getExplanation( final CheckType checkType ) {
+        switch ( checkType ) {
             case REDUNDANT_ROWS:
                 return new Explanation()
                         .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP1() )
@@ -182,7 +182,7 @@ public class ExplanationProvider {
             return "---";
         }
 
-        switch ( issue.getExplanationType() ) {
+        switch ( issue.getCheckType() ) {
             case CONFLICTING_ROWS:
                 return AnalysisConstants.INSTANCE.ConflictingRows();
             case DEFICIENT_ROW:

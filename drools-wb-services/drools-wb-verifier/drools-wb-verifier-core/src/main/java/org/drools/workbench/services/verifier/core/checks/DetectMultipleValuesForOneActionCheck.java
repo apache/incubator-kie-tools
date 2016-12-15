@@ -21,7 +21,7 @@ import java.util.HashSet;
 
 import org.drools.workbench.services.verifier.api.client.relations.Conflict;
 import org.drools.workbench.services.verifier.api.client.relations.HumanReadable;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.MultipleValuesForOneActionIssue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
@@ -35,12 +35,14 @@ public class DetectMultipleValuesForOneActionCheck
     private Conflict conflict = Conflict.EMPTY;
 
     public DetectMultipleValuesForOneActionCheck( final RuleInspector ruleInspector ) {
-        super( ruleInspector );
+        super( ruleInspector,
+               CheckType.MULTIPLE_VALUES_FOR_ONE_ACTION );
     }
 
     @Override
     public void check() {
 
+        hasIssues = false;
         conflict = Conflict.EMPTY;
 
         for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
@@ -54,20 +56,14 @@ public class DetectMultipleValuesForOneActionCheck
             }
         }
 
-        hasIssues = false;
     }
 
     @Override
     public Issue getIssue() {
-        String conflictedItem = HumanReadable.toHumanReadableString( conflict.getConflictedItem() );
-        String conflictingItem = HumanReadable.toHumanReadableString( conflict.getConflictingItem() );
-
-        final Issue issue = new MultipleValuesForOneActionIssue( Severity.WARNING,
-                                                                 ExplanationType.MULTIPLE_VALUES_FOR_ONE_ACTION,
-                                                                 conflictedItem,
-                                                                 conflictingItem,
-                                                                 new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) ) );
-
-        return issue;
+        return new MultipleValuesForOneActionIssue( Severity.WARNING,
+                                                    checkType,
+                                                    HumanReadable.toHumanReadableString( conflict.getConflictedItem() ),
+                                                    HumanReadable.toHumanReadableString( conflict.getConflictingItem() ),
+                                                    new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) ) );
     }
 }

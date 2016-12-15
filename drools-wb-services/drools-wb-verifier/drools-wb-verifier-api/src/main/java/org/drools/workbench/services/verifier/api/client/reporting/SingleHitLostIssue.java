@@ -28,11 +28,11 @@ public class SingleHitLostIssue
     private final String secondItem;
 
     public SingleHitLostIssue( @MapsTo("severity") final Severity severity,
-                               @MapsTo("explanationType") final ExplanationType explanationType,
+                               @MapsTo("checkType") final CheckType checkType,
                                @MapsTo("firstItem") final String firstItem,
                                @MapsTo("secondItem") final String secondItem ) {
         super( severity,
-               explanationType,
+               checkType,
                Collections.emptySet() );
 
         this.firstItem = firstItem;

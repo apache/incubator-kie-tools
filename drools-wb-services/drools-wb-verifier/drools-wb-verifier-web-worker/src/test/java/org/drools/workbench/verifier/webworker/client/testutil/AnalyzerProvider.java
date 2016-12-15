@@ -141,4 +141,7 @@ public class AnalyzerProvider {
         return getAnalyser( table52 );
     }
 
+    public void setConfiguration( final AnalyzerConfiguration analyzerConfiguration ) {
+        this.configuration = analyzerConfiguration;
+    }
 }

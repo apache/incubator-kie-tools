@@ -16,17 +16,17 @@
 
 package org.drools.workbench.services.verifier.core.checks;
 
+import org.drools.workbench.services.verifier.api.client.index.Field;
+import org.drools.workbench.services.verifier.api.client.relations.Conflict;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
+import org.drools.workbench.services.verifier.api.client.reporting.ImpossibleMatchIssue;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.cache.inspectors.PatternInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ComparableConditionInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionsInspectorMultiMap;
 import org.drools.workbench.services.verifier.core.checks.base.SingleCheck;
-import org.drools.workbench.services.verifier.api.client.relations.Conflict;
-import org.drools.workbench.services.verifier.api.client.index.Field;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
-import org.drools.workbench.services.verifier.api.client.reporting.ImpossibleMatchIssue;
-import org.drools.workbench.services.verifier.api.client.reporting.Issue;
-import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 
 import static org.drools.workbench.services.verifier.api.client.relations.HumanReadable.*;
 
@@ -36,7 +36,8 @@ public class DetectImpossibleMatchCheck
     private Conflict conflict = Conflict.EMPTY;
 
     public DetectImpossibleMatchCheck( final RuleInspector ruleInspector ) {
-        super( ruleInspector );
+        super( ruleInspector,
+               CheckType.IMPOSSIBLE_MATCH );
     }
 
     @Override
@@ -67,21 +68,17 @@ public class DetectImpossibleMatchCheck
             fieldName = field.getName();
             fieldFactType = field.getFactType();
         }
-        String conflictedItem = toHumanReadableString( conflict.getOrigin()
-                                                  .getConflictedItem() );
-        String conflictingItem = toHumanReadableString( conflict.getOrigin()
-                                                   .getConflictingItem() );
 
-        Issue issue = new ImpossibleMatchIssue( Severity.ERROR,
-                                                ExplanationType.IMPOSSIBLE_MATCH,
-                                                Integer.toString( ruleInspector.getRowIndex() + 1 ),
-                                                fieldFactType,
-                                                fieldName,
-                                                conflictedItem,
-                                                conflictingItem,
-                                                ruleInspector.getRowIndex() + 1 );
-
-
-        return issue;
+        return new ImpossibleMatchIssue( Severity.ERROR,
+                                         checkType,
+                                         Integer.toString( ruleInspector.getRowIndex() + 1 ),
+                                         fieldFactType,
+                                         fieldName,
+                                         toHumanReadableString( conflict.getOrigin()
+                                                                        .getConflictedItem() ),
+                                         toHumanReadableString( conflict.getOrigin()
+                                                                        .getConflictingItem() ),
+                                         ruleInspector.getRowIndex() + 1 );
     }
+
 }

@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
 import org.drools.workbench.services.verifier.api.client.configuration.DateTimeFormatProvider;
 import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
@@ -27,6 +28,10 @@ public class AnalyzerConfigurationMock
         extends AnalyzerConfiguration {
 
     public AnalyzerConfigurationMock() {
+        this( CheckWhiteList.newDefault() );
+    }
+
+    public AnalyzerConfigurationMock( final CheckWhiteList checkWhiteList ) {
         super( "UUID",
                new DateTimeFormatProvider() {
                    @Override
@@ -43,6 +48,7 @@ public class AnalyzerConfigurationMock
                        return Long.toString( index-- );
                    }
                },
+               checkWhiteList,
                RunnerType.JAVA );
     }
 }

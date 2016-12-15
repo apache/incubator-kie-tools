@@ -60,11 +60,11 @@ public class DecisionTableAnalyzerFromFileTest {
                                           Exception,
                                           UpdateException {
 
-        String xml = loadResource( "Is Null Table.gdst" );
+        final String xml = loadResource( "Is Null Table.gdst" );
 
         final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        final Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         // First run
         analyzer.resetChecks();
@@ -108,12 +108,12 @@ public class DecisionTableAnalyzerFromFileTest {
     @Test
     public void testFilePricingLoansGDST() throws
                             Exception {
-        String xml = loadResource( "Pricing loans.gdst" );
+        final String xml = loadResource( "Pricing loans.gdst" );
 
         final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
                 .unmarshal( xml );
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        final Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.resetChecks();
         analyzer.analyze();
@@ -125,9 +125,9 @@ public class DecisionTableAnalyzerFromFileTest {
     @Test
     public void testFileLargeFileGDST() throws
                             Exception {
-        String xml = loadResource( "Large file.gdst" );
+        final String xml = loadResource( "Large file.gdst" );
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance()
+        final Analyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance()
                                                                        .unmarshal( xml ) );
 
         analyzer.resetChecks();
@@ -141,12 +141,12 @@ public class DecisionTableAnalyzerFromFileTest {
     @Test
     public void testFile3() throws
                             Exception {
-        String xml = loadResource( "Pricing loans version 2.gdst" );
+        final String xml = loadResource( "Pricing loans version 2.gdst" );
 
-        GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
                 .unmarshal( xml );
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        final Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
 
         analyzer.resetChecks();
@@ -168,9 +168,9 @@ public class DecisionTableAnalyzerFromFileTest {
                                                   }
                                               } ) );
 
-        String xml = loadResource( "Score Achievements.gdst" );
+        final String xml = loadResource( "Score Achievements.gdst" );
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance()
+        final Analyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance()
                                                                        .unmarshal( xml ) );
 
         analyzer.resetChecks();
@@ -184,9 +184,9 @@ public class DecisionTableAnalyzerFromFileTest {
     @Test
     public void testFileBaseEntitlementGDST() throws
                             Exception {
-        String xml = loadResource( "Base entitlement.gdst" );
+        final String xml = loadResource( "Base entitlement.gdst" );
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance()
+        final Analyzer analyzer = analyzerProvider.makeAnalyser( GuidedDTXMLPersistence.getInstance()
                                                                        .unmarshal( xml ) );
 
         analyzer.resetChecks();
@@ -201,14 +201,14 @@ public class DecisionTableAnalyzerFromFileTest {
                                                   Exception,
                                                   UpdateException {
         long baseline = System.currentTimeMillis();
-        String xml = loadResource( "Large file.gdst" );
+        final String xml = loadResource( "Large file.gdst" );
         final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
                 .unmarshal( xml );
         long now = System.currentTimeMillis();
         System.out.println( "Loading of model took.. " + ( now - baseline ) + " ms" );
         baseline = now;
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        final Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         now = System.currentTimeMillis();
         System.out.println( "Indexing took.. " + ( now - baseline ) + " ms" );
@@ -226,7 +226,7 @@ public class DecisionTableAnalyzerFromFileTest {
                 .get( 2 )
                 .get( 6 )
                 .clearValues();
-        List<Coordinate> updates = new ArrayList<>();
+        final List<Coordinate> updates = new ArrayList<>();
         updates.add( new Coordinate( 2,
                                      6 ) );
         analyzerProvider.getUpdateManager( table52,
@@ -244,11 +244,11 @@ public class DecisionTableAnalyzerFromFileTest {
     public void testFileLargeFileGDSTWithDeletes() throws
                                                    Exception,
                                                    UpdateException {
-        String xml = loadResource( "Large file.gdst" );
+        final String xml = loadResource( "Large file.gdst" );
         final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
                 .unmarshal( xml );
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        final Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
 
         analyzer.resetChecks();
         analyzer.analyze();

@@ -26,7 +26,7 @@ import org.drools.workbench.services.verifier.api.client.index.Rule;
 import org.drools.workbench.services.verifier.api.client.maps.InspectorList;
 import org.drools.workbench.services.verifier.api.client.maps.LeafInspectorList;
 import org.drools.workbench.services.verifier.api.client.relations.SubsumptionResolver;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.cache.RuleInspectorCache;
@@ -36,6 +36,7 @@ import org.drools.workbench.services.verifier.core.cache.inspectors.condition.Co
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionsInspectorMultiMap;
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.NumericIntegerConditionInspector;
+import org.drools.workbench.services.verifier.core.checks.base.CheckFactory;
 import org.drools.workbench.services.verifier.core.checks.base.CheckStorage;
 import org.drools.workbench.services.verifier.core.checks.base.OneToManyCheck;
 
@@ -56,7 +57,8 @@ public class RangeCheck
                                                 .getUuidKey() );
                    }
                },
-               configuration );
+               configuration,
+               CheckType.MISSING_RANGE );
     }
 
     @Override
@@ -125,12 +127,10 @@ public class RangeCheck
 
     @Override
     public Issue getIssue() {
-        final Issue issue = new Issue( Severity.NOTE,
-                                       ExplanationType.MISSING_RANGE,
-                                       new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
+        return new Issue( Severity.NOTE,
+                          checkType,
+                          new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
         );
-
-        return issue;
     }
 
     private class RuleInspectorClone
@@ -142,7 +142,7 @@ public class RangeCheck
         public RuleInspectorClone( final Rule rule,
                                    final RuleInspectorCache cache ) {
             super( rule,
-                   new CheckStorage( cache.getConfiguration() ),
+                   new CheckStorage( new CheckFactory( cache.getConfiguration() ) ),
                    cache,
                    cache.getConfiguration() );
             conditionsInspectors = new InspectorList<>( cache.getConfiguration() );

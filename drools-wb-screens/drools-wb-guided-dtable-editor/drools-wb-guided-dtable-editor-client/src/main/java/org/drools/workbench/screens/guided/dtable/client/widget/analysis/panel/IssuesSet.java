@@ -23,18 +23,18 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 
 public class IssuesSet
         extends TreeSet<Issue> {
 
-    private Set<ExplanationType> MERGEABLE_ISSUES = EnumSet.of(
-        ExplanationType.EMPTY_RULE,
-        ExplanationType.MISSING_RESTRICTION,
-        ExplanationType.MISSING_ACTION
-    );
+    private static Set<CheckType> MERGEABLE_ISSUES = EnumSet.of(
+            CheckType.EMPTY_RULE,
+            CheckType.MISSING_RESTRICTION,
+            CheckType.MISSING_ACTION
+                                                               );
 
     public IssuesSet( List<Issue> issues ) {
         super( new Comparator<Issue>() {
@@ -81,14 +81,15 @@ public class IssuesSet
                                 .map( typeToMerge -> mergeIssues( issues, typeToMerge ) )
                                 .filter( Optional::isPresent ).map( Optional::get ).collect( Collectors.toSet() ) );
 
-        addAll( issues.stream()
-                      .filter( issue -> !MERGEABLE_ISSUES.contains( issue.getExplanationType() ) )
-                      .collect( Collectors.toSet() ) );
+        issues.stream()
+                .filter( issue -> !MERGEABLE_ISSUES.contains( issue.getCheckType() ) )
+                .forEach( issue -> add( issue ) );
     }
 
-    private Optional<Issue> mergeIssues( List<Issue> issues, ExplanationType typeToMerge ) {
+    private Optional<Issue> mergeIssues( final List<Issue> issues,
+                                         final CheckType typeToMerge ) {
         Set<Issue> issuesToMerge = issues.stream()
-                                         .filter( issue -> issue.getExplanationType() == typeToMerge )
+                                         .filter( issue -> issue.getCheckType() == typeToMerge )
                                          .collect( Collectors.toSet() );
 
         Set<Integer> affectedRows = issuesToMerge.stream()

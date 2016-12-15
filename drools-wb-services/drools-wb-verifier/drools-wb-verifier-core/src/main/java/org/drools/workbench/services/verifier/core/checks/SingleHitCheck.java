@@ -15,33 +15,46 @@
  */
 package org.drools.workbench.services.verifier.core.checks;
 
-import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.api.client.reporting.SingleHitLostIssue;
+import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.checks.base.PairCheck;
 
-public class SingleHitCheck {
+public class SingleHitCheck
+        extends PairCheck {
 
-    public static PairCheck.IssueType check( final RuleInspector ruleInspector,
-                                             final RuleInspector other ) {
+    private static final CheckType CHECK_TYPE = CheckType.SINGLE_HIT_LOST;
+
+    public SingleHitCheck( final RuleInspector ruleInspector,
+                           final RuleInspector other ) {
+        super( ruleInspector,
+               other );
+    }
+
+    @Override
+    public void check() {
+        hasIssues = false;
 
         if ( ruleInspector.getConditionsInspectors()
                 .subsumes( other.getConditionsInspectors() ) ) {
-            return PairCheck.IssueType.SINGLE_HIT;
-        } else {
-            return PairCheck.IssueType.EMPTY;
+            hasIssues = true;
         }
     }
 
-    public static Issue getIssue( final RuleInspector ruleInspector,
-                                  final RuleInspector other ) {
-        final Issue issue = new SingleHitLostIssue( Severity.NOTE,
-                                                    ExplanationType.SINGLE_HIT_LOST,
-                                                    Integer.toString( ruleInspector.getRowIndex() + 1 ),
-                                                    Integer.toString( other.getRowIndex() + 1 ) );
+    @Override
+    public Issue getIssue() {
+        return new SingleHitLostIssue( Severity.NOTE,
+                                       CHECK_TYPE,
+                                       Integer.toString( ruleInspector.getRowIndex() + 1 ),
+                                       Integer.toString( other.getRowIndex() + 1 ) );
+    }
 
-        return issue;
+    @Override
+    public boolean isActive( final CheckWhiteList whiteList ) {
+        return whiteList.getAllowedCheckTypes()
+                .contains( CHECK_TYPE );
     }
 }

@@ -30,12 +30,12 @@ public class MultipleValuesForOneActionIssue
     private final String conflictingItem;
 
     public MultipleValuesForOneActionIssue( @MapsTo("severity") final Severity severity,
-                                            @MapsTo("explanationType") final ExplanationType explanationType,
+                                            @MapsTo("checkType") final CheckType checkType,
                                             @MapsTo("conflictedItem") final String conflictedItem,
                                             @MapsTo("conflictingItem") final String conflictingItem,
                                             @MapsTo("rowNumbers") final Set<Integer> rowNumbers ) {
         super( severity,
-               explanationType,
+               checkType,
                rowNumbers );
 
         this.conflictedItem = conflictedItem;

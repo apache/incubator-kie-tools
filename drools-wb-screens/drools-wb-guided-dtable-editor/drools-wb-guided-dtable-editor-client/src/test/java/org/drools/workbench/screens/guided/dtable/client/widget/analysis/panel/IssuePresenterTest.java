@@ -21,7 +21,7 @@ import java.util.HashSet;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Before;
@@ -50,7 +50,7 @@ public class IssuePresenterTest {
                            Exception {
 
         Issue issue = new Issue( Severity.WARNING,
-                                 ExplanationType.REDUNDANT_ROWS,
+                                 CheckType.REDUNDANT_ROWS,
                                  new HashSet<>( Arrays.asList( 1,
                                                                2,
                                                                3 ) )

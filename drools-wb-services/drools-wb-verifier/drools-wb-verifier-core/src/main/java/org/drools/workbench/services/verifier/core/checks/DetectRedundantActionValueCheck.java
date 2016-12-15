@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,22 +23,18 @@ import org.drools.workbench.services.verifier.api.client.index.ObjectField;
 import org.drools.workbench.services.verifier.api.client.maps.util.RedundancyResult;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
-import org.drools.workbench.services.verifier.api.client.reporting.RedundantConditionsIssue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
+import org.drools.workbench.services.verifier.api.client.reporting.ValueForActionIsSetTwiceIssue;
 import org.drools.workbench.services.verifier.core.cache.inspectors.PatternInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
-import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionInspector;
-import org.drools.workbench.services.verifier.core.checks.base.SingleCheck;
+import org.drools.workbench.services.verifier.core.cache.inspectors.action.ActionInspector;
 
-public class DetectRedundantConditionsCheck
-        extends SingleCheck {
+public class DetectRedundantActionValueCheck
+        extends DetectRedundantActionBase {
 
-
-    private RedundancyResult<ObjectField, ConditionInspector> result;
-
-    public DetectRedundantConditionsCheck( final RuleInspector ruleInspector ) {
+    public DetectRedundantActionValueCheck( final RuleInspector ruleInspector ) {
         super( ruleInspector,
-               CheckType.REDUNDANT_CONDITIONS_TITLE );
+               CheckType.VALUE_FOR_ACTION_IS_SET_TWICE );
     }
 
     @Override
@@ -46,9 +42,12 @@ public class DetectRedundantConditionsCheck
         hasIssues = false;
 
         for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
-            this.result = patternInspector.getConditionsInspector()
+            this.patternInspector = patternInspector;
+            result = patternInspector.getActionsInspector()
                     .hasRedundancy();
-            if ( result.isTrue() ) {
+            if ( result.isTrue()
+                    && patternInspector.getPattern()
+                    .getBoundName() == null ) {
                 hasIssues = true;
                 return;
             }
@@ -57,16 +56,13 @@ public class DetectRedundantConditionsCheck
 
     @Override
     public Issue getIssue() {
-        return new RedundantConditionsIssue( Severity.NOTE,
-                                                    checkType,
-                                                    result.getParent()
-                                                            .getFactType(),
-                                                    result.getParent()
-                                                            .getName(),
-                                                    result.get( 0 )
-                                                            .toHumanReadableString(),
-                                                    result.get( 1 )
-                                                            .toHumanReadableString(),
-                                                    new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() +1 )));
+        return new ValueForActionIsSetTwiceIssue( Severity.WARNING,
+                                                  checkType,
+                                                  result.get( 0 )
+                                                          .toHumanReadableString(),
+                                                  result.get( 1 )
+                                                          .toHumanReadableString(),
+                                                  new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) ) );
     }
+
 }

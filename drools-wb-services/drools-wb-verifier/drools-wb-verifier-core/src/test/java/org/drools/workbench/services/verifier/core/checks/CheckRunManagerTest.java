@@ -25,12 +25,13 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.cache.RuleInspectorCache;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.checks.base.Check;
+import org.drools.workbench.services.verifier.core.checks.base.CheckFactory;
 import org.drools.workbench.services.verifier.core.checks.base.CheckRunManager;
 import org.drools.workbench.services.verifier.core.checks.base.CheckStorage;
 import org.drools.workbench.services.verifier.core.checks.base.SingleCheck;
@@ -65,15 +66,15 @@ public class CheckRunManagerTest {
                         Exception {
         configuration = new AnalyzerConfigurationMock();
 
-        checkStorage = new CheckStorage( configuration ) {
-            @Override
-            public HashSet<Check> makeSingleChecks( final RuleInspector ruleInspector ) {
-                final HashSet<Check> result = new HashSet<>();
-                result.add( new MockSingleCheck( ruleInspector ) );
-                return result;
-            }
-
-        };
+        checkStorage = new CheckStorage(
+                new CheckFactory( configuration ) {
+                    @Override
+                    public HashSet<Check> makeSingleChecks( final RuleInspector ruleInspector ) {
+                        final HashSet<Check> result = new HashSet<>();
+                        result.add( new MockSingleCheck( ruleInspector ) );
+                        return result;
+                    }
+                } );
 
         ruleInspectors = new ArrayList<>();
         when( cache.all() ).thenReturn( ruleInspectors );
@@ -187,10 +188,9 @@ public class CheckRunManagerTest {
     private class MockSingleCheck
             extends SingleCheck {
 
-        int runCount = 0;
-
         public MockSingleCheck( RuleInspector ruleInspector ) {
-            super( ruleInspector );
+            super( ruleInspector,
+                   CheckType.REDUNDANT_ROWS );
         }
 
         @Override
@@ -201,7 +201,7 @@ public class CheckRunManagerTest {
         @Override
         public Issue getIssue() {
             return new Issue( Severity.NOTE,
-                              ExplanationType.REDUNDANT_ROWS,
+                              checkType,
                               Collections.emptySet() );
         }
     }

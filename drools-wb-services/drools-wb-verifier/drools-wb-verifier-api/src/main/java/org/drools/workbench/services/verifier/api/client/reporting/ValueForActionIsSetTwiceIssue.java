@@ -28,12 +28,12 @@ public class ValueForActionIsSetTwiceIssue
     private final String secondItem;
 
     public ValueForActionIsSetTwiceIssue( @MapsTo("severity") final Severity severity,
-                                          @MapsTo("explanationType") final ExplanationType explanationType,
+                                          @MapsTo("checkType") final CheckType checkType,
                                           @MapsTo("firstItem") final String firstItem,
                                           @MapsTo("secondItem") final String secondItem,
                                           @MapsTo("rowNumbers") final Set<Integer> rowNumbers ) {
         super( severity,
-               explanationType,
+               checkType,
                rowNumbers );
 
         this.firstItem = firstItem;

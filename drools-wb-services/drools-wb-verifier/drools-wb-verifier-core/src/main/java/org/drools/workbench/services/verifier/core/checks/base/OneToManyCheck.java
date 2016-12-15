@@ -16,10 +16,11 @@
 
 package org.drools.workbench.services.verifier.core.checks.base;
 
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.maps.InspectorList;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.core.cache.RuleInspectorCache;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
-import org.drools.workbench.services.verifier.api.client.maps.InspectorList;
-import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 
 public abstract class OneToManyCheck
         extends SingleCheck {
@@ -29,15 +30,19 @@ public abstract class OneToManyCheck
 
     public OneToManyCheck( final RuleInspector ruleInspector,
                            final RuleInspectorCache.Filter filter,
-                           final AnalyzerConfiguration configuration ) {
+                           final AnalyzerConfiguration configuration,
+                           final CheckType checkType ) {
         this( ruleInspector,
-              configuration );
+              configuration,
+              checkType );
         this.filter = filter;
     }
 
     public OneToManyCheck( final RuleInspector ruleInspector,
-                           final AnalyzerConfiguration configuration ) {
-        super( ruleInspector );
+                           final AnalyzerConfiguration configuration,
+                           final CheckType checkType ) {
+        super( ruleInspector,
+               checkType );
         ruleInspectors = new InspectorList<>( configuration );
     }
 

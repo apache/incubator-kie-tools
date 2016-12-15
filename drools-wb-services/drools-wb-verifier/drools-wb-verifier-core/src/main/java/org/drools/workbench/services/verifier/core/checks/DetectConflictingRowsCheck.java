@@ -19,28 +19,43 @@ package org.drools.workbench.services.verifier.core.checks;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.drools.workbench.services.verifier.api.client.reporting.ExplanationType;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspectorDumper;
 import org.drools.workbench.services.verifier.core.checks.base.PairCheck;
 
-public class DetectConflictingRowsCheck {
+public class DetectConflictingRowsCheck
+        extends PairCheck {
 
-    public static PairCheck.IssueType check( final RuleInspector ruleInspector,
-                                             final RuleInspector other ) {
+    private final static CheckType CHECK_TYPE = CheckType.CONFLICTING_ROWS;
+
+    public DetectConflictingRowsCheck( final RuleInspector ruleInspector,
+                                       final RuleInspector other ) {
+        super( ruleInspector,
+               other );
+    }
+
+    @Override
+    public void check() {
+        hasIssues = false;
         if ( ruleInspector.conflicts( other ) ) {
-            return PairCheck.IssueType.CONFLICT;
-        } else {
-            return PairCheck.IssueType.EMPTY;
+            hasIssues = true;
         }
     }
 
-    public static Issue getIssue( final RuleInspector ruleInspector,
-                                  final RuleInspector other ) {
+    @Override
+    public boolean isActive( final CheckWhiteList whiteList ) {
+        return whiteList.getAllowedCheckTypes()
+                .contains( CHECK_TYPE );
+    }
+
+    @Override
+    public Issue getIssue() {
         final Issue issue = new Issue( Severity.WARNING,
-                                       ExplanationType.CONFLICTING_ROWS,
+                                       CHECK_TYPE,
                                        new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1,
                                                                      other.getRowIndex() + 1 ) )
         );

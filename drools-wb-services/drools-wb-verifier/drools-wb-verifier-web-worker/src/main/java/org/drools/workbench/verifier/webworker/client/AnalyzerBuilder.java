@@ -19,6 +19,7 @@ import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
 import org.drools.workbench.services.verifier.api.client.configuration.DateTimeFormatProvider;
 import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
 import org.drools.workbench.services.verifier.api.client.index.Index;
@@ -90,6 +91,7 @@ public class AnalyzerBuilder {
                             return UUID.uuid();
                         }
                     },
+                    CheckWhiteList.newDefault(),
                     runnerType );
         }
         return configuration;

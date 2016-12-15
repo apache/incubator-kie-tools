@@ -16,6 +16,7 @@
 package org.drools.workbench.verifier.webworker.client.testutil;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
 import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
 
 public class AnalyzerConfigurationMock
@@ -26,6 +27,7 @@ public class AnalyzerConfigurationMock
         super( "UUID",
                new DateTimeFormatProviderMock() ,
                new UUIDKeyProviderMock(),
+               CheckWhiteList.newDefault(),
                RunnerType.JAVA );
     }
 }

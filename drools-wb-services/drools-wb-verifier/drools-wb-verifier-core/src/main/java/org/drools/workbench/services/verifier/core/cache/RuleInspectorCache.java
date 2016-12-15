@@ -30,23 +30,24 @@ import org.drools.workbench.services.verifier.api.client.index.Fields;
 import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
 import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatcher;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
+import org.drools.workbench.services.verifier.core.checks.base.CheckFactory;
 import org.drools.workbench.services.verifier.core.checks.base.CheckStorage;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class RuleInspectorCache {
 
     private final Map<Rule, RuleInspector> ruleInspectors = new HashMap<>();
-    protected Index index;
-    private CheckStorage checkStorage;
-    private AnalyzerConfiguration configuration;
+    protected final Index index;
+    private final CheckStorage checkStorage;
+    private final AnalyzerConfiguration configuration;
 
     public RuleInspectorCache( final Index index,
                                final AnalyzerConfiguration configuration ) {
         this.index = PortablePreconditions.checkNotNull( "index",
                                                          index );
-        this.checkStorage = new CheckStorage( PortablePreconditions.checkNotNull( "configuration",
-                                                                                  configuration ) );
+        this.checkStorage = new CheckStorage( new CheckFactory( PortablePreconditions.checkNotNull( "configuration",
+                                                                                                    configuration ) ) );
         this.configuration = configuration;
     }
 

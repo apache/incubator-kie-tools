@@ -16,37 +16,40 @@
 
 package org.drools.workbench.services.verifier.core.checks;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
+import org.drools.workbench.services.verifier.api.client.index.ObjectField;
+import org.drools.workbench.services.verifier.api.client.maps.util.RedundancyResult;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
-import org.drools.workbench.services.verifier.api.client.reporting.Issue;
-import org.drools.workbench.services.verifier.api.client.reporting.Severity;
+import org.drools.workbench.services.verifier.core.cache.inspectors.PatternInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
+import org.drools.workbench.services.verifier.core.cache.inspectors.action.ActionInspector;
 import org.drools.workbench.services.verifier.core.checks.base.SingleCheck;
 
-public class DetectMissingConditionCheck
+public abstract class DetectRedundantActionBase
         extends SingleCheck {
 
-    public DetectMissingConditionCheck( final RuleInspector ruleInspector ) {
+    protected PatternInspector patternInspector;
+
+    protected RedundancyResult<ObjectField, ActionInspector> result;
+
+    DetectRedundantActionBase( final RuleInspector ruleInspector,
+                               final CheckType checkType ) {
         super( ruleInspector,
-               CheckType.MISSING_RESTRICTION );
+               checkType );
     }
 
     @Override
     public void check() {
         hasIssues = false;
 
-        if ( ruleInspector.atLeastOneActionHasAValue() ) {
-            hasIssues = !ruleInspector.atLeastOneConditionHasAValue();
+        for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
+            this.patternInspector = patternInspector;
+            result = patternInspector.getActionsInspector()
+                    .hasRedundancy();
+            if ( result.isTrue() ) {
+                hasIssues = true;
+                return;
+            }
         }
     }
 
-    @Override
-    public Issue getIssue() {
-        return new Issue( Severity.NOTE,
-                          checkType,
-                          new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
-        );
-    }
 }

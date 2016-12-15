@@ -18,7 +18,7 @@ package org.drools.workbench.services.verifier.api.client.reporting;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public enum ExplanationType {
+public enum CheckType {
     CONFLICTING_ROWS,
     DEFICIENT_ROW,
     IMPOSSIBLE_MATCH,

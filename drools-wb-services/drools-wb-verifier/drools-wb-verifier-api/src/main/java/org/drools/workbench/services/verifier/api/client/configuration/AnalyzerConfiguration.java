@@ -20,22 +20,31 @@ import java.util.Date;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class AnalyzerConfiguration {
 
     private final UUIDKeyProvider uuidKeyProvider;
-    private String webWorkerUUID;
-    private DateTimeFormatProvider dateTimeFormatter;
-    private RunnerType runnerType;
+    private final String webWorkerUUID;
+    private final DateTimeFormatProvider dateTimeFormatter;
+    private final CheckWhiteList checkWhiteList;
+    private final RunnerType runnerType;
 
     public AnalyzerConfiguration( final String webWorkerUUID,
                                   final DateTimeFormatProvider dateTimeFormatter,
                                   final UUIDKeyProvider uuidKeyProvider,
+                                  final CheckWhiteList checkWhiteList,
                                   final RunnerType runnerType ) {
-        this.webWorkerUUID = webWorkerUUID;
-        this.dateTimeFormatter = dateTimeFormatter;
-        this.uuidKeyProvider = uuidKeyProvider;
-        this.runnerType = runnerType;
+        this.webWorkerUUID = PortablePreconditions.checkNotNull( "webWorkerUUID",
+                                                                 webWorkerUUID );
+        this.dateTimeFormatter = PortablePreconditions.checkNotNull( "dateTimeFormatter",
+                                                                     dateTimeFormatter );
+        this.uuidKeyProvider = PortablePreconditions.checkNotNull( "uuidKeyProvider",
+                                                                   uuidKeyProvider );
+        this.checkWhiteList = PortablePreconditions.checkNotNull( "checkWhiteList",
+                                                                  checkWhiteList );
+        this.runnerType = PortablePreconditions.checkNotNull( "runnerType",
+                                                              runnerType );
     }
 
     public String getWebWorkerUUID() {
@@ -48,6 +57,10 @@ public class AnalyzerConfiguration {
 
     public String formatDate( final Date dateValue ) {
         return dateTimeFormatter.format( dateValue );
+    }
+
+    public CheckWhiteList getCheckWhiteList() {
+        return checkWhiteList;
     }
 
     public RunnerType getRunnerType() {

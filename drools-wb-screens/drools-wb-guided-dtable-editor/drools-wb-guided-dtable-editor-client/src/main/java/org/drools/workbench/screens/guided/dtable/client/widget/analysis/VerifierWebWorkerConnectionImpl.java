@@ -24,12 +24,12 @@ import com.google.gwt.webworker.client.Worker;
 import org.drools.workbench.services.verifier.api.client.Reporter;
 import org.drools.workbench.services.verifier.api.client.Status;
 import org.drools.workbench.services.verifier.api.client.reporting.Issues;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
 import org.drools.workbench.services.verifier.plugin.client.api.RequestStatus;
 import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerException;
 import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerLogMessage;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class VerifierWebWorkerConnectionImpl
         implements VerifierWebWorkerConnection {
@@ -108,7 +108,8 @@ public class VerifierWebWorkerConnectionImpl
                 reporter.sendReport( new HashSet<>( ( (Issues) o ).getSet() ) );
             }
         } catch ( Exception e ) {
-            LOGGER.severe( "Could not manage received json: " + e.getMessage() );
+            LOGGER.severe( "Could not manage received json: " + e.getMessage()
+                                   + " JSON: " + json );
 
         }
     }

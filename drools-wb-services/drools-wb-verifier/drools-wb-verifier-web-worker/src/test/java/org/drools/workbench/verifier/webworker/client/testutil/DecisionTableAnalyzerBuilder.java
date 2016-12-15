@@ -17,6 +17,7 @@ package org.drools.workbench.verifier.webworker.client.testutil;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
 import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
 import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
@@ -63,6 +64,7 @@ public class DecisionTableAnalyzerBuilder {
                 "UUID",
                 new DateTimeFormatProviderMock(),
                 new UUIDKeyProviderMock(),
+                CheckWhiteList.newDefault(),
                 RunnerType.GWT ) );
     }
 
