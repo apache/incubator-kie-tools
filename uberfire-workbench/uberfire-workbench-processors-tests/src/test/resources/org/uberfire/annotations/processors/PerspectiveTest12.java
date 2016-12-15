@@ -6,26 +6,33 @@ import javax.enterprise.context.ApplicationScoped;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import javax.inject.Inject;
 
 @ApplicationScoped
 @WorkbenchPerspective(
         identifier = "HomePerspective",
         isDefault = true)
-public class PerspectiveTest12 {
+public class PerspectiveTest12 implements IsElement {
 
+    @Inject
     @WorkbenchPanel(panelType = MultiTabWorkbenchPanelPresenter.class,
                     isDefault = true,
                     parts = { "HelloWorldScreen1", "HelloWorldScreen2" } )
-    Object teste = new Object();
+    Div teste;
 
+    @Inject
     @WorkbenchPanel( parts = "HelloWorldScreen3" )
-    Object teste2 = new Object();
+    Div teste2;
 
+    @Inject
     @WorkbenchPanel( parts = "HelloWorldScreen4" )
-    Object teste3 = new Object();
+    Div teste3;
 
+    @Inject
     @WorkbenchPanel( parts = "HelloWorldScreen5" )
-    Object teste4 = new Object();
+    Div teste4;
 
     @PostConstruct
     public void setup() {

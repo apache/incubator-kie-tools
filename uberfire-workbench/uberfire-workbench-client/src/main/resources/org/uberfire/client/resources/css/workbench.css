@@ -162,3 +162,63 @@
     -ms-user-select: none;
     user-select: none;
 }
+
+.uf-perspective-container {
+    height: 100%;
+}
+
+.uf-perspective-row-12 {
+    height: 100%;
+}
+
+.uf-perspective-row-11 {
+    height:91.66666667%;
+}
+
+.uf-perspective-row-10 {
+    height:83.33333333%;
+}
+
+.uf-perspective-row-9 {
+    height:75%;
+}
+
+.uf-perspective-row-8 {
+    height:66.66666667%;
+}
+
+.uf-perspective-row-7 {
+    height:58.33333333%;
+}
+
+.uf-perspective-row-6 {
+    height:50%;
+}
+
+.uf-perspective-row-5 {
+    height:41.66666667%;
+}
+
+.uf-perspective-row-4 {
+    height:33.33333333%;
+}
+
+.uf-perspective-row-3 {
+    height:25%;
+}
+
+.uf-perspective-row-2{
+    height:16.66666667%;
+}
+
+.uf-perspective-row-1 {
+    height:8.33333333%;
+}
+
+.uf-perspective-col {
+    height: 100%;
+}
+
+.uf-perspective-component {
+    height: 100%;
+}

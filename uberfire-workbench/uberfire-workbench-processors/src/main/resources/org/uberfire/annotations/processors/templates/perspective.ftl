@@ -30,6 +30,8 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import java.util.HashMap;
 import java.util.Map;
 import org.uberfire.client.annotations.Perspective;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.DOMUtil;
 </#if>
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -83,6 +85,10 @@ ${qualifier}
  */
 public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTemplate> implements TemplatedActivity</#if> {
 
+<#if isTemplate>
+    private static final String UF_PERSPECTIVE_COMPONENT = "uf-perspective-component";
+
+</#if>
     @Inject
 <#list qualifiers as qualifier>
     ${qualifier}
@@ -175,20 +181,22 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTem
 </#if>
 <#if isTemplate>
     @Override
-    public IsWidget getRootWidget() {
-        return realPresenter;
+    public HTMLElement getRootElement() {
+        return realPresenter.getElement();
     }
 
     @Override
-    public HasWidgets resolvePosition( NamedPosition position ) {
+    public HTMLElement resolvePosition( NamedPosition position ) {
         final String fieldName = position.getName();
         <#if defaultPanel??>
         if ( fieldName.equals( "${defaultPanel.fieldName}" ) ) {
+            DOMUtil.addCSSClass( realPresenter.${defaultPanel.fieldName}, UF_PERSPECTIVE_COMPONENT );
             return realPresenter.${defaultPanel.fieldName};
         }
         </#if>
         <#list wbPanels as wbPanel>
         if ( fieldName.equals( "${wbPanel.fieldName}" ) ) {
+            DOMUtil.addCSSClass( realPresenter.${wbPanel.fieldName}, UF_PERSPECTIVE_COMPONENT );
             return realPresenter.${wbPanel.fieldName};
         }
         </#list>

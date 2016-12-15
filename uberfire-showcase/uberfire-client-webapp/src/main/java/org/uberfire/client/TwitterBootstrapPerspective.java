@@ -16,6 +16,8 @@
 
 package org.uberfire.client;
 
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPanel;
@@ -24,26 +26,29 @@ import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresente
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.SimpleDnDWorkbenchPanelPresenter;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import javax.inject.Inject;
+
 
 @Templated
 @WorkbenchPerspective(identifier = "TwitterBootstrapPerspective")
-public class TwitterBootstrapPerspective extends Composite {
+public class TwitterBootstrapPerspective implements IsElement {
 
+    @Inject
     @DataField
     @WorkbenchPanel(panelType = MultiTabWorkbenchPanelPresenter.class,
                     parts = "MoodScreen")
-    FlowPanel tabPanel = new FlowPanel();
+    Div tabPanel;
 
+    @Inject
     @DataField
     @WorkbenchPanel(panelType = MultiListWorkbenchPanelPresenter.class,
                     parts = "HelloWorldScreen")
-    FlowPanel listPanel = new FlowPanel();
+    Div listPanel;
 
+    @Inject
     @DataField
     @WorkbenchPanel(panelType = SimpleDnDWorkbenchPanelPresenter.class,
                     parts = "HomeScreen")
-    FlowPanel simplePanel = new FlowPanel();
+    Div simplePanel;
 
 }

@@ -24,6 +24,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ui.shared.TemplateUtil;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.mvp.TemplatedActivity;
 import org.uberfire.client.workbench.LayoutSelection;
@@ -40,6 +44,8 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 
 /**
  * The view component of the templated panel system. This view supports an arbitrary number of child panel views, each
@@ -82,7 +88,7 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
         if ( activity == null ) {
             return null;
         }
-        return activity.getRootWidget().asWidget();
+        return ElementWrapperWidget.getWidget( activity.getRootElement() );
     }
 
     @Override
@@ -103,13 +109,13 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
                           WorkbenchPanelView<?> view,
                           Position p ) {
         NamedPosition position = (NamedPosition) p;
-        HasWidgets panelContainer = activity.resolvePosition( position );
+        HTMLElement panelContainer = activity.resolvePosition( position );
 
-        if ( panelContainer.iterator().hasNext() ) {
+        if ( panelContainer.hasChildNodes() )  {
             throw new IllegalStateException( "Child position " + position + " is already occupied" );
         }
 
-        panelContainer.add( view.asWidget() );
+        DOMUtil.appendWidgetToElement(panelContainer, view.asWidget());
         childPanelPositions.put(view, position);
     }
 
@@ -119,8 +125,9 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
         if ( removedFromPosition == null ) {
             return false;
         }
-        HasWidgets panelContainer = activity.resolvePosition( removedFromPosition );
-        panelContainer.clear();
+
+        HTMLElement panelContainer = activity.resolvePosition( removedFromPosition );
+        removeAllChildren( panelContainer );
         return true;
     }
 

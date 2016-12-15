@@ -18,9 +18,10 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
-import static org.uberfire.ext.layout.editor.client.infra.CSSClassNameHelper.*;
-import static org.uberfire.ext.layout.editor.client.infra.DomUtil.extractOffSetWidth;
 import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
+import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.hasCSSClass;
 
 @Dependent
 @Templated
@@ -104,25 +105,25 @@ public class ColumnWithComponentsView
         right.setOndragenter( e -> {
             e.preventDefault();
             if ( presenter.shouldPreviewDrop() ) {
-                addClassName( right, "columnDropPreview" );
-                addClassName( right, "dropPreview" );
-                addClassName( content, "centerPreview" );
+                addCSSClass( right, "columnDropPreview" );
+                addCSSClass( right, "dropPreview" );
+                addCSSClass( content, "centerPreview" );
             }
         } );
         right.setOndragleave( e -> {
             e.preventDefault();
             if ( presenter.shouldPreviewDrop() ) {
-                removeClassName( right, "columnDropPreview" );
-                removeClassName( right, "dropPreview" );
-                removeClassName( content, "centerPreview" );
+                removeCSSClass( right, "columnDropPreview" );
+                removeCSSClass( right, "dropPreview" );
+                removeCSSClass( content, "centerPreview" );
             }
         } );
         right.setOndrop( e -> {
             e.preventDefault();
             if ( presenter.shouldPreviewDrop() ) {
-                removeClassName( right, "columnDropPreview" );
-                removeClassName( right, "dropPreview" );
-                removeClassName( content, "centerPreview" );
+                removeCSSClass( right, "columnDropPreview" );
+                removeCSSClass( right, "dropPreview" );
+                removeCSSClass( content, "centerPreview" );
                 presenter.onDrop( ColumnDrop.Orientation.RIGHT, extractDndData( e ) );
             }
         } );
@@ -146,26 +147,26 @@ public class ColumnWithComponentsView
         left.setOndragenter( e -> {
             e.preventDefault();
             if ( presenter.shouldPreviewDrop() ) {
-                addClassName( left, "columnDropPreview" );
-                addClassName( left, "dropPreview" );
-                addClassName( content, "centerPreview" );
+                addCSSClass( left, "columnDropPreview" );
+                addCSSClass( left, "dropPreview" );
+                addCSSClass( content, "centerPreview" );
             }
         } );
         left.setOndragover( e -> e.preventDefault() );
         left.setOndragleave( e -> {
             e.preventDefault();
             if ( presenter.shouldPreviewDrop() ) {
-                removeClassName( left, "columnDropPreview" );
-                removeClassName( left, "dropPreview" );
-                removeClassName( content, "centerPreview" );
+                removeCSSClass( left, "columnDropPreview" );
+                removeCSSClass( left, "dropPreview" );
+                removeCSSClass( content, "centerPreview" );
             }
         } );
         left.setOndrop( e -> {
             e.preventDefault();
             if ( presenter.shouldPreviewDrop() ) {
-                removeClassName( left, "columnDropPreview" );
-                removeClassName( left, "dropPreview" );
-                removeClassName( content, "centerPreview" );
+                removeCSSClass( left, "columnDropPreview" );
+                removeCSSClass( left, "dropPreview" );
+                removeCSSClass( content, "centerPreview" );
                 presenter.onDrop( ColumnDrop.Orientation.LEFT, extractDndData( e ) );
             }
         } );
@@ -185,15 +186,15 @@ public class ColumnWithComponentsView
     @Override
     public void setSize( String size ) {
         if ( hasCssSizeClass() ) {
-            removeClassName( colWithComponents, cssSize );
+            removeCSSClass( colWithComponents, cssSize );
         }
         cssSize = COL_CSS_CLASS + size;
-        addClassName( colWithComponents, cssSize );
-        addClassName( colWithComponents, "container" );
+        addCSSClass( colWithComponents, cssSize );
+        addCSSClass( colWithComponents, "container" );
     }
 
     private boolean hasCssSizeClass() {
-        return !cssSize.isEmpty() && hasClassName( colWithComponents, cssSize );
+        return !cssSize.isEmpty() && hasCSSClass( colWithComponents, cssSize );
     }
 
     @Override
@@ -215,7 +216,7 @@ public class ColumnWithComponentsView
 
         Scheduler.get().scheduleDeferred( () -> {
 
-            final int colWidth = Integer.parseInt( extractOffSetWidth( row ) );
+            final int colWidth = row.getBoundingClientRect().getWidth().intValue();
 
             int padding = 2;
             final int contentWidth = colWidth - ( originalLeftRightWidth * 2 ) - padding;

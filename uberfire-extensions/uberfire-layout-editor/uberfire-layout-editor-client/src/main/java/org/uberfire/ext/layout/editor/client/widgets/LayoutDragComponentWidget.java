@@ -13,8 +13,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import static org.uberfire.ext.layout.editor.client.infra.CSSClassNameHelper.addClassName;
-import static org.uberfire.ext.layout.editor.client.infra.CSSClassNameHelper.removeClassName;
+import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeCSSClass;
 import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.setDndData;
 
 @Dependent
@@ -36,13 +36,13 @@ public class LayoutDragComponentWidget implements IsElement {
 
     public void init( LayoutDragComponent dragComponent ) {
         title.setTextContent( dragComponent.getDragComponentTitle() );
-        dndcomponent.setOnmousedown( e -> addClassName( dndcomponent, "le-dndcomponent-selected" ) );
+        dndcomponent.setOnmousedown( e -> addCSSClass( dndcomponent, "le-dndcomponent-selected" ) );
         dndcomponent.setOnmouseup( e -> {
-            removeClassName( dndcomponent, "le-dndcomponent-selected" );
+            removeCSSClass( dndcomponent, "le-dndcomponent-selected" );
             dragComponentEnd.fire( new DragComponentEndEvent() );
         } );
         dndcomponent.setOndragend( e -> {
-            removeClassName( dndcomponent, "le-dndcomponent-selected" );
+            removeCSSClass( dndcomponent, "le-dndcomponent-selected" );
             dragComponentEnd.fire( new DragComponentEndEvent() );
         } );
         dndcomponent.setOndragstart(

@@ -16,6 +16,8 @@
 
 package org.uberfire.client;
 
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPanel;
@@ -23,21 +25,26 @@ import org.uberfire.client.annotations.WorkbenchPerspective;
 
 import com.google.gwt.user.client.ui.Composite;
 
+import javax.inject.Inject;
+
 @WorkbenchPerspective(identifier = "HomePerspective",
                       isDefault = true)
 @Templated
-public class HomePerspective extends Composite {
+public class HomePerspective implements IsElement {
 
+    @Inject
     @DataField
     @WorkbenchPanel(parts = "MoodScreen?uber=fire&uber1=fire1")
-    WorkbenchPanelPanel moodScreen = new WorkbenchPanelPanel( 100 );
+    Div moodScreen;
 
+    @Inject
     @DataField
     @WorkbenchPanel(parts = "HomeScreen?uber=fire")
-    WorkbenchPanelPanel homeScreen = new WorkbenchPanelPanel( 100 );
+    Div homeScreen;
 
+    @Inject
     @DataField
     @WorkbenchPanel(parts = "AnotherScreen")
-    WorkbenchPanelPanel anotherScreen = new WorkbenchPanelPanel( 100 );
+    Div anotherScreen;
 
 }

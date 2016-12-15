@@ -29,6 +29,8 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import java.util.HashMap;
 import java.util.Map;
 import org.uberfire.client.annotations.Perspective;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.DOMUtil;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
@@ -53,6 +55,8 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
  */
 public class PerspectiveTest13Activity extends AbstractWorkbenchPerspectiveActivity implements TemplatedActivity {
 
+    private static final String UF_PERSPECTIVE_COMPONENT = "uf-perspective-component";
+
     @Inject
     private PerspectiveTest13 realPresenter;
 
@@ -73,14 +77,15 @@ public class PerspectiveTest13Activity extends AbstractWorkbenchPerspectiveActiv
     }
 
     @Override
-    public IsWidget getRootWidget() {
-        return realPresenter;
+    public HTMLElement getRootElement() {
+        return realPresenter.getElement();
     }
 
     @Override
-    public HasWidgets resolvePosition( NamedPosition position ) {
+    public HTMLElement resolvePosition( NamedPosition position ) {
         final String fieldName = position.getName();
         if ( fieldName.equals( "teste" ) ) {
+            DOMUtil.addCSSClass( realPresenter.teste, UF_PERSPECTIVE_COMPONENT );
             return realPresenter.teste;
         }
         return null;
