@@ -36,14 +36,18 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 /**
  * A Perspective to show M2_REPO related screen
  */
+@Templated
 @Dependent
 @WorkbenchPerspective( identifier = PerspectiveIds.GUVNOR_M2REPO )
-public class M2RepoPerspective extends FlowPanel {
+public class M2RepoPerspective implements IsElement {
 
     @Inject
     private ContextualSearch contextualSearch;
@@ -57,13 +61,13 @@ public class M2RepoPerspective extends FlowPanel {
     @Inject
     private SyncBeanManager iocManager;
 
+    @Inject
+    @DataField
     @WorkbenchPanel( parts = "M2RepoEditor" )
-    FlowPanel m2RepoEditor = new FlowPanel();
+    Div m2RepoEditor;
 
     @PostConstruct
     private void init() {
-        Layouts.setToFillParent( m2RepoEditor );
-        add( m2RepoEditor );
         contextualSearch.setPerspectiveSearchBehavior( PerspectiveIds.GUVNOR_M2REPO, new SearchBehavior() {
             @Override
             public void execute( String searchFilter ) {
