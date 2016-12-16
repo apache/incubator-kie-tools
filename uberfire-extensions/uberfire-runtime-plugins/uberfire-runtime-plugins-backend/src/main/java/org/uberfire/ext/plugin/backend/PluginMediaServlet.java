@@ -55,7 +55,9 @@ public class PluginMediaServlet
 
     private String pattern = "/plugins/";
 
-    private static MediaServletURI mediaServletURI = new MediaServletURI( "plugins/" );
+    @Inject
+    @Named("MediaServletURI")
+    private MediaServletURI mediaServletURI;
 
     private FileSystem fileSystem;
 
@@ -86,12 +88,6 @@ public class PluginMediaServlet
             fileSystem = ioService.getFileSystem( URI.create( "default://plugins" ) );
         }
         this.root = fileSystem.getRootDirectories().iterator().next();
-    }
-
-    @Produces
-    @Named("MediaServletURI")
-    public MediaServletURI produceMediaServletURI() {
-        return mediaServletURI;
     }
 
     @Override

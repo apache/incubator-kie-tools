@@ -17,16 +17,60 @@
 package org.uberfire.ext.plugin.backend;
 
 import java.io.IOException;
+import java.net.URI;
+import java.util.Iterator;
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class PluginMediaServletTest {
+
+    @Mock
+    FileSystem fileSystem;
+
+    @Mock
+    Iterable<Path> iterable;
+
+    @Mock
+    Iterator<Path> iterator;
+
+    @Mock
+    ServletConfig config;
+
+    @Mock
+    IOService ioService;
+
+    @Mock
+    MediaServletURI mediaServletURI;
+
+    @InjectMocks
+    PluginMediaServlet servlet = fakeServlet();
+
+    @Test
+    public void testInit() throws Exception {
+        when( iterable.iterator() ).thenReturn( iterator );
+        when( fileSystem.getRootDirectories() ).thenReturn( iterable );
+        when( config.getInitParameter( anyString() ) ).thenReturn( "/fake" );
+        when( ioService.newFileSystem( any( URI.class ), anyMapOf( String.class, Class.class ) ) ).thenReturn( fileSystem );
+
+        servlet.init( config );
+
+        verify( mediaServletURI ).setURI( eq( "fake/" ) );
+    }
 
     @Test
     public void testDoPost() throws Exception {
@@ -60,6 +104,10 @@ public class PluginMediaServletTest {
         when( fileItem.getName() ).thenReturn( fileName );
 
         return fileItem;
+    }
+
+    private PluginMediaServlet fakeServlet() {
+        return fakeServlet( null );
     }
 
     private PluginMediaServlet fakeServlet( final FileItem fileItem ) {
