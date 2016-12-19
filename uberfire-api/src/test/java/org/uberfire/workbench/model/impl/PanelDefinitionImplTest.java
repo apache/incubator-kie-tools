@@ -16,13 +16,13 @@
 
 package org.uberfire.workbench.model.impl;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class PanelDefinitionImplTest {
 
@@ -30,13 +30,21 @@ public class PanelDefinitionImplTest {
     private PanelDefinitionImpl otherPanel;
     private PartDefinition part;
     private PlaceRequest placeRequest;
+    private PanelDefinitionImpl parent;
 
     @Before
     public void setUp() throws Exception {
         panelDefinition = new PanelDefinitionImpl();
         otherPanel = new PanelDefinitionImpl();
+        parent = new PanelDefinitionImpl();
         placeRequest = mock( PlaceRequest.class );
         part = new PartDefinitionImpl( placeRequest );
+    }
+
+    @Test( expected = IllegalStateException.class )
+    public void settingTwoDifferentParentsShouldThrowException() throws Exception {
+        panelDefinition.setParent( otherPanel );
+        panelDefinition.setParent( parent );
     }
 
     @Test
@@ -66,6 +74,22 @@ public class PanelDefinitionImplTest {
     }
 
     @Test
+    public void partShouldNotBePresentAfterRemoval() throws Exception {
+        panelDefinition.addPart( part );
+        assertNotNull( part.getParentPanel() );
+        assertTrue( panelDefinition.getParts().contains( part ) );
+        panelDefinition.removePart( part );
+        assertNull( part.getParentPanel() );
+        assertFalse( panelDefinition.getParts().contains( part ) );
+    }
+
+    @Test
+    public void removeNonexistentPartShouldDoNothingAndReturnFalse() throws Exception {
+        boolean result = panelDefinition.removePart( part );
+        assertEquals( false, result );
+    }
+
+    @Test
     public void widthShouldNotRevertOnceSet() throws Exception {
         assertNull(panelDefinition.getWidth() );
         panelDefinition.setWidth( 1234 );
@@ -81,4 +105,18 @@ public class PanelDefinitionImplTest {
         assertEquals( (Integer) 1234, panelDefinition.getHeight() );
     }
 
+    @Test
+    public void appendChildShouldAddPanelToChildren(){
+        panelDefinition.appendChild( otherPanel );
+        assertTrue( panelDefinition.getChildren().contains( otherPanel ) );
+        assertEquals( panelDefinition, otherPanel.getParent() );
+    }
+
+    @Test
+    public void appendChildToPanelTwiceShouldWork(){
+        panelDefinition.appendChild( otherPanel );
+        assertTrue( panelDefinition.getChildren().contains( otherPanel ) );
+        panelDefinition.appendChild( otherPanel );
+        assertTrue( panelDefinition.getChildren().contains( otherPanel ) );
+    }
 }

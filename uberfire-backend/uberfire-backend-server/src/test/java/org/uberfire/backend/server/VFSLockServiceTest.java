@@ -55,80 +55,79 @@ import org.uberfire.rpc.SessionInfo;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VFSLockServiceTest {
-    
+
     @InjectMocks
     private VFSLockServiceImpl lockService;
-    
+
     @Mock
     private IOService ioService;
 
     @Mock
     private FileSystem fileSystem;
-    
+
     @Mock
     private SessionInfo sessionInfo;
-    
+
     @Mock
     private QueueSession queueSession;
-    
+
     @Mock
     private HttpSession httpSession;
-    
+
     private Path path = PathFactory.newPath( "file-to-lock.txt", "default://file-to-lock.txt" );
-    
+
     @Before
     public void setup() {
         setupRpcContext();
-        
-        User testUser = new UserImpl("testUser");
-        when(sessionInfo.getIdentity()).thenReturn( testUser );
-        
-        when(queueSession.getAttribute(HttpSession.class, HttpSession.class.getName())).thenReturn( httpSession );
+
+        User testUser = new UserImpl( "testUser" );
+        when( sessionInfo.getIdentity() ).thenReturn( testUser );
+        when( queueSession.getAttribute( HttpSession.class, HttpSession.class.getName() ) ).thenReturn( httpSession );
     }
-    
+
     @Test
     public void acquireLockSucceedsIfFileUnlocked() {
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( false );
-        
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( false );
+
         final LockResult result = lockService.acquireLock( path );
-        assertTrue(result.isSuccess());
-        assertEquals(path, result.getLockInfo().getFile());
-        assertEquals("testUser", result.getLockInfo().lockedBy());
-        assertTrue(result.getLockInfo().isLocked());
+        assertTrue( result.isSuccess() );
+        assertEquals( path, result.getLockInfo().getFile() );
+        assertEquals( "testUser", result.getLockInfo().lockedBy() );
+        assertTrue( result.getLockInfo().isLocked() );
     }
-    
+
     @Test
     public void acquireLockSucceedsIfLockOwned() {
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
-        when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "testUser" );
-        
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "testUser" );
+
         final LockResult result = lockService.acquireLock( path );
-        assertTrue(result.isSuccess());
-        assertEquals(path, result.getLockInfo().getFile());
-        assertEquals("testUser", result.getLockInfo().lockedBy());
-        assertTrue(result.getLockInfo().isLocked());
+        assertTrue( result.isSuccess() );
+        assertEquals( path, result.getLockInfo().getFile() );
+        assertEquals( "testUser", result.getLockInfo().lockedBy() );
+        assertTrue( result.getLockInfo().isLocked() );
     }
-    
+
     @Test
     public void acquireLockFailsIfFileLocked() {
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
-        when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "some-other-user" );
-        
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "some-other-user" );
+
         final LockResult result = lockService.acquireLock( path );
-        assertFalse(result.isSuccess());
-        assertEquals(path, result.getLockInfo().getFile());
-        assertEquals("some-other-user", result.getLockInfo().lockedBy());
-        assertTrue(result.getLockInfo().isLocked());
+        assertFalse( result.isSuccess() );
+        assertEquals( path, result.getLockInfo().getFile() );
+        assertEquals( "some-other-user", result.getLockInfo().lockedBy() );
+        assertTrue( result.getLockInfo().isLocked() );
     }
-    
+
     @Test
     public void acquireLockUpdatesSession() {
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( false );
-        
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( false );
+
         lockService.acquireLock( path );
-        verify(httpSession).setAttribute( eq(VFSLockServiceImpl.LOCK_SESSION_ATTRIBUTE_NAME), any(Set.class));
+        verify( httpSession ).setAttribute( eq( VFSLockServiceImpl.LOCK_SESSION_ATTRIBUTE_NAME ), any( Set.class ) );
     }
-    
+
     @Test
     // Unfortunately, batching is required for ensuring writes are properly 
     // replicated in the cluster. This needs to addressed in a future version 
@@ -144,87 +143,86 @@ public class VFSLockServiceTest {
         inOrder.verify( ioService ).write( any( org.uberfire.java.nio.file.Path.class ), any( String.class ) );
         inOrder.verify( ioService ).endBatch();
     }
-    
+
     @Test
     public void releaseLockSucceedsIfLockOwned() {
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
-        when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "testUser" );
-        
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "testUser" );
+
         final LockResult result = lockService.releaseLock( path );
-        assertTrue(result.isSuccess());
-        assertEquals(path, result.getLockInfo().getFile());
-        assertEquals(null, result.getLockInfo().lockedBy());
-        assertFalse(result.getLockInfo().isLocked());
+        assertTrue( result.isSuccess() );
+        assertEquals( path, result.getLockInfo().getFile() );
+        assertEquals( null, result.getLockInfo().lockedBy() );
+        assertFalse( result.getLockInfo().isLocked() );
     }
-    
+
     @Test
     public void releaseLockFailsIfLockNotOwned() {
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
-        when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "some-other-user" );
-        
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "some-other-user" );
+
         try {
             lockService.releaseLock( path );
-            fail("Expected exception on attempt to release lock not owned by user");
-        } 
-        catch (Exception ioe) {
-         // expected    
+            fail( "Expected exception on attempt to release lock not owned by user" );
+        } catch ( Exception ioe ) {
+            // expected    
         }
     }
-    
+
     @Test
     public void forceReleaseLockSucceedsIfLockNotOwned() {
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
-        when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "some-other-user" );
-        
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "some-other-user" );
+
         final LockResult result = lockService.forceReleaseLock( path );
-        assertTrue(result.isSuccess());
-        assertEquals(path, result.getLockInfo().getFile());
-        assertEquals(null, result.getLockInfo().lockedBy());
-        assertFalse(result.getLockInfo().isLocked());
+        assertTrue( result.isSuccess() );
+        assertEquals( path, result.getLockInfo().getFile() );
+        assertEquals( null, result.getLockInfo().lockedBy() );
+        assertFalse( result.getLockInfo().isLocked() );
     }
-    
+
     @Test
     public void releaseLockFailsIfFileUnlocked() {
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( false );
-        
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( false );
+
         final LockResult result = lockService.releaseLock( path );
-        assertFalse(result.isSuccess());
-        assertEquals(path, result.getLockInfo().getFile());
-        assertEquals(null, result.getLockInfo().lockedBy());
-        assertFalse(result.getLockInfo().isLocked());
+        assertFalse( result.isSuccess() );
+        assertEquals( path, result.getLockInfo().getFile() );
+        assertEquals( null, result.getLockInfo().lockedBy() );
+        assertFalse( result.getLockInfo().isLocked() );
     }
-    
+
     @Test
     public void releaseLockUpdatesSession() {
         lockService.acquireLock( path );
-        
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
-        when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "testUser" );
-        
+
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "testUser" );
+
         lockService.releaseLock( path );
-        verify(httpSession).setAttribute(eq(VFSLockServiceImpl.LOCK_SESSION_ATTRIBUTE_NAME), any(Set.class));
+        verify( httpSession ).setAttribute( eq( VFSLockServiceImpl.LOCK_SESSION_ATTRIBUTE_NAME ), any( Set.class ) );
     }
-    
+
     @Test
     // Unfortunately, batching is required for ensuring writes are properly 
     // replicated in the cluster. This needs to addressed in a future version 
     // of UF: https://issues.jboss.org/browse/UF-242
     public void releaseLockUsesBatch() {
         lockService.acquireLock( path );
-        
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
-        when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "testUser" );
-        
+
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "testUser" );
+
         lockService.releaseLock( path );
-        
-        final InOrder inOrder = inOrder(ioService);
-        inOrder.verify(ioService).startBatch( fileSystem );
-        inOrder.verify(ioService).exists( any(org.uberfire.java.nio.file.Path.class) );
-        inOrder.verify(ioService).readAllString( any(org.uberfire.java.nio.file.Path.class) );
-        inOrder.verify(ioService).delete( any(org.uberfire.java.nio.file.Path.class) );
-        inOrder.verify(ioService).endBatch( );
+
+        final InOrder inOrder = inOrder( ioService );
+        inOrder.verify( ioService ).startBatch( fileSystem );
+        inOrder.verify( ioService ).exists( any( org.uberfire.java.nio.file.Path.class ) );
+        inOrder.verify( ioService ).readAllString( any( org.uberfire.java.nio.file.Path.class ) );
+        inOrder.verify( ioService ).delete( any( org.uberfire.java.nio.file.Path.class ) );
+        inOrder.verify( ioService ).endBatch();
     }
-    
+
     @Test
     public void retrieveLockInfoForLockedFile() {
         when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
@@ -244,7 +242,7 @@ public class VFSLockServiceTest {
         assertFalse( info.isLocked() );
         assertNull( info.lockedBy() );
     }
-    
+
     @Test
     public void retrieveLockInfoNoSuchFileException() {
         when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
@@ -254,10 +252,11 @@ public class VFSLockServiceTest {
         assertFalse( info.isLocked() );
         assertNull( info.lockedBy() );
     }
-    
+
     private void setupRpcContext() {
-        final Message message = MessageBuilder.createMessage("for testing").signalling().done().getMessage();
-        message.setResource( "Session", queueSession );
+        final Message message = MessageBuilder.createMessage( "for testing" ).signalling().done().getMessage();
+        message.setResource( "Session",
+                             queueSession );
         RpcContext.set( message );
     }
 
