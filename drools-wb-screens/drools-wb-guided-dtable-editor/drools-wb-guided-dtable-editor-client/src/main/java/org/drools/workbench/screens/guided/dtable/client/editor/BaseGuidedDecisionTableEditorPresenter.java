@@ -208,6 +208,13 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         this.editorPlaceRequest = placeRequest;
     }
 
+    protected void onFocus() {
+        if ( modeller.getActiveDecisionTable() != null ) {
+            decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( modeller.getActiveDecisionTable() ) );
+            modeller.getActiveDecisionTable().initialiseAnalysis();
+        }
+    }
+
     protected String getTitleText() {
         return resourceType.getDescription();
     }

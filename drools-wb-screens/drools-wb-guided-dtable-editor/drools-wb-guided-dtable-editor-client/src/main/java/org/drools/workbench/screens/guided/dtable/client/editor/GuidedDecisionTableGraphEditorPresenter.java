@@ -75,6 +75,7 @@ import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -368,6 +369,12 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
         initialiseEditor( path,
                           placeRequest );
+    }
+
+    @Override
+    @OnFocus
+    public void onFocus() {
+        super.onFocus();
     }
 
     @Override

@@ -122,6 +122,34 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
     }
 
     @Test
+    public void checkDecisionTableSelectedEventFiredWhenEditorReceivesFocusWithActiveDecisionTable() {
+        final GuidedDecisionTableView.Presenter activeDtable = mock( GuidedDecisionTableView.Presenter.class );
+        when( modeller.getActiveDecisionTable() ).thenReturn( activeDtable );
+
+        presenter.onFocus();
+
+        verify( activeDtable,
+                times( 1 ) ).initialiseAnalysis();
+
+        verify( decisionTableSelectedEvent,
+                times( 1 ) ).fire( dtSelectedEventCaptor.capture() );
+
+        final DecisionTableSelectedEvent event = dtSelectedEventCaptor.getValue();
+        assertNotNull( event );
+        assertNotNull( event.getPresenter() );
+        assertEquals( activeDtable,
+                      event.getPresenter() );
+    }
+
+    @Test
+    public void checkDecisionTableSelectedEventNotFiredWhenEditorReceivesFocusWithoutActiveDecisionTable() {
+        presenter.onFocus();
+
+        verify( decisionTableSelectedEvent,
+                never() ).fire( any( DecisionTableSelectedEvent.class ) );
+    }
+
+    @Test
     public void checkMayCloseWithNoDecisionTable() {
         assertTrue( presenter.mayClose() );
     }

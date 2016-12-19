@@ -107,12 +107,10 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                       placeRequest );
     }
 
+    @Override
     @OnFocus
     public void onFocus() {
-        if ( modeller.getActiveDecisionTable() != null ) {
-            modeller.getActiveDecisionTable()
-                    .initialiseAnalysis();
-        }
+        super.onFocus();
     }
 
     @Override
