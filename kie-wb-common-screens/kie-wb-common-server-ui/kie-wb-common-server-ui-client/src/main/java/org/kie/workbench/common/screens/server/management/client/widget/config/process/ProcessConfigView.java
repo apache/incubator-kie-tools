@@ -159,6 +159,7 @@ public class ProcessConfigView extends Composite
         kbase.setText( "" );
         ksession.setText( "" );
         runtimeStrategy.setText( presenter.getRuntimeStrategies().get( 0 ) );
+        mergeMode.setText( presenter.getMergeModes().get( 0 ) );
     }
 
     @Override

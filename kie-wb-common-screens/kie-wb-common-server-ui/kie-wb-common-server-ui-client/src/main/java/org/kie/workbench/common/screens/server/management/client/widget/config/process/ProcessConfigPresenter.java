@@ -102,11 +102,13 @@ public class ProcessConfigPresenter {
     }
 
     private void setupView( final ProcessConfig processConfig ) {
-        this.view.setContent( ClientRuntimeStrategy.valueOf( processConfig.getRuntimeStrategy() ).getValue( view.getTranslationService() ),
+        final String runtimeStrategy = ClientRuntimeStrategy.valueOf( processConfig.getRuntimeStrategy() ).getValue( view.getTranslationService() );
+        final String mergeMode = ClientMergeMode.valueOf( processConfig.getMergeMode() ).getValue( view.getTranslationService() );
+
+        this.view.setContent( runtimeStrategy,
                               processConfig.getKBase(),
                               processConfig.getKSession(),
-                              ClientMergeMode.convert( processConfig.getMergeMode(), view.getTranslationService() ).getValue( view.getTranslationService() ) );
-
+                              mergeMode );
     }
 
     public void disable() {
