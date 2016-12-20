@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser;
 
-import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
@@ -28,7 +28,7 @@ public interface ContextualParser extends Parser {
 
         GraphUtils getGraphUtils();
 
-        Bpmn2OryxManager getOryxManager();
+        OryxManager getOryxManager();
 
     }
 

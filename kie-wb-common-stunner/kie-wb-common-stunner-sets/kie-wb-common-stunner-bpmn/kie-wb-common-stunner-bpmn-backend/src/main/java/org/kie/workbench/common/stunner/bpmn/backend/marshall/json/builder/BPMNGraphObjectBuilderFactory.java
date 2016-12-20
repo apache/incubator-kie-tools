@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
-import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation.RuntimeDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.BindableMorphAdapter;
@@ -27,19 +30,15 @@ import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 @ApplicationScoped
-public class BPMNGraphObjectBuilderFactory {
+public class BPMNGraphObjectBuilderFactory implements GraphObjectBuilderFactory {
 
     DefinitionManager definitionManager;
-    Bpmn2OryxManager oryxManager;
+    OryxManager oryxManager;
 
     @Inject
     public BPMNGraphObjectBuilderFactory( DefinitionManager definitionManager,
-                                          Bpmn2OryxManager oryxManager ) {
-        this.definitionManager = definitionManager;
+                                          OryxManager oryxManager ) {
         this.definitionManager = definitionManager;
         this.oryxManager = oryxManager;
     }
@@ -47,10 +46,12 @@ public class BPMNGraphObjectBuilderFactory {
     public BPMNGraphObjectBuilderFactory() {
     }
 
+    @Override
     public GraphObjectBuilder<?, ?> bootstrapBuilder() {
         return new BootstrapObjectBuilder( this );
     }
 
+    @Override
     @SuppressWarnings( "unchecked" )
     public GraphObjectBuilder<?, ?> builderFor( String oryxId ) {
         if ( oryxId == null ) {

@@ -23,9 +23,9 @@ import java.util.Map;
 
 public class BootstrapObjectBuilder<W, T extends Element<View<W>>> extends AbstractObjectBuilder<W, T> {
 
-    BPMNGraphObjectBuilderFactory buildersFactory;
+    GraphObjectBuilderFactory buildersFactory;
 
-    public BootstrapObjectBuilder( BPMNGraphObjectBuilderFactory buildersFactory ) {
+    public BootstrapObjectBuilder( GraphObjectBuilderFactory buildersFactory ) {
         super();
         this.buildersFactory = buildersFactory;
     }

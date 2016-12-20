@@ -16,56 +16,39 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx;
 
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.Bpmn2OryxPropertyManager;
 import org.kie.workbench.common.stunner.core.backend.util.BackendBindableDefinitionUtils;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 @ApplicationScoped
-public class Bpmn2OryxManager {
-
-    Bpmn2OryxIdMappings oryxIdMappings;
-    Bpmn2OryxPropertyManager oryxPropertyManager;
-
-    private final List<Class<?>> definitions = new LinkedList<>();
+public class Bpmn2OryxManager extends BaseOryxManager {
 
     protected Bpmn2OryxManager() {
     }
 
     @Inject
-    public Bpmn2OryxManager( final Bpmn2OryxIdMappings oryxIdMappings,
+    public Bpmn2OryxManager( final OryxIdMappings oryxIdMappings,
                              final Bpmn2OryxPropertyManager oryxPropertyManager ) {
-        this.oryxIdMappings = oryxIdMappings;
-        this.oryxPropertyManager = oryxPropertyManager;
+        super( oryxIdMappings,
+               oryxPropertyManager );
     }
 
+    @Override
     @PostConstruct
     public void init() {
+        super.init();
+    }
+
+    @Override
+    public Set<Class<?>> getDefinitionClasses() {
         final BPMNDefinitionSet set = new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build();
-        // Load default & custom mappings for BPMN definitions.
         final Set<Class<?>> defClasses = BackendBindableDefinitionUtils.getDefinitions( set );
-        definitions.addAll( defClasses );
-        // Initialize the manager for the id mappings.
-        oryxIdMappings.init( definitions );
-
-    }
-
-    public Bpmn2OryxIdMappings getMappingsManager() {
-        return oryxIdMappings;
-    }
-
-    public Bpmn2OryxPropertyManager getPropertyManager() {
-        return oryxPropertyManager;
-    }
-
-    public List<Class<?>> getDefinitions() {
-        return definitions;
+        return defClasses;
     }
 
 }

@@ -16,10 +16,23 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
-import org.codehaus.jackson.*;
-import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Stack;
+
+import org.codehaus.jackson.Base64Variant;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.JsonStreamContext;
+import org.codehaus.jackson.ObjectCodec;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -42,41 +55,37 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Stack;
-
 /**
  * Support for a basic single process hierarchy
  */
 public class BPMNGraphGenerator extends JsonGenerator {
 
-    private final BPMNGraphObjectBuilderFactory bpmnGraphBuilderFactory;
+    private final GraphObjectBuilderFactory bpmnGraphBuilderFactory;
     private final DefinitionManager definitionManager;
     private final FactoryManager factoryManager;
     private final GraphUtils graphUtils;
-    private final Bpmn2OryxManager oryxManager;
+    private final OryxManager oryxManager;
     private final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager;
     private final GraphCommandFactory commandFactory;
     private final GraphIndexBuilder<?> indexBuilder;
+    private final Class<?> diagramDefinitionSetClass;
+    private final Class<? extends BPMNDefinition> diagramDefinitionClass;
     private final Stack<GraphObjectBuilder> nodeBuilders = new Stack<>();
     private final Stack<GraphObjectParser> parsers = new Stack<GraphObjectParser>();
     private final Collection<GraphObjectBuilder<?, ?>> builders = new LinkedList<GraphObjectBuilder<?, ?>>();
     Graph<DefinitionSet, Node> graph;
     boolean isClosed;
 
-    public BPMNGraphGenerator( final BPMNGraphObjectBuilderFactory bpmnGraphBuilderFactory,
+    public BPMNGraphGenerator( final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
                                final DefinitionManager definitionManager,
                                final FactoryManager factoryManager,
                                final GraphUtils graphUtils,
-                               final Bpmn2OryxManager oryxManager,
+                               final OryxManager oryxManager,
                                final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager,
                                final GraphCommandFactory commandFactory,
-                               final GraphIndexBuilder<?> indexBuilder ) {
+                               final GraphIndexBuilder<?> indexBuilder,
+                               final Class<?> diagramDefinitionSetClass,
+                               final Class<? extends BPMNDefinition> diagramDefinitionClass ) {
         this.bpmnGraphBuilderFactory = bpmnGraphBuilderFactory;
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
@@ -85,6 +94,8 @@ public class BPMNGraphGenerator extends JsonGenerator {
         this.commandManager = commandManager;
         this.commandFactory = commandFactory;
         this.indexBuilder = indexBuilder;
+        this.diagramDefinitionSetClass = diagramDefinitionSetClass;
+        this.diagramDefinitionClass = diagramDefinitionClass;
         this.parsers.push( new RootObjectParser( null ) );
         this.isClosed = false;
     }
@@ -125,10 +136,10 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void close() throws IOException {
         logBuilders();
-        this.graph = ( Graph<DefinitionSet, Node> ) factoryManager.newElement( UUID.uuid(), BPMNDefinitionSet.class );
+        this.graph = (Graph<DefinitionSet, Node>) factoryManager.newElement( UUID.uuid(), diagramDefinitionSetClass );
         // TODO: Where are the BPMN diagram bounds in the Oryx json structure? Exist?
         if ( null == graph.getContent().getBounds() ) {
             graph.getContent().setBounds( new BoundsImpl(
@@ -146,19 +157,19 @@ public class BPMNGraphGenerator extends JsonGenerator {
         if ( diagramBuilder == null ) {
             throw new RuntimeException( "No diagrams found!" );
         }
-        Node<View<BPMNDiagram>, Edge> diagramNode = ( Node<View<BPMNDiagram>, Edge> ) diagramBuilder.build( builderContext );
+        Node<View<BPMNDefinition>, Edge> diagramNode = (Node<View<BPMNDefinition>, Edge>) diagramBuilder.build( builderContext );
         graph.addNode( diagramNode );
         this.isClosed = true;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     protected NodeObjectBuilder getDiagramBuilder( final GraphObjectBuilder.BuilderContext context ) {
         Collection<GraphObjectBuilder<?, ?>> builders = context.getBuilders();
         if ( builders != null && !builders.isEmpty() ) {
             for ( GraphObjectBuilder<?, ?> builder : builders ) {
                 try {
-                    NodeObjectBuilder nodeBuilder = ( NodeObjectBuilder ) builder;
-                    if ( BPMNDiagram.class.equals( nodeBuilder.getDefinitionClass() ) ) {
+                    NodeObjectBuilder nodeBuilder = (NodeObjectBuilder) builder;
+                    if ( diagramDefinitionClass.equals( nodeBuilder.getDefinitionClass() ) ) {
                         return nodeBuilder;
                     }
                 } catch ( ClassCastException e ) {
@@ -212,11 +223,11 @@ public class BPMNGraphGenerator extends JsonGenerator {
         }
 
         @Override
-        public Bpmn2OryxManager getOryxManager() {
+        public OryxManager getOryxManager() {
             return oryxManager;
         }
 
-        @SuppressWarnings( "unchecked" )
+        @SuppressWarnings("unchecked")
         public CommandResult<RuleViolation> execute( Command<GraphCommandExecutionContext, RuleViolation> command ) {
             GraphCommandExecutionContext executionContext =
                     new EmptyRulesCommandExecutionContext( definitionManager, factoryManager, index );
@@ -281,7 +292,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
                 parsers.push( new StencilObjectParser() );
             } else if ( "childShapes".equals( fieldName ) ) {
                 RootObjectParser rootObjectParser = nodeBuilders.empty() ? null :
-                        new RootObjectParser( ( NodeObjectBuilder ) nodeBuilders.peek() );
+                        new RootObjectParser( (NodeObjectBuilder) nodeBuilders.peek() );
                 parsers.push( rootObjectParser );
                 nodeBuilders.push( bpmnGraphBuilderFactory.bootstrapBuilder() );
             } else if ( "outgoing".equals( fieldName ) ) {
@@ -625,15 +636,21 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    public void writeString( char[] chars, int i, int i1 ) throws IOException, JsonGenerationException {
+    public void writeString( char[] chars,
+                             int i,
+                             int i1 ) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRawUTF8String( byte[] bytes, int i, int i1 ) throws IOException, JsonGenerationException {
+    public void writeRawUTF8String( byte[] bytes,
+                                    int i,
+                                    int i1 ) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeUTF8String( byte[] bytes, int i, int i1 ) throws IOException, JsonGenerationException {
+    public void writeUTF8String( byte[] bytes,
+                                 int i,
+                                 int i1 ) throws IOException, JsonGenerationException {
     }
 
     @Override
@@ -641,11 +658,15 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    public void writeRaw( String s, int i, int i1 ) throws IOException, JsonGenerationException {
+    public void writeRaw( String s,
+                          int i,
+                          int i1 ) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRaw( char[] chars, int i, int i1 ) throws IOException, JsonGenerationException {
+    public void writeRaw( char[] chars,
+                          int i,
+                          int i1 ) throws IOException, JsonGenerationException {
     }
 
     @Override
@@ -657,15 +678,22 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    public void writeRawValue( String s, int i, int i1 ) throws IOException, JsonGenerationException {
+    public void writeRawValue( String s,
+                               int i,
+                               int i1 ) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRawValue( char[] chars, int i, int i1 ) throws IOException, JsonGenerationException {
+    public void writeRawValue( char[] chars,
+                               int i,
+                               int i1 ) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeBinary( Base64Variant base64Variant, byte[] bytes, int i, int i1 ) throws IOException, JsonGenerationException {
+    public void writeBinary( Base64Variant base64Variant,
+                             byte[] bytes,
+                             int i,
+                             int i1 ) throws IOException, JsonGenerationException {
     }
 
     @Override

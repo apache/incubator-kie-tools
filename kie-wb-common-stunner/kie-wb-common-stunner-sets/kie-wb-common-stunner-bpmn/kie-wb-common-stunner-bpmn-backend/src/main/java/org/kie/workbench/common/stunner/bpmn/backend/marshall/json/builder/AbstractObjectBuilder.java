@@ -16,7 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
-import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxIdMappings;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxIdMappings;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.Bpmn2OryxPropertyManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -26,8 +34,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> implements GraphObjectBuilder<W, T> {
 
@@ -120,7 +126,7 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
     protected void setProperties( BuilderContext context, BPMNDefinition definition ) {
         assert definition != null;
         Bpmn2OryxPropertyManager propertyManager = context.getOryxManager().getPropertyManager();
-        Bpmn2OryxIdMappings idMappings = context.getOryxManager().getMappingsManager();
+        OryxIdMappings idMappings = context.getOryxManager().getMappingsManager();
         Set<?> defProperties = context.getDefinitionManager().adapters().forDefinition().getProperties( definition );
         for ( Map.Entry<String, String> entry : properties.entrySet() ) {
             final String oryxId = entry.getKey();
@@ -146,7 +152,7 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
 
                 }
                 if ( !found && null != pId ) {
-                    LOG.warn( "Property [" + pId + "] not found for definition [" + definition.getClass().getName() + "]" );
+                    //LOG.warn( "Property [" + pId + "] not found for definition [" + definition.getClass().getName() + "]" );
 
                 }
 

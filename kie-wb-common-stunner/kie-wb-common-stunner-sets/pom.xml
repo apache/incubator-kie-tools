@@ -33,6 +33,7 @@
   <modules>
     <module>kie-wb-common-stunner-basicset</module>
     <module>kie-wb-common-stunner-bpmn</module>
+    <module>kie-wb-common-stunner-case-mgmt</module>
   </modules>
 
 </project>

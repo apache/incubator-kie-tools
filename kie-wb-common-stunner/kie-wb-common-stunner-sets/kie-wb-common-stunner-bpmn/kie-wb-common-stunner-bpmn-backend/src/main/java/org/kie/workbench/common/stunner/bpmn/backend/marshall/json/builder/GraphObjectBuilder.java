@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
-import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
+import java.util.Collection;
+
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -31,8 +33,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-
-import java.util.Collection;
 
 public interface GraphObjectBuilder<W, T extends Element<View<W>>> {
 
@@ -66,7 +66,7 @@ public interface GraphObjectBuilder<W, T extends Element<View<W>>> {
 
         GraphUtils getGraphUtils();
 
-        Bpmn2OryxManager getOryxManager();
+        OryxManager getOryxManager();
 
         GraphCommandFactory getCommandFactory();
 

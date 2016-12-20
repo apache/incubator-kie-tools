@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.processors;
 
+import javax.lang.model.element.Element;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ProcessingContext {
 
@@ -28,8 +31,11 @@ public class ProcessingContext {
 
     private final ProcessingDefinitionSetAnnotations defSetAnnotations = new ProcessingDefinitionSetAnnotations();
     private final ProcessingDefinitionAnnotations definitionAnnotations = new ProcessingDefinitionAnnotations();
+    private final Set<Element> definitionElements = new LinkedHashSet<>();
     private final ProcessingPropertySetAnnotations propertySetAnnotations = new ProcessingPropertySetAnnotations();
+    private final Set<Element> propertySetElements = new LinkedHashSet<>();
     private final ProcessingPropertyAnnotations propertyAnnotations = new ProcessingPropertyAnnotations();
+    private final Set<Element> propertyElements = new LinkedHashSet<>();
     private final ProcessingMorphingAnnotations morphingAnnotations = new ProcessingMorphingAnnotations();
 
     public synchronized static ProcessingContext getInstance() {
@@ -87,5 +93,17 @@ public class ProcessingContext {
 
     public ProcessingMorphingAnnotations getMorphingAnnotations() {
         return morphingAnnotations;
+    }
+
+    public Set<Element> getDefinitionElements() {
+        return definitionElements;
+    }
+
+    public Set<Element> getPropertySetElements() {
+        return propertySetElements;
+    }
+
+    public Set<Element> getPropertyElements() {
+        return propertyElements;
     }
 }
