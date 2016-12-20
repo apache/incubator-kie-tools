@@ -43,7 +43,7 @@ public class DeploymentIdGeneratorTest {
     @Test
     public void testExtractUuid() {
         try {
-            assertEquals( "abc", DeploymentIdGenerator.extractUuid( "kie:abc:" ) );
+            assertEquals( "abc", DeploymentIdGenerator.extractUuid( "kie#abc#" ) );
         } catch ( Exception e ) {
             fail( e.getMessage() );
         }
@@ -52,7 +52,7 @@ public class DeploymentIdGeneratorTest {
     @Test
     public void testExtractInvalidUuid( ) {
         //all this are invalid deployment ids, so the extraction should fail for all of them.
-        String invalidValues[] = { "abc", "kie:", "kie::" };
+        String invalidValues[] = { "abc", "kie#", "kie##" };
         for ( int i = 0; i < invalidValues.length; i++ ) {
             testExtractUuidInvalidUuid( invalidValues[ i ] );
         }
@@ -63,9 +63,9 @@ public class DeploymentIdGeneratorTest {
         when ( driverDef.getUuid() ).thenReturn( "driver1" );
         when( dataSourceDef.getUuid() ).thenReturn( "dataSource1" );
 
-        assertEquals( "kie:driver1:", DeploymentIdGenerator.generateDeploymentId( driverDef ) );
-        assertEquals( "kie:dataSource1:", DeploymentIdGenerator.generateDeploymentId( dataSourceDef ) );
-        assertEquals( "kie:someValue:", DeploymentIdGenerator.generateDeploymentId( "someValue" ) );
+        assertEquals( "kie#driver1#", DeploymentIdGenerator.generateDeploymentId( driverDef ) );
+        assertEquals( "kie#dataSource1#", DeploymentIdGenerator.generateDeploymentId( dataSourceDef ) );
+        assertEquals( "kie#someValue#", DeploymentIdGenerator.generateDeploymentId( "someValue" ) );
     }
 
     private void testExtractUuidInvalidUuid( String invalidUuid ) {

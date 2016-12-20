@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.datasource.management.backend.core;
 
 public interface DataSourceManagementTestConstants {
 
+    String SEPARATOR = "#";
+
     String RANDOM_UUID = "random_uuid";
 
     String DS1_UUID = "uuid1";
@@ -32,7 +34,7 @@ public interface DataSourceManagementTestConstants {
 
     String DS1_JNID = "jndi1";
 
-    String DS1_DEPLOYMENT_ID = "kie:" + DS1_UUID + ":_" + RANDOM_UUID;
+    String DS1_DEPLOYMENT_ID = "kie" + SEPARATOR + DS1_UUID + SEPARATOR + "_" + RANDOM_UUID;
 
     String DS2_UUID = "uuid2";
 
@@ -46,15 +48,15 @@ public interface DataSourceManagementTestConstants {
 
     String DS2_JNID = "jndi2";
 
-    String DS2_DEPLOYMENT_ID = "kie:" + DS2_UUID + ":_" + RANDOM_UUID;
+    String DS2_DEPLOYMENT_ID = "kie" + SEPARATOR + DS2_UUID + SEPARATOR + "_" + RANDOM_UUID;
 
     String DS3_UUID = "uuid3";
 
-    String DS3_DEPLOYMENT_ID = "kie:" + DS3_UUID + ":_" + RANDOM_UUID;
+    String DS3_DEPLOYMENT_ID = "kie" + SEPARATOR + DS3_UUID + SEPARATOR + "_" + RANDOM_UUID;
 
     String DRIVER1_UUID = "driverUuid1";
 
-    String DRIVER1_DEPLOYMENT_ID = "kie:" + DRIVER1_UUID + ":";
+    String DRIVER1_DEPLOYMENT_ID = "kie" + SEPARATOR + DRIVER1_UUID + SEPARATOR;
 
     String DRIVER1_NAME = "driver1";
 

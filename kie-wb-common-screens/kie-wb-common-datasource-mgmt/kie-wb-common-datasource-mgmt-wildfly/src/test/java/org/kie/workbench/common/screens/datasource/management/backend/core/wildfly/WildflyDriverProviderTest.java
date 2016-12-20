@@ -37,9 +37,9 @@ import static org.mockito.Mockito.*;
 public class WildflyDriverProviderTest
         extends DriverProviderBaseTest {
 
-    private static final String DRIVER1_DEPLOYMENT_ID = "kie:" + DRIVER1_UUID + ":";
+    private static final String DRIVER1_DEPLOYMENT_ID = "kie#" + DRIVER1_UUID + "#";
 
-    private static final String UUID2_DEPLOYMENT_ID = "kie:" + DRIVER2_UUID + ":";
+    private static final String UUID2_DEPLOYMENT_ID = "kie#" + DRIVER2_UUID + "#";
 
     @Mock
     private WildflyDriverManagementClient managementClient;
