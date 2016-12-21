@@ -56,6 +56,12 @@
       <artifactId>kie-wb-common-project-explorer-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-backend</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

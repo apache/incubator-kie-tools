@@ -64,7 +64,7 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
         defaultValue.ouAlias = "Team";
         defaultValue.repositoryAlias = "myrepo";
         defaultValue.repositoryDefaultScheme = "git";
-        defaultValue.projectGroupId = "org.default";
+        defaultValue.projectGroupId = "myteam";
         defaultValue.projectVersion = "1.0.0";
         defaultValue.projectDescription = "default description";
         defaultValue.projectDefaultBranch = "master";
