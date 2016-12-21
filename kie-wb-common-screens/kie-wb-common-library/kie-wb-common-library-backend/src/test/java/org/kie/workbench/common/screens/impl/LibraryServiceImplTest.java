@@ -193,8 +193,8 @@ public class LibraryServiceImplTest {
         RepositoryEnvironmentConfigurations conf = libraryService
                 .getDefaultRepositoryEnvironmentConfigurations();
 
-        boolean managed = ( boolean ) conf.getConfigurationMap().get( EnvironmentParameters.MANAGED );
-        assertTrue( managed );
+        Boolean managed = (Boolean) conf.getConfigurationMap().get( EnvironmentParameters.MANAGED );
+        assertNull( managed );
     }
 
     @Test

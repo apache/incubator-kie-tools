@@ -234,7 +234,6 @@ public class LibraryServiceImpl implements LibraryService {
 
     RepositoryEnvironmentConfigurations getDefaultRepositoryEnvironmentConfigurations() {
         final RepositoryEnvironmentConfigurations configuration = new RepositoryEnvironmentConfigurations();
-        configuration.setManaged( true );
         return configuration;
     }
 
