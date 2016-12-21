@@ -249,4 +249,25 @@ public class NewContainerFormPresenterTest {
         assertEquals( "containerAlias", containerSpec.getContainerName() );
         assertEquals( "containerName", containerSpec.getId() );
     }
+
+
+    @Test
+    public void testOnDependencyPathSelectedEventWithDefaultContainerName() {
+        final String path = "org:kie:1.0";
+        final String templateId = "templateId";
+        final GAV gav = new GAV( path );
+        final ServerTemplate serverTemplate = mock( ServerTemplate.class );
+
+        when( serverTemplate.getId() ).thenReturn( templateId );
+        when( m2RepoService.loadGAVFromJar( path ) ).thenReturn( gav );
+        when( specManagementService.validContainerId( templateId, path ) ).thenReturn( path );
+        when( view.getContainerName() ).thenReturn( "" );
+
+        presenter.setServerTemplate( serverTemplate );
+        presenter.asWidget();
+
+        presenter.onDependencyPathSelectedEvent( new DependencyPathSelectedEvent( artifactListWidgetPresenter, path ) );
+
+        verify( view ).setContainerName( path );
+    }
 }

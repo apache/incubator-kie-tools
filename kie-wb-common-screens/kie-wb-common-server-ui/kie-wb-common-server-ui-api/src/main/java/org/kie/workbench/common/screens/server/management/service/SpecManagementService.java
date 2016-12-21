@@ -71,5 +71,8 @@ public interface SpecManagementService {
     boolean isContainerIdValid( final String serverTemplateId,
                                 final String containerId );
 
+    String validContainerId( final String serverTemplateId,
+                             final String containerId );
+
     boolean isNewServerTemplateIdValid( final String serverTemplateId );
 }

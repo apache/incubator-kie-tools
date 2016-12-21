@@ -82,8 +82,30 @@ public class SpecManagementServiceCDI extends RestSpecManagementServiceImpl impl
     }
 
     @Override
+    public String validContainerId( final String serverTemplateId,
+                                    final String containerId ) {
+
+        if ( isContainerIdValid( serverTemplateId, containerId ) ) {
+            return containerId;
+        }
+
+        return validContainerIdWithSuffix( serverTemplateId, containerId );
+    }
+
+    @Override
     public boolean isNewServerTemplateIdValid( String serverTemplateId ) {
         return !getTemplateStorage().exists( serverTemplateId );
+    }
+
+    private String validContainerIdWithSuffix( final String serverTemplateId,
+                                               final String containerId ) {
+        int attemptNumber = 2;
+
+        while ( !isContainerIdValid( serverTemplateId, containerId + "-" + attemptNumber ) ) {
+            attemptNumber++;
+        }
+
+        return containerId + "-" + attemptNumber;
     }
 
     private boolean isValidIdentifier( final String s ) {

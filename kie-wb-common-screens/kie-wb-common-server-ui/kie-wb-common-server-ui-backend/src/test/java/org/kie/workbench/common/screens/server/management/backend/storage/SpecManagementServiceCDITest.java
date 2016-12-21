@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.server.management.backend.storage;
 
 import org.junit.Test;
+import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.server.management.backend.service.SpecManagementServiceCDI;
 
@@ -47,4 +48,47 @@ public class SpecManagementServiceCDITest {
         assertFalse( specManagementService.isContainerIdValid( "templateId", "aa&&aa" ) );
     }
 
+    @Test
+    public void testValidContainerIdWhenContainerIdIsValidInTheFirstAttempt() {
+        final SpecManagementServiceCDI service = spy( new SpecManagementServiceCDI() );
+        final ServerTemplate template = mock( ServerTemplate.class );
+
+        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0" ) ).thenReturn( null );
+        when( service.getServerTemplate( "templateId" ) ).thenReturn( template );
+
+        final String containerId = service.validContainerId( "templateId", "org.jbpm:Evaluation:1.0" );
+
+        assertEquals( containerId, "org.jbpm:Evaluation:1.0" );
+    }
+
+    @Test
+    public void testValidContainerIdWhenContainerIdIsValidInTheSecondAttempt() {
+        final SpecManagementServiceCDI service = spy( new SpecManagementServiceCDI() );
+        final ServerTemplate template = mock( ServerTemplate.class );
+        final ContainerSpec containerSpec = mock( ContainerSpec.class );
+
+        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0" ) ).thenReturn( containerSpec );
+        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0-2" ) ).thenReturn( null );
+        when( service.getServerTemplate( "templateId" ) ).thenReturn( template );
+
+        final String containerId = service.validContainerId( "templateId", "org.jbpm:Evaluation:1.0" );
+
+        assertEquals( containerId, "org.jbpm:Evaluation:1.0-2" );
+    }
+
+    @Test
+    public void testValidContainerIdWhenContainerIdIsValidInTheThirdAttempt() {
+        final SpecManagementServiceCDI service = spy( new SpecManagementServiceCDI() );
+        final ServerTemplate template = mock( ServerTemplate.class );
+        final ContainerSpec containerSpec = mock( ContainerSpec.class );
+
+        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0" ) ).thenReturn( containerSpec );
+        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0-2" ) ).thenReturn( containerSpec );
+        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0-3" ) ).thenReturn( null );
+        when( service.getServerTemplate( "templateId" ) ).thenReturn( template );
+
+        final String containerId = service.validContainerId( "templateId", "org.jbpm:Evaluation:1.0" );
+
+        assertEquals( containerId, "org.jbpm:Evaluation:1.0-3" );
+    }
 }

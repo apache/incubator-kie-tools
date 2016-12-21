@@ -226,6 +226,11 @@ public class NewContainerFormView extends Composite
     }
 
     @Override
+    public void setContainerName( final String value ) {
+        containerName.setText( value );
+    }
+
+    @Override
     public String getContainerName() {
         return containerName.getText();
     }
