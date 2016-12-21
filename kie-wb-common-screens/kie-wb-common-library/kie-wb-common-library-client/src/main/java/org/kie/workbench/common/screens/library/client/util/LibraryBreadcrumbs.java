@@ -15,65 +15,87 @@
  */
 package org.kie.workbench.common.screens.library.client.util;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.widgets.LibraryBreadCrumbToolbarPresenter;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 @Dependent
 public class LibraryBreadcrumbs {
 
     private UberfireBreadcrumbs breadcrumbs;
 
-
     private TranslationService ts;
 
     @Inject
-    public LibraryBreadcrumbs( UberfireBreadcrumbs breadcrumbs,
-                               TranslationService ts ) {
+    public LibraryBreadcrumbs( final UberfireBreadcrumbs breadcrumbs,
+                               final TranslationService ts ) {
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
     }
 
     public LibraryBreadcrumbs() {
-
     }
 
-
-    public void setupToolBar( LibraryBreadCrumbToolbarPresenter breadCrumbToolbarPresenter ) {
+    public void setupToolBar( final LibraryBreadCrumbToolbarPresenter breadCrumbToolbarPresenter ) {
         breadcrumbs.clearBreadCrumbsAndToolBars( LibraryPlaces.LIBRARY_PERSPECTIVE );
-        breadcrumbs
-                .addBreadCrumb( LibraryPlaces.LIBRARY_PERSPECTIVE, ts.getTranslation( LibraryConstants.All_Projects ),
-                                new DefaultPlaceRequest( LibraryPlaces.LIBRARY_SCREEN ) );
+        breadcrumbs.addBreadCrumb( LibraryPlaces.LIBRARY_PERSPECTIVE, ts.getTranslation( LibraryConstants.All_Projects ),
+                                   new DefaultPlaceRequest( LibraryPlaces.LIBRARY_SCREEN ) );
         breadcrumbs.addToolbar( LibraryPlaces.LIBRARY_PERSPECTIVE, breadCrumbToolbarPresenter.getView().getElement() );
     }
 
-    public void setupAuthoringBreadCrumbsForProject( String projectName ) {
+    public void setupAuthoringBreadCrumbsForProject( final String projectName ) {
         breadcrumbs.clearBreadCrumbsAndToolBars( LibraryPlaces.AUTHORING );
         breadcrumbs.addBreadCrumb( LibraryPlaces.AUTHORING, ts.getTranslation( LibraryConstants.All_Projects ),
                                    new DefaultPlaceRequest( LibraryPlaces.LIBRARY_PERSPECTIVE ) );
-        breadcrumbs
-                .addBreadCrumb( LibraryPlaces.AUTHORING, projectName,
-                                new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
-
+        breadcrumbs.addBreadCrumb( LibraryPlaces.AUTHORING, projectName,
+                                   new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
     }
-
 
     public void setupAuthoringBreadcrumbsForExample() {
         breadcrumbs.clearBreadCrumbsAndToolBars( LibraryPlaces.AUTHORING );
         breadcrumbs.addBreadCrumb( LibraryPlaces.AUTHORING, ts.getTranslation( LibraryConstants.All_Projects ),
                                    new DefaultPlaceRequest( LibraryPlaces.LIBRARY_PERSPECTIVE ) );
-
     }
 
     public void setupLibraryBreadCrumbs() {
         breadcrumbs.clearBreadCrumbsAndToolBars( LibraryPlaces.LIBRARY_PERSPECTIVE );
         breadcrumbs.addBreadCrumb( LibraryPlaces.LIBRARY_PERSPECTIVE, ts.getTranslation( LibraryConstants.All_Projects ),
                                    new DefaultPlaceRequest( LibraryPlaces.LIBRARY_PERSPECTIVE ) );
+    }
 
+    public void setupLibraryBreadCrumbsForProject( final String projectName,
+                                                   final String projectPath ) {
+        final Map<String, String> params = new HashMap<>();
+        params.put( "projectName", projectName );
+        params.put( "projectPath", projectPath );
+
+        breadcrumbs.clearBreadCrumbsAndToolBars( LibraryPlaces.LIBRARY_PERSPECTIVE );
+        breadcrumbs.addBreadCrumb( LibraryPlaces.LIBRARY_PERSPECTIVE, ts.getTranslation( LibraryConstants.All_Projects ),
+                                   new DefaultPlaceRequest( LibraryPlaces.LIBRARY_SCREEN ) );
+        breadcrumbs.addBreadCrumb( LibraryPlaces.LIBRARY_PERSPECTIVE, projectName,
+                                   new DefaultPlaceRequest( LibraryPlaces.PROJECT_SCREEN, params ) );
+    }
+
+    public void setupLibraryBreadCrumbsForAsset( final String projectName,
+                                                 final String projectPath,
+                                                 final String assetName ) {
+        final Map<String, String> params = new HashMap<>();
+        params.put( "projectName", projectName );
+        params.put( "projectPath", projectPath );
+
+        breadcrumbs.clearBreadCrumbsAndToolBars( LibraryPlaces.AUTHORING );
+        breadcrumbs.addBreadCrumb( LibraryPlaces.AUTHORING, ts.getTranslation( LibraryConstants.All_Projects ),
+                                   new DefaultPlaceRequest( LibraryPlaces.LIBRARY_SCREEN ) );
+        breadcrumbs.addBreadCrumb( LibraryPlaces.AUTHORING, projectName,
+                                   new DefaultPlaceRequest( LibraryPlaces.PROJECT_SCREEN, params ) );
+        breadcrumbs.addBreadCrumb( LibraryPlaces.AUTHORING, assetName,
+                                   new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
     }
 }

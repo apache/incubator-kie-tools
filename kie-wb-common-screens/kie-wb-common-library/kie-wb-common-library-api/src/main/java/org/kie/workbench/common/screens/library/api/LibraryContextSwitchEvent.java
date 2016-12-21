@@ -16,36 +16,43 @@
 package org.kie.workbench.common.screens.library.api;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.mvp.Command;
 
-@Portable
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 public class LibraryContextSwitchEvent {
 
-    private String uri;
+    private Path resourcePath;
 
     private EventType eventType;
+
+    private Command contextSwitchedCallback;
 
     public LibraryContextSwitchEvent() {
     }
 
-    public LibraryContextSwitchEvent( EventType eventType ) {
+    public LibraryContextSwitchEvent( final EventType eventType ) {
         checkNotNull( "eventType", eventType );
         this.eventType = eventType;
     }
 
-    public LibraryContextSwitchEvent( EventType eventType, String uri ) {
+    public LibraryContextSwitchEvent( final EventType eventType,
+                                      final Path resourcePath,
+                                      final Command contextSwitchedCallback ) {
         checkNotNull( "eventType", eventType );
-        checkNotNull( "uri", uri );
+        checkNotNull( "resourcePath", resourcePath );
         this.eventType = eventType;
-        this.uri = uri;
+        this.resourcePath = resourcePath;
+        this.contextSwitchedCallback = contextSwitchedCallback;
     }
 
-    public String getUri() {
-        return uri;
+    public Path getResourcePath() {
+        return resourcePath;
     }
 
-    public EventType getEventType() {
-        return eventType;
+    public Command getContextSwitchedCallback() {
+        return contextSwitchedCallback;
     }
 
     public boolean isProjectFromExample() {
@@ -56,8 +63,12 @@ public class LibraryContextSwitchEvent {
         return eventType == EventType.PROJECT_SELECTED;
     }
 
+    public boolean isAssetSelected() {
+        return eventType == EventType.ASSET_SELECTED;
+    }
+
     @Portable
     public enum EventType {
-        PROJECT_SELECTED, PROJECT_FROM_EXAMPLE;
+        PROJECT_SELECTED, PROJECT_FROM_EXAMPLE, ASSET_SELECTED
     }
 }

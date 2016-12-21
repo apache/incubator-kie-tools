@@ -88,7 +88,7 @@ public class Classifier {
         return groups;
     }
 
-    private ClientResourceType findResourceType( final FolderItem folderItem ) {
+    public ClientResourceType findResourceType( final FolderItem folderItem ) {
         if ( folderItem.getItem() instanceof Path ) {
             for ( ClientResourceType resourceType : resourceTypes ) {
                 if ( resourceType.accept( (Path) folderItem.getItem() ) ) {

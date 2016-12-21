@@ -45,7 +45,7 @@ public class LibraryConstants {
     public static final String All_Projects = "All_Projects";
 
     @TranslationKey( defaultValue = "" )
-    public static final String Projected_Created = "Project_Created";
+    public static final String Project_Created = "Project_Created";
 
     @TranslationKey( defaultValue = "" )
     public static final String EmptyLibraryScreen = "Empty_Library_Screen";

@@ -23,6 +23,8 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryBreadcrumbs;
 import org.kie.workbench.common.screens.library.client.util.LibraryDocks;
@@ -50,7 +52,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@WorkbenchScreen( identifier = LibraryPlaces.LIBRARY_SCREEN )
+@WorkbenchScreen( identifier = LibraryPlaces.LIBRARY_SCREEN,
+        owningPerspective = LibraryPerspective.class )
 public class LibraryScreen {
 
     public interface View extends UberElement<LibraryScreen> {
@@ -60,41 +63,56 @@ public class LibraryScreen {
         void addProject( String project, Command details, Command select );
 
         void clearFilterText();
-
-        void noRightsPopup();
     }
 
-    @Inject
     private View view;
 
-    @Inject
     private LibraryBreadCrumbToolbarPresenter breadCrumbToolbarPresenter;
 
-    @Inject
     private LibraryDocks libraryDocks;
 
-    @Inject
     private PlaceManager placeManager;
 
-    @Inject
     private LibraryBreadcrumbs libraryBreadcrumbs;
 
-    @Inject
     private Event<LibraryContextSwitchEvent> libraryContextSwitchEvent;
 
-    @Inject
     private SessionInfo sessionInfo;
 
-    @Inject
     private AuthorizationManager authorizationManager;
 
-    @Inject
     private TranslationService ts;
 
-    @Inject
+    private Event<ProjectDetailEvent> projectDetailEvent;
+
     Caller<LibraryService> libraryService;
 
     LibraryInfo libraryInfo;
+
+    @Inject
+    public LibraryScreen( final View view,
+                          final LibraryBreadCrumbToolbarPresenter breadCrumbToolbarPresenter,
+                          final LibraryDocks libraryDocks,
+                          final PlaceManager placeManager,
+                          final LibraryBreadcrumbs libraryBreadcrumbs,
+                          final Event<LibraryContextSwitchEvent> libraryContextSwitchEvent,
+                          final SessionInfo sessionInfo,
+                          final AuthorizationManager authorizationManager,
+                          final TranslationService ts,
+                          final Event<ProjectDetailEvent> projectDetailEvent,
+                          final Caller<LibraryService> libraryService ) {
+        this.view = view;
+        this.breadCrumbToolbarPresenter = breadCrumbToolbarPresenter;
+        this.libraryDocks = libraryDocks;
+        this.placeManager = placeManager;
+        this.libraryBreadcrumbs = libraryBreadcrumbs;
+        this.libraryContextSwitchEvent = libraryContextSwitchEvent;
+        this.sessionInfo = sessionInfo;
+        this.authorizationManager = authorizationManager;
+        this.ts = ts;
+        this.projectDetailEvent = projectDetailEvent;
+        this.libraryService = libraryService;
+    }
 
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
@@ -112,12 +130,13 @@ public class LibraryScreen {
                 }
             }
         } ).getDefaultLibraryInfo();
+
+        setupToolBar();
     }
 
     private void loadLibrary( LibraryInfo libraryInfo ) {
         LibraryScreen.this.libraryInfo = libraryInfo;
         setupProjects( libraryInfo.getProjects() );
-        setupToolBar();
         setupOus( libraryInfo );
         libraryDocks.refresh();
     }
@@ -127,11 +146,9 @@ public class LibraryScreen {
     }
 
     private void setupOus( LibraryInfo libraryInfo ) {
-
         breadCrumbToolbarPresenter.init( ou -> {
             selectOrganizationUnit( ou );
         }, libraryInfo );
-
     }
 
     private void updateLibrary( String ou ) {
@@ -166,18 +183,12 @@ public class LibraryScreen {
     }
 
 
-    private Command selectCommand( Project project ) {
+    Command selectCommand( Project project ) {
         return () -> {
-            if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
+            placeManager.goTo( LibraryPlaces.PROJECT_SCREEN );
+            projectDetailEvent.fire( new ProjectDetailEvent( project ) );
 
-                libraryBreadcrumbs.setupAuthoringBreadCrumbsForProject( project.getProjectName() );
-                placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
-                libraryContextSwitchEvent
-                        .fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_SELECTED,
-                                                              project.getIdentifier() ) );
-            } else {
-                view.noRightsPopup();
-            }
+            detailsCommand( project ).execute();
         };
     }
 
@@ -186,7 +197,7 @@ public class LibraryScreen {
         return authorizationManager.authorize( resourceRef, sessionInfo.getIdentity() );
     }
 
-    private Command detailsCommand( Project selectedProject ) {
+    Command detailsCommand( Project selectedProject ) {
         return () -> {
             libraryDocks.handle( selectedProject );
         };

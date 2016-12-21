@@ -17,7 +17,9 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
@@ -30,13 +32,16 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -76,6 +81,9 @@ public class NewProjectScreenTest {
     LibraryMonitor libraryMonitor;
 
     @Mock
+    PlaceManager placeManager;
+
+    @Mock
     private OrganizationalUnit ou1;
 
     @Mock
@@ -89,7 +97,7 @@ public class NewProjectScreenTest {
         libraryServiceCaller = new CallerMock<>( libraryService );
         newProjectScreen.libraryService = libraryServiceCaller;
 
-        doNothing().when( newProjectScreen ).gotoAuthoring( any( KieProject.class ) );
+        doNothing().when( newProjectScreen ).goToProject( any( KieProject.class ) );
     }
 
     @Test
@@ -109,6 +117,20 @@ public class NewProjectScreenTest {
         newProjectScreen.getSuccessCallback().callback( null );
 
         verify( libraryMonitor ).setThereIsAtLeastOneProjectAccessible( true );
+    }
+
+    @Test
+    public void openProjectTest() {
+        final KieProject project = mock( KieProject.class );
+        doReturn( "projectName" ).when( project ).getProjectName();
+        doReturn( "projectPath" ).when( project ).getIdentifier();
+
+        newProjectScreen.openProject( project );
+
+        final Map<String, String> params = new HashMap<>();
+        params.put( "projectName", project.getProjectName() );
+        params.put( "projectPath", project.getIdentifier() );
+        verify( placeManager ).goTo( new DefaultPlaceRequest( LibraryPlaces.PROJECT_SCREEN, params ) );
     }
 
     private LibraryInfo getDefaultLibraryMock() {

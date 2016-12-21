@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.impl;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -28,15 +29,19 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryPreferences;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +74,15 @@ public class LibraryServiceImplTest {
 
     @Mock
     private SessionInfo sessionInfo;
+
+    @Mock
+    private ExplorerServiceHelper explorerServiceHelper;
+
+    @Mock
+    private KieProjectService projectService;
+
+    @Mock
+    private IOService ioService;
 
     @Mock
     private OrganizationalUnit ou1;
@@ -110,7 +124,7 @@ public class LibraryServiceImplTest {
         projectsMock.add( mock( Project.class ) );
         projectsMock.add( mock( Project.class ) );
 
-        libraryService = new LibraryServiceImpl( ouService, repositoryService, kieProjectService, preferences, authorizationManager, sessionInfo );
+        libraryService = new LibraryServiceImpl( ouService, repositoryService, kieProjectService, preferences, authorizationManager, sessionInfo, explorerServiceHelper, projectService, ioService );
     }
 
     @Test
@@ -314,5 +328,18 @@ public class LibraryServiceImplTest {
 
         verify( kieProjectService, times( 1 ) ).getProjects( any( Repository.class ), anyString() );
         verify( kieProjectService ).getProjects( repo2Default, "repo2-branch1" );
+    }
+
+    @Test( expected = IllegalArgumentException.class )
+    public void getNullProjectAssetsTest() {
+        libraryService.getProjectAssets( null );
+    }
+
+    @Test
+    public void getProjectAssetsTest() {
+        libraryService.getProjectAssets( mock( Project.class ) );
+
+        verify( projectService ).resolveDefaultPackage( any( Project.class ) );
+        verify( explorerServiceHelper ).getAssetsRecursively( any( Package.class ), any( ActiveOptions.class ) );
     }
 }

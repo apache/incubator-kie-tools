@@ -47,6 +47,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
@@ -55,6 +56,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.*;
 
@@ -679,8 +681,7 @@ public abstract class BaseViewPresenter
                                       path );
                 setupActiveContextFor( path );
             }
-        } )
-                .get( event.getUri() );
+        } ).get( event.getUri() );
     }
 
     private void openBestSuitedScreen( final String eventType,
@@ -718,19 +719,24 @@ public abstract class BaseViewPresenter
     }
 
     void setupActiveContextFor( final Path path ) {
+        setupActiveContextFor( path, null );
+    }
 
+    void setupActiveContextFor( final Path path,
+                                final Command activeContextLoadedCallback ) {
         explorerService.call( new RemoteCallback<URIStructureExplorerModel>() {
             @Override
             public void callback( final URIStructureExplorerModel model ) {
                 activeContextManager.initActiveContext( model.getOrganizationalUnit(),
                                                         model.getRepository(),
-                                                        model.getRepository()
-                                                                .getDefaultBranch(),
+                                                        model.getRepository().getDefaultBranch(),
                                                         model.getProject() );
-            }
-        } )
-                .getURIStructureExplorerModel( path );
 
+                if ( activeContextLoadedCallback != null ) {
+                    activeContextLoadedCallback.execute();
+                }
+            }
+        } ).getURIStructureExplorerModel( path );
     }
 
     public void initialiseViewForActiveContext( ProjectContext context ) {
@@ -782,16 +788,18 @@ public abstract class BaseViewPresenter
         return copyPopUpPresenter.getView();
     }
 
+    @Inject
+    private UberfireDocks uberfireDocks;
+
     public void onLibraryContextSwitchEvent( @Observes final LibraryContextSwitchEvent event ) {
-        if ( event.isProjectSelected() ) {
-            vfsService.call( new RemoteCallback<Path>() {
-                @Override
-                public void callback( Path path ) {
-                    placeManager.goTo( "projectScreen" );
-                    setupActiveContextFor( path );
+        if ( event.isProjectSelected() || event.isAssetSelected() ) {
+            setupActiveContextFor( event.getResourcePath(), () -> {
+                placeManager.goTo( event.getResourcePath() );
+
+                if ( event.getContextSwitchedCallback() != null ) {
+                    event.getContextSwitchedCallback().execute();
                 }
-            } )
-                    .get( event.getUri() );
+            } );
         }
     }
 }

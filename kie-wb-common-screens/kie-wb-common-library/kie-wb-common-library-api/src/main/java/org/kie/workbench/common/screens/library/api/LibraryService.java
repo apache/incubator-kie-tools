@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.screens.library.api;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.services.shared.project.KieProject;
-
-import java.util.Collection;
 
 @Remote
 public interface LibraryService {
@@ -36,4 +39,6 @@ public interface LibraryService {
     KieProject newProject( String projectName, String selectOu, String baseURL );
 
     Boolean thereIsAProjectInTheWorkbench();
+
+    List<FolderItem> getProjectAssets( Project project );
 }

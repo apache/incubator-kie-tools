@@ -16,6 +16,8 @@
 package org.kie.workbench.common.screens.explorer.backend.server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemOperation;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -88,6 +91,9 @@ public class ExplorerServiceHelperTest {
     private Package pkg;
 
     @Mock
+    private Package childPkg;
+
+    @Mock
     private Path srcPath;
 
     @Mock
@@ -140,16 +146,16 @@ public class ExplorerServiceHelperTest {
             }
         } );
 
-        helper = new ExplorerServiceHelper( projectService,
-                                            folderListingResolver,
-                                            ioService,
-                                            ioServiceConfig,
-                                            lockService,
-                                            metadataService,
-                                            userServices,
-                                            deleteService,
-                                            renameService,
-                                            copyService );
+        helper = spy( new ExplorerServiceHelper( projectService,
+                                                 folderListingResolver,
+                                                 ioService,
+                                                 ioServiceConfig,
+                                                 lockService,
+                                                 metadataService,
+                                                 userServices,
+                                                 deleteService,
+                                                 renameService,
+                                                 copyService ) );
     }
 
     @Test
@@ -259,6 +265,31 @@ public class ExplorerServiceHelperTest {
         thenOperationIsRestricted( FolderItemOperation.RENAME, restrictedOperations );
         thenOperationIsRestricted( FolderItemOperation.COPY, restrictedOperations );
         thenThereAreNOperationsRestricted( 3, restrictedOperations );
+    }
+
+    @Test
+    public void getAssetsRecursivelyTest() {
+        final FolderItem folderItem1 = mock( FolderItem.class );
+        doReturn( FolderItemType.FOLDER ).when( folderItem1 ).getType();
+        final FolderItem folderItem2 = mock( FolderItem.class );
+        doReturn( FolderItemType.FILE ).when( folderItem2 ).getType();
+        final FolderItem folderItem3 = mock( FolderItem.class );
+        doReturn( FolderItemType.FILE ).when( folderItem3 ).getType();
+
+        final List<FolderItem> pkgItems = Arrays.asList( folderItem1, folderItem2 );
+        final List<FolderItem> childPkgItems = Arrays.asList( folderItem3 );
+
+        doReturn( "pkg" ).when( pkg ).getRelativeCaption();
+        doReturn( "childPkg" ).when( childPkg ).getRelativeCaption();
+        doReturn( new HashSet<Package>() {{ add( childPkg ); }} ).when( projectService ).resolvePackages( pkg );
+        doReturn( pkgItems ).when( helper ).getItems( eq( pkg ), any( ActiveOptions.class ) );
+        doReturn( childPkgItems ).when( helper ).getItems( eq( childPkg ), any( ActiveOptions.class ) );
+
+        final List<FolderItem> assets = helper.getAssetsRecursively( pkg, new ActiveOptions() );
+
+        assertEquals( 2, assets.size() );
+        assertTrue( assets.contains( folderItem3 ) );
+        assertTrue( assets.contains( folderItem2 ) );
     }
 
     private void givenThatOperationHasRestrictions( FolderItemOperation operation ) {

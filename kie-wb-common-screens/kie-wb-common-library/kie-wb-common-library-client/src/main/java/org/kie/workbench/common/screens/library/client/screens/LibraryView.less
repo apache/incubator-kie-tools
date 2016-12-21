@@ -1,0 +1,271 @@
+@import "/org/uberfire/client/views/static/uberfire-variables.less";
+
+.library {
+
+    background-color: @color-pf-black-150;
+    height: 100%;
+
+    //Status colors
+    .status-ok-kie {
+        color: @color-pf-light-green;
+    }
+
+    //Circle Icons
+    // Includes :hover
+    .circle-icon-kie {
+        background-color: @alert-info-bg;
+        font-size: 15px;
+        font-weight: 400;
+        height: 2.5em;
+        line-height: 2.5em;
+        margin: .5em;
+        width: 2.5em;
+        -webkit-border-radius:50%;
+        -moz-border-radius:50%;
+        border-radius:50%;
+        &:hover {
+            background-color: @color-pf-black-600;
+            color: @color-pf-white;
+        }
+    }
+
+    // Toolbars
+    .row-toolbar-kie {
+        padding: .25em;
+        background-color: @color-pf-white;
+        border-collapse: collapse;
+    }
+
+    .toolbar-pf {
+        padding: .5em 1em;
+    }
+
+    .toolbar-kie {
+        display:flex;
+    }
+
+    .toolbar-pf .form-group,
+    .toolbar-pf .btn-group {
+        margin-bottom: 0;
+        display: flex;
+    }
+
+    .toolbar-pf .form-group:last-of-type {
+        border-right: none;
+    }
+
+    // Toolbar has a title
+    .toolbar-title-kie {
+        font-size: 2em;
+        margin-right: 1em;
+    }
+
+    // Toolbar has other items on the right
+    .toolbar-right-kie {
+        float:right;
+    }
+
+    .toolbar-element-kie {
+        display: inline-block;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .dropdown-minimal-kie {
+        background: none;
+        border: none;
+        box-shadow: none;
+    }
+
+    .toolbar-btn-group-kie {
+        float:right;
+        margin-top: .5em;
+    }
+
+    // TOOLBAR
+    // move the button group to the right on narrower screens
+    .btn-group-kie-right {
+        float:right;
+    }
+
+    //so the placeholder text doesn't get cut off
+    .toolbar-pf-filter {
+        min-width: 18em;
+    }
+
+    // Title for toolbar inside content section
+    .toolbar-data-title-kie {
+        display:table-cell;
+        float:left;
+        font-size: 1.5em;
+        margin-right: 1em;
+    }
+
+    // Add space to left of kebab; have to override specificity
+    .dropdown-kebab-pf {
+        margin-left: 1em !important;
+    }
+
+    // add some vertical space if toolbar pieces are stacked
+    .input-group-kie {
+        margin-bottom: .5em;
+    }
+
+    // switch to flex display for toolbar
+    @media (min-width: @screen-sm-min) {
+        // Use flex to vertically center toolbar items
+        .toolbar-pf-actions {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        // Push the button group to the right when flexed
+        .btn-group-kie-right {
+            margin-left: auto;
+        }
+        //remove the margin needed when items were stacked
+        .input-group-kie {
+            margin-bottom: auto;
+        }
+    }
+
+    // Page Content
+    .page-content-kie {
+        background-color: @well-bg;
+        padding-bottom: 1em;
+        padding-top: 1em;
+    }
+
+    .main-content-kie {
+        box-shadow: 0 1px 1px fade(@color-pf-black, 17.5%);
+    }
+
+    // Blank slate
+    .blank-slate-pf {
+        background-color: @color-pf-white;
+        border: 0;
+    }
+
+    // Makes a big card-looking button
+    .button-card-kie {
+        background-color: inherit;
+        box-shadow: none;
+        min-width: 10em;
+        padding: 1em;
+        &:hover .circle-icon-kie {
+            background-color: @color-pf-black-600;
+            color: @color-pf-white;
+        }
+
+    }
+
+    // Add this to the .fa-code-fork icon to make the process-flow icon
+    .fa-process-flow-kie {
+        transform: rotate(90deg);
+    }
+
+    // Add this to the .fa-external-link-suqare icon to make the process-flow icon
+    .fa-imported-kie {
+        transform: rotate(180deg);
+    }
+
+    // A link to the right side of a card's title
+    .card-title-link-kie {
+        margin-left: .5em;
+    }
+
+    .card-pf-heading-link-kie {
+        padding: 20px 0;
+    }
+
+    .card-pf-body {
+        margin: auto;
+    }
+
+    .card-pf-footer {
+        padding-bottom: 20px;
+    }
+
+    //Change default dl to have a left justified dd
+    .name-list-kie dt {
+        text-align: left;
+        font-weight:normal;
+    }
+
+    // Adds a checkbox icon before
+    // Used for indicating status rather than clickable checkboxes
+    .checked-kie {
+        &:before {
+            content: @fa-var-check-square-o;
+            font-family: FontAwesome;
+            margin-right: .25em;
+        }
+    }
+
+    .unchecked-kie {
+        &:before {
+            content: @fa-var-square-o;
+            font-family: FontAwesome;
+            margin-right: .25em;
+        }
+    }
+
+    // Adjust width of list-view items to make more space for the description and heading
+    @media (min-width: @screen-md-min) {
+        .list-view-pf-description {
+            width: 85%;
+        }
+        .list-view-pf-additional-info {
+            flex: 0 0 auto; // it covers whats left from summary
+            float: left; // IE9 fallback
+            width: 15%; // IE9 fallback
+        }
+        .list-view-pf .list-group-item-heading {
+            -ms-flex: 1 0 calc(~'70% - 20px'); // IE10 fallback
+            flex:     1 0 calc(~'70% - 20px');
+            width: calc(~'70% - 20px'); // IE9 fallback
+        }
+        .list-view-pf .list-group-item-text {
+            -ms-flex: 0 0 calc(~'30% - 20px'); // IE10 fallback
+            flex:     0 0 calc(~'30% - 20px');
+            width: calc(~'30% - 20px'); // IE9 fallback
+        }
+    }
+
+    //selector length needed to override specificity
+    // Adjust size of the circle so that the icon fits nicely
+    .list-view-pf-left .fa.list-view-pf-icon-sm {
+        height: 2em;
+        line-height: 2em;
+        width: 2em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .list-view-pf-left .fa.list-view-pf-icon-sm img {
+        width: 1em;
+        height: auto;
+    }
+
+    .toolbar-pf-actions {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    /* hack by ederign */
+    .dropdown-kebab-pf {
+        margin-left: 0 !important;
+    }
+
+    .bold-font {
+        font-weight: bold;
+        /* i cannot override flex size check with designers*/
+    }
+
+    .normal-font {
+        font-weight: normal;
+        /* i cannot override flex size check with designers*/
+    }
+}

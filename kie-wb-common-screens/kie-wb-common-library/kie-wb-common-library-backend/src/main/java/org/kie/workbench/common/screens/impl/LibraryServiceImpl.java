@@ -17,13 +17,16 @@
 package org.kie.workbench.common.screens.impl;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -32,14 +35,21 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
+import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryPreferences;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped
@@ -57,6 +67,12 @@ public class LibraryServiceImpl implements LibraryService {
 
     private SessionInfo sessionInfo;
 
+    private ExplorerServiceHelper explorerServiceHelper;
+
+    private KieProjectService projectService;
+
+    private IOService ioService;
+
     public LibraryServiceImpl() {
     }
 
@@ -66,13 +82,19 @@ public class LibraryServiceImpl implements LibraryService {
                                KieProjectService kieProjectService,
                                LibraryPreferences preferences,
                                AuthorizationManager authorizationManager,
-                               SessionInfo sessionInfo ) {
+                               SessionInfo sessionInfo,
+                               ExplorerServiceHelper explorerServiceHelper,
+                               KieProjectService projectService,
+                               @Named("ioStrategy") IOService ioService ) {
         this.ouService = ouService;
         this.repositoryService = repositoryService;
         this.kieProjectService = kieProjectService;
         this.preferences = preferences;
         this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
+        this.explorerServiceHelper = explorerServiceHelper;
+        this.projectService = projectService;
+        this.ioService = ioService;
     }
 
     @Override
@@ -82,16 +104,10 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public OrganizationalUnit getDefaultOrganizationalUnit() {
-        Collection<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
+        final Collection<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
+        final LibraryPreferences preferences = getPreferences();
 
-        LibraryPreferences preferences = getPreferences();
-
-        Optional<OrganizationalUnit> defaultOU = getOU( preferences.getOuIdentifier(), organizationalUnits );
-        if ( !defaultOU.isPresent() ) {
-            return createDefaultOU();
-        }
-
-        return defaultOU.get();
+        return getOU( preferences.getOuIdentifier(), organizationalUnits ).orElseGet( this::createDefaultOU );
     }
 
     private Optional<OrganizationalUnit> getOU( String ouIdentifier,
@@ -168,6 +184,13 @@ public class LibraryServiceImpl implements LibraryService {
                 .flatMap( repository -> repository.getBranches().stream()
                         .map( branch -> kieProjectService.getProjects( repository, branch ) ) )
                 .anyMatch( projects -> projects != null && !projects.isEmpty() );
+    }
+
+    @Override
+    public List<FolderItem> getProjectAssets( final Project project ) {
+        checkNotNull( "project", project );
+        final Package defaultPackage = projectService.resolveDefaultPackage( project );
+        return explorerServiceHelper.getAssetsRecursively( defaultPackage, new ActiveOptions( Option.BUSINESS_CONTENT ) );
     }
 
     POM createPOM( String projectName,

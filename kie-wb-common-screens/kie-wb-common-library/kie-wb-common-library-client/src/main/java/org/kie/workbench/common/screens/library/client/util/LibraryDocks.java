@@ -84,6 +84,7 @@ public class LibraryDocks {
 
     public void refresh() {
         currentProject = null;
+        hide();
     }
 
     public void reloadProjectDetail( @Observes UberfireDocksInteractionEvent event ) {

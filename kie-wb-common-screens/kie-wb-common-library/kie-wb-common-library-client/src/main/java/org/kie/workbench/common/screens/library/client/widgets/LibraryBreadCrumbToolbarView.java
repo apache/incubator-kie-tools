@@ -27,7 +27,6 @@ public class LibraryBreadCrumbToolbarView implements LibraryBreadCrumbToolbarPre
 
     private LibraryBreadCrumbToolbarPresenter presenter;
 
-
     @DataField
     @Inject
     Label ouLabel;
@@ -65,7 +64,6 @@ public class LibraryBreadCrumbToolbarView implements LibraryBreadCrumbToolbarPre
     public void setOuLabel( String label ) {
         ouLabel.setTextContent( label+ ":" );
     }
-
 
     private Option createOption( String ou ) {
         Option option = ( Option ) document.createElement( "option" );

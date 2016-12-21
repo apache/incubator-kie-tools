@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -57,6 +59,7 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 
 import static java.util.Collections.*;
+import static java.util.stream.Collectors.toList;
 
 public class ExplorerServiceHelper {
 
@@ -226,6 +229,18 @@ public class ExplorerServiceHelper {
         return new FolderListing( toFolderItem( nioPath ),
                                   folderItems,
                                   getPathSegments( basePath ) );
+    }
+
+    public List<FolderItem> getAssetsRecursively( final Package pkg,
+                                                  final ActiveOptions options ) {
+        return getItems( pkg, options ).stream().flatMap( ( FolderItem item ) -> {
+            if ( item.getType().equals( FolderItemType.FOLDER ) ) {
+                final Set<Package> childPackages = projectService.resolvePackages( pkg );
+                return childPackages.stream().flatMap( childPkg -> getAssetsRecursively( childPkg, options ).stream() );
+            } else {
+                return Stream.of( item );
+            }
+        } ).collect( Collectors.toList() );
     }
 
     public List<FolderItem> getItems( final Package pkg,

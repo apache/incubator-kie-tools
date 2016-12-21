@@ -17,26 +17,40 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryBreadcrumbs;
 import org.kie.workbench.common.screens.library.client.util.LibraryDocks;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.LibraryBreadCrumbToolbarPresenter;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import javax.enterprise.event.Event;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -45,16 +59,14 @@ import static org.mockito.Mockito.*;
 public class LibraryScreenTest {
 
     @Mock
-    LibraryScreen.View view;
-
-    @InjectMocks
-    LibraryScreen libraryScreen;
+    private LibraryScreen.View view;
 
     @Mock
-    LibraryService libraryService;
+    private LibraryService libraryService;
+    private Caller<LibraryService> libraryServiceCaller;
 
     @Mock
-    PlaceManager placeManager;
+    private PlaceManager placeManager;
 
     @Mock
     private OrganizationalUnit defaultOU1;
@@ -71,7 +83,22 @@ public class LibraryScreenTest {
     @Mock
     private LibraryDocks libraryDocks;
 
-    CallerMock<LibraryService> libraryServiceCaller;
+    @Mock
+    private SessionInfo sessionInfo;
+
+    @Mock
+    private AuthorizationManager authorizationManager;
+
+    @Mock
+    private TranslationService ts;
+
+    @Mock
+    private Event<LibraryContextSwitchEvent> libraryContextSwitchEventEvent;
+
+    @Mock
+    private Event<ProjectDetailEvent> projectDetailEventEvent;
+
+    private LibraryScreen libraryScreen;
 
     private String ouAlias;
     private Project proj1 = mock( Project.class );
@@ -81,11 +108,22 @@ public class LibraryScreenTest {
     @Before
     public void setup() {
         libraryServiceCaller = new CallerMock<>( libraryService );
-        libraryScreen.libraryService = libraryServiceCaller;
         when( libraryService.getDefaultLibraryInfo() ).thenReturn( getDefaultLibraryMock() );
         when( proj1.getProjectName() ).thenReturn( "a" );
         when( proj2.getProjectName() ).thenReturn( "b" );
         when( proj3.getProjectName() ).thenReturn( "c" );
+
+        libraryScreen = spy( new LibraryScreen( view,
+                                                breadCrumbToolbarPresenter,
+                                                libraryDocks,
+                                                placeManager,
+                                                libraryBreadcrumbs,
+                                                libraryContextSwitchEventEvent,
+                                                sessionInfo,
+                                                authorizationManager,
+                                                ts,
+                                                projectDetailEventEvent,
+                                                libraryServiceCaller ) );
     }
 
     @Test
@@ -119,6 +157,22 @@ public class LibraryScreenTest {
 
         verify( placeManager ).goTo( LibraryPlaces.NEW_PROJECT_PERSPECTIVE );
 
+    }
+
+    @Test
+    public void selectCommand() {
+        final Command detailsCommand = mock( Command.class );
+        doReturn( detailsCommand ).when( libraryScreen ).detailsCommand( any( Project.class ) );
+
+        final Project project = mock( Project.class );
+        doReturn( "projectName" ).when( project ).getProjectName();
+        doReturn( "projectPath" ).when( project ).getIdentifier();
+
+        libraryScreen.selectCommand( project ).execute();
+
+        verify( placeManager ).goTo( LibraryPlaces.PROJECT_SCREEN );
+        verify( projectDetailEventEvent ).fire( any( ProjectDetailEvent.class ) );
+        verify( detailsCommand ).execute();
     }
 
     private LibraryInfo getDefaultLibraryMock() {

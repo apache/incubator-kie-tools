@@ -36,6 +36,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explor
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
+import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
@@ -59,6 +60,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -343,19 +345,41 @@ public class BaseViewPresenterTest {
 
     @Test
     public void testOnLibraryContextSwitchEvent() {
-
         LibraryContextSwitchEvent event = mock( LibraryContextSwitchEvent.class );
-        BaseViewPresenter spy = spy( presenter );
+        BaseViewPresenter baseViewPresenter = spy( presenter );
+        Path path = mock( Path.class );
+        Command command = mock( Command.class );
+        URIStructureExplorerModel uriStructureExplorerModel = mock( URIStructureExplorerModel.class );
+
+        doReturn( mock( Repository.class ) ).when( uriStructureExplorerModel ).getRepository();
+        doReturn( uriStructureExplorerModel ).when( explorerServiceActual ).getURIStructureExplorerModel( any( Path.class ) );
 
         when( event.isProjectSelected() ).thenReturn( true );
-        when( event.getUri() ).thenReturn( "uri" );
-        doNothing().when( spy ).setupActiveContextFor( any() );
+        when( event.getResourcePath() ).thenReturn( path );
+        when( event.getContextSwitchedCallback() ).thenReturn( command );
 
-        spy.onLibraryContextSwitchEvent( event );
+        baseViewPresenter.onLibraryContextSwitchEvent( event );
 
-        verify( placeManager ).goTo( BaseViewPresenter.PROJECT_SCREEN );
-        verify( spy ).setupActiveContextFor( any() );
+        verify( baseViewPresenter ).setupActiveContextFor( eq( path ), any( Command.class ) );
+        verify( placeManager ).goTo( path );
+        verify( command ).execute();
+    }
 
+    @Test
+    public void testOnLibraryContextSwitchEventWithInvalidType() {
+        LibraryContextSwitchEvent event = mock( LibraryContextSwitchEvent.class );
+        BaseViewPresenter baseViewPresenter = spy( presenter );
+        Path path = mock( Path.class );
+        Command command = mock( Command.class );
+
+        when( event.isProjectFromExample() ).thenReturn( true );
+        when( event.getContextSwitchedCallback() ).thenReturn( command );
+
+        baseViewPresenter.onLibraryContextSwitchEvent( event );
+
+        verify( baseViewPresenter, never() ).setupActiveContextFor( any( Path.class ), any( Command.class ) );
+        verify( placeManager, never() ).goTo( any( Path.class ) );
+        verify( command, never() ).execute();
     }
 
     private void copyPopUpPresenterShowMock() {

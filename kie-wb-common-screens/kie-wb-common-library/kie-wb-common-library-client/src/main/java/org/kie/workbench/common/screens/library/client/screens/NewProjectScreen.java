@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -30,7 +32,6 @@ import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.InfoPopup;
 import org.kie.workbench.common.screens.library.client.util.LibraryBreadcrumbs;
 import org.kie.workbench.common.screens.library.client.util.LibraryParameters;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -45,10 +46,8 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.model.ActivityResourceType;
 
 @WorkbenchScreen( identifier = "NewProjectScreen" )
 public class NewProjectScreen {
@@ -187,22 +186,13 @@ public class NewProjectScreen {
             libraryMonitor.setThereIsAtLeastOneProjectAccessible( true );
             hideLoadingBox();
             notifySuccess();
-            gotoAuthoring( project );
+            goToProject( project );
         };
     }
 
-    void gotoAuthoring( KieProject project ) {
-        if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
-            setupBreadCrumbs( project );
-            openProject( project );
-        } else {
-            InfoPopup.generate( ts.getTranslation( LibraryConstants.Error_NoAccessRights ) );
-        }
-    }
-
-    boolean hasAccessToPerspective( String perspectiveId ) {
-        ResourceRef resourceRef = new ResourceRef( perspectiveId, ActivityResourceType.PERSPECTIVE );
-        return authorizationManager.authorize( resourceRef, sessionInfo.getIdentity() );
+    void goToProject( KieProject project ) {
+        setupBreadCrumbs( project );
+        openProject( project );
     }
 
     private void setupBreadCrumbs( KieProject project ) {
@@ -210,16 +200,16 @@ public class NewProjectScreen {
     }
 
     private void notifySuccess() {
-        notificationEvent.fire( new NotificationEvent( ts.getTranslation( LibraryConstants.Projected_Created ) ) );
+        notificationEvent.fire( new NotificationEvent( ts.getTranslation( LibraryConstants.Project_Created ),
+                                                       NotificationEvent.NotificationType.SUCCESS ) );
     }
 
-    private void openProject( KieProject project ) {
-        placeManager.goTo( LibraryPlaces.AUTHORING );
-        libraryContextSwitchEvent
-                .fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_SELECTED,
-                                                      project.getIdentifier() ) );
+    void openProject( KieProject project ) {
+        final Map<String, String> params = new HashMap<>();
+        params.put( "projectName", project.getProjectName() );
+        params.put( "projectPath", project.getIdentifier() );
+        placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.PROJECT_SCREEN, params ) );
     }
-
 
     @PostConstruct
     public void setup() {
