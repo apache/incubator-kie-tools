@@ -190,18 +190,29 @@ public class TreeItem extends Composite {
         this.userObject = userObject;
     }
 
+    public Type getType() {
+        return this.type;
+    }
+
     public TreeItem addItem( final Type type,
                              final String value ) {
         if ( notFolder() ) {
             return null;
         }
 
-        final TreeItem child = new TreeItem( type, value );
+        final TreeItem child = makeChild( type,
+                                          value );
         content.add( child );
         child.setTree( tree );
         child.setParent( this );
 
         return child;
+    }
+
+    protected TreeItem makeChild( final Type type,
+                                  final String value ) {
+        return new TreeItem( type,
+                             value );
     }
 
     public void removeItems() {
