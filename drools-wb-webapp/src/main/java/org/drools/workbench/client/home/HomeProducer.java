@@ -24,7 +24,11 @@ import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.screens.home.model.HomeModel;
 import org.kie.workbench.common.screens.home.model.ModelUtils;
 import org.kie.workbench.common.screens.home.model.SectionEntry;
+import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.ConditionalPlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static org.uberfire.workbench.model.ActivityResourceType.*;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
@@ -40,6 +44,9 @@ public class HomeProducer {
     @Inject
     private PlaceManager placeManager;
 
+    @Inject
+    protected LibraryMonitor libraryMonitor;
+
     @PostConstruct
     public void init() {
         final String url = GWT.getModuleBaseURL();
@@ -53,8 +60,10 @@ public class HomeProducer {
 
         final SectionEntry s1 = ModelUtils.makeSectionEntry( "Discover and Author:" );
 
+        final DefaultPlaceRequest libraryPlaceRequest = new DefaultPlaceRequest( LIBRARY );
+        final PlaceRequest authoringPlaceRequest = new ConditionalPlaceRequest( AUTHORING ).when( p -> libraryMonitor.thereIsAtLeastOneProjectAccessible() ).orElse( libraryPlaceRequest );
         s1.addChild( ModelUtils.makeSectionEntry( "Author",
-                () -> placeManager.goTo( AUTHORING ),
+                () -> placeManager.goTo( authoringPlaceRequest ),
                 AUTHORING, PERSPECTIVE ) );
 
         model.addSection( s1 );
