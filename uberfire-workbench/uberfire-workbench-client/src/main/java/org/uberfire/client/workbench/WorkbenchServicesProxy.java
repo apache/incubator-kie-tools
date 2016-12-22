@@ -32,10 +32,10 @@ public interface WorkbenchServicesProxy {
     void loadPerspective( final String name,
                           final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand );
 
-    public void loadPerspectives( final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand );
+    void loadPerspectives( final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand );
 
     void removePerspectiveState( final String perspectiveId,
-            final Command callback );
+                                 final Command callback );
 
     void removePerspectiveStates( final Command doWhenFinished );
 
@@ -43,4 +43,7 @@ public interface WorkbenchServicesProxy {
 
     void loadSplashScreenFilter( final String name,
                                  final ParameterizedCommand<SplashScreenFilter> parameterizedCommand );
+
+    void isWorkbenchOnCluster( final ParameterizedCommand<Boolean> parameterizedCommand );
+
 }

@@ -49,7 +49,7 @@ public class WorkbenchServicesProxyClientImpl implements WorkbenchServicesProxy 
 
     @Override
     public void removePerspectiveState( final String perspectiveId,
-            final Command callback ) {
+                                        final Command callback ) {
         callback.execute();
     }
 
@@ -67,5 +67,10 @@ public class WorkbenchServicesProxyClientImpl implements WorkbenchServicesProxy 
     public void loadSplashScreenFilter( final String name,
                                         final ParameterizedCommand<SplashScreenFilter> parameterizedCommand ) {
         parameterizedCommand.execute( null );
+    }
+
+    @Override
+    public void isWorkbenchOnCluster( final ParameterizedCommand<Boolean> parameterizedCommand ) {
+        parameterizedCommand.execute( false );
     }
 }

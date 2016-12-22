@@ -57,7 +57,7 @@ public class WorkbenchServicesProxyBackendImpl implements WorkbenchServicesProxy
             public void callback( final PerspectiveDefinition result ) {
                 parameterizedCommand.execute( result );
             }
-        } ).loadPerspective(name);
+        } ).loadPerspective( name );
     }
 
     @Override
@@ -72,13 +72,13 @@ public class WorkbenchServicesProxyBackendImpl implements WorkbenchServicesProxy
 
     @Override
     public void removePerspectiveState( final String perspectiveId,
-            final Command callback ) {
+                                        final Command callback ) {
         workbenchServices.call( new RemoteCallback<Void>() {
             @Override
             public void callback( Void o ) {
                 callback.execute();
             }
-        } ).removePerspectiveState(perspectiveId);
+        } ).removePerspectiveState( perspectiveId );
     }
 
     @Override
@@ -105,5 +105,16 @@ public class WorkbenchServicesProxyBackendImpl implements WorkbenchServicesProxy
                 parameterizedCommand.execute( result );
             }
         } ).loadSplashScreenFilter( name );
+    }
+
+    @Override
+    public void isWorkbenchOnCluster( final ParameterizedCommand<Boolean> parameterizedCommand ) {
+        workbenchServices.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( final Boolean result ) {
+                parameterizedCommand.execute( result );
+            }
+        } ).isWorkbenchOnCluster();
+
     }
 }

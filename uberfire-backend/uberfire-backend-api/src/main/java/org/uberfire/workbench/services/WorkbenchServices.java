@@ -28,22 +28,24 @@ import org.uberfire.workbench.model.SplashScreenFilter;
 @Remote
 public interface WorkbenchServices {
 
-    public void save( String perspectiveId,
-                      final PerspectiveDefinition perspective );
+    void save( String perspectiveId,
+               final PerspectiveDefinition perspective );
 
-    public void save( final SplashScreenFilter splashFilter );
+    void save( final SplashScreenFilter splashFilter );
 
-    public Set<PerspectiveDefinition> loadPerspectives();
+    Set<PerspectiveDefinition> loadPerspectives();
 
-    public PerspectiveDefinition loadPerspective( final String perspectiveId );
+    PerspectiveDefinition loadPerspective( final String perspectiveId );
 
-    public void removePerspectiveState( final String perspectiveId );
+    void removePerspectiveState( final String perspectiveId );
 
-    public void removePerspectiveStates();
+    void removePerspectiveStates();
 
-    public SplashScreenFilter loadSplashScreenFilter( final String filterName );
+    SplashScreenFilter loadSplashScreenFilter( final String filterName );
 
-    public Map<String, String> loadDefaultEditorsMap();
+    Map<String, String> loadDefaultEditorsMap();
 
     void saveDefaultEditors( Map<String, String> properties );
+
+    boolean isWorkbenchOnCluster();
 }

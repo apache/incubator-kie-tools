@@ -43,6 +43,16 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-backend-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

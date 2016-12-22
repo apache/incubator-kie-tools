@@ -25,6 +25,7 @@ import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileVisitResult;
@@ -42,9 +43,7 @@ import static org.uberfire.java.nio.file.Files.*;
 
 @Service
 @ApplicationScoped
-public class WorkbenchServicesImpl
-        implements
-        WorkbenchServices {
+public class WorkbenchServicesImpl implements WorkbenchServices {
 
     public static final String PERSPECTIVE_EXTENSION = ".perspective";
 
@@ -54,6 +53,10 @@ public class WorkbenchServicesImpl
 
     @Inject
     private UserServicesImpl userServices;
+
+    @Inject
+    @Named("clusterServiceFactory")
+    private ClusterServiceFactory clusterServiceFactory;
 
     private final XStream xs = new XStream();
 
@@ -197,6 +200,11 @@ public class WorkbenchServicesImpl
         } finally {
             ioService.endBatch();
         }
+    }
+
+    @Override
+    public boolean isWorkbenchOnCluster() {
+        return clusterServiceFactory != null;
     }
 
     private Path getPathToDefaultEditors() {

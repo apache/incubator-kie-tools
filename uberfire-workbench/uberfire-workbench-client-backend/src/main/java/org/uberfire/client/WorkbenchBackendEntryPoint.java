@@ -19,54 +19,76 @@ package org.uberfire.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.api.BusLifecycleAdapter;
+import org.jboss.errai.bus.client.api.BusLifecycleEvent;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.api.TransportError;
-import org.jboss.errai.bus.client.api.TransportErrorHandler;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.slf4j.Logger;
+import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.Commands;
+import org.uberfire.mvp.ParameterizedCommand;
 
 @EntryPoint
 public class WorkbenchBackendEntryPoint {
 
-    @Inject
+    private Logger logger;
+
     private ClientMessageBus bus;
 
-    @Inject
+    private WorkbenchServicesProxy workbenchServices;
+
     private ErrorPopupPresenter errorPopupPresenter;
 
-    private boolean askRefresh = false;
+    private boolean isWorkbenchOnCluster = false;
+    private boolean showedError = false;
 
-    @PostConstruct
-    public void init() {
-        startApp();
+    public WorkbenchBackendEntryPoint() {
+
     }
 
-    private void startApp() {
-        bus.addTransportErrorHandler( new TransportErrorHandler() {
+    @Inject
+    public WorkbenchBackendEntryPoint( final Logger logger,
+                                       final ClientMessageBus bus,
+                                       final WorkbenchServicesProxy workbenchServices,
+                                       final ErrorPopupPresenter errorPopupPresenter ) {
+        this.logger = logger;
+        this.bus = bus;
+        this.workbenchServices = workbenchServices;
+        this.errorPopupPresenter = errorPopupPresenter;
+    }
+
+    @AfterInitialization
+    public void init() {
+        workbenchServices.isWorkbenchOnCluster( new ParameterizedCommand<Boolean>() {
             @Override
-            public void onError( TransportError error ) {
-                if ( askRefresh ) {
-                    return;
-                }
-                if ( error != null && error.getStatusCode() > 400 && error.getStatusCode() < 500 ) {
-                    askRefresh = true;
-                    errorPopupPresenter.showMessage( "You've been disconnected. Click OK to refresh the application.",
-                                                     Commands.DO_NOTHING,
-                                                     new Command() {
-                        @Override
-                        public void execute() {
-                            forceReload();
-                        }
-                    } );
-                }
+            public void execute( final Boolean parameter ) {
+                isWorkbenchOnCluster = !( parameter == null || parameter.equals( Boolean.FALSE ) );
             }
         } );
     }
 
-    private static native void forceReload() /*-{
-        $wnd.location.reload(true);
-    }-*/;
+    @PostConstruct
+    public void postConstruct() {
+        bus.addLifecycleListener( new BusLifecycleAdapter() {
+            @Override
+            public void busOnline( final BusLifecycleEvent e ) {
+                logger.info( "Bus is back online." );
+                showedError = false;
+            }
+
+            @Override
+            public void busOffline( final BusLifecycleEvent e ) {
+                if ( showedError ) {
+                    return;
+                }
+                logger.error( "Bus is offline. [" + e.getReason().getErrorMessage() + "]" );
+                if ( !isWorkbenchOnCluster ) {
+                    errorPopupPresenter.showMessage( "You've been disconnected." );
+                }
+                showedError = true;
+            }
+        } );
+    }
 
 }
