@@ -48,12 +48,13 @@ public class GwtRuntimePluginWatcher {
 
     private static final Logger LOG = LoggerFactory.getLogger( GwtRuntimePluginWatcher.class );
 
-    boolean active;
+    volatile boolean active;
     private ExecutorService executor;
+    private GwtRuntimePluginLoader pluginLoader;
 
     /**
-     * Starts the plugin watcher iff the provided plugin directory exists
-     * and the watcher hasn't already been started.
+     * Starts the plugin watcher iff the provided plugin directory exists and
+     * the watcher hasn't already been started.
      * 
      * @param pluginDir
      *            the plugin directory to monitor
@@ -70,49 +71,40 @@ public class GwtRuntimePluginWatcher {
         if ( active || !Files.exists( pluginRootPath ) ) {
             return;
         }
-        
+
         this.active = true;
         this.executor = executor;
+        this.pluginLoader = pluginLoader;
 
         final WatchService watchService = FileSystems.getDefault().newWatchService();
         pluginRootPath.register( watchService,
                                  ENTRY_CREATE,
                                  ENTRY_MODIFY,
                                  ENTRY_DELETE );
-        
-        startWatchService(watchService, pluginLoader);
+
+        startWatchService( watchService );
     }
-    
-    private void startWatchService(final WatchService watchService, final GwtRuntimePluginLoader pluginLoader) {
+
+    private void startWatchService( final WatchService watchService ) {
         executor.submit( () -> {
             while ( active ) {
                 try {
                     final WatchKey watchKey = watchService.poll( 5, TimeUnit.SECONDS );
-
-                    if ( watchKey != null ) {
+                    
+                    if ( watchKey != null && active ) {
                         final List<WatchEvent<?>> events = watchKey.pollEvents();
                         for ( WatchEvent<?> event : events ) {
                             final Kind<?> kind = event.kind();
-
                             if ( kind == OVERFLOW ) {
                                 continue;
                             }
 
                             final Path file = (Path) event.context();
                             if ( kind == ENTRY_CREATE || kind == ENTRY_MODIFY ) {
-                                if ( file.getFileName().toString().endsWith( ".jar" ) ) {
-                                    try {
-                                        pluginLoader.loadPlugin( file, true );
-                                    } catch ( Exception e ) {
-                                        LOG.error( "Failed to process new plugin " + file.getFileName().toString(), e );
-                                    }
-                                }
-                            } else if ( kind == ENTRY_DELETE ) {
-                                try {
-                                    pluginLoader.reload();
-                                } catch ( Exception e ) {
-                                    LOG.error( "Failed to delete plugin " + file.getFileName().toString(), e );
-                                }
+                                loadPlugin( file );
+                            } 
+                            else if ( kind == ENTRY_DELETE ) {
+                                reloadPlugins( file );
                             }
                         }
                         boolean valid = watchKey.reset();
@@ -130,7 +122,38 @@ public class GwtRuntimePluginWatcher {
 
     void stop() {
         active = false;
-        executor.shutdown();
+        
+        if (executor != null) {
+            executor.shutdown();
+        }
+    }
+
+    void loadPlugin( final Path file ) {
+        if ( file.getFileName().toString().endsWith( ".jar" ) ) {
+            try {
+                pluginLoader.loadPlugin( file, true );
+            } catch ( Exception e ) {                
+                logPluginWatcherError( "Failed to process new plugin " + file.getFileName().toString(), e, !active );
+            }
+        }
+    }
+
+    void reloadPlugins( final Path file ) {
+        try {
+            pluginLoader.reload();
+        } catch ( Exception e ) {
+            logPluginWatcherError( "Failed to delete plugin " + file.getFileName().toString(), e, !active );
+        }
+    }
+    
+    void logPluginWatcherError (final String message, final Exception e, final boolean debug) {
+        if (debug) {
+            // Debug level is sufficient in case application is stopping
+            LOG.debug( message );
+        }
+        else {
+            LOG.error( message );
+        }
     }
 
 }
