@@ -84,13 +84,13 @@ public class WorkbenchBackendEntryPointTest {
 
         listener.busOnline( event );
 
-        verify( logger, times( 2 ) ).error( ( anyString() ) );
+        verify( logger, times( 1 ) ).info( ( anyString() ) );
         verify( errorPopupPresenter, times( 1 ) ).showMessage( anyString() );
 
         listener.busOffline( event );
         listener.busOffline( event );
 
-        verify( logger, times( 3 ) ).error( ( anyString() ) );
+        verify( logger, times( 2 ) ).error( ( anyString() ) );
         verify( errorPopupPresenter, times( 2 ) ).showMessage( anyString() );
     }
 
@@ -129,13 +129,13 @@ public class WorkbenchBackendEntryPointTest {
 
         listener.busOnline( event );
 
-        verify( logger, times( 2 ) ).error( ( anyString() ) );
+        verify( logger, times( 1 ) ).info( ( anyString() ) );
         verify( errorPopupPresenter, times( 0 ) ).showMessage( anyString() );
 
         listener.busOffline( event );
         listener.busOffline( event );
 
-        verify( logger, times( 3 ) ).error( ( anyString() ) );
+        verify( logger, times( 2 ) ).error( ( anyString() ) );
         verify( errorPopupPresenter, times( 0 ) ).showMessage( anyString() );
     }
 
