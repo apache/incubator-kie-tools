@@ -59,7 +59,7 @@ import com.google.gwt.resources.client.ImageResource;
  * The upside is that it will not need to generate a separate Image for the Selection Layer,
  * which saves memory and time, both for generating the selection layer Image and when drawing the Picture.
  */
-public class Picture extends AbstractImageShape<Picture>implements ImageDataFilterable<Picture>
+public class Picture extends AbstractImageShape<Picture> implements ImageDataFilterable<Picture>
 {
     protected Picture(JSONObject node, ValidationContext ctx) throws ValidationException
     {
@@ -109,7 +109,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, true, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().load(url);
     }
@@ -133,7 +133,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, true, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().setFilters(filter, filters);
 
@@ -159,7 +159,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, true, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().load(url);
     }
@@ -183,7 +183,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, true, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().setFilters(filter, filters);
 
@@ -211,7 +211,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().load(url);
     }
@@ -237,7 +237,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().setFilters(filter, filters);
 
@@ -265,7 +265,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().load(url);
     }
@@ -291,7 +291,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().setFilters(filter, filters);
 
@@ -319,7 +319,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -353,7 +353,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -389,7 +389,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -423,7 +423,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -455,7 +455,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -489,7 +489,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -525,7 +525,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -559,7 +559,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -599,7 +599,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageDestinationWidth(dw);
 
@@ -629,7 +629,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageDestinationWidth(dw);
 
@@ -661,7 +661,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageDestinationWidth(dw);
 
@@ -691,7 +691,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageDestinationWidth(dw);
 
@@ -745,7 +745,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, true, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().load(resource);
     }
@@ -769,7 +769,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, true, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().setFilters(filter, filters);
 
@@ -795,7 +795,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, true, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().load(resource);
     }
@@ -819,7 +819,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, true, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().setFilters(filter, filters);
 
@@ -847,7 +847,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().load(resource);
     }
@@ -873,7 +873,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().setFilters(filter, filters);
 
@@ -901,7 +901,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().load(resource);
     }
@@ -927,7 +927,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         getImageProxy().setFilters(filter, filters);
 
@@ -954,7 +954,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -987,7 +987,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -1022,7 +1022,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -1055,7 +1055,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -1087,7 +1087,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -1121,7 +1121,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -1157,7 +1157,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -1191,7 +1191,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageStartX(sx);
 
@@ -1230,7 +1230,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageDestinationWidth(dw);
 
@@ -1259,7 +1259,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageDestinationWidth(dw);
 
@@ -1290,7 +1290,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageDestinationWidth(dw);
 
@@ -1319,7 +1319,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
-        onLoaded( loadedHandler );
+        onLoaded(loadedHandler);
 
         setClippedImageDestinationWidth(dw);
 
@@ -1785,10 +1785,13 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
         }
     }
 
-    private PictureLoadedHandler createPictureLoader() {
-        return new PictureLoadedHandler() {
+    private PictureLoadedHandler createPictureLoader()
+    {
+        return new PictureLoadedHandler()
+        {
             @Override
-            public void onPictureLoaded( Picture picture ) {
+            public void onPictureLoaded(Picture picture)
+            {
                 if (picture.isLoaded() && picture.isVisible())
                 {
                     Layer layer = picture.getLayer();
@@ -1802,7 +1805,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
         };
     }
 
-    private void onLoaded( final PictureLoadedHandler handler)
+    private void onLoaded(final PictureLoadedHandler handler)
     {
         getImageProxy().setImageShapeLoadedHandler(new ImageShapeLoadedHandler<Picture>()
         {
@@ -1813,5 +1816,4 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
             }
         });
     }
-
 }
