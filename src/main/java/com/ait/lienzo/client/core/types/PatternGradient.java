@@ -127,7 +127,7 @@ public final class PatternGradient implements FillGradient
 			self.src = s;
 			self.repeat = r;
 			self.type = "PatternGradient";
-			self.getImageElement = function() {
+			self.image = function() {
 			    return e;
 			};
 			return self;

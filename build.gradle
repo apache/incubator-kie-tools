@@ -50,7 +50,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.0.282-RELEASE'
+version = '2.0.283-RELEASE'
 
 group = 'com.ahome-it'
 
