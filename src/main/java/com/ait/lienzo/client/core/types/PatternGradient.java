@@ -123,14 +123,14 @@ public final class PatternGradient implements FillGradient
 
         public static final native PatternGradientJSO make(ImageElement e, String s, String r)
         /*-{
-			return {
-				src : s,
-				repeat : r,
-				type : "PatternGradient",
-				image : function() {
-					return e;
-				}
-			}
+			var self = {};
+			self.src = s;
+			self.repeat = r;
+			self.type = "PatternGradient";
+			self.getImageElement = function() {
+			    return e;
+			};
+			return self;
         }-*/;
 
         public final native String getSrc()

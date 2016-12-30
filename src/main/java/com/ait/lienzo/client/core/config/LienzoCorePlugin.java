@@ -589,6 +589,6 @@ final class LienzoCorePlugin extends AbstractLienzoCorePlugin
     @Override
     public final String getVersion()
     {
-        return "2.0.281-RELEASE";
+        return "2.0.282-RELEASE";
     }
 }

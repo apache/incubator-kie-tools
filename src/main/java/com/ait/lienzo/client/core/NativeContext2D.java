@@ -290,8 +290,8 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native void setFillGradient(PatternGradientJSO grad)
     /*-{
-		if ((grad) && (grad.image)) {
-			var elem = grad.image();
+		if ((grad) && ((typeof grad.getImageElement) === 'function')) {
+			var elem = grad.getImageElement();
 			if (elem) {
 				this.fillStyle = this.createPattern(elem, grad.repeat);
 			} else {

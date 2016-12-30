@@ -104,6 +104,8 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
                         public void onImageElementLoad(final ImageElement elem)
                         {
                             attr.setFillGradient(new PatternGradient(elem, patg.getRepeat()));
+                            
+                            batch();
                         }
 
                         @Override
