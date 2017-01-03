@@ -221,7 +221,7 @@ public class DefaultPlaceRequest implements PlaceRequest {
     }
 
     @Override
-    public boolean equals( Object o ) {
+    public boolean equals( final Object o ) {
         if ( this == o ) {
             return true;
         }
@@ -231,11 +231,11 @@ public class DefaultPlaceRequest implements PlaceRequest {
 
         final DefaultPlaceRequest that = (DefaultPlaceRequest) o;
 
-        if ( !identifier.equals( that.identifier ) ) {
+        if ( getIdentifier() != null ? !getIdentifier().equals( that.getIdentifier() ) : that.getIdentifier() != null ) {
             return false;
         }
+        return !( getParameters() != null ? !getParameters().equals( that.getParameters() ) : that.getParameters() != null );
 
-        return parameters.equals( that.parameters );
     }
 
     @Override

@@ -15,17 +15,15 @@
  */
 package org.uberfire.mvp.impl;
 
-import org.uberfire.mvp.PlaceRequest;
-
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class ConditionalPlaceRequest extends DefaultPlaceRequest {
+import org.uberfire.mvp.PlaceRequest;
 
+public class ConditionalPlaceRequest extends DefaultPlaceRequest {
 
     private PlaceRequest orElsePlaceRequest;
     private Predicate<PlaceRequest> predicate;
-
 
     public ConditionalPlaceRequest() {
         super();
@@ -34,7 +32,6 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
     /**
      * A predicate applied to determine if this place request
      * should be used or the alternative specified by #orElse
-     *
      * @param identifier The place ID, or an empty string for the default place.
      */
     public ConditionalPlaceRequest( final String identifier ) {
@@ -44,7 +41,6 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
     /**
      * Creates a conditional place request for the given place ID with the given
      * state parameters for that place.
-     *
      * @param identifier The place ID, or an empty string for the default place.
      * @param parameters Place-specific parameters to pass to the place. Must not be null.
      */
@@ -56,9 +52,8 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
     /**
      * Creates a place request for the given place ID with the given
      * state parameters for that place.
-     *
      * @param predicate Represents if default place request should be used.
-     *                  If false, the place request will be orElsePlaceRequest.
+     * If false, the place request will be orElsePlaceRequest.
      */
     public ConditionalPlaceRequest when( Predicate<PlaceRequest> predicate ) {
         this.predicate = predicate;
@@ -68,7 +63,6 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
     /**
      * Creates a place request for the given place ID with the given
      * state parameters for that place.
-     *
      * @param orElsePlaceRequest alternative place request.
      */
     public PlaceRequest orElse( PlaceRequest orElsePlaceRequest ) {
@@ -82,7 +76,7 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
      * default place request.
      */
     public PlaceRequest resolveConditionalPlaceRequest() {
-        if ( invalidPlaceRequest() ) {
+        if ( invalidConditionalPlaceRequest() ) {
             return this;
         }
         if ( predicate.test( this ) ) {
@@ -92,21 +86,104 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
         }
     }
 
-    private boolean invalidPlaceRequest() {
+    private boolean invalidConditionalPlaceRequest() {
         return predicate == null || orElsePlaceRequest == null;
     }
 
-    private PlaceRequest resolve() {
+    protected PlaceRequest resolve() {
         if ( orElsePlaceRequest instanceof ConditionalPlaceRequest ) {
-            return ( ( ConditionalPlaceRequest ) orElsePlaceRequest ).resolveConditionalPlaceRequest();
+            return ( (ConditionalPlaceRequest) orElsePlaceRequest ).resolveConditionalPlaceRequest();
         } else {
             return orElsePlaceRequest;
         }
     }
 
     @Override
-    public String toString() {
-        return "ConditionalPlaceRequest " + super.toString();
+    public String getIdentifier() {
+        if ( invalidConditionalPlaceRequest() ) {
+            return identifier;
+        }
+
+        if ( predicate.test( this ) ) {
+            return identifier;
+        } else {
+            return resolve().getIdentifier();
+        }
     }
 
+    @Override
+    public Map<String, String> getParameters() {
+        if ( invalidConditionalPlaceRequest() ) {
+            return parameters;
+        }
+
+        if ( predicate.test( this ) ) {
+            return parameters;
+        } else {
+            return resolve().getParameters();
+        }
+    }
+
+    @Override
+    public PlaceRequest clone() {
+        return new ConditionalPlaceRequest( identifier, parameters ).when( predicate ).orElse( orElsePlaceRequest );
+    }
+
+    /**
+     * A conditional place request should be resolved before being compared to another default place request.
+     * @param o A default or conditional place request.
+     * @return True if the resolved conditional place request equals to the default place request or resolved
+     * conditional place request passed, and false otherwise.
+     */
+    @Override
+    public boolean equals( final Object o ) {
+        if ( o == null ) {
+            return false;
+        }
+
+        if ( !( o instanceof DefaultPlaceRequest ) ) {
+            return false;
+        }
+
+        if ( this == o ) {
+            return true;
+        }
+
+        PlaceRequest that = (PlaceRequest) o;
+        if ( o instanceof ConditionalPlaceRequest ) {
+            that = ( (ConditionalPlaceRequest) o ).resolveConditionalPlaceRequest();
+        }
+
+        if ( invalidConditionalPlaceRequest() ) {
+            return super.equals( that );
+        }
+
+        if ( predicate.test( this ) ) {
+            return super.equals( that );
+        } else {
+            return resolve().equals( that );
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        if ( invalidConditionalPlaceRequest() ) {
+            return super.hashCode();
+        }
+
+        if ( predicate.test( this ) ) {
+            return super.hashCode();
+        } else {
+            return resolve().hashCode();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "ConditionalPlaceRequest[" +
+                super.toString() +
+                ", orElsePlaceRequest=" + orElsePlaceRequest +
+                ", predicate=" + predicate +
+                ']';
+    }
 }
