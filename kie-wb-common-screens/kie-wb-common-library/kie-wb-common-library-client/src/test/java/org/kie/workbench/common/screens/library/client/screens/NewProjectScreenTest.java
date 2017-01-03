@@ -98,6 +98,7 @@ public class NewProjectScreenTest {
         newProjectScreen.libraryService = libraryServiceCaller;
 
         doNothing().when( newProjectScreen ).goToProject( any( KieProject.class ) );
+        doReturn( "" ).when( view ).getOrganizationUnitSelected();
     }
 
     @Test
@@ -109,7 +110,6 @@ public class NewProjectScreenTest {
         verify( view ).setOUAlias( ouAlias );
         verify( view, times( 2 ) ).addOrganizationUnit( any() );
         verify( view ).setOrganizationUnitSelected( ou2.getIdentifier() );
-        assertEquals( ou2.getIdentifier(), newProjectScreen.selectOu );
     }
 
     @Test
@@ -117,6 +117,16 @@ public class NewProjectScreenTest {
         newProjectScreen.getSuccessCallback().callback( null );
 
         verify( libraryMonitor ).setThereIsAtLeastOneProjectAccessible( true );
+    }
+
+    @Test
+    public void projectCreationArgumentsTest() {
+        doReturn( "baseUrl" ).when( newProjectScreen ).getBaseURL();
+        doReturn( "selectedOU" ).when( view ).getOrganizationUnitSelected();
+
+        newProjectScreen.createProject( "projectName" );
+
+        verify( libraryService ).newProject( "projectName", "selectedOU", "baseUrl" );
     }
 
     @Test

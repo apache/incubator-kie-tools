@@ -197,7 +197,15 @@ public class ProjectScreen {
     }
 
     public void newAsset() {
-        placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
+        if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
+            placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
+            libraryContextSwitchEvent.fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_SELECTED,
+                                                                           project.getRootPath(),
+                                                                           () -> libraryBreadcrumbs.setupLibraryBreadCrumbsForProject( project.getProjectName(),
+                                                                                                                                       project.getIdentifier() ) ) );
+        } else {
+            view.noRightsPopup();
+        }
     }
 
     @WorkbenchPartTitle

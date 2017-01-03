@@ -125,8 +125,6 @@ public class LibraryScreen {
             public void callback( LibraryInfo libraryInfo ) {
                 if ( libraryInfo.isFullLibrary() ) {
                     loadLibrary( libraryInfo );
-                } else {
-                    placeManager.goTo( LibraryPlaces.NEW_PROJECT_PERSPECTIVE );
                 }
             }
         } ).getDefaultLibraryInfo();

@@ -16,11 +16,15 @@
 package org.kie.workbench.common.screens.library.client.perspective;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
 import org.kie.workbench.common.screens.library.client.util.LibraryDocks;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.docks.UberfireDocks;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
@@ -40,15 +44,21 @@ public class LibraryPerspective {
 
     private LibraryDocks libraryDocks;
 
+    private LibraryMonitor libraryMonitor;
+
     public LibraryPerspective() {
 
     }
 
     @Inject
-    public LibraryPerspective( PlaceManager placeManager, UberfireDocks uberfireDocks, LibraryDocks libraryDocks ) {
+    public LibraryPerspective( final PlaceManager placeManager,
+                               final UberfireDocks uberfireDocks,
+                               final LibraryDocks libraryDocks,
+                               final LibraryMonitor libraryMonitor ) {
         this.placeManager = placeManager;
         this.uberfireDocks = uberfireDocks;
         this.libraryDocks = libraryDocks;
+        this.libraryMonitor = libraryMonitor;
     }
 
     @AfterInitialization
@@ -59,14 +69,15 @@ public class LibraryPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl(
-                "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter" );
-        p.setName( "Library Perspective" );
-        p.getRoot().addPart(
-                new PartDefinitionImpl(
-                        new DefaultPlaceRequest( "LibraryScreen" ) ) );
+        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl( "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter" );
+        perspectiveDefinition.setName( "Library Perspective" );
+        perspectiveDefinition.getRoot().addPart( new PartDefinitionImpl( getLibraryPlaceRequest() ) );
 
-        return p;
+        return perspectiveDefinition;
     }
 
+    PlaceRequest getLibraryPlaceRequest() {
+        final DefaultPlaceRequest emptyLibraryPlaceRequest = new DefaultPlaceRequest( LibraryPlaces.EMPTY_LIBRARY_SCREEN );
+        return new ConditionalPlaceRequest( LibraryPlaces.LIBRARY_SCREEN ).when( p -> libraryMonitor.thereIsAtLeastOneProjectAccessible() ).orElse( emptyLibraryPlaceRequest );
+    }
 }

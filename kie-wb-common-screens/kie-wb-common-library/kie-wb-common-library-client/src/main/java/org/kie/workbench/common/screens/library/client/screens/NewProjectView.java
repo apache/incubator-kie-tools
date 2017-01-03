@@ -104,6 +104,11 @@ public class NewProjectView implements NewProjectScreen.View, IsElement {
         ouLabel.setTextContent( ouAlias );
     }
 
+    @Override
+    public String getOrganizationUnitSelected() {
+        return ouDropdown.getValue();
+    }
+
     private Option createOption( String ou ) {
         Option option = ( Option ) document.createElement( "option" );
         option.setText( ou );

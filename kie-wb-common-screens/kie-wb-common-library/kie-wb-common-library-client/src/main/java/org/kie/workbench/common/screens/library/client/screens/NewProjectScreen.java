@@ -62,6 +62,7 @@ public class NewProjectScreen {
 
         void setOUAlias( String ouAlias );
 
+        String getOrganizationUnitSelected();
     }
 
     @Inject
@@ -99,8 +100,6 @@ public class NewProjectScreen {
 
     private DefaultPlaceRequest backPlaceRequest;
 
-    String selectOu = "";
-
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
         setupBreadCrumbs();
@@ -113,7 +112,7 @@ public class NewProjectScreen {
     }
 
     private void loadSelectedOU( PlaceRequest place ) {
-        this.selectOu = place.getParameter( LibraryParameters.SELECTED_OU, "" );
+        setOrganizationUnitSelected( place.getParameter( LibraryParameters.SELECTED_OU, "" ) );
         load();
     }
 
@@ -125,10 +124,9 @@ public class NewProjectScreen {
                 clearOrganizationUnits();
                 lib.getOrganizationUnits()
                         .forEach( ou -> addOrganizationUnit( ou.getIdentifier() ) );
-                if ( selectOu.isEmpty() ) {
-                    NewProjectScreen.this.selectOu = lib.getSelectedOrganizationUnit().getIdentifier();
+                if ( view.getOrganizationUnitSelected().isEmpty() ) {
+                    setOrganizationUnitSelected( lib.getSelectedOrganizationUnit().getIdentifier() );
                 }
-                setOrganizationUnitSelected( selectOu );
             }
         } ).getDefaultLibraryInfo();
     }
@@ -157,11 +155,13 @@ public class NewProjectScreen {
 
     public void createProject( String projectName ) {
         busyIndicatorView.showBusyIndicator( ts.getTranslation( LibraryConstants.NewProjectScreen_Saving ) );
-
-        libraryService.call( getSuccessCallback(), getErrorCallBack() ).newProject( projectName, selectOu, getBaseURL() );
+        libraryService.call( getSuccessCallback(),
+                             getErrorCallBack() ).newProject( projectName,
+                                                              view.getOrganizationUnitSelected(),
+                                                              getBaseURL() );
     }
 
-    private String getBaseURL() {
+    String getBaseURL() {
         final String url = GWT.getModuleBaseURL();
         final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
         return baseUrl;

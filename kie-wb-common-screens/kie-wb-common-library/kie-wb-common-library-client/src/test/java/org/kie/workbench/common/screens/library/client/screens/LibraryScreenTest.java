@@ -148,18 +148,6 @@ public class LibraryScreenTest {
     }
 
     @Test
-    public void onStartupLoadEmptyLibraryTest() {
-        LibraryInfo emptyLibrary = new LibraryInfo();
-
-        when( libraryService.getDefaultLibraryInfo() ).thenReturn( emptyLibrary );
-
-        libraryScreen.onStartup( mock( PlaceRequest.class ) );
-
-        verify( placeManager ).goTo( LibraryPlaces.NEW_PROJECT_PERSPECTIVE );
-
-    }
-
-    @Test
     public void selectCommand() {
         final Command detailsCommand = mock( Command.class );
         doReturn( detailsCommand ).when( libraryScreen ).detailsCommand( any( Project.class ) );
