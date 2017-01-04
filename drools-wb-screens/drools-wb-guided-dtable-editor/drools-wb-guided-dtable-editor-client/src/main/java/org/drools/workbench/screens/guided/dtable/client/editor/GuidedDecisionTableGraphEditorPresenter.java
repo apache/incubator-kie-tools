@@ -78,6 +78,8 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -98,7 +100,6 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     private final Event<SaveInProgressEvent> saveInProgressEvent;
     private final LockManager lockManager;
 
-    private Integer originalGraphHash;
     private GuidedDecisionTableEditorGraphContent content;
     private LoadGraphLatch loadGraphLatch = null;
     private SaveGraphLatch saveGraphLatch = null;
@@ -108,28 +109,41 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
     protected Access access = new Access();
+    protected Integer originalGraphHash;
 
     private class LoadGraphLatch {
 
         private int dtGraphElementCount;
-        private Path dtToSelectPath;
+        private Command onAllDocumentGraphEntriesLoadedCommand;
+        private ParameterizedCommand<GuidedDecisionTableView.Presenter> onDocumentGraphEntryLoadedCommand;
 
         private LoadGraphLatch( final int dtGraphElementCount,
-                                final Path dtToSelectPath ) {
-            this.dtGraphElementCount = dtGraphElementCount;
-            this.dtToSelectPath = dtToSelectPath;
+                                final ParameterizedCommand<GuidedDecisionTableView.Presenter> onDocumentGraphEntryLoadedCommand ) {
+            this( dtGraphElementCount,
+                  onDocumentGraphEntryLoadedCommand,
+                  () -> {/*Do nothing*/} );
         }
 
-        private void fireDecisionTableSelectedEvent( final GuidedDecisionTableView.Presenter dtPresenter ) {
-            if ( dtPresenter.getCurrentPath().getOriginal().equals( dtToSelectPath ) ) {
-                decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( dtPresenter,
-                                                                                 false ) );
+        private LoadGraphLatch( final int dtGraphElementCount,
+                                final ParameterizedCommand<GuidedDecisionTableView.Presenter> onDocumentGraphEntryLoadedCommand,
+                                final Command onAllDocumentGraphEntriesLoadedCommand ) {
+            this.dtGraphElementCount = dtGraphElementCount;
+            this.onDocumentGraphEntryLoadedCommand = onDocumentGraphEntryLoadedCommand;
+            this.onAllDocumentGraphEntriesLoadedCommand = onAllDocumentGraphEntriesLoadedCommand;
+        }
+
+        private void onDocumentGraphEntryLoaded( final GuidedDecisionTableView.Presenter dtPresenter ) {
+            if ( onDocumentGraphEntryLoadedCommand != null ) {
+                onDocumentGraphEntryLoadedCommand.execute( dtPresenter );
             }
         }
 
         private void hideLoadingIndicator() {
             dtGraphElementCount--;
             if ( dtGraphElementCount == 0 ) {
+                if ( onAllDocumentGraphEntriesLoadedCommand != null ) {
+                    onAllDocumentGraphEntriesLoadedCommand.execute();
+                }
                 view.hideBusyIndicator();
             }
         }
@@ -171,7 +185,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                                                                  y );
                 registerDocument( dtPresenter );
 
-                fireDecisionTableSelectedEvent( dtPresenter );
+                onDocumentGraphEntryLoaded( dtPresenter );
 
                 hideLoadingIndicator();
             };
@@ -201,7 +215,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                                                                  null );
                 registerDocument( dtPresenter );
 
-                fireDecisionTableSelectedEvent( dtPresenter );
+                onDocumentGraphEntryLoaded( dtPresenter );
 
                 hideLoadingIndicator();
             };
@@ -428,8 +442,19 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
             }
 
             loadGraphLatch = new LoadGraphLatch( modelEntries.size(),
-                                                 modelEntries.iterator().next().getPathHead() );
+                                                 getSelectDecisionTableCommand( modelEntries.iterator().next().getPathHead() ),
+                                                 () -> originalGraphHash = buildModelFromEditor().hashCode() );
+
             modelEntries.stream().forEach( loadGraphLatch::loadDocumentGraphEntry );
+        };
+    }
+
+    private ParameterizedCommand<GuidedDecisionTableView.Presenter> getSelectDecisionTableCommand( final Path dtToSelectPath ) {
+        return ( dtPresenter ) -> {
+            if ( dtPresenter.getCurrentPath().getOriginal().equals( dtToSelectPath ) ) {
+                decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( dtPresenter,
+                                                                                 false ) );
+            }
         };
     }
 
@@ -546,8 +571,10 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
         }
 
         view.showLoading();
+
         loadGraphLatch = new LoadGraphLatch( selectedDocumentPaths.size(),
-                                             selectedDocumentPaths.get( 0 ) );
+                                             getSelectDecisionTableCommand( selectedDocumentPaths.get( 0 ) ) );
+
         selectedDocumentPaths.stream().forEach( ( p ) -> {
             final PathPlaceRequest placeRequest = getPathPlaceRequest( p );
             loadGraphLatch.loadDocument( placeRequest.getPath(),

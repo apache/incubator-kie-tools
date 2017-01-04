@@ -223,6 +223,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         assertEquals( GuidedDecisionTableView.ROW_HEIGHT,
                       dtPresenter.getUiModel().getRow( 2 ).getHeight(),
                       0.0 );
+
+        assertEquals( dtContent.getModel().hashCode(),
+                      (int) dtPresenter.getOriginalHashCode() );
     }
 
     @Test
@@ -259,6 +262,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                 times( 2 ) ).initialiseValidationAndVerification();
         verify( dtPresenter,
                 times( 2 ) ).initialiseAuditLog();
+
+        assertEquals( dtContent.getModel().hashCode(),
+                      (int) dtPresenter.getOriginalHashCode() );
 
         //These invocations are as a result of the previous Presenter being destroyed
         verify( dtPresenter,

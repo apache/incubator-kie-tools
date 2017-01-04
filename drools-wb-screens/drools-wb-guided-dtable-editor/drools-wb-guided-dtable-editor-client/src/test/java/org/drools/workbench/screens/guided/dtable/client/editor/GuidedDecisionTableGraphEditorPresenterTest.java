@@ -84,6 +84,9 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecisionTablePresenterTest<GuidedDecisionTableGraphEditorPresenter> {
 
+    private static final int INITIAL_HASH_CODE = 100;
+    private static final int EDITOR_HASH_CODE = 200;
+
     @Mock
     private LockManager lockManager;
 
@@ -319,7 +322,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     public void checkOnStartupBasicInitialisation() {
         final ObservablePath dtGraphPath = mock( ObservablePath.class );
         final PlaceRequest dtGraphPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent( INITIAL_HASH_CODE );
 
         when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
         when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
@@ -333,6 +336,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                       presenter.editorPath );
         assertEquals( dtGraphPlaceRequest,
                       presenter.editorPlaceRequest );
+        assertEquals( INITIAL_HASH_CODE,
+                      (int) presenter.originalGraphHash );
 
         verify( presenter,
                 times( 1 ) ).initialiseEditor( eq( dtGraphPath ),
@@ -358,7 +363,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     public void checkOnStartupLoadGraphEntries() {
         final ObservablePath dtGraphPath = mock( ObservablePath.class );
         final PlaceRequest dtGraphPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent( INITIAL_HASH_CODE );
 
         final Path dtPath = mock( Path.class );
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent();
@@ -377,6 +382,9 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         when( dtService.loadContent( eq( dtPath ) ) ).thenReturn( dtContent );
         when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
         when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
+
+        //Fake building of Graph Model from Editor to control hashCode
+        doReturn( makeDecisionTableGraphContent( EDITOR_HASH_CODE ).getModel() ).when( presenter ).buildModelFromEditor();
 
         when( modeller.addDecisionTable( any( ObservablePath.class ),
                                          any( PlaceRequest.class ),
@@ -410,6 +418,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                       dtObservablePath.toURI() );
         assertEquals( dtPath.toURI(),
                       dtPathPlaceRequest.getPath().toURI() );
+        assertEquals( EDITOR_HASH_CODE,
+                      (int) presenter.originalGraphHash );
 
         verify( presenter,
                 times( 1 ) ).registerDocument( eq( dtPresenter ) );

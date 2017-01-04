@@ -478,6 +478,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             initialiseRow( modelColumns,
                            row );
         }
+        setOriginalHashCode( model.hashCode() );
     }
 
     //Ensure field data-type is set (field did not exist before 5.2)
