@@ -70,7 +70,7 @@ public class VerifierWebWorkerServletTest {
 
     @Test
     public void fileNameNeedsToContainVerifier() throws
-                                                   Exception {
+                                                 Exception {
 
         when( httpServletRequest.getRequestURI() ).thenReturn( "0BD650E7DC9A4B57B8AFCE8F27AACA84.cache.js" );
 

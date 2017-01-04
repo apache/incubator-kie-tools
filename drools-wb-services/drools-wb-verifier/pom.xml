@@ -38,7 +38,6 @@
         <module>drools-wb-verifier-api</module>
         <module>drools-wb-verifier-core</module>
         <module>drools-wb-verifier-client</module>
-        <module>drools-wb-verifier-web-worker</module>
         <module>drools-wb-verifier-backend</module>
     </modules>
 

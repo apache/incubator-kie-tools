@@ -53,7 +53,7 @@ public class VerifierWebWorkerConnectionImpl
     }
 
     private void startWorker() {
-        worker = Worker.create( "verifier/VerifierWebWorker.nocache.js" );
+        worker = Worker.create( "verifier/verifier.nocache.js" );
 
         worker.setOnMessage( new MessageHandler() {
             @Override
