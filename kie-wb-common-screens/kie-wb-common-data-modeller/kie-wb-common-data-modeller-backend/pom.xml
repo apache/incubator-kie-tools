@@ -221,11 +221,6 @@
       <artifactId>jboss-ejb-api_3.2_spec</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
