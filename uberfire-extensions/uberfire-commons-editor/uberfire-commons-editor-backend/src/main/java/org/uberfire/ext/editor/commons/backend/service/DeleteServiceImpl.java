@@ -130,14 +130,16 @@ public class DeleteServiceImpl implements DeleteService {
         try {
             ioService.startBatch( _path.getFileSystem() );
 
+            // Delegate additional changes required for a deletion to applicable Helpers. Helpers are invoked before
+            // the deletion as Helpers may depend on the presence of the file; in particular when it is necessary to
+            // resolve a Package from a file name.
+            notifyDeleteHelpers( path );
+
             ioService.delete( Paths.convert( path ),
                               new CommentedOption( sessionInfo != null ? sessionInfo.getId() : "--",
                                                    identity.getIdentifier(),
                                                    null,
                                                    comment ) );
-
-            //Delegate additional changes required for a deletion to applicable Helpers
-            notifyDeleteHelpers( path );
 
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
@@ -148,6 +150,11 @@ public class DeleteServiceImpl implements DeleteService {
 
     void deletePathIfExists( final Path path,
                              final String comment ) {
+        // Delegate additional changes required for a deletion to applicable Helpers. Helpers are invoked before
+        // the deletion as Helpers may depend on the presence of the file; in particular when it is necessary to
+        // resolve a Package from a file name.
+        notifyDeleteHelpers( path );
+
         ioService.deleteIfExists( Paths.convert( path ),
                                   new CommentedOption( sessionInfo.getId(),
                                                        identity.getIdentifier(),
@@ -156,8 +163,6 @@ public class DeleteServiceImpl implements DeleteService {
                                   StandardDeleteOption.NON_EMPTY_DIRECTORIES
                                 );
 
-        //Delegate additional changes required for a deletion to applicable Helpers
-        notifyDeleteHelpers( path );
     }
 
     void notifyDeleteHelpers( final Path path ) {

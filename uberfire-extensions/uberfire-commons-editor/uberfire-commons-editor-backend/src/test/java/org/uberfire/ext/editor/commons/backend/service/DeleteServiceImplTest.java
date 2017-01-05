@@ -24,6 +24,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -37,6 +38,7 @@ import org.uberfire.ext.editor.commons.backend.service.restriction.LockRestricto
 import org.uberfire.ext.editor.commons.service.ValidationService;
 import org.uberfire.ext.editor.commons.service.restrictor.DeleteRestrictor;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 
@@ -197,6 +199,24 @@ public class DeleteServiceImplTest {
         thenDeleteHelperWasInvoked( paths.get( 1 ) );
         thenDeleteHelperWasInvoked( paths.get( 2 ) );
         thenIOServiceBatchEnded();
+    }
+
+    @Test
+    public void deletePathInvokesDeleteHelpersInCorrectOrder() {
+        final Path path = getPath();
+
+        final InOrder order = inOrder( ioService,
+                                       deleteHelper,
+                                       ioService,
+                                       ioService );
+
+        whenPathIsDeleted( path );
+
+        order.verify( ioService ).startBatch( any( FileSystem.class ) );
+        order.verify( deleteHelper ).postProcess( eq( path ) );
+        order.verify( ioService ).delete( any( org.uberfire.java.nio.file.Path.class ),
+                                          any( CommentedOption.class ) );
+        order.verify( ioService ).endBatch();
     }
 
     private void givenThatPathIsLocked( final Path path ) {

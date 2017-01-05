@@ -18,7 +18,7 @@ package org.uberfire.ext.editor.commons.backend.service.helper;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * Helper for when a file is deleted. Helpers are always invoked after the deletion occurs.
+ * Helper for when a file is deleted. Helpers are always invoked before the deletion occurs.
  */
 public interface DeleteHelper {
 
