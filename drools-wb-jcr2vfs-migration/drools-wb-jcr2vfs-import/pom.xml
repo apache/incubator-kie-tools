@@ -180,11 +180,7 @@
       <artifactId>zip4j</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Investigate why is gwt-user needed and ideally remove it, see https://issues.jboss.org/browse/DROOLS-1391 -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-    </dependency>
+
   </dependencies>
 
   <build>
