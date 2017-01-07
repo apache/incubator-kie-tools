@@ -35,9 +35,7 @@ public abstract class ImageLoader
 
         image.setVisible(false);
 
-        final boolean isValidDataURL = isValidDataURL(url);
-
-        final String crossOrigin = isValidDataURL && (url.startsWith("http:") || (url.startsWith("https:"))) ? "" : null;
+        final String crossOrigin = url.startsWith("http:") || (url.startsWith("https:")) ? "anonymous" : null;
 
         if (null != crossOrigin)
         {
@@ -63,7 +61,7 @@ public abstract class ImageLoader
         });
         RootPanel.get().add(image);
 
-        if (isValidDataURL)
+        if (isValidDataURL(url) && isValidSVG(url))
         {
             image.setUrl(url);
         }
@@ -115,6 +113,11 @@ public abstract class ImageLoader
             return true;
         }
         return false;
+    }
+
+    public boolean isValidSVG(final String url)
+    {
+        return url.toLowerCase().contains("svg+xml");
     }
 
     public ImageLoader(final ImageResource resource)
