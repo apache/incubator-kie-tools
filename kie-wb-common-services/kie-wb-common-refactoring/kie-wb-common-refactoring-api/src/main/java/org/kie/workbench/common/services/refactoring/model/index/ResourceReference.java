@@ -34,7 +34,8 @@ public class ResourceReference implements IndexElementsGenerator {
     private final ResourceType resourceType; // this might be (initially?) unknown
     private Map<String, ValuePartReferenceIndexTerm> fieldNamepartReferenceMap;
 
-    public ResourceReference( final String resourceFQN, ResourceType resoureType ) {
+    public ResourceReference( final String resourceFQN,
+                              ResourceType resoureType ) {
         this.resourceFQN = PortablePreconditions.checkNotNull( "resourceFQN", resourceFQN );
         this.resourceType = PortablePreconditions.checkNotNull( "resourceType", resoureType );
     }
@@ -43,19 +44,25 @@ public class ResourceReference implements IndexElementsGenerator {
         return this.resourceType;
     }
 
-    public void addPartReference(String partName, PartType partType) {
-        if( fieldNamepartReferenceMap == null ) {
-            this.fieldNamepartReferenceMap = new HashMap<String, ValuePartReferenceIndexTerm>(4);
+    public void addPartReference( String partName,
+                                  PartType partType ) {
+        if ( fieldNamepartReferenceMap == null ) {
+            this.fieldNamepartReferenceMap = new HashMap<String, ValuePartReferenceIndexTerm>( 4 );
         }
-        fieldNamepartReferenceMap.put(partName, new ValuePartReferenceIndexTerm(resourceFQN, partName, partType));
+        fieldNamepartReferenceMap.put( partName, new ValuePartReferenceIndexTerm( resourceFQN, partName, partType ) );
     }
 
-    public void addPartReference(Map<String, ValuePartReferenceIndexTerm> partReferences) {
-        fieldNamepartReferenceMap.putAll(partReferences);
+    public void addPartReference( Map<String, ValuePartReferenceIndexTerm> partReferences ) {
+        if ( !( partReferences == null || partReferences.isEmpty() ) ) {
+            if ( fieldNamepartReferenceMap == null ) {
+                this.fieldNamepartReferenceMap = new HashMap<>( 4 );
+            }
+            fieldNamepartReferenceMap.putAll( partReferences );
+        }
     }
 
     public Map<String, ValuePartReferenceIndexTerm> getPartReferences() {
-        if( fieldNamepartReferenceMap == null ) {
+        if ( fieldNamepartReferenceMap == null ) {
             return Collections.emptyMap();
         }
         return fieldNamepartReferenceMap;
@@ -66,14 +73,14 @@ public class ResourceReference implements IndexElementsGenerator {
         final List<Pair<String, String>> indexElements = new ArrayList<Pair<String, String>>();
 
         // Impact Analysis references
-        if( resourceFQN != null ) {
-            ValueReferenceIndexTerm refTerm = new ValueReferenceIndexTerm(this.resourceFQN, this.resourceType);
-            indexElements.add(new Pair<String, String>(refTerm.getTerm(), refTerm.getValue()));
+        if ( resourceFQN != null ) {
+            ValueReferenceIndexTerm refTerm = new ValueReferenceIndexTerm( this.resourceFQN, this.resourceType );
+            indexElements.add( new Pair<String, String>( refTerm.getTerm(), refTerm.getValue() ) );
         }
 
-        if( this.fieldNamepartReferenceMap != null ) {
-            for( ValuePartReferenceIndexTerm refPartTerm : fieldNamepartReferenceMap.values() ) {
-                indexElements.add(new Pair<String, String>(refPartTerm.getTerm(), refPartTerm.getValue()));
+        if ( this.fieldNamepartReferenceMap != null ) {
+            for ( ValuePartReferenceIndexTerm refPartTerm : fieldNamepartReferenceMap.values() ) {
+                indexElements.add( new Pair<String, String>( refPartTerm.getTerm(), refPartTerm.getValue() ) );
             }
         }
 
