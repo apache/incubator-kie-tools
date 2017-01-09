@@ -26,9 +26,12 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.ConditionExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.ConditionExpressionLanguage;
@@ -152,10 +155,25 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
             diagramPropertiesMap.put( Name.class, "processn" );
             // The process variables property in the diagram stencil is "vardefs".
             diagramPropertiesMap.put( ProcessVariables.class, "vardefs" );
+
             Map<Class<?>, String> userTaskPropertiesMap = new HashMap<Class<?>, String>();
             put( UserTask.class, userTaskPropertiesMap );
             userTaskPropertiesMap.put( AssignmentsInfo.class, "assignmentsinfo" );
             userTaskPropertiesMap.put( TaskName.class, "taskname" );
+
+            Map<Class<?>, String> businesRuleTaskPropertiesMap = new HashMap<Class<?>, String>();
+            put( BusinessRuleTask.class, businesRuleTaskPropertiesMap );
+            businesRuleTaskPropertiesMap.put( AssignmentsInfo.class, "assignmentsinfo" );
+
+            Map<Class<?>, String> startEventPropertiesMap = new HashMap<Class<?>, String>();
+            put( StartNoneEvent.class, startEventPropertiesMap );
+            startEventPropertiesMap.put( AssignmentsInfo.class, "assignmentsinfo" );
+
+            Map<Class<?>, String> endEventPropertiesMap = new HashMap<Class<?>, String>();
+            put( EndNoneEvent.class, endEventPropertiesMap );
+            put( EndTerminateEvent.class, endEventPropertiesMap );
+            endEventPropertiesMap.put( AssignmentsInfo.class, "assignmentsinfo" );
+
             Map<Class<?>, String> exclusiveDatabasedGatewayPropertiesMap = new HashMap<Class<?>, String>();
             put( ExclusiveDatabasedGateway.class, exclusiveDatabasedGatewayPropertiesMap );
             exclusiveDatabasedGatewayPropertiesMap.put( DefaultRoute.class, "defaultgate" );

@@ -24,6 +24,7 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.AssigneeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
@@ -49,7 +50,7 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
 @Definition( graphFactory = NodeFactory.class, builder = UserTask.UserTaskBuilder.class )
 @CanDock( roles = { "IntermediateEventOnActivityBoundary" } )
 @Morph( base = BaseTask.class )
-public class UserTask extends BaseTask {
+public class UserTask extends BaseTask implements DataIOModel {
 
     @Title
     public static final transient String title = "User Task";
@@ -102,6 +103,26 @@ public class UserTask extends BaseTask {
         this.executionSet = executionSet;
         this.assigneeSet = assigneeSet;
         this.dataIOSet = dataIOSet;
+    }
+
+    @Override
+    public boolean hasInputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleInputVar() {
+        return false;
+    }
+
+    @Override
+    public boolean hasOutputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleOutputVar(){
+        return false;
     }
 
     public String getTitle() {

@@ -21,6 +21,7 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -54,6 +55,7 @@ public class StartNoneEvent extends BaseStartEvent {
         @Override
         public StartNoneEvent build() {
             return new StartNoneEvent( new BPMNGeneralSet(),
+                    new DataIOSet(),
                     new BackgroundSet( BG_COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
                     new CatchEventAttributes(),
@@ -66,11 +68,12 @@ public class StartNoneEvent extends BaseStartEvent {
     }
 
     public StartNoneEvent( @MapsTo( "general" ) BPMNGeneralSet general,
+                           @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
                            @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                            @MapsTo( "fontSet" ) FontSet fontSet,
                            @MapsTo( "catchEventAttributes" ) CatchEventAttributes catchEventAttributes,
                            @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
-        super( general, backgroundSet, fontSet, catchEventAttributes, dimensionsSet );
+        super( general, dataIOSet, backgroundSet, fontSet, catchEventAttributes, dimensionsSet );
     }
 
     public String getTitle() {

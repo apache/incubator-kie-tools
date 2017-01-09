@@ -48,12 +48,15 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.AssigneeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
@@ -128,6 +131,9 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_NOT_BOUNDARY_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/notBoundaryIntmEvent.bpmn";
     private static final String BPMN_PROCESSVARIABLES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processVariables.bpmn";
     private static final String BPMN_USERTASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignments.bpmn";
+    private static final String BPMN_BUSINESSRULETASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTaskAssignments.bpmn";
+    private static final String BPMN_STARTEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startEventAssignments.bpmn";
+    private static final String BPMN_ENDEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endEventAssignments.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
     private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
@@ -293,14 +299,14 @@ public class BPMNDiagramMarshallerTest {
         GraphIndexBuilder<?> indexBuilder = new MapIndexBuilder();
         // The tested BPMN marshaller.
         tested = new BPMNDiagramMarshaller( new XMLEncoderDiagramMetadataMarshaller(),
-                                            objectBuilderFactory,
-                                            definitionManager,
-                                            graphUtils,
-                                            indexBuilder,
-                                            oryxManager,
-                                            applicationFactoryManager,
-                                            commandManager,
-                                            commandFactory );
+                objectBuilderFactory,
+                definitionManager,
+                graphUtils,
+                indexBuilder,
+                oryxManager,
+                applicationFactoryManager,
+                commandManager,
+                commandFactory );
     }
 
     // 4 nodes expected: BPMNDiagram, StartNode, Task and EndNode
@@ -387,8 +393,8 @@ public class BPMNDiagramMarshallerTest {
         }
         assertEquals( "BPSimple", diagramProperties.getName().getValue() );
         assertEquals( "\n" +
-                              "        This is a simple process\n" +
-                              "    ", diagramProperties.getDocumentation().getValue() );
+                "        This is a simple process\n" +
+                "    ", diagramProperties.getDocumentation().getValue() );
         assertEquals( "JDLProj.BPSimple", diagramProperties.getId().getValue() );
         assertEquals( "org.jbpm", diagramProperties.getPackageProperty().getValue() );
         assertEquals( Boolean.valueOf( true ), diagramProperties.getExecutable().getValue() );
@@ -406,6 +412,53 @@ public class BPMNDiagramMarshallerTest {
         DataIOSet dataIOSet = selfEvaluationTask.getDataIOSet();
         AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
         assertEquals( assignmentsinfo.getValue(), "|reason:com.test.Reason,Comment:Object,Skippable:Object||performance:Object|[din]reason->reason,[dout]performance->performance" );
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    public void testUnmarshallBusinessRuleTaskAssignments() throws Exception {
+        Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_BUSINESSRULETASKASSIGNMENTS );
+        assertDiagram( diagram, 4 );
+        assertEquals( "BusinessRuleTaskAssignments", diagram.getMetadata().getTitle() );
+        Node<? extends Definition, ?> businessRuleNode = diagram.getGraph().getNode( "_45C2C340-D1D0-4D63-8419-EF38F9E73507" );
+        BusinessRuleTask businessRuleTask = ( BusinessRuleTask ) businessRuleNode.getContent().getDefinition();
+        assertEquals( businessRuleTask.getTaskType().getValue(), TaskTypes.BUSINESS_RULE);
+        DataIOSet dataIOSet = businessRuleTask.getDataIOSet();
+        AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
+        assertEquals( assignmentsinfo.getValue(), "|input1:String,input2:String||output1:String,output2:String|[din]pv1->input1,[din]pv2->input2,[dout]output1->pv2,[dout]output2->pv2" );
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    public void testUnmarshallStartEventAssignments() throws Exception {
+        Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_STARTEVENTASSIGNMENTS );
+        assertDiagram( diagram, 8 );
+        assertEquals( "StartEventAssignments", diagram.getMetadata().getTitle() );
+        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode( "_106AADA7-E381-4736-8BD6-7EB47A1D096B" );
+        StartNoneEvent startNoneEvent = ( StartNoneEvent ) startEventNode.getContent().getDefinition();
+        DataIOSet dataIOSet = startNoneEvent.getDataIOSet();
+        AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
+        assertEquals( "||StartEventOutput1:String||[dout]StartEventOutput1->employee", assignmentsinfo.getValue() );
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    public void testUnmarshallEndEventAssignments() throws Exception {
+        Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_ENDEVENTASSIGNMENTS );
+        assertDiagram( diagram, 8 );
+        assertEquals( "EndEventAssignments", diagram.getMetadata().getTitle() );
+
+        Node<? extends Definition, ?> endTerminateEventNode = diagram.getGraph().getNode( "_0493ECBF-3C0F-4086-9979-2391CE740AA8" );
+        EndTerminateEvent endTerminateEvent = ( EndTerminateEvent ) endTerminateEventNode.getContent().getDefinition();
+        DataIOSet dataIOSet = endTerminateEvent.getDataIOSet();
+        AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
+        assertEquals( "EndTermEventInput1:String||||[din]employee->EndTermEventInput1", assignmentsinfo.getValue() );
+
+        Node<? extends Definition, ?> endNoneEventNode = diagram.getGraph().getNode( "_4824B9FD-6097-4E06-9E7E-2CE5E7601BC5" );
+        EndNoneEvent endNoneEvent = ( EndNoneEvent ) endNoneEventNode.getContent().getDefinition();
+        DataIOSet dataIOSet2 = endNoneEvent.getDataIOSet();
+        AssignmentsInfo assignmentsinfo2 = dataIOSet2.getAssignmentsinfo();
+        assertEquals( "EndNoneEventInput1:String||||[din]reason->EndNoneEventInput1", assignmentsinfo2.getValue() );
     }
 
     @Test
@@ -668,6 +721,49 @@ public class BPMNDiagramMarshallerTest {
         assertTrue( result.contains( "<bpmn2:targetRef>_6063D302-9D81-4C86-920B-E808A45377C2_reasonInputX</bpmn2:targetRef>" ) );
         assertTrue( result.contains( "<bpmn2:sourceRef>_6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputX</bpmn2:sourceRef>" ) );
         assertTrue( result.contains( "<bpmn2:targetRef>performance</bpmn2:targetRef>" ) );
+    }
+
+    @Test
+    public void testMarshallBusinessRuleTaskAssignments() throws Exception {
+        Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_BUSINESSRULETASKASSIGNMENTS );
+        String result = tested.marshall( diagram );
+        assertDiagram( result, 1, 3, 2 );
+        assertTrue( result.contains( "<bpmn2:dataInput id=\"_45C2C340-D1D0-4D63-8419-EF38F9E73507_input1InputX\" drools:dtype=\"String\" itemSubjectRef=\"__45C2C340-D1D0-4D63-8419-EF38F9E73507_input1InputXItem\" name=\"input1\"/>" ) );
+        assertTrue( result.contains( "<bpmn2:dataInput id=\"_45C2C340-D1D0-4D63-8419-EF38F9E73507_input2InputX\" drools:dtype=\"String\" itemSubjectRef=\"__45C2C340-D1D0-4D63-8419-EF38F9E73507_input2InputXItem\" name=\"input2\"/>" ) );
+        assertTrue( result.contains( "<bpmn2:dataOutput id=\"_45C2C340-D1D0-4D63-8419-EF38F9E73507_output1OutputX\" drools:dtype=\"String\" itemSubjectRef=\"__45C2C340-D1D0-4D63-8419-EF38F9E73507_output1OutputXItem\" name=\"output1\"/>" ) );
+        assertTrue( result.contains( "<bpmn2:dataOutput id=\"_45C2C340-D1D0-4D63-8419-EF38F9E73507_output2OutputX\" drools:dtype=\"String\" itemSubjectRef=\"__45C2C340-D1D0-4D63-8419-EF38F9E73507_output2OutputXItem\" name=\"output2\"/>" ) );
+        assertTrue( result.contains( "<bpmn2:dataInputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_input1InputX</bpmn2:dataInputRefs>" ) );
+        assertTrue( result.contains( "<bpmn2:dataInputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_input2InputX</bpmn2:dataInputRefs>" ) );
+        assertTrue( result.contains( "<bpmn2:dataOutputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_output1OutputX</bpmn2:dataOutputRefs>" ) );
+        assertTrue( result.contains( "<bpmn2:dataOutputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_output2OutputX</bpmn2:dataOutputRefs>" ) );
+    }
+
+    @Test
+    public void testMarshallStartEventAssignments() throws Exception {
+        Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_STARTEVENTASSIGNMENTS );
+        String result = tested.marshall( diagram );
+        assertDiagram( result, 1, 7, 7 );
+        assertTrue( result.contains( "<bpmn2:dataOutput id=\"_106AADA7-E381-4736-8BD6-7EB47A1D096B_StartEventOutput1\" drools:dtype=\"String\" name=\"StartEventOutput1\"/>" ) );
+        assertTrue( result.contains( "<bpmn2:sourceRef>_106AADA7-E381-4736-8BD6-7EB47A1D096B_StartEventOutput1</bpmn2:sourceRef>" ) );
+        assertTrue( result.contains( "<bpmn2:targetRef>employee</bpmn2:targetRef>" ) );
+        assertTrue( result.contains( "<bpmn2:dataOutputRefs>_106AADA7-E381-4736-8BD6-7EB47A1D096B_StartEventOutput1</bpmn2:dataOutputRefs>" ) );
+
+    }
+
+    @Test
+    public void testMarshallEndEventAssignments() throws Exception {
+        Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_ENDEVENTASSIGNMENTS );
+        String result = tested.marshall( diagram );
+        assertDiagram( result, 1, 7, 6 );
+        assertTrue( result.contains( "<bpmn2:dataInput id=\"_0493ECBF-3C0F-4086-9979-2391CE740AA8_EndTermEventInput1InputX\" drools:dtype=\"String\" name=\"EndTermEventInput1\"/>" ) );
+        assertTrue( result.contains( "<bpmn2:sourceRef>employee</bpmn2:sourceRef>" ) );
+        assertTrue( result.contains( "<bpmn2:targetRef>_0493ECBF-3C0F-4086-9979-2391CE740AA8_EndTermEventInput1InputX</bpmn2:targetRef>" ) );
+        assertTrue( result.contains( "<bpmn2:dataInputRefs>_0493ECBF-3C0F-4086-9979-2391CE740AA8_EndTermEventInput1InputX</bpmn2:dataInputRefs>" ) );
+
+        assertTrue( result.contains( "<bpmn2:dataInput id=\"_4824B9FD-6097-4E06-9E7E-2CE5E7601BC5_EndNoneEventInput1InputX\" drools:dtype=\"String\" name=\"EndNoneEventInput1\"/>" ) );
+        assertTrue( result.contains( "<bpmn2:sourceRef>reason</bpmn2:sourceRef>" ) );
+        assertTrue( result.contains( "<bpmn2:targetRef>_4824B9FD-6097-4E06-9E7E-2CE5E7601BC5_EndNoneEventInput1InputX</bpmn2:targetRef>" ) );
+        assertTrue( result.contains( "<bpmn2:dataInputRefs>_4824B9FD-6097-4E06-9E7E-2CE5E7601BC5_EndNoneEventInput1InputX</bpmn2:dataInputRefs>" ) );
     }
 
     @Test

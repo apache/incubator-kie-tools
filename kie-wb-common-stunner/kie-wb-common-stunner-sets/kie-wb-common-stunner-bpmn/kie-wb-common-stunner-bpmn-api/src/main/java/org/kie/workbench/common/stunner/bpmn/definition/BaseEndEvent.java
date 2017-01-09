@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -33,24 +35,29 @@ import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
 
 @MorphBase( defaultType = EndNoneEvent.class
         /* TODO: Disabled morphing from end to start events for M1
         targets = { BaseStartEvent.class } */
 )
-public abstract class BaseEndEvent implements BPMNDefinition {
+public abstract class BaseEndEvent implements BPMNDefinition, DataIOModel {
 
     @Category
     public static final transient String category = Categories.EVENTS;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
+    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 1 )
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
+    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2 )
+    @Valid
+    protected DataIOSet dataIOSet;
+
+    @PropertySet
+    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 3 )
     @Valid
     protected BackgroundSet backgroundSet;
 
@@ -89,15 +96,37 @@ public abstract class BaseEndEvent implements BPMNDefinition {
     }
 
     public BaseEndEvent( @MapsTo( "general" ) BPMNGeneralSet general,
+                         @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
                          @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                          @MapsTo( "fontSet" ) FontSet fontSet,
                          @MapsTo( "throwEventAttributes" ) ThrowEventAttributes throwEventAttributes,
                          @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
         this.general = general;
+        this.dataIOSet = dataIOSet;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.throwEventAttributes = throwEventAttributes;
         this.dimensionsSet = dimensionsSet;
+    }
+
+    @Override
+    public boolean hasInputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleInputVar() {
+        return true;
+    }
+
+    @Override
+    public boolean hasOutputVars() {
+        return false;
+    }
+
+    @Override
+    public boolean isSingleOutputVar(){
+        return false;
     }
 
     public String getCategory() {
@@ -110,6 +139,10 @@ public abstract class BaseEndEvent implements BPMNDefinition {
 
     public BPMNGeneralSet getGeneral() {
         return general;
+    }
+
+    public DataIOSet getDataIOSet() {
+        return dataIOSet;
     }
 
     public BackgroundSet getBackgroundSet() {
@@ -126,6 +159,10 @@ public abstract class BaseEndEvent implements BPMNDefinition {
 
     public void setGeneral( BPMNGeneralSet general ) {
         this.general = general;
+    }
+
+    public void setDataIOSet( DataIOSet dataIOSet ) {
+        this.dataIOSet = dataIOSet;
     }
 
     public void setBackgroundSet( BackgroundSet backgroundSet ) {
