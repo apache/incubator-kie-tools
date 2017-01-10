@@ -576,6 +576,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
             activeDocument.setLatestPath( versionRecordManager.getPathToLatest() );
             activeDocument.setCurrentPath( versionRecordManager.getPathToLatest() );
             initialiseVersionManager( activeDocument );
+            activeDocument.setReadOnly( false );
             refreshDocument( activeDocument );
             notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
         }
