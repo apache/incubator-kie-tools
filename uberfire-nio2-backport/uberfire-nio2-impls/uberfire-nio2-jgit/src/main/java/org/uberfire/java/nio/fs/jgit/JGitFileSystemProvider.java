@@ -1251,8 +1251,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         }
 
         try {
-            final OutputStream outputStream = newOutputStream( path.resolve( ".gitignore" ) );
-            outputStream.write( "# empty\n".getBytes() );
+            final OutputStream outputStream = newOutputStream( path.resolve( ".gitkeep" ) );
             outputStream.close();
         } catch ( final Exception e ) {
             throw new IOException( "Failed to write to or close the output stream.", e );
@@ -1322,8 +1321,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 return;
             }
             final List<JGitPathInfo> content = listPathContent( path.getFileSystem().gitRepo(), path.getRefTree(), path.getPath() );
-            if ( content.size() == 1 && content.get( 0 ).getPath().equals( path.getPath().substring( 1 ) + "/.gitignore" ) ) {
-                delete( path.resolve( ".gitignore" ) );
+            if ( content.size() == 1 && content.get( 0 ).getPath().equals( path.getPath().substring( 1 ) + "/.gitkeep" ) ) {
+                delete( path.resolve( ".gitkeep" ) );
                 deleteResource( path, options );
                 return;
             }
@@ -1414,8 +1413,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 return true;
             }
             final List<JGitPathInfo> content = listPathContent( path.getFileSystem().gitRepo(), path.getRefTree(), path.getPath() );
-            if ( content.size() == 1 && content.get( 0 ).getPath().equals( path.getPath().substring( 1 ) + "/.gitignore" ) ) {
-                delete( path.resolve( ".gitignore" ) );
+            if ( content.size() == 1 && content.get( 0 ).getPath().equals( path.getPath().substring( 1 ) + "/.gitkeep" ) ) {
+                delete( path.resolve( ".gitkeep" ) );
                 return true;
             }
             throw new DirectoryNotEmptyException( path.toString() );

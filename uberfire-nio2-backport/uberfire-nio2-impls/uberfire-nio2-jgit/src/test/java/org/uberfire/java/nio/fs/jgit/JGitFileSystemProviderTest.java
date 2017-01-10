@@ -856,6 +856,9 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final Pair<PathType, ObjectId> resultAfter = JGitUtil.checkPath( path.getFileSystem().gitRepo(), path.getRefTree(), path.getPath() );
         assertThat( resultAfter.getK1() ).isEqualTo( PathType.DIRECTORY );
 
+        final Path gitkeepPath = path.resolve( ".gitkeep" );
+        assertThat( provider.exists( gitkeepPath ) ).isEqualTo( true );
+
         try {
             provider.createDirectory( path );
             failBecauseExceptionWasNotThrown( FileAlreadyExistsException.class );
