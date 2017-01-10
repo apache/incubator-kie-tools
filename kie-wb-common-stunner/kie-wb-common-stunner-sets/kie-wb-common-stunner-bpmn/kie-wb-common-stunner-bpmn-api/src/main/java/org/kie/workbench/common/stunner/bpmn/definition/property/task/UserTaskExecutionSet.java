@@ -42,7 +42,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     protected TaskName taskName;
 
     public UserTaskExecutionSet() {
-        this( new TaskName( "" ) );
+        this( new TaskName( "Task" ) );
     }
 
     public UserTaskExecutionSet( @MapsTo( "taskName" ) TaskName taskName ) {

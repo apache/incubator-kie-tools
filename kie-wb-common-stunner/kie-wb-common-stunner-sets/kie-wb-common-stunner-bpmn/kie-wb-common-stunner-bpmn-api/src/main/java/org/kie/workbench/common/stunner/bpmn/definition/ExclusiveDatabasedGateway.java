@@ -64,7 +64,7 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
 
         @Override
         public ExclusiveDatabasedGateway build() {
-            return new ExclusiveDatabasedGateway( new BPMNGeneralSet(),
+            return new ExclusiveDatabasedGateway( new BPMNGeneralSet( "Gateway" ),
                     new ExclusiveGatewayExecutionSet(),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),

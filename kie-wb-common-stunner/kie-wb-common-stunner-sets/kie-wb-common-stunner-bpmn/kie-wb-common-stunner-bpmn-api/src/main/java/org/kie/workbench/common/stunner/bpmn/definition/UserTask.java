@@ -57,6 +57,7 @@ public class UserTask extends BaseTask implements DataIOModel {
 
     @PropertySet
     @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
+    @Valid
     protected UserTaskExecutionSet executionSet;
 
     @PropertySet

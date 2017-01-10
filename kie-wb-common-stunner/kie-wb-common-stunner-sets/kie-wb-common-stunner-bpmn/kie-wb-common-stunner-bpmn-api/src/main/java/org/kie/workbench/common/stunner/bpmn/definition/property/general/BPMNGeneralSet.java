@@ -50,7 +50,7 @@ public class BPMNGeneralSet implements BPMNPropertySet {
     private Documentation documentation;
 
     public BPMNGeneralSet() {
-        this(new Name(), new Documentation());
+        this(new Name( "" ), new Documentation());
     }
 
     public BPMNGeneralSet(@MapsTo("name") Name name,

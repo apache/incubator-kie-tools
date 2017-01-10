@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.diagram;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
@@ -48,9 +51,11 @@ public class Package implements BPMNProperty {
     public static final String DEFAULT_PACKAGE = "org.jbpm";
 
     @DefaultValue
-    public static final transient String defaultValue = "";
+    public static final transient String defaultValue = DEFAULT_PACKAGE;
 
     @Value
+    @NotNull
+    @NotEmpty
     private String value = defaultValue;
 
     public Package() {

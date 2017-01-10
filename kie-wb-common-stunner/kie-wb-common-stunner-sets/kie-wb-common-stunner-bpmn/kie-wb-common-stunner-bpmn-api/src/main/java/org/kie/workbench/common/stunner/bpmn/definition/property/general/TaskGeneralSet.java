@@ -49,7 +49,7 @@ public class TaskGeneralSet implements BPMNPropertySet {
     private Documentation documentation;
 
     public TaskGeneralSet() {
-        this( new Name(), new Documentation());
+        this( new Name( "" ), new Documentation() );
     }
 
     public TaskGeneralSet(@MapsTo("name") Name name,

@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
@@ -51,9 +55,12 @@ public class TaskName implements BPMNProperty {
     public static final PropertyType type = new StringType();
 
     @DefaultValue
-    public static final transient String defaultValue = "";
+    public static final transient String defaultValue = "TaskName";
 
     @Value
+    @NotNull
+    @NotEmpty
+    @Pattern(regexp = "[a-zA-Z0-9._-]+")
     private String value = defaultValue;
 
     public TaskName() {

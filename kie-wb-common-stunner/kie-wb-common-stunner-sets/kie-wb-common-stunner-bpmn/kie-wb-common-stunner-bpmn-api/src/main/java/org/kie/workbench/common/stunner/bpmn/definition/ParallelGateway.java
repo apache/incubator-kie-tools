@@ -52,7 +52,7 @@ public class ParallelGateway extends BaseGateway {
 
         @Override
         public ParallelGateway build() {
-            return new ParallelGateway( new BPMNGeneralSet(),
+            return new ParallelGateway( new BPMNGeneralSet( "Gateway" ),
                     new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
                     new FontSet(),
                     new CircleDimensionSet( new Radius( RADIUS ) ) );

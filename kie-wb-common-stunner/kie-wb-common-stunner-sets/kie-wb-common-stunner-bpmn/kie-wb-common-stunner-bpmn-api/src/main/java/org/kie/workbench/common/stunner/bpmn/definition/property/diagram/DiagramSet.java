@@ -69,9 +69,9 @@ public class DiagramSet {
     private Executable executable;
 
     public DiagramSet() {
-        this( new Name(), new Documentation(),
-                new Id(), new Package(),
-                new Version(), new Executable() );
+        this( new Name(""), new Documentation(),
+                new Id(""), new Package(""),
+                new Version(  Version.defaultValue ), new Executable() );
     }
 
     public DiagramSet( @MapsTo( "name" ) Name name,
@@ -88,27 +88,10 @@ public class DiagramSet {
         this.executable = executable;
     }
 
-    public DiagramSet( String name,
-                       String documentation,
-                       String id,
-                       String packageProperty,
-                       String version,
-                       Boolean executable ) {
-        this.name = new Name( name );
-        this.documentation = new Documentation( documentation );
-        this.id = new Id( id );
-        this.packageProperty = new Package( packageProperty );
-        this.version = new Version( version );
-        this.executable = new Executable( executable );
-    }
-
     public DiagramSet( String name ) {
-        this.name = new Name( name );
-        this.documentation = new Documentation();
-        this.id = new Id();
-        this.packageProperty = new Package();
-        this.version = new Version();
-        this.executable = new Executable();
+        this( new Name( name ), new Documentation(),
+                new Id( "" ), new Package( "" ),
+                new Version(  Version.defaultValue ), new Executable() );
     }
 
     public String getPropertySetName() {
