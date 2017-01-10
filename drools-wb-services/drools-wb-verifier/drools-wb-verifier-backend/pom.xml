@@ -48,7 +48,6 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-wb-verifier-core</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
