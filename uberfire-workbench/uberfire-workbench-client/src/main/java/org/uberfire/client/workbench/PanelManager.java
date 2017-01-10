@@ -17,6 +17,7 @@
 package org.uberfire.client.workbench;
 
 import com.google.gwt.user.client.ui.HasWidgets;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
@@ -131,6 +132,23 @@ public interface PanelManager {
      *         its parent will be null; {@code isRoot()} will return false.
      */
     PanelDefinition addCustomPanel( HasWidgets container, String panelType );
+
+    /**
+     * Creates an UberFire panel and installs its view in the given html element container.
+     * <p>
+     * <h3>Custom Panel Lifecycle</h3>
+     * <p>
+     * Custom panels can be disposed like any other panel: by calling {@link #removeWorkbenchPanel(PanelDefinition)}.
+     * Additionally, custom panels are monitored for DOM detachment. When a custom panel's view is removed from the DOM
+     * (whether directly removed from its parent or some ancestor is removed,) all the panel's parts are closed and then
+     * the associated panel is disposed.
+     *
+     * @param container
+     *            the html element container to install the new panel in. The new panel will fill the container.
+     * @return the definition for the newly constructed panel. Never null. The panel's type will be {@code panelType};
+     *         its parent will be null; {@code isRoot()} will return false.
+     */
+    PanelDefinition addCustomPanel( HTMLElement container, String panelType );
 
     /**
      * Removes the panel associated with the given definition, removing the panel's presenter and view from the

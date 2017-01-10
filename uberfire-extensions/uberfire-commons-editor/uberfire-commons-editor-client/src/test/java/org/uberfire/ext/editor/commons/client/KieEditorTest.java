@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -31,11 +31,17 @@ import org.junit.runner.RunWith;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteAcceptedEvent;
+import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteIgnoredEvent;
+import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEvent;
+import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameIgnoredEvent;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -47,9 +53,9 @@ public class KieEditorTest {
     private RestoreEvent restoreEvent;
     private ObservablePath observablePath;
 
-    public static class NotificationEventMock extends EventSourceMock<NotificationEvent> {
+    public static class EventMock<T> extends EventSourceMock<T> {
 
-        @Override public void fire( NotificationEvent event ) {
+        @Override public void fire( T event ) {
             // Overriding for testing.
         }
     }
@@ -78,10 +84,25 @@ public class KieEditorTest {
             protected void showConcurrentUpdatePopup() {
                 // Overriding for testing.
             }
+
+            @Override
+            void disableMenus() {
+
+            }
+
+            @Override
+            public void reload() {
+
+            }
         } );
 
+        kieEditor.placeManager = mock( PlaceManager.class );
+        kieEditor.concurrentRenameIgnoredEvent = spy( new EventMock<>() );
+        kieEditor.concurrentRenameAcceptedEvent = spy( new EventMock<>() );
+        kieEditor.concurrentDeleteIgnoredEvent = spy( new EventMock<>() );
+        kieEditor.concurrentDeleteAcceptedEvent = spy( new EventMock<>() );
         kieEditor.versionRecordManager = mock( VersionRecordManager.class );
-        kieEditor.notification = new NotificationEventMock();
+        kieEditor.notification = new EventMock<>();
         observablePath = mock( ObservablePath.class );
         PlaceRequest placeRequest = mock( PlaceRequest.class );
         ClientResourceType resourceType = mock( ClientResourceType.class );
@@ -238,5 +259,45 @@ public class KieEditorTest {
     public void testOnValidateMethodIsCalled() throws Exception {
         kieEditor.onValidate();
         verify( kieEditor ).onValidate();
+    }
+
+    @Test
+    public void testOnConcurrentRenameIgnoreCommand() {
+        final Command onConcurrentRenameIgnoreCommand = kieEditor.onConcurrentRenameIgnoreCommand( observablePath );
+
+        onConcurrentRenameIgnoreCommand.execute();
+
+        verify( kieEditor ).disableMenus();
+        verify( kieEditor.concurrentRenameIgnoredEvent ).fire( eq( new ConcurrentRenameIgnoredEvent( observablePath ) ) );
+    }
+
+    @Test
+    public void testOnConcurrentRenameAcceptedCommand() {
+        final Command onConcurrentRenameCloseCommand = kieEditor.onConcurrentRenameCloseCommand( observablePath );
+
+        onConcurrentRenameCloseCommand.execute();
+
+        verify( kieEditor ).reload();
+        verify( kieEditor.concurrentRenameAcceptedEvent ).fire( eq( new ConcurrentRenameAcceptedEvent( observablePath ) ) );
+    }
+
+    @Test
+    public void testOnConcurrentDeleteIgnoreCommand() {
+        final Command onConcurrentDeleteIgnoreCommand = kieEditor.onConcurrentDeleteIgnoreCommand( observablePath );
+
+        onConcurrentDeleteIgnoreCommand.execute();
+
+        verify( kieEditor ).disableMenus();
+        verify( kieEditor.concurrentDeleteIgnoredEvent ).fire( eq( new ConcurrentDeleteIgnoredEvent( observablePath ) ) );
+    }
+
+    @Test
+    public void testOnConcurrentDeleteAcceptedCommand() {
+        final Command onConcurrentDeleteCloseCommand = kieEditor.onConcurrentDeleteCloseCommand( observablePath );
+
+        onConcurrentDeleteCloseCommand.execute();
+
+        verify( kieEditor.placeManager ).closePlace( any( PlaceRequest.class ) );
+        verify( kieEditor.concurrentDeleteAcceptedEvent ).fire( eq( new ConcurrentDeleteAcceptedEvent( observablePath ) ) );
     }
 }

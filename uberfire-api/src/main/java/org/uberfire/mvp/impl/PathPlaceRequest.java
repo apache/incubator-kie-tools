@@ -124,6 +124,7 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + ((getPath() != null) ? getPath().hashCode() : 0);
+        result = ~~result;
         return result;
     }
     

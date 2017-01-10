@@ -20,6 +20,7 @@ import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.Shared;
 import org.jboss.errai.ioc.client.api.SharedSingleton;
@@ -128,6 +129,12 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     @Override
     public void goTo( PlaceRequest place,
                       HasWidgets addTo ) {
+        fail();
+    }
+
+    @Override
+    public void goTo( PlaceRequest place,
+                      HTMLElement addTo ) {
         fail();
     }
 

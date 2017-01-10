@@ -20,6 +20,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 
 import java.util.Collection;
 
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -104,6 +105,9 @@ public interface PlaceManager {
     @JsIgnore
     void goTo( final PlaceRequest place,
                final HasWidgets addTo );
+    @JsIgnore
+    void goTo( final PlaceRequest place,
+               final HTMLElement addTo );
 
     /**
      * Finds the <i>currently open</i> activity that handles the given PlaceRequest by ID. No attempt is made to match

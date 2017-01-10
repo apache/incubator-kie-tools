@@ -15,12 +15,28 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import jsinterop.annotations.JsMethod;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.SharedSingleton;
@@ -31,7 +47,12 @@ import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
-import org.uberfire.client.workbench.events.*;
+import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
+import org.uberfire.client.workbench.events.ClosePlaceEvent;
+import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
+import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.impl.UnanchoredStaticWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
@@ -41,23 +62,17 @@ import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.ForcedPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.model.*;
+import org.uberfire.workbench.model.ActivityResourceType;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.function.Supplier;
-
-import static java.util.Collections.unmodifiableCollection;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.plugin.PluginUtil.ensureIterable;
-import static org.uberfire.plugin.PluginUtil.toInteger;
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.plugin.PluginUtil.*;
 
 @SharedSingleton
 @EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
@@ -187,11 +202,21 @@ public class PlaceManagerImpl
     @Override
     public void goTo( PlaceRequest place,
                       HasWidgets addTo ) {
+        goToTargetPanel( place, panelManager.addCustomPanel( addTo, UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) );
+    }
+
+    @Override
+    public void goTo( PlaceRequest place,
+                      HTMLElement addTo ) {
+        goToTargetPanel( place, panelManager.addCustomPanel( addTo, UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) );
+    }
+
+    private void goToTargetPanel( final PlaceRequest place,
+                                  final PanelDefinition adoptedPanel ) {
         if ( existingWorkbenchActivities.containsKey( place ) ) {
             // if already open, behaviour is to select the place where it already lives
             goTo( place, null, Commands.DO_NOTHING );
         } else {
-            PanelDefinition adoptedPanel = panelManager.addCustomPanel( addTo, UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
             customPanels.put( place, adoptedPanel );
             goTo( place, adoptedPanel, Commands.DO_NOTHING );
         }

@@ -18,6 +18,7 @@ package org.uberfire.client.workbench.panels.impl;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HasWidgets;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
@@ -847,6 +848,103 @@ public class PlaceManagerTest {
                 .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
 
         HasWidgets customContainer = mock( HasWidgets.class );
+
+        placeManager.goTo( emeraldCityPlace, customContainer );
+        placeManager.closeAllPlaces();
+
+        assertTrue( customPanelDef.getParts().isEmpty() );
+        verify( panelManager ).removeWorkbenchPanel( customPanelDef );
+    }
+
+    @Test
+    public void testLaunchActivityInCustomPanelInsideHTMLElement() throws Exception {
+        PanelDefinition customPanelDef = new PanelDefinitionImpl(
+                UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
+        when( panelManager.addCustomPanel( any( HTMLElement.class ),
+                                           eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) )
+                .thenReturn( customPanelDef );
+
+        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
+        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
+        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
+        when( activityManager.getActivities( emeraldCityPlace ) )
+                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
+        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+
+        HTMLElement customContainer = mock( HTMLElement.class );
+
+        placeManager.goTo( emeraldCityPlace, customContainer );
+
+        verifyActivityLaunchSideEffects( emeraldCityPlace, emeraldCityActivity, customPanelDef );
+        verify( panelManager ).addWorkbenchPart( eq( emeraldCityPlace ),
+                                                 eq( new PartDefinitionImpl( emeraldCityPlace ) ),
+                                                 eq( customPanelDef ),
+                                                 isNull( Menus.class ),
+                                                 any( UIPart.class ),
+                                                 isNull( String.class ),
+                                                 isNull( Integer.class ),
+                                                 isNull( Integer.class ) );
+        assertNull( customPanelDef.getParent() );
+    }
+
+    @Test
+    public void testLaunchExistingActivityInCustomPanelInsideHTMLElement() throws Exception {
+        HTMLElement customContainer = mock( HTMLElement.class );
+
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        placeManager.goTo( kansas, customContainer );
+
+        verify( panelManager, never() )
+                .addCustomPanel( customContainer, StaticWorkbenchPanelPresenter.class.getName() );
+        verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
+        verify( selectWorkbenchPartEvent ).fire( refEq( new SelectPlaceEvent( kansas ) ) );
+    }
+
+    @Test
+    public void testClosingActivityInCustomPanelInsideHTMLElement() throws Exception {
+        PanelDefinition customPanelDef = new PanelDefinitionImpl(
+                UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
+        when( panelManager.addCustomPanel( any( HTMLElement.class ),
+                                           eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) )
+                .thenReturn( customPanelDef );
+
+        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
+        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
+        when( emeraldCityActivity.onMayClose() ).thenReturn( true );
+        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
+        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( activityManager.getActivities( emeraldCityPlace ) )
+                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
+
+        HTMLElement customContainer = mock( HTMLElement.class );
+
+        placeManager.goTo( emeraldCityPlace, customContainer );
+        placeManager.closePlace( emeraldCityPlace );
+
+        assertTrue( customPanelDef.getParts().isEmpty() );
+        verify( panelManager ).removeWorkbenchPanel( customPanelDef );
+    }
+
+    @Test
+    public void testClosingAllPlacesIncludesCustomPanelsInsideHTMLElements() throws Exception {
+        PanelDefinition customPanelDef = new PanelDefinitionImpl(
+                UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
+        when( panelManager.addCustomPanel( any( HTMLElement.class ),
+                                           eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) )
+                .thenReturn( customPanelDef );
+
+        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
+        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
+        when( emeraldCityActivity.onMayClose() ).thenReturn( true );
+        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
+        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( activityManager.getActivities( emeraldCityPlace ) )
+                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
+
+        HTMLElement customContainer = mock( HTMLElement.class );
 
         placeManager.goTo( emeraldCityPlace, customContainer );
         placeManager.closeAllPlaces();

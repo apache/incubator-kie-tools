@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.widgets.common.client.breadcrumbs;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.IsElement;
@@ -30,14 +33,12 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.workbench.docks.UberfireDockContainerReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbsPresenter;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
@@ -63,11 +64,11 @@ public class UberfireBreadcrumbsTest {
                 .thenReturn( mock( BreadcrumbsPresenter.class ) ).thenReturn( mock( BreadcrumbsPresenter.class ) );
 
         view = mock( UberfireBreadcrumbs.View.class );
-        uberfireBreadcrumbs = new UberfireBreadcrumbs( uberfireDocksContainer,
-                                                       breadcrumbsPresenters,
-                                                       placeManager,
-                                                       view ) {
-        };
+        uberfireBreadcrumbs = spy( new UberfireBreadcrumbs( uberfireDocksContainer,
+                                                            breadcrumbsPresenters,
+                                                            placeManager,
+                                                            view ) {
+        } );
     }
 
     @Test
@@ -94,8 +95,7 @@ public class UberfireBreadcrumbsTest {
 
         uberfireBreadcrumbs.currentPerspective = "myperspective";
         uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
-        uberfireBreadcrumbs
-                .addBreadCrumb( "myperspective", "label2", new DefaultPlaceRequest( "screen2" ), Optional.empty() );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label2", new DefaultPlaceRequest( "screen2" ) );
         uberfireBreadcrumbs.addBreadCrumb( "myperspective2", "label4", new DefaultPlaceRequest( "screen4" ) );
 
 
@@ -139,6 +139,7 @@ public class UberfireBreadcrumbsTest {
     @Test
     public void generateBreadCrumbSelectCommandTest() {
         DefaultPlaceRequest placeRequest = new DefaultPlaceRequest( "screen" );
+        final Command command = mock( Command.class );
         uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", placeRequest );
 
         List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" );
@@ -149,30 +150,33 @@ public class UberfireBreadcrumbsTest {
         uberfireBreadcrumbs.generateBreadCrumbSelectCommand( "myperspective",
                                                              breadcrumb,
                                                              placeRequest,
-                                                             Optional.empty() ).execute();
+                                                             null,
+                                                             command ).execute();
 
         verify( placeManager ).goTo( placeRequest );
         verify( placeManager, never() ).goTo( eq( placeRequest ), any( HasWidgets.class ) );
+        verify( command ).execute();
     }
-
 
     @Test
     public void generateBreadCrumbSelectCommandWithTargetPanelTest() {
         DefaultPlaceRequest placeRequest = new DefaultPlaceRequest( "screen" );
+        final Command command = mock( Command.class );
         uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", placeRequest );
 
         List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" );
 
         BreadcrumbsPresenter breadcrumb = breadcrumbs.get( 0 );
 
-
         uberfireBreadcrumbs.generateBreadCrumbSelectCommand( "myperspective",
                                                              breadcrumb,
                                                              placeRequest,
-                                                             Optional.of( mock( HasWidgets.class ) ) ).execute();
+                                                             mock( HasWidgets.class ),
+                                                             command ).execute();
 
         verify( placeManager ).goTo( eq( placeRequest ), any( HasWidgets.class ) );
         verify( placeManager, never() ).goTo( placeRequest );
+        verify( command ).execute();
     }
 
     @Test
@@ -196,4 +200,23 @@ public class UberfireBreadcrumbsTest {
         verify( view, times( 1 ) ).addBreadcrumbToolbar( any( Element.class ) );
     }
 
+    @Test
+    public void addBreadcrumbAssociatedWithAPlaceRequestTest() {
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
+        verify( uberfireBreadcrumbs ).addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), null, null );
+    }
+
+    @Test
+    public void addBreadcrumbAssociatedWithAPlaceRequestAndATargetPanelTest() {
+        final HasWidgets targetPanel = mock( HasWidgets.class );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), targetPanel );
+        verify( uberfireBreadcrumbs ).addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), targetPanel, null );
+    }
+
+    @Test
+    public void addBreadcrumbAssociatedWithAPlaceRequestWithACommandTest() {
+        final Command command = mock( Command.class );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), command );
+        verify( uberfireBreadcrumbs ).addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), null, command );
+    }
 }

@@ -35,6 +35,10 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteAcceptedEvent;
+import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteIgnoredEvent;
+import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEvent;
+import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameIgnoredEvent;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
@@ -66,7 +70,7 @@ public abstract class BaseEditor {
     protected Menus menus;
 
     @Inject
-    private PlaceManager placeManager;
+    protected PlaceManager placeManager;
 
     @Inject
     protected Event<ChangeTitleWidgetEvent> changeTitleNotification;
@@ -82,6 +86,18 @@ public abstract class BaseEditor {
 
     @Inject
     protected DefaultFileNameValidator fileNameValidator;
+
+    @Inject
+    protected Event<ConcurrentDeleteAcceptedEvent> concurrentDeleteAcceptedEvent;
+
+    @Inject
+    protected Event<ConcurrentDeleteIgnoredEvent> concurrentDeleteIgnoredEvent;
+
+    @Inject
+    protected Event<ConcurrentRenameAcceptedEvent> concurrentRenameAcceptedEvent;
+
+    @Inject
+    protected Event<ConcurrentRenameIgnoredEvent> concurrentRenameIgnoredEvent;
 
     protected Set<MenuItems> menuItems = new HashSet<MenuItems>();
 
@@ -256,19 +272,8 @@ public abstract class BaseEditor {
                 newConcurrentRename( info.getSource(),
                                      info.getTarget(),
                                      info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             reload();
-                                         }
-                                     }
-                                   ).show();
+                                     onConcurrentRenameIgnoreCommand( path ),
+                                     onConcurrentRenameCloseCommand( path ) ).show();
             }
         } );
 
@@ -277,21 +282,38 @@ public abstract class BaseEditor {
             public void execute( final ObservablePath.OnConcurrentDelete info ) {
                 newConcurrentDelete( info.getPath(),
                                      info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             placeManager.closePlace( place );
-                                         }
-                                     }
-                                   ).show();
+                                     onConcurrentDeleteIgnoreCommand( path ),
+                                     onConcurrentDeleteCloseCommand( path ) ).show();
             }
         } );
+    }
+
+    Command onConcurrentRenameIgnoreCommand( final ObservablePath path ) {
+        return () -> {
+            disableMenus();
+            concurrentRenameIgnoredEvent.fire( new ConcurrentRenameIgnoredEvent( path ) );
+        };
+    }
+
+    Command onConcurrentRenameCloseCommand( final ObservablePath path ) {
+        return () -> {
+            reload();
+            concurrentRenameAcceptedEvent.fire( new ConcurrentRenameAcceptedEvent( path ) );
+        };
+    }
+
+    Command onConcurrentDeleteIgnoreCommand( final ObservablePath path ) {
+        return () -> {
+            disableMenus();
+            concurrentDeleteIgnoredEvent.fire( new ConcurrentDeleteIgnoredEvent( path ) );
+        };
+    }
+
+    Command onConcurrentDeleteCloseCommand( final ObservablePath path ) {
+        return () -> {
+            placeManager.closePlace( place );
+            concurrentDeleteAcceptedEvent.fire( new ConcurrentDeleteAcceptedEvent( path ) );
+        };
     }
 
     private void onDelete() {
@@ -402,7 +424,7 @@ public abstract class BaseEditor {
         changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
     }
 
-    private void disableMenus() {
+    void disableMenus() {
         disableMenuItem( COPY );
         disableMenuItem( MenuItems.RENAME );
         disableMenuItem( MenuItems.DELETE );

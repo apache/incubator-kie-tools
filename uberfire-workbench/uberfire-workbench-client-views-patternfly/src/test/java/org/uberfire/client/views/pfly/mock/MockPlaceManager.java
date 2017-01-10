@@ -20,6 +20,7 @@ import java.util.Collection;
 import javax.enterprise.inject.Alternative;
 
 import com.google.gwt.user.client.ui.HasWidgets;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -90,6 +91,12 @@ public class MockPlaceManager implements PlaceManager {
     @Override
     public void goTo( PlaceRequest place,
                       HasWidgets addTo ) {
+        throw new UnsupportedOperationException( "Not implemented." );
+    }
+
+    @Override
+    public void goTo( PlaceRequest place,
+                      HTMLElement addTo ) {
         throw new UnsupportedOperationException( "Not implemented." );
     }
 

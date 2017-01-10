@@ -16,6 +16,15 @@
 
 package org.uberfire.ext.widgets.common.client.breadcrumbs;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.HasWidgets;
 import org.jboss.errai.common.client.dom.Element;
 import org.jboss.errai.ioc.client.api.EntryPoint;
@@ -28,11 +37,6 @@ import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbsPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * A container for breadcrumbs and a toolbar area.
@@ -104,7 +108,7 @@ public class UberfireBreadcrumbs {
      *
      * @param associatedPerspective perspective associated with the breadcrumb
      */
-    public void clearBreadCrumbsAndToolBars( String associatedPerspective ) {
+    public void clearBreadCrumbsAndToolBars( final String associatedPerspective ) {
         breadcrumbsPerPerspective.put( associatedPerspective, new ArrayList<>() );
         breadcrumbsToolBarPerPerspective.remove( associatedPerspective );
     }
@@ -117,9 +121,14 @@ public class UberfireBreadcrumbs {
      * @param breadCrumbLabel        label of the breadcrumb
      * @param associatedPlaceRequest place request associated with the breadcrumb
      */
-    public void addBreadCrumb( String associatedPerspective, String breadCrumbLabel,
-                               DefaultPlaceRequest associatedPlaceRequest ) {
-        addBreadCrumb( associatedPerspective, breadCrumbLabel, associatedPlaceRequest, Optional.empty() );
+    public void addBreadCrumb( final String associatedPerspective,
+                               final String breadCrumbLabel,
+                               final DefaultPlaceRequest associatedPlaceRequest ) {
+        addBreadCrumb( associatedPerspective,
+                       breadCrumbLabel,
+                       associatedPlaceRequest,
+                       null,
+                       null );
     }
 
     /**
@@ -131,12 +140,55 @@ public class UberfireBreadcrumbs {
      * @param associatedPlaceRequest place request associated with the breadcrumb
      * @param addTo                  target content panel of the place request
      */
-    public void addBreadCrumb( String associatedPerspective, String breadCrumbLabel,
-                               DefaultPlaceRequest associatedPlaceRequest,
-                               Optional<HasWidgets> addTo ) {
+    public void addBreadCrumb( final String associatedPerspective,
+                               final String breadCrumbLabel,
+                               final DefaultPlaceRequest associatedPlaceRequest,
+                               final HasWidgets addTo ) {
+        addBreadCrumb( associatedPerspective,
+                       breadCrumbLabel,
+                       associatedPlaceRequest,
+                       addTo,
+                       null );
+    }
+
+    /**
+     * Creates a breadcrumb associated with a perspective
+     * and Place Request.
+     *
+     * @param associatedPerspective  perspective associated with the breadcrumb
+     * @param breadCrumbLabel        label of the breadcrumb
+     * @param associatedPlaceRequest place request associated with the breadcrumb
+     * @param command                command to be executed after the associated place request is accessed
+     */
+    public void addBreadCrumb( final String associatedPerspective,
+                               final String breadCrumbLabel,
+                               final DefaultPlaceRequest associatedPlaceRequest,
+                               final Command command ) {
+        addBreadCrumb( associatedPerspective,
+                       breadCrumbLabel,
+                       associatedPlaceRequest,
+                       null,
+                       command );
+    }
+
+    /**
+     * Creates a breadcrumb associated with a perspective
+     * a Place Request and a target panel.
+     *
+     * @param associatedPerspective  perspective associated with the breadcrumb
+     * @param breadCrumbLabel        label of the breadcrumb
+     * @param associatedPlaceRequest place request associated with the breadcrumb
+     * @param addTo                  target content panel of the place request
+     * @param command                command to be executed after the associated place request is accessed
+     */
+    public void addBreadCrumb( final String associatedPerspective,
+                               final String breadCrumbLabel,
+                               final DefaultPlaceRequest associatedPlaceRequest,
+                               final HasWidgets addTo,
+                               final Command command ) {
         List<BreadcrumbsPresenter> breadCrumbs = getBreadcrumbs( associatedPerspective );
         deactivateLastBreadcrumb( breadCrumbs );
-        breadCrumbs.add( createBreadCrumb( associatedPerspective, breadCrumbLabel, associatedPlaceRequest, addTo ) );
+        breadCrumbs.add( createBreadCrumb( associatedPerspective, breadCrumbLabel, associatedPlaceRequest, addTo, command ) );
         breadcrumbsPerPerspective.put( associatedPerspective, breadCrumbs );
         if ( currentPerspective == associatedPerspective ) {
             updateView();
@@ -151,14 +203,15 @@ public class UberfireBreadcrumbs {
      * @param associatedPerspective perspective associated with the toolbar
      * @param toolbar               toolbar that will be added
      */
-    public void addToolbar( String associatedPerspective, Element toolbar ) {
+    public void addToolbar( final String associatedPerspective,
+                            final Element toolbar ) {
         breadcrumbsToolBarPerPerspective.put( associatedPerspective, toolbar );
         if ( currentPerspective == associatedPerspective ) {
             updateView();
         }
     }
 
-    private List<BreadcrumbsPresenter> getBreadcrumbs( String perspective ) {
+    private List<BreadcrumbsPresenter> getBreadcrumbs( final String perspective ) {
         List<BreadcrumbsPresenter> breadCrumbs = breadcrumbsPerPerspective.get( perspective );
         if ( breadCrumbs == null ) {
             breadCrumbs = new ArrayList<>();
@@ -166,44 +219,53 @@ public class UberfireBreadcrumbs {
         return breadCrumbs;
     }
 
-    private void deactivateLastBreadcrumb( List<BreadcrumbsPresenter> breadCrumbs ) {
+    private void deactivateLastBreadcrumb( final List<BreadcrumbsPresenter> breadCrumbs ) {
         if ( !breadCrumbs.isEmpty() ) {
             breadCrumbs.get( breadCrumbs.size() - 1 ).deactivate();
         }
     }
 
-    private BreadcrumbsPresenter createBreadCrumb( String perspective,
-                                                   String label,
-                                                   DefaultPlaceRequest placeRequest,
-                                                   Optional<HasWidgets> addTo ) {
+    private BreadcrumbsPresenter createBreadCrumb( final String perspective,
+                                                   final String label,
+                                                   final DefaultPlaceRequest placeRequest,
+                                                   final HasWidgets addTo,
+                                                   final Command command ) {
 
         BreadcrumbsPresenter breadCrumb = breadcrumbsPresenters.get();
-        breadCrumb.setup( label, placeRequest,
-                          generateBreadCrumbSelectCommand( perspective, breadCrumb, placeRequest, addTo ) );
+        breadCrumb.setup( label,
+                          placeRequest,
+                          generateBreadCrumbSelectCommand( perspective, breadCrumb, placeRequest, addTo, command ) );
         breadCrumb.activate();
         return breadCrumb;
     }
 
-    Command generateBreadCrumbSelectCommand( String perspective,
-                                             BreadcrumbsPresenter breadCrumb,
-                                             DefaultPlaceRequest placeRequest, Optional<HasWidgets> addTo ) {
+    Command generateBreadCrumbSelectCommand( final String perspective,
+                                             final BreadcrumbsPresenter breadCrumb,
+                                             final DefaultPlaceRequest placeRequest,
+                                             final HasWidgets addTo,
+                                             final Command command ) {
         return () -> {
             removeDeepLevelBreadcrumbs( perspective, breadCrumb );
             breadCrumb.activate();
             goToBreadCrumb( placeRequest, addTo );
             updateView();
+            if ( command != null ) {
+                command.execute();
+            }
         };
     }
 
-    private void goToBreadCrumb( DefaultPlaceRequest placeRequest, Optional<HasWidgets> addTo ) {
-        if ( addTo.isPresent() ) {
-            placeManager.goTo( placeRequest, addTo.get() );
+    private void goToBreadCrumb( final DefaultPlaceRequest placeRequest,
+                                 final HasWidgets addTo ) {
+        if ( addTo != null ) {
+            placeManager.goTo( placeRequest, addTo );
         } else {
             placeManager.goTo( placeRequest );
         }
     }
 
-    void removeDeepLevelBreadcrumbs( String perspective, BreadcrumbsPresenter breadCrumb ) {
+    void removeDeepLevelBreadcrumbs( final String perspective,
+                                     final BreadcrumbsPresenter breadCrumb ) {
         List<BreadcrumbsPresenter> breadCrumbs = breadcrumbsPerPerspective.get( perspective );
         if ( breadCrumbs != null ) {
             Predicate<BreadcrumbsPresenter> toRemovePredicate = current ->
@@ -229,11 +291,11 @@ public class UberfireBreadcrumbs {
         return view;
     }
 
-    private boolean thereIsBreadcrumbsFor( String perspective ) {
+    private boolean thereIsBreadcrumbsFor( final String perspective ) {
         return breadcrumbsPerPerspective.containsKey( perspective );
     }
 
-    private boolean thereIsBreadcrumbToolbarFor( String perspective ) {
+    private boolean thereIsBreadcrumbToolbarFor( final String perspective ) {
         return breadcrumbsToolBarPerPerspective.containsKey( perspective );
     }
 

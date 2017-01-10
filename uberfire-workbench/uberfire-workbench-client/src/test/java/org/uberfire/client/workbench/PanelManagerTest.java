@@ -24,17 +24,14 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.lang.annotation.Annotation;
 
 import javax.enterprise.event.Event;
 
+import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.junit.Before;
 import org.junit.Test;
@@ -141,19 +138,20 @@ public class PanelManagerTest {
 
         PerspectiveActivity testPerspectiveActivity = mock( PerspectiveActivity.class );
 
-        panelManager = new PanelManagerImpl(
-                placeGainFocusEvent,
-                placeLostFocusEvent,
-                panelFocusEvent,
-                selectPlaceEvent,
-                placeMaximizedEvent,
-                placeMinimizedEvent,
-                placeHidEvent,
-                null,
-                null,
-                layoutSelection,
-                beanFactory);
+        panelManager = spy( new PanelManagerImpl( placeGainFocusEvent,
+                                                  placeLostFocusEvent,
+                                                  panelFocusEvent,
+                                                  selectPlaceEvent,
+                                                  placeMaximizedEvent,
+                                                  placeMinimizedEvent,
+                                                  placeHidEvent,
+                                                  null,
+                                                  null,
+                                                  layoutSelection,
+                                                  beanFactory ) );
         panelManager.setRoot( testPerspectiveActivity, testPerspectiveDef.getRoot() );
+
+        doNothing().when( panelManager ).appendWidgetToElement( any( HTMLElement.class ), any( Widget.class ) );
     }
 
     @Test
@@ -280,6 +278,14 @@ public class PanelManagerTest {
     }
 
     @Test
+    public void addedCustomPanelsInsideHTMLElementsShouldBeRemembered() throws Exception {
+        HTMLElement container = mock( HTMLElement.class );
+        PanelDefinition customPanel = panelManager.addCustomPanel( container, StaticWorkbenchPanelPresenter.class.getName() );
+
+        assertTrue( panelManager.mapPanelDefinitionToPresenter.containsKey( customPanel ) );
+    }
+
+    @Test
     public void explicitlyRemovedPanelsShouldBeForgotten() throws Exception {
         PanelDefinition subPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
@@ -293,6 +299,15 @@ public class PanelManagerTest {
     @Test
     public void explicitlyRemovedCustomPanelsShouldBeForgotten() throws Exception {
         HasWidgets container = mock( HasWidgets.class );
+        PanelDefinition customPanel = panelManager.addCustomPanel( container, StaticWorkbenchPanelPresenter.class.getName() );
+        panelManager.removeWorkbenchPanel( customPanel );
+
+        assertFalse( panelManager.mapPanelDefinitionToPresenter.containsKey( customPanel ) );
+    }
+
+    @Test
+    public void explicitlyRemovedCustomPanelsInsideHTMLElementsShouldBeForgotten() throws Exception {
+        HTMLElement container = mock( HTMLElement.class );
         PanelDefinition customPanel = panelManager.addCustomPanel( container, StaticWorkbenchPanelPresenter.class.getName() );
         panelManager.removeWorkbenchPanel( customPanel );
 

@@ -28,6 +28,9 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Element;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -99,6 +102,12 @@ public class PanelManagerImpl implements PanelManager {
      * are closed/removed.
      */
     protected final Map<PanelDefinition, HasWidgets> customPanels = new HashMap<PanelDefinition, HasWidgets>();
+
+    /**
+     * Remembers which HTMLElements contain each existing custom panel. Items are removed from this map when the panels
+     * are closed/removed.
+     */
+    protected final Map<PanelDefinition, HTMLElement> customPanelsInsideHTMLElements = new HashMap<>();
 
     protected PartDefinition activePart = null;
 
@@ -276,18 +285,7 @@ public class PanelManagerImpl implements PanelManager {
             throw new IllegalArgumentException( "Couldn't find panel to remove: " + toRemove );
         }
 
-        HasWidgets customContainer = customPanels.remove( toRemove );
-        if ( customContainer != null ) {
-            customContainer.remove( presenterToRemove.getPanelView().asWidget() );
-        } else {
-            final PanelDefinition parentDef = toRemove.getParent();
-            final WorkbenchPanelPresenter parentPresenter = mapPanelDefinitionToPresenter.get( parentDef );
-            if ( parentPresenter == null ) {
-                throw new IllegalArgumentException( "The given panel's parent could not be found" );
-            }
-
-            parentPresenter.removePanel( presenterToRemove );
-        }
+        removeWorkbenchPanelFromParent( toRemove, presenterToRemove );
 
         // we do this check last because some panel types (eg. docking panels) can "rescue" orphaned child panels
         // during the PanelPresenter.remove() call
@@ -296,6 +294,28 @@ public class PanelManagerImpl implements PanelManager {
         }
 
         getBeanFactory().destroy( presenterToRemove );
+    }
+
+    private void removeWorkbenchPanelFromParent( final PanelDefinition toRemove,
+                                                 final WorkbenchPanelPresenter presenterToRemove ) {
+        HasWidgets customContainer = customPanels.remove( toRemove );
+        if ( customContainer != null ) {
+            customContainer.remove( presenterToRemove.getPanelView().asWidget() );
+        } else {
+            HTMLElement customHTMLElementContainer = customPanelsInsideHTMLElements.remove( toRemove );
+
+            if ( customHTMLElementContainer != null ) {
+                DOMUtil.removeFromParent( presenterToRemove.getPanelView().asWidget() );
+            } else {
+                final PanelDefinition parentDef = toRemove.getParent();
+                final WorkbenchPanelPresenter parentPresenter = mapPanelDefinitionToPresenter.get( parentDef );
+                if ( parentPresenter == null ) {
+                    throw new IllegalArgumentException( "The given panel's parent could not be found" );
+                }
+
+                parentPresenter.removePanel( presenterToRemove );
+            }
+        }
     }
 
     @Override
@@ -475,16 +495,41 @@ public class PanelManagerImpl implements PanelManager {
     @Override
     public PanelDefinition addCustomPanel( final HasWidgets container,
                                            final String panelType ) {
+        return addCustomPanelOnContainer( container, panelType );
+    }
+
+    @Override
+    public PanelDefinition addCustomPanel( final HTMLElement container,
+                                           final String panelType ) {
+        return addCustomPanelOnContainer( container, panelType );
+    }
+
+    private PanelDefinition addCustomPanelOnContainer( final Object container,
+                                                       final String panelType ) {
         PanelDefinition panelDef = new PanelDefinitionImpl( panelType );
         final WorkbenchPanelPresenter panelPresenter = beanFactory.newWorkbenchPanel( panelDef );
         Widget panelViewWidget = panelPresenter.getPanelView().asWidget();
         panelViewWidget.addAttachHandler( new CustomPanelCleanupHandler( panelPresenter ) );
-        container.add( panelViewWidget );
+
+        if ( container instanceof HasWidgets ) {
+            HasWidgets widgetContainer = (HasWidgets) container;
+            widgetContainer.add( panelViewWidget );
+            customPanels.put( panelDef, widgetContainer );
+        } else {
+            HTMLElement htmlContainer = (HTMLElement) container;
+            appendWidgetToElement( htmlContainer, panelViewWidget );
+            customPanelsInsideHTMLElements.put( panelDef, htmlContainer );
+        }
+
         mapPanelDefinitionToPresenter.put( panelDef,
                                            panelPresenter );
-        customPanels.put( panelDef, container );
         onPanelFocus( panelDef );
         return panelDef;
+    }
+
+    void appendWidgetToElement( final HTMLElement container,
+                                        final Widget panelViewWidget ) {
+        DOMUtil.appendWidgetToElement( container, panelViewWidget.asWidget() );
     }
 
     /**
