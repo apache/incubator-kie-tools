@@ -36,4 +36,24 @@ public class ProjectDetailEvent {
     public Project getProjectSelected() {
         return projectSelected;
     }
+
+    @Override
+    public boolean equals( final Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ProjectDetailEvent ) ) {
+            return false;
+        }
+
+        final ProjectDetailEvent that = (ProjectDetailEvent) o;
+
+        return !( getProjectSelected() != null ? !getProjectSelected().equals( that.getProjectSelected() ) : that.getProjectSelected() != null );
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getProjectSelected() != null ? getProjectSelected().hashCode() : 0;
+    }
 }

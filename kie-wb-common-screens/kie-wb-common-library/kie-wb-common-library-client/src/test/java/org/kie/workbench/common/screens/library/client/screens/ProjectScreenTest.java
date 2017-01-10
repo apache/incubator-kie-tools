@@ -34,6 +34,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryBreadcrumbs;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -71,7 +72,6 @@ public class ProjectScreenTest {
     private LibraryBreadcrumbs libraryBreadcrumbs;
 
     @Mock
-    private LibraryContextSwitchEvent libraryContextSwitchEvent;
     private Event<LibraryContextSwitchEvent> libraryContextSwitchEventEvent;
 
     @Mock
@@ -90,6 +90,9 @@ public class ProjectScreenTest {
     @Mock
     private Classifier assetClassifier;
 
+    @Mock
+    private Event<AssetDetailEvent> assetDetailEventEvent;
+
     @Captor
     private ArgumentCaptor<LibraryContextSwitchEvent> libraryContextSwitchEventArgumentCaptor;
 
@@ -100,7 +103,6 @@ public class ProjectScreenTest {
     @Before
     public void setup() {
         libraryServiceCaller = new CallerMock<>( libraryService );
-        libraryContextSwitchEventEvent = spy( new EventSourceMock<>() );
 
         projectScreen = spy( new ProjectScreen( view,
                                                 placeManager,
@@ -110,7 +112,8 @@ public class ProjectScreenTest {
                                                 authorizationManager,
                                                 ts,
                                                 libraryServiceCaller,
-                                                assetClassifier ) );
+                                                assetClassifier,
+                                                assetDetailEventEvent ) );
 
         mockClientResourceType();
         mockAssets();
@@ -124,7 +127,7 @@ public class ProjectScreenTest {
 
         projectScreen.onStartup( new ProjectDetailEvent( project ) );
 
-        verify( libraryBreadcrumbs ).setupLibraryBreadCrumbsForProject( PROJECT_NAME, PROJECT_PATH );
+        verify( libraryBreadcrumbs ).setupLibraryBreadCrumbsForProject( project );
         verify( libraryService ).getProjectAssets( project );
         verify( view ).clearAssets();
         verify( view, times( 2 ) ).addAsset( anyString(),
@@ -135,40 +138,17 @@ public class ProjectScreenTest {
     }
 
     @Test
-    public void selectCommandWithoutAccessToAuthoring() {
-        doReturn( false ).when( projectScreen ).hasAccessToPerspective( anyString() );
-
-        projectScreen.selectCommand( "file2.txt", mock( Path.class ) ).execute();
-
-        verify( placeManager, never() ).goTo( any( PlaceRequest.class ) );
-        verify( libraryContextSwitchEventEvent, never() ).fire( any( LibraryContextSwitchEvent.class ) );
-        verify( view ).noRightsPopup();
-    }
-
-    @Test
-    public void selectCommandWithAccessToAuthoring() {
+    public void selectCommandTest() {
         final Project project = mock( Project.class );
         doReturn( "projectName" ).when( project ).getProjectName();
         doReturn( "projectPath" ).when( project ).getIdentifier();
-
-        doReturn( true ).when( projectScreen ).hasAccessToPerspective( anyString() );
-        doNothing().when( libraryContextSwitchEventEvent ).fire( libraryContextSwitchEventArgumentCaptor.capture() );
 
         final Path assetPath = mock( Path.class );
         projectScreen.onStartup( new ProjectDetailEvent( project ) );
         projectScreen.selectCommand( "file2.txt", assetPath ).execute();
 
-        LibraryContextSwitchEvent event = libraryContextSwitchEventArgumentCaptor.getValue();
-        assertEquals( assetPath, event.getResourcePath() );
-        assertTrue( event.isAssetSelected() );
-
-        verify( placeManager ).goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
-        verify( libraryContextSwitchEventEvent ).fire( event );
-        verify( view, never() ).noRightsPopup();
-
-        verify( libraryBreadcrumbs, never() ).setupLibraryBreadCrumbsForAsset( anyString(), anyString(), anyString() );
-        event.getContextSwitchedCallback().execute();
-        verify( libraryBreadcrumbs ).setupLibraryBreadCrumbsForAsset( PROJECT_NAME, PROJECT_PATH, "file2.txt" );
+        verify( placeManager ).goTo( LibraryPlaces.ASSET_PERSPECTIVE );
+        verify( assetDetailEventEvent ).fire( eq( new AssetDetailEvent( project, assetPath ) ) );
     }
 
     @Test

@@ -115,7 +115,7 @@ public class LibraryScreen {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest place ) {
+    public void onStartup() {
         loadDefaultLibrary();
     }
 

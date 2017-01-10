@@ -90,14 +90,17 @@ public class Classifier {
 
     public ClientResourceType findResourceType( final FolderItem folderItem ) {
         if ( folderItem.getItem() instanceof Path ) {
-            for ( ClientResourceType resourceType : resourceTypes ) {
-                if ( resourceType.accept( (Path) folderItem.getItem() ) ) {
-                    return resourceType;
-                }
-            }
-            throw new IllegalArgumentException( "Unable to find ResourceType for " + ( (Path) folderItem.getItem() ).toURI() + ". Is AnyResourceType on the classpath?" );
+            return findResourceType( (Path) folderItem.getItem() );
         }
         throw new IllegalArgumentException( "Invalid FolderItem type." );
     }
 
+    public ClientResourceType findResourceType( final Path path ) {
+        for ( ClientResourceType resourceType : resourceTypes ) {
+            if ( resourceType.accept( path ) ) {
+                return resourceType;
+            }
+        }
+        throw new IllegalArgumentException( "Unable to find ResourceType for " + path.toURI() + ". Is AnyResourceType on the classpath?" );
+    }
 }

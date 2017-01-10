@@ -15,6 +15,12 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.enterprise.event.Event;
+
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
@@ -30,32 +36,18 @@ import org.kie.workbench.common.screens.library.client.util.LibraryBreadcrumbs;
 import org.kie.workbench.common.screens.library.client.util.LibraryDocks;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.LibraryBreadCrumbToolbarPresenter;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.CallerMock;
-import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.event.Event;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class LibraryScreenTest {
 
     @Mock
@@ -128,7 +120,7 @@ public class LibraryScreenTest {
 
     @Test
     public void onStartupLoadLibraryTest() {
-        libraryScreen.onStartup( mock( PlaceRequest.class ) );
+        libraryScreen.onStartup();
 
         verify( view ).clearProjects();
         verify( view, times( getProjects().size() ) ).addProject( any(), any(), any() );
@@ -140,7 +132,7 @@ public class LibraryScreenTest {
     @Test
     public void filterProjects() {
 
-        libraryScreen.onStartup( mock( PlaceRequest.class ) );
+        libraryScreen.onStartup();
 
         assertEquals( getDefaultLibraryMock().getProjects().size(), libraryScreen.libraryInfo.getProjects().size() );
 
@@ -186,5 +178,4 @@ public class LibraryScreenTest {
         projects.add( proj3 );
         return projects;
     }
-
 }

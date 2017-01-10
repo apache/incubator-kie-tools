@@ -33,6 +33,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
@@ -45,9 +46,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
@@ -89,6 +88,8 @@ public class ProjectScreen {
 
     private Classifier assetClassifier;
 
+    private Event<AssetDetailEvent> assetDetailEvent;
+
     private Project project;
 
     private List<FolderItem> assets;
@@ -102,7 +103,8 @@ public class ProjectScreen {
                           final AuthorizationManager authorizationManager,
                           final TranslationService ts,
                           final Caller<LibraryService> libraryService,
-                          final Classifier assetClassifier ) {
+                          final Classifier assetClassifier,
+                          final Event<AssetDetailEvent> assetDetailEvent ) {
         this.view = view;
         this.placeManager = placeManager;
         this.libraryBreadcrumbs = libraryBreadcrumbs;
@@ -112,6 +114,7 @@ public class ProjectScreen {
         this.ts = ts;
         this.libraryService = libraryService;
         this.assetClassifier = assetClassifier;
+        this.assetDetailEvent = assetDetailEvent;
     }
 
     public void onStartup( @Observes final ProjectDetailEvent projectDetailEvent ) {
@@ -135,8 +138,7 @@ public class ProjectScreen {
     }
 
     private void setupToolBar() {
-        libraryBreadcrumbs.setupLibraryBreadCrumbsForProject( project.getProjectName(),
-                                                              project.getIdentifier() );
+        libraryBreadcrumbs.setupLibraryBreadCrumbsForProject( project );
     }
 
     private void setupAssets( List<FolderItem> assets ) {
@@ -159,16 +161,8 @@ public class ProjectScreen {
     Command selectCommand( final String assetName,
                            final Path assetPath ) {
         return () -> {
-            if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
-                placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
-                libraryContextSwitchEvent.fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.ASSET_SELECTED,
-                                                                               assetPath,
-                                                                               () -> libraryBreadcrumbs.setupLibraryBreadCrumbsForAsset( project.getProjectName(),
-                                                                                                                                         project.getIdentifier(),
-                                                                                                                                         assetName ) ) );
-            } else {
-                view.noRightsPopup();
-            }
+            placeManager.goTo( LibraryPlaces.ASSET_PERSPECTIVE );
+            assetDetailEvent.fire( new AssetDetailEvent( project, assetPath ) );
         };
     }
 
@@ -201,8 +195,7 @@ public class ProjectScreen {
             placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
             libraryContextSwitchEvent.fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_SELECTED,
                                                                            project.getRootPath(),
-                                                                           () -> libraryBreadcrumbs.setupLibraryBreadCrumbsForProject( project.getProjectName(),
-                                                                                                                                       project.getIdentifier() ) ) );
+                                                                           () -> libraryBreadcrumbs.setupLibraryBreadCrumbsForProject( project ) ) );
         } else {
             view.noRightsPopup();
         }
