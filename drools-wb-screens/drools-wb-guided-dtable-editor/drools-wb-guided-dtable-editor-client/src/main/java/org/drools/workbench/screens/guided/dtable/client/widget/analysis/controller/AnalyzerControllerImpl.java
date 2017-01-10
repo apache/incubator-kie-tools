@@ -41,6 +41,7 @@ public class AnalyzerControllerImpl
     private static final Logger LOGGER = Logger.getLogger( "DTable Analyzer" );
 
     private final DecisionTableAnalyzer decisionTableAnalyzer;
+    private final Events events;
     private PlaceManager placeManager;
 
     public AnalyzerControllerImpl( final DecisionTableAnalyzer decisionTableAnalyzer,
@@ -50,37 +51,30 @@ public class AnalyzerControllerImpl
                                                                          decisionTableAnalyzer );
         this.placeManager = PortablePreconditions.checkNotNull( "placeManager",
                                                                 placeManager );
-        PortablePreconditions.checkNotNull( "eventBus",
-                                            eventBus );
-
-        eventBus.addHandler( ValidateEvent.TYPE,
+        events = new Events( PortablePreconditions.checkNotNull( "eventBus",
+                                                                 eventBus ),
                              this );
-        eventBus.addHandler( DeleteRowEvent.TYPE,
-                             this );
-        eventBus.addHandler( AfterColumnDeleted.TYPE,
-                             this );
-        eventBus.addHandler( UpdateColumnDataEvent.TYPE,
-                             this );
-        eventBus.addHandler( AppendRowEvent.TYPE,
-                             this );
-        eventBus.addHandler( InsertRowEvent.TYPE,
-                             this );
-        eventBus.addHandler( AfterColumnInserted.TYPE,
-                             this );
-
     }
 
     @Override
     public void initialiseAnalysis() {
         LOGGER.info( "Initializing analysis." );
+
+        events.setup();
+
         decisionTableAnalyzer.activate();
     }
 
     @Override
     public void terminateAnalysis() {
+
         LOGGER.info( "Terminating analysis." );
+
+        events.teardown();
+
         decisionTableAnalyzer.terminate();
         placeManager.closePlace( AnalysisReportScreen.IDENTIFIER );
+
     }
 
     @Override

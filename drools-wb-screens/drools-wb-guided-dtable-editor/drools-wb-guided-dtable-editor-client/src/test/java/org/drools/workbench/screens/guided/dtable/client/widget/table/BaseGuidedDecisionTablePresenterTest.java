@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
+import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -31,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipbo
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.DefaultClipboard;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerProvider;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
@@ -249,6 +251,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     @Mock
     private DecisionTableAnalyzerProvider decisionTableAnalyzerProvider;
 
+    @Mock
+    protected AnalyzerController analyzerController;
+
     protected GuidedDecisionTablePresenter dtPresenter;
     protected GuidedDecisionTableEditorContent dtContent;
 
@@ -256,7 +261,15 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     public void setup() {
         setupPreferences();
         setupServices();
+        setupProviders();
         setupPresenter();
+    }
+
+    private void setupProviders() {
+        when( decisionTableAnalyzerProvider.newAnalyzer( eq( dtPlaceRequest ),
+                                                         eq( oracle ),
+                                                         any( GuidedDecisionTable52.class ),
+                                                         any( EventBus.class ) ) ).thenReturn( analyzerController );
     }
 
     private void setupPreferences() {

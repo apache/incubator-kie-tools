@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.contro
 import java.util.ArrayList;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +58,36 @@ public class AnalyzerControllerImplTest {
     }
 
     @Test
-    public void areHandlersAreSetUp() throws Exception {
+    public void doNotSetUpHandlersDuringConstruction() throws
+                                                       Exception {
+        verify( eventBus,
+                never() ).addHandler( ValidateEvent.TYPE,
+                                      controller );
+        verify( eventBus,
+                never() ).addHandler( DeleteRowEvent.TYPE,
+                                      controller );
+        verify( eventBus,
+                never() ).addHandler( AfterColumnDeleted.TYPE,
+                                      controller );
+        verify( eventBus,
+                never() ).addHandler( UpdateColumnDataEvent.TYPE,
+                                      controller );
+        verify( eventBus,
+                never() ).addHandler( AppendRowEvent.TYPE,
+                                      controller );
+        verify( eventBus,
+                never() ).addHandler( InsertRowEvent.TYPE,
+                                      controller );
+        verify( eventBus,
+                never() ).addHandler( AfterColumnInserted.TYPE,
+                                      controller );
+    }
+
+    @Test
+    public void areHandlersAreSetUpOnInit() throws
+                                            Exception {
+        controller.initialiseAnalysis();
+
         verify( eventBus ).addHandler( ValidateEvent.TYPE,
                                        controller );
         verify( eventBus ).addHandler( DeleteRowEvent.TYPE,
@@ -73,6 +103,50 @@ public class AnalyzerControllerImplTest {
         verify( eventBus ).addHandler( AfterColumnInserted.TYPE,
                                        controller );
 
+    }
+
+    @Test
+    public void areHandlersTornDownOnTerminate() throws
+                                                 Exception {
+
+        final HandlerRegistration validateEvent = mock( HandlerRegistration.class );
+        when( eventBus.addHandler( ValidateEvent.TYPE,
+                                   controller ) ).thenReturn( validateEvent );
+
+        final HandlerRegistration deleteRowEvent = mock( HandlerRegistration.class );
+        when( eventBus.addHandler( DeleteRowEvent.TYPE,
+                                   controller ) ).thenReturn( deleteRowEvent );
+
+        final HandlerRegistration afterColumnDeleted = mock( HandlerRegistration.class );
+        when( eventBus.addHandler( AfterColumnDeleted.TYPE,
+                                   controller ) ).thenReturn( afterColumnDeleted );
+
+        final HandlerRegistration updateColumnDataEvent = mock( HandlerRegistration.class );
+        when( eventBus.addHandler( UpdateColumnDataEvent.TYPE,
+                                   controller ) ).thenReturn( updateColumnDataEvent );
+
+        final HandlerRegistration appendRowEvent = mock( HandlerRegistration.class );
+        when( eventBus.addHandler( AppendRowEvent.TYPE,
+                                   controller ) ).thenReturn( appendRowEvent );
+
+        final HandlerRegistration insertRowEvent = mock( HandlerRegistration.class );
+        when( eventBus.addHandler( InsertRowEvent.TYPE,
+                                   controller ) ).thenReturn( insertRowEvent );
+
+        final HandlerRegistration afterColumnInserted = mock( HandlerRegistration.class );
+        when( eventBus.addHandler( AfterColumnInserted.TYPE,
+                                   controller ) ).thenReturn( afterColumnInserted );
+
+        controller.initialiseAnalysis();
+        controller.terminateAnalysis();
+
+        verify( validateEvent ).removeHandler();
+        verify( deleteRowEvent ).removeHandler();
+        verify( afterColumnDeleted ).removeHandler();
+        verify( updateColumnDataEvent ).removeHandler();
+        verify( appendRowEvent ).removeHandler();
+        verify( insertRowEvent ).removeHandler();
+        verify( afterColumnDeleted ).removeHandler();
     }
 
     @Test

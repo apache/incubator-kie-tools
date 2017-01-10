@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.plugin.client.Coordinate;
@@ -27,57 +26,58 @@ import org.drools.workbench.services.verifier.plugin.client.api.NewColumn;
 import org.drools.workbench.services.verifier.plugin.client.api.RemoveRule;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
 import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 
 public class DTableUpdateManagerImpl
         implements DTableUpdateManager {
 
-    private static final Logger LOGGER = Logger.getLogger( "DTable Analyzer" );
-
-    private VerifierWebWorkerConnectionImpl webWorker;
+    private Poster poster;
     private FieldTypeProducer fieldTypeProducer;
 
-    public DTableUpdateManagerImpl( final VerifierWebWorkerConnectionImpl webWorker,
+    public DTableUpdateManagerImpl( final Poster poster,
                                     final FieldTypeProducer fieldTypeProducer ) {
-        this.webWorker = webWorker;
-        this.fieldTypeProducer = fieldTypeProducer;
+        this.poster = PortablePreconditions.checkNotNull( "poster",
+                                                          poster );
+        this.fieldTypeProducer = PortablePreconditions.checkNotNull( "fieldTypeProducer",
+                                                                     fieldTypeProducer );
     }
 
     @Override
     public void update( final GuidedDecisionTable52 model,
                         final List<Coordinate> coordinates ) {
-        webWorker.send( new Update( model,
-                                    coordinates ) );
+        poster.post( new Update( model,
+                                 coordinates ) );
     }
 
     @Override
     public void newColumn( final GuidedDecisionTable52 model,
                            final int columnIndex ) {
-        webWorker.send( new NewColumn( model,
-                                       new ModelMetaDataEnhancer( model ).getHeaderMetaData(),
-                                       fieldTypeProducer.getFactTypes(),
-                                       columnIndex ) );
+        poster.post( new NewColumn( model,
+                                    new ModelMetaDataEnhancer( model ).getHeaderMetaData(),
+                                    fieldTypeProducer.getFactTypes(),
+                                    columnIndex ) );
     }
 
     @Override
     public void deleteColumns( final int firstColumnIndex,
                                final int numberOfColumns ) {
-        webWorker.send( new DeleteColumns( firstColumnIndex,
-                                           numberOfColumns ) );
+        poster.post( new DeleteColumns( firstColumnIndex,
+                                        numberOfColumns ) );
     }
 
     @Override
     public void removeRule( final Integer rowDeleted ) {
-        webWorker.send( new RemoveRule( rowDeleted ) );
+        poster.post( new RemoveRule( rowDeleted ) );
     }
 
     @Override
     public void makeRule( final GuidedDecisionTable52 model,
-                          int index ) {
-        webWorker.send( new MakeRule( model,
-                                      new ModelMetaDataEnhancer( model ).getHeaderMetaData(),
-                                      fieldTypeProducer.getFactTypes(),
-                                      index ) );
+                          final int index ) {
+        poster.post( new MakeRule( model,
+                                   new ModelMetaDataEnhancer( model ).getHeaderMetaData(),
+                                   fieldTypeProducer.getFactTypes(),
+                                   index ) );
     }
 
 }

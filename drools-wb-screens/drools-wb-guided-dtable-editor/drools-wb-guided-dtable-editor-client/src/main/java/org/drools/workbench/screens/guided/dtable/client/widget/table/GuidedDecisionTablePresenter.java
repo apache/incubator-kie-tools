@@ -339,6 +339,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                            placeRequest,
                            content,
                            isReadOnly );
+
+        if ( !isReadOnly() ) {
+            analyzerController.initialiseAnalysis();
+        }
     }
 
     void initialiseContent( final ObservablePath path,

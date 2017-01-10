@@ -15,20 +15,11 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.HashSet;
 import java.util.logging.Logger;
 
-import com.google.gwt.webworker.client.MessageEvent;
-import com.google.gwt.webworker.client.MessageHandler;
 import com.google.gwt.webworker.client.Worker;
-import org.drools.workbench.services.verifier.api.client.Reporter;
-import org.drools.workbench.services.verifier.api.client.Status;
-import org.drools.workbench.services.verifier.api.client.reporting.Issues;
 import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
 import org.drools.workbench.services.verifier.plugin.client.api.RequestStatus;
-import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerException;
-import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerLogMessage;
-import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public class VerifierWebWorkerConnectionImpl
@@ -38,16 +29,20 @@ public class VerifierWebWorkerConnectionImpl
 
     private Worker worker = null;
 
-    private final Reporter reporter;
+    private final Poster poster;
+    private final Receiver receiver;
     private final Initialize initialize;
 
     public VerifierWebWorkerConnectionImpl( final Initialize initialize,
-                                            final Reporter reporter ) {
+                                            final Poster poster,
+                                            final Receiver receiver ) {
 
         this.initialize = PortablePreconditions.checkNotNull( "initialize",
                                                               initialize );
-        this.reporter = PortablePreconditions.checkNotNull( "reporter",
-                                                            reporter );
+        this.poster = PortablePreconditions.checkNotNull( "poster",
+                                                          poster );
+        this.receiver = PortablePreconditions.checkNotNull( "receiver",
+                                                            receiver );
 
         LOGGER.finest( "Created Web Worker" );
     }
@@ -55,62 +50,27 @@ public class VerifierWebWorkerConnectionImpl
     private void startWorker() {
         worker = Worker.create( "verifier/verifier.nocache.js" );
 
-        worker.setOnMessage( new MessageHandler() {
-            @Override
-            public void onMessage( final MessageEvent messageEvent ) {
-                received( messageEvent.getDataAsString() );
-            }
-        } );
+        poster.setUp( worker );
+        receiver.setUp( worker );
     }
 
     @Override
     public void activate() {
 
-        reporter.activate();
+        receiver.activate();
 
         if ( worker == null ) {
             startWorker();
-            send( initialize );
+            poster.post( initialize );
         } else {
-            send( new RequestStatus() );
+            poster.post( new RequestStatus() );
         }
     }
 
     @Override
     public void terminate() {
-        worker.terminate();
-    }
-
-    public void send( final Object object ) {
-
-        final String json = MarshallingWrapper.toJSON( object );
-
-        LOGGER.finest( "Sending: " + json );
-
-        worker.postMessage( json );
-    }
-
-    public void received( final String json ) {
-
-        try {
-
-            LOGGER.finest( "Receiving: " + json );
-
-            final Object o = MarshallingWrapper.fromJSON( json );
-
-            if ( o instanceof WebWorkerLogMessage ) {
-                LOGGER.info( "Web Worker log message: " + ( (WebWorkerLogMessage) o ).getMessage() );
-            } else if ( o instanceof WebWorkerException ) {
-                LOGGER.severe( "Web Worker failed: " + ( (WebWorkerException) o ).getMessage() );
-            } else if ( o instanceof Status ) {
-                reporter.sendStatus( (Status) o );
-            } else if ( o instanceof Issues ) {
-                reporter.sendReport( new HashSet<>( ( (Issues) o ).getSet() ) );
-            }
-        } catch ( Exception e ) {
-            LOGGER.severe( "Could not manage received json: " + e.getMessage()
-                                   + " JSON: " + json );
-
+        if ( worker != null ) {
+            worker.terminate();
         }
     }
 }

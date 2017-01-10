@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.logging.Logger;
-
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
@@ -30,8 +28,6 @@ import org.uberfire.mvp.PlaceRequest;
 
 public class DecisionTableAnalyzerBuilder {
 
-    private static final Logger LOGGER = Logger.getLogger( "DTable Analyzer" );
-
     protected PlaceRequest placeRequest;
     protected AsyncPackageDataModelOracle oracle;
     protected GuidedDecisionTable52 model;
@@ -41,6 +37,7 @@ public class DecisionTableAnalyzerBuilder {
     private DecisionTableAnalyzer decisionTableAnalyzer;
     private VerifierWebWorkerConnectionImpl webWorker;
     private FieldTypeProducer fieldTypeProducer;
+    private Poster poster;
 
     public DecisionTableAnalyzerBuilder withPlaceRequest( final PlaceRequest placeRequest ) {
         this.placeRequest = placeRequest;
@@ -82,9 +79,17 @@ public class DecisionTableAnalyzerBuilder {
                                                                              new ModelMetaDataEnhancer( model ).getHeaderMetaData(),
                                                                              fieldTypeProducer.getFactTypes(),
                                                                              ApplicationPreferences.getDroolsDateFormat() ),
-                                                             getAnalysisReporter() );
+                                                             getPoster(),
+                                                             new Receiver( getAnalysisReporter() ) );
         }
         return webWorker;
+    }
+
+    private Poster getPoster() {
+        if ( poster == null ) {
+            poster = new Poster();
+        }
+        return poster;
     }
 
     protected AnalysisReporter getAnalysisReporter() {
@@ -95,9 +100,9 @@ public class DecisionTableAnalyzerBuilder {
         return analysisReporter;
     }
 
-    public DTableUpdateManagerImpl getUpdateManager() {
+    private DTableUpdateManagerImpl getUpdateManager() {
         if ( this.updateManager == null ) {
-            this.updateManager = new DTableUpdateManagerImpl( getWebWorker(),
+            this.updateManager = new DTableUpdateManagerImpl( getPoster(),
                                                               fieldTypeProducer );
         }
         return this.updateManager;
@@ -106,10 +111,15 @@ public class DecisionTableAnalyzerBuilder {
 
     private DecisionTableAnalyzer getDTableAnalyzer() {
         if ( decisionTableAnalyzer == null ) {
+            reset();
             decisionTableAnalyzer = new DecisionTableAnalyzer( model,
                                                                getUpdateManager(),
                                                                getWebWorker() );
         }
         return decisionTableAnalyzer;
+    }
+
+    private void reset() {
+        poster = null;
     }
 }
