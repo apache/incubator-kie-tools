@@ -28,7 +28,7 @@ public class GridLayerRedrawManager {
 
     private static final GridLayerRedrawManager instance = new GridLayerRedrawManager();
 
-    private static final Comparator<PrioritizedCommand> COMPARATOR = new Comparator<PrioritizedCommand>() {
+    private final Comparator<PrioritizedCommand> COMPARATOR = new Comparator<PrioritizedCommand>() {
         @Override
         public int compare( final PrioritizedCommand o1,
                             final PrioritizedCommand o2 ) {
@@ -36,7 +36,7 @@ public class GridLayerRedrawManager {
         }
     };
 
-    private SortedSet<PrioritizedCommand> commands = new TreeSet<PrioritizedCommand>( COMPARATOR );
+    SortedSet<PrioritizedCommand> commands = new TreeSet<PrioritizedCommand>( COMPARATOR );
 
     private AnimationScheduler.AnimationCallback callback;
 
