@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
+import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
@@ -173,6 +174,10 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
             put( EndNoneEvent.class, endEventPropertiesMap );
             put( EndTerminateEvent.class, endEventPropertiesMap );
             endEventPropertiesMap.put( AssignmentsInfo.class, "assignmentsinfo" );
+
+            Map<Class<?>, String> reusableSubprocessPropertiesMap = new HashMap<Class<?>, String>();
+            put( ReusableSubprocess.class, reusableSubprocessPropertiesMap );
+            reusableSubprocessPropertiesMap.put( AssignmentsInfo.class, "assignmentsinfo" );
 
             Map<Class<?>, String> exclusiveDatabasedGatewayPropertiesMap = new HashMap<Class<?>, String>();
             put( ExclusiveDatabasedGateway.class, exclusiveDatabasedGatewayPropertiesMap );

@@ -647,6 +647,33 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
+    public void testUnmarshallReusableSubprocess() throws Exception {
+        Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_REUSABLE_SUBPROCESS );
+        ReusableSubprocess reusableSubprocess = null;
+        Iterator<Element> it = nodesIterator( diagram );
+        while ( it.hasNext() ) {
+            Element element = it.next();
+            if ( element.getContent() instanceof View ) {
+                Object oDefinition = ( (View) element.getContent() ).getDefinition();
+                if ( oDefinition instanceof ReusableSubprocess ) {
+                    reusableSubprocess = (ReusableSubprocess) oDefinition;
+                    break;
+                }
+            }
+        }
+        assertNotNull( reusableSubprocess );
+        assertNotNull( reusableSubprocess.getExecutionSet() );
+        assertNotNull( reusableSubprocess.getExecutionSet().getCalledElement() );
+        assertNotNull( reusableSubprocess.getGeneral() );
+        assertNotNull( reusableSubprocess.getGeneral().getName() );
+        assertEquals( "my subprocess", reusableSubprocess.getGeneral().getName().getValue() );
+        assertEquals( "my-called-element", reusableSubprocess.getExecutionSet().getCalledElement().getValue() );
+
+        String assignmentsInfo = reusableSubprocess.getDataIOSet().getAssignmentsinfo().getValue();
+        assertEquals("|input1:String,input2:Float||output1:String,output2:Float|[din]pv1->input1,[din]pv2->input2,[dout]output1->pv1,[dout]output2->pv2", assignmentsInfo);
+    }
+
+    @Test
     public void testUnmarshallSeveralDiagrams() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram1 = unmarshall( BPMN_EVALUATION );
         assertDiagram( diagram1, 8 );
@@ -767,6 +794,23 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallReusableSubprocess() throws Exception {
+        Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_REUSABLE_SUBPROCESS );
+        assertDiagram( diagram, 4);
+        String result = tested.marshall( diagram );
+        assertDiagram( result, 1, 3, 2 );
+
+        assertTrue( result.contains( "<bpmn2:dataInput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputX\" drools:dtype=\"String\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputXItem\" name=\"input1\"/>" ) );
+        assertTrue( result.contains( "<bpmn2:dataOutput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputX\" drools:dtype=\"Float\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputXItem\" name=\"output2\"/>" ) );
+        assertTrue( result.contains( "<bpmn2:sourceRef>pv1</bpmn2:sourceRef>" ) );
+        assertTrue( result.contains( "<bpmn2:targetRef>_FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputX</bpmn2:targetRef>" ) );
+        assertTrue( result.contains( "<bpmn2:sourceRef>_FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputX</bpmn2:sourceRef>" ) );
+        assertTrue( result.contains( "<bpmn2:targetRef>pv2</bpmn2:targetRef>" ) );
+
+    }
+
+
+    @Test
     public void testMarshallUserTaskAssignees() throws Exception {
         Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_USERTASKASSIGNEES );
         String result = tested.marshall( diagram );
@@ -808,29 +852,6 @@ public class BPMNDiagramMarshallerTest {
         Diagram diagram2 = unmarshall( BPMN_EVALUATION );
         String result2 = tested.marshall( diagram2 );
         assertDiagram( result2, 1, 7, 7 );
-    }
-
-    public void testMarshallReusableSubprocess() throws Exception {
-        Diagram<Graph<DefinitionSet, ?>, Metadata> diagram = unmarshall( BPMN_REUSABLE_SUBPROCESS );
-        ReusableSubprocess reusableSubprocess = null;
-        Iterator<Element> it = nodesIterator( diagram );
-        while ( it.hasNext() ) {
-            Element element = it.next();
-            if ( element.getContent() instanceof View ) {
-                Object oDefinition = ( (View) element.getContent() ).getDefinition();
-                if ( oDefinition instanceof ReusableSubprocess ) {
-                    reusableSubprocess = (ReusableSubprocess) oDefinition;
-                    break;
-                }
-            }
-        }
-        assertNotNull( reusableSubprocess );
-        assertNotNull( reusableSubprocess.getExecutionSet() );
-        assertNotNull( reusableSubprocess.getExecutionSet().getCalledElement() );
-        assertNotNull( reusableSubprocess.getGeneral() );
-        assertNotNull( reusableSubprocess.getGeneral().getName() );
-        assertEquals( "my subprocess", reusableSubprocess.getGeneral().getName().getValue() );
-        assertEquals( "my-called-element", reusableSubprocess.getExecutionSet().getCalledElement().getValue() );
     }
 
     @Test

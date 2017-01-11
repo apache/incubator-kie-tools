@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -44,7 +45,7 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 @Bindable
 @Definition( graphFactory = NodeFactory.class, builder = ReusableSubprocess.ReusableSubprocessBuilder.class )
 @CanDock( roles = { "IntermediateEventOnActivityBoundary" } )
-public class ReusableSubprocess extends BaseSubprocess {
+public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
 
     @Title
     public static final transient String title = "Reusable Subprocess";
@@ -92,6 +93,26 @@ public class ReusableSubprocess extends BaseSubprocess {
         super( general, backgroundSet, fontSet, dimensionsSet, simulationSet );
         this.executionSet = executionSet;
         this.dataIOSet = dataIOSet;
+    }
+
+    @Override
+    public boolean hasInputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleInputVar() {
+        return false;
+    }
+
+    @Override
+    public boolean hasOutputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleOutputVar(){
+        return false;
     }
 
     public String getTitle() {
