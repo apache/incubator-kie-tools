@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.shapes.client.view.RingView;
 import org.kie.workbench.common.stunner.shapes.def.RingShapeDef;
 
@@ -41,7 +40,6 @@ public class RingShape<W> extends AbstractBasicShapeWithTitle<W, RingView, RingS
         // Inner Radius.
         final Double innerRadius = proxy.getInnerRadius( getDefinition( element ) );
         _applyInnerRadius( element, innerRadius, mutationContext );
-
     }
 
     protected RingShape<W> _applyOuterRadius( final Node<View<W>, Edge> element,
@@ -49,8 +47,6 @@ public class RingShape<W> extends AbstractBasicShapeWithTitle<W, RingView, RingS
                                               final MutationContext mutationContext ) {
         if ( null != radius ) {
             getShapeView().setOuterRadius( radius );
-            GraphUtils.updateBounds( radius, element.getContent() );
-
         }
         return this;
     }
@@ -60,7 +56,6 @@ public class RingShape<W> extends AbstractBasicShapeWithTitle<W, RingView, RingS
                                               final MutationContext mutationContext ) {
         if ( null != radius ) {
             getShapeView().setInnerRadius( radius );
-
         }
         return this;
     }
@@ -69,5 +64,4 @@ public class RingShape<W> extends AbstractBasicShapeWithTitle<W, RingView, RingS
     public String toString() {
         return "RingShape{}";
     }
-
 }

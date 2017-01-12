@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,7 +46,7 @@ public abstract class AbstractCanvasGraphCommand
      * The private instance of the canvas command.
      * It's a private stateful command instance - will be used for undoing the operation on the graph.
      */
-    private AbstractCanvasCommand canvasCommand;
+    private Command<AbstractCanvasHandler, CanvasViolation> canvasCommand;
 
     /**
      * Creates a new command instance for the graph context.
@@ -55,7 +56,7 @@ public abstract class AbstractCanvasGraphCommand
     /**
      * Creates a new command instance for the canvas context.
      */
-    protected abstract AbstractCanvasCommand newCanvasCommand( AbstractCanvasHandler context );
+    protected abstract Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand( AbstractCanvasHandler context );
 
     @Override
     public Command<GraphCommandExecutionContext, RuleViolation> getGraphCommand( final AbstractCanvasHandler context ) {
@@ -65,7 +66,7 @@ public abstract class AbstractCanvasGraphCommand
         return graphCommand;
     }
 
-    public AbstractCanvasCommand getCanvasCommand( final AbstractCanvasHandler context ) {
+    public Command<AbstractCanvasHandler, CanvasViolation> getCanvasCommand( final AbstractCanvasHandler context ) {
         if ( null == canvasCommand ) {
             canvasCommand = newCanvasCommand( context );
         }
@@ -92,7 +93,6 @@ public abstract class AbstractCanvasGraphCommand
                 performOperationOnGraph( context, CommandOperation.EXECUTE );
         if ( !CommandUtils.isError( canvasResult ) ) {
             return getCanvasCommand( context ).execute( context );
-
         }
         return canvasResult;
     }
@@ -115,7 +115,9 @@ public abstract class AbstractCanvasGraphCommand
     }
 
     private enum CommandOperation {
-        ALLOW, EXECUTE, UNDO;
+        ALLOW,
+        EXECUTE,
+        UNDO;
     }
 
     /**
@@ -148,7 +150,7 @@ public abstract class AbstractCanvasGraphCommand
 
     @Override
     public String toString() {
-        return  "[" +
+        return "[" +
                 this.getClass().getName() +
                 "]" +
                 " [canvasCommand=" +
@@ -157,5 +159,4 @@ public abstract class AbstractCanvasGraphCommand
                 ( null != graphCommand ? graphCommand.toString() : null ) +
                 "]";
     }
-
 }

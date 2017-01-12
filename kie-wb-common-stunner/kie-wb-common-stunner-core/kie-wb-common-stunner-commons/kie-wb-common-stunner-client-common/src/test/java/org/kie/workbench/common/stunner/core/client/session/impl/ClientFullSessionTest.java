@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElemen
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -49,22 +51,40 @@ import static org.mockito.Mockito.*;
 @RunWith( GwtMockitoTestRunner.class )
 public class ClientFullSessionTest {
 
-    @Mock AbstractCanvas canvas;
-    @Mock AbstractCanvasHandler canvasHandler;
-    @Mock SelectionControl<AbstractCanvasHandler, Element> selectionControl;
-    @Mock ZoomControl<AbstractCanvas> zoomControl;
-    @Mock PanControl<AbstractCanvas> panControl;
-    @Mock ResizeControl<AbstractCanvasHandler, Element> resizeControl;
-    @Mock CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl;
-    @Mock CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl;
-    @Mock CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
-    @Mock ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
-    @Mock ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
-    @Mock DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
-    @Mock CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
-    @Mock DragControl<AbstractCanvasHandler, Element> dragControl;
-    @Mock ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
-    @Mock ElementBuilderControl<AbstractCanvasHandler> builderControl;
+    @Mock
+    AbstractCanvas canvas;
+    @Mock
+    AbstractCanvasHandler canvasHandler;
+    @Mock
+    SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+    @Mock
+    ZoomControl<AbstractCanvas> zoomControl;
+    @Mock
+    PanControl<AbstractCanvas> panControl;
+    @Mock
+    ResizeControl<AbstractCanvasHandler, Element> resizeControl;
+    @Mock
+    CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl;
+    @Mock
+    CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl;
+    @Mock
+    CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    @Mock
+    RegistryFactory registryFactory;
+    @Mock
+    ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
+    @Mock
+    ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
+    @Mock
+    DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
+    @Mock
+    CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
+    @Mock
+    DragControl<AbstractCanvasHandler, Element> dragControl;
+    @Mock
+    ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
+    @Mock
+    ElementBuilderControl<AbstractCanvasHandler> builderControl;
 
     private ClientFullSessionImpl tested;
 
@@ -72,9 +92,9 @@ public class ClientFullSessionTest {
     public void setup() throws Exception {
         when( canvasHandler.getCanvas() ).thenReturn( canvas );
         this.tested = new ClientFullSessionImpl( canvas, canvasHandler, resizeControl, canvasValidationControl,
-                canvasPaletteControl, canvasCommandManager, connectionAcceptorControl, containmentAcceptorControl,
-                dockingAcceptorControl, canvasNameEditionControl, selectionControl, dragControl, toolboxControl,
-                builderControl, zoomControl, panControl );
+                canvasPaletteControl, canvasCommandManager, registryFactory, connectionAcceptorControl,
+                containmentAcceptorControl, dockingAcceptorControl, canvasNameEditionControl, selectionControl,
+                dragControl, toolboxControl, builderControl, zoomControl, panControl );
     }
 
     @Test
@@ -85,9 +105,9 @@ public class ClientFullSessionTest {
         assertEquals( zoomControl, tested.getZoomControl() );
         assertEquals( panControl, tested.getPanControl() );
         assertEquals( resizeControl, tested.getResizeControl() );
-        assertEquals( canvasValidationControl, tested.getCanvasValidationControl() );
-        assertEquals( canvasPaletteControl, tested.getCanvasPaletteControl() );
-        assertEquals( canvasCommandManager, tested.getCanvasCommandManager() );
+        assertEquals( canvasValidationControl, tested.getValidationControl() );
+        assertEquals( canvasPaletteControl, tested.getPaletteControl() );
+        assertEquals( canvasCommandManager, tested.getCommandManager() );
         assertEquals( connectionAcceptorControl, tested.getConnectionAcceptorControl() );
         assertEquals( containmentAcceptorControl, tested.getContainmentAcceptorControl() );
         assertEquals( dockingAcceptorControl, tested.getDockingAcceptorControl() );
@@ -102,7 +122,7 @@ public class ClientFullSessionTest {
         tested.open();
         verify( canvas, times( 1 ) ).addRegistrationListener( any( CanvasShapeListener.class ) );
         verify( canvasHandler, times( 1 ) ).addRegistrationListener( any( CanvasElementListener.class ) );
-        verify( selectionControl, times( 1 ) ).enable( eq( canvasHandler  ) );
+        verify( selectionControl, times( 1 ) ).enable( eq( canvasHandler ) );
         verify( zoomControl, times( 1 ) ).enable( eq( canvas ) );
         verify( panControl, times( 1 ) ).enable( eq( canvas ) );
         verify( resizeControl, times( 1 ) ).enable( eq( canvasHandler ) );
@@ -140,5 +160,4 @@ public class ClientFullSessionTest {
         verify( toolboxControl, times( 1 ) ).disable();
         verify( builderControl, times( 1 ) ).disable();
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,12 @@ import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -34,15 +36,15 @@ import java.util.Set;
 public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<Object>, Node<Definition<Object>, Edge>>
         implements NodeFactory<Object> {
 
-    private final DefinitionManager definitionManager;
+    private final DefinitionUtils definitionUtils;
 
     protected NodeFactoryImpl() {
-        this.definitionManager = null;
+        this( null );
     }
 
     @Inject
-    public NodeFactoryImpl( final DefinitionManager definitionManager ) {
-        this.definitionManager = definitionManager;
+    public NodeFactoryImpl( final DefinitionUtils definitionUtils ) {
+        this.definitionUtils = definitionUtils;
     }
 
     @Override
@@ -53,10 +55,11 @@ public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     @Override
     @SuppressWarnings( "unchecked" )
     public Node<Definition<Object>, Edge> build( final String uuid,
-                                     final Object definition ) {
+                                                 final Object definition ) {
         final NodeImpl node = new NodeImpl<>( uuid );
         if ( null != definition ) {
-            View<Object> content = new ViewImpl<>( definition, buildBounds() );
+            final Bounds bounds = definitionUtils.buildBounds( definition, 0d, 0d );
+            View<Object> content = new ViewImpl<>( definition, bounds );
             node.setContent( content );
             node.getLabels().addAll( getLabels( definition ) );
         }
@@ -64,7 +67,10 @@ public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     }
 
     private Set<String> getLabels( final Object definition ) {
-        return definitionManager.adapters().forDefinition().getLabels( definition );
+        return getDefinitionManager().adapters().forDefinition().getLabels( definition );
     }
 
+    private DefinitionManager getDefinitionManager() {
+        return definitionUtils.getDefinitionManager();
+    }
 }

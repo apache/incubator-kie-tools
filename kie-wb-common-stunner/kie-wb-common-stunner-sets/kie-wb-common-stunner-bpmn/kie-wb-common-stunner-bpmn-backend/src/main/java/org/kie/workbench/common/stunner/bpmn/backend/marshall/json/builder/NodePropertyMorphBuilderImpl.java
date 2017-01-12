@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInher
 import org.kie.workbench.common.stunner.core.definition.morph.BindablePropertyMorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -65,7 +65,5 @@ public class NodePropertyMorphBuilderImpl extends NodeBuilderImpl {
         final String pRawValue = properties.get( oryxId );
         final Object pValue = context.getOryxManager().getPropertyManager().parse( mp, propertyType, pRawValue );
         return morphProperty.getMorphTarget( pValue );
-
     }
-
 }

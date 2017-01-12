@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,13 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType;
 
 @Portable
 @Bindable
-@Property
+@Property( meta = PropertyMetaTypes.HEIGHT )
 public class Height {
 
     @Caption
@@ -88,5 +89,4 @@ public class Height {
     public void setValue( Double value ) {
         this.value = value;
     }
-
 }

@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +20,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -30,19 +32,26 @@ public abstract class AbstractCanvasCommandTest {
     protected static final String SHAPE_SET_ID = "ssid1";
     protected static final String CANVAS_ROOT_UUID = "rootUUID1";
 
-    @Mock protected AbstractCanvasHandler canvasHandler;
-    @Mock protected AbstractCanvas canvas;
-    @Mock protected Diagram diagram;
-    @Mock protected Metadata metadata;
+    @Mock
+    protected AbstractCanvasHandler canvasHandler;
+    @Mock
+    protected AbstractCanvas canvas;
+    @Mock
+    protected Diagram diagram;
+    @Mock
+    protected Graph graph;
+    @Mock
+    protected Metadata metadata;
 
-    public void setup() throws Exception  {
-        MockitoAnnotations.initMocks( this );;
+    public void setup() throws Exception {
+        MockitoAnnotations.initMocks( this );
+        ;
         when( canvasHandler.getDiagram() ).thenReturn( diagram );
         when( canvasHandler.getCanvas() ).thenReturn( canvas );
         when( diagram.getMetadata() ).thenReturn( metadata );
+        when( diagram.getGraph() ).thenReturn( graph );
         when( metadata.getDefinitionSetId() ).thenReturn( DEF_SET_ID );
         when( metadata.getShapeSetId() ).thenReturn( SHAPE_SET_ID );
         when( metadata.getCanvasRootUUID() ).thenReturn( CANVAS_ROOT_UUID );
     }
-
 }

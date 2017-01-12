@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,6 @@
  */
 
 package org.kie.workbench.common.stunner.core.client.canvas;
-
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
@@ -63,6 +53,12 @@ import org.kie.workbench.common.stunner.core.rule.Rule;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
+
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class AbstractCanvasHandler<D extends Diagram, C extends AbstractCanvas>
         implements CanvasHandler<D, C>, HasCanvasListeners<CanvasElementListener> {
@@ -157,7 +153,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
                     }
                 }
                 // Run the draw command.
-                canvasCommandFactory.DRAW().execute( AbstractCanvasHandler.this );
+                canvasCommandFactory.draw().execute( AbstractCanvasHandler.this );
             }
 
             @Override
@@ -185,7 +181,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
 
     public void register( final String shapeSetId,
                           final Element<View<?>> candidate ) {
-        final  ShapeFactory<Object, AbstractCanvasHandler, Shape> factory = shapeManager
+        final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory = shapeManager
                 .getShapeSet( shapeSetId )
                 .getShapeFactory();
         register( factory, candidate, true );
@@ -201,9 +197,8 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         if ( null == shape.getUUID() ) {
             shape.setUUID( candidate.getUUID() );
         }
-        shape.getShapeView().setZIndex( 0 );
         // Add the shapes on canvas and fire events.
-        canvas.addShape( shape );
+        addShape( shape );
         canvas.draw();
         if ( fireEvents ) {
             // Fire listeners.
@@ -225,11 +220,9 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
             fireCanvasElementRemoved( element );
             // Fire events.
             beforeElementDeleted( element, shape );
-
         }
-        // TODO: Delete connector connections to the node being deleted?
         doDeregister( shape, element );
-        canvas.deleteShape( shape );
+        removeShape( shape );
         canvas.draw();
         if ( fireEvents ) {
             afterElementDeleted( element, shape );
@@ -274,21 +267,42 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         }
     }
 
+    public void addShape( final Shape shape ) {
+        shape.getShapeView().setZIndex( 0 );
+        canvas.addShape( shape );
+    }
+
+    public void removeShape( final Shape shape ) {
+        canvas.deleteShape( shape );
+    }
+
+    @SuppressWarnings( "unchecked" )
     public void addChild( final Element parent, final Element child ) {
+        final Shape childShape = canvas.getShape( child.getUUID() );
         if ( !isCanvasRoot( parent ) ) {
             final Shape parentShape = canvas.getShape( parent.getUUID() );
-            final Shape childShape = canvas.getShape( child.getUUID() );
             handleParentChildZIndex( parent, child, parentShape, childShape, true );
             canvas.addChildShape( parentShape, childShape );
+        } else {
+            // -- Special case when parent is the canvas root --
+            // Ensure the shape is added into the layer, but no need to register it again and generate new
+            // handlers ( f.i. using canvas#addShape() method ).
+            canvas.getLayer().addShape( childShape.getShapeView() );
         }
     }
 
+    @SuppressWarnings( "unchecked" )
     public void removeChild( final String parentUUID, final String childUUID ) {
+        final Shape childShape = canvas.getShape( childUUID );
         if ( !isCanvasRoot( parentUUID ) ) {
             final Shape parentShape = canvas.getShape( parentUUID );
-            final Shape childShape = canvas.getShape( childUUID );
             handleParentChildZIndex( null, null, parentShape, childShape, false );
             canvas.deleteChildShape( parentShape, childShape );
+        } else {
+            // -- Special case when parent is the canvas root --
+            // Ensure the shape is removed from the layer, but no need to deregister any
+            // handlers ( f.i. using canvas#removeShape() method ).
+            canvas.getLayer().removeShape( childShape.getShapeView() );
         }
     }
 
@@ -379,7 +393,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     @Override
     public CanvasHandler<D, C> clear() {
         canvas.clear();
-        graphIndex.clear();;
+        destroyGraphIndex();
         graphIndex = null;
         diagram = null;
         return this;
@@ -388,11 +402,18 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     @Override
     public void destroy() {
         canvas.destroy();
-        graphIndex.clear();
+        destroyGraphIndex();
         listeners.clear();
         canvas = null;
         graphIndex = null;
         diagram = null;
+    }
+
+    private void destroyGraphIndex() {
+        if ( null != graphIndex ) {
+            graphIndex.clear();
+            graphIndex = null;
+        }
     }
 
     @Override
@@ -464,7 +485,6 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         }
         // Fire a canvas element added event.
         canvasElementUpdatedEvent.fire( new CanvasElementUpdatedEvent( this, element ) );
-
     }
 
     protected void showError( final ClientRuntimeError error ) {
@@ -536,5 +556,4 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
             LOGGER.log( level, message );
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,9 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
@@ -92,7 +90,7 @@ public class StunnerClientLogger {
     private static void logFullSessionInfo( final AbstractClientFullSession session ) {
         final ElementBuilderControl<AbstractCanvasHandler> builderControl = session.getBuilderControl();
         final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager =
-                session.getCanvasCommandManager();
+                session.getCommandManager();
         log( "Builder control = " + ( null != builderControl ? builderControl.toString() : "null" ) );
         log( "Canvas command mgr = " + ( null != canvasCommandManager ? canvasCommandManager.toString() : "null" ) );
     }
@@ -101,7 +99,7 @@ public class StunnerClientLogger {
     public static void logCommandHistory( final ClientFullSession session ) {
         if ( null != session ) {
             final List<Command<AbstractCanvasHandler, CanvasViolation>> history =
-                    ( ( StackCommandManager<AbstractCanvasHandler, CanvasViolation> ) session.getCanvasCommandManager() ).getRegistry().getCommandHistory();
+                    session.getCommandRegistry().getCommandHistory();
             logCommandHistory( history );
         }
     }
@@ -113,10 +111,10 @@ public class StunnerClientLogger {
         } else {
             final int[] x = { 0 };
             history.stream().forEach( command -> {
-                logCommand( x[0], command );
-                x[0]++;
+                logCommand( x[ 0 ], command );
+                x[ 0 ]++;
             } );
-            log( " ( FOUND " + x[0] + " ENTRIES )" );
+            log( " ( FOUND " + x[ 0 ] + " ENTRIES )" );
         }
         log( "**** COMMAND HISTORY END *********" );
     }
@@ -125,11 +123,9 @@ public class StunnerClientLogger {
                                     final Command<AbstractCanvasHandler, CanvasViolation> command ) {
         if ( null == command ) {
             log( "Command is null" );
-
         } else {
             log( "Command [" + count + "] => " + command.toString() );
         }
-
     }
 
     public static void switchLogLevel() {

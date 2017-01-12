@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -26,7 +27,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.factory.D
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
 
 public abstract class AbstractPaletteWidgetFactory<I extends PaletteDefinition, P extends PaletteWidget<I, ?>>
         extends AbstractPaletteFactory<I, P>
@@ -37,7 +37,7 @@ public abstract class AbstractPaletteWidgetFactory<I extends PaletteDefinition, 
 
     public AbstractPaletteWidgetFactory( final ShapeManager shapeManager,
                                          final SyncBeanManager beanManager,
-                                         final Instance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
+                                         final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
                                          final P palette,
                                          final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent ) {
         super( shapeManager, beanManager, defaultPaletteDefinitionFactoryInstance, palette );
@@ -58,9 +58,6 @@ public abstract class AbstractPaletteWidgetFactory<I extends PaletteDefinition, 
             palette.onItemDrop( ( definition, factory, x, y ) ->
                     buildCanvasShapeEvent.fire( new BuildCanvasShapeEvent( ( AbstractCanvasHandler ) canvasHandler,
                             definition, factory, x, y ) ) );
-
         }
-
     }
-
 }

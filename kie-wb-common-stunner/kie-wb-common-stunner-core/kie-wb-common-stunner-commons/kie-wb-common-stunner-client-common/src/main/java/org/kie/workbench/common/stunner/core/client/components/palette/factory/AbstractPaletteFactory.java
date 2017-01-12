@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
 import com.google.gwt.logging.client.LogConfiguration;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
@@ -27,7 +28,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Pal
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
-import javax.enterprise.inject.Instance;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +40,7 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
     private static Logger LOGGER = Logger.getLogger( AbstractPaletteFactory.class.getName() );
 
     protected SyncBeanManager beanManager;
-    protected Instance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance;
+    protected ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance;
     protected ShapeManager shapeManager;
 
     protected final List<DefSetPaletteDefinitionFactory> paletteDefinitionFactories = new LinkedList<>();
@@ -48,7 +48,7 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
 
     public AbstractPaletteFactory( final ShapeManager shapeManager,
                                    final SyncBeanManager beanManager,
-                                   final Instance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
+                                   final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
                                    final P palette ) {
         this.shapeManager = shapeManager;
         this.beanManager = beanManager;
@@ -64,7 +64,6 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
             DefSetPaletteDefinitionFactory factory = defSet.getInstance();
             paletteDefinitionFactories.add( factory );
         }
-
     }
 
     protected PaletteDefinitionFactory getPaletteDefinitionFactory( final String defSetId ) {
@@ -75,6 +74,7 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
         }
         return defaultPaletteDefinitionFactoryInstance.get();
     }
+
     @Override
     @SuppressWarnings( "unchecked" )
     public P newPalette( final String shapeSetId ) {
@@ -95,14 +95,12 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
                 beforeBindPalette( paletteDefinition, shapeSetId );
                 palette.bind( paletteDefinition );
                 afterBindPalette( paletteDefinition, shapeSetId );
-
             }
 
             @Override
             public void onError( final ClientRuntimeError error ) {
                 logError( error );
             }
-
         } );
         return palette;
     }
@@ -129,5 +127,4 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
             LOGGER.log( Level.SEVERE, error.toString() );
         }
     }
-
 }

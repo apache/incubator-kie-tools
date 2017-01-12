@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@ import org.uberfire.commons.validation.PortablePreconditions;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class CommandManagerImpl<C, V> implements CommandManager<C, V>, HasCommandManagerListener<CommandManagerListener<C, V>> {
+public class CommandManagerImpl<C, V> implements CommandManager<C, V>, HasCommandListener<CommandListener<C, V>> {
 
     private static Logger LOGGER = Logger.getLogger( CommandManagerImpl.class.getName() );
 
-    private CommandManagerListener<C, V> listener;
+    private CommandListener<C, V> listener;
 
-    CommandManagerImpl() {
+    public CommandManagerImpl() {
         this.listener = null;
     }
 
@@ -41,7 +41,7 @@ class CommandManagerImpl<C, V> implements CommandManager<C, V>, HasCommandManage
             listener.onAllow( context, command, result );
         }
         LOGGER.log( Level.FINE, "Evaluation (allow) of command [" + command + "] finished - "
-                + "Result [" + result + "]");
+                + "Result [" + result + "]" );
         return result;
     }
 
@@ -55,7 +55,7 @@ class CommandManagerImpl<C, V> implements CommandManager<C, V>, HasCommandManage
             listener.onExecute( context, command, result );
         }
         LOGGER.log( Level.FINE, "Execution of command [" + command + "] finished - "
-                + "Result [" + result + "]");
+                + "Result [" + result + "]" );
         return result;
     }
 
@@ -68,13 +68,12 @@ class CommandManagerImpl<C, V> implements CommandManager<C, V>, HasCommandManage
             listener.onUndo( context, command, result );
         }
         LOGGER.log( Level.FINE, "Undo of command [" + command + "] finished - "
-                + "Result [" + result + "]");
+                + "Result [" + result + "]" );
         return result;
     }
 
     @Override
-    public void setCommandManagerListener( final CommandManagerListener<C, V> listener ) {
+    public void setCommandListener( final CommandListener<C, V> listener ) {
         this.listener = listener;
     }
-
 }

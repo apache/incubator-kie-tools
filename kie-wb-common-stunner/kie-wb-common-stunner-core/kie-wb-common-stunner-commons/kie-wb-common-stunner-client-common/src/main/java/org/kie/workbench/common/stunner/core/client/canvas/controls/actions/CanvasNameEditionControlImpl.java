@@ -92,33 +92,38 @@ public class CanvasNameEditionControlImpl
             final ShapeView shapeView = shape.getShapeView();
             if ( shapeView instanceof HasEventHandlers ) {
                 final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shapeView;
-                // Double click event.
-                final MouseDoubleClickHandler doubleClickHandler = new MouseDoubleClickHandler() {
-                    @Override
-                    public void handle( final MouseDoubleClickEvent event ) {
-                        CanvasNameEditionControlImpl.this.show( element, event.getClientX(), event.getClientY() );
+                if ( hasEventHandlers.supports( ViewEventType.MOUSE_DBL_CLICK ) ) {
+                    // Double click event.
+                    final MouseDoubleClickHandler doubleClickHandler = new MouseDoubleClickHandler() {
+                        @Override
+                        public void handle( final MouseDoubleClickEvent event ) {
+                            CanvasNameEditionControlImpl.this.show( element, event.getClientX(), event.getClientY() );
+                        }
+                    };
+                    hasEventHandlers.addHandler( ViewEventType.MOUSE_DBL_CLICK, doubleClickHandler );
+                    registerHandler( shape.getUUID(), doubleClickHandler );
+                    // TODO: Not firing - Text over event.
+                    final TextOverHandler overHandler = new TextOverHandler() {
+                        @Override
+                        public void handle( TextOverEvent event ) {
+                            canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.TEXT );
+                        }
+                    };
+                    if ( hasEventHandlers.supports( ViewEventType.TEXT_OVER ) &&
+                            hasEventHandlers.supports( ViewEventType.TEXT_OUT ) ) {
+                        hasEventHandlers.addHandler( ViewEventType.TEXT_OVER, overHandler );
+                        registerHandler( shape.getUUID(), overHandler );
+                        // TODO: Not firing - Text out event.
+                        final TextOutHandler outHandler = new TextOutHandler() {
+                            @Override
+                            public void handle( TextOutEvent event ) {
+                                canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
+                            }
+                        };
+                        hasEventHandlers.addHandler( ViewEventType.TEXT_OUT, outHandler );
+                        registerHandler( shape.getUUID(), outHandler );
                     }
-                };
-                hasEventHandlers.addHandler( ViewEventType.MOUSE_DBL_CLICK, doubleClickHandler );
-                registerHandler( shape.getUUID(), doubleClickHandler );
-                // TODO: Not firing - Text over event.
-                final TextOverHandler overHandler = new TextOverHandler() {
-                    @Override
-                    public void handle( TextOverEvent event ) {
-                        canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.TEXT );
-                    }
-                };
-                hasEventHandlers.addHandler( ViewEventType.TEXT_OVER, overHandler );
-                registerHandler( shape.getUUID(), overHandler );
-                // TODO: Not firing - Text out event.
-                final TextOutHandler outHandler = new TextOutHandler() {
-                    @Override
-                    public void handle( TextOutEvent event ) {
-                        canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
-                    }
-                };
-                hasEventHandlers.addHandler( ViewEventType.TEXT_OUT, outHandler );
-                registerHandler( shape.getUUID(), outHandler );
+                }
             }
         }
     }
@@ -130,13 +135,13 @@ public class CanvasNameEditionControlImpl
         this.uuid = item.getUUID();
         enableShapeEdit();
         nameEditBox.show( item );
-        Double[] size;
+        double[] size;
         try {
             size = GraphUtils.getSize( ( View ) item.getContent() );
         } catch ( final ClassCastException e ) {
             size = null;
         }
-        final double rx = null != size ? size[0] / 2 : 0d;
+        final double rx = null != size ? size[ 0 ] / 2 : 0d;
         floatingView
                 .setX( x - rx )
                 .setY( y )
@@ -194,6 +199,7 @@ public class CanvasNameEditionControlImpl
     private boolean isVisible() {
         return null != this.uuid;
     }
+
     private Canvas getCanvas() {
         return canvasHandler.getCanvas();
     }

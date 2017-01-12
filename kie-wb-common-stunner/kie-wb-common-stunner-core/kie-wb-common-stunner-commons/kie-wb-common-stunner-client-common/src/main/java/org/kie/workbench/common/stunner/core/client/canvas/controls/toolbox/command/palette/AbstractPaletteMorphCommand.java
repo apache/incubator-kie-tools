@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,13 +29,12 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Gly
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPaletteBuilder;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.enterprise.event.Event;
 import java.util.HashMap;
@@ -108,7 +107,7 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
         final Node node = ( Node ) sourceNode;
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
         canvasCommandManager.execute( canvasHandler,
-                commandFactory.MORPH_NODE( node, morphDefinition, definitionId, ssid ) );
+                commandFactory.morphNode( node, morphDefinition, definitionId, ssid ) );
         this.morphDefinitions.clear();
         clear();
         fireElementSelectedEvent( elementSelectedEvent, canvasHandler, node.getUUID() );
@@ -117,5 +116,4 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
     protected DefinitionManager getDefinitionManager() {
         return definitionUtils.getDefinitionManager();
     }
-
 }

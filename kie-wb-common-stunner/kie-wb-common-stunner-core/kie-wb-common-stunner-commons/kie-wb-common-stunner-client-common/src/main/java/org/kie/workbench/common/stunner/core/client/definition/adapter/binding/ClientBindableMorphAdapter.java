@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.BindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinitionProvider;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -57,7 +57,6 @@ public class ClientBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
     protected <T> T doMerge( final S source,
                              final T result ) {
         return ClientBindingUtils.merge( source, result );
-
     }
 
     @Override
@@ -69,5 +68,4 @@ public class ClientBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
         }
         return true;
     }
-
 }

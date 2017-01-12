@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.definition.adapter.shared;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.impl.DefinitionImpl;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -33,11 +34,6 @@ public class DefaultDefinitionAdapter implements DefinitionAdapter<DefinitionImp
     @Override
     public String getId( DefinitionImpl pojo ) {
         return pojo.getId();
-    }
-
-    @Override
-    public Object getNameProperty( DefinitionImpl pojo ) {
-        return pojo.getNameProperty();
     }
 
     @Override
@@ -71,6 +67,11 @@ public class DefaultDefinitionAdapter implements DefinitionAdapter<DefinitionImp
     }
 
     @Override
+    public Object getMetaProperty( PropertyMetaTypes metaType, DefinitionImpl pojo ) {
+        return null;
+    }
+
+    @Override
     public Class<? extends ElementFactory> getGraphFactoryType( DefinitionImpl pojo ) {
         // TODO
         return null;
@@ -90,5 +91,4 @@ public class DefaultDefinitionAdapter implements DefinitionAdapter<DefinitionImp
     public int getPriority() {
         return 1;
     }
-
 }

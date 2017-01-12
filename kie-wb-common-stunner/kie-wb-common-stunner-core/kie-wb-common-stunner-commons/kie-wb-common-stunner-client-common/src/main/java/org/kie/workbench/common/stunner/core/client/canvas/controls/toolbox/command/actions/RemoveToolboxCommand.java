@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,13 +60,11 @@ public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
         super.click( context, element );
         // TODO: Remove use of hardcoded confirm box here & I18n.
         if ( Window.confirm( "Are you sure?" ) ) {
-            canvasCommandManager.execute( context.getCanvasHandler(), commandFactory.DELETE_NODE( ( Node ) element ) );
+            canvasCommandManager.execute( context.getCanvasHandler(), commandFactory.deleteNode( ( Node ) element ) );
         }
-
     }
 
     @Override
     public void destroy() {
     }
-
 }

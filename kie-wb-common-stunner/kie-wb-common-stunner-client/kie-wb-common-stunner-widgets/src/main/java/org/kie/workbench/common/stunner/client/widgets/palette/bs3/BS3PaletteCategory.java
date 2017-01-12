@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.AbstractP
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteGroup;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.client.mvp.UberView;
 
 import javax.annotation.PostConstruct;
@@ -56,7 +56,6 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
         View addItem( String id, String text, String description, String glyphDefId, IsWidget view );
 
         View clear();
-
     }
 
     ShapeManager shapeManager;
@@ -114,30 +113,22 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
                 for ( final DefinitionPaletteItem item : items ) {
                     if ( item instanceof DefinitionPaletteGroup ) {
                         showGroup( ( DefinitionPaletteGroup ) item );
-
                     } else {
                         showItem( item );
-
                     }
                     addSeparator();
-
                 }
-
             }
-
         }
         if ( doClear ) {
             clear();
-
         }
         return this;
-
     }
 
     public void clear() {
         this.itemIds.clear();
         this.view.clear();
-
     }
 
     public View getView() {
@@ -151,11 +142,8 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
         if ( null != items && !items.isEmpty() ) {
             for ( final DefinitionPaletteItem item : items ) {
                 showItem( item );
-
             }
-
         }
-
     }
 
     private void showItem( final DefinitionPaletteItem item ) {
@@ -165,7 +153,6 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
         final String glyphId = item.getDefinitionId();
         view.addItem( id, title, desc, glyphId, bs3PaletteWidget.getDefinitionView( glyphId ) );
         itemIds.add( id );
-
     }
 
     private void addSeparator() {
@@ -179,7 +166,6 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
         this.shapeManager = null;
         this.definitionUtils = null;
         this.view = null;
-
     }
 
     @Override
@@ -194,9 +180,7 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
                       final int itemY ) {
         if ( null != itemMouseDownCallback ) {
             itemMouseDownCallback.onItemMouseDown( id, mouseX, mouseY, itemX, itemY );
-
         }
-
     }
 
     void onMouseClick( final String id,
@@ -206,9 +190,7 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
                        final int itemY ) {
         if ( null != itemClickCallback ) {
             itemClickCallback.onItemClick( id, mouseX, mouseY, itemX, itemY );
-
         }
-
     }
 
     private int getIndex( final String id ) {
@@ -223,11 +205,8 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
                     }
                     x++;
                 }
-
             }
-
         }
         return -1;
     }
-
 }

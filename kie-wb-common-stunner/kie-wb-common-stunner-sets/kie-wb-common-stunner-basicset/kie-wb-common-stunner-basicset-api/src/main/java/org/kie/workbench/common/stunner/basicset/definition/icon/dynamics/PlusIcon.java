@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,11 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
-
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
 
 @Portable
 @Bindable
@@ -79,6 +79,7 @@ public class PlusIcon implements DynamicIcon {
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
         add( "all" );
+        add( "icon" );
     }};
 
     @NonPortable
@@ -97,7 +98,6 @@ public class PlusIcon implements DynamicIcon {
                     new Width( WIDTH ),
                     new Height( HEIGHT ) );
         }
-
     }
 
     public PlusIcon() {
@@ -111,7 +111,6 @@ public class PlusIcon implements DynamicIcon {
         this.backgroundSet = backgroundSet;
         this.width = width;
         this.height = height;
-
     }
 
     public String getCategory() {
@@ -161,5 +160,4 @@ public class PlusIcon implements DynamicIcon {
     public void setHeight( Height height ) {
         this.height = height;
     }
-
 }

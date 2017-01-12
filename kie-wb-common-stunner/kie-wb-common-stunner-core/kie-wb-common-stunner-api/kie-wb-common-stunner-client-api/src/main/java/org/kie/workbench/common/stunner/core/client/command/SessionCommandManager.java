@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@
 package org.kie.workbench.common.stunner.core.client.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
+import org.kie.workbench.common.stunner.core.command.HasCommandRegistry;
 
 public interface SessionCommandManager<H extends CanvasHandler>
-        extends CanvasCommandManager<H>, StackCommandManager<H, CanvasViolation> {
+        extends CanvasCommandManager<H>,
+        HasCommandRegistry<H, CanvasViolation> {
 
 }

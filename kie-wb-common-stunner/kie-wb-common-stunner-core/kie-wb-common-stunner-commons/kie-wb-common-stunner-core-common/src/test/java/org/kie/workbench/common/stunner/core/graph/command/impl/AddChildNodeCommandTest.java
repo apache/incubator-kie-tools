@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +23,6 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.*;
@@ -55,7 +55,7 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
         super.init( 500, 500 );
         this.parent = mockNode( PARENT_UUID );
         this.candidate = mockNode( CANDIDATE_UUID );
-        when( graphIndex.getNode( eq( PARENT_UUID ) )).thenReturn( parent );
+        when( graphIndex.getNode( eq( PARENT_UUID ) ) ).thenReturn( parent );
         this.tested = new AddChildNodeCommand( PARENT_UUID, candidate, x, y );
     }
 
@@ -66,12 +66,12 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
         tested.initialize( graphCommandExecutionContext );
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
         verify( tested, times( 3 ) ).addCommand( commandArgumentCaptor.capture() );
-        List<Command > commands = commandArgumentCaptor.getAllValues();
+        List<Command> commands = commandArgumentCaptor.getAllValues();
         assertNotNull( commands );
         assertTrue( commands.size() == 3 );
-        assertTrue( commands.get( 0 ) instanceof RegisterNodeCommand);
-        assertTrue( commands.get( 1 ) instanceof UpdateElementPositionCommand );
-        assertTrue( commands.get( 2 ) instanceof SetChildNodeCommand );
+        assertTrue( commands.get( 0 ) instanceof RegisterNodeCommand );
+        assertTrue( commands.get( 1 ) instanceof SetChildNodeCommand );
+        assertTrue( commands.get( 2 ) instanceof UpdateElementPositionCommand );
     }
 
     @Test
@@ -81,7 +81,7 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
         tested.initialize( graphCommandExecutionContext );
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
         verify( tested, times( 2 ) ).addCommand( commandArgumentCaptor.capture() );
-        List<Command > commands = commandArgumentCaptor.getAllValues();
+        List<Command> commands = commandArgumentCaptor.getAllValues();
         assertNotNull( commands );
         assertTrue( commands.size() == 2 );
         assertTrue( commands.get( 0 ) instanceof RegisterNodeCommand );
@@ -127,5 +127,4 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
         assertEquals( CommandResult.Type.ERROR, result.getType() );
     }
-
 }

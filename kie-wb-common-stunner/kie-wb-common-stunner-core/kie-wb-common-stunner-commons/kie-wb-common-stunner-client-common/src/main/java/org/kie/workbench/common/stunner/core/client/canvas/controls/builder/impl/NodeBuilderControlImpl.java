@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.imp
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -60,6 +61,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
     protected NodeBuilderControlImpl() {
         this( null, null, null, null, null, null );
     }
+
     @Inject
     public NodeBuilderControlImpl( final ClientDefinitionManager clientDefinitionManager,
                                    final ShapeManager shapeManager,
@@ -114,27 +116,26 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
             final String nodeId = clientDefinitionManager.adapters().forDefinition().getId( nodeDef );
             final ElementBuilderControlImpl ebc = getElementBuilderControl();
             final Node<View<?>, Edge> parent = ebc.getParent( x, y );
-            final Double[] childCoordinates = ebc.getChildCoordinates( parent, x, y );
+            final Point2D childCoordinates = ebc.getChildCoordinates( parent, x, y );
             final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
-            ebc.getElementCommands( node, parent, childCoordinates[ 0 ], childCoordinates[ 1 ], new AbstractElementBuilderControl.CommandsCallback() {
+            ebc.getElementCommands( node, parent, childCoordinates.getX(), childCoordinates.getY(), new AbstractElementBuilderControl.CommandsCallback() {
                 @Override
                 public void onComplete( final String uuid,
                                         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
                     final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
                             new CompositeCommandImpl.CompositeCommandBuilder()
-                            .addCommands( commands );
+                                    .addCommands( commands );
                     if ( inEdge != null ) {
                         final Object edgeDef = inEdge.getContent().getDefinition();
                         final String edgeId = clientDefinitionManager.adapters().forDefinition().getId( edgeDef );
                         // The commands to batch for the edge that connects both nodes.
-                        commandBuilder.addCommand( commandFactory.ADD_CONNECTOR( inEdge.getSourceNode(), inEdge, sourceManget, ssid ) );
-                        commandBuilder.addCommand( commandFactory.SET_TARGET_NODE( node, inEdge, targetMagnet ) );
+                        commandBuilder.addCommand( commandFactory.addConnector( inEdge.getSourceNode(), inEdge, sourceManget, ssid ) );
+                        commandBuilder.addCommand( commandFactory.setTargetNode( node, inEdge, targetMagnet ) );
                     }
                     final CommandResult<CanvasViolation> results =
                             canvasCommandManager.execute( canvasHandler, commandBuilder.build() );
                     if ( !CommandUtils.isError( results ) ) {
                         updateConnectorShape( inEdge, node, sourceManget, targetMagnet );
-
                     }
                     buildCallback.onSuccess( uuid );
                 }
@@ -144,9 +145,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
                     buildCallback.onError( error );
                 }
             } );
-
         }
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -170,5 +169,4 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
     protected ElementBuilderControlImpl getElementBuilderControl() {
         return ( ElementBuilderControlImpl ) elementBuilderControl;
     }
-
 }

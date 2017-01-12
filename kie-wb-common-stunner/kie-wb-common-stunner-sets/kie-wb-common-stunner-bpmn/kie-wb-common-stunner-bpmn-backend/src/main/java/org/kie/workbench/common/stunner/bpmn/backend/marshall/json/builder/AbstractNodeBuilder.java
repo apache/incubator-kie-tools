@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
         setProperties( context, ( BPMNDefinition ) result.getContent().getDefinition() );
         // View Bounds.
         setBounds( context, result );
-        AddNodeCommand addNodeCommand = context.getCommandFactory().ADD_NODE( result );
+        AddNodeCommand addNodeCommand = context.getCommandFactory().addNode( result );
         if ( doExecuteCommand( context, addNodeCommand ) ) {
             // Post processing.
             afterNodeBuild( context, result );
@@ -99,7 +99,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
     }
 
     protected void setSize( BuilderContext context, T node ) {
-        final Double[] size = GraphUtils.getSize( node.getContent() );
+        final double[] size = GraphUtils.getSize( node.getContent() );
         setSize( context, node, size[ 0 ], size[ 1 ] );
     }
 
@@ -153,7 +153,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                 if ( outgoingBuilder instanceof AbstractNodeBuilder ) {
                     // Command - Create the docked node.
                     Node docked = ( Node ) outgoingBuilder.build( context );
-                    commands.add( context.getCommandFactory().ADD_DOCKED_NODE( node, docked ) );
+                    commands.add( context.getCommandFactory().addDockedNode( node, docked ) );
                     // Obtain docked position and use those for the docked node.
                     final List<Double[]> dockers = ( ( AbstractNodeBuilder ) outgoingBuilder ).dockers;
                     if ( !dockers.isEmpty() ) {
@@ -161,16 +161,15 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                         Double[] dCoords = dockers.get( 0 );
                         double x = dCoords[ 0 ];
                         double y = dCoords[ 1 ];
-                        commands.add( context.getCommandFactory().UPDATE_POSITION( docked, x, y ) );
+                        commands.add( context.getCommandFactory().updatePosition( docked, x, y ) );
                     }
                 } else {
                     // Create the outgoing edge.
                     Edge edge = ( Edge ) outgoingBuilder.build( context );
                     // Command - Execute the graph command to set the node as the edge connection's source..
                     int magnetIdx = getSourceConnectionMagnetIndex( context, node, edge );
-                    commands.add( context.getCommandFactory().SET_SOURCE_NODE( node, edge, magnetIdx ) );
+                    commands.add( context.getCommandFactory().setSourceNode( node, edge, magnetIdx ) );
                     ;
-
                 }
                 if ( !commands.isEmpty() ) {
                     for ( Command<GraphCommandExecutionContext, RuleViolation> command : commands ) {
@@ -190,7 +189,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                 if ( childNodeBuilder instanceof NodeObjectBuilder ) {
                     // Command - Create the child node and the parent-child relationship.
                     Node childNode = ( Node ) childNodeBuilder.build( context );
-                    command = context.getCommandFactory().ADD_CHILD_NODE( node, childNode );
+                    command = context.getCommandFactory().addChildNode( node, childNode );
                 }
                 if ( null != command ) {
                     doExecuteCommand( context, command );
@@ -222,5 +221,4 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
     public String toString() {
         return super.toString() + " [defClass=" + definitionClass.getName() + "] [childrenIds=" + childNodeIds + "] ";
     }
-
 }

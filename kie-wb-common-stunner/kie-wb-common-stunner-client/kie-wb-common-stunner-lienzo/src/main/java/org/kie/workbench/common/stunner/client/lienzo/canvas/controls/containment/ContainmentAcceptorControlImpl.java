@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.Session;
+import org.kie.workbench.common.stunner.core.client.command.Request;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -44,7 +44,7 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
 
     @Inject
     public ContainmentAcceptorControlImpl( final CanvasCommandFactory canvasCommandFactory,
-                                           final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
+                                           final @Request SessionCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
         super( canvasCommandManager );
         this.canvasCommandFactory = canvasCommandFactory;
     }
@@ -66,12 +66,12 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
 
     @Override
     protected Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand( final Node parent, final Node child ) {
-        return canvasCommandFactory.SET_CHILD_NODE( parent, child );
+        return canvasCommandFactory.setChildNode( parent, child );
     }
 
     @Override
     protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand( final Node parent, final Node child ) {
-        return canvasCommandFactory.REMOVE_CHILD( parent, child );
+        return canvasCommandFactory.removeChild( parent, child );
     }
 
     private final IContainmentAcceptor CONTAINMENT_ACCEPTOR = new IContainmentAcceptor() {
@@ -96,7 +96,5 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
             final Node parentNode = WiresUtils.getNode( getCanvasHandler(), wiresContainer );
             return accept( parentNode, childNode );
         }
-
     };
-
 }

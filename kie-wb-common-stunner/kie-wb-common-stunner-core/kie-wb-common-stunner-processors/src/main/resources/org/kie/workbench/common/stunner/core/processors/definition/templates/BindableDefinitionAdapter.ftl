@@ -90,6 +90,12 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
         </#list>
     }};
 
+    private static final Map<${metaTypeClass}, Class> metaPropertyTypes = new HashMap<${metaTypeClass}, Class>(${metaTypesSize}) {{
+        <#list metaTypes as metaType>
+            put( ${metaType.className}, ${metaType.methodName} );
+        </#list>
+    }};
+
     protected ${className}() {
     }
 
@@ -100,7 +106,7 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
     
     @Override
     protected void setBindings(final BindableDefinitionAdapter<Object> adapter) {
-        adapter.setBindings(  ${namePropertyClass},
+        adapter.setBindings( metaPropertyTypes,
                 baseTypes,
                 propertySetsFieldNames,
                 propertiesFieldNames,

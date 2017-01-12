@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,12 +24,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -40,26 +41,38 @@ import java.util.Collection;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith( MockitoJUnitRunner.class )
 public class FormPropertiesWidgetTest {
 
     private static final String DIAGRAM_NAME = "diagram1";
     private static final String ROOT_UUID = "root1";
 
-    @Mock DefinitionUtils definitionUtils;
+    @Mock
+    DefinitionUtils definitionUtils;
     @Mock
     CanvasCommandFactory commandFactory;
-    @Mock DynamicFormRenderer formRenderer;
-    @Mock Event<FormPropertiesOpened> propertiesOpenedEvent;
-    @Mock AbstractClientFullSession session;
-    @Mock SelectionControl selectionControl;
-    @Mock AbstractCanvasHandler canvasHandler;
-    @Mock Diagram diagram;
-    @Mock Metadata metadata;
-    @Mock NodeImpl node;
-    @Mock Definition nodeContent;
-    @Mock Object nodeDefObject;
-    @Mock Index graphIndex;
+    @Mock
+    DynamicFormRenderer formRenderer;
+    @Mock
+    Event<FormPropertiesOpened> propertiesOpenedEvent;
+    @Mock
+    AbstractClientFullSession session;
+    @Mock
+    SelectionControl selectionControl;
+    @Mock
+    AbstractCanvasHandler canvasHandler;
+    @Mock
+    Diagram diagram;
+    @Mock
+    Metadata metadata;
+    @Mock
+    NodeImpl node;
+    @Mock
+    Definition nodeContent;
+    @Mock
+    Object nodeDefObject;
+    @Mock
+    Index graphIndex;
 
     private FormPropertiesWidget tested;
 
@@ -99,7 +112,7 @@ public class FormPropertiesWidgetTest {
      */
     @Test( expected = java.lang.RuntimeException.class )
     public void testShowSelectedItem() {
-        final Collection<String> selectedItems = new ArrayList<String>(3) {{
+        final Collection<String> selectedItems = new ArrayList<String>( 3 ) {{
             add( ROOT_UUID );
             add( "item2" );
             add( "item3" );
@@ -107,8 +120,8 @@ public class FormPropertiesWidgetTest {
         when( selectionControl.getSelectedItems() ).thenReturn( selectedItems );
         final Command callback = mock( Command.class );
         tested
-            .bind( session )
-            .show( callback );
+                .bind( session )
+                .show( callback );
     }
 
     /**
@@ -123,5 +136,4 @@ public class FormPropertiesWidgetTest {
                 .bind( session )
                 .show( callback );
     }
-
 }

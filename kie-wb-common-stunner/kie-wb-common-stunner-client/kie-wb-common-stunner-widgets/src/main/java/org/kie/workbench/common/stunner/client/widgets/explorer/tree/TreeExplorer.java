@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -41,7 +42,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -69,7 +69,7 @@ public class TreeExplorer implements IsWidget {
 
     DefinitionManager definitionManager;
     ChildrenTraverseProcessor childrenTraverseProcessor;
-    Instance<TreeExplorerItem> treeExplorerItemInstances;
+    ManagedInstance<TreeExplorerItem> treeExplorerItemInstances;
     Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
     View view;
 
@@ -78,7 +78,7 @@ public class TreeExplorer implements IsWidget {
     @Inject
     public TreeExplorer( final DefinitionManager definitionManager,
                          final ChildrenTraverseProcessor childrenTraverseProcessor,
-                         final Instance<TreeExplorerItem> treeExplorerItemInstances,
+                         final ManagedInstance<TreeExplorerItem> treeExplorerItemInstances,
                          final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
                          final View view ) {
         this.definitionManager = definitionManager;
@@ -165,19 +165,14 @@ public class TreeExplorer implements IsWidget {
                     final TreeExplorerItem item = treeExplorerItemInstances.get();
                     view.addItem( node.getUUID(), item.asWidget(), expand );
                     item.show( getShapeSetId(), node );
-
                 } else {
                     int[] parentsIdx = getParentsIdx( levelIdx, level );
                     final TreeExplorerItem item = treeExplorerItemInstances.get();
                     view.addItem( node.getUUID(), item.asWidget(), expand, parentsIdx );
                     item.show( getShapeSetId(), node );
-
                 }
-
             }
-
         } );
-
     }
 
     private void inc( final List<Integer> levels, final int level ) {
@@ -211,7 +206,6 @@ public class TreeExplorer implements IsWidget {
 
     private void selectShape( final Canvas canvas, final String uuid ) {
         elementSelectedEventEvent.fire( new CanvasElementSelectedEvent( canvasHandler, uuid ) );
-
     }
 
     void onCanvasClearEvent( @Observes CanvasClearEvent canvasClearEvent ) {
@@ -252,6 +246,7 @@ public class TreeExplorer implements IsWidget {
     private String getShapeSetId() {
         return canvasHandler.getDiagram().getMetadata().getShapeSetId();
     }
+
     @SuppressWarnings( "unchecked" )
     private void showEventGraph( final AbstractCanvasHandlerEvent canvasHandlerEvent ) {
         doShow( canvasHandlerEvent.getCanvasHandler().getDiagram().getGraph() );
@@ -265,5 +260,4 @@ public class TreeExplorer implements IsWidget {
     public CanvasHandler getCanvasHandler() {
         return canvasHandler;
     }
-
 }

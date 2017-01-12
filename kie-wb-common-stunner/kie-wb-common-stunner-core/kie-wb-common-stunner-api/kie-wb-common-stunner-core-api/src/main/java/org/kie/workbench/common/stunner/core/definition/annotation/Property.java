@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.definition.annotation;
 
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+
 import java.lang.annotation.*;
 
 @Inherited
@@ -22,4 +24,13 @@ import java.lang.annotation.*;
 @Target( { ElementType.TYPE, ElementType.FIELD } )
 public @interface Property {
 
+    /**
+     * Specifies the meta-type for this property.
+     *
+     * @see org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes
+     * <p>
+     * TODO: This attribute is still not used when the annotation in present on FIELDS targets, only works for TYPES.
+     * TODO: @see org.kie.workbench.common.stunner.core.processors.MainProcessor
+     */
+    PropertyMetaTypes meta() default PropertyMetaTypes.NONE;
 }

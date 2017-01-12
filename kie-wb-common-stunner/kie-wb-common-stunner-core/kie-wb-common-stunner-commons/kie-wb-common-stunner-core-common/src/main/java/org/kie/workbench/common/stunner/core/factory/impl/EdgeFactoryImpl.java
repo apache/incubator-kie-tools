@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,10 @@ import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
@@ -53,7 +56,7 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     @Override
     @SuppressWarnings( "unchecked" )
     public Edge<Definition<Object>, Node> build( final String uuid,
-                                     final Object definition ) {
+                                                 final Object definition ) {
         final EdgeImpl edge = new EdgeImpl<>( uuid );
         if ( null != definition ) {
             ViewConnector<Object> content = new ViewConnectorImpl<>( definition, buildBounds() );
@@ -67,4 +70,8 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
         return definitionManager.adapters().forDefinition().getLabels( definition );
     }
 
+    // TODO: Review.
+    private Bounds buildBounds() {
+        return new BoundsImpl( new BoundImpl( 0d, 0d ), new BoundImpl( 30d, 30d ) );
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,17 @@ package org.kie.workbench.common.stunner.core.command.impl;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.command.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand<T, V> {
 
@@ -69,7 +72,7 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
                 LOGGER.log( Level.FINE, "Checking execution for command [" + command + "]" );
                 final CommandResult<V> violations = doExecute( context, command );
                 LOGGER.log( Level.FINE, "Execution of command [" + command + "] finished - "
-                        + "Violations [" + violations + "]");
+                        + "Violations [" + violations + "]" );
                 results.add( violations );
                 if ( CommandResult.Type.ERROR.equals( violations.getType() ) ) {
                     undoMultipleExecutedCommands( context, executedCommands );
@@ -81,62 +84,90 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
         return allowResult;
     }
 
-    @Override
-    public CommandResult<V> undo( final T context ) {
+    protected CommandResult<V> undo( final T context,
+                                     final boolean reverse ) {
         final List<CommandResult<V>> results = new LinkedList<>();
-        final int cs = commands.size();
-        for ( int x = 0; x < cs; x++ ) {
-            final Command<T, V> command = commands.get( cs - ( x + 1 ) );
+        final List<Command<T, V>> collected = reverse ?
+                commands.stream().collect( reverse() ) : commands.stream().collect( forward() );
+        collected.forEach( command -> {
             LOGGER.log( Level.FINE, "Undoing command [" + command + "]" );
             final CommandResult<V> violations = doUndo( context, command );
             LOGGER.log( Level.FINE, "Undo of command [" + command + "] finished - "
-                    + "Violations [" + violations + "]");
+                    + "Violations [" + violations + "]" );
             results.add( violations );
-        }
+        } );
         return buildResult( results );
     }
 
-    protected void initialize( T context ) {
+    protected AbstractCompositeCommand<T, V> initialize( T context ) {
         // Nothing to do by default. Implementation can add commands here.
+        this.initialized = true;
+        return this;
     }
 
-    protected void ensureInitialized( T context ) {
-        if ( !initialized ) {
-            initialize( context );
-            this.initialized = true;
-        }
+    @Override
+    public int size() {
+        return commands.size();
     }
 
     public List<Command<T, V>> getCommands() {
         return commands;
     }
 
+    protected boolean isInitialized() {
+        return initialized;
+    }
+
+    protected void ensureInitialized( T context ) {
+        if ( !isInitialized() ) {
+            initialize( context );
+        }
+    }
+
     private CommandResult<V> buildResult( final List<CommandResult<V>> results ) {
         final CommandResult.Type[] type = { CommandResult.Type.INFO };
-        String message = "Found" + results.size() + " violations.";
+        String message = "Found [" + results.size() + "] results.";
         final List<V> violations = new LinkedList<V>();
         results.stream().forEach( rr -> {
-            if ( hasMoreSeverity( rr.getType(), type[0] ) ) {
-                type[0] = rr.getType();
+            if ( hasMoreSeverity( rr.getType(), type[ 0 ] ) ) {
+                type[ 0 ] = rr.getType();
             }
             final Iterable<V> rrIter = rr.getViolations();
             if ( null != rrIter ) {
                 rrIter.forEach( violations::add );
             }
         } );
-        return new CommandResultImpl<V>( type[0], message, violations );
+        return new CommandResultImpl<V>( type[ 0 ], message, violations );
     }
 
     private boolean hasMoreSeverity( final CommandResult.Type type, final CommandResult.Type reference ) {
         return type.getSeverity() > reference.getSeverity();
-
     }
 
     private CommandResult<V> undoMultipleExecutedCommands( final T context,
-                                                            final List<Command<T, V>> commandStack ) {
+                                                           final List<Command<T, V>> commandStack ) {
         final List<CommandResult<V>> results = new LinkedList<>();
         commandStack.stream().forEach( command -> results.add( doUndo( context, command ) ) );
         return buildResult( results );
     }
 
+    private static <T> Collector<T, ?, List<T>> forward() {
+        return Collectors.toList();
+    }
+
+    private static <T> Collector<T, ?, List<T>> reverse() {
+        return Collectors.collectingAndThen( Collectors.toList(), l -> {
+            Collections.reverse( l );
+            return l;
+        } );
+    }
+
+    @Override
+    public String toString() {
+        String s = "[" + getClass().getName() + "]";
+        for ( int x = 0; x < commands.size(); x++ ) {
+            s += " {(" + x + ") [" + commands.get( x ) + "]} ";
+        }
+        return s;
+    }
 }

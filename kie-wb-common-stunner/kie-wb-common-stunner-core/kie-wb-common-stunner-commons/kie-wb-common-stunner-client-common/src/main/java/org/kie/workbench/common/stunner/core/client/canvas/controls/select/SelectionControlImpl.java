@@ -37,7 +37,6 @@ public final class SelectionControlImpl extends AbstractSelectionControl {
     public SelectionControlImpl( final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
                                  final Event<CanvasClearSelectionEvent> clearSelectionEventEvent ) {
         super( elementSelectedEventEvent, clearSelectionEventEvent );
-
     }
 
     /*
@@ -52,21 +51,19 @@ public final class SelectionControlImpl extends AbstractSelectionControl {
         final ShapeView shapeView = shape.getShapeView();
         if ( shapeView instanceof HasEventHandlers ) {
             final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shapeView;
-            // Click event.
-            final MouseClickHandler clickHandler = new MouseClickHandler() {
-
-                @Override
-                public void handle( final MouseClickEvent event ) {
-                    final boolean isSelected = isSelected( element );
-                    SelectionControlImpl.super.handleElementSelection( element, isSelected, !event.isShiftKeyDown() );
-
-                }
-
-            };
-            hasEventHandlers.addHandler( ViewEventType.MOUSE_CLICK, clickHandler );
-            registerHandler( shape.getUUID(), clickHandler );
+            if ( hasEventHandlers.supports( ViewEventType.MOUSE_CLICK ) ) {
+                // Click event.
+                final MouseClickHandler clickHandler = new MouseClickHandler() {
+                    @Override
+                    public void handle( final MouseClickEvent event ) {
+                        final boolean isSelected = isSelected( element );
+                        SelectionControlImpl.super.handleElementSelection( element, isSelected, !event.isShiftKeyDown() );
+                    }
+                };
+                hasEventHandlers.addHandler( ViewEventType.MOUSE_CLICK, clickHandler );
+                registerHandler( shape.getUUID(), clickHandler );
+            }
         }
-
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class BootstrapNavigatorView
     @Override
     public BootstrapNavigatorView clear() {
         container.clear();
-        this.itemCounter = 0;
+        resetRow();
         return this;
     }
 
@@ -85,15 +85,17 @@ public class BootstrapNavigatorView
 
     private void addItem( final IsWidget widget ) {
         if ( null == currentRow || ( itemCounter == 4 ) ) {
-            currentRow = new Row();
-            container.add( currentRow );
-            itemCounter = 0;
+            resetRow();
         }
         final Column column = new Column( ColumnSize.MD_3 );
         column.add( widget );
         currentRow.add( column );
         itemCounter++;
-
     }
 
+    private void resetRow() {
+        currentRow = new Row();
+        container.add( currentRow );
+        itemCounter = 0;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,15 +79,11 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
             public void handle( final MouseClickEvent event ) {
                 if ( event.isButtonLeft() ) {
                     handleLayerClick( !event.isShiftKeyDown() );
-
                 }
-
             }
-
         };
         layer.addHandler( ViewEventType.MOUSE_CLICK, clickHandler );
         this.layerClickHandler = clickHandler;
-
     }
 
     protected abstract void register( Element element, Shape<?> shape );
@@ -97,9 +93,7 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         final Shape<?> shape = getCanvas().getShape( element.getUUID() );
         if ( null != shape ) {
             register( element, shape );
-
         }
-
     }
 
     protected void handleElementSelection( final Element element,
@@ -107,18 +101,14 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
                                            final boolean clearSelection ) {
         if ( clearSelection ) {
             clearSelection();
-
         }
         if ( selected ) {
             log( Level.FINE, "Deselect [element=" + element.getUUID() + "]" );
             deselect( element );
-
         } else {
             log( Level.FINE, "Select [element=" + element.getUUID() + "]" );
             select( element );
-
         }
-
     }
 
     protected void handleLayerClick( final boolean clearSelection ) {
@@ -128,24 +118,9 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         final String canvasRootUUID = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
         if ( null != canvasRootUUID ) {
             elementSelectedEventEvent.fire( new CanvasElementSelectedEvent( canvasHandler, canvasRootUUID ) );
-
         } else {
             clearSelectionEventEvent.fire( new CanvasClearSelectionEvent( canvasHandler ) );
-
         }
-
-    }
-
-    @Override
-    public void deregister( Element element ) {
-        super.deregister( element );
-        selectedElements.remove( element.getUUID() );
-    }
-
-    @Override
-    public void deregisterAll() {
-        super.deregisterAll();
-        selectedElements.clear();
     }
 
     @Override
@@ -155,8 +130,17 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
             this.getCanvas().getLayer().removeHandler( layerClickHandler );
             this.layerClickHandler = null;
         }
-        this.selectedElements.clear();
+    }
 
+    @Override
+    public void deregisterAll() {
+        super.deregisterAll();
+        selectedElements.clear();
+    }
+
+    @Override
+    public void deregister( String uuid ) {
+        selectedElements.remove( uuid );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -167,30 +151,23 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
                 final boolean isSelected = !selectedElements.isEmpty() && selectedElements.contains( shape.getUUID() );
                 if ( isSelected ) {
                     selectShape( shape );
-
                 } else {
                     deselectShape( shape );
-
                 }
-
             }
             // Batch a show operation.
             getCanvas().draw();
-
         }
-
     }
 
     protected void selectShape( final Shape shape ) {
         shape.applyState( ShapeState.SELECTED );
         getCanvas().draw();
-
     }
 
     protected void deselectShape( final Shape shape ) {
         shape.applyState( ShapeState.NONE );
         getCanvas().draw();
-
     }
     
     /*
@@ -205,7 +182,6 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         updateViewShapesState();
         if ( fireEvent ) {
             elementSelectedEventEvent.fire( new CanvasElementSelectedEvent( canvasHandler, uuid ) );
-
         }
         return this;
     }
@@ -228,7 +204,6 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         updateViewShapesState();
         if ( fireEvent ) {
             fireCanvasClear();
-
         }
         return this;
     }
@@ -241,7 +216,6 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
     public SelectionControl<AbstractCanvasHandler, Element> deselect( final Element element,
                                                                       final boolean fireEvent ) {
         return this.deselect( element.getUUID(), fireEvent );
-
     }
 
     protected boolean isSelected( final String uuid ) {
@@ -269,19 +243,15 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
             final Shape<?> shape = canvasHandler.getCanvas().getShape( uuid );
             if ( null != shape ) {
                 deselectShape( shape );
-
             }
-
         }
         selectedElements.clear();
         if ( null != getCanvas() ) {
             // Force batch re-show.
             getCanvas().draw();
-
         }
         if ( fireEvent ) {
             fireCanvasClear();
-
         }
         return this;
     }
@@ -293,9 +263,7 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
             if ( selectedElements.contains( shape.getUUID() ) ) {
                 this.deselect( shape.getUUID(), false );
             }
-
         }
-
     }
 
     void onCanvasElementSelectedEvent( @Observes CanvasElementSelectedEvent event ) {
@@ -303,7 +271,6 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         final String uuid = event.getElementUUID();
         if ( null != canvasHandler && canvasHandler.equals( event.getCanvasHandler() ) ) {
             doSelect( uuid );
-
         }
     }
 
@@ -311,7 +278,6 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         if ( !isSelected( uuid ) ) {
             this.clearSelection( false );
             this.select( uuid, false );
-
         }
     }
 
@@ -319,9 +285,7 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         checkNotNull( "event", event );
         if ( null != canvasHandler && canvasHandler.equals( event.getCanvasHandler() ) ) {
             this.clearSelection( false );
-
         }
-
     }
 
     protected void fireCanvasClear() {
@@ -337,5 +301,4 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
             LOGGER.log( level, message );
         }
     }
-
 }

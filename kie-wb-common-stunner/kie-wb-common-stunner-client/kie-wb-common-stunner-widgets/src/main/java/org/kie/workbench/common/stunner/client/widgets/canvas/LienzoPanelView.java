@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,27 +38,29 @@ public class LienzoPanelView extends FocusableLienzoPanelView implements LienzoP
                 addMouseOutHandler( mouseOutEvent -> presenter.onMouseOut() )
         );
         handlerRegistrationManager.register(
+                addMouseDownHandler( event -> presenter.onMouseDown() )
+        );
+        handlerRegistrationManager.register(
+                addMouseUpHandler( event -> presenter.onMouseUp() )
+        );
+        handlerRegistrationManager.register(
                 RootPanel.get().addDomHandler( keyPressEvent -> {
                     final int unicodeChar = keyPressEvent.getUnicodeCharCode();
                     presenter.onKeyPress( unicodeChar );
-
                 }, KeyPressEvent.getType() )
         );
         handlerRegistrationManager.register(
                 RootPanel.get().addDomHandler( keyDownEvent -> {
                     final int unicodeChar = keyDownEvent.getNativeKeyCode();
                     presenter.onKeyDown( unicodeChar );
-
                 }, KeyDownEvent.getType() )
         );
         handlerRegistrationManager.register(
                 RootPanel.get().addDomHandler( keyUpEvent -> {
                     final int unicodeChar = keyUpEvent.getNativeKeyCode();
                     presenter.onKeyUp( unicodeChar );
-
                 }, KeyUpEvent.getType() )
         );
-
     }
 
     @Override
@@ -71,5 +73,4 @@ public class LienzoPanelView extends FocusableLienzoPanelView implements LienzoP
         handlerRegistrationManager.removeHandler();
         presenter = null;
     }
-
 }

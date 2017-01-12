@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.shapes.client.view.BasicShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.animatiion.BasicShapeAnimation;
 import org.kie.workbench.common.stunner.shapes.client.view.animatiion.BasicShapeDecoratorAnimation;
@@ -110,9 +109,7 @@ public abstract class BasicShape<W, V extends BasicShapeView>
                         }
                     } )
                     .run();
-
         }
-
     }
 
     @Override
@@ -128,9 +125,7 @@ public abstract class BasicShape<W, V extends BasicShapeView>
             } else {
                 applyNoneState();
             }
-
         }
-
     }
 
     private void applySelectedState() {
@@ -147,7 +142,6 @@ public abstract class BasicShape<W, V extends BasicShapeView>
 
     private void applyActiveState( final String color ) {
         new BasicShapeDecoratorAnimation( color, 1.5, 1 ).forShape( this ).run();
-
     }
 
     private void applyNoneState() {
@@ -167,12 +161,9 @@ public abstract class BasicShape<W, V extends BasicShapeView>
                 && !hasGradient
                 && isAnimationMutation( mutationContext ) ) {
             getAnimation().animateFillColor( color );
-
         } else {
             super.applyFillColor( color, mutationContext );
-
         }
-
     }
 
     @Override
@@ -182,12 +173,9 @@ public abstract class BasicShape<W, V extends BasicShapeView>
         final boolean isAnimation = isAnimationMutation( mutationContext );
         if ( isAnimation ) {
             getAnimation().animateFontAlpha( alpha );
-
         } else {
             super.applyFontAlpha( hasTitle, alpha, mutationContext );
-
         }
-
     }
 
     protected void _applyWidthAndHeight( final Node<View<W>, Edge> element,
@@ -195,7 +183,6 @@ public abstract class BasicShape<W, V extends BasicShapeView>
                                          final Double height,
                                          final MutationContext mutationContext ) {
         applySize( ( HasSize ) getShapeView(), width, height, mutationContext );
-        GraphUtils.updateBounds( width, height, element.getContent() );
     }
 
     @Override
@@ -206,12 +193,9 @@ public abstract class BasicShape<W, V extends BasicShapeView>
         // TODO: Shape (multipath) resize animations.
         if ( false && isAnimationMutation( mutationContext ) ) {
             getAnimation().animateSize( width, height );
-
         } else {
             super.applySize( hasSize, width, height, mutationContext );
-
         }
-
     }
 
     protected void _applyRadius( final Node<View<W>, Edge> element,
@@ -219,7 +203,6 @@ public abstract class BasicShape<W, V extends BasicShapeView>
                                  final MutationContext mutationContext ) {
         if ( null != radius ) {
             applyRadius( ( HasRadius ) getShapeView(), radius, mutationContext );
-            GraphUtils.updateBounds( radius, element.getContent() );
         }
     }
 
@@ -231,14 +214,10 @@ public abstract class BasicShape<W, V extends BasicShapeView>
             // TODO: Shape (multipath) resize animations.
             if ( false && isAnimationMutation( mutationContext ) ) {
                 getAnimation().animateRadius( radius );
-
             } else {
                 super.applyRadius( hasRadius, radius, mutationContext );
-
             }
-
         }
-
     }
 
     private boolean hasAnimation() {

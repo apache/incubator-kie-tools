@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxBu
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxBuilder;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxButtonGridBuilder;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -88,7 +88,7 @@ public class MorphToolboxControlProvider extends AbstractToolboxControlProvider 
     @Override
     @SuppressWarnings( "unchecked" )
     public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands( final AbstractCanvasHandler context,
-                                                   final Element item ) {
+                                                                       final Element item ) {
         return !hasMorphTargets( item ) ? null :
                 new ArrayList<ToolboxCommand<AbstractCanvasHandler, ?>>( 1 ) {{
                     add( morphCommand );
@@ -105,5 +105,4 @@ public class MorphToolboxControlProvider extends AbstractToolboxControlProvider 
             return false;
         }
     }
-
 }

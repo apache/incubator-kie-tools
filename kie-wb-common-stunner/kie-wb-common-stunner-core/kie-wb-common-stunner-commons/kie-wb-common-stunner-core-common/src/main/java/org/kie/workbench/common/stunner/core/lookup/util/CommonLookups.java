@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.core.lookup.util;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -35,6 +34,7 @@ import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupRequestImpl;
 import org.kie.workbench.common.stunner.core.rule.*;
 import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -95,16 +95,15 @@ public class CommonLookups {
                     final RuleViolations oev = modelRulesManager
                             .edgeCardinality()
                             .evaluate( allowedEdgeId, sourceNode.getLabels(), edgeCount,
-                            EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.ADD );
+                                    EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.ADD );
                     final boolean oeCardinalityAllowed = pass( oev );
-                    LOGGER.log( Level.FINE, "Outgoing edge cardinality rules evaluation " +
+                    log( Level.FINEST, "Outgoing edge cardinality rules evaluation " +
                             "result = [" + oeCardinalityAllowed + "]" );
                     if ( oeCardinalityAllowed ) {
                         result.add( allowedEdgeId );
                     }
                 } );
             }
-
         }
         return result;
     }
@@ -126,7 +125,7 @@ public class CommonLookups {
                                                               final int pageSize ) {
         final Set<Object> allowedDefinitions =
                 getAllowedTargetDefinitions( modelRulesManager, defSetId, graph, sourceNode, edgeId, page, pageSize );
-        LOGGER.log( Level.FINE, "Target definitions allowed " +
+        log( Level.FINEST, "Target definitions allowed " +
                 "for [" + sourceNode + "] and using the " +
                 "connector [" + edgeId + "] " +
                 "ARE [" + allowedDefinitions + "]" );
@@ -139,12 +138,11 @@ public class CommonLookups {
                 final String id = hasMorphBase ? morphDefinition.getDefault() : defId;
                 result.add( id );
             } );
-            LOGGER.log( Level.FINE, "Target definitions group by morph base type allowed " +
+            log( Level.FINEST, "Target definitions group by morph base type allowed " +
                     "for [" + sourceNode + "] and using the " +
                     "connector [" + edgeId + "] " +
                     "ARE [" + result + "]" );
             return result;
-
         }
         return null;
     }
@@ -164,27 +162,27 @@ public class CommonLookups {
                                                         final int pageSize ) {
         if ( null != defSetId && null != graph && null != sourceNode && null != edgeId ) {
             final T definition = sourceNode.getContent().getDefinition();
-            LOGGER.log( Level.FINE, "*** Checking the target definitions allowed " +
+            log( Level.FINEST, "*** Checking the target definitions allowed " +
                     "for [" + definition + "] and using the " +
                     "connector [" + edgeId + "] ***" );
             // Check outgoing connectors cardinality for the source node ( plus the new one to be added ).
             final int outConnectorsCount = countOutgoingEdges( sourceNode, edgeId );
-            LOGGER.log( Level.FINE, "The source node has  " + outConnectorsCount + "] outgoing connections." );
+            log( Level.FINEST, "The source node has  " + outConnectorsCount + "] outgoing connections." );
             final RuleViolations oev = modelRulesManager.edgeCardinality().evaluate( edgeId, sourceNode.getLabels(), outConnectorsCount,
                     EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.ADD );
             final boolean oeCardinalityAllowed = pass( oev );
-            LOGGER.log( Level.FINE, "Outgoing edge cardinality rules evaluation " +
+            log( Level.FINEST, "Outgoing edge cardinality rules evaluation " +
                     "result = [" + oeCardinalityAllowed + "]" );
             if ( oeCardinalityAllowed ) {
                 // Obtain allowed target roles that pass connection rules.
                 final Set<String> allowedConnectionRoles =
                         getConnectionRulesAllowedTargets( defSetId, definition, edgeId, page, pageSize );
-                LOGGER.log( Level.FINE, "Allowed target roles that pass connection rules " +
+                log( Level.FINEST, "Allowed target roles that pass connection rules " +
                         "ARE [" + allowedConnectionRoles + "]" );
                 if ( null != allowedConnectionRoles ) {
                     // Obtain a first set of candidate Defintiion identifiers.
                     final Set<String> allowedDefinitions = getDefinitions( defSetId, allowedConnectionRoles );
-                    LOGGER.log( Level.FINE, "Allowed target definitions that pass connection rules " +
+                    log( Level.FINEST, "Allowed target definitions that pass connection rules " +
                             "ARE [" + allowedConnectionRoles + "]" );
                     if ( null != allowedDefinitions ) {
                         final Map<String, Integer> graphLabelCount =
@@ -215,16 +213,16 @@ public class CommonLookups {
                                                 } )
                                                 .findFirst()
                                                 .isPresent();
-                                        LOGGER.log( Level.FINE, "Cardinality rules evaluation " +
+                                        log( Level.FINEST, "Cardinality rules evaluation " +
                                                 "result = [" + hasCardinalityViolations + "]" );
                                         if ( !hasCardinalityViolations ) {
                                             // Check incoming connector cardinality for each the target node.
                                             final RuleViolations iev = modelRulesManager
                                                     .edgeCardinality()
                                                     .evaluate( edgeId, targetDefinitionRoles, inConnectorsCount,
-                                                    EdgeCardinalityRule.Type.INCOMING, RuleManager.Operation.ADD );
+                                                            EdgeCardinalityRule.Type.INCOMING, RuleManager.Operation.ADD );
                                             final boolean ieCardinalityAllowed = pass( iev );
-                                            LOGGER.log( Level.FINE, "Incoming edge cardinality rules evaluation " +
+                                            log( Level.FINEST, "Incoming edge cardinality rules evaluation " +
                                                     "result = [" + ieCardinalityAllowed + "]" );
                                             if ( ieCardinalityAllowed ) {
                                                 // This potential node can be used as target one, as it passes all rule checks.
@@ -265,7 +263,6 @@ public class CommonLookups {
                 }
                 return result;
             }
-
         }
         return new HashSet<>( 0 );
     }
@@ -277,9 +274,9 @@ public class CommonLookups {
      * @oaram sourceDefinition The domain model object ( not a graph element ).
      */
     private <T> Set<String> getConnectionRulesAllowedEdges( final String defSetId,
-                                                           final T sourceDefinition,
-                                                           final int page,
-                                                           final int pageSize ) {
+                                                            final T sourceDefinition,
+                                                            final int page,
+                                                            final int pageSize ) {
         final List<Rule> rules = lookupConnectionRules( defSetId, sourceDefinition, null, page, pageSize );
         if ( null != rules && !rules.isEmpty() ) {
             final Set<String> result = new LinkedHashSet<>();
@@ -299,11 +296,11 @@ public class CommonLookups {
      * <p>
      * TODO: Handle several result pages.
      */
-    private  <T> Set<String> getConnectionRulesAllowedTargets( final String defSetId,
-                                                             final T sourceDefinition,
-                                                             final String edgeId,
-                                                             final int page,
-                                                             final int pageSize ) {
+    private <T> Set<String> getConnectionRulesAllowedTargets( final String defSetId,
+                                                              final T sourceDefinition,
+                                                              final String edgeId,
+                                                              final int page,
+                                                              final int pageSize ) {
         final List<Rule> rules = lookupConnectionRules( defSetId, sourceDefinition, edgeId, page, pageSize );
         if ( null != rules && !rules.isEmpty() ) {
             final Set<String> result = new LinkedHashSet<>();
@@ -373,4 +370,7 @@ public class CommonLookups {
         return definitionUtils.getDefinitionManager();
     }
 
+    private void log( final Level level, final String message ) {
+        LOGGER.log( level, message );
+    }
 }

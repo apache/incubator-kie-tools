@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,6 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
         View addWidget( IsWidget widget );
 
         View clear();
-
     }
 
     SyncBeanManager beanManager;
@@ -93,15 +92,11 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
                 final ToolboxControlProvider<AbstractCanvasHandler, Element> toolboxProvider = providersSet.newInstance();
                 if ( toolboxProvider.supports( definition ) ) {
                     result.add( toolboxProvider );
-
                 }
-
             }
             return result;
-
         }
         return null;
-
     }
 
     @Override
@@ -115,10 +110,10 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
      * Once an element has been updated, the toolbox/es should be re-built, as
      * rule evaluations have to be evaluated against latest status
      * and latest graph structure.
-     *
+     * <p>
      * TODO:
-     *  - bug -> applies the new toolbox buttons after any further op with the node, but not the 1st time.
-     *  - improve by not recreating instances, just adding/removing buttons.
+     * - bug -> applies the new toolbox buttons after any further op with the node, but not the 1st time.
+     * - improve by not recreating instances, just adding/removing buttons.
      */
     @Override
     public void update( Element element ) {
@@ -131,11 +126,6 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
     @Override
     @SuppressWarnings( "unchecked" )
     public void register( final Element element ) {
-        this.doRegister( element );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    private void doRegister( final Element element ) {
         final Shape shape = canvasHandler.getCanvas().getShape( element.getUUID() );
         if ( shape instanceof NodeShape ) {
             final List<ToolboxControlProvider<AbstractCanvasHandler, Element>> toolboxControlProviders = getToolboxProviders( element );
@@ -161,33 +151,34 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
                                     .setMouseDownHandler( event -> fireCommandExecutionAndHideToolbox( element, command, event, Context.EventType.MOUSE_DOWN ) )
                                     .build();
                             toolboxBuilder.add( button );
-
                         }
                         final Toolbox toolbox = toolboxBuilder.build();
                         addToolbox( element.getUUID(), toolbox );
                     }
                 }
             }
+            // If shape view can be drag, hide the shape's toolbox/es when drag starts.
             final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shape.getShapeView();
-            final DragHandler handler = new DragHandler() {
+            if ( hasEventHandlers.supports( ViewEventType.DRAG ) ) {
+                final DragHandler handler = new DragHandler() {
 
-                @Override
-                public void handle( final DragEvent event ) {
-                }
+                    @Override
+                    public void handle( final DragEvent event ) {
+                    }
 
-                @Override
-                public void start( final DragEvent event ) {
-                    hideToolboxes( element );
-                }
+                    @Override
+                    public void start( final DragEvent event ) {
+                        hideToolboxes( element );
+                    }
 
-                @Override
-                public void end( final DragEvent event ) {
-                }
-            };
-            hasEventHandlers.addHandler( ViewEventType.DRAG, handler );
-            registerHandler( element.getUUID(), handler );
+                    @Override
+                    public void end( final DragEvent event ) {
+                    }
+                };
+                hasEventHandlers.addHandler( ViewEventType.DRAG, handler );
+                registerHandler( element.getUUID(), handler );
+            }
         }
-
     }
 
     private void addToolbox( final String uuid,
@@ -200,7 +191,6 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
             }
             toolboxes.add( toolbox );
         }
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -228,46 +218,30 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
     }
 
     @Override
-    public void deregister( final Element element ) {
-        super.deregister( element );
-        this.deregister( element.getUUID() );
-    }
-
-    private void deregister( final String uuid ) {
-        final List<Toolbox> toolboxes = getToolboxes( uuid );
-        if ( null != toolboxes && !toolboxes.isEmpty() ) {
-            for ( final Toolbox toolbox : toolboxes ) {
-                toolbox.remove();
-            }
-            toolboxMap.remove( uuid );
-        }
+    protected void doDisable() {
+        super.doDisable();
+        // Delete the control view.
+        canvasHandler.getCanvas().deleteControl( CanvasToolboxControl.this.asWidget() );
     }
 
     @Override
     public void deregisterAll() {
         super.deregisterAll();
-        final Collection<List<Toolbox>> allToolboxes = toolboxMap.values();
-        for ( final List<Toolbox> toolboxes : allToolboxes ) {
-            for ( final Toolbox toolbox : toolboxes ) {
-                toolbox.remove();
-            }
-        }
+        new HashSet<>( toolboxMap.keySet() )
+                .stream()
+                .forEach( this::deregister );
         toolboxMap.clear();
     }
 
     @Override
-    protected void doDisable() {
-        super.doDisable();
-        // Delete the control view.
-        canvasHandler.getCanvas().deleteControl( CanvasToolboxControl.this.asWidget() );
-        // De-register all toolbox components.
-        for ( final List<Toolbox> toolboxes : toolboxMap.values() ) {
-            if ( null != toolboxes && !toolboxes.isEmpty() ) {
-                for ( final Toolbox toolbox : toolboxes ) {
-                    toolbox.remove();
-
-                }
-            }
+    public void deregister( final String uuid ) {
+        super.deregister( uuid );
+        final List<Toolbox> toolboxes = getToolboxes( uuid );
+        if ( null != toolboxes ) {
+            toolboxes
+                    .stream()
+                    .forEach( Toolbox::remove );
+            toolboxMap.remove( uuid );
         }
     }
 
@@ -347,5 +321,4 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
     private List<Toolbox> getToolboxes( final String uuid ) {
         return toolboxMap.get( uuid );
     }
-
 }

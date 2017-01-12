@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommandCallback;
@@ -28,7 +29,6 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.item.AbstractTool
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.mvp.Command;
 
-import javax.enterprise.inject.Instance;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -42,10 +42,10 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
     private final List<AbstractToolbarItem<S>> items = new LinkedList<>();
     private S session;
 
-    private Instance<AbstractToolbarItem<S>> toolbarItems;
+    private ManagedInstance<AbstractToolbarItem<S>> toolbarItems;
     private ToolbarView view;
 
-    public AbstractToolbar( final Instance<AbstractToolbarItem<S>> toolbarItems,
+    public AbstractToolbar( final ManagedInstance<AbstractToolbarItem<S>> toolbarItems,
                             final ToolbarView view ) {
         this.toolbarItems = toolbarItems;
         this.view = view;
@@ -68,11 +68,9 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
             view.addItem( toolbarItem.asWidget() );
             items.add( toolbarItem );
             toolbarItem.show( this, session, command, clickHandler );
-
         }
         afterDraw();
         show();
-
     }
 
     private void afterDraw() {
@@ -83,12 +81,10 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
 
     public void show() {
         view.show();
-
     }
 
     public void hide() {
         view.hide();
-
     }
 
     public void destroy() {
@@ -120,7 +116,6 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
         if ( null != item ) {
             item.disable();
         }
-
     }
 
     public void enable( final ToolbarCommand<S> command ) {
@@ -128,7 +123,6 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
         if ( null != item ) {
             item.enable();
         }
-
     }
 
     protected AbstractToolbarItem<S> getItem( final ToolbarCommand<?> command ) {
@@ -146,5 +140,4 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
             LOGGER.log( level, message );
         }
     }
-
 }

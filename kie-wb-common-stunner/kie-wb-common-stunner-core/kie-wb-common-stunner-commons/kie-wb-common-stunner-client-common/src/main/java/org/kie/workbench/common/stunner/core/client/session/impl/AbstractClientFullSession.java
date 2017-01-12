@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.DragCanvasGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -33,9 +32,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Selec
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 public abstract class AbstractClientFullSession extends ClientReadOnlySessionImpl
         implements ClientFullSession<AbstractCanvas, AbstractCanvasHandler> {
@@ -44,6 +45,7 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
     private CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl;
     private CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl;
     private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    private CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
     private ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
     private ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
     private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
@@ -61,6 +63,7 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
                                       final ZoomControl<AbstractCanvas> zoomControl,
                                       final PanControl<AbstractCanvas> panControl,
                                       final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
+                                      final CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry,
                                       final ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl,
                                       final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl,
                                       final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl,
@@ -73,6 +76,7 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
         this.canvasValidationControl = canvasValidationControl;
         this.canvasPaletteControl = canvasPaletteControl;
         this.canvasCommandManager = canvasCommandManager;
+        this.commandRegistry = commandRegistry;
         this.connectionAcceptorControl = connectionAcceptorControl;
         this.containmentAcceptorControl = containmentAcceptorControl;
         this.dockingAcceptorControl = dockingAcceptorControl;
@@ -88,18 +92,23 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
     }
 
     @Override
-    public CanvasValidationControl<AbstractCanvasHandler> getCanvasValidationControl() {
+    public CanvasValidationControl<AbstractCanvasHandler> getValidationControl() {
         return canvasValidationControl;
     }
 
     @Override
-    public CanvasPaletteControl<AbstractCanvasHandler> getCanvasPaletteControl() {
+    public CanvasPaletteControl<AbstractCanvasHandler> getPaletteControl() {
         return canvasPaletteControl;
     }
 
     @Override
-    public CanvasCommandManager<AbstractCanvasHandler> getCanvasCommandManager() {
+    public CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
         return canvasCommandManager;
+    }
+
+    @Override
+    public CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry() {
+        return commandRegistry;
     }
 
     @Override
@@ -145,12 +154,10 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
         enableControl( getContainmentAcceptorControl(), getCanvasHandler() );
         enableControl( getDockingAcceptorControl(), getCanvasHandler() );
         enableControl( getDragControl(), getCanvasHandler() );
-        // Enable show grid on drag by default.
-        getDragControl().setDragGrid( DragCanvasGrid.INSTANCE );
         enableControl( getToolboxControl(), getCanvasHandler() );
         enableControl( getBuilderControl(), getCanvasHandler() );
-        enableControl( getCanvasValidationControl(), getCanvasHandler() );
-        enableControl( getCanvasPaletteControl(), getCanvasHandler() );
+        enableControl( getValidationControl(), getCanvasHandler() );
+        enableControl( getPaletteControl(), getCanvasHandler() );
         enableControl( getCanvasNameEditionControl(), getCanvasHandler() );
     }
 
@@ -160,16 +167,14 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
         if ( null != getResizeControl() ) {
             getResizeControl().disable();
         }
-        if ( null != getCanvasValidationControl() ) {
-            getCanvasValidationControl().disable();
+        if ( null != getValidationControl() ) {
+            getValidationControl().disable();
         }
-        if ( null != getCanvasPaletteControl() ) {
-            getCanvasPaletteControl().disable();
+        if ( null != getPaletteControl() ) {
+            getPaletteControl().disable();
         }
-        if ( null != getCanvasCommandManager() ) {
-            if ( getCanvasCommandManager() instanceof StackCommandManager ) {
-                ( ( StackCommandManager ) getCanvasCommandManager() ).getRegistry().clear();
-            }
+        if ( null != getCommandRegistry() ) {
+            getCommandRegistry().clear();
         }
         if ( null != getConnectionAcceptorControl() ) {
             getConnectionAcceptorControl().disable();
@@ -207,7 +212,7 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
             fireRegistrationUpdateListeners( getDragControl(), element );
             fireRegistrationUpdateListeners( getToolboxControl(), element );
             fireRegistrationUpdateListeners( getBuilderControl(), element );
-            fireRegistrationUpdateListeners( getCanvasPaletteControl(), element );
+            fireRegistrationUpdateListeners( getPaletteControl(), element );
             fireRegistrationUpdateListeners( getCanvasNameEditionControl(), element );
         } else {
             fireRegistrationListeners( getResizeControl(), element, add );
@@ -217,7 +222,7 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
             fireRegistrationListeners( getDragControl(), element, add );
             fireRegistrationListeners( getToolboxControl(), element, add );
             fireRegistrationListeners( getBuilderControl(), element, add );
-            fireRegistrationListeners( getCanvasPaletteControl(), element, add );
+            fireRegistrationListeners( getPaletteControl(), element, add );
             fireRegistrationListeners( getCanvasNameEditionControl(), element, add );
         }
     }
@@ -232,9 +237,8 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
         fireRegistrationClearListeners( getDragControl() );
         fireRegistrationClearListeners( getToolboxControl() );
         fireRegistrationClearListeners( getBuilderControl() );
-        fireRegistrationClearListeners( getCanvasValidationControl() );
-        fireRegistrationClearListeners( getCanvasPaletteControl() );
+        fireRegistrationClearListeners( getValidationControl() );
+        fireRegistrationClearListeners( getPaletteControl() );
         fireRegistrationClearListeners( getCanvasNameEditionControl() );
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,11 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -48,10 +50,17 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
         this.parent = parent;
     }
 
-    protected void initialize( final GraphCommandExecutionContext context ) {
+    protected AddDockedNodeCommand initialize( final GraphCommandExecutionContext context ) {
         super.initialize( context );
         this.addCommand( new RegisterNodeCommand( candidate ) )
                 .addCommand( new DockNodeCommand( getParent( context ), candidate ) );
+        return this;
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
+        return new SafeDeleteNodeCommand( getCandidate() ).execute( context );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -62,13 +71,17 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
         return parent;
     }
 
-    @Override
-    public String toString() {
-        return "AddDockedNodeCommand [parent=" + parentUUID + ", candidate=" + candidate.getUUID() + "]";
+    public Node getCandidate() {
+        return candidate;
     }
 
     @Override
     protected boolean delegateRulesContextToChildren() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "AddDockedNodeCommand [parent=" + parentUUID + ", candidate=" + candidate.getUUID() + "]";
     }
 }

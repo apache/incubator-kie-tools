@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,7 @@ import javax.tools.Diagnostic;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class AbstractAdapterGenerator {
 
@@ -79,7 +76,7 @@ public abstract class AbstractAdapterGenerator {
         return sw.getBuffer();
     }
 
-    protected List<ProcessingElement> toList( Map<String, String> map ) {
+    protected List<ProcessingElement> toElements( Map<String, String> map ) {
         List<ProcessingElement> result = new LinkedList<>();
         for ( Map.Entry<String, String> entry : map.entrySet() ) {
             result.add( new ProcessingElement( entry.getKey(), entry.getValue() ) );
@@ -87,12 +84,25 @@ public abstract class AbstractAdapterGenerator {
         return result;
     }
 
-    protected List<ProcessingMultipleElement> toMultipleList( Map<String, Set<String>> map ) {
-        List<ProcessingMultipleElement> result = new LinkedList<>();
+    protected List<ProcessingElementSet> toElementSet( Map<String, Set<String>> map ) {
+        List<ProcessingElementSet> result = new LinkedList<>();
         for ( Map.Entry<String, Set<String>> entry : map.entrySet() ) {
-            result.add( new ProcessingMultipleElement( entry.getKey(), entry.getValue() ) );
+            result.add( new ProcessingElementSet( entry.getKey(), entry.getValue() ) );
         }
         return result;
     }
 
+    protected List<ProcessingElementMap> toElementMap( Map<String, Map<String, String>> map ) {
+        List<ProcessingElementMap> result = new LinkedList<>();
+        map.entrySet().stream()
+                .forEach( entry1 -> {
+                    final Map<String, String> entryMap = new LinkedHashMap<String, String>();
+                    entry1.getValue().entrySet().stream().forEach( entry2 -> {
+                        entryMap.put( entry2.getKey(), entry2.getValue() );
+                    } );
+                    final ProcessingElementMap elementMap = new ProcessingElementMap( entry1.getKey(), entryMap );
+                    result.add( elementMap );
+                } );
+        return result;
+    }
 }

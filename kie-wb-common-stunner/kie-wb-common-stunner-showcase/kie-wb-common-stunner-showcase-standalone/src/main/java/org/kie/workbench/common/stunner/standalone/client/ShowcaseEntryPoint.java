@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.standalone.client.perspectives.AuthoringPerspective;
-import org.kie.workbench.common.stunner.standalone.client.perspectives.HomePerspective;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.views.pfly.menu.UserMenu;
@@ -99,7 +98,6 @@ public class ShowcaseEntryPoint {
                 menuDevCommandsBuilder.enable();
             }
         } );
-
     }
 
     private void setupGlobalErrorHandler() {
@@ -107,9 +105,7 @@ public class ShowcaseEntryPoint {
             final String message = "Uncaught error on client side: " + throwable.getMessage();
             errorPopupPresenter.showMessage( message );
             log( Level.SEVERE, throwable.getMessage() );
-
         } );
-
     }
 
     private void setupMenus() {
@@ -130,10 +126,7 @@ public class ShowcaseEntryPoint {
     }
 
     private Menus createMenuBar() {
-        return newTopLevelMenu( "Home" )
-                .perspective( HomePerspective.PERSPECTIVE_ID )
-                .endMenu()
-                .newTopLevelMenu( "Authoring" )
+        return newTopLevelMenu( "Authoring" )
                 .perspective( AuthoringPerspective.PERSPECTIVE_ID )
                 .endMenu()
                 .build();
@@ -190,5 +183,4 @@ public class ShowcaseEntryPoint {
             LOGGER.log( level, message );
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,11 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
-
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
 
 @Portable
 @Bindable
@@ -84,6 +84,7 @@ public class Ring {
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
         add( "all" );
+        add( "ring" );
     }};
 
     @NonPortable
@@ -103,7 +104,6 @@ public class Ring {
                     new OuterRadius( OUTER_RADIUS ),
                     new InnerRadius( INNER_RADIUS ) );
         }
-
     }
 
     public Ring() {
@@ -119,7 +119,6 @@ public class Ring {
         this.fontSet = fontSet;
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
-
     }
 
     public String getCategory() {

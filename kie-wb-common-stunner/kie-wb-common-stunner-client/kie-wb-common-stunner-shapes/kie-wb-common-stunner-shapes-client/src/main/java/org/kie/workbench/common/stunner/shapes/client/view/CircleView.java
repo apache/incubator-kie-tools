@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 
 /**
@@ -28,7 +27,8 @@ public class CircleView extends BasicShapeView<CircleView>
         implements HasRadius<CircleView> {
 
     public CircleView( final double radius ) {
-        super( create( new MultiPath(), radius ) );
+        super( BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+                create( new MultiPath(), radius ) );
     }
 
     @Override
@@ -44,11 +44,6 @@ public class CircleView extends BasicShapeView<CircleView>
     private static MultiPath create( final MultiPath path,
                                      final double radius ) {
         return path.M( radius, 0 ).circle( radius ).Z();
-    }
-
-    @Override
-    public WiresShape setResizable( final boolean resizable ) {
-        return super.setResizable( false );
     }
 
 }

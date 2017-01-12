@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,92 +41,91 @@ public class CanvasCommandFactory {
         this.treeWalkTraverseProcessor = treeWalkTraverseProcessor;
     }
 
-    public AddNodeCommand ADD_NODE( Node candidate, String shapeSetId ) {
+    public AddNodeCommand addNode( Node candidate, String shapeSetId ) {
         return new AddNodeCommand( candidate, shapeSetId );
     }
 
-    public AddChildNodeCommand ADD_CHILD_NODE( final Node parent,
-                                               final Node candidate,
-                                               final String shapeSetId ) {
+    public AddChildNodeCommand addChildNode( final Node parent,
+                                             final Node candidate,
+                                             final String shapeSetId ) {
         return new AddChildNodeCommand( parent, candidate, shapeSetId );
     }
 
-    public AddDockedNodeCommand ADD_DOCKED_NODE( final Node parent,
-                                                 final Node candidate,
-                                                 final String shapeSetId ) {
+    public AddDockedNodeCommand addDockedNode( final Node parent,
+                                               final Node candidate,
+                                               final String shapeSetId ) {
         return new AddDockedNodeCommand( parent, candidate, shapeSetId );
     }
 
-    public AddConnectorCommand ADD_CONNECTOR( Node sourceNode,
-                                              Edge candidate,
-                                              int magnetIndex,
-                                              String shapeSetId ) {
+    public AddConnectorCommand addConnector( Node sourceNode,
+                                             Edge candidate,
+                                             int magnetIndex,
+                                             String shapeSetId ) {
         return new AddConnectorCommand( sourceNode, candidate, magnetIndex, shapeSetId );
     }
 
-    public SetChildNodeCommand SET_CHILD_NODE( final Node parent, final Node candidate ) {
+    public SetChildNodeCommand setChildNode( final Node parent, final Node candidate ) {
         return new SetChildNodeCommand( parent, candidate );
     }
 
-    public DockNodeCommand DOCK_NODE( final Node parent,
-                                      final Node candidate ) {
+    public DockNodeCommand dockNode( final Node parent,
+                                     final Node candidate ) {
         return new DockNodeCommand( parent, candidate );
     }
 
-    public DeleteNodeCommand DELETE_NODE( Node candidate ) {
+    public DeleteNodeCommand deleteNode( Node candidate ) {
         return new DeleteNodeCommand( candidate );
     }
 
-    public RemoveChildCommand REMOVE_CHILD( final Node parent, final Node candidate ) {
+    public RemoveChildCommand removeChild( final Node parent, final Node candidate ) {
         return new RemoveChildCommand( parent, candidate );
     }
 
-    public UnDockNodeCommand UNDOCK_NODE( final Node parent,
-                                          final Node candidate ) {
+    public UnDockNodeCommand unDockNode( final Node parent,
+                                         final Node candidate ) {
         return new UnDockNodeCommand( parent, candidate );
     }
 
-    public DeleteConnectorCommand DELETE_CONNECTOR( Edge candidate ) {
+    public DeleteConnectorCommand deleteConnector( Edge candidate ) {
         return new DeleteConnectorCommand( candidate );
     }
 
-    public DrawCanvasCommand DRAW() {
+    public DrawCanvasCommand draw() {
         return new DrawCanvasCommand( treeWalkTraverseProcessor );
     }
 
-    public MorphNodeCommand MORPH_NODE( final Node<? extends Definition<?>, Edge> candidate,
-                                        final MorphDefinition morphDefinition,
-                                        final String morphTarget,
-                                        final String shapeSetId ) {
+    public MorphNodeCommand morphNode( final Node<? extends Definition<?>, Edge> candidate,
+                                       final MorphDefinition morphDefinition,
+                                       final String morphTarget,
+                                       final String shapeSetId ) {
         return new MorphNodeCommand( candidate, morphDefinition, morphTarget, shapeSetId );
     }
 
-    public SetConnectionSourceNodeCommand SET_SOURCE_NODE( final Node<? extends View<?>, Edge> node,
-                                                           final Edge<? extends View<?>, Node> edge,
-                                                           final int magnetIndex ) {
+    public SetConnectionSourceNodeCommand setSourceNode( final Node<? extends View<?>, Edge> node,
+                                                         final Edge<? extends View<?>, Node> edge,
+                                                         final int magnetIndex ) {
         return new SetConnectionSourceNodeCommand( node, edge, magnetIndex );
     }
 
-    public SetConnectionTargetNodeCommand SET_TARGET_NODE( final Node<? extends View<?>, Edge> node,
-                                                           final Edge<? extends View<?>, Node> edge,
-                                                           final int magnetIndex ) {
+    public SetConnectionTargetNodeCommand setTargetNode( final Node<? extends View<?>, Edge> node,
+                                                         final Edge<? extends View<?>, Node> edge,
+                                                         final int magnetIndex ) {
         return new SetConnectionTargetNodeCommand( node, edge, magnetIndex );
     }
 
-    public UpdateElementPositionCommand UPDATE_POSITION( final Node<View<?>, Edge> element,
-                                                         final Double x,
-                                                         final Double y ) {
+    public UpdateElementPositionCommand updatePosition( final Node<View<?>, Edge> element,
+                                                        final Double x,
+                                                        final Double y ) {
         return new UpdateElementPositionCommand( element, x, y );
     }
 
-    public UpdateElementPropertyCommand UPDATE_PROPERTY( final Element element,
-                                                         final String propertyId,
-                                                         final Object value ) {
+    public UpdateElementPropertyCommand updatePropertyValue( final Element element,
+                                                             final String propertyId,
+                                                             final Object value ) {
         return new UpdateElementPropertyCommand( element, propertyId, value );
     }
 
-    public ClearCommand CLEAR_CANVAS() {
+    public ClearCommand clearCanvas() {
         return new ClearCommand();
     }
-
 }

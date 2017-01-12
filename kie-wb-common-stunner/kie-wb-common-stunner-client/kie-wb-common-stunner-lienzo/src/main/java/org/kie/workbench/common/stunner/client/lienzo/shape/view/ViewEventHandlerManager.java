@@ -34,14 +34,21 @@ public class ViewEventHandlerManager {
 
     private final Node<?> node;
     private final ViewEventType[] supportedTypes;
-    private Timer clickHandlerTimer;
     private boolean enabled;
+    /**
+     * This is a flag used to distinguish between click / double click events fired for same node.
+     * When doing mouse click on the node, this implementation schedules a timer to trigger the click handler/s, if any.
+     * If just another click is done, which produces the double click event to fire, the double click handler added
+     * by this implementation set the <code>fireClickHandler</code> to false, to when the previously scheduled timer
+     * tries to fire the click event, it'll be fired depending on this boolean's value.
+     */
+    private boolean fireClickHandler;
 
     public ViewEventHandlerManager( final Node<?> node,
                                     final ViewEventType... supportedTypes ) {
         this.node = node;
         this.supportedTypes = supportedTypes;
-        this.clickHandlerTimer = null;
+        this.fireClickHandler = true;
         enable();
     }
 
@@ -135,7 +142,7 @@ public class ViewEventHandlerManager {
 
     @SuppressWarnings( "unchecked" )
     public void destroy() {
-        clearClickHandlerTimer();
+        fireClickHandler = true;
         registrationManager.removeHandler();
         registrationMap.clear();
 
@@ -201,6 +208,7 @@ public class ViewEventHandlerManager {
         return new HandlerRegistration[]{
                 node.addNodeMouseClickHandler( nodeMouseClickEvent -> {
                     if ( ViewEventHandlerManager.this.isEnabled() ) {
+                        this.fireClickHandler = true;
                         final int x = nodeMouseClickEvent.getX();
                         final int y = nodeMouseClickEvent.getY();
                         final int clientX = nodeMouseClickEvent.getMouseEvent().getClientX();
@@ -211,35 +219,26 @@ public class ViewEventHandlerManager {
                         final boolean isButtonLeft = nodeMouseClickEvent.isButtonLeft();
                         final boolean isButtonMiddle = nodeMouseClickEvent.isButtonMiddle();
                         final boolean isButtonRight = nodeMouseClickEvent.isButtonRight();
-                        if ( null == ViewEventHandlerManager.this.clickHandlerTimer ) {
-                            ViewEventHandlerManager.this.clickHandlerTimer = new Timer() {
-
+                            new Timer() {
                                 @Override
                                 public void run() {
-                                    ViewEventHandlerManager.this.onMouseClick( eventHandler,
-                                            x,
-                                            y,
-                                            clientX,
-                                            clientY,
-                                            isShiftKeyDown,
-                                            isAltKeyDown,
-                                            isMetaKeyDown,
-                                            isButtonLeft,
-                                            isButtonMiddle,
-                                            isButtonRight );
-                                    ViewEventHandlerManager.this.clickHandlerTimer = null;
-
+                                    if (fireClickHandler) {
+                                        ViewEventHandlerManager.this.onMouseClick( eventHandler,
+                                                x,
+                                                y,
+                                                clientX,
+                                                clientY,
+                                                isShiftKeyDown,
+                                                isAltKeyDown,
+                                                isMetaKeyDown,
+                                                isButtonLeft,
+                                                isButtonMiddle,
+                                                isButtonRight );
+                                    }
                                 }
-
-                            };
-                            ViewEventHandlerManager.this.clickHandlerTimer.schedule( CLICK_HANDLER_TIMER_DURATION );
-
-                        }
-
+                            }.schedule( CLICK_HANDLER_TIMER_DURATION );
                     }
-
                 } )
-
         };
 
     }
@@ -248,7 +247,7 @@ public class ViewEventHandlerManager {
         return new HandlerRegistration[]{
                 node.addNodeMouseDoubleClickHandler( nodeMouseDoubleClickEvent -> {
                     if ( isEnabled() ) {
-                        clearClickHandlerTimer();
+                        fireClickHandler = false;
                         final MouseDoubleClickEvent event = new MouseDoubleClickEvent(
                                 nodeMouseDoubleClickEvent.getX(),
                                 nodeMouseDoubleClickEvent.getY(),
@@ -261,7 +260,7 @@ public class ViewEventHandlerManager {
                         event.setButtonMiddle( nodeMouseDoubleClickEvent.isButtonMiddle() );
                         event.setButtonRight( nodeMouseDoubleClickEvent.isButtonRight() );
                         eventHandler.handle( event );
-
+                        fireClickHandler = true;
                     }
 
                 } )
@@ -352,16 +351,6 @@ public class ViewEventHandlerManager {
             return new TouchEventImpl( event.getX(), event.getY(), tx, ty );
         }
         return null;
-    }
-
-    private void clearClickHandlerTimer() {
-        if ( null != this.clickHandlerTimer ) {
-            if ( this.clickHandlerTimer.isRunning() ) {
-                this.clickHandlerTimer.cancel();
-            }
-            this.clickHandlerTimer = null;
-        }
-
     }
 
 }

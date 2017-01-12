@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,9 @@ import java.util.Collection;
 
 /**
  * A Command to set the outgoing connection for an edge.
- * Note: if the connector's source is not set, the <code>sourceNode</code> can be null.
+ * Notes:
+ * - In case <code>sourceNode</code> is <code>null</code>, connector's source node, if any, will be removed.
+ * - if connector is not view based, no need to provide magnet index.
  */
 @Portable
 public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
@@ -54,7 +56,9 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                                            @MapsTo( "magnetIndex" ) Integer magnetIndex ) {
         this.edgeUUID = PortablePreconditions.checkNotNull( "edgeUUID", edgeUUID );
         this.sourceNodeUUID = sourceNodeUUID;
-        this.magnetIndex = PortablePreconditions.checkNotNull( "magnetIndex", magnetIndex );
+        this.magnetIndex = magnetIndex;
+        this.lastSourceNodeUUID = null;
+        this.lastMagnetIndex = null;
     }
 
     @SuppressWarnings( "unchecked" )
@@ -65,6 +69,12 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
         this.sourceNode = sourceNode;
         this.edge = edge;
         this.targetNode = edge.getTargetNode();
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public SetConnectionSourceNodeCommand( Node<? extends View<?>, Edge> sourceNode,
+                                           Edge<? extends View, Node> edge ) {
+        this( sourceNode, edge, null );
     }
 
     @Override
@@ -83,9 +93,11 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                 sourceNode.getOutEdges().add( edge );
             }
             edge.setSourceNode( sourceNode );
-            ViewConnector connectionContent = ( ViewConnector ) edge.getContent();
-            lastMagnetIndex = connectionContent.getSourceMagnetIndex();
-            connectionContent.setSourceMagnetIndex( magnetIndex );
+            if ( null != magnetIndex ) {
+                ViewConnector connectionContent = ( ViewConnector ) edge.getContent();
+                lastMagnetIndex = connectionContent.getSourceMagnetIndex();
+                connectionContent.setSourceMagnetIndex( magnetIndex );
+            }
         }
         return results;
     }
@@ -132,8 +144,8 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final SetConnectionTargetNodeCommand undoCommand =
-                new SetConnectionTargetNodeCommand( ( Node<? extends View<?>, Edge> ) getNode( context, lastSourceNodeUUID ),
+        final SetConnectionSourceNodeCommand undoCommand =
+                new SetConnectionSourceNodeCommand( ( Node<? extends View<?>, Edge> ) getNode( context, lastSourceNodeUUID ),
                         getEdge( context ), lastMagnetIndex );
         return undoCommand.execute( context );
     }
@@ -187,5 +199,4 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                 + ", candidate=" + ( null != sourceNodeUUID ? sourceNodeUUID : "null" )
                 + ", magnet=" + magnetIndex + "]";
     }
-
 }

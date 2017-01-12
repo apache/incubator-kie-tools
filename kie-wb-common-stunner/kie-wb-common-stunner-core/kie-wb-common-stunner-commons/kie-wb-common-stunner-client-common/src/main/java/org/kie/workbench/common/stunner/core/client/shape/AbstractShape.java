@@ -16,18 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
-import java.util.logging.Logger;
-
-import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
+import org.kie.workbench.common.stunner.core.client.shape.view.*;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+
+import java.util.logging.Logger;
 
 /**
  * A base shape impl for handling contents of node graph elements.
@@ -79,11 +76,9 @@ public abstract class AbstractShape<W, E extends Node<View<W>, Edge>, V extends 
 
     @Override
     public void applyPosition( final E element, final MutationContext mutationContext ) {
-        final Double[] position = GraphUtils.getPosition( element.getContent() );
-        final double x = position[ 0 ];
-        final double y = position[ 1 ];
-        view.setShapeX( x );
-        view.setShapeY( y );
+        final Point2D position = GraphUtils.getPosition( element.getContent() );
+        view.setShapeX( position.getX() );
+        view.setShapeY( position.getY() );
 
     }
 

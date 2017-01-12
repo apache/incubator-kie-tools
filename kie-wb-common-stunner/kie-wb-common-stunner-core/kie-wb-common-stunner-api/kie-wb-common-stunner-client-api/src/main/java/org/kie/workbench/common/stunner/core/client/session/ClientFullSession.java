@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,14 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.palette.Canv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 /**
  * A session that provides controls which can potentially update or modify the session's diagram structure/metadata.
+ *
  * @param <C> The canvas.
  * @param <H> The canvas handler.
  */
@@ -41,11 +45,13 @@ public interface ClientFullSession<C extends Canvas, H extends CanvasHandler>
 
     ResizeControl<H, Element> getResizeControl();
 
-    CanvasValidationControl<H> getCanvasValidationControl();
+    CanvasValidationControl<H> getValidationControl();
 
-    CanvasPaletteControl<H> getCanvasPaletteControl();
+    CanvasPaletteControl<H> getPaletteControl();
 
-    CanvasCommandManager<H> getCanvasCommandManager();
+    CanvasCommandManager<H> getCommandManager();
+
+    CommandRegistry<Command<H, CanvasViolation>> getCommandRegistry();
 
     ConnectionAcceptorControl<H> getConnectionAcceptorControl();
 
@@ -60,5 +66,4 @@ public interface ClientFullSession<C extends Canvas, H extends CanvasHandler>
     ToolboxControl<H, Element> getToolboxControl();
 
     ElementBuilderControl<H> getBuilderControl();
-
 }

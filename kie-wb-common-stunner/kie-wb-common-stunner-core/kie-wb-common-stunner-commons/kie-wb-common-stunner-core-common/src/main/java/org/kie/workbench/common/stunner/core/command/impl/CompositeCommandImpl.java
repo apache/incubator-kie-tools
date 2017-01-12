@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.command.impl;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -29,6 +31,12 @@ import java.util.List;
  */
 @Portable
 public class CompositeCommandImpl<T, V> extends AbstractCompositeCommand<T, V> {
+
+    private final boolean reverse;
+
+    public CompositeCommandImpl( @MapsTo( "reverse" ) boolean reverse ) {
+        this.reverse = reverse;
+    }
 
     @Override
     protected CommandResult<V> doAllow( final T context,
@@ -48,25 +56,51 @@ public class CompositeCommandImpl<T, V> extends AbstractCompositeCommand<T, V> {
         return command.undo( context );
     }
 
+    @Override
+    public CommandResult<V> undo( final T context ) {
+        return undo( context, reverse );
+    }
+
     @NonPortable
     public static class CompositeCommandBuilder<T, V> {
 
-        final CompositeCommand<T, V> compositeCommand = new CompositeCommandImpl<T, V>();
+        private final List<Command<T, V>> commands = new LinkedList<>();
+        private boolean reverse = true;
 
-        public CompositeCommandBuilder<T, V> addCommand( final Command<T, V> command ) {
-            compositeCommand.addCommand( command );
+        /**
+         * The undo for this composite command will be done by using a reverse order.
+         */
+        public CompositeCommandBuilder<T, V> reverse() {
+            this.reverse = true;
             return this;
         }
 
-        public CompositeCommandBuilder<T, V> addCommands( final List<Command<T, V>> commands ) {
-            commands.stream().forEach( compositeCommand::addCommand );
+        /**
+         * The undo for this composite command will be done by using the same insertion order.
+         */
+        public CompositeCommandBuilder<T, V> forward() {
+            this.reverse = false;
             return this;
+        }
+
+        public CompositeCommandBuilder<T, V> addCommand( final Command<T, V> command ) {
+            commands.add( command );
+            return this;
+        }
+
+        public CompositeCommandBuilder<T, V> addCommands( final List<Command<T, V>> _commands ) {
+            commands.addAll( _commands );
+            return this;
+        }
+
+        public int size() {
+            return commands.size();
         }
 
         public CompositeCommand<T, V> build() {
+            final CompositeCommandImpl<T, V> compositeCommand = new CompositeCommandImpl<T, V>( reverse );
+            commands.stream().forEach( compositeCommand::addCommand );
             return compositeCommand;
         }
-
     }
-
 }

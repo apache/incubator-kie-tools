@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,7 @@ public class UserIcon implements StaticIcon {
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
         add( "all" );
+        add( "icon" );
     }};
 
     @NonPortable
@@ -62,7 +63,6 @@ public class UserIcon implements StaticIcon {
         public UserIcon build() {
             return new UserIcon();
         }
-
     }
 
     public UserIcon() {
@@ -88,5 +88,4 @@ public class UserIcon implements StaticIcon {
     public Icons getIcon() {
         return Icons.USER;
     }
-
 }

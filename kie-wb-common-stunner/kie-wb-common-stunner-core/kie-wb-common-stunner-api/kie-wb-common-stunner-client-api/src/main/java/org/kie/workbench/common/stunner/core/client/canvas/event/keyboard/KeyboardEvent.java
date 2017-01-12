@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,12 @@ package org.kie.workbench.common.stunner.core.client.canvas.event.keyboard;
 public interface KeyboardEvent {
 
     enum Key {
-        ESC( 27 ), DELETE( 46 );
+        ESC( 27 ),
+        DELETE( 46 ),
+        ARROW_UP( 24 ),
+        ARROW_DOWN( 25 ),
+        ARROW_LEFT( 27 ),
+        ARROW_RIGHT( 26 );
 
         private final int unicharCode;
 
@@ -33,5 +38,4 @@ public interface KeyboardEvent {
     }
 
     Key getKey();
-
 }

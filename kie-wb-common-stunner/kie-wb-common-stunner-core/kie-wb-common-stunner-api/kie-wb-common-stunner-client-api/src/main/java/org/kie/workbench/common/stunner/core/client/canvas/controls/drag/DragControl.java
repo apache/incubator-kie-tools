@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,13 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.drag;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 public interface DragControl<C extends CanvasHandler, E extends Element> extends CanvasRegistationControl<C, E> {
 
     DragControl<C, E> setDragGrid( CanvasGrid grid );
 
+    CommandResult<CanvasViolation> move( E element, double x, double y );
 }

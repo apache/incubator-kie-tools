@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,23 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.MoveShapeDownToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.MoveShapeUpToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.RemoveToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewNodeCommand;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 public abstract class ToolboxCommandFactory {
 
-    private final Instance<NewNodeCommand> newNodeCommands;
-    private final Instance<NewConnectorCommand> newConnectorCommands;
+    private final ManagedInstance<NewNodeCommand> newNodeCommands;
+    private final ManagedInstance<NewConnectorCommand> newConnectorCommands;
 
     @Inject
-    public ToolboxCommandFactory( final Instance<NewNodeCommand> newNodeCommands,
-                                  final Instance<NewConnectorCommand> newConnectorCommands ) {
+    public ToolboxCommandFactory( final ManagedInstance<NewNodeCommand> newNodeCommands,
+                                  final ManagedInstance<NewConnectorCommand> newConnectorCommands ) {
         this.newNodeCommands = newNodeCommands;
         this.newConnectorCommands = newConnectorCommands;
     }
@@ -50,5 +50,4 @@ public abstract class ToolboxCommandFactory {
     public NewConnectorCommand<?> newConnectorCommand() {
         return newConnectorCommands.get();
     }
-
 }

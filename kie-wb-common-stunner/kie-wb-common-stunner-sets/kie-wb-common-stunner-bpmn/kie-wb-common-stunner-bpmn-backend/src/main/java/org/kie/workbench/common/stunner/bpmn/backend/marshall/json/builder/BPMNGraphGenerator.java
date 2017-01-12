@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Stack;
-
-import org.codehaus.jackson.Base64Variant;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.JsonStreamContext;
-import org.codehaus.jackson.ObjectCodec;
+import org.codehaus.jackson.*;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
@@ -54,6 +40,13 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * Support for a basic single process hierarchy
@@ -136,10 +129,10 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public void close() throws IOException {
         logBuilders();
-        this.graph = (Graph<DefinitionSet, Node>) factoryManager.newElement( UUID.uuid(), diagramDefinitionSetClass );
+        this.graph = ( Graph<DefinitionSet, Node> ) factoryManager.newElement( UUID.uuid(), diagramDefinitionSetClass );
         // TODO: Where are the BPMN diagram bounds in the Oryx json structure? Exist?
         if ( null == graph.getContent().getBounds() ) {
             graph.getContent().setBounds( new BoundsImpl(
@@ -152,23 +145,23 @@ public class BPMNGraphGenerator extends JsonGenerator {
                 .init( graph )
                 // Clears the nodes present, if any, on the recently new graph instance for BPMN. This generator
                 // provides the generation for the complete graph structure and nodes.
-                .execute( builderContext.getCommandFactory().CLEAR_GRAPH() );
+                .execute( builderContext.getCommandFactory().clearGraph() );
         NodeObjectBuilder diagramBuilder = getDiagramBuilder( builderContext );
         if ( diagramBuilder == null ) {
             throw new RuntimeException( "No diagrams found!" );
         }
-        Node<View<BPMNDefinition>, Edge> diagramNode = (Node<View<BPMNDefinition>, Edge>) diagramBuilder.build( builderContext );
+        Node<View<BPMNDefinition>, Edge> diagramNode = ( Node<View<BPMNDefinition>, Edge> ) diagramBuilder.build( builderContext );
         graph.addNode( diagramNode );
         this.isClosed = true;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     protected NodeObjectBuilder getDiagramBuilder( final GraphObjectBuilder.BuilderContext context ) {
         Collection<GraphObjectBuilder<?, ?>> builders = context.getBuilders();
         if ( builders != null && !builders.isEmpty() ) {
             for ( GraphObjectBuilder<?, ?> builder : builders ) {
                 try {
-                    NodeObjectBuilder nodeBuilder = (NodeObjectBuilder) builder;
+                    NodeObjectBuilder nodeBuilder = ( NodeObjectBuilder ) builder;
                     if ( diagramDefinitionClass.equals( nodeBuilder.getDefinitionClass() ) ) {
                         return nodeBuilder;
                     }
@@ -227,7 +220,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
             return oryxManager;
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings( "unchecked" )
         public CommandResult<RuleViolation> execute( Command<GraphCommandExecutionContext, RuleViolation> command ) {
             GraphCommandExecutionContext executionContext =
                     new EmptyRulesCommandExecutionContext( definitionManager, factoryManager, index );
@@ -237,7 +230,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
         public GraphCommandFactory getCommandFactory() {
             return commandFactory;
         }
-
     };
 
     // For local testing...
@@ -261,7 +253,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
         void writeStartArray();
 
         void writeEndArray();
-
     }
 
     /*
@@ -292,7 +283,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
                 parsers.push( new StencilObjectParser() );
             } else if ( "childShapes".equals( fieldName ) ) {
                 RootObjectParser rootObjectParser = nodeBuilders.empty() ? null :
-                        new RootObjectParser( (NodeObjectBuilder) nodeBuilders.peek() );
+                        new RootObjectParser( ( NodeObjectBuilder ) nodeBuilders.peek() );
                 parsers.push( rootObjectParser );
                 nodeBuilders.push( bpmnGraphBuilderFactory.bootstrapBuilder() );
             } else if ( "outgoing".equals( fieldName ) ) {
@@ -473,7 +464,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
             if ( isLR && isUL ) {
                 end = true;
             }
-
         }
 
         @Override
@@ -501,7 +491,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
                     lrY = d;
                 }
             }
-
         }
 
         @Override
@@ -526,7 +515,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
         @Override
         public void writeEndObject() {
             nodeBuilders.peek().docker( x, y );
-
         }
 
         @Override
@@ -540,13 +528,10 @@ public class BPMNGraphGenerator extends JsonGenerator {
             Double d = Double.valueOf( value );
             if ( "x".equals( fieldName ) ) {
                 this.x = d;
-
             }
             if ( "y".equals( fieldName ) ) {
                 this.y = d;
-
             }
-
         }
 
         @Override
@@ -556,7 +541,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
         @Override
         public void writeEndArray() {
             parsers.pop();
-
         }
     }
 
@@ -748,5 +732,4 @@ public class BPMNGraphGenerator extends JsonGenerator {
     public JsonStreamContext getOutputContext() {
         return null;
     }
-
 }

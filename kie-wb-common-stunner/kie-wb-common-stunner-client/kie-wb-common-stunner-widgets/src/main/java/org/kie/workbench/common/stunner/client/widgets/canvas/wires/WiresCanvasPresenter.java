@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,12 +79,6 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     @Override
     public void deleteControl( final IsWidget control ) {
         view.remove( control );
-    }
-
-    public WiresCanvasPresenter clear() {
-        super.clear();
-        view.clear();
-        return this;
     }
 
     @Override

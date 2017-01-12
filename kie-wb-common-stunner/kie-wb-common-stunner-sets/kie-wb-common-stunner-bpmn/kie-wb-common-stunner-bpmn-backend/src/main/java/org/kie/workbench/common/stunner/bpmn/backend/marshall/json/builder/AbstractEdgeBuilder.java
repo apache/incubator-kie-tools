@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,10 +65,10 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
                 }
                 Node node = ( Node ) outgoingNodeBuilder.build( context );
                 // Command - Add the node into the graph store.
-                AddNodeCommand addNodeCommand = context.getCommandFactory().ADD_NODE( node );
+                AddNodeCommand addNodeCommand = context.getCommandFactory().addNode( node );
                 // Command - Set the edge connection's target node.
                 int magnetIdx = ( ( AbstractNodeBuilder ) outgoingNodeBuilder ).getTargetConnectionMagnetIndex( context, node, edge );
-                SetConnectionTargetNodeCommand setTargetNodeCommand = context.getCommandFactory().SET_TARGET_NODE( node, edge, magnetIdx );
+                SetConnectionTargetNodeCommand setTargetNodeCommand = context.getCommandFactory().setTargetNode( node, edge, magnetIdx );
                 CommandResult<RuleViolation> results1 = context.execute( addNodeCommand );
                 if ( hasErrors( results1 ) ) {
                     throw new RuntimeException( "Error building BPMN graph. Command 'addNodeCommand' execution failed." );
@@ -79,12 +79,11 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
                 }
             }
         }
-
     }
 
     @SuppressWarnings( "unchecked" )
     protected void addEdgeIntoIndex( BuilderContext context, T edge ) {
-        MutableIndex<Node, Edge> index = (MutableIndex<Node, Edge>) context.getIndex();
+        MutableIndex<Node, Edge> index = ( MutableIndex<Node, Edge> ) context.getIndex();
         index.addEdge( edge );
     }
 

@@ -29,7 +29,9 @@ public class PolygonView extends BasicShapeView<PolygonView>
 
     public PolygonView( final double radius,
                         final String fillColor ) {
-        super( create( new MultiPath(), SIDES, radius, CORNER ) );
+        super( BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+                create( new MultiPath(), SIDES, radius, CORNER ) );
+        super.setResizable( false );
     }
 
     @Override

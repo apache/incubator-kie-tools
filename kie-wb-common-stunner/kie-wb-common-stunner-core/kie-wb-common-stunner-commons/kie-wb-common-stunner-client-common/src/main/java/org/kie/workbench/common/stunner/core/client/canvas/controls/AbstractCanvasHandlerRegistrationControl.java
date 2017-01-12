@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractCanvasHandlerControl
@@ -42,35 +43,38 @@ public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractC
 
     @Override
     protected void doDisable() {
-        // De-register all drag handlers.
-        for ( Map.Entry<String, ViewHandler<?>> entry : handlers.entrySet() ) {
-            final String uuid = entry.getKey();
-            final Shape shape = canvasHandler.getCanvas().getShape( uuid );
-            final ViewHandler<?> handler = entry.getValue();
-            doDeregisterHandler( shape, handler );
-        }
+        deregisterAll();
+    }
+
+    public void deregisterAll() {
+        new HashSet<>( handlers.keySet() )
+                .stream()
+                .forEach( this::deregister );
+        handlers.clear();
     }
 
     @Override
     public void deregister( final Element element ) {
-        handlers.remove( element.getUUID() );
+        deregister( element.getUUID() );
     }
 
-    protected void doDeregisterHandler( final Shape shape,
-                                        final ViewHandler<?> handler ) {
+    protected void deregister( final String uuid ) {
+        final Shape shape = canvasHandler.getCanvas().getShape( uuid );
+        final ViewHandler<?> handler = handlers.get( uuid );
+        doDeregisterHandler( shape, handler );
+    }
+
+    private void doDeregisterHandler( final Shape shape,
+                                      final ViewHandler<?> handler ) {
         if ( null != shape && null != handler ) {
             final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shape.getShapeView();
             hasEventHandlers.removeHandler( handler );
+            handlers.remove( shape.getUUID() );
         }
-    }
-
-    public void deregisterAll() {
-        handlers.clear();
     }
 
     protected boolean checkEventContext( final AbstractCanvasHandlerEvent canvasHandlerEvent ) {
         final CanvasHandler _canvasHandler = canvasHandlerEvent.getCanvasHandler();
         return canvasHandler != null && canvasHandler.equals( _canvasHandler );
     }
-
 }

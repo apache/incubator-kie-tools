@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,14 +39,11 @@ public final class WiresUtils {
         if ( shape instanceof ShapeView ) {
             final ShapeView view = ( ShapeView ) shape;
             return canvasHandler.getGraphIndex().getNode( view.getUUID() );
-
         } else if ( shape instanceof WiresLayer ) {
             final String canvasRoot = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
             if ( null != canvasRoot ) {
                 return canvasHandler.getGraphIndex().getNode( canvasRoot );
-
             }
-
         }
         return null;
     }
@@ -65,9 +62,19 @@ public final class WiresUtils {
         if ( connector instanceof ShapeView ) {
             final ShapeView view = ( ShapeView ) connector;
             return canvasHandler.getGraphIndex().getEdge( view.getUUID() );
-
         }
         return null;
     }
 
+    public static boolean isWiresShape( final ShapeView<?> shapeView ) {
+        return shapeView instanceof WiresShape;
+    }
+
+    public static boolean isWiresContainer( final ShapeView<?> shapeView ) {
+        return shapeView instanceof WiresContainer;
+    }
+
+    public static boolean isWiresConnector( final ShapeView<?> shapeView ) {
+        return shapeView instanceof WiresConnector;
+    }
 }

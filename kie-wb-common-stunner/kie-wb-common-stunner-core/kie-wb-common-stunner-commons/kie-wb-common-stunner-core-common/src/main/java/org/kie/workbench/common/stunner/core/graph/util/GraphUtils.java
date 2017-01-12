@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.graph.util;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -26,8 +27,6 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -97,7 +96,7 @@ public class GraphUtils {
         return null;
     }
 
-    public static Map<String, Integer> getLabelsCount( final Graph<?, ? extends Node> target) {
+    public static Map<String, Integer> getLabelsCount( final Graph<?, ? extends Node> target ) {
         return getLabelsCount( target, null );
     }
 
@@ -121,14 +120,14 @@ public class GraphUtils {
     }
 
     public int countDefinitionsById( final Graph<?, ? extends Node> target,
-                                         final String id ) {
+                                     final String id ) {
         final int[] count = { 0 };
         target.nodes().forEach( node -> {
             if ( getElementDefinitionId( node ).equals( id ) ) {
-                count[0]++;
+                count[ 0 ]++;
             }
         } );
-        return count[0];
+        return count[ 0 ];
     }
 
     public <T> int countDefinitions( final Graph<?, ? extends Node> target,
@@ -140,20 +139,21 @@ public class GraphUtils {
     public int countEdges( final String edgeId,
                            final List<? extends Edge> edges ) {
         final int[] count = { 0 };
-        if ( null != edges ) {
+        if ( null != edgeId
+                && null != edges
+                && !edges.isEmpty() ) {
             edges.stream().forEach( edge -> {
                 final String eId = getElementDefinitionId( edge );
                 if ( null != eId && edgeId.equals( eId ) ) {
-                    count[0]++;
+                    count[ 0 ]++;
                 }
             } );
         }
-        return count[0];
+        return count[ 0 ];
     }
 
     private <T> String getDefinitionId( final T definition ) {
         return definitionManager.adapters().forDefinition().getId( definition );
-
     }
 
     public String getElementDefinitionId( final Element<?> element ) {
@@ -161,10 +161,8 @@ public class GraphUtils {
         if ( element.getContent() instanceof Definition ) {
             final Object definition = ( ( Definition ) element.getContent() ).getDefinition();
             targetId = getDefinitionId( definition );
-
         } else if ( element.getContent() instanceof DefinitionSet ) {
             targetId = ( ( DefinitionSet ) element.getContent() ).getDefinition();
-
         }
         return targetId;
     }
@@ -185,59 +183,42 @@ public class GraphUtils {
         return null;
     }
 
-    public static Double[] getPosition( final View element ) {
+    public static Point2D getPosition( final View element ) {
         final Bounds.Bound ul = element.getBounds().getUpperLeft();
         final double x = ul.getX();
         final double y = ul.getY();
-        return new Double[]{ x, y };
+        return new Point2D( x, y );
     }
 
-    public static Double[] getSize( final View element ) {
+    public static double[] getSize( final View element ) {
         final Bounds.Bound ul = element.getBounds().getUpperLeft();
         final Bounds.Bound lr = element.getBounds().getLowerRight();
         final double w = lr.getX() - ul.getX();
         final double h = lr.getY() - ul.getY();
-        return new Double[]{ Math.abs( w ), Math.abs( h ) };
+        return new double[]{ Math.abs( w ), Math.abs( h ) };
     }
 
-    // TODO: Workaround - review.
-    public static void updateBounds( final double radius,
-                                     final View element ) {
-        final Double[] coords = getPosition( element );
-        updateBounds( coords[ 0 ], coords[ 1 ], radius, element );
-    }
-
-    // TODO: Workaround - review.
-    public static void updateBounds( final double x,
-                                     final double y,
-                                     final double radius,
-                                     final View element ) {
-        updateBounds( x, y, radius * 2, radius * 2, element );
-    }
-
-    // TODO: Workaround - review.
-    public static void updateBounds( final double width, final double height, final View element ) {
-        final Double[] coords = getPosition( element );
-        updateBounds( coords[ 0 ], coords[ 1 ], width, height, element );
-    }
-
-    // TODO: Workaround - review.
-    public static void updateBounds( final double x,
-                                     final double y,
-                                     final double width,
-                                     final double height,
-                                     final View element ) {
-        final Bounds bounds = new BoundsImpl(
-                new BoundImpl( x, y ),
-                new BoundImpl( x + width, y + height )
-        );
-        element.setBounds( bounds );
+    /**
+     * Checks that the given Bounds do not exceed graph limits.
+     *
+     * @return if bounds exceed graph limits it returns <code>false</code>. Otherwise returns <code>true</code>.
+     */
+    @SuppressWarnings( "unchecked" )
+    public static boolean checkBounds( Graph<DefinitionSet, ? extends Node> graph,
+                                       final Bounds bounds ) {
+        final Bounds graphBounds = graph.getContent().getBounds();
+        if ( ( bounds.getLowerRight().getX() > graphBounds.getLowerRight().getX() )
+                || ( bounds.getLowerRight().getY() > graphBounds.getLowerRight().getY() ) ) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * Finds the first node in the graph structure for the given type.
+     *
      * @param graph The graph structure.
-     * @param type The Definition type..
+     * @param type  The Definition type..
      */
     @SuppressWarnings( "unchecked" )
     public static <C> Node<Definition<C>, ?> getFirstNode( final Graph<?, Node> graph,
@@ -261,5 +242,4 @@ public class GraphUtils {
     private static boolean instanceOf( final Object item, final Class<?> clazz ) {
         return null != item && item.getClass().equals( clazz );
     }
-
 }

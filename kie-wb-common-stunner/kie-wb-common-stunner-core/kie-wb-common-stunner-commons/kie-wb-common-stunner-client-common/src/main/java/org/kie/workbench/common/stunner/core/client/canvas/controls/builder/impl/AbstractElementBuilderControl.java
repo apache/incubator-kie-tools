@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.imp
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -129,7 +130,6 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             final double[] p = canvasLayoutUtils.getNext( canvasHandler, 150, 75 );
             x = p[ 0 ] + 50;
             y = p[ 1 ] > 0 ? p[ 1 ] : 200;
-
         } else {
             x = request.getX();
             y = request.getY();
@@ -138,8 +138,8 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         // Notify processing starts.
         fireProcessingStarted();
         final Node<View<?>, Edge> parent = getParent( x, y );
-        final Double[] childCoordinates = getChildCoordinates( parent, x, y );
-        getCommands( definition, parent, childCoordinates[ 0 ], childCoordinates[ 1 ], new CommandsCallback() {
+        final Point2D childCoordinates = getChildCoordinates( parent, x, y );
+        getCommands( definition, parent, childCoordinates.getX(), childCoordinates.getY(), new CommandsCallback() {
 
             @Override
             public void onComplete( final String uuid,
@@ -158,7 +158,6 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                 // Notify processing ends.
                 fireProcessingCompleted();
             }
-
         } );
     }
 
@@ -174,7 +173,6 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         void onComplete( String uuid, List<Command<AbstractCanvasHandler, CanvasViolation>> commands );
 
         void onError( ClientRuntimeError error );
-
     }
 
     public void getCommands( final Object definition,
@@ -193,12 +191,14 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                                             final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
                         commandsCallback.onComplete( uuid, commands );
                     }
+
                     @Override
                     public void onError( final ClientRuntimeError error ) {
                         commandsCallback.onError( error );
                     }
                 } );
             }
+
             @Override
             public void onError( final ClientRuntimeError error ) {
                 commandsCallback.onError( error );
@@ -215,25 +215,25 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         Command<AbstractCanvasHandler, CanvasViolation> command = null;
         if ( element instanceof Node ) {
             if ( null != parent ) {
-                command = canvasCommandFactory.ADD_CHILD_NODE( parent, ( Node ) element, getShapeSetId() );
+                command = canvasCommandFactory.addChildNode( parent, ( Node ) element, getShapeSetId() );
             } else {
-                command = canvasCommandFactory.ADD_NODE( ( Node ) element, getShapeSetId() );
+                command = canvasCommandFactory.addNode( ( Node ) element, getShapeSetId() );
             }
         } else if ( element instanceof Edge && null != parent ) {
-            command = canvasCommandFactory.ADD_CONNECTOR( parent, ( Edge ) element, 3, getShapeSetId() );
+            command = canvasCommandFactory.addConnector( parent, ( Edge ) element, 3, getShapeSetId() );
         } else {
             throw new RuntimeException( "Unrecognized element type for " + element );
         }
         // Execute both add element and move commands in batch, so undo will be done in batch as well.
         Command<AbstractCanvasHandler, CanvasViolation> moveCanvasElementCommand =
-                canvasCommandFactory.UPDATE_POSITION( ( Node<View<?>, Edge> ) element, x, y );
+                canvasCommandFactory.updatePosition( ( Node<View<?>, Edge> ) element, x, y );
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commandList = new LinkedList<Command<AbstractCanvasHandler, CanvasViolation>>();
         commandList.add( command );
         commandList.add( moveCanvasElementCommand );
         commandsCallback.onComplete( element.getUUID(), commandList );
     }
 
-     @SuppressWarnings( "unchecked" )
+    @SuppressWarnings( "unchecked" )
     public Node<View<?>, Edge> getParent( final double _x,
                                           final double _y ) {
         if ( _x > -1 && _y > -1 ) {
@@ -245,16 +245,16 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         return null;
     }
 
-    public Double[] getChildCoordinates( final Node<View<?>, Edge> parent,
-                                         final double _x,
-                                         final double _y ) {
+    public Point2D getChildCoordinates( final Node<View<?>, Edge> parent,
+                                        final double _x,
+                                        final double _y ) {
         if ( null != parent ) {
-            final Double[] parentCoords = GraphUtils.getPosition( parent.getContent() );
-            final double x = _x - parentCoords[ 0 ];
-            final double y = _y - parentCoords[ 1 ];
-            return new Double[]{ x, y };
+            final Point2D parentCoords = GraphUtils.getPosition( parent.getContent() );
+            final double x = _x - parentCoords.getX();
+            final double y = _y - parentCoords.getY();
+            return new Point2D( x, y );
         }
-        return new Double[]{ _x, _y };
+        return new Point2D( _x, _y );
     }
 
     protected void fireProcessingStarted() {
@@ -272,5 +272,4 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     protected String getShapeSetId() {
         return canvasHandler.getDiagram().getMetadata().getShapeSetId();
     }
-
 }

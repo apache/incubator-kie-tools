@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,12 +38,12 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.mvp.Command;
 
@@ -99,10 +99,8 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
         getGlyphTooltip().setPrefix( "Click to create a " );
     }
 
-
     public void setDefinitionIdentifier( final String definitionId ) {
         this.definitionId = definitionId;
-
     }
 
     private String getEdgeIdentifier( final Context<AbstractCanvasHandler> context ) {
@@ -157,22 +155,17 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
                         NewNodeCommand.this.targetMagnet = 7;
                         final double[] next = canvasLayoutUtils.getNext( canvasHandler, ( Node<View<?>, Edge> ) element );
                         log( Level.INFO, "New edge request complete - [UUID=" + newEdgeElement.getUUID()
-                                + ", x=" + next[0] + ", y=" + next[1] + "]" );
+                                + ", x=" + next[ 0 ] + ", y=" + next[ 1 ] + "]" );
                         NewNodeCommand.this.onComplete( context, element, newEdgeElement, ( int ) next[ 0 ], ( int ) next[ 1 ] );
-
                     }
-
                 } );
-
             }
 
             @Override
             public void onError( final ClientRuntimeError error ) {
                 NewNodeCommand.this.onError( context, error );
             }
-
         } );
-
     }
 
     @Override
@@ -195,14 +188,12 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
             public void onStart( final int x,
                                  final int y ) {
                 NewNodeCommand.this.onStart( context, element, item, x, y );
-
             }
 
             @Override
             public void onMove( final int x,
                                 final int y ) {
                 NewNodeCommand.this.onMove( context, element, item, x, y );
-
             }
 
             @Override
@@ -217,11 +208,8 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
                 NewNodeCommand.this.sourceMagnet = sourceMagnet;
                 NewNodeCommand.this.targetMagnet = targetMagnet;
                 NewNodeCommand.this.onComplete( context, element, item, x, y );
-
             }
-
         };
-
     }
 
     @Override
@@ -234,7 +222,6 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
         // Disable layer events handlers in order to avoid layer events while using the drag def.
         this.layerEventHandlers = getLayer( context );
         disableHandlers();
-
     }
 
     @Override
@@ -254,7 +241,6 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
 
     protected Layer getLayer( final Context<AbstractCanvasHandler> context ) {
         return context.getCanvasHandler().getCanvas().getLayer();
-
     }
 
     @Override
@@ -281,9 +267,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
             public void onError( final ClientRuntimeError error ) {
                 NewNodeCommand.this.onError( context, error );
             }
-
         } );
-
     }
 
     @Override
@@ -319,9 +303,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
             public ShapeFactory<?, AbstractCanvasHandler, ?> getInEdgeShapeFactory() {
                 return shapeFactory;
             }
-
         };
-
     }
 
     @Override
@@ -338,9 +320,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
         if ( accepts ) {
             if ( null != parent ) {
                 return true;
-
             }
-
         }
         return false;
     }
@@ -362,7 +342,6 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
         super.clearDragProxy();
         // Enable layers' events handlers again.
         enableHandlers();
-
     }
 
     private void disableHandlers() {
@@ -381,7 +360,6 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     public void destroy() {
         super.destroy();
         this.layerEventHandlers = null;
-
     }
 
     protected String getDefinitionId( final Object def ) {
@@ -393,5 +371,4 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
             LOGGER.log( level, message );
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,8 +102,8 @@ public class BPMNGraphFactoryImpl
         Node<Definition<StartNoneEvent>, Edge> startEventNode = ( Node<Definition<StartNoneEvent>, Edge> ) factoryManager.newElement( UUID.uuid(), StartNoneEvent.class );
         graphCommandManager.execute( createGraphContext( graph ),
                 new CompositeCommandImpl.CompositeCommandBuilder()
-                        .addCommand( graphCommandFactory.ADD_NODE( diagramNode ) )
-                        .addCommand( graphCommandFactory.ADD_CHILD_NODE( diagramNode, startEventNode, 100d, 100d ) )
+                        .addCommand( graphCommandFactory.addNode( diagramNode ) )
+                        .addCommand( graphCommandFactory.addChildNode( diagramNode, startEventNode, 100d, 100d ) )
                         .build()
         );
 
@@ -117,5 +117,4 @@ public class BPMNGraphFactoryImpl
                 definitionManager,
                 factoryManager, index );
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
@@ -38,6 +30,14 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * For Lienzo's based Canvas.
  */
@@ -47,7 +47,13 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     private static Logger LOGGER = Logger.getLogger( AbstractCanvas.class.getName() );
 
     public enum Cursors {
-        AUTO, MOVE, POINTER, TEXT, NOT_ALLOWED, WAIT, CROSSHAIR;
+        AUTO,
+        MOVE,
+        POINTER,
+        TEXT,
+        NOT_ALLOWED,
+        WAIT,
+        CROSSHAIR;
     }
 
     public interface View<P> extends IsWidget {
@@ -87,7 +93,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         View clear();
 
         void destroy();
-
     }
 
     protected Layer layer;
@@ -154,7 +159,9 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     public Shape getShape( final String uuid ) {
         if ( null != shapes ) {
             for ( final Shape shape : shapes ) {
-                if ( shape.getUUID().equals( uuid ) ) return shape;
+                if ( shape.getUUID().equals( uuid ) ) {
+                    return shape;
+                }
             }
         }
         return null;
@@ -190,10 +197,12 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     @Override
     public Canvas addShape( final Shape shape ) {
-        addTransientShape( shape );
-        shapes.add( shape );
-        fireCanvasShapeAdded( shape );
-        canvasShapeAddedEvent.fire( new CanvasShapeAddedEvent( this, shape ) );
+        if ( !shapes.contains( shape ) ) {
+            addTransientShape( shape );
+            shapes.add( shape );
+            fireCanvasShapeAdded( shape );
+            canvasShapeAddedEvent.fire( new CanvasShapeAddedEvent( this, shape ) );
+        }
         return this;
     }
 
@@ -254,15 +263,26 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         return this;
     }
 
-    @Override
-    public void destroy() {
-        if ( !shapes.isEmpty() ) {
-            for ( final Shape shape : shapes ) {
-                shape.destroy();
+    public AbstractCanvas clear() {
+        return clear( true );
+    }
 
-            }
+    private AbstractCanvas clear( final boolean fireEvents ) {
+        if ( !shapes.isEmpty() ) {
+            new LinkedList<>( shapes ).stream().forEach( this::deleteShape );
             shapes.clear();
         }
+        fireCanvasClear();
+        if ( fireEvents ) {
+            canvasClearEvent.fire( new CanvasClearEvent( this ) );
+        }
+        view.clear();
+        return this;
+    }
+
+    @Override
+    public void destroy() {
+        clear( false );
         listeners.clear();
         view.destroy();
         layer.destroy();
@@ -291,34 +311,26 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     protected void fireCanvasShapeAdded( final Shape shape ) {
         for ( final CanvasShapeListener instance : listeners ) {
             instance.register( shape );
-
         }
-
     }
 
     protected void fireCanvasShapeRemoved( final Shape shape ) {
         for ( final CanvasShapeListener instance : listeners ) {
             instance.deregister( shape );
-
         }
-
     }
 
     protected void fireCanvasClear() {
         for ( final CanvasShapeListener instance : listeners ) {
             instance.clear();
-
         }
-
     }
 
     protected void applyShapesDraw() {
         for ( final Shape shape : shapes ) {
             // Zindex.
             applyShapeZIndex( shape );
-
         }
-
     }
 
     protected void applyShapeZIndex( final Shape shape ) {
@@ -331,22 +343,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     protected void afterDrawCanvas() {
         canvasDrawnEvent.fire( new CanvasDrawnEvent( this ) );
-    }
-
-    public AbstractCanvas clear() {
-        if ( !shapes.isEmpty() ) {
-            final List<Shape> shapesToRemove = new LinkedList<>( shapes );
-            // Clear shapes.
-            for ( Shape shape : shapesToRemove ) {
-                deleteShape( shape );
-            }
-            // Clear state.
-            shapes.clear();
-
-        }
-        fireCanvasClear();
-        canvasClearEvent.fire( new CanvasClearEvent( this ) );
-        return this;
     }
 
     @Override
@@ -397,5 +393,4 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
             LOGGER.log( level, message );
         }
     }
-
 }

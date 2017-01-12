@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,13 @@ package org.kie.workbench.common.stunner.client.lienzo;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.shared.core.types.DataURLType;
-import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.util.LienzoImageDataUtils;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractLayer;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
@@ -56,15 +57,25 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
 
     @Override
     public LienzoLayer addShape( final ShapeView<?> shape ) {
-        GWT.log( "Adding shape " + shape.toString() );
-        layer.add( ( IPrimitive<?> ) shape );
+        if ( WiresUtils.isWiresContainer( shape ) ) {
+            layer.add( ( ( WiresContainer ) shape ).getGroup() );
+        } else if ( WiresUtils.isWiresConnector( shape ) ) {
+            layer.add( ( ( WiresConnector ) shape ).getLine() );
+        } else {
+            layer.add( ( IPrimitive<?> ) shape );
+        }
         return this;
     }
 
     @Override
     public LienzoLayer removeShape( final ShapeView<?> shape ) {
-        GWT.log( "Removing shape " + shape.toString() );
-        layer.remove( ( IPrimitive<?> ) shape );
+        if ( WiresUtils.isWiresContainer( shape ) ) {
+            layer.remove( ( ( WiresContainer ) shape ).getGroup() );
+        } else if ( WiresUtils.isWiresConnector( shape ) ) {
+            layer.remove( ( ( WiresConnector ) shape ).getLine() );
+        } else {
+            layer.remove( ( IPrimitive<?> ) shape );
+        }
         return this;
     }
 
@@ -90,7 +101,6 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
                              final int width,
                              final int height ) {
         return LienzoImageDataUtils.toImageData( getLienzoLayer(), x, y, width, height );
-
     }
 
     @Override
@@ -104,7 +114,6 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
         if ( null != eventHandlerManager ) {
             eventHandlerManager.destroy();
             eventHandlerManager = null;
-
         }
         // Remove the layer stuff.
         if ( null != layer ) {
@@ -112,7 +121,6 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
             layer.removeFromParent();
             layer = null;
         }
-
     }
 
     @Override
@@ -169,5 +177,4 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
                 layer.getAbsoluteTransform().getScaleY()
         );
     }
-
 }

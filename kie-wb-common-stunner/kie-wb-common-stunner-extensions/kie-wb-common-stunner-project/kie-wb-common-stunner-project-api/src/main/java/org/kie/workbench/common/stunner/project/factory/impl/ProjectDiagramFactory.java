@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +26,9 @@ import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 
 import javax.enterprise.context.ApplicationScoped;
 
+/**
+ * The default factory for ProjectDiagrams.
+ */
 @ApplicationScoped
 public class ProjectDiagramFactory
         implements DiagramFactory<ProjectMetadata, ProjectDiagram> {
@@ -41,15 +45,13 @@ public class ProjectDiagramFactory
         return new ProjectDiagramImpl( name, graph, metadata );
     }
 
-    /**
-     * The default factory for ProjectDiagrams.
-     * @param source the Definition Set identifier.
-     * @return If does not accepts any concrete Definition Set, so no matter the identifier,
-     * this instance is the default factory for all definition sets on the Project context (ProjectMetadata).
-     */
     @Override
     public boolean accepts( final String source ) {
-        return false;
+        return true;
     }
 
+    @Override
+    public boolean isDefault() {
+        return true;
+    }
 }

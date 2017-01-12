@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,16 +43,17 @@ public class RuntimeAdapterUtils {
 
     public static <T, V> Set<V> getFieldValues( T object, Set<String> fieldNames ) throws IllegalAccessException {
         Set<V> result = new LinkedHashSet<V>();
-        for ( String fieldName : fieldNames ) {
-            Class<?> c = object.getClass();
-            while ( !c.getName().equals( Object.class.getName() ) ) {
-                V result1 = getFieldValue( object, c, fieldName );
-                if ( null != result1 ) {
-                    result.add( result1 );
+        if ( null != fieldNames ) {
+            for ( String fieldName : fieldNames ) {
+                Class<?> c = object.getClass();
+                while ( !c.getName().equals( Object.class.getName() ) ) {
+                    V result1 = getFieldValue( object, c, fieldName );
+                    if ( null != result1 ) {
+                        result.add( result1 );
+                    }
+                    c = c.getSuperclass();
                 }
-                c = c.getSuperclass();
             }
-
         }
         return result;
     }
@@ -66,7 +68,6 @@ public class RuntimeAdapterUtils {
             c = c.getSuperclass();
         }
         return null;
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -115,7 +116,6 @@ public class RuntimeAdapterUtils {
             c = c.getSuperclass();
         }
         return null;
-
     }
 
     public static Field getField( Class<?> sourceType,
@@ -137,7 +137,6 @@ public class RuntimeAdapterUtils {
             T result = c.getAnnotation( annotationType );
             if ( null != result ) {
                 return result;
-
             }
             c = c.getSuperclass();
         }
@@ -152,12 +151,10 @@ public class RuntimeAdapterUtils {
                 Collection<Field> fields = _getFieldAnnotations( c, annotationType );
                 if ( null != fields && !fields.isEmpty() ) {
                     result.addAll( fields );
-
                 }
                 c = c.getSuperclass();
             }
             return result;
-
         }
         return null;
     }
@@ -170,7 +167,6 @@ public class RuntimeAdapterUtils {
                 T annotation = field.getAnnotation( annotationType );
                 if ( null != annotation ) {
                     result.add( field );
-
                 }
             }
             return result;
@@ -185,5 +181,4 @@ public class RuntimeAdapterUtils {
     public static String getPropertyId( final Object pojo ) {
         return BindableAdapterUtils.getPropertyId( pojo.getClass() );
     }
-
 }

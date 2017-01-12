@@ -137,9 +137,9 @@ public class CanvasLayoutUtils {
     public double[] getNext( final CanvasHandler canvasHandler,
                              final Node<View<?>, Edge> root ) {
         final double[] rootBounds = getBoundCoordinates( root.getContent() );
-        final Double[] size = GraphUtils.getSize( root.getContent() );
+        final double[] size = GraphUtils.getSize( root.getContent() );
 
-        return getNext( canvasHandler, root, size[0], size[1], rootBounds[ 0 ], rootBounds[ 1 ] );
+        return getNext( canvasHandler, root, size[ 0 ], size[ 1 ], rootBounds[ 0 ], rootBounds[ 1 ] );
     }
 
     @SuppressWarnings( "unchecked" )

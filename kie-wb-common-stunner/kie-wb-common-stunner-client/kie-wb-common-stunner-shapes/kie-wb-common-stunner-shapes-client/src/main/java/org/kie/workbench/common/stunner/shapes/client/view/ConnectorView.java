@@ -32,7 +32,8 @@ public class ConnectorView extends BasicConnectorView<ConnectorView> {
     }
 
     private ConnectorView( final Object[] line ) {
-        super( ( OrthogonalPolyLine ) line[ 0 ],
+        super( BasicShapesSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
+                ( OrthogonalPolyLine ) line[ 0 ],
                 ( MultiPathDecorator ) line[ 1 ],
                 ( MultiPathDecorator ) line[ 2 ] );
     }
@@ -56,8 +57,8 @@ public class ConnectorView extends BasicConnectorView<ConnectorView> {
                 .setFillAlpha( 1 );
         final OrthogonalPolyLine line =
                 new OrthogonalPolyLine( Point2DArray.fromArrayOfDouble( points ) )
-                .setCornerRadius( 5 )
-                .setDraggable( true );
+                        .setCornerRadius( 5 )
+                        .setDraggable( true );
         line.setHeadOffset( head.getBoundingBox().getHeight() );
         line.setTailOffset( tail.getBoundingBox().getHeight() );
         final MultiPathDecorator headDecorator = new MultiPathDecorator( head );

@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,7 +50,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 import static org.uberfire.java.nio.file.Files.walkFileTree;
 
 // TODO: Use the diagram registry cache.
-public abstract class AbstractVFSDiagramService<D extends Diagram> implements BaseDiagramService<D> {
+public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Diagram<Graph, M>> implements BaseDiagramService<M, D> {
 
     private static final Logger LOG =
             LoggerFactory.getLogger( AbstractVFSDiagramService.class.getName() );
@@ -82,7 +83,7 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
     }
 
     public Path create( Path path, String name, String defSetId, Metadata metadata ) {
-        final DefinitionSetService services = getServicesById( defSetId );
+        final DefinitionSetService services = getServiceById( defSetId );
         if ( null == services ) {
             throw new IllegalStateException( "No backend Definition Set services for [" + defSetId + "]" );
         }
@@ -118,29 +119,29 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
     @SuppressWarnings( "unchecked" )
     public D getDiagramByPath( final org.uberfire.backend.vfs.Path file ) {
         if ( accepts( file ) ) {
-            DefinitionSetService services = getServicesByPath( file );
+            DefinitionSetService services = getServiceByPath( file );
             if ( null != services ) {
                 final String defSetId = getDefinitionSetId( services );
                 final String name = parseFileName( file, services );
                 // Check if any metadata definition exist.
-                Metadata metadata = null;
+                M metadata = null;
                 InputStream metaDataStream = loadMetadataForPath( file );
                 if ( null != metaDataStream ) {
                     try {
-                        metadata = services.getDiagramMarshaller().getMetadataMarshaller().unmarshall( metaDataStream );
+                        metadata = ( M ) services.getDiagramMarshaller().getMetadataMarshaller().unmarshall( metaDataStream );
                     } catch ( java.io.IOException e ) {
                         LOG.error( "Cannot unmarshall metadata for diagram's path [" + file + "]", e );
                     }
                 }
                 if ( null == metadata ) {
-                    metadata = buildMetadataInstance( file, defSetId, name );
+                    metadata = ( M ) buildMetadataInstance( file, defSetId, name );
                 }
                 metadata.setPath( file );
                 // Parse and load the diagram raw data.
                 final InputStream is = loadPath( file );
                 try {
                     Graph<DefinitionSet, ?> graph = services.getDiagramMarshaller().unmarshall( metadata, is );
-                    DiagramFactory<Metadata, ?> factory =
+                    DiagramFactory<M, ?> factory =
                             factoryManager.registry().getDiagramFactory( graph.getContent().getDefinition(), getMetadataType() );
                     return ( D ) factory.build( name, metadata, graph );
                 } catch ( java.io.IOException e ) {
@@ -148,7 +149,6 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
                     return null;
                 }
             }
-
         }
         throw new UnsupportedOperationException( "Diagram format not supported [" + file + "]" );
     }
@@ -163,8 +163,8 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
         return n.substring( 0, n.length() - ext.length() - 1 );
     }
 
-    public void saveOrUpdate( D diagram ) {
-        register( diagram );
+    public M saveOrUpdate( D diagram ) {
+        return register( diagram );
     }
 
     public boolean delete( D diagram ) {
@@ -174,24 +174,26 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
 
     protected abstract boolean doDelete( Path path );
 
+    protected abstract M doSave( D diagram, String raw, String metadata );
+
     @SuppressWarnings( "unchecked" )
-    private void register( D diagram ) {
+    private M register( D diagram ) {
         try {
             String[] raw = serizalize( diagram );
-            doSave( diagram, raw[ 0 ], raw[ 1 ] );
+            return doSave( diagram, raw[ 0 ], raw[ 1 ] );
         } catch ( Exception e ) {
             LOG.error( "Error while saving diagram with UUID [" + diagram.getName() + "].", e );
             throw new RuntimeException( e );
         }
     }
 
+    @SuppressWarnings( "unchecked" )
     protected String[] serizalize( final D diagram ) throws java.io.IOException {
-        final String uuid = diagram.getName();
         final String defSetId = diagram.getMetadata().getDefinitionSetId();
-        final DefinitionSetService services = getServicesById( defSetId );
+        final DefinitionSetService services = getServiceById( defSetId );
         // Serialize using the concrete marshalling service.
         DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> marshaller = services.getDiagramMarshaller();
-        final String rawData = marshaller.marshall( diagram );
+        final String rawData = marshaller.marshall( ( Diagram<Graph, Metadata> ) diagram );
         final Metadata metadata = diagram.getMetadata();
         final String metadataRaw = marshaller.getMetadataMarshaller().marshall( metadata );
         return new String[]{ rawData, metadataRaw };
@@ -219,14 +221,12 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
                                     if ( null != diagram ) {
                                         result.add( diagram );
                                     }
-
                                 }
                                 return FileVisitResult.CONTINUE;
                             }
                         } );
             }
             return result;
-
         } catch ( Exception e ) {
             LOG.error( "Error while obtaining diagrams.", e );
             throw e;
@@ -248,8 +248,6 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
         return new ByteArrayInputStream( bytes );
     }
 
-    protected abstract void doSave( D diagram, String raw, String metadata );
-
     public boolean accepts( final org.uberfire.backend.vfs.Path path ) {
         if ( path != null ) {
             // Look for the specific services definition.
@@ -258,7 +256,6 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
                     return true;
                 }
             }
-
         }
         return false;
     }
@@ -272,7 +269,7 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
         return result;
     }
 
-    protected DefinitionSetService getServicesByPath( final org.uberfire.backend.vfs.Path path ) {
+    protected DefinitionSetService getServiceByPath( final org.uberfire.backend.vfs.Path path ) {
         // Look for the specific services definition.
         for ( DefinitionSetService definitionSetService : definitionSetServices ) {
             if ( definitionSetService.getResourceType().accept( path ) ) {
@@ -287,7 +284,7 @@ public abstract class AbstractVFSDiagramService<D extends Diagram> implements Ba
         return BindableAdapterUtils.getDefinitionSetId( type );
     }
 
-    protected DefinitionSetService getServicesById( final String defSetId ) {
+    protected DefinitionSetService getServiceById( final String defSetId ) {
         // Look for the specific services definition.
         for ( DefinitionSetService definitionSetService : definitionSetServices ) {
             if ( definitionSetService.accepts( defSetId ) ) {

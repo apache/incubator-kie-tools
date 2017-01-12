@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,14 @@ package org.kie.workbench.common.stunner.client.widgets.actions;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateCanvasElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.components.actions.AbstractNameEditBox;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.client.mvp.UberView;
 
 import javax.annotation.PostConstruct;
@@ -42,7 +41,6 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
         View show( String name );
 
         View hide();
-
     }
 
     View view;
@@ -101,33 +99,27 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
             final Object def = element.getContent().getDefinition();
             final String nameId = definitionUtils.getNameIdentifier( def );
             if ( null != nameId ) {
-                UpdateElementPropertyCommand command = canvasCommandFactory.UPDATE_PROPERTY( element, nameId, this.nameValue );
+                UpdateElementPropertyCommand command = canvasCommandFactory.updatePropertyValue( element, nameId, this.nameValue );
                 canvasCommandManager.execute( canvasHandler, command );
-
             }
-
         }
         view.hide();
         fireCloseCallback();
-
     }
 
     void onKeyPress( final int keyCode,
                      final String value ) {
         processKey( keyCode, value );
-
     }
 
     void onKeyDown( final int keyCode,
                     final String value ) {
         processKey( keyCode, value );
-
     }
 
     void onClose() {
         this.hide();
         fireCloseCallback();
-
     }
 
     private void processKey( final int keyCode,
@@ -136,17 +128,12 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
         // Enter key produces save.
         if ( 13 == keyCode ) {
             onSave();
-
         }
-
     }
 
     private void fireCloseCallback() {
         if ( null != closeCallback ) {
             closeCallback.execute();
-
         }
-
     }
-
 }

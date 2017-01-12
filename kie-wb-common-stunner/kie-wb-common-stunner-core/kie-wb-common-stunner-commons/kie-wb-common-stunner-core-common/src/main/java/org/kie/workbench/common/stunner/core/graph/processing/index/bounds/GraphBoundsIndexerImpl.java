@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.index.bounds;
 
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -159,10 +160,10 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
                 if ( null != parents && parents.hasNext() ) {
                     while ( parents.hasNext() ) {
                         final Node tParent = parents.next();
-                        final Double[] nodeCoordinates = getNodeCoordinates( tParent );
+                        final Point2D nodeCoordinates = getNodeCoordinates( tParent );
                         if ( null != nodeCoordinates ) {
-                            parentX += nodeCoordinates[ 0 ];
-                            parentY += nodeCoordinates[ 1 ];
+                            parentX += nodeCoordinates.getX();
+                            parentY += nodeCoordinates.getY();
 
                         }
 
@@ -177,7 +178,7 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
 
     }
 
-    private Double[] getNodeCoordinates( final Node node ) {
+    private Point2D getNodeCoordinates( final Node node ) {
         if ( null != node ) {
             final Object content = node.getContent();
             if ( content instanceof View ) {
@@ -189,8 +190,8 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
         return null;
     }
 
-    private Double[] getNodeCoordinates( final Node node,
-                                         final String root ) {
+    private Point2D getNodeCoordinates( final Node node,
+                                        final String root ) {
         if ( null != node ) {
             final String uuid = node.getUUID();
             if ( null == root || !root.equals( uuid ) ) {

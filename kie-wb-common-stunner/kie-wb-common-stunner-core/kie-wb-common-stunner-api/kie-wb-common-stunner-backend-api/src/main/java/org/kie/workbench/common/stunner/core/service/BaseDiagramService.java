@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +17,8 @@
 package org.kie.workbench.common.stunner.core.service;
 
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -23,7 +26,7 @@ import org.uberfire.backend.vfs.Path;
  *
  * @param <D> The type of the Diagram that this service suports.
  */
-public interface BaseDiagramService<D extends Diagram> {
+public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph, M>> {
 
     /**
      * Returns a Diagram by the given path in the service.
@@ -48,8 +51,11 @@ public interface BaseDiagramService<D extends Diagram> {
 
     /**
      * Saves or updates the diagram.
+     * Save applies when diagram is not present on the VFS. A new path will be assigned and returned into
+     * the resulting metadata instance (eg: when diagrams are created and authored in client side).
+     * Update applies if the diagram is already present on the VFS.
      */
-    void saveOrUpdate( D diagram );
+    M saveOrUpdate( D diagram );
 
     /**
      * Deletes the diagram.
@@ -58,5 +64,4 @@ public interface BaseDiagramService<D extends Diagram> {
      * @return <code>true</code> if the operation result is success, <code>false</code> otherwise.
      */
     boolean delete( D diagram );
-
 }

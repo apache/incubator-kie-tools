@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CommandManagerListener;
+import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -47,7 +47,6 @@ public class CommandManagerImplTest {
     @Before
     public void setup() throws Exception {
         tested = new CommandManagerImpl<Object, Object>();
-
     }
 
     @Test
@@ -59,19 +58,17 @@ public class CommandManagerImplTest {
         verify( command, times( 0 ) ).undo( anyObject() );
         assertNotNull( result );
         assertEquals( commandResult, result );
-
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testAllowWithListener() {
-        CommandManagerListener<Object, Object> listener = mock( CommandManagerListener.class );
-        tested.setCommandManagerListener( listener );
+        CommandListener<Object, Object> listener = mock( CommandListener.class );
+        tested.setCommandListener( listener );
         testAllow();
         verify( listener, times( 1 ) ).onAllow( eq( context ), eq( command ), eq( commandResult ) );
         verify( listener, times( 0 ) ).onExecute( anyObject(), anyObject(), anyObject() );
         verify( listener, times( 0 ) ).onUndo( anyObject(), anyObject(), anyObject() );
-
     }
 
     @Test
@@ -83,19 +80,17 @@ public class CommandManagerImplTest {
         verify( command, times( 0 ) ).undo( anyObject() );
         assertNotNull( result );
         assertEquals( commandResult, result );
-
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecuteWithListener() {
-        CommandManagerListener<Object, Object> listener = mock( CommandManagerListener.class );
-        tested.setCommandManagerListener( listener );
+        CommandListener<Object, Object> listener = mock( CommandListener.class );
+        tested.setCommandListener( listener );
         testExecute();
         verify( listener, times( 0 ) ).onAllow( anyObject(), anyObject(), anyObject() );
         verify( listener, times( 1 ) ).onExecute( eq( context ), eq( command ), eq( commandResult ) );
         verify( listener, times( 0 ) ).onUndo( anyObject(), anyObject(), anyObject() );
-
     }
 
     @Test
@@ -107,19 +102,16 @@ public class CommandManagerImplTest {
         verify( command, times( 0 ) ).allow( anyObject() );
         assertNotNull( result );
         assertEquals( commandResult, result );
-
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testUndoWithListener() {
-        CommandManagerListener<Object, Object> listener = mock( CommandManagerListener.class );
-        tested.setCommandManagerListener( listener );
+        CommandListener<Object, Object> listener = mock( CommandListener.class );
+        tested.setCommandListener( listener );
         testUndo();
         verify( listener, times( 0 ) ).onAllow( anyObject(), anyObject(), anyObject() );
         verify( listener, times( 0 ) ).onExecute( anyObject(), anyObject(), anyObject() );
         verify( listener, times( 1 ) ).onUndo( eq( context ), eq( command ), eq( commandResult ) );
-
     }
-
 }

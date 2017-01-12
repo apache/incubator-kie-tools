@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,13 +67,12 @@ public class ApplicationFactoryManager extends AbstractFactoryManager implements
     @SuppressWarnings( "unchecked" )
     public void init() {
         // Definition factories.
-        definitionFactoryInstances.forEach( factory -> registry().register( factory ) );
+        definitionFactoryInstances.forEach( registry()::register );
         // Graph factories.
-        graphFactoryInstances.forEach( factory -> registry().register( factory ) );
-        nodeFactoryInstances.forEach( factory -> registry().register( factory ) );
-        edgeFactoryInstances.forEach( factory -> registry().register( factory ) );
+        graphFactoryInstances.forEach( registry()::register );
+        nodeFactoryInstances.forEach( registry()::register );
+        edgeFactoryInstances.forEach( registry()::register );
         // Diagram factories.
-        diagramFactoryInstances.forEach( factory -> registry().register( factory ) );
+        diagramFactoryInstances.forEach( registry()::register );
     }
-
 }

@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,37 +16,38 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 @ApplicationScoped
 public class SessionCommandFactory {
 
-    private final Instance<ClearSelectionSessionCommand> clearSelectionCommand;
-    private final Instance<VisitGraphSessionCommand> visitGraphCommand;
-    private final Instance<SwitchGridSessionCommand> switchGridCommand;
-    private final Instance<ClearSessionCommand> clearCommand;
-    private final Instance<DeleteSelectionSessionCommand> deleteSelectionCommand;
-    private final Instance<UndoSessionCommand> undoCommand;
-    private final Instance<RedoSessionCommand> redoCommand;
-    private final Instance<ValidateSessionCommand> validateCommand;
-    private final Instance<RefreshSessionCommand> refreshSessionCommand;
+    private final ManagedInstance<ClearSelectionSessionCommand> clearSelectionCommand;
+    private final ManagedInstance<VisitGraphSessionCommand> visitGraphCommand;
+    private final ManagedInstance<SwitchGridSessionCommand> switchGridCommand;
+    private final ManagedInstance<ClearSessionCommand> clearCommand;
+    private final ManagedInstance<DeleteSelectionSessionCommand> deleteSelectionCommand;
+    private final ManagedInstance<UndoSessionCommand> undoCommand;
+    private final ManagedInstance<RedoSessionCommand> redoCommand;
+    private final ManagedInstance<ValidateSessionCommand> validateCommand;
+    private final ManagedInstance<RefreshSessionCommand> refreshSessionCommand;
 
     protected SessionCommandFactory() {
         this( null, null, null, null, null, null, null, null, null );
     }
 
     @Inject
-    public SessionCommandFactory( final Instance<ClearSelectionSessionCommand> clearSelectionCommand,
-                                  final Instance<VisitGraphSessionCommand> visitGraphCommand,
-                                  final Instance<SwitchGridSessionCommand> switchGridCommand,
-                                  final Instance<ClearSessionCommand> clearCommand,
-                                  final Instance<DeleteSelectionSessionCommand> deleteSelectionCommand,
-                                  final Instance<UndoSessionCommand> undoCommand,
-                                  final Instance<RedoSessionCommand> redoCommand,
-                                  final Instance<ValidateSessionCommand> validateCommand,
-                                  final Instance<RefreshSessionCommand> refreshSessionCommand ) {
+    public SessionCommandFactory( final ManagedInstance<ClearSelectionSessionCommand> clearSelectionCommand,
+                                  final ManagedInstance<VisitGraphSessionCommand> visitGraphCommand,
+                                  final ManagedInstance<SwitchGridSessionCommand> switchGridCommand,
+                                  final ManagedInstance<ClearSessionCommand> clearCommand,
+                                  final ManagedInstance<DeleteSelectionSessionCommand> deleteSelectionCommand,
+                                  final ManagedInstance<UndoSessionCommand> undoCommand,
+                                  final ManagedInstance<RedoSessionCommand> redoCommand,
+                                  final ManagedInstance<ValidateSessionCommand> validateCommand,
+                                  final ManagedInstance<RefreshSessionCommand> refreshSessionCommand ) {
         this.clearSelectionCommand = clearSelectionCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;
@@ -92,5 +94,4 @@ public class SessionCommandFactory {
     public RefreshSessionCommand newRefreshSessionCommand() {
         return refreshSessionCommand.get();
     }
-
 }

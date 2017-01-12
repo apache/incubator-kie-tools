@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,15 +60,19 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
     public DiagramFactory<?, ?> getDiagramFactory( final String defSetId,
                                                    final Class<? extends Metadata> metadataType ) {
         return diagramFactories.stream()
-                .filter( factory -> factory.accepts( defSetId ) && metadataType.equals( factory.getMetadataType() )  )
+                .filter( factory -> !factory.isDefault()
+                        && factory.accepts( defSetId )
+                        && metadataType.equals( factory.getMetadataType() ) )
                 .findFirst()
                 .orElse( getDefaultDiagramFactory( defSetId, metadataType ) );
     }
 
     private DiagramFactory<?, ?> getDefaultDiagramFactory( final String defSetId,
-                                                            final Class<? extends Metadata> metadataType ) {
+                                                           final Class<? extends Metadata> metadataType ) {
         return diagramFactories.stream()
-                .filter( factory -> !factory.accepts( defSetId ) && metadataType.equals( factory.getMetadataType() )  )
+                .filter( factory -> factory.isDefault()
+                        && factory.accepts( defSetId )
+                        && metadataType.equals( factory.getMetadataType() ) )
                 .findFirst()
                 .orElse( null );
     }
@@ -91,7 +95,7 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
             return definitionFactories.remove( item );
         } else if ( item instanceof ElementFactory ) {
             return null != graphFactories.remove( ( ( ElementFactory ) item ).getFactoryType() );
-        } else  if ( item instanceof DiagramFactory ) {
+        } else if ( item instanceof DiagramFactory ) {
             return diagramFactories.remove( item );
         }
         return false;
@@ -114,7 +118,6 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
             return diagramFactories.contains( item );
         }
         return false;
-
     }
 
     @Override
@@ -137,5 +140,4 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
         final String id = BindableAdapterUtils.getDefinitionId( type, adapterManager.registry() );
         return getDefinitionFactory( id );
     }
-
 }

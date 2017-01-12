@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,26 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.delegate.DelegateCommandManager;
-import org.kie.workbench.common.stunner.core.command.exception.CommandException;
-import org.kie.workbench.common.stunner.core.command.stack.StackCommandManager;
+import org.kie.workbench.common.stunner.core.command.impl.CommandRegistryListener;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
- * Command manager used in a client session context. It delegates to each session's command manager in order to keep
- * each session command history/registry.
+ * The default session command manager implementation.
+ * Commands that must be keep into the session for further undoing/redoing operations must be executed
+ * using this implementation, as it keep the successful executed commands in the session's registry.
  */
 @ApplicationScoped
 @Session
-public class SessionCommandManagerImpl extends DelegateCommandManager<AbstractCanvasHandler, CanvasViolation>
-        implements SessionCommandManager<AbstractCanvasHandler> {
-
-    private static Logger LOGGER = Logger.getLogger( SessionCommandManagerImpl.class.getName() );
+public class SessionCommandManagerImpl
+        extends AbstractSessionCommandManager {
 
     private final AbstractClientSessionManager clientSessionManager;
 
@@ -58,61 +49,28 @@ public class SessionCommandManagerImpl extends DelegateCommandManager<AbstractCa
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( AbstractCanvasHandler context, Command<AbstractCanvasHandler, CanvasViolation> command ) {
-        try {
-            return super.execute( context, command );
-        } catch ( final CommandException ce ) {
-            clientSessionManager.handleCommandError( ce );
-        } catch ( final RuntimeException e ) {
-            clientSessionManager.handleClientError( new ClientRuntimeError( e ) );
-        }
-        return CanvasCommandResultBuilder.FAILED;
+    protected AbstractClientSessionManager getClientSessionManager() {
+        return clientSessionManager;
     }
 
     @Override
-    protected CommandManager<AbstractCanvasHandler, CanvasViolation> getDelegate() {
-        final ClientFullSession<AbstractCanvas, AbstractCanvasHandler> defaultSession = getDefaultSession();
-        if ( null != defaultSession ) {
-            return defaultSession.getCanvasCommandManager();
-        }
-        return null;
+    protected CommandListener<AbstractCanvasHandler, CanvasViolation> getRegistryListener() {
+        return registryListener;
     }
 
-    private ClientFullSession<AbstractCanvas, AbstractCanvasHandler> getDefaultSession() {
-        final ClientSession<AbstractCanvas, AbstractCanvasHandler> session = getCurrentSession();
-        if ( session instanceof ClientFullSession ) {
-            return ( ClientFullSession<AbstractCanvas, AbstractCanvasHandler> ) session;
-        }
-        return null;
-    }
+    private CommandRegistryListener<AbstractCanvasHandler, CanvasViolation> registryListener =
+            new CommandRegistryListener<AbstractCanvasHandler, CanvasViolation>() {
 
-    private ClientSession<AbstractCanvas, AbstractCanvasHandler> getCurrentSession() {
-        return clientSessionManager.getCurrentSession();
-    }
+                @Override
+                public void onAllow( final AbstractCanvasHandler context,
+                                     final Command<AbstractCanvasHandler, CanvasViolation> command,
+                                     final CommandResult<CanvasViolation> result ) {
+                    // Nothing to do with the command registry for the allow operation.
+                }
 
-    @Override
-    public CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {
-        final StackCommandManager<AbstractCanvasHandler, CanvasViolation> scm = ( StackCommandManager<AbstractCanvasHandler, CanvasViolation> ) getDelegate();
-        if ( null != scm ) {
-            return scm.getRegistry();
-
-        }
-        return null;
-    }
-
-    @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        final StackCommandManager<AbstractCanvasHandler, CanvasViolation> scm = ( StackCommandManager<AbstractCanvasHandler, CanvasViolation> ) getDelegate();
-        if ( null != scm ) {
-            return scm.undo( context );
-        }
-        return null;
-
-    }
-
-    @Override
-    public String toString() {
-        return "[" + super.toString() + "] - Current session = ["
-                + ( null != getCurrentSession() ? getCurrentSession().toString() : "null") + "]";
-    }
+                @Override
+                protected CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {
+                    return SessionCommandManagerImpl.this.getRegistry();
+                }
+            };
 }

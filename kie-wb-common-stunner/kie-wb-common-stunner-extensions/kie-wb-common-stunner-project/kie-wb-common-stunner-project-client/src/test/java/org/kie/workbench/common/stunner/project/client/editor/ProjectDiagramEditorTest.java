@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.ClientSessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenErrorView;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.*;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
@@ -80,6 +82,8 @@ public class ProjectDiagramEditorTest {
     @Mock
     AbstractClientSessionPresenter clientSessionPresenter;
     @Mock
+    ScreenErrorView editorErrorView;
+    @Mock
     BS3PaletteFactory paletteFactory;
     @Mock
     ClientSessionUtils sessionUtils;
@@ -133,7 +137,7 @@ public class ProjectDiagramEditorTest {
         when( clientSessionPresenter.setDisplayErrors( anyBoolean() ) ).thenReturn( clientSessionPresenter );
         this.tested = new ProjectDiagramEditorStub( view, placeManager, errorPopupPresenter,
                 changeTitleNotificationEvent, savePopUpPresenter, resourceType, projectDiagramServices,
-                clientSessionManager, clientSessionPresenter, paletteFactory, sessionUtils,
+                clientSessionManager, clientSessionPresenter, editorErrorView, paletteFactory, sessionUtils,
                 sessionCommandFactory, menuItemsBuilder );
     }
 
@@ -161,5 +165,4 @@ public class ProjectDiagramEditorTest {
         tested.loadContent();
         verify( projectDiagramServices, times( 1 ) ).getByPath( eq( path ), any( ServiceCallback.class ) );
     }
-
 }

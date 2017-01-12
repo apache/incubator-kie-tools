@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,9 +26,9 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
-import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
+import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,8 +135,8 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     }
 
     @Override
-    public void saveOrUpdate( ProjectDiagram diagram ) {
-        controller.saveOrUpdate( diagram );
+    public ProjectMetadata saveOrUpdate( ProjectDiagram diagram ) {
+        return controller.saveOrUpdate( diagram );
     }
 
     @Override
@@ -147,5 +148,4 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     public void delete( Path path, String comment ) {
         controller.delete( path, comment );
     }
-
 }

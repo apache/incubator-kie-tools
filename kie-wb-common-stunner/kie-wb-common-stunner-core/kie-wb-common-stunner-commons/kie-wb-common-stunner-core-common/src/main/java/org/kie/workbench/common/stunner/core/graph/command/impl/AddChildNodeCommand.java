@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
     public AddChildNodeCommand( @MapsTo( "parentUUID" ) String parentUUID,
                                 @MapsTo( "candidate" ) Node candidate,
                                 @MapsTo( "x" ) Double x,
-                                @MapsTo( "y" ) Double y) {
+                                @MapsTo( "y" ) Double y ) {
         this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
                 parentUUID );
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
@@ -55,28 +55,29 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
         this.y = y;
     }
 
-    public AddChildNodeCommand( Node<?, Edge> parent,
-                                Node candidate,
-                                Double x,
-                                Double y ) {
+    public AddChildNodeCommand( final Node<?, Edge> parent,
+                                final Node candidate,
+                                final Double x,
+                                final Double y ) {
         this( parent.getUUID(), candidate, x, y );
         this.parent = parent;
     }
 
     public AddChildNodeCommand( Node<?, Edge> parent,
-                                Node candidate) {
+                                Node candidate ) {
         this( parent, candidate, null, null );
     }
 
     @SuppressWarnings( "unchecked" )
-    protected void initialize( final GraphCommandExecutionContext context ) {
+    protected AddChildNodeCommand initialize( final GraphCommandExecutionContext context ) {
         super.initialize( context );
         final Node<?, Edge> parent = getParent( context );
         this.addCommand( new RegisterNodeCommand( candidate ) );
+        this.addCommand( new SetChildNodeCommand( parent, candidate ) );
         if ( null != x && null != y ) {
             this.addCommand( new UpdateElementPositionCommand( candidate, x, y ) );
         }
-        this.addCommand( new SetChildNodeCommand( parent, candidate ) );
+        return this;
     }
 
     @Override
@@ -96,6 +97,12 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
         violations.addAll( containmentRuleViolations );
         violations.addAll( cardinalityRuleViolations );
         return new GraphCommandResultBuilder( violations ).build();
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
+        return new SafeDeleteNodeCommand( getCandidate() ).execute( context );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -131,5 +138,4 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
     protected boolean delegateRulesContextToChildren() {
         return false;
     }
-
 }

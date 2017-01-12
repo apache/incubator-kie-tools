@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,19 +47,20 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
         this.magnetIndex = PortablePreconditions.checkNotNull( "magnetIndex", magnetIndex );
     }
 
-    public AddConnectorCommand( Node<?, Edge> sourceNode,
-                                Edge edge,
-                                Integer magnetIndex ) {
+    public AddConnectorCommand( final Node<?, Edge> sourceNode,
+                                final Edge edge,
+                                final Integer magnetIndex ) {
         this( sourceNode.getUUID(), edge, magnetIndex );
         this.node = sourceNode;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    protected void initialize( final GraphCommandExecutionContext context ) {
+    protected AddConnectorCommand initialize( final GraphCommandExecutionContext context ) {
         super.initialize( context );
         final Node<? extends View<?>, Edge> source = ( Node<? extends View<?>, Edge> ) getNode( context );
         commands.add( new SetConnectionSourceNodeCommand( source, edge, magnetIndex ) );
+        return this;
     }
 
     @Override
@@ -123,5 +124,4 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
     protected boolean delegateRulesContextToChildren() {
         return true;
     }
-
 }

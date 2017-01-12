@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
@@ -62,14 +62,14 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         edge = mockEdge( EDGE_UUID );
         edgeContent = mock( ViewConnector.class );
         graphNodes.add( node );
-        when( graphIndex.getNode( eq( NODE_UUID ) )).thenReturn( node );
-        when( graphIndex.getNode( eq( LAST_SOURCE_NODE_UUID ) )).thenReturn( lastSourceNode );
-        when( graphIndex.getNode( eq( TARGET_UUID ) )).thenReturn( target );
-        when( graphIndex.getEdge( eq( EDGE_UUID ) )).thenReturn( edge );
+        when( graphIndex.getNode( eq( NODE_UUID ) ) ).thenReturn( node );
+        when( graphIndex.getNode( eq( LAST_SOURCE_NODE_UUID ) ) ).thenReturn( lastSourceNode );
+        when( graphIndex.getNode( eq( TARGET_UUID ) ) ).thenReturn( target );
+        when( graphIndex.getEdge( eq( EDGE_UUID ) ) ).thenReturn( edge );
         when( edge.getContent() ).thenReturn( edgeContent );
         when( edge.getSourceNode() ).thenReturn( lastSourceNode );
         when( edge.getTargetNode() ).thenReturn( target );
-        this.tested = new SetConnectionSourceNodeCommand( node, edge,  MAGNET_INDEX );
+        this.tested = new SetConnectionSourceNodeCommand( node, edge, MAGNET_INDEX );
     }
 
     @Test
@@ -107,7 +107,7 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
     @Test
     @SuppressWarnings( "unchecked" )
     public void testAllowNoSourceConnection() {
-        this.tested = new SetConnectionSourceNodeCommand( null, edge,  MAGNET_INDEX );
+        this.tested = new SetConnectionSourceNodeCommand( null, edge, MAGNET_INDEX );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
         assertEquals( CommandResult.Type.INFO, result.getType() );
         verify( connectionRuleManager, times( 1 ) ).evaluate( eq( edge ), any( Node.class ), any( Node.class ) );
@@ -148,8 +148,38 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
         verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
         verify( graphIndex, times( 0 ) ).addNode( any( Node.class ) );
-        verify( graphIndex, times( 0 ) ).removeNode(  any( Node.class ) );
+        verify( graphIndex, times( 0 ) ).removeNode( any( Node.class ) );
     }
 
-
+    @Test
+    @SuppressWarnings( "unchecked" )
+    public void testExecuteNoMagnets() {
+        this.tested = new SetConnectionSourceNodeCommand( node, edge );
+        final List lastSourceOutEdges = mock( List.class );
+        final List sourceOutEdges = mock( List.class );
+        final List targetInEdges = mock( List.class );
+        when( node.getOutEdges() ).thenReturn( sourceOutEdges );
+        when( lastSourceNode.getOutEdges() ).thenReturn( lastSourceOutEdges );
+        when( target.getInEdges() ).thenReturn( targetInEdges );
+        CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
+        verify( connectionRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( node ), eq( target ) );
+        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( lastSourceNode ),
+                any( List.class ), eq( EdgeCardinalityRule.Type.OUTGOING ), eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( node ),
+                any( List.class ), eq( EdgeCardinalityRule.Type.OUTGOING ), eq( RuleManager.Operation.ADD ) );
+        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO, result.getType() );
+        verify( lastSourceOutEdges, times( 1 ) ).remove( eq( edge ) );
+        verify( sourceOutEdges, times( 1 ) ).add( eq( edge ) );
+        verify( edgeContent, times( 0 ) ).setSourceMagnetIndex( anyInt() );
+        verify( edge, times( 1 ) ).setSourceNode( eq( node ) );
+        verify( targetInEdges, times( 0 ) ).remove( any( Edge.class ) );
+        verify( targetInEdges, times( 0 ) ).add( any( Edge.class ) );
+        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
+        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
+        verify( graphIndex, times( 0 ) ).addNode( any( Node.class ) );
+        verify( graphIndex, times( 0 ) ).removeNode( any( Node.class ) );
+    }
 }

@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +22,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommand
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.Session;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
@@ -49,17 +51,20 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
     private static Logger LOGGER = Logger.getLogger( DeleteSelectionSessionCommand.class.getName() );
 
     private final ClientSessionManager<?, ?, ?> clientSessionManager;
+    private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory canvasCommandFactory;
 
     protected DeleteSelectionSessionCommand() {
-        this( null, null );
+        this( null, null, null );
     }
 
     @Inject
     public DeleteSelectionSessionCommand( final ClientSessionManager<?, ?, ?> clientSessionManager,
+                                          final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                           final CanvasCommandFactory canvasCommandFactory ) {
         super( false );
         this.clientSessionManager = clientSessionManager;
+        this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
     }
 
@@ -68,7 +73,6 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
         checkNotNull( "callback", callback );
         if ( null != getSession().getSelectionControl() ) {
             final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
-            final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager = getSession().getCanvasCommandManager();
             final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
             final Collection<String> selectedItems = selectionControl.getSelectedItems();
             if ( selectedItems != null && !selectedItems.isEmpty() ) {
@@ -78,11 +82,11 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
                         element = canvasHandler.getGraphIndex().getEdge( selectedItemUUID );
                         if ( element != null ) {
                             log( Level.FINE, "Deleting edge with id " + element.getUUID() );
-                            canvasCommandManager.execute( canvasHandler, canvasCommandFactory.DELETE_CONNECTOR( ( Edge ) element ) );
+                            sessionCommandManager.execute( canvasHandler, canvasCommandFactory.deleteConnector( ( Edge ) element ) );
                         }
                     } else {
                         log( Level.FINE, "Deleting node with id " + element.getUUID() );
-                        canvasCommandManager.execute( canvasHandler, canvasCommandFactory.DELETE_NODE( ( Node ) element ) );
+                        sessionCommandManager.execute( canvasHandler, canvasCommandFactory.deleteNode( ( Node ) element ) );
                     }
                 } );
             } else {
@@ -93,7 +97,6 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
         }
     }
 
-    // TODO: Use a confirm box? Use error popup?
     void onKeyDownEvent( @Observes KeyDownEvent keyDownEvent ) {
         checkNotNull( "keyDownEvent", keyDownEvent );
         final KeyboardEvent.Key key = keyDownEvent.getKey();
@@ -110,7 +113,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
                 @Override
                 public void onError( final ClientRuntimeError error ) {
                     LOGGER.log( Level.SEVERE, "Error while trying to delete selected items. " +
-                            "Message=[" + error.toString() +"]", error.getThrowable() );
+                            "Message=[" + error.toString() + "]", error.getThrowable() );
                 }
             } );
         }
@@ -121,5 +124,4 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
             LOGGER.log( level, message );
         }
     }
-
 }

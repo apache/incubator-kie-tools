@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,7 @@ public class BasicConnector {
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
         add( "all" );
+        add( "connector" );
     }};
 
     @NonPortable
@@ -83,7 +84,6 @@ public class BasicConnector {
             return new BasicConnector( new Name( "Connector" ),
                     new BackgroundAndBorderSet( COLOR, BORDER_COLOR, BORDER_SIZE ) );
         }
-
     }
 
     public BasicConnector() {
@@ -126,5 +126,4 @@ public class BasicConnector {
     public void setBackgroundSet( BackgroundAndBorderSet backgroundSet ) {
         this.backgroundSet = backgroundSet;
     }
-
 }

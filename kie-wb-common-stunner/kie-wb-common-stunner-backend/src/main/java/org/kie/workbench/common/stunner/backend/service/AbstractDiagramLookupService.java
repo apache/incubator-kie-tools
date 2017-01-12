@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +19,8 @@ package org.kie.workbench.common.stunner.backend.service;
 import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.core.backend.lookup.impl.AbstractVFSLookupManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
@@ -33,17 +36,17 @@ import org.uberfire.io.IOService;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractDiagramLookupService<D extends Diagram>
+public abstract class AbstractDiagramLookupService<M extends Metadata, D extends Diagram<Graph, M>>
         extends AbstractVFSLookupManager<D, DiagramRepresentation, DiagramLookupRequest>
         implements DiagramLookupManager, DiagramLookupService {
 
     private static final Logger LOG =
             LoggerFactory.getLogger( AbstractDiagramLookupService.class.getName() );
 
-    private final BaseDiagramService<D> diagramService;
+    private final BaseDiagramService<M, D> diagramService;
 
     public AbstractDiagramLookupService( IOService ioService,
-                                         BaseDiagramService<D> diagramService ) {
+                                         BaseDiagramService<M, D> diagramService ) {
         super( ioService );
         this.diagramService = diagramService;
     }
@@ -93,8 +96,7 @@ public abstract class AbstractDiagramLookupService<D extends Diagram>
         }
     }
 
-    protected BaseDiagramService<D> getDiagramService() {
+    protected BaseDiagramService<M, D> getDiagramService() {
         return diagramService;
     }
-
 }

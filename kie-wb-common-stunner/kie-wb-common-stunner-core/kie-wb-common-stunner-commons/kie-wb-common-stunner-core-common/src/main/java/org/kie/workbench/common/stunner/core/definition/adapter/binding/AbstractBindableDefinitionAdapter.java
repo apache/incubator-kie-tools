@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import java.util.*;
 
@@ -25,7 +26,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
 
     protected DefinitionUtils definitionUtils;
 
-    protected Class<?> namePropertyClass;
+    protected Map<PropertyMetaTypes, Class> metaPropertyTypeClasses;
     protected Map<Class, Class> baseTypes;
     protected Map<Class, Set<String>> propertySetsFieldNames;
     protected Map<Class, Set<String>> propertiesFieldNames;
@@ -42,7 +43,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
     protected abstract Set<?> getBindProperties( final T pojo );
 
     @Override
-    public void setBindings( final Class<?> namePropertyClass,
+    public void setBindings( Map<PropertyMetaTypes, Class> metaPropertyTypeClasses,
                              final Map<Class, Class> baseTypes,
                              final Map<Class, Set<String>> propertySetsFieldNames,
                              final Map<Class, Set<String>> propertiesFieldNames,
@@ -51,7 +52,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
                              final Map<Class, String> propertyTitleFieldNames,
                              final Map<Class, String> propertyCategoryFieldNames,
                              final Map<Class, String> propertyDescriptionFieldNames ) {
-        this.namePropertyClass = namePropertyClass;
+        this.metaPropertyTypeClasses = metaPropertyTypeClasses;
         this.baseTypes = baseTypes;
         this.propertySetsFieldNames = propertySetsFieldNames;
         this.propertiesFieldNames = propertiesFieldNames;
@@ -68,7 +69,6 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
         final Class<?> baseType = baseTypes.get( type );
         if ( null != baseType ) {
             return getDefinitionId( baseType );
-
         }
         return null;
     }
@@ -83,11 +83,9 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
             if ( baseType.equals( _id ) ) {
                 result.add( getDefinitionId( type ) );
             }
-
         }
         if ( !result.isEmpty() ) {
             return result.toArray( new String[ result.size() ] );
-
         }
         return null;
     }
@@ -96,13 +94,16 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
         return getDefinitionId( pojo.getClass() );
     }
 
-    public Object getNameProperty( final T pojo ) {
-        final Set<?> properties = getProperties( pojo );
-        if ( null != properties && !properties.isEmpty() ) {
-            for ( final Object property : properties ) {
-                if ( getNamePropertyClass().equals( property.getClass() ) ) {
-                    return property;
-                }
+    @Override
+    public Object getMetaProperty( final PropertyMetaTypes metaPropertyType, final T pojo ) {
+        final Class pClass = metaPropertyTypeClasses.get( metaPropertyType );
+        if ( null != pClass ) {
+            final Set<?> properties = getProperties( pojo );
+            if ( null != properties ) {
+                return properties.stream()
+                        .filter( property -> pClass.equals( property.getClass() ) )
+                        .findFirst()
+                        .orElse( null );
             }
         }
         return null;
@@ -149,10 +150,6 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
         return 0;
     }
 
-    protected Class<?> getNamePropertyClass() {
-        return namePropertyClass;
-    }
-
     protected Map<Class, Set<String>> getPropertySetsFieldNames() {
         return propertySetsFieldNames;
     }
@@ -184,5 +181,4 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
     protected String getDefinitionId( final Class<?> type ) {
         return BindableAdapterUtils.getDefinitionId( type );
     }
-
 }

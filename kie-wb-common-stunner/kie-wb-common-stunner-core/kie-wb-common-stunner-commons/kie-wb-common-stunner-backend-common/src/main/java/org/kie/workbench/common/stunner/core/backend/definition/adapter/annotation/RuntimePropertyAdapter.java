@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -111,10 +112,8 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
                 }
                 c = c.getSuperclass();
             }
-
         }
         return null;
-
     }
 
     @Override
@@ -139,7 +138,6 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
             }
         }
         return null;
-
     }
 
     @Override
@@ -161,24 +159,17 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
                                     while ( vIt.hasNext() ) {
                                         Object v = vIt.next();
                                         result.put( v, v.toString() );
-
                                     }
-
                                 }
                                 done = true;
-
                             } catch ( Exception e ) {
                                 LOG.error( "Error obtaining annotated allowed values for Property with id " + getId( property ) );
                             }
-
                         }
-
                     }
-
                 }
                 c = c.getSuperclass();
             }
-
         }
         return !result.isEmpty() ? result : null;
     }
@@ -199,7 +190,6 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
             if ( isReadOnly( property ) ) {
                 // throw new RuntimeException( "Cannot set new value for property [" + getId( property ) + "] as it is read only! " );
                 return;
-
             }
             Class<?> c = property.getClass();
             boolean done = false;
@@ -218,22 +208,16 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
                                 LOG.error( "Error setting value for Property with id [" + getId( property ) + "] " +
                                         "and value [" + ( value != null ? value.toString() : "null" ) + "]" );
                             }
-
                         }
                     }
-
                 }
                 c = c.getSuperclass();
-
             }
-
         }
-
     }
 
     @Override
     public boolean accepts( Class<?> pojo ) {
-        return pojo.getAnnotation( Property.class ) != null || pojo.getAnnotation( NameProperty.class ) != null;
+        return pojo.getAnnotation( Property.class ) != null;
     }
-
 }

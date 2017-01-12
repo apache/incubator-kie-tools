@@ -58,7 +58,7 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
 
     protected abstract void doDestroy();
 
-    protected void init() {
+    private void init() {
         getLine().setFillColor( ColorName.WHITE ).setStrokeWidth( 0 );
     }
 

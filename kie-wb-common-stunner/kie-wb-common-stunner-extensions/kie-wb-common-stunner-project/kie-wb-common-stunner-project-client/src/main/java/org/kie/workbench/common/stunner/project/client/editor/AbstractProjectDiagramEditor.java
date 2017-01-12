@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenErrorView;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -67,7 +69,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     public interface View extends UberView<AbstractProjectDiagramEditor>, KieEditorView, IsWidget {
 
         void setWidget( IsWidget widget );
-
     }
 
     private final PlaceManager placeManager;
@@ -77,6 +78,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final ClientProjectDiagramService projectDiagramServices;
     private final AbstractClientSessionManager clientSessionManager;
     private final AbstractClientSessionPresenter clientSessionPresenter;
+    private final ScreenErrorView editorErrorView;
     private final BS3PaletteFactory paletteFactory;
     private final ClientSessionUtils sessionUtils;
     private final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
@@ -105,6 +107,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                          final ClientProjectDiagramService projectDiagramServices,
                                          final AbstractClientSessionManager clientSessionManager,
                                          final AbstractClientSessionPresenter clientSessionPresenter,
+                                         final ScreenErrorView editorErrorView,
                                          final BS3PaletteFactory paletteFactory,
                                          final ClientSessionUtils sessionUtils,
                                          final SessionCommandFactory sessionCommandFactory,
@@ -118,6 +121,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.projectDiagramServices = projectDiagramServices;
         this.clientSessionManager = clientSessionManager;
         this.clientSessionPresenter = clientSessionPresenter;
+        this.editorErrorView = editorErrorView;
         this.paletteFactory = paletteFactory;
         this.sessionUtils = sessionUtils;
         this.menuItemsBuilder = menuItemsBuilder;
@@ -172,7 +176,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 showError( error );
             }
         } );
-
     }
 
     protected void open( final ProjectDiagram diagram ) {
@@ -180,7 +183,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         final Command callback = () -> {
             hideLoadingViews();
         };
+        // Use the session presenter's view.
         this.paletteWidget = buildPalette( diagram );
+        getView().setWidget( clientSessionPresenter.getView() );
         clientSessionPresenter.getView().setPalette( this.paletteWidget.getView() );
         clientSessionPresenter.open( diagram, callback );
         updateTitle( diagram.getMetadata().getTitle() );
@@ -190,7 +195,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     protected Command onValidate() {
         showLoadingViews();
         return () -> {
-            session.getCanvasValidationControl().validate();
+            session.getValidationControl().validate();
             hideLoadingViews();
         };
     }
@@ -198,7 +203,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @Override
     protected void save( final String commitMessage ) {
         showLoadingViews();
-        session.getCanvasValidationControl().validate( new CanvasValidatorCallback() {
+        session.getValidationControl().validate( new CanvasValidatorCallback() {
             @Override
             public void onSuccess() {
                 doSave( commitMessage );
@@ -461,12 +466,16 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     private void showError( final ClientRuntimeError error ) {
+        editorErrorView.showError( error );
+        getView().setWidget( editorErrorView.asWidget() );
         errorPopupPresenter.showMessage( error.toString() );
         hideLoadingViews();
     }
 
     protected int getCurrentDiagramHash() {
-        if ( getDiagram() == null ) return 0;
+        if ( getDiagram() == null ) {
+            return 0;
+        }
         return getDiagram().hashCode();
     }
 
@@ -474,7 +483,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return null != clientSessionPresenter.getCanvasHandler() ? ( ProjectDiagram ) clientSessionPresenter.getCanvasHandler().getDiagram() : null;
     }
 
-    private  void executeWithConfirm( final String message, final Command command ) {
+    private void executeWithConfirm( final String message, final Command command ) {
         final Command yesCommand = command::execute;
         final Command noCommand = () -> {
         };
@@ -492,5 +501,4 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             LOGGER.log( level, message );
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.Tool
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -48,6 +49,7 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
                                   final CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl,
                                   final CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl,
                                   final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
+                                  final RegistryFactory registryFactory,
                                   final ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl,
                                   final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl,
                                   final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl,
@@ -59,10 +61,8 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
                                   final ZoomControl<AbstractCanvas> zoomControl,
                                   final PanControl<AbstractCanvas> panControl ) {
         super( canvas, canvasHandler, resizeControl, canvasValidationControl, canvasPaletteControl,
-                selectionControl, zoomControl, panControl, canvasCommandManager, connectionAcceptorControl,
-                containmentAcceptorControl, dockingAcceptorControl, canvasNameEditionControl, dragControl,
-                toolboxControl, builderControl );
-
+                selectionControl, zoomControl, panControl, canvasCommandManager,
+                registryFactory.newCommandRegistry(), connectionAcceptorControl, containmentAcceptorControl,
+                dockingAcceptorControl, canvasNameEditionControl, dragControl, toolboxControl, builderControl );
     }
-
 }

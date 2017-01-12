@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +19,8 @@ package org.kie.workbench.common.stunner.backend.service;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.slf4j.Logger;
@@ -34,7 +37,7 @@ import java.util.Map;
 @ApplicationScoped
 @Service
 public class DiagramLookupServiceImpl
-        extends AbstractDiagramLookupService<Diagram> {
+        extends AbstractDiagramLookupService<Metadata, Diagram<Graph, Metadata>> {
 
     private static final Logger LOG =
             LoggerFactory.getLogger( DiagramLookupServiceImpl.class.getName() );
@@ -57,7 +60,7 @@ public class DiagramLookupServiceImpl
             Map<String, String> criteriaMap = AbstractCriteriaLookupManager.parseCriteria( criteria );
             String name = criteriaMap.get( "name" );
             if ( !StringUtils.isEmpty( name ) ) {
-                Collection<Diagram> diagrams = getItemsByPath( getServiceImpl().getDiagramsPath() );
+                Collection<Diagram<Graph, Metadata>> diagrams = getItemsByPath( getServiceImpl().getDiagramsPath() );
                 if ( null != diagrams ) {
                     final Diagram d = diagrams
                             .stream()
@@ -80,5 +83,4 @@ public class DiagramLookupServiceImpl
     private DiagramServiceImpl getServiceImpl() {
         return ( DiagramServiceImpl ) getDiagramService();
     }
-
 }

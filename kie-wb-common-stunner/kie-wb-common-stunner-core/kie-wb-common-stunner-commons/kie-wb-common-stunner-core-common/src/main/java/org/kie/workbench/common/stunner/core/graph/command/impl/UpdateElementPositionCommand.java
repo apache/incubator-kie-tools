@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BoundsExceededException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -84,10 +85,10 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     @Override
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final Element<?> element = checkNodeNotNull( context );
-        final Double[] oldPosition = GraphUtils.getPosition( ( View ) element.getContent() );
-        final Double[] oldSize = GraphUtils.getSize( ( View ) element.getContent() );
-        this.oldX = oldPosition[ 0 ];
-        this.oldY = oldPosition[ 1 ];
+        final Point2D oldPosition = GraphUtils.getPosition( ( View ) element.getContent() );
+        final double[] oldSize = GraphUtils.getSize( ( View ) element.getContent() );
+        this.oldX = oldPosition.getX();
+        this.oldY = oldPosition.getY();
         final double w = oldSize[ 0 ];
         final double h = oldSize[ 1 ];
         final BoundsImpl newBounds = new BoundsImpl(
@@ -104,9 +105,8 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     private void checkBounds( final GraphCommandExecutionContext context,
                               final Bounds bounds ) {
         final Graph<DefinitionSet, Node> graph = ( Graph<DefinitionSet, Node> ) getGraph( context );
-        final Bounds graphBounds = graph.getContent().getBounds();
-        if ( ( bounds.getLowerRight().getX() > graphBounds.getLowerRight().getX() )
-                || ( bounds.getLowerRight().getY() > graphBounds.getLowerRight().getY() ) ) {
+        if ( !GraphUtils.checkBounds( graph, bounds ) ) {
+            final Bounds graphBounds = graph.getContent().getBounds();
             throw new BoundsExceededException( this, bounds, graphBounds.getLowerRight().getX(), graphBounds.getLowerRight().getY() );
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.client.mvp.UberView;
 
 import javax.annotation.PostConstruct;
@@ -44,7 +44,6 @@ public class TreeExplorerItem implements IsWidget {
         View setName( String name );
 
         View setGlyph( Glyph<Group> glyph );
-
     }
 
     ShapeManager shapeManager;
@@ -82,12 +81,10 @@ public class TreeExplorerItem implements IsWidget {
         view.setUUID( element.getUUID() )
                 .setName( getItemText( element ) )
                 .setGlyph( factory.glyph( defId, 25, 25 ) );
-
     }
 
     private String getItemText( final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> item ) {
         final String name = definitionUtils.getName( item.getContent().getDefinition() );
         return ( name != null ? name : "- No name -" );
     }
-
 }

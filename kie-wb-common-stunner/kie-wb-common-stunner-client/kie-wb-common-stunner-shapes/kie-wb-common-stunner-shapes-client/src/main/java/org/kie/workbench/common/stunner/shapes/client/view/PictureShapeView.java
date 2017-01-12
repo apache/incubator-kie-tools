@@ -17,7 +17,6 @@ package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Picture;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
 
 import static org.kie.workbench.common.stunner.shapes.client.util.BasicShapesUtils.scalePicture;
 
@@ -33,10 +32,11 @@ public class PictureShapeView<T extends PictureShapeView>
     public PictureShapeView( final String uri,
                              final double width,
                              final double height ) {
-        super( new MultiPath()
-                .rect( 0, 0, width, height )
-                .setStrokeAlpha( 0 )
-                .setFillAlpha( 0 ) );
+        super( BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+                new MultiPath()
+                        .rect( 0, 0, width, height )
+                        .setStrokeAlpha( 0 )
+                        .setFillAlpha( 0 ) );
         new Picture( uri, picture1 -> {
             this.picture = picture1;
             scalePicture( picture1, width, height );
@@ -50,12 +50,6 @@ public class PictureShapeView<T extends PictureShapeView>
     protected void doDestroy() {
         super.doDestroy();
         picture.removeFromParent();
-    }
-
-    //
-    @Override
-    public WiresShape setResizable( final boolean resizable ) {
-        return super.setResizable( false );
     }
 
 }

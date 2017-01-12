@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenErrorView;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
@@ -37,7 +39,6 @@ import org.uberfire.lifecycle.*;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -58,12 +59,13 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                               final ClientProjectDiagramService projectDiagramServices,
                               final ClientProjectSessionManager clientSessionManager,
                               final AbstractClientSessionPresenter clientSessionPresenter,
+                              final ScreenErrorView editorErrorView,
                               final BS3PaletteFactory paletteFactory,
                               final ClientSessionUtils sessionUtils,
                               final SessionCommandFactory sessionCommandFactory,
                               final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder ) {
         super( view, placeManager, errorPopupPresenter, changeTitleNotificationEvent, savePopUpPresenter,
-                resourceType, projectDiagramServices, clientSessionManager, clientSessionPresenter,
+                resourceType, projectDiagramServices, clientSessionManager, clientSessionPresenter, editorErrorView,
                 paletteFactory, sessionUtils, sessionCommandFactory, menuItemsBuilder );
     }
 
@@ -75,12 +77,12 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     @Override
     protected int getCanvasWidth() {
-        return (int) BPMNGraphFactory.GRAPH_DEFAULT_WIDTH;
+        return ( int ) BPMNGraphFactory.GRAPH_DEFAULT_WIDTH;
     }
 
     @Override
     protected int getCanvasHeight() {
-        return (int) BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT;
+        return ( int ) BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT;
     }
 
     @OnOpen
@@ -127,5 +129,4 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     public boolean onMayClose() {
         return super.mayClose( getCurrentDiagramHash() );
     }
-
 }

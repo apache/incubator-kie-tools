@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,26 +17,19 @@
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
-import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 
-import java.util.List;
-
-// TODO: Refactor as composite of canvas commands...
+import java.util.logging.Logger;
 
 public final class DrawCanvasCommand extends AbstractCanvasCommand {
+
+    private static Logger LOGGER = Logger.getLogger( DrawCanvasCommand.class.getName() );
 
     private final TreeWalkTraverseProcessor treeWalkTraverseProcessor;
 
@@ -45,117 +39,53 @@ public final class DrawCanvasCommand extends AbstractCanvasCommand {
 
     @Override
     public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        draw( context );
-        return buildResult();
+        final Diagram diagram = context.getDiagram();
+        final String shapeSetId = getShapeSetId( context );
+        final String rootUUID = diagram.getMetadata().getCanvasRootUUID();
+        Command<AbstractCanvasHandler, CanvasViolation> command = null;
+        if ( null != rootUUID ) {
+            final Node root = context.getGraphIndex().getNode( rootUUID );
+            command = new AddCanvasNodeCommand( treeWalkTraverseProcessor, root, shapeSetId );
+        } else {
+            command = new CanvasNodesRegistrationCommand();
+        }
+        return command.execute( context );
     }
 
     @Override
     public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        // TODO: Return to previous snapshot? Use CleanCanvasCommand?
-        throw new UnsupportedOperationException( "Draw cannot be undone, yet." );
+        throw new UnsupportedOperationException( "Undo operation for [" + this.getClass().getName() + "[ is not supported.." );
     }
 
-    private void draw( final AbstractCanvasHandler context ) {
-        final Diagram diagram = context.getDiagram();
-        final String shapeSetId = context.getDiagram().getMetadata().getShapeSetId();
-        // Walk throw the graph and register the shapes.
-        treeWalkTraverseProcessor
-                .useEdgeVisitorPolicy( TreeWalkTraverseProcessor.EdgeVisitorPolicy.VISIT_EDGE_AFTER_TARGET_NODE )
-                .traverse( diagram.getGraph(), new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
-                    @Override
-                    public void startGraphTraversal( final Graph graph ) {
-                    }
-
-                    @Override
-                    @SuppressWarnings( "unchecked" )
-                    public boolean startNodeTraversal( final Node node ) {
-                        if ( node.getContent() instanceof View ) {
-                            if ( !CanvasLayoutUtils.isCanvasRoot( diagram, node ) ) {
-                                final View viewContent = ( View ) node.getContent();
-                                // Add the node shape into the canvas.
-                                context.register( shapeSetId, node );
-                                context.applyElementMutation( node, MutationContext.STATIC );
-
-                            }
-                            return true;
-
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    @SuppressWarnings( "unchecked" )
-                    public boolean startEdgeTraversal( final Edge edge ) {
-                        final Object content = edge.getContent();
-                        if ( content instanceof View ) {
-                            final View viewContent = ( View ) edge.getContent();
-                            // Add the edge shape into the canvas.
-                            context.register( shapeSetId, edge );
-                            context.applyElementMutation( edge, MutationContext.STATIC );
-                            ShapeUtils.applyConnections( edge, context, MutationContext.STATIC );
-                            return true;
-
-                        } else if ( content instanceof Child ) {
-                            final Node child = edge.getTargetNode();
-                            final Node parent = edge.getSourceNode();
-                            // If the child is docked, do not consider adding it as a child shape of the given parent here,
-                            // as docking lienzo wires implies that child shape is added as a child for the docked shape.
-                            // TODO: This logic is specific for lienzo wires, should not be here.
-                            if ( !isDocked( child ) ) {
-                                final Object childContent = child.getContent();
-                                if ( childContent instanceof View ) {
-                                    context.addChild( parent, child );
-                                    context.applyElementMutation( child, MutationContext.STATIC );
-                                }
-
-                            }
-                            return true;
-
-                        } else if ( content instanceof Dock ) {
-                            final Node docked = edge.getTargetNode();
-                            final Node parent = edge.getSourceNode();
-                            final Object dockedContent = docked.getContent();
-                            if ( dockedContent instanceof View ) {
-                                context.dock( parent, docked );
-                                context.applyElementMutation( docked, MutationContext.STATIC );
-                            }
-                            return true;
-                        }
-                        return false;
-
-                    }
-
-                    @Override
-                    public void endGraphTraversal() {
-                        super.endGraphTraversal();
-                        // Draw the canvas shapes.
-                        context.getCanvas().draw();
-
-                    }
-
-                } );
-
+    private String getShapeSetId( final AbstractCanvasHandler context ) {
+        return context.getDiagram().getMetadata().getShapeSetId();
     }
 
-    @SuppressWarnings( "unchecked" )
-    private boolean isDocked( final Node child ) {
-        if ( null != child ) {
-            List<Edge> edges = child.getInEdges();
-            if ( null != edges && !edges.isEmpty() ) {
-                for ( final Edge edge : edges ) {
-                    if ( isDockEdged( edge ) ) {
-                        return true;
-                    }
-                }
+    /**
+     * Registers all nodes.
+     */
+    private final class CanvasNodesRegistrationCommand extends AbstractCanvasNodeRegistrationCommand {
 
-            }
-
+        private CanvasNodesRegistrationCommand() {
+            super( treeWalkTraverseProcessor, null );
         }
-        return false;
-    }
 
-    private boolean isDockEdged( final Edge edge ) {
-        return edge.getContent() instanceof Dock;
-    }
+        @Override
+        protected String getShapeSetId( final AbstractCanvasHandler context ) {
+            return DrawCanvasCommand.this.getShapeSetId( context );
+        }
 
+        @Override
+        @SuppressWarnings( "unchecked" )
+        protected boolean registerCandidate( final AbstractCanvasHandler context ) {
+            context.register( getShapeSetId( context ), getCandidate() );
+            context.applyElementMutation( getCandidate(), MutationContext.STATIC );
+            return true;
+        }
+
+        @Override
+        public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
+            return DrawCanvasCommand.this.undo( context );
+        }
+    }
 }

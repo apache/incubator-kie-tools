@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,13 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.resize;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 public interface ResizeControl<C extends CanvasHandler, E extends Element> extends CanvasRegistationControl<C, E> {
 
+    CommandResult<CanvasViolation> resize( E element, double width, double height );
+
+    CommandResult<CanvasViolation> resize( E element, double x, double y, double width, double height );
 }

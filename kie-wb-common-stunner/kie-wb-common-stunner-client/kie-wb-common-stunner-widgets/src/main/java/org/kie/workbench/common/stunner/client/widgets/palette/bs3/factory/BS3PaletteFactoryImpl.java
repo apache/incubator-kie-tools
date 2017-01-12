@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.client.widgets.palette.AbstractPaletteWidgetFactory;
@@ -29,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.view.Pale
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -44,7 +44,7 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteWidgetFactory<Definiti
     @Inject
     public BS3PaletteFactoryImpl( final ShapeManager shapeManager,
                                   final SyncBeanManager beanManager,
-                                  final Instance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
+                                  final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
                                   final BS3PaletteWidget palette,
                                   final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent ) {
         super( shapeManager, beanManager, defaultPaletteDefinitionFactoryInstance, palette, buildCanvasShapeEvent );
@@ -68,7 +68,7 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteWidgetFactory<Definiti
 
     @Override
     protected void beforeBindPalette( final DefinitionSetPalette paletteDefinition,
-                                      final String shapeSetId) {
+                                      final String shapeSetId ) {
         super.beforeBindPalette( paletteDefinition, shapeSetId );
         final String defSetId = paletteDefinition.getDefinitionSetId();
         BS3PaletteViewFactory viewFactory = getViewFactory( defSetId );
@@ -86,5 +86,4 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteWidgetFactory<Definiti
         }
         return null;
     }
-
 }

@@ -15,28 +15,26 @@
 
 package org.kie.workbench.common.stunner.project.client.view;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-// TODO: Review this - Does not work. Results in the mainPanel div empty. Once done enable its usage on classes that uses this view.
 @Dependent
 @Templated
-public class ProjectScreenViewImpl implements ProjectScreenView {
+public class ProjectScreenViewImpl implements ProjectScreenView, IsElement {
 
-    private FlowPanel mainPanel;
     private FlowPanel loadingPanel;
     private FlowPanel widgetPanel;
 
     @Inject
-    public ProjectScreenViewImpl( @DataField FlowPanel mainPanel,
-                                  @DataField FlowPanel loadingPanel,
+    public ProjectScreenViewImpl( @DataField FlowPanel loadingPanel,
                                   @DataField FlowPanel widgetPanel ) {
-        this.mainPanel = mainPanel;
         this.loadingPanel = loadingPanel;
         this.widgetPanel = widgetPanel;
     }
@@ -64,6 +62,6 @@ public class ProjectScreenViewImpl implements ProjectScreenView {
 
     @Override
     public IsWidget asWidget() {
-        return mainPanel;
+        return ElementWrapperWidget.getWidget( this.getElement() );
     }
 }

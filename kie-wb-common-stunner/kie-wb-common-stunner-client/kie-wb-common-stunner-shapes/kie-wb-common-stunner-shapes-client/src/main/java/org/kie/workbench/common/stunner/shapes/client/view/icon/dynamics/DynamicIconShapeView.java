@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.shapes.client.view.icon.dynamics;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.shapes.client.view.BasicShapeView;
+import org.kie.workbench.common.stunner.shapes.client.view.BasicShapesSupportedEvents;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
 
 public class DynamicIconShapeView<T extends DynamicIconShapeView>
@@ -35,13 +36,14 @@ public class DynamicIconShapeView<T extends DynamicIconShapeView>
     public DynamicIconShapeView( final Icons icon,
                                  final double width,
                                  final double height ) {
-        super( buildIcon( new MultiPath(),
-                icon,
-                width,
-                height,
-                BLACK,
-                BLACK,
-                STROKE_WIDTH ) );
+        super( BasicShapesSupportedEvents.ALL_DESKTOP_EVENT_TYPES,
+                buildIcon( new MultiPath(),
+                        icon,
+                        width,
+                        height,
+                        BLACK,
+                        BLACK,
+                        STROKE_WIDTH ) );
         this.icon = icon;
         this.width = width;
         this.height = height;
@@ -55,6 +57,7 @@ public class DynamicIconShapeView<T extends DynamicIconShapeView>
         height = 0;
     }
 
+    @SuppressWarnings( "unchecked" )
     public T setIcon( final Icons icon ) {
         this.icon = icon;
         updateIcon();
@@ -62,6 +65,7 @@ public class DynamicIconShapeView<T extends DynamicIconShapeView>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setSize( final double width,
                       final double height ) {
         this.width = width;

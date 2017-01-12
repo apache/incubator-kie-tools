@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.morph.PropertyMorphDefinition;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -50,7 +50,6 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
             final String definitionId = ids[ 0 ];
             final String baseId = ids[ 1 ];
             return getMorphDefinitions( definitionId, baseId );
-
         }
         return null;
     }
@@ -63,12 +62,9 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
                 if ( morphDefinition.accepts( id ) ||
                         ( null != baseId && morphDefinition.accepts( baseId ) ) ) {
                     result.add( morphDefinition );
-
                 }
-
             }
             return result;
-
         }
         return null;
     }
@@ -80,7 +76,6 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
             final String definitionId = ids[ 0 ];
             final String baseId = ids[ 1 ];
             return getMorphProperties( definitionId, baseId );
-
         }
         return null;
     }
@@ -100,14 +95,10 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
                             propertyMorphDefinition.getMorphProperties( definitionId ) : null;
                     if ( null != baseMorphProperties ) {
                         addAll( result, baseMorphProperties );
-
                     }
-
                 }
-
             }
             return result;
-
         }
         return null;
     }
@@ -134,14 +125,10 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
                     if ( null != baseId ) {
                         final Iterable<String> t2 = morphDefinition.getTargets( baseId );
                         addAll( result, t2 );
-
                     }
-
                 }
-
             }
             return result;
-
         }
         return null;
     }
@@ -152,28 +139,22 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
                         final String targetId ) {
         if ( null == source ) {
             throw new IllegalArgumentException( "Cannot morph from unspecified source." );
-
         }
         if ( null == morphDefinition ) {
             throw new IllegalArgumentException( "Cannot morph from unspecified Morph Definition." );
-
         }
         if ( null == targetId ) {
             throw new IllegalArgumentException( "Cannot morph to unspecified target." );
-
         }
         final T target = factoryManager.newDefinition( targetId );
         if ( null == target ) {
             throw new RuntimeException( "Morph failed. Cannot build a Definition instance for [" + targetId + "]" );
-
         }
         return doMerge( source, morphDefinition, target );
-
     }
 
     protected <T> String[] getDefinitionIds( final T definition ) {
         return definitionUtils.getDefinitionIds( definition );
-
     }
 
     protected DefinitionManager getDefinitionManager() {
@@ -202,5 +183,4 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
     protected boolean hasMorphDefinitions() {
         return !morphDefinitions.isEmpty();
     }
-
 }

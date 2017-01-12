@@ -17,13 +17,12 @@
 package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.lienzo.util.LienzoPaths;
 
 /**
  * The lienzo view implementation for the Rectangle shape.
- *
+ * <p>
  * TODO: Disabling for now the resize for rectangles when they're using a corner radius value different
  * from zero - ARC resize is not implemented yet on lienzo side, and the corners are built using ARCs.
  * See <a>org.kie.workbench.common.stunner.lienzo.util.LienzoPaths#rectangle</a>.
@@ -36,7 +35,9 @@ public class RectangleView extends BasicShapeView<RectangleView>
     public RectangleView( final double width,
                           final double height,
                           final double corner ) {
-        super( create( new MultiPath(), width, height, corner ) );
+        super( corner == 0 ? BasicShapesSupportedEvents.ALL_DESKTOP_EVENT_TYPES :
+                        BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+                create( new MultiPath(), width, height, corner ) );
         super.setResizable( corner == 0 );
         this.corner_radius = corner;
     }
@@ -49,12 +50,6 @@ public class RectangleView extends BasicShapeView<RectangleView>
         refresh();
         return this;
 
-    }
-
-
-    @Override
-    public WiresShape setResizable( boolean resizable ) {
-        return super.setResizable( corner_radius == 0 && resizable );
     }
 
     /**

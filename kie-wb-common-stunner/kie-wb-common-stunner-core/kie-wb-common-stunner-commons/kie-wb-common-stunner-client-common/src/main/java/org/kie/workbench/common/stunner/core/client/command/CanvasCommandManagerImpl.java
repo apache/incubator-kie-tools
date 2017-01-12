@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,36 +21,43 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasC
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.command.*;
-import org.kie.workbench.common.stunner.core.command.delegate.DelegateCommandManager;
+import org.kie.workbench.common.stunner.core.command.impl.CommandManagerImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
-class CanvasCommandManagerImpl
+/**
+ * The default canvas command manager implementation.
+ * It operates with instances of type <code>CanvasCommand</code> and throw different context events.
+ */
+@Dependent
+public class CanvasCommandManagerImpl
         extends DelegateCommandManager<AbstractCanvasHandler, CanvasViolation>
         implements
         CanvasCommandManager<AbstractCanvasHandler>,
-        HasCommandManagerListener<CommandManagerListener<AbstractCanvasHandler, CanvasViolation>> {
+        HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> {
 
     private final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent;
     private final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent;
     private final Event<CanvasUndoCommandExecutedEvent> canvasUndoCommandExecutedEvent;
 
     private final CommandManager<AbstractCanvasHandler, CanvasViolation> commandManager;
-    private CommandManagerListener<AbstractCanvasHandler, CanvasViolation> listener;
+    private CommandListener<AbstractCanvasHandler, CanvasViolation> listener;
 
-    CanvasCommandManagerImpl() {
-        this( null, null, null, null );
+    protected CanvasCommandManagerImpl() {
+        this( null, null, null );
     }
 
-    CanvasCommandManagerImpl( final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent,
-                              final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent,
-                              final Event<CanvasUndoCommandExecutedEvent> canvasUndoCommandExecutedEvent,
-                              final CommandManagerFactory commandManagerFactory ) {
+    @Inject
+    public CanvasCommandManagerImpl( final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent,
+                                     final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent,
+                                     final Event<CanvasUndoCommandExecutedEvent> canvasUndoCommandExecutedEvent ) {
         this.isCanvasCommandAllowedEvent = isCanvasCommandAllowedEvent;
         this.canvasCommandExecutedEvent = canvasCommandExecutedEvent;
         this.canvasUndoCommandExecutedEvent = canvasUndoCommandExecutedEvent;
-        this.commandManager = commandManagerFactory.newCommandManager();
+        this.commandManager = new CommandManagerImpl<>();
         this.listener = null;
     }
 
@@ -108,14 +115,13 @@ class CanvasCommandManagerImpl
     }
 
     @Override
-    public void setCommandManagerListener( final CommandManagerListener<AbstractCanvasHandler, CanvasViolation> listener ) {
+    public void setCommandListener( final CommandListener<AbstractCanvasHandler, CanvasViolation> listener ) {
         this.listener = listener;
     }
 
     private void draw( final AbstractCanvasHandler context ) {
         context.getCanvas().draw();
     }
-
 }
 
 

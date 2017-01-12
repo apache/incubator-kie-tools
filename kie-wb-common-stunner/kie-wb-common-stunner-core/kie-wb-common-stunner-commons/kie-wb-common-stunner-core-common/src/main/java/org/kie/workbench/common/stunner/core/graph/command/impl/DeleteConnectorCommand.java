@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,24 +41,25 @@ public final class DeleteConnectorCommand extends AbstractGraphCompositeCommand 
                 edgeUUID );
     }
 
-    public DeleteConnectorCommand( Edge<? extends View, Node> edge ) {
+    public DeleteConnectorCommand( final Edge<? extends View, Node> edge ) {
         this( edge.getUUID() );
         this.edge = edge;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    protected void initialize( final GraphCommandExecutionContext context ) {
+    protected DeleteConnectorCommand initialize( final GraphCommandExecutionContext context ) {
         super.initialize( context );
         final Edge<? extends ViewConnector, Node> edge = getCandidateEdge( context );
         final Node<View<?>, Edge> targetNode = edge.getTargetNode();
         final Node<View<?>, Edge> sourceNode = edge.getSourceNode();
         if ( null != sourceNode ) {
-            commands.add( new SetConnectionSourceNodeCommand( null, edge, 0 ) );
+            commands.add( new SetConnectionSourceNodeCommand( null, edge ) );
         }
         if ( null != targetNode ) {
-            commands.add( new SetConnectionTargetNodeCommand( null, edge, 0 ) );
+            commands.add( new SetConnectionTargetNodeCommand( null, edge ) );
         }
+        return this;
     }
 
     @Override
@@ -74,7 +75,7 @@ public final class DeleteConnectorCommand extends AbstractGraphCompositeCommand 
     @Override
     public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
         getMutableIndex( context ).addEdge( edge );
-        final CommandResult<RuleViolation> result = super.undo( context );
+        final CommandResult<RuleViolation> result = super.undo( context, true );
         if ( CommandUtils.isError( result ) ) {
             getMutableIndex( context ).removeEdge( edge );
         }
@@ -95,12 +96,11 @@ public final class DeleteConnectorCommand extends AbstractGraphCompositeCommand 
 
     @Override
     public String toString() {
-        return "DeleteEdgeCommand [edge=" + edgeUUID + "]";
+        return getClass().getName() + "[edge=" + edgeUUID + "]";
     }
 
     @Override
     protected boolean delegateRulesContextToChildren() {
         return true;
     }
-
 }

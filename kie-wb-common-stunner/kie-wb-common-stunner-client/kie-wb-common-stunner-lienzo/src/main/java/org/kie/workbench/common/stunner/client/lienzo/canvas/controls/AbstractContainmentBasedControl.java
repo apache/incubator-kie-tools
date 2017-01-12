@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -94,7 +95,6 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
             logResults( "isAllow", command, violations );
         }
         return isAllow;
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -107,13 +107,22 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
         final boolean isSameParent = isSameParent( parent, dockEdge );
         boolean isAccept = true;
         if ( !isSameParent ) {
+            CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> builder = null;
             // Remove current relationship.
-            if ( null != dockEdge ) {
-                // TODO: Check command results
-                CommandResult<CanvasViolation> result = canvasCommandManager.execute( canvasHandler, getDeleteEdgeCommand( dockEdge.getSourceNode(), child ) );
+            if ( null != dockEdge && null != dockEdge.getSourceNode() ) {
+                builder = new CompositeCommandImpl
+                        .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+                        .reverse()
+                        .addCommand( getDeleteEdgeCommand( dockEdge.getSourceNode(), child ) );
             }
             // Add a new relationship.
-            final Command<AbstractCanvasHandler, CanvasViolation> command = getAddEdgeCommand( parent, child );
+            final Command<AbstractCanvasHandler, CanvasViolation> c = getAddEdgeCommand( parent, child );
+            final Command<AbstractCanvasHandler, CanvasViolation> command =
+                    null == builder ?
+                            c :
+                            builder
+                                    .addCommand( c )
+                                    .build();
             final CommandResult<CanvasViolation> violations = canvasCommandManager.execute( canvasHandler, command );
             isAccept = isAccept( violations );
             logResults( "isAccept", command, violations );
@@ -121,7 +130,6 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
             log( Level.FINE, "isAccept = TRUE" );
         }
         return isAccept;
-
     }
 
     protected boolean isAccept( final WiresContainer wiresContainer,
@@ -147,9 +155,7 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
             if ( null != sourceNode ) {
                 final String parentUUID = null != parent ? parent.getUUID() : canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
                 return null != parentUUID && sourceNode.getUUID().equals( parentUUID );
-
             }
-
         }
         return parent == null;
     }
@@ -163,7 +169,6 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
                     if ( isEdgeAccepted( edge ) ) {
                         return edge;
                     }
-
                 }
             }
         }
@@ -171,8 +176,9 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
     }
 
     private boolean isWiresShape( final WiresContainer wiresShape ) {
-        return isWiresLayer( wiresShape ) || ( null != wiresShape.getContainer().getUserData() &&
-                wiresShape.getContainer().getUserData().equals( WiresCanvas.WIRES_CANVAS_GROUP_ID ) );
+        return isWiresLayer( wiresShape ) ||
+                ( null != wiresShape && null != wiresShape.getContainer().getUserData() &&
+                        wiresShape.getContainer().getUserData().equals( WiresCanvas.WIRES_CANVAS_GROUP_ID ) );
     }
 
     private boolean isWiresLayer( final WiresContainer wiresShape ) {
@@ -195,9 +201,7 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
                 log( Level.FINE, "*************** Command = { " + command.toString() + " } " );
                 log( Level.FINE, "*************** Violations = { " + violations.getMessage() + " } " );
             }
-
         }
-
     }
 
     private void log( final Level level, final String message ) {
@@ -205,5 +209,4 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
             LOGGER.log( level, message );
         }
     }
-
 }

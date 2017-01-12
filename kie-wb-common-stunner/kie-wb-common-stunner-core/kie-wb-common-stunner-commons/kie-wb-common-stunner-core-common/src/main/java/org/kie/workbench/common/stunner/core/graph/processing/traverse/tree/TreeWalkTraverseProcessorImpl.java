@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,16 +53,23 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
 
     @Override
     public void traverse( final Graph graph,
+                          final Node node,
                           final TreeTraverseCallback<Graph, Node, Edge> callback ) {
         this.graph = graph;
         this.callback = callback;
         processesNodes.clear();
         processesEdges.clear();
-        startTraverse();
+        startTraverse( node );
     }
 
-    private void startTraverse() {
-        startGraphTraversal();
+    @Override
+    public void traverse( final Graph graph,
+                          final TreeTraverseCallback<Graph, Node, Edge> callback ) {
+        this.traverse( graph, null, callback );
+    }
+
+    private void startTraverse( final Node startNode ) {
+        startGraphTraversal( startNode );
         endGraphTraversal();
     }
 
@@ -74,14 +81,18 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
         this.processesNodes.clear();
     }
 
-    private void startGraphTraversal() {
+    private void startGraphTraversal( final Node startNode ) {
         assert graph != null && callback != null;
         doStartGraphTraversal();
-        Collection<Node> startingNodes = getStartingNodes( graph );
-        if ( !startingNodes.isEmpty() ) {
-            for ( Node node : startingNodes ) {
-                startNodeTraversal( node );
+        if ( null == startNode ) {
+            final Collection<Node> startingNodes = getStartingNodes( graph );
+            if ( !startingNodes.isEmpty() ) {
+                for ( Node node : startingNodes ) {
+                    startNodeTraversal( node );
+                }
             }
+        } else {
+            startNodeTraversal( startNode );
         }
     }
 
@@ -165,17 +176,12 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
                 for ( final Edge edge : inEdges ) {
                     if ( edge.getContent() instanceof View ) {
                         return false;
-
                     }
-
                 }
                 return true;
-
             }
             return false;
-
         }
         return true;
     }
-
 }

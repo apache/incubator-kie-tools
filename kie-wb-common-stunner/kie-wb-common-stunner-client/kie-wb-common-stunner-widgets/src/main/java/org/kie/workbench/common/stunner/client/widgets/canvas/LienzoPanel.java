@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyDow
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyPressEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyUpEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseUpEvent;
 import org.uberfire.client.mvp.UberView;
 
 import javax.enterprise.context.Dependent;
@@ -34,12 +36,13 @@ public class LienzoPanel implements IsWidget {
     public interface View extends UberView<LienzoPanel> {
 
         void destroy();
-
     }
 
-    Event<KeyPressEvent> keyPressEvent;
-    Event<KeyDownEvent> keyDownEvent;
-    Event<KeyUpEvent> keyUpEvent;
+    private final Event<KeyPressEvent> keyPressEvent;
+    private final Event<KeyDownEvent> keyDownEvent;
+    private final Event<KeyUpEvent> keyUpEvent;
+    private final Event<CanvasMouseDownEvent> mouseDownEvent;
+    private final Event<CanvasMouseUpEvent> mouseUpEvent;
     View view;
 
     private boolean listening;
@@ -47,10 +50,14 @@ public class LienzoPanel implements IsWidget {
     @Inject
     public LienzoPanel( final Event<KeyPressEvent> keyPressEvent,
                         final Event<KeyDownEvent> keyDownEvent,
-                        final Event<KeyUpEvent> keyUpEvent ) {
+                        final Event<KeyUpEvent> keyUpEvent,
+                        final Event<CanvasMouseDownEvent> mouseDownEvent,
+                        final Event<CanvasMouseUpEvent> mouseUpEvent ) {
         this.keyPressEvent = keyPressEvent;
         this.keyDownEvent = keyDownEvent;
         this.keyUpEvent = keyUpEvent;
+        this.mouseDownEvent = mouseDownEvent;
+        this.mouseUpEvent = mouseUpEvent;
         this.listening = false;
     }
 
@@ -64,12 +71,23 @@ public class LienzoPanel implements IsWidget {
                       final int padding ) {
         view = new LienzoPanelView( width + padding, height + padding );
         view.init( this );
-
     }
 
     public void destroy() {
         this.listening = false;
         view.destroy();
+    }
+
+    void onMouseDown() {
+        if ( listening ) {
+            mouseDownEvent.fire( new CanvasMouseDownEvent() );
+        }
+    }
+
+    void onMouseUp() {
+        if ( listening ) {
+            mouseUpEvent.fire( new CanvasMouseUpEvent() );
+        }
     }
 
     void onMouseOver() {
@@ -85,11 +103,8 @@ public class LienzoPanel implements IsWidget {
             final KeyboardEvent.Key key = getKey( unicodeChar );
             if ( null != key ) {
                 keyPressEvent.fire( new KeyPressEvent( key ) );
-
             }
-
         }
-
     }
 
     void onKeyDown( final int unicodeChar ) {
@@ -97,11 +112,8 @@ public class LienzoPanel implements IsWidget {
             final KeyboardEvent.Key key = getKey( unicodeChar );
             if ( null != key ) {
                 keyDownEvent.fire( new KeyDownEvent( key ) );
-
             }
-
         }
-
     }
 
     void onKeyUp( final int unicodeChar ) {
@@ -109,11 +121,8 @@ public class LienzoPanel implements IsWidget {
             final KeyboardEvent.Key key = getKey( unicodeChar );
             if ( null != key ) {
                 keyUpEvent.fire( new KeyUpEvent( key ) );
-
             }
-
         }
-
     }
 
     private KeyboardEvent.Key getKey( final int unicodeChar ) {
@@ -122,12 +131,8 @@ public class LienzoPanel implements IsWidget {
             final int c = key.getUnicharCode();
             if ( c == unicodeChar ) {
                 return key;
-
             }
-
         }
         return null;
-
     }
-
 }

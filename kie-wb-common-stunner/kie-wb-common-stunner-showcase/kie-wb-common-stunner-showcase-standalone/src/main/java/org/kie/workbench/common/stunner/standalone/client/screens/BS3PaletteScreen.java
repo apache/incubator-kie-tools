@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -111,7 +112,6 @@ public class BS3PaletteScreen {
         } else {
             log( Level.INFO, "Palette not built as no session present or it is already open." );
         }
-
     }
 
     private void close() {
@@ -119,7 +119,6 @@ public class BS3PaletteScreen {
         if ( null != paletteWidget ) {
             paletteWidget.unbind();
             log( Level.INFO, "Palette unbind." );
-
         }
         this.sessionScreenView.setScreenViewBgColor( EMPTY_VIEW_BG_COLOR );
         this.session = null;
@@ -148,7 +147,6 @@ public class BS3PaletteScreen {
     void onCanvasSessionOpened( @Observes SessionOpenedEvent sessionOpenedEvent ) {
         checkNotNull( "sessionOpenedEvent", sessionOpenedEvent );
         doOpenSession( sessionOpenedEvent.getSession() );
-
     }
 
     void onCanvasSessionDisposed( @Observes SessionDisposedEvent sessionDisposedEvent ) {
@@ -157,7 +155,7 @@ public class BS3PaletteScreen {
         doDisposeSession();
     }
 
-    void onSessionDiagramOpenedEvent( @Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent  ) {
+    void onSessionDiagramOpenedEvent( @Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent ) {
         checkNotNull( "sessionDiagramOpenedEvent", sessionDiagramOpenedEvent );
         if ( null != getCanvas() && getCanvas().equals( sessionDiagramOpenedEvent.getSession().getCanvas() ) ) {
             // Force to reload current session, for example, when a new diagram is just created.
@@ -179,6 +177,8 @@ public class BS3PaletteScreen {
 
     private boolean isAlreadyOpen( final Diagram diagram ) {
         return null != paletteWidget
+                && null != paletteWidget.getDefinition()
+                && null != paletteWidget.getDefinition().getDefinitionSetId()
                 && paletteWidget.getDefinition().getDefinitionSetId().equals( diagram.getMetadata().getDefinitionSetId() );
     }
 
@@ -196,5 +196,4 @@ public class BS3PaletteScreen {
             LOGGER.log( level, message );
         }
     }
-
 }

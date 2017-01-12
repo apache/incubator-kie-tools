@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,22 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.general;
 
-import javax.validation.constraints.NotNull;
-
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 
+import javax.validation.constraints.NotNull;
+
 @Portable
 @Bindable
-@NameProperty
+@Property( meta = PropertyMetaTypes.NAME )
 public class Name implements BPMNProperty {
 
     @Caption
@@ -93,5 +95,4 @@ public class Name implements BPMNProperty {
     public void setValue( String value ) {
         this.value = value;
     }
-
 }

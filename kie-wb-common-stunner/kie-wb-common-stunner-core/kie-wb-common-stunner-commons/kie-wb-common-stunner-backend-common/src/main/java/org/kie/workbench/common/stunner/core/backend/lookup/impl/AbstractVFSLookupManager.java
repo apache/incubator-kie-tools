@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,19 +60,22 @@ public abstract class AbstractVFSLookupManager<I, T, R extends LookupManager.Loo
                                 checkNotNull( "attrs", attrs );
                                 final org.uberfire.backend.vfs.Path file = org.uberfire.backend.server.util.Paths.convert( _file );
                                 if ( acceptsPath( file ) ) {
-                                    // portable diagram representation.
-                                    I item = getItemByPath( file );
+                                    I item = null;
+                                    try {
+                                        // portable diagram representation.
+                                        item = getItemByPath( file );
+                                    } catch ( final Exception e ) {
+                                        LOG.error( "Cannot load diagram for path [" + file + "]", e );
+                                    }
                                     if ( null != item ) {
                                         result.add( item );
                                     }
-
                                 }
                                 return FileVisitResult.CONTINUE;
                             }
                         } );
             }
             return result;
-
         } catch ( Exception e ) {
             LOG.error( "Error while loading from VFS the item with path [" + root + "].", e );
         }

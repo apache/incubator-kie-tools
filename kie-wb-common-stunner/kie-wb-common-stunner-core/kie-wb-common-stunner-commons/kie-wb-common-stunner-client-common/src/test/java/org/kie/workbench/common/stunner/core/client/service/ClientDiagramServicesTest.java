@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +24,7 @@ import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
@@ -38,25 +40,33 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith( MockitoJUnitRunner.class )
 public class ClientDiagramServicesTest {
 
-    @Mock ShapeManager shapeManager;
-    @Mock DiagramService diagramService;
-    @Mock DiagramLookupService diagramLookupService;
-    @Mock Path path;
-    @Mock Diagram diagram;
-    @Mock Metadata metadata;
+    @Mock
+    ShapeManager shapeManager;
+    @Mock
+    DiagramService diagramService;
+    @Mock
+    DiagramLookupService diagramLookupService;
+    @Mock
+    Path path;
+    @Mock
+    Diagram diagram;
+    @Mock
+    Metadata metadata;
     private Caller<DiagramService> diagramServiceCaller;
     private Caller<DiagramLookupService> diagramLookupServiceCaller;
 
     private ClientDiagramService tested;
 
     @Before
+    @SuppressWarnings( "unchecked" )
     public void setup() throws Exception {
         when( diagram.getMetadata() ).thenReturn( metadata );
-        when( metadata.getDefinitionSetId() ).thenReturn( "ds1 ");
-        when( metadata.getShapeSetId() ).thenReturn( "ss1 ");
+        when( metadata.getDefinitionSetId() ).thenReturn( "ds1 " );
+        when( metadata.getShapeSetId() ).thenReturn( "ss1 " );
+        when( diagramService.saveOrUpdate( any( Diagram.class ) ) ).thenReturn( metadata );
         this.diagramServiceCaller = new CallerMock<DiagramService>( diagramService );
         this.diagramLookupServiceCaller = new CallerMock<DiagramLookupService>( diagramLookupService );
         this.tested = new ClientDiagramService( shapeManager, diagramServiceCaller, diagramLookupServiceCaller );
@@ -77,7 +87,7 @@ public class ClientDiagramServicesTest {
     @Test
     @SuppressWarnings( "unchecked" )
     public void testAdd() {
-        ServiceCallback<Diagram> callback = mock( ServiceCallback.class );
+        ServiceCallback<Diagram<Graph, Metadata>> callback = mock( ServiceCallback.class );
         tested.add( diagram, callback );
         verify( diagramService, times( 1 ) ).saveOrUpdate( eq( diagram ) );
         verify( callback, times( 1 ) ).onSuccess( any( Diagram.class ) );
@@ -87,7 +97,7 @@ public class ClientDiagramServicesTest {
     @Test
     @SuppressWarnings( "unchecked" )
     public void testSaveOrUpdate() {
-        ServiceCallback<Diagram> callback = mock( ServiceCallback.class );
+        ServiceCallback<Diagram<Graph, Metadata>> callback = mock( ServiceCallback.class );
         tested.saveOrUpdate( diagram, callback );
         verify( diagramService, times( 1 ) ).saveOrUpdate( eq( diagram ) );
         verify( callback, times( 1 ) ).onSuccess( any( Diagram.class ) );
@@ -97,7 +107,7 @@ public class ClientDiagramServicesTest {
     @Test
     @SuppressWarnings( "unchecked" )
     public void testGetByPath() {
-        ServiceCallback<Diagram> callback = mock( ServiceCallback.class );
+        ServiceCallback<Diagram<Graph, Metadata>> callback = mock( ServiceCallback.class );
         tested.getByPath( path, callback );
         verify( diagramService, times( 1 ) ).getDiagramByPath( eq( path ) );
         verify( callback, times( 1 ) ).onSuccess( any( Diagram.class ) );
@@ -123,12 +133,11 @@ public class ClientDiagramServicesTest {
         when( shapeSet.getId() ).thenReturn( ssid );
         when( shapeManager.getDefaultShapeSet( anyString() ) ).thenReturn( shapeSet );
         when( metadata.getShapeSetId() ).thenReturn( null );
-        ServiceCallback<Diagram> callback = mock( ServiceCallback.class );
-        ServiceCallback<Path> callback1 = mock( ServiceCallback.class );
+        ServiceCallback<Diagram<Graph, Metadata>> callback = mock( ServiceCallback.class );
         when( diagramService.getDiagramByPath( eq( path ) ) ).thenReturn( diagram );
         tested.add( diagram, callback );
         tested.saveOrUpdate( diagram, callback );
         tested.getByPath( path, callback );
-        verify( metadata, times( 3 ) ).setShapeSetId( eq( ssid) );
+        verify( metadata, times( 3 ) ).setShapeSetId( eq( ssid ) );
     }
 }

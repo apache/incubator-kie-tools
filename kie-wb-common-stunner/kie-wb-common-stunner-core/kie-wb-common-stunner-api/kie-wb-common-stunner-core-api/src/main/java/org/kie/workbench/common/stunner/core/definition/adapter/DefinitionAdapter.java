@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 
 import java.util.Set;
@@ -29,14 +30,6 @@ public interface DefinitionAdapter<T> extends PriorityAdapter {
      * Returns the definition's identifier for a given pojo.
      */
     String getId( T pojo );
-
-    /**
-     * Returns the definition's name property for a given pojo.
-     * Name is a build-in property supported by different components and widgets, it's a good idea returning your
-     * pojo name property instance here so you can use all the different features for it.
-     * If no name for the definition, can return null.
-     */
-    Object getNameProperty( T pojo );
 
     /**
      * Returns the definition's category for a given pojo.
@@ -71,8 +64,14 @@ public interface DefinitionAdapter<T> extends PriorityAdapter {
     Set<?> getProperties( T pojo );
 
     /**
+     * Returns the property bean instance for the given meta-property type..
+     * Stunner provides some built-in features that could require model updates,
+     * so this meta-properties are used for binding these features with the property beans.
+     */
+    Object getMetaProperty( PropertyMetaTypes metaType, T pojo );
+
+    /**
      * Returns the definition's graph element factory class for a given pojo.
      */
     Class<? extends ElementFactory> getGraphFactoryType( T pojo );
-
 }

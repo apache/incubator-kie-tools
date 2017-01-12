@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,15 @@ package org.kie.workbench.common.stunner.basicset.definition.property;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 
 @Portable
 @Bindable
-@NameProperty
+@Property( meta = PropertyMetaTypes.NAME )
 public class Name {
 
     @Caption
@@ -87,5 +89,4 @@ public class Name {
     public void setValue( String value ) {
         this.value = value;
     }
-
 }

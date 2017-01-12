@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.*;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -51,5 +51,4 @@ public class ClientBindableAdapterFactory implements BindableAdapterFactory {
     public BindablePropertySetAdapter<Object> newBindablePropertySetAdapter() {
         return new ClientBindablePropertySetAdapter();
     }
-
 }

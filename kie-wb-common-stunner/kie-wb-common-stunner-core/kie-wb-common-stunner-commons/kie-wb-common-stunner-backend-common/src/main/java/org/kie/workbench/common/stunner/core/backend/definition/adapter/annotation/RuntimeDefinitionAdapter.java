@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,9 +26,9 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.NameProperty;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,12 +73,15 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public Object getNameProperty( T pojo ) {
+    public Object getMetaProperty( PropertyMetaTypes metaType, T pojo ) {
         Set<?> properties = getProperties( pojo );
         if ( null != properties ) {
             return properties
                     .stream()
-                    .filter( property -> null != getClassAnnotation( property.getClass(), NameProperty.class ) )
+                    .filter( property -> {
+                        Property p = getClassAnnotation( property.getClass(), Property.class );
+                        return null != p && metaType.equals( p.meta() );
+                    } )
                     .findFirst()
                     .orElse( null );
         }
@@ -102,7 +106,6 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
             LOG.error( "Error obtaining annotated title for Definition with id " + getId( definition ) );
         }
         return null;
-
     }
 
     @Override
@@ -113,7 +116,6 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
             LOG.error( "Error obtaining annotated description for Definition with id " + getId( definition ) );
         }
         return null;
-
     }
 
     @Override
@@ -135,10 +137,8 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
                 try {
                     Object v = _getValue( field, PropertySet.class, definition );
                     result.add( v );
-
                 } catch ( Exception e ) {
                     LOG.error( "Error obtaining annotated property sets for Definition with id " + getId( definition ) );
-
                 }
             } );
             return result;
@@ -184,13 +184,11 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     public Class<? extends ElementFactory> getGraphFactoryType( final T definition ) {
         Definition annotation = getDefinitionAnnotation( definition.getClass() );
         return null != annotation ? annotation.graphFactory() : null;
-
     }
 
     public static Class<? extends ElementFactory> getGraphFactory( final Class<?> type ) {
         Definition annotation = getDefinitionAnnotation( type );
         return null != annotation ? annotation.graphFactory() : null;
-
     }
 
     protected static Definition getDefinitionAnnotation( Class<?> type ) {
@@ -236,5 +234,4 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
         }
         return false;
     }
-
 }

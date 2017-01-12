@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.connectio
 import com.ait.lienzo.client.core.shape.wires.*;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
@@ -85,7 +86,7 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         final boolean eq = eq( source, connector.getSourceNode() );
         if ( !eq ) {
             final CommandResult<CanvasViolation> violations =
-                    canvasCommandManager.allow( canvasHandler, canvasCommandFactory.SET_SOURCE_NODE( source, connector, magnet ) );
+                    canvasCommandManager.allow( canvasHandler, canvasCommandFactory.setSourceNode( source, connector, magnet ) );
             final boolean accepts = isAccept( violations );
             highlight( source, accepts );
             return accepts;
@@ -104,7 +105,7 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         final boolean eq = eq( target, connector.getTargetNode() );
         if ( !eq ) {
             final CommandResult<CanvasViolation> violations =
-                    canvasCommandManager.allow( canvasHandler, canvasCommandFactory.SET_TARGET_NODE( target, connector, magnet ) );
+                    canvasCommandManager.allow( canvasHandler, canvasCommandFactory.setTargetNode( target, connector, magnet ) );
             final boolean accepts = isAccept( violations );
             highlight( target, accepts );
             return accepts;
@@ -124,7 +125,7 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         if ( !eq ) {
             ensureUnHighLight();
             final CommandResult<CanvasViolation> violations =
-                    canvasCommandManager.execute( canvasHandler, canvasCommandFactory.SET_SOURCE_NODE( source, connector, magnet ) );
+                    canvasCommandManager.execute( canvasHandler, canvasCommandFactory.setSourceNode( source, connector, magnet ) );
             return isAccept( violations );
         }
         return true;
@@ -142,7 +143,7 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         if ( !eq ) {
             ensureUnHighLight();
             final CommandResult<CanvasViolation> violations =
-                    canvasCommandManager.execute( canvasHandler, canvasCommandFactory.SET_TARGET_NODE( target, connector, magnet ) );
+                    canvasCommandManager.execute( canvasHandler, canvasCommandFactory.setTargetNode( target, connector, magnet ) );
             return isAccept( violations );
         }
         return true;
@@ -165,8 +166,8 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         public boolean acceptHead( final WiresConnection head,
                                    final WiresMagnet magnet ) {
             log( Level.FINE, "## Accept Head ##" );
-            final Edge edge = org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils.getEdge( canvasHandler, head.getConnector() );
-            final Node sourceNode = org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils.getNode( canvasHandler, magnet );
+            final Edge edge = WiresUtils.getEdge( canvasHandler, head.getConnector() );
+            final Node sourceNode = WiresUtils.getNode( canvasHandler, magnet );
             final int mIndex = getMagnetIndex( magnet );
             final String sourceUUID = sourceNode != null ? sourceNode.getUUID() : null;
             final String message = "Executed SetConnectionSourceNodeCommand [source=" + sourceUUID + ", magnet=" + mIndex + "]";
@@ -181,8 +182,8 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
                                    final WiresMagnet magnet ) {
             log( Level.FINE, "## Accept tail ##" );
             final WiresConnection head = tail.getConnector().getHeadConnection();
-            final Edge edge = org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils.getEdge( canvasHandler, head.getConnector() );
-            final Node targetNode = org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils.getNode( canvasHandler, magnet );
+            final Edge edge = WiresUtils.getEdge( canvasHandler, head.getConnector() );
+            final Node targetNode = WiresUtils.getNode( canvasHandler, magnet );
             final int mIndex = getMagnetIndex( magnet );
             final String targetUUID = targetNode != null ? targetNode.getUUID() : null;
             final String message = "Executed SetConnectionTargetNodeCommand [target=" + targetUUID + ", magnet=" + mIndex + "]";
@@ -195,8 +196,8 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         public boolean headConnectionAllowed( final WiresConnection head,
                                               final WiresShape shape ) {
             log( Level.FINE, "## Allow Head ##" );
-            final Edge<View<?>, Node> edge = org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils.getEdge( canvasHandler, head.getConnector() );
-            final Node sourceNode = org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils.getNode( canvasHandler, shape );
+            final Edge<View<?>, Node> edge = WiresUtils.getEdge( canvasHandler, head.getConnector() );
+            final Node sourceNode = WiresUtils.getNode( canvasHandler, shape );
             final boolean b = allowSource( sourceNode, edge, 0 );
             final String nUUID = null != sourceNode ? sourceNode.getUUID() : "null";
             log( Level.FINE, "  Is head allowed [" + nUUID + "] = " + b );
@@ -208,8 +209,8 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         public boolean tailConnectionAllowed( final WiresConnection tail,
                                               final WiresShape shape ) {
             log( Level.FINE, "## Allow tail ##" );
-            final Edge<View<?>, Node> edge = org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils.getEdge( canvasHandler, tail.getConnector() );
-            final Node targetNode = org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils.getNode( canvasHandler, shape );
+            final Edge<View<?>, Node> edge = WiresUtils.getEdge( canvasHandler, tail.getConnector() );
+            final Node targetNode = WiresUtils.getNode( canvasHandler, shape );
             final boolean b = allowTarget( targetNode, edge, 0 );
             final String nUUID = null != targetNode ? targetNode.getUUID() : "null";
             log( Level.FINE, "  Is tail allowed [" + nUUID + "] = " + b );
@@ -228,7 +229,6 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
             }
             return -1;
         }
-
     };
 
     private boolean isAccept( final CommandResult<CanvasViolation> result ) {

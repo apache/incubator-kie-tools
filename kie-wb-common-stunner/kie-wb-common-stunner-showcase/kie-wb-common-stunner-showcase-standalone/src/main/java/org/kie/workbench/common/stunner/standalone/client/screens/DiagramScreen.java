@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +20,8 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenErrorView;
+import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenPanelView;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommandCallback;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.ToolbarFactory;
@@ -48,7 +51,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.lifecycle.*;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -65,6 +67,7 @@ import java.util.logging.Logger;
 
 import static java.util.logging.Level.FINE;
 
+// TODO: i18n.
 @Dependent
 @WorkbenchScreen( identifier = DiagramScreen.SCREEN_ID )
 public class DiagramScreen {
@@ -83,6 +86,8 @@ public class DiagramScreen {
     private final ToolbarFactory toolbars;
     private final ClientSessionUtils sessionUtils;
     private final MenuDevCommandsBuilder menuDevCommandsBuilder;
+    private final ScreenPanelView screenPanelView;
+    private final ScreenErrorView screenErrorView;
 
     private PlaceRequest placeRequest;
     private String title = "Diagram Screen";
@@ -100,7 +105,9 @@ public class DiagramScreen {
                           final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                           final ToolbarFactory toolbars,
                           final ClientSessionUtils sessionUtils,
-                          final MenuDevCommandsBuilder menuDevCommandsBuilder ) {
+                          final MenuDevCommandsBuilder menuDevCommandsBuilder,
+                          final ScreenPanelView screenPanelView,
+                          final ScreenErrorView screenErrorView ) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.clientDiagramServices = clientDiagramServices;
@@ -111,6 +118,8 @@ public class DiagramScreen {
         this.toolbars = toolbars;
         this.sessionUtils = sessionUtils;
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
+        this.screenPanelView = screenPanelView;
+        this.screenErrorView = screenErrorView;
     }
 
     @PostConstruct
@@ -119,9 +128,12 @@ public class DiagramScreen {
         // Create a new full control session.
         session = ( AbstractClientFullSession ) canvasSessionManager.newFullSession();
         // Initialize the session presenter.
-        clientSessionPresenter.initialize( session, 1400, 650 );
+        clientSessionPresenter
+                .setDisplayErrors( true )
+                .initialize( session, 1400, 650 );
         // Configure toolbar.
         this.toolbar = buildToolbar();
+        screenPanelView.setWidget( clientSessionPresenter.getView() );
         clientSessionPresenter.getView().setToolbar( toolbar.getView() );
         toolbar.initialize( session, new ToolbarCommandCallback<Object>() {
             @Override
@@ -130,7 +142,7 @@ public class DiagramScreen {
 
             @Override
             public void onError( final ClientRuntimeError error ) {
-                showError( error.toString() );
+                showError( error );
             }
         } );
     }
@@ -160,9 +172,7 @@ public class DiagramScreen {
             if ( null != diagram ) {
                 // Update screen title.
                 updateTitle( diagram.getMetadata().getTitle() );
-
             }
-
         };
         if ( isCreate ) {
             final String defSetId = placeRequest.getParameter( "defSetId", "" );
@@ -170,21 +180,18 @@ public class DiagramScreen {
             final String title = placeRequest.getParameter( "title", "" );
             // Create a new diagram.
             newDiagram( UUID.uuid(), title, defSetId, shapeSetd, callback );
-
         } else {
             // Load an existing diagram.
             load( name, callback );
-
         }
-
     }
 
     private Menus makeMenuBar() {
         final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> m =
                 MenuFactory
-                .newTopLevelMenu( "Save" )
-                .respondsWith( getSaveCommand() )
-                .endMenu();
+                        .newTopLevelMenu( "Save" )
+                        .respondsWith( getSaveCommand() )
+                        .endMenu();
         if ( menuDevCommandsBuilder.isEnabled() ) {
             m.newTopLevelMenu( menuDevCommandsBuilder.build() ).endMenu();
         }
@@ -204,18 +211,18 @@ public class DiagramScreen {
     }
 
     private void save() {
-        session.getCanvasValidationControl().validate( new CanvasValidatorCallback() {
+        session.getValidationControl().validate( new CanvasValidatorCallback() {
             @Override
             public void onSuccess() {
-                doSave( new ServiceCallback<Diagram>() {
+                doSave( new ServiceCallback<Diagram<Graph, Metadata>>() {
                     @Override
-                    public void onSuccess( Diagram item ) {
+                    public void onSuccess( Diagram<Graph, Metadata> item ) {
                         log( Level.INFO, "Save operation finished for diagram [" + item.getName() + "]." );
                     }
 
                     @Override
                     public void onError( ClientRuntimeError error ) {
-                        showError( error.toString() );
+                        showError( error );
                     }
                 } );
             }
@@ -228,7 +235,7 @@ public class DiagramScreen {
     }
 
     @SuppressWarnings( "unchecked" )
-    private void doSave( final ServiceCallback<Diagram> diagramServiceCallback ) {
+    private void doSave( final ServiceCallback<Diagram<Graph, Metadata>> diagramServiceCallback ) {
         // Update diagram's image data as thumbnail.
         final String thumbData = sessionUtils.canvasToImageData( session );
         final CanvasHandler canvasHandler = session.getCanvasHandler();
@@ -239,10 +246,10 @@ public class DiagramScreen {
     }
 
     private void newDiagram( final String uuid,
-                            final String title,
-                            final String definitionSetId,
-                            final String shapeSetId,
-                            final Command callback ) {
+                             final String title,
+                             final String definitionSetId,
+                             final String shapeSetId,
+                             final Command callback ) {
         final Metadata metadata = buildMetadata( definitionSetId, shapeSetId, title );
         clientFactoryServices.newDiagram( uuid, definitionSetId, metadata, new ServiceCallback<Diagram>() {
             @Override
@@ -255,11 +262,10 @@ public class DiagramScreen {
 
             @Override
             public void onError( final ClientRuntimeError error ) {
-                showError( error.toString() );
+                showError( error );
                 callback.execute();
             }
         } );
-
     }
 
     private Metadata buildMetadata( final String defSetId,
@@ -285,29 +291,30 @@ public class DiagramScreen {
 
             @Override
             public void onError( ClientRuntimeError error ) {
-                showError( error.toString() );
+                showError( error );
                 callback.execute();
             }
         } );
     }
 
     private void loadByPath( final Path path, final Command callback ) {
-        clientDiagramServices.getByPath( path, new ServiceCallback<Diagram>() {
+        clientDiagramServices.getByPath( path, new ServiceCallback<Diagram<Graph, Metadata>>() {
             @Override
-            public void onSuccess( final Diagram diagram ) {
+            public void onSuccess( final Diagram<Graph, Metadata> diagram ) {
                 open( diagram, callback );
             }
 
             @Override
             public void onError( final ClientRuntimeError error ) {
-                showError( error.toString() );
+                showError( error );
                 callback.execute();
             }
         } );
     }
 
     private void open( final Diagram diagram,
-                      final Command callback ) {
+                       final Command callback ) {
+        screenPanelView.setWidget( clientSessionPresenter.getView() );
         clientSessionPresenter.open( diagram, callback );
     }
 
@@ -315,7 +322,6 @@ public class DiagramScreen {
         // Change screen title.
         DiagramScreen.this.title = title;
         changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest, this.title ) );
-
     }
 
     @OnOpen
@@ -373,7 +379,7 @@ public class DiagramScreen {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return clientSessionPresenter.getView();
+        return screenPanelView.asWidget();
     }
 
     @WorkbenchContextId
@@ -381,13 +387,15 @@ public class DiagramScreen {
         return "stunnerDiagramScreenContext";
     }
 
-    protected void showError( String message ) {
-        log( Level.SEVERE, message );
+    private void showError( final ClientRuntimeError error ) {
+        screenErrorView.showError( error );
+        screenPanelView.setWidget( screenErrorView.asWidget() );
+        log( Level.SEVERE, error.toString() );
     }
 
     void onSessionErrorEvent( @Observes OnSessionErrorEvent errorEvent ) {
         if ( isSameSession( errorEvent.getSession() ) ) {
-            showError( errorEvent.getError().toString() );
+            showError( errorEvent.getError() );
             // TODO executeWithConfirm( "An error happened [" + errorEvent.getError() + "]. Do you want" +
             //         "to refresh the diagram (Last changes can be lost)? ", this::menu_refresh );
         }
@@ -398,5 +406,4 @@ public class DiagramScreen {
             LOGGER.log( level, message );
         }
     }
-
 }

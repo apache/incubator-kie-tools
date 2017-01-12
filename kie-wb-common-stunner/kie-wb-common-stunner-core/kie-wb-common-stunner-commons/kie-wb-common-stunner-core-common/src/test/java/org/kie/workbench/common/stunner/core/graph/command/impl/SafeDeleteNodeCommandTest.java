@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +23,6 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
@@ -63,9 +63,9 @@ public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
         edge = mockEdge( EDGE_UUID );
         graphNodes.add( node );
         graphNodes.add( node1 );
-        when( graphIndex.getNode( eq( UUID ) )).thenReturn( node );
-        when( graphIndex.getNode( eq( UUID ) )).thenReturn( node );
-        when( graphIndex.getEdge( eq( EDGE_UUID ) )).thenReturn( edge );
+        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( node );
+        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( node );
+        when( graphIndex.getEdge( eq( EDGE_UUID ) ) ).thenReturn( edge );
         when( node.getOutEdges() ).thenReturn( nodeOutEdges );
         when( node.getInEdges() ).thenReturn( nodeInEdges );
         when( node1.getOutEdges() ).thenReturn( nodeOutEdges1 );
@@ -98,15 +98,14 @@ public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
         List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull( commands );
-        assertTrue( 3 == commands.size() );
+        assertTrue( 2 == commands.size() );
         assertTrue( contains( commands, DeregisterNodeCommand.class ) );
-        assertTrue( contains( commands, DeleteConnectorCommand.class ) );
         assertTrue( contains( commands, SafeDeleteNodeCommand.class ) );
         assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( cardinalityRuleManager, times( 4 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 2 ) ).evaluate( any( Edge.class ), any( Node.class ),
+        verify( cardinalityRuleManager, times( 3 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
                 any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
-        verify( connectionRuleManager, times( 2 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
+        verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
         verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
         verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
     }
@@ -127,7 +126,7 @@ public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
 
     @SuppressWarnings( "unchecked" )
     private void initializeTheChildNode() {
-        Child edgeContent = mock ( Child.class );
+        Child edgeContent = mock( Child.class );
         when( edge.getContent() ).thenReturn( edgeContent );
         when( edge.getSourceNode() ).thenReturn( node );
         when( edge.getTargetNode() ).thenReturn( node1 );
@@ -139,5 +138,4 @@ public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
     private boolean contains( List commands, Class<?> clazz ) {
         return commands.stream().filter( command -> command.getClass().isAssignableFrom( clazz ) ).findFirst().isPresent();
     }
-
 }

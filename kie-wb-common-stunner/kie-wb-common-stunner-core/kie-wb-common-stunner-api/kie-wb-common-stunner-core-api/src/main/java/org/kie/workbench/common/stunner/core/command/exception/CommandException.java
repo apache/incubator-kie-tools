@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,15 +21,15 @@ import org.kie.workbench.common.stunner.core.command.Command;
 /**
  * Base exception type for runtime command errors.
  */
-public abstract class CommandException extends RuntimeException {
-    
+public class CommandException extends RuntimeException {
+
     private final Command<?, ?> command;
 
-    protected CommandException( final Command<?, ?> command ) {
+    public CommandException( final Command<?, ?> command ) {
         this.command = command;
     }
 
-    protected CommandException( final String message,
+    public CommandException( final String message,
                              final Command<?, ?> command ) {
         super( message );
         this.command = command;
@@ -36,7 +37,6 @@ public abstract class CommandException extends RuntimeException {
 
     @SuppressWarnings( "unchecked" )
     protected <T> T cast() {
-        return (T) command;
+        return ( T ) command;
     }
-
 }

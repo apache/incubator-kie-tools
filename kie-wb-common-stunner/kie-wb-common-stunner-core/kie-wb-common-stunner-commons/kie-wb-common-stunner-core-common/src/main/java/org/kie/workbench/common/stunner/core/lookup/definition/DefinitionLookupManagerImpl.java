@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package org.kie.workbench.common.stunner.core.lookup.definition;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.DefinitionRegistry;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -112,5 +112,4 @@ public class DefinitionLookupManagerImpl
         final Class<? extends ElementFactory> elemFactoryType = definitionAdapter.getGraphFactoryType( def );
         return DefinitionUtils.isNodeFactory( elemFactoryType, factoryManager.registry() );
     }
-
 }

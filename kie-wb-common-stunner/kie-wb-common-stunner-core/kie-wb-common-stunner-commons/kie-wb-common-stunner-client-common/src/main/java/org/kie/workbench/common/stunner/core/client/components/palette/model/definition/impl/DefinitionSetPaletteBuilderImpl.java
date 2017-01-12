@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -136,32 +136,23 @@ public class DefinitionSetPaletteBuilderImpl
                         public void onError( final ClientRuntimeError error ) {
                             callback.onError( error );
                         }
-
                     } );
-
                 }
-
             }
             if ( !categoryBuilders.isEmpty() ) {
                 final List<DefinitionPaletteCategory> categories = new LinkedList<>();
                 for ( final DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder builder :
                         categoryBuilders ) {
                     categories.add( builder.build() );
-
                 }
                 final DefinitionSetPaletteImpl definitionPalette = new DefinitionSetPaletteImpl( categories, defSetId );
                 callback.onSuccess( definitionPalette );
-
             } else {
                 callback.onError( new ClientRuntimeError( "No categories found." ) );
-
             }
-
         } else {
             callback.onError( new ClientRuntimeError( "Missing definition argument." ) );
-
         }
-
     }
 
     static final PaletteCategoryProvider CATEGORY_PROVIDER = new PaletteCategoryProvider() {
@@ -180,7 +171,6 @@ public class DefinitionSetPaletteBuilderImpl
         public String getDefinitionId( final String id ) {
             return null;
         }
-
     };
 
     static final PaletteMorphGroupProvider MORPH_GROUP_PROVIDER = new PaletteMorphGroupProvider() {
@@ -196,12 +186,10 @@ public class DefinitionSetPaletteBuilderImpl
                                       final Object definition ) {
             return morphBaseId;
         }
-
     };
 
     protected DefinitionManager getDefinitionManager() {
         return definitionUtils.getDefinitionManager();
-
     }
 
     @Override
@@ -215,5 +203,4 @@ public class DefinitionSetPaletteBuilderImpl
         this.paletteMorphGroupProvider = groupProvider;
         return this;
     }
-
 }

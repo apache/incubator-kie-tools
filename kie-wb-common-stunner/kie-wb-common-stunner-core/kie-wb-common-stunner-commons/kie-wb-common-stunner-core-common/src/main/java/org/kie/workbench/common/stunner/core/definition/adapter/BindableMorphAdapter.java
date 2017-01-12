@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -32,7 +33,6 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
     public BindableMorphAdapter( DefinitionUtils definitionUtils,
                                  FactoryManager factoryManager ) {
         super( definitionUtils, factoryManager );
-
     }
 
     protected abstract <T> T doMerge( S source, T result );
@@ -44,19 +44,18 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
                              final T result ) {
         if ( definitionUtils.isNonePolicy( morphDefinition ) ) {
             return result;
-
         }
         if ( definitionUtils.isDefaultPolicy( morphDefinition ) ) {
-            final Object nameProperty = getDefinitionManager().adapters().forDefinition().getNameProperty( source );
+            final Object nameProperty =
+                    getDefinitionManager().adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME, source );
             final Object namePropertyValue = getDefinitionManager().adapters().forProperty().getValue( nameProperty );
-            final Object targetNameProperty = getDefinitionManager().adapters().forDefinition().getNameProperty( result );
+            final Object targetNameProperty =
+                    getDefinitionManager().adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME, result );
             getDefinitionManager().adapters().forProperty().setValue( targetNameProperty, namePropertyValue );
             ;
             return result;
-
         }
         return doMerge( source, result );
-
     }
 
     @Override
@@ -85,7 +84,6 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
         final String dId = getDefinitionId( type );
         final String baseId = getBaseDefinitionId( type );
         return getTargets( type, dId, baseId );
-
     }
 
     @Override
@@ -104,15 +102,11 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
                 final String[] types = getTypes( type, s );
                 if ( null != types && types.length > 0 ) {
                     Collections.addAll( result, types );
-
                 } else {
                     result.add( s );
-
                 }
-
             }
             return result;
-
         }
         return null;
     }
@@ -123,7 +117,6 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
             return ( ( HasInheritance ) definitionAdapter ).getTypes( baseType );
         }
         return null;
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -138,5 +131,4 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
     protected String getDefinitionId( final Class<?> type ) {
         return BindableAdapterUtils.getDefinitionId( type );
     }
-
 }

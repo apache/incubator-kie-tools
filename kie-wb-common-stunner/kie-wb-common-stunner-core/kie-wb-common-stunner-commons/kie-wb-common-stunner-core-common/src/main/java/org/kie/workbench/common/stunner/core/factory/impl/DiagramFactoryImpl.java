@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,9 +26,12 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 
 import javax.enterprise.context.ApplicationScoped;
 
+/**
+ * The default factory for generic Diagrams.
+ */
 @ApplicationScoped
 public class DiagramFactoryImpl
-        implements DiagramFactory<Metadata, Diagram<Graph<DefinitionSet, ?>, Metadata>> {
+        implements DiagramFactory<Metadata, Diagram<Graph, Metadata>> {
 
     @Override
     public Class<? extends Metadata> getMetadataType() {
@@ -35,20 +39,19 @@ public class DiagramFactoryImpl
     }
 
     @Override
-    public Diagram<Graph<DefinitionSet, ?>, Metadata> build( String name, Metadata metadata, Graph<DefinitionSet, ?> graph ) {
-        final AbstractDiagram<Graph<DefinitionSet, ?>, Metadata> result = new DiagramImpl( name, metadata );
+    public Diagram<Graph, Metadata> build( String name, Metadata metadata, Graph<DefinitionSet, ?> graph ) {
+        final AbstractDiagram<Graph, Metadata> result = new DiagramImpl( name, metadata );
         result.setGraph( graph );
         return result;
     }
 
-    /**
-     * The default factory for generic Diagrams.
-     * @param source the Definition Set identifier.
-     * @return If does not accepts any concrete Definition Set, so no matter the identifier,
-     * this instance is the default factory for all definition sets on the default context (Metadata).
-     */
     @Override
     public boolean accepts( String source ) {
-        return false;
+        return true;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return true;
     }
 }

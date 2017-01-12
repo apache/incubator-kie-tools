@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.core.client.service;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.kie.workbench.common.stunner.core.service.DiagramService;
 
@@ -29,7 +31,7 @@ import javax.inject.Inject;
  * A wrapper util class for handling different diagram services from client side.
  */
 @ApplicationScoped
-public class ClientDiagramService extends AbstractClientDiagramService<Diagram, DiagramService> {
+public class ClientDiagramService extends AbstractClientDiagramService<Metadata, Diagram<Graph, Metadata>, DiagramService> {
 
     protected ClientDiagramService() {
         this( null, null, null );
@@ -41,5 +43,4 @@ public class ClientDiagramService extends AbstractClientDiagramService<Diagram, 
                                  final Caller<DiagramLookupService> diagramLookupServiceCaller ) {
         super( shapeManager, diagramServiceCaller, diagramLookupServiceCaller );
     }
-
 }

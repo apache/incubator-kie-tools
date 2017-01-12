@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,9 @@ import java.util.Collection;
 
 /**
  * A Command to set the incoming connection for an edge.
- * Note: if the connector's target is not set, the <code>targetNode</code> can be null.
+ * Notes:
+ * - In case <code>targetNode</code> is <code>null</code>, connector's target node, if any, will be removed.
+ * - if connector is not view based, no need to provide magnet index.
  */
 @Portable
 public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
@@ -54,7 +56,9 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
                                            @MapsTo( "magnetIndex" ) Integer magnetIndex ) {
         this.edgeUUID = PortablePreconditions.checkNotNull( "edgeUUID", edgeUUID );
         this.targetNodeUUID = targetNodeUUID;
-        this.magnetIndex = PortablePreconditions.checkNotNull( "magnetIndex", magnetIndex );
+        this.magnetIndex = magnetIndex;
+        this.lastTargetNodeUUID = null;
+        this.lastMagnetIndex = null;
     }
 
     @SuppressWarnings( "unchecked" )
@@ -65,6 +69,12 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
         this.edge = PortablePreconditions.checkNotNull( "edge", edge );
         this.sourceNode = edge.getSourceNode();
         this.targetNode = targetNode;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public SetConnectionTargetNodeCommand( Node<? extends View<?>, Edge> targetNode,
+                                           Edge<? extends View, Node> edge ) {
+        this( targetNode, edge, null );
     }
 
     @Override
@@ -83,9 +93,11 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
                 targetNode.getInEdges().add( edge );
             }
             edge.setTargetNode( targetNode );
-            ViewConnector connectionContent = ( ViewConnector ) edge.getContent();
-            lastMagnetIndex = connectionContent.getTargetMagnetIndex();
-            connectionContent.setTargetMagnetIndex( magnetIndex );
+            if ( null != magnetIndex ) {
+                ViewConnector connectionContent = ( ViewConnector ) edge.getContent();
+                lastMagnetIndex = connectionContent.getTargetMagnetIndex();
+                connectionContent.setTargetMagnetIndex( magnetIndex );
+            }
         }
         return results;
     }
@@ -181,5 +193,4 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
                 + ", candidate=" + ( null != targetNodeUUID ? targetNodeUUID : "null" )
                 + ", magnet=" + magnetIndex + "]";
     }
-
 }

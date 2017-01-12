@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,12 @@ package org.kie.workbench.common.stunner.core.diagram;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
 @Portable
-public final class DiagramImpl extends AbstractDiagram<Graph<DefinitionSet, ?>, Metadata> {
+public final class DiagramImpl extends AbstractDiagram<Graph, Metadata> {
 
     public DiagramImpl( @MapsTo( "name" ) String name,
                         @MapsTo( "metadata" ) Metadata metadata ) {
         super( name, metadata );
     }
-
 }

@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.shapes.client.view.BasicShapeView;
+import org.kie.workbench.common.stunner.shapes.client.view.BasicShapesSupportedEvents;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons;
 
 public class StaticIconShapeView<T extends StaticIconShapeView>
@@ -32,9 +33,10 @@ public class StaticIconShapeView<T extends StaticIconShapeView>
     private Group iconGroup;
 
     public StaticIconShapeView( final Icons icon ) {
-        super( new MultiPath()
-                .setStrokeWidth( 0 )
-                .setStrokeAlpha( 0 ) );
+        super( BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+                new MultiPath()
+                        .setStrokeWidth( 0 )
+                        .setStrokeAlpha( 0 ) );
         this.setIcon( icon );
 
     }

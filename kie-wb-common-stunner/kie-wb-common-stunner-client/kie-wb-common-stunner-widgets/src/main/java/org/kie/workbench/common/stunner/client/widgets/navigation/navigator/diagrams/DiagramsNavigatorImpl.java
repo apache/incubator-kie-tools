@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.navigation.navigator.dia
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.Navigator;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.NavigatorItem;
@@ -33,7 +34,6 @@ import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentatio
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
     private static Logger LOGGER = Logger.getLogger( DiagramsNavigatorImpl.class.getName() );
 
     ClientDiagramService clientDiagramServices;
-    Instance<DiagramNavigatorItem> navigatorItemInstances;
+    ManagedInstance<DiagramNavigatorItem> navigatorItemInstances;
     Event<LoadDiagramEvent> loadDiagramEventEvent;
     NavigatorView<?> view;
 
@@ -56,7 +56,7 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     @Inject
     public DiagramsNavigatorImpl( final ClientDiagramService clientDiagramServices,
-                                  final Instance<DiagramNavigatorItem> navigatorItemInstances,
+                                  final ManagedInstance<DiagramNavigatorItem> navigatorItemInstances,
                                   final Event<LoadDiagramEvent> loadDiagramEventEvent,
                                   final NavigatorView<?> view ) {
         this.clientDiagramServices = clientDiagramServices;
@@ -92,18 +92,15 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
                     for ( final DiagramRepresentation diagram : items ) {
                         addEntry( diagram );
                     }
-
                 }
                 // Notify some processing ends.
                 fireProcessingCompleted();
-
             }
 
             @Override
             public void onError( final ClientRuntimeError error ) {
                 showError( error );
             }
-
         } );
         return this;
     }
@@ -165,5 +162,4 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
             LOGGER.log( level, message );
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 
 import java.util.Set;
@@ -35,11 +36,6 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     @Override
     public String getId( final T pojo ) {
         return adapter.getId( pojo );
-    }
-
-    @Override
-    public Object getNameProperty( final T pojo ) {
-        return adapter.getNameProperty( pojo );
     }
 
     @Override
@@ -78,6 +74,11 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     }
 
     @Override
+    public Object getMetaProperty( final PropertyMetaTypes metaType, final T pojo ) {
+        return adapter.getMetaProperty( metaType, pojo );
+    }
+
+    @Override
     public boolean isPojoModel() {
         return adapter.isPojoModel();
     }
@@ -91,5 +92,4 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     public boolean accepts( final Class<?> type ) {
         return adapter.accepts( type );
     }
-
 }

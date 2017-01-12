@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,13 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxBu
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxBuilder;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxButtonGridBuilder;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -45,14 +45,14 @@ import java.util.logging.Logger;
 /**
  * A toolbox control provider implementation that provides buttons to create new elements
  * and update the graph structure.
- *
+ * <p>
  * It provides buttons for:
  * - Creating a new connection from the source element.
- *   It looks for the default connector type and creates a button for it.
+ * It looks for the default connector type and creates a button for it.
  * - Creating new nodes after the source element.
- *   As could be many target nodes that can be placed after the source one, as rules are evaluating and passing,
- *   to avoid big amount of buttons on the toolbox, it just creates a button for each of
- *   the base morph types that match all the given targets.
+ * As could be many target nodes that can be placed after the source one, as rules are evaluating and passing,
+ * to avoid big amount of buttons on the toolbox, it just creates a button for each of
+ * the base morph types that match all the given targets.
  */
 @Dependent
 public class FlowActionsToolboxControlProvider extends AbstractToolboxControlProvider {
@@ -108,7 +108,7 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
     @Override
     @SuppressWarnings( "unchecked" )
     public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands( final AbstractCanvasHandler context,
-                                                   final Element item ) {
+                                                                       final Element item ) {
         try {
             final Node<Definition<Object>, Edge> node = ( Node<Definition<Object>, Edge> ) item;
             final Diagram diagram = context.getDiagram();
@@ -161,5 +161,4 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
             LOGGER.log( Level.SEVERE, "** FLOW-ACTIONS-TOOLBOX ** " + message );
         }
     }
-
 }

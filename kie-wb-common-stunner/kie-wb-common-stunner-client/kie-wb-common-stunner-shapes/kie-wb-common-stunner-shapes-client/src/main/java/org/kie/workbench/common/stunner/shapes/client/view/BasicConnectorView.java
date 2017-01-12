@@ -36,10 +36,6 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
         HasTitle<T>,
         HasEventHandlers<T, Shape<?>> {
 
-    private static final ViewEventType[] SUPPORTED_EVENT_TYPES = new ViewEventType[]{
-            ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK, ViewEventType.TOUCH
-    };
-
     protected ViewEventHandlerManager eventHandlerManager;
     protected Text text;
     protected WiresLayoutContainer.Layout textPosition;
@@ -47,25 +43,28 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
     private Double strokeWidth;
     private String color;
 
-    public BasicConnectorView( final AbstractDirectionalMultiPointShape<?> line,
+    public BasicConnectorView( final ViewEventType[] supportedEventTypes,
+                               final AbstractDirectionalMultiPointShape<?> line,
                                final MultiPathDecorator headDecorator,
                                final MultiPathDecorator tailDecorator ) {
         super( line, headDecorator, tailDecorator );
+        init( supportedEventTypes );
     }
 
-    public BasicConnectorView( final WiresMagnet headMagnet,
+    public BasicConnectorView( final ViewEventType[] supportedEventTypes,
+                               final WiresMagnet headMagnet,
                                final WiresMagnet tailMagnet,
                                final AbstractDirectionalMultiPointShape<?> line,
                                final MultiPathDecorator headDecorator,
                                final MultiPathDecorator tailDecorator ) {
         super( headMagnet, tailMagnet, line, headDecorator, tailDecorator );
+        init( supportedEventTypes );
     }
 
-    protected void init() {
-        super.init();
+    protected void init( final ViewEventType[] supportedEventTypes ) {
         this.textPosition = WiresLayoutContainer.Layout.CENTER;
         this.textRotationDegrees = 0;
-        this.eventHandlerManager = new ViewEventHandlerManager( getLine(), SUPPORTED_EVENT_TYPES );
+        this.eventHandlerManager = new ViewEventHandlerManager( getLine(), supportedEventTypes );
         enableShowControlsOnMouseEnter();
     }
 

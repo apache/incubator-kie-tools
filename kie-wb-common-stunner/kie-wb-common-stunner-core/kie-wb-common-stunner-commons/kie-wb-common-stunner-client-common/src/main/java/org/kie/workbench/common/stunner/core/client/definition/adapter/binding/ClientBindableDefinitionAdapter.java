@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import java.util.Collection;
 import java.util.Set;
@@ -67,5 +67,4 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
     private <T, V> void setProxiedValue( final T pojo, final String fieldName, final V value ) {
         ClientBindingUtils.setProxiedValue( pojo, fieldName, value );
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,7 @@ package org.kie.workbench.common.stunner.core.factory.impl;
 
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 
 public abstract class AbstractElementFactory<C, D extends Definition<C>, T extends Element<D>>
         implements ElementFactory<C, D, T> {
@@ -33,10 +30,4 @@ public abstract class AbstractElementFactory<C, D extends Definition<C>, T exten
     public boolean accepts( final Object definition ) {
         return true;
     }
-
-    // TODO: Dummy bounds - In addition see GraphUtils#updateBounds methods.
-    protected Bounds buildBounds() {
-        return new BoundsImpl( new BoundImpl( 0d, 0d ), new BoundImpl( 30d, 30d ) );
-    }
-
 }

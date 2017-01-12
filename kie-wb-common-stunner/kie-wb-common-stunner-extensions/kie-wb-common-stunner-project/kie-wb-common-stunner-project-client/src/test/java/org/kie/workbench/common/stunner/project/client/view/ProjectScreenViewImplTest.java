@@ -15,9 +15,9 @@
 
 package org.kie.workbench.common.stunner.project.client.view;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,8 +34,6 @@ public class ProjectScreenViewImplTest {
     @Mock
     FlowPanel widget;
     @Mock
-    FlowPanel mainPanel;
-    @Mock
     FlowPanel loadingPanel;
     @Mock
     FlowPanel widgetPanel;
@@ -44,7 +42,7 @@ public class ProjectScreenViewImplTest {
 
     @Before
     public void setup() throws Exception {
-        this.tested = new ProjectScreenViewImpl( mainPanel, loadingPanel, widgetPanel );
+        this.tested = new ProjectScreenViewImpl( loadingPanel, widgetPanel );
     }
 
     @Test

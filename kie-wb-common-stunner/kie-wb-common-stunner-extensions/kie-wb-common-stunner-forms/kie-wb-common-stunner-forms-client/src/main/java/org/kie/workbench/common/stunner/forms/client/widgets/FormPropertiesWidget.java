@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,13 +34,13 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.uberfire.mvp.Command;
 
@@ -107,8 +108,8 @@ public class FormPropertiesWidget implements IsWidget {
      * Shows properties of elements in current session as:
      * 1.- If any element selected on session control, show properties for it.
      * 2.- If no element selected on session control:
-     *  2.1- If no canvas root fot the diagram, show the diagram's graph properties.
-     *  2.2- If diagram has a canvas root, show the properties for that element.
+     * 2.1- If no canvas root fot the diagram, show the diagram's graph properties.
+     * 2.2- If diagram has a canvas root, show the properties for that element.
      */
     public void show() {
         this.show( null );
@@ -128,7 +129,7 @@ public class FormPropertiesWidget implements IsWidget {
                 }
             }
             if ( null == selectedItemUUID ) {
-                final  Diagram<?, ?> diagram = getDiagram();
+                final Diagram<?, ?> diagram = getDiagram();
                 if ( null != diagram ) {
                     final String cRoot = diagram.getMetadata().getCanvasRootUUID();
                     // Check if there exist any canvas root element.
@@ -245,17 +246,15 @@ public class FormPropertiesWidget implements IsWidget {
     private void executeUpdateProperty( final Element<? extends Definition<?>> element,
                                         final String propertyId,
                                         final Object value ) {
-        final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCanvasCommandManager();
-        commandManager.execute( getCanvasHandler(), commandFactory.UPDATE_PROPERTY( element, propertyId, value ) );
-
+        final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
+        commandManager.execute( getCanvasHandler(), commandFactory.updatePropertyValue( element, propertyId, value ) );
     }
 
     private void executeMove( final Element<? extends Definition<?>> element,
                               final double x,
                               final double y ) {
-        final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCanvasCommandManager();
-        commandManager.execute( getCanvasHandler(), commandFactory.UPDATE_POSITION( ( Node<View<?>, Edge> ) element, x, y ) );
-
+        final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
+        commandManager.execute( getCanvasHandler(), commandFactory.updatePosition( ( Node<View<?>, Edge> ) element, x, y ) );
     }
 
     private String getModifiedPropertyId( HasProperties model, String fieldName ) {
@@ -279,10 +278,10 @@ public class FormPropertiesWidget implements IsWidget {
     private boolean isEmpty( final String s ) {
         return s == null || s.trim().length() == 0;
     }
+
     private void log( final Level level, final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
             LOGGER.log( level, message );
         }
     }
-
 }

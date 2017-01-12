@@ -1,11 +1,12 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +40,8 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
 
     private static final String UUID = "nodeUUID";
 
-    @Mock Node node;
+    @Mock
+    Node node;
 
     private AddNodeCommand tested;
 
@@ -47,6 +49,8 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
     public void setup() throws Exception {
         super.init( 500, 500 );
         when( node.getUUID() ).thenReturn( UUID );
+        when( graph.getNode( eq( UUID ) ) ).thenReturn( node );
+        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( node );
         this.tested = new AddNodeCommand( node );
     }
 
@@ -62,7 +66,6 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
                 any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
         verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
     }
-
 
     @Test
     @SuppressWarnings( "unchecked" )
@@ -82,6 +85,9 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
         verify( graph, times( 1 ) ).addNode( eq( node ) );
         verify( graphIndex, times( 1 ) ).addNode( eq( node ) );
         verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
+        verify( graph, times( 0 ) ).removeNode( eq( UUID ) );
+        verify( graphIndex, times( 0 ) ).removeNode( eq( node ) );
+        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
     }
 
     @Test
@@ -95,6 +101,21 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
         verify( graph, times( 0 ) ).addNode( eq( node ) );
         verify( graphIndex, times( 0 ) ).addNode( eq( node ) );
         verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
+        verify( graph, times( 0 ) ).removeNode( eq( UUID ) );
+        verify( graphIndex, times( 0 ) ).removeNode( eq( node ) );
+        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
     }
 
+    @Test
+    @SuppressWarnings( "unchecked" )
+    public void testUndo() {
+        CommandResult<RuleViolation> result = tested.undo( graphCommandExecutionContext );
+        assertEquals( CommandResult.Type.INFO, result.getType() );
+        verify( graph, times( 1 ) ).removeNode( eq( UUID ) );
+        verify( graphIndex, times( 1 ) ).removeNode( eq( node ) );
+        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
+        verify( graph, times( 0 ) ).addNode( eq( node ) );
+        verify( graphIndex, times( 0 ) ).addNode( eq( node ) );
+        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
+    }
 }

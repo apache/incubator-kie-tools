@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,17 @@ package org.kie.workbench.common.stunner.core.graph.command;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
-import org.kie.workbench.common.stunner.core.command.CommandManagerFactory;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.event.local.CommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.command.event.local.CommandUndoExecutedEvent;
 import org.kie.workbench.common.stunner.core.command.event.local.IsCommandAllowedEvent;
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
+import org.kie.workbench.common.stunner.core.command.impl.CommandManagerImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,15 +44,14 @@ public class GraphCommandManagerImpl
     private final Event<CommandUndoExecutedEvent> commandUndoExecutedEvent;
 
     protected GraphCommandManagerImpl() {
-        this( null, null, null, null );
+        this( null, null, null );
     }
 
     @Inject
-    public GraphCommandManagerImpl( final CommandManagerFactory commandManagerFactory,
-                                    final Event<IsCommandAllowedEvent> isCommandAllowedEvent,
+    public GraphCommandManagerImpl( final Event<IsCommandAllowedEvent> isCommandAllowedEvent,
                                     final Event<CommandExecutedEvent> commandExecutedEvent,
                                     final Event<CommandUndoExecutedEvent> commandUndoExecutedEvent ) {
-        this.commandManager = commandManagerFactory.newCommandManager();
+        this.commandManager = new CommandManagerImpl<GraphCommandExecutionContext, RuleViolation>();
         this.isCommandAllowedEvent = isCommandAllowedEvent;
         this.commandExecutedEvent = commandExecutedEvent;
         this.commandUndoExecutedEvent = commandUndoExecutedEvent;
@@ -99,5 +97,4 @@ public class GraphCommandManagerImpl
         }
         return result;
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 
 package org.kie.workbench.common.stunner.cm.factory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -42,6 +39,9 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBu
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * The custom factory for Case Management graphs.
@@ -84,39 +84,38 @@ public class CaseManagementGraphFactoryImpl
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public Graph<DefinitionSet, Node> build( final String uuid,
                                              final String definitionSetId ) {
         final GraphImpl graph = new GraphImpl<>( uuid,
-                                                 new GraphNodeStoreImpl() );
+                new GraphNodeStoreImpl() );
         final DefinitionSet content = new DefinitionSetImpl( definitionSetId );
         graph.setContent( content );
 
         if ( content.getBounds() == null ) {
             content.setBounds( new BoundsImpl( new BoundImpl( 0d,
-                                                              0d ),
-                                               new BoundImpl( CaseManagementGraphFactory.GRAPH_DEFAULT_WIDTH,
-                                                              CaseManagementGraphFactory.GRAPH_DEFAULT_HEIGHT )
+                    0d ),
+                    new BoundImpl( CaseManagementGraphFactory.GRAPH_DEFAULT_WIDTH,
+                            CaseManagementGraphFactory.GRAPH_DEFAULT_HEIGHT )
             ) );
         }
         // Add a Case Management diagram by default.
-        final Node<Definition<CaseManagementDiagram>, Edge> diagramNode = (Node<Definition<CaseManagementDiagram>, Edge>) factoryManager.newElement( UUID.uuid(),
-                                                                                                                                                     CaseManagementDiagram.class );
+        final Node<Definition<CaseManagementDiagram>, Edge> diagramNode = ( Node<Definition<CaseManagementDiagram>, Edge> ) factoryManager.newElement( UUID.uuid(),
+                CaseManagementDiagram.class );
         graphCommandManager.execute( createGraphContext( graph ),
-                                     new CompositeCommandImpl.CompositeCommandBuilder()
-                                             .addCommand( graphCommandFactory.ADD_NODE( diagramNode ) )
-                                             .build()
-                                   );
+                new CompositeCommandImpl.CompositeCommandBuilder()
+                        .addCommand( graphCommandFactory.addNode( diagramNode ) )
+                        .build()
+        );
 
         return graph;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     private GraphCommandExecutionContext createGraphContext( final GraphImpl graph ) {
         final Index<?, ?> index = indexBuilder.build( graph );
         return new EmptyRulesCommandExecutionContext( definitionManager,
-                                                      factoryManager,
-                                                      index );
+                factoryManager,
+                index );
     }
-
 }

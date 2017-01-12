@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 
 import java.util.Map;
@@ -24,7 +25,7 @@ import java.util.Set;
 
 public interface BindableDefinitionAdapter<T> extends DefinitionAdapter<T>, HasInheritance {
 
-    void setBindings( Class<?> namePropertyClass,
+    void setBindings( Map<PropertyMetaTypes, Class> metaPropertyTypeClasses,
                       Map<Class, Class> baseTypes,
                       Map<Class, Set<String>> propertySetsFieldNames,
                       Map<Class, Set<String>> propertiesFieldNames,
@@ -35,5 +36,4 @@ public interface BindableDefinitionAdapter<T> extends DefinitionAdapter<T>, HasI
                       Map<Class, String> propertyDescriptionFieldNames );
 
     Class<? extends ElementFactory> getGraphFactory( Class<?> type );
-
 }

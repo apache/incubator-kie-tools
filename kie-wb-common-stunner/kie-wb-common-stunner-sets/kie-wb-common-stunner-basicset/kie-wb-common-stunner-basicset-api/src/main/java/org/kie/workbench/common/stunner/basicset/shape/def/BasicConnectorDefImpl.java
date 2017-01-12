@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.basicset.shape.def;
 import org.kie.workbench.common.stunner.basicset.definition.BasicConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.shapes.def.ConnectorGlyphDef;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
 public final class BasicConnectorDefImpl
@@ -86,6 +87,19 @@ public final class BasicConnectorDefImpl
 
     @Override
     public GlyphDef<BasicConnector> getGlyphDef() {
-        return null;
+        return new BasicConnectorGlyphDef();
+    }
+
+    private static class BasicConnectorGlyphDef extends ConnectorGlyphDef<BasicConnector> {
+
+        @Override
+        public String getColor() {
+            return "#000000";
+        }
+
+        @Override
+        public String getGlyphDescription( final BasicConnector element ) {
+            return element.getTitle();
+        }
     }
 }

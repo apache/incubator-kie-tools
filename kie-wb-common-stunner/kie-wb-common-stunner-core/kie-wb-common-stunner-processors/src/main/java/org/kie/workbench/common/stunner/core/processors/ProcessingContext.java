@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.processors;
 
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+
 import javax.lang.model.element.Element;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ProcessingContext {
 
     private static ProcessingContext context;
     private ProcessingEntity definitionSet;
-    private String namePropertyClass;
     private final List<ProcessingRule> rules = new ArrayList<>();
 
     private final ProcessingDefinitionSetAnnotations defSetAnnotations = new ProcessingDefinitionSetAnnotations();
@@ -36,6 +34,7 @@ public class ProcessingContext {
     private final Set<Element> propertySetElements = new LinkedHashSet<>();
     private final ProcessingPropertyAnnotations propertyAnnotations = new ProcessingPropertyAnnotations();
     private final Set<Element> propertyElements = new LinkedHashSet<>();
+    private final Map<PropertyMetaTypes, String> metaPropertyTypes = new LinkedHashMap<>();
     private final ProcessingMorphingAnnotations morphingAnnotations = new ProcessingMorphingAnnotations();
 
     public synchronized static ProcessingContext getInstance() {
@@ -50,14 +49,6 @@ public class ProcessingContext {
 
     public ProcessingEntity getDefinitionSet() {
         return definitionSet;
-    }
-
-    public String getNamePropertyClass() {
-        return namePropertyClass;
-    }
-
-    public void setNamePropertyClass( String namePropertyClass ) {
-        this.namePropertyClass = namePropertyClass;
     }
 
     public void setDefinitionSet( String packageName, String className ) {
@@ -89,6 +80,10 @@ public class ProcessingContext {
 
     public ProcessingPropertyAnnotations getPropertyAnnotations() {
         return propertyAnnotations;
+    }
+
+    public Map<PropertyMetaTypes, String> getMetaPropertyTypes() {
+        return metaPropertyTypes;
     }
 
     public ProcessingMorphingAnnotations getMorphingAnnotations() {

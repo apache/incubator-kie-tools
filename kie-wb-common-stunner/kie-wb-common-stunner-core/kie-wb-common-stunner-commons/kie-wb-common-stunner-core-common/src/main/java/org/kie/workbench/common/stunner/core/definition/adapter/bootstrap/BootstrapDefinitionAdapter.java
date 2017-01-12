@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.definition.adapter.bootstrap;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 
@@ -33,11 +34,6 @@ class BootstrapDefinitionAdapter implements DefinitionAdapter<Object> {
     @Override
     public String getId( final Object pojo ) {
         return getWrapped( pojo ).getId( pojo );
-    }
-
-    @Override
-    public Object getNameProperty( final Object pojo ) {
-        return getWrapped( pojo ).getNameProperty( pojo );
     }
 
     @Override
@@ -71,6 +67,11 @@ class BootstrapDefinitionAdapter implements DefinitionAdapter<Object> {
     }
 
     @Override
+    public Object getMetaProperty( final PropertyMetaTypes metaType, final Object pojo ) {
+        return getWrapped( pojo ).getMetaProperty( metaType, pojo );
+    }
+
+    @Override
     public Class<? extends ElementFactory> getGraphFactoryType( final Object pojo ) {
         return getWrapped( pojo ).getGraphFactoryType( pojo );
     }
@@ -97,5 +98,4 @@ class BootstrapDefinitionAdapter implements DefinitionAdapter<Object> {
     private DefinitionAdapter<Object> getWrapped( final Class<?> type ) {
         return adapterRegistry.getDefinitionAdapter( type );
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.definition.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -89,7 +89,6 @@ public class DefinitionsPaletteBuilderImpl
                 for ( final DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder builder :
                         builders ) {
                     paletteItems.add( builder.build() );
-
                 }
                 final DefinitionsPaletteImpl definitionsPalette = new DefinitionsPaletteImpl( paletteItems );
                 callback.onSuccess( definitionsPalette );
@@ -119,5 +118,4 @@ public class DefinitionsPaletteBuilderImpl
     protected DefinitionManager getDefinitionManager() {
         return definitionUtils.getDefinitionManager();
     }
-
 }

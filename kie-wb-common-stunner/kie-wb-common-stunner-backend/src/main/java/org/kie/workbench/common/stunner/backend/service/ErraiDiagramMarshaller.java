@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class ErraiDiagramMarshaller implements DiagramMarshaller<Graph, Metadata
     @Override
     @SuppressWarnings( "unchecked" )
     public String marshall( Diagram<Graph, Metadata> diagram ) throws IOException {
-        String result = ServerMarshalling.toJSON( diagram );
+        String result = ServerMarshalling.toJSON( diagram.getGraph() );
         return result;
     }
 
@@ -60,5 +60,4 @@ public class ErraiDiagramMarshaller implements DiagramMarshaller<Graph, Metadata
     public DiagramMetadataMarshaller<Metadata> getMetadataMarshaller() {
         return diagramMetadataMarshaller;
     }
-
 }
