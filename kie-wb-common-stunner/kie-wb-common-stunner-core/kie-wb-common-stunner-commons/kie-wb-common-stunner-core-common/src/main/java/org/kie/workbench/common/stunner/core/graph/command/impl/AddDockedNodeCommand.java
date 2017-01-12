@@ -36,24 +36,26 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
     private final Node candidate;
     private transient Node parent;
 
-    public AddDockedNodeCommand( @MapsTo( "parentUUID" ) String parentUUID,
-                                 @MapsTo( "candidate" ) Node candidate ) {
+    public AddDockedNodeCommand( final @MapsTo( "parentUUID" ) String parentUUID,
+                                 final @MapsTo( "candidate" ) Node candidate ) {
         this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
-                parentUUID );
+                                                              parentUUID );
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                candidate );
+                                                             candidate );
     }
 
-    public AddDockedNodeCommand( Node parent,
-                                 Node candidate ) {
-        this( parent.getUUID(), candidate );
+    public AddDockedNodeCommand( final Node parent,
+                                 final Node candidate ) {
+        this( parent.getUUID(),
+              candidate );
         this.parent = parent;
     }
 
     protected AddDockedNodeCommand initialize( final GraphCommandExecutionContext context ) {
         super.initialize( context );
         this.addCommand( new RegisterNodeCommand( candidate ) )
-                .addCommand( new DockNodeCommand( getParent( context ), candidate ) );
+                .addCommand( new DockNodeCommand( getParent( context ),
+                                                  candidate ) );
         return this;
     }
 
@@ -66,7 +68,8 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
     @SuppressWarnings( "unchecked" )
     private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
         if ( null == parent ) {
-            parent = checkNodeNotNull( context, parentUUID );
+            parent = checkNodeNotNull( context,
+                                       parentUUID );
         }
         return parent;
     }

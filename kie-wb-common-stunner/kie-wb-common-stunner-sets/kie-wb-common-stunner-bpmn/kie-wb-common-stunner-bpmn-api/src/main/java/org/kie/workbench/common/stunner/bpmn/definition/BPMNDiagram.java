@@ -43,12 +43,8 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-
-import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DATA;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_PROCESS_SETTINGS;
 
 @Portable
 @Bindable
@@ -104,12 +100,14 @@ public class BPMNDiagram implements BPMNDefinition {
         @Override
         public BPMNDiagram build() {
             return new BPMNDiagram( new DiagramSet( "" ),
-                    new ProcessData(),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet(),
-                    new RectangleDimensionsSet( WIDTH, HEIGHT ) );
+                                    new ProcessData(),
+                                    new BackgroundSet( COLOR,
+                                                       BORDER_COLOR,
+                                                       BORDER_SIZE ),
+                                    new FontSet(),
+                                    new RectangleDimensionsSet( WIDTH,
+                                                                HEIGHT ) );
         }
-
     }
 
     public BPMNDiagram() {
@@ -182,5 +180,4 @@ public class BPMNDiagram implements BPMNDefinition {
     public void setFontSet( FontSet fontSet ) {
         this.fontSet = fontSet;
     }
-
 }

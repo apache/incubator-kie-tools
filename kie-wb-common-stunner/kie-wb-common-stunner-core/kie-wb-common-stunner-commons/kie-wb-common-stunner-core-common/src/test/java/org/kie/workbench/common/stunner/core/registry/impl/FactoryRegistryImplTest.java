@@ -27,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class FactoryRegistryImplTest {
@@ -59,22 +59,26 @@ public class FactoryRegistryImplTest {
         assertNull( factory.getDefinitionFactory( DefinitionFactory.class.getName() ) );
         factory.register( definitionFactory );
         assertNull( factory.getDefinitionFactory( NOT_VALID_ID ) );
-        assertEquals( definitionFactory, factory.getDefinitionFactory( DefinitionFactory.class.getName() ) );
-        assertEquals( definitionFactory, factory.getDefinitionFactory( DefinitionFactory.class ) );
+        assertEquals( definitionFactory,
+                      factory.getDefinitionFactory( DefinitionFactory.class.getName() ) );
+        assertEquals( definitionFactory,
+                      factory.getDefinitionFactory( DefinitionFactory.class ) );
     }
 
     @Test
     public void testGetGraphFactory() {
         assertNull( factory.getElementFactory( elementFactory.getFactoryType() ) );
         factory.register( elementFactory );
-        assertEquals( elementFactory, factory.getElementFactory( elementFactory.getFactoryType() ) );
+        assertEquals( elementFactory,
+                      factory.getElementFactory( elementFactory.getFactoryType() ) );
     }
 
     @Test
     public void testGetItems() {
         factory.register( elementFactory );
         factory.register( definitionFactory );
-        assertArrayEquals( new Object[]{ definitionFactory, elementFactory }, factory.getAllFactories().toArray() );
+        assertArrayEquals( new Object[]{ definitionFactory, elementFactory },
+                           factory.getAllFactories().toArray() );
     }
 
     @Test
@@ -96,9 +100,9 @@ public class FactoryRegistryImplTest {
         factory.register( definitionFactory );
         factory.register( missingFactory );
         factory.clear();
-        assertArrayEquals( new Object[ 0 ], factory.getAllFactories().toArray() );
+        assertArrayEquals( new Object[ 0 ],
+                           factory.getAllFactories().toArray() );
     }
-
 
     @Test
     public void testEmpty() {
@@ -127,6 +131,7 @@ public class FactoryRegistryImplTest {
         assertTrue( factory.contains( definitionFactory ) );
         assertTrue( factory.remove( definitionFactory ) );
         assertFalse( factory.contains( definitionFactory ) );
-        assertArrayEquals( new Object[ 0 ], factory.getAllFactories().toArray() );
+        assertArrayEquals( new Object[ 0 ],
+                           factory.getAllFactories().toArray() );
     }
 }

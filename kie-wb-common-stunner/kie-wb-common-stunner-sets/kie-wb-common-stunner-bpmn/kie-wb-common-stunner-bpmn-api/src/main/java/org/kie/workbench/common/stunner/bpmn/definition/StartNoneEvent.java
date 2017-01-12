@@ -55,13 +55,14 @@ public class StartNoneEvent extends BaseStartEvent {
         @Override
         public StartNoneEvent build() {
             return new StartNoneEvent( new BPMNGeneralSet( "Start" ),
-                    new DataIOSet(),
-                    new BackgroundSet( BG_COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet(),
-                    new CatchEventAttributes(),
-                    new CircleDimensionSet( new Radius( RADIUS ) ) );
+                                       new DataIOSet(),
+                                       new BackgroundSet( BG_COLOR,
+                                                          BORDER_COLOR,
+                                                          BORDER_SIZE ),
+                                       new FontSet(),
+                                       new CatchEventAttributes(),
+                                       new CircleDimensionSet( new Radius( RADIUS ) ) );
         }
-
     }
 
     public StartNoneEvent() {
@@ -73,7 +74,12 @@ public class StartNoneEvent extends BaseStartEvent {
                            @MapsTo( "fontSet" ) FontSet fontSet,
                            @MapsTo( "catchEventAttributes" ) CatchEventAttributes catchEventAttributes,
                            @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
-        super( general, dataIOSet, backgroundSet, fontSet, catchEventAttributes, dimensionsSet );
+        super( general,
+               dataIOSet,
+               backgroundSet,
+               fontSet,
+               catchEventAttributes,
+               dimensionsSet );
     }
 
     public String getTitle() {
@@ -83,5 +89,4 @@ public class StartNoneEvent extends BaseStartEvent {
     public String getDescription() {
         return description;
     }
-
 }

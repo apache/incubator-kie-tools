@@ -84,16 +84,24 @@ public class ProjectDiagramNewResourceHandlerTest {
         when( projectDiagramResourceType.getSuffix() ).thenReturn( "bpmn2" );
         when( projectDiagramResourceType.getPrefix() ).thenReturn( "" );
         this.tested = new ProjectDiagramNewResourceHandlerStub( definitionManager,
-                projectDiagramServices, projectDiagramResourceType );
+                                                                projectDiagramServices,
+                                                                projectDiagramResourceType );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testCreate() {
         final String baseFileName = "file1";
-        tested.create( aPackage, baseFileName, presenter );
-        verify( projectDiagramServices, times( 1 ) ).create( eq( path ), eq( "file1" ), eq( DEFSET_ID ),
-                eq( PROJ_ROOT_FILENAME ), eq( PROJ_PKG ), any( ServiceCallback.class ) );
+        tested.create( aPackage,
+                       baseFileName,
+                       presenter );
+        verify( projectDiagramServices,
+                times( 1 ) ).create( eq( path ),
+                                     eq( "file1" ),
+                                     eq( DEFSET_ID ),
+                                     eq( PROJ_ROOT_FILENAME ),
+                                     eq( PROJ_PKG ),
+                                     any( ServiceCallback.class ) );
     }
 
     private class ProjectDiagramNewResourceHandlerStub extends AbstractProjectDiagramNewResourceHandler<ClientResourceType> {
@@ -104,7 +112,9 @@ public class ProjectDiagramNewResourceHandlerTest {
         public ProjectDiagramNewResourceHandlerStub( DefinitionManager definitionManager,
                                                      ClientProjectDiagramService projectDiagramServices,
                                                      ClientResourceType projectDiagramResourceType ) {
-            super( definitionManager, projectDiagramServices, projectDiagramResourceType );
+            super( definitionManager,
+                   projectDiagramServices,
+                   projectDiagramResourceType );
         }
 
         @Override
@@ -127,5 +137,4 @@ public class ProjectDiagramNewResourceHandlerTest {
             return null;
         }
     }
-
 }

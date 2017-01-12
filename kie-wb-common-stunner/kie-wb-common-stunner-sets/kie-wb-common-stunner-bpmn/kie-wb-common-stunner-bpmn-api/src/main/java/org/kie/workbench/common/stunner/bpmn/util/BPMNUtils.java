@@ -32,7 +32,7 @@ public class BPMNUtils {
      */
     @SuppressWarnings( "unchecked" )
     public static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode( final Graph<?, Node> graph ) {
-        return GraphUtils.getFirstNode( graph, BPMNDiagram.class );
+        return GraphUtils.getFirstNode( graph,
+                                        BPMNDiagram.class );
     }
-
 }

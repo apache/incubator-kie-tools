@@ -21,5 +21,4 @@ public interface GestureEvent extends ViewEvent {
     double getScale();
 
     double getRotation();
-
 }

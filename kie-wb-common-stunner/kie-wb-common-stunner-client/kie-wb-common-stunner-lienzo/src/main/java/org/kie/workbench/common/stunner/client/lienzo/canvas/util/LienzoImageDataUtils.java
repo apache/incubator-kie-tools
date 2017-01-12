@@ -27,17 +27,20 @@ public class LienzoImageDataUtils {
                                       final int y,
                                       final int width,
                                       final int height ) {
-        final ImageData imageData = layer.getContext().getImageData( x, y, width, height );
+        final ImageData imageData = layer.getContext().getImageData( x,
+                                                                     y,
+                                                                     width,
+                                                                     height );
         if ( null != imageData ) {
-            final LienzoPanel p = new LienzoPanel( width, height );
+            final LienzoPanel p = new LienzoPanel( width,
+                                                   height );
             final Layer l = new Layer().setTransformable( true );
             p.add( l );
-            l.getContext().putImageData( imageData, 0, 0 );
+            l.getContext().putImageData( imageData,
+                                         0,
+                                         0 );
             return l.toDataURL();
-
         }
         return null;
-
     }
-
 }

@@ -25,7 +25,7 @@ public final class CanvasElementUpdatedEvent extends AbstractCanvasHandlerElemen
 
     public CanvasElementUpdatedEvent( final CanvasHandler canvasHandler,
                                       final Element<?> element ) {
-        super( canvasHandler, element );
+        super( canvasHandler,
+               element );
     }
-
 }

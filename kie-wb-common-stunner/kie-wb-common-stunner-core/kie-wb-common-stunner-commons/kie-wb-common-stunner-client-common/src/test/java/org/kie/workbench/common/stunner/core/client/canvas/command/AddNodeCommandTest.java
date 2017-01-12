@@ -22,14 +22,14 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class AddNodeCommandTest extends AbstractCanvasCommandTest {
 
-    @Mock private Node candidate;
+    @Mock
+    private Node candidate;
 
     private AddNodeCommand tested;
 
@@ -37,7 +37,8 @@ public class AddNodeCommandTest extends AbstractCanvasCommandTest {
     public void setup() throws Exception {
         super.setup();
         when( candidate.getUUID() ).thenReturn( "uuid1" );
-        this.tested = new AddNodeCommand( candidate, SHAPE_SET_ID );
+        this.tested = new AddNodeCommand( candidate,
+                                          SHAPE_SET_ID );
     }
 
     @Test
@@ -45,17 +46,18 @@ public class AddNodeCommandTest extends AbstractCanvasCommandTest {
         final org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand graphCommand =
                 ( org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand ) tested.newGraphCommand( canvasHandler );
         assertNotNull( graphCommand );
-        assertEquals( candidate, graphCommand.getCandidate() );
+        assertEquals( candidate,
+                      graphCommand.getCandidate() );
     }
-
 
     @Test
     public void testGetCanvasCommand() {
         final AddCanvasNodeCommand canvasCommand =
                 ( AddCanvasNodeCommand ) tested.newCanvasCommand( canvasHandler );
         assertNotNull( canvasCommand );
-        assertEquals( candidate, canvasCommand.getCandidate() );
-        assertEquals( SHAPE_SET_ID, canvasCommand.getShapeSetId() );
+        assertEquals( candidate,
+                      canvasCommand.getCandidate() );
+        assertEquals( SHAPE_SET_ID,
+                      canvasCommand.getShapeSetId() );
     }
-
 }

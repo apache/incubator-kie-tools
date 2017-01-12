@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.basicset.shape.def;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.basicset.definition.PolygonWithIcon;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -27,9 +30,6 @@ import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
 import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.DynamicIconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public final class PolygonWithIconShapeDefImpl
         extends AbstractShapeDef<PolygonWithIcon>
@@ -110,7 +110,8 @@ public final class PolygonWithIconShapeDefImpl
     @Override
     public Map<ShapeDef<PolygonWithIcon>, HasChildren.Layout> getChildShapeDefs() {
         return new LinkedHashMap<ShapeDef<PolygonWithIcon>, HasChildren.Layout>() {{
-            put( new IconProxy(), HasChildren.Layout.CENTER );
+            put( new IconProxy(),
+                 HasChildren.Layout.CENTER );
         }};
     }
 
@@ -159,7 +160,5 @@ public final class PolygonWithIconShapeDefImpl
         public double getBorderAlpha( final PolygonWithIcon element ) {
             return 1;
         }
-
     }
-
 }

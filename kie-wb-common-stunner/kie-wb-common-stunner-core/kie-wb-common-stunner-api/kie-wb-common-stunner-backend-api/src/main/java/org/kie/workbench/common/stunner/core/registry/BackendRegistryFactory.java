@@ -25,9 +25,7 @@ public interface BackendRegistryFactory extends RegistryFactory {
 
     /**
      * Constructs a new synchronized diagram registry.
-     *
      * @param <T> The type of the diagram registry.
      */
     <T extends Diagram> DiagramRegistry<T> newDiagramSynchronizedRegistry();
-
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo;
 
+import javax.enterprise.context.Dependent;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
@@ -31,8 +33,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.uberfire.mvp.Command;
-
-import javax.enterprise.context.Dependent;
 
 @Dependent
 @Lienzo
@@ -51,7 +51,8 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
     @Override
     public LienzoLayer initialize( final Object view ) {
         this.layer = ( com.ait.lienzo.client.core.shape.Layer ) view;
-        this.eventHandlerManager = new ViewEventHandlerManager( layer, SUPPORTED_EVENT_TYPES );
+        this.eventHandlerManager = new ViewEventHandlerManager( layer,
+                                                                SUPPORTED_EVENT_TYPES );
         return this;
     }
 
@@ -100,7 +101,11 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
                              final int y,
                              final int width,
                              final int height ) {
-        return LienzoImageDataUtils.toImageData( getLienzoLayer(), x, y, width, height );
+        return LienzoImageDataUtils.toImageData( getLienzoLayer(),
+                                                 x,
+                                                 y,
+                                                 width,
+                                                 height );
     }
 
     @Override
@@ -131,7 +136,8 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
     @Override
     public LienzoLayer addHandler( final ViewEventType type,
                                    final ViewHandler<? extends ViewEvent> eventHandler ) {
-        eventHandlerManager.addHandler( type, eventHandler );
+        eventHandlerManager.addHandler( type,
+                                        eventHandler );
         return this;
     }
 

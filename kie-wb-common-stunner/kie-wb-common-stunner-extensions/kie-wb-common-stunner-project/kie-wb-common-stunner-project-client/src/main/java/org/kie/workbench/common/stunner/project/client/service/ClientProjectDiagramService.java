@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.project.client.service;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -29,9 +32,6 @@ import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.uberfire.backend.vfs.Path;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 /**
  * A wrapper util class for handling different diagram services for the current Guvnor Project from client side.
  */
@@ -39,14 +39,18 @@ import javax.inject.Inject;
 public class ClientProjectDiagramService extends AbstractClientDiagramService<ProjectMetadata, ProjectDiagram, ProjectDiagramService> {
 
     protected ClientProjectDiagramService() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
     public ClientProjectDiagramService( final ShapeManager shapeManager,
                                         final Caller<ProjectDiagramService> diagramServiceCaller,
                                         final Caller<DiagramLookupService> diagramLookupServiceCaller ) {
-        super( shapeManager, diagramServiceCaller, diagramLookupServiceCaller );
+        super( shapeManager,
+               diagramServiceCaller,
+               diagramLookupServiceCaller );
     }
 
     public void create( final Path path,
@@ -56,14 +60,19 @@ public class ClientProjectDiagramService extends AbstractClientDiagramService<Pr
                         final String projPkg,
                         final ServiceCallback<Path> callback ) {
         diagramServiceCaller.call( new RemoteCallback<Path>() {
-            @Override
-            public void callback( Path path ) {
-                callback.onSuccess( path );
-            }
-        }, ( message, throwable ) -> {
-            callback.onError( new ClientRuntimeError( throwable ) );
-            return false;
-        } ).create( path, name, defSetId, projName, projPkg );
+                                       @Override
+                                       public void callback( Path path ) {
+                                           callback.onSuccess( path );
+                                       }
+                                   },
+                                   ( message, throwable ) -> {
+                                       callback.onError( new ClientRuntimeError( throwable ) );
+                                       return false;
+                                   } ).create( path,
+                                               name,
+                                               defSetId,
+                                               projName,
+                                               projPkg );
     }
 
     public void saveOrUpdate( final Path path,
@@ -72,11 +81,15 @@ public class ClientProjectDiagramService extends AbstractClientDiagramService<Pr
                               final String comment,
                               final ServiceCallback<ProjectDiagram> callback ) {
         diagramServiceCaller.call( v -> {
-            updateClientMetadata( diagram );
-            callback.onSuccess( diagram );
-        }, ( message, throwable ) -> {
-            callback.onError( new ClientRuntimeError( throwable ) );
-            return false;
-        } ).save( path, diagram, metadata, comment );
+                                       updateClientMetadata( diagram );
+                                       callback.onSuccess( diagram );
+                                   },
+                                   ( message, throwable ) -> {
+                                       callback.onError( new ClientRuntimeError( throwable ) );
+                                       return false;
+                                   } ).save( path,
+                                             diagram,
+                                             metadata,
+                                             comment );
     }
 }

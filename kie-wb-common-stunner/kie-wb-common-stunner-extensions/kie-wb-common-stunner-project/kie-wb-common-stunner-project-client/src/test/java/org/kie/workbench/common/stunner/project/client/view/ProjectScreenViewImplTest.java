@@ -25,8 +25,7 @@ import org.mockito.Mock;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class ProjectScreenViewImplTest {
@@ -42,28 +41,34 @@ public class ProjectScreenViewImplTest {
 
     @Before
     public void setup() throws Exception {
-        this.tested = new ProjectScreenViewImpl( loadingPanel, widgetPanel );
+        this.tested = new ProjectScreenViewImpl( loadingPanel,
+                                                 widgetPanel );
     }
 
     @Test
     public void testSetWidget() {
         tested.setWidget( widget );
-        verify( widgetPanel, times( 1 ) ).clear();
-        verify( widgetPanel, times( 1 ) ).add( any( IsWidget.class ) );
+        verify( widgetPanel,
+                times( 1 ) ).clear();
+        verify( widgetPanel,
+                times( 1 ) ).add( any( IsWidget.class ) );
     }
 
     @Test
     public void testShowLoading() {
         tested.showLoading();
-        verify( widgetPanel, times( 1 ) ).setVisible( eq( false ) );
-        verify( loadingPanel, times( 1 ) ).setVisible( eq( true ) );
+        verify( widgetPanel,
+                times( 1 ) ).setVisible( eq( false ) );
+        verify( loadingPanel,
+                times( 1 ) ).setVisible( eq( true ) );
     }
 
     @Test
     public void testHideLoading() {
         tested.hideLoading();
-        verify( loadingPanel, times( 1 ) ).setVisible( eq( false ) );
-        verify( widgetPanel, times( 1 ) ).setVisible( eq( true ) );
+        verify( loadingPanel,
+                times( 1 ) ).setVisible( eq( false ) );
+        verify( widgetPanel,
+                times( 1 ) ).setVisible( eq( true ) );
     }
-
 }

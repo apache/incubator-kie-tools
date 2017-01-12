@@ -26,5 +26,4 @@ public interface NodeObjectBuilder<W, T extends Node<View<W>, Edge>>
     Class<?> getDefinitionClass();
 
     NodeObjectBuilder<W, T> child( String nodeId );
-
 }

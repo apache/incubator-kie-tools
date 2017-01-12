@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class ModelCardinalityRuleManagerImplTest {
@@ -38,8 +38,10 @@ public class ModelCardinalityRuleManagerImplTest {
     private final static int MIN2 = 0;
     private final static int MAX2 = 1;
 
-    @Mock CardinalityRule rule;
-    @Mock CardinalityRule rule2;
+    @Mock
+    CardinalityRule rule;
+    @Mock
+    CardinalityRule rule2;
 
     private ModelCardinalityRuleManagerImpl tested;
 
@@ -58,51 +60,64 @@ public class ModelCardinalityRuleManagerImplTest {
 
     @Test
     public void testMax1Accept() {
-        final RuleViolations violations = tested.evaluate( ROLE1, 1, RuleManager.Operation.ADD );
+        final RuleViolations violations = tested.evaluate( ROLE1,
+                                                           1,
+                                                           RuleManager.Operation.ADD );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
 
     @Test
     public void testMax1Deny() {
-        final RuleViolations violations = tested.evaluate( ROLE1, 2, RuleManager.Operation.ADD );
+        final RuleViolations violations = tested.evaluate( ROLE1,
+                                                           2,
+                                                           RuleManager.Operation.ADD );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
 
     @Test
     public void testMin1Accept() {
-        final RuleViolations violations = tested.evaluate( ROLE1, 1, RuleManager.Operation.ADD );
+        final RuleViolations violations = tested.evaluate( ROLE1,
+                                                           1,
+                                                           RuleManager.Operation.ADD );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
 
     @Test
     public void testMin1Deny() {
-        final RuleViolations violations = tested.evaluate( ROLE1, 1, RuleManager.Operation.DELETE );
+        final RuleViolations violations = tested.evaluate( ROLE1,
+                                                           1,
+                                                           RuleManager.Operation.DELETE );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
 
     @Test
     public void testMax2Accept() {
-        final RuleViolations violations = tested.evaluate( ROLE2, 0, RuleManager.Operation.ADD );
+        final RuleViolations violations = tested.evaluate( ROLE2,
+                                                           0,
+                                                           RuleManager.Operation.ADD );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
 
     @Test
     public void testMax2Deny() {
-        final RuleViolations violations = tested.evaluate( ROLE2, 1, RuleManager.Operation.ADD );
+        final RuleViolations violations = tested.evaluate( ROLE2,
+                                                           1,
+                                                           RuleManager.Operation.ADD );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
 
     @Test
     public void testMin2Accept() {
-        final RuleViolations violations = tested.evaluate( ROLE2, 2, RuleManager.Operation.DELETE );
+        final RuleViolations violations = tested.evaluate( ROLE2,
+                                                           2,
+                                                           RuleManager.Operation.DELETE );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
-
 }

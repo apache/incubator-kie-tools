@@ -19,14 +19,13 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 public interface GraphStore<T extends Element> extends Iterable<T> {
 
-    T add( T node );
+    T add( final T node );
 
-    T remove( String uuid );
+    T remove( final String uuid );
 
-    T get( String uuid );
+    T get( final String uuid );
 
     int size();
 
     void clear();
-
 }

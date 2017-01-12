@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.bootstrap;
 
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-
-import java.util.Map;
 
 class BootstrapPropertyAdapter implements PropertyAdapter<Object, Object> {
 
@@ -78,7 +78,8 @@ class BootstrapPropertyAdapter implements PropertyAdapter<Object, Object> {
     @Override
     public void setValue( final Object pojo,
                           final Object value ) {
-        getWrapped( pojo ).setValue( pojo, value );
+        getWrapped( pojo ).setValue( pojo,
+                                     value );
     }
 
     @Override
@@ -104,5 +105,4 @@ class BootstrapPropertyAdapter implements PropertyAdapter<Object, Object> {
     private PropertyAdapter<Object, Object> getWrapped( final Class<?> type ) {
         return ( PropertyAdapter<Object, Object> ) adapterRegistry.getPropertyAdapter( type );
     }
-
 }

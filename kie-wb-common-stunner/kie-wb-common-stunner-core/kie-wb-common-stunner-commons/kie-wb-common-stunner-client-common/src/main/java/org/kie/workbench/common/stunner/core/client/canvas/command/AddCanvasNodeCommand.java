@@ -34,13 +34,15 @@ public final class AddCanvasNodeCommand extends AbstractCanvasNodeRegistrationCo
     public AddCanvasNodeCommand( final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
                                  final Node candidate,
                                  final String shapeSetId ) {
-        super( treeWalkTraverseProcessor, candidate );
+        super( treeWalkTraverseProcessor,
+               candidate );
         this.shapeSetId = shapeSetId;
     }
 
     AddCanvasNodeCommand( final Node candidate,
                           final String shapeSetId ) {
-        super( new TreeWalkTraverseProcessorImpl(), candidate );
+        super( new TreeWalkTraverseProcessorImpl(),
+               candidate );
         this.shapeSetId = shapeSetId;
     }
 
@@ -51,9 +53,11 @@ public final class AddCanvasNodeCommand extends AbstractCanvasNodeRegistrationCo
 
     @Override
     @SuppressWarnings( "unchecked" )
-    protected boolean registerCandidate( AbstractCanvasHandler context ) {
-        context.register( shapeSetId, getCandidate() );
-        context.applyElementMutation( getCandidate(), MutationContext.STATIC );
+    protected boolean registerCandidate( final AbstractCanvasHandler context ) {
+        context.register( shapeSetId,
+                          getCandidate() );
+        context.applyElementMutation( getCandidate(),
+                                      MutationContext.STATIC );
         return true;
     }
 

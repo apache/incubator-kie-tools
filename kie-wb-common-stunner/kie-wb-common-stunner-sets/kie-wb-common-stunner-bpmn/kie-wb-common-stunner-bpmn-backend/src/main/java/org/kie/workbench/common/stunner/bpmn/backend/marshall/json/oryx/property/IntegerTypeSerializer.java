@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.IntegerType;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class IntegerTypeSerializer implements Bpmn2OryxPropertySerializer<Integer> {
@@ -30,12 +30,14 @@ public class IntegerTypeSerializer implements Bpmn2OryxPropertySerializer<Intege
     }
 
     @Override
-    public Integer parse( Object property, String value ) {
+    public Integer parse( Object property,
+                          String value ) {
         return Integer.parseInt( value );
     }
 
     @Override
-    public String serialize( Object property, Integer value ) {
+    public String serialize( Object property,
+                             Integer value ) {
         return Integer.toString( value );
     }
 }

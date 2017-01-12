@@ -15,9 +15,13 @@
  */
 package org.kie.workbench.common.stunner.core.definition.annotation;
 
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.*;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 
 @Inherited
 @Retention( RetentionPolicy.RUNTIME )
@@ -26,9 +30,8 @@ public @interface Property {
 
     /**
      * Specifies the meta-type for this property.
-     *
      * @see org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes
-     * <p>
+     * <p/>
      * TODO: This attribute is still not used when the annotation in present on FIELDS targets, only works for TYPES.
      * TODO: @see org.kie.workbench.common.stunner.core.processors.MainProcessor
      */

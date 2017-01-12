@@ -16,20 +16,23 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.diagram;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.metaModel.TextArea;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import javax.validation.Valid;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DOCUMENTATION;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_ID;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_NAME;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_PACKAGE;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_VERSION;
 
 @Portable
 @Bindable
@@ -40,18 +43,18 @@ public class DiagramSet {
     public static final transient String propertySetName = "BPMN Process";
 
     @Property
-    @FieldDef(label = FIELDDEF_NAME, property = "value", position = 0)
+    @FieldDef( label = FIELDDEF_NAME, property = "value", position = 0 )
     @Valid
     private Name name;
 
     @Property
-    @FieldDef(label = FIELDDEF_DOCUMENTATION, property = "value", position = 1)
-    @TextArea(rows = 3)
+    @FieldDef( label = FIELDDEF_DOCUMENTATION, property = "value", position = 1 )
+    @TextArea( rows = 3 )
     @Valid
     private Documentation documentation;
 
     @Property
-    @FieldDef( label = FIELDDEF_ID, property = "value", position = 2)
+    @FieldDef( label = FIELDDEF_ID, property = "value", position = 2 )
     @Valid
     private Id id;
 
@@ -69,9 +72,12 @@ public class DiagramSet {
     private Executable executable;
 
     public DiagramSet() {
-        this( new Name(""), new Documentation(),
-                new Id(""), new Package(""),
-                new Version(  Version.defaultValue ), new Executable() );
+        this( new Name( "" ),
+              new Documentation(),
+              new Id( "" ),
+              new Package( "" ),
+              new Version( Version.defaultValue ),
+              new Executable() );
     }
 
     public DiagramSet( @MapsTo( "name" ) Name name,
@@ -89,9 +95,12 @@ public class DiagramSet {
     }
 
     public DiagramSet( String name ) {
-        this( new Name( name ), new Documentation(),
-                new Id( "" ), new Package( "" ),
-                new Version(  Version.defaultValue ), new Executable() );
+        this( new Name( name ),
+              new Documentation(),
+              new Id( "" ),
+              new Package( "" ),
+              new Version( Version.defaultValue ),
+              new Executable() );
     }
 
     public String getPropertySetName() {
@@ -122,11 +131,11 @@ public class DiagramSet {
         return executable;
     }
 
-    public void setName(Name name) {
+    public void setName( Name name ) {
         this.name = name;
     }
 
-    public void setDocumentation(Documentation documentation) {
+    public void setDocumentation( Documentation documentation ) {
         this.documentation = documentation;
     }
 
@@ -138,7 +147,9 @@ public class DiagramSet {
         this.packageProperty = packageProperty;
     }
 
-    public void setVersion( Version version ) { this.version = version; }
+    public void setVersion( Version version ) {
+        this.version = version;
+    }
 
     public void setExecutable( Executable executable ) {
         this.executable = executable;

@@ -16,17 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.client;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 @ApplicationScoped
 public class ShapeManagerImpl implements ShapeManager {
@@ -59,7 +59,6 @@ public class ShapeManagerImpl implements ShapeManager {
             ShapeSet shapeSet = beanDef.getInstance();
             shapeSets.add( shapeSet );
         }
-
     }
 
     private void initThumbProviders() {
@@ -69,7 +68,6 @@ public class ShapeManagerImpl implements ShapeManager {
             ShapeSetThumbProvider shapeSet = beanDef.getInstance();
             thumbProviders.add( shapeSet );
         }
-
     }
 
     @Override
@@ -85,7 +83,6 @@ public class ShapeManagerImpl implements ShapeManager {
                     return shapeSet;
                 }
             }
-
         }
         return null;
     }
@@ -98,7 +95,6 @@ public class ShapeManagerImpl implements ShapeManager {
                     return shapeSet;
                 }
             }
-
         }
         return null;
     }
@@ -112,5 +108,4 @@ public class ShapeManagerImpl implements ShapeManager {
         }
         return null;
     }
-
 }

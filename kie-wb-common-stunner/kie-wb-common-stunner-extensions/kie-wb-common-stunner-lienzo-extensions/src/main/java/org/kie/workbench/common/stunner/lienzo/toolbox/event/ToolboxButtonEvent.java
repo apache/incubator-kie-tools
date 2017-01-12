@@ -29,5 +29,4 @@ public interface ToolboxButtonEvent {
     int getClientX();
 
     int getClientY();
-
 }

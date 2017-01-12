@@ -15,6 +15,9 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,11 +28,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class ModelEdgeCardinalityRuleManagerImplTest {
@@ -41,8 +41,10 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
     private final static int IMIN1 = -1;
     private final static int IMAX1 = 1;
 
-    @Mock EdgeCardinalityRule orule;
-    @Mock EdgeCardinalityRule irule;
+    @Mock
+    EdgeCardinalityRule orule;
+    @Mock
+    EdgeCardinalityRule irule;
 
     private ModelEdgeCardinalityRuleManagerImpl tested;
 
@@ -67,7 +69,11 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
             add( OROLE1 );
         }};
         final RuleViolations violations =
-                tested.evaluate( OROLE1, labels, 1, EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.ADD );
+                tested.evaluate( OROLE1,
+                                 labels,
+                                 1,
+                                 EdgeCardinalityRule.Type.OUTGOING,
+                                 RuleManager.Operation.ADD );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -78,7 +84,11 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
             add( OROLE1 );
         }};
         final RuleViolations violations =
-                tested.evaluate( OROLE1, labels, 2, EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.ADD );
+                tested.evaluate( OROLE1,
+                                 labels,
+                                 2,
+                                 EdgeCardinalityRule.Type.OUTGOING,
+                                 RuleManager.Operation.ADD );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -89,7 +99,11 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
             add( OROLE1 );
         }};
         final RuleViolations violations =
-                tested.evaluate( OROLE1, labels, 2, EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.DELETE );
+                tested.evaluate( OROLE1,
+                                 labels,
+                                 2,
+                                 EdgeCardinalityRule.Type.OUTGOING,
+                                 RuleManager.Operation.DELETE );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -100,7 +114,11 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
             add( OROLE1 );
         }};
         final RuleViolations violations =
-                tested.evaluate( OROLE1, labels, 1, EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.DELETE );
+                tested.evaluate( OROLE1,
+                                 labels,
+                                 1,
+                                 EdgeCardinalityRule.Type.OUTGOING,
+                                 RuleManager.Operation.DELETE );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -111,7 +129,11 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
             add( IROLE1 );
         }};
         final RuleViolations violations =
-                tested.evaluate( IROLE1, labels, 0, EdgeCardinalityRule.Type.INCOMING, RuleManager.Operation.ADD );
+                tested.evaluate( IROLE1,
+                                 labels,
+                                 0,
+                                 EdgeCardinalityRule.Type.INCOMING,
+                                 RuleManager.Operation.ADD );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -122,7 +144,11 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
             add( IROLE1 );
         }};
         final RuleViolations violations =
-                tested.evaluate( IROLE1, labels, 1, EdgeCardinalityRule.Type.INCOMING, RuleManager.Operation.ADD );
+                tested.evaluate( IROLE1,
+                                 labels,
+                                 1,
+                                 EdgeCardinalityRule.Type.INCOMING,
+                                 RuleManager.Operation.ADD );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -133,7 +159,11 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
             add( IROLE1 );
         }};
         final RuleViolations violations =
-                tested.evaluate( IROLE1, labels, 1, EdgeCardinalityRule.Type.INCOMING, RuleManager.Operation.DELETE );
+                tested.evaluate( IROLE1,
+                                 labels,
+                                 1,
+                                 EdgeCardinalityRule.Type.INCOMING,
+                                 RuleManager.Operation.DELETE );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -142,7 +172,8 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
     private final static int AMIN1 = 0;
     private final static int AMAX1 = -1;
 
-    @Mock EdgeCardinalityRule anotherRule;
+    @Mock
+    EdgeCardinalityRule anotherRule;
 
     @Test
     public void testMinNotNegative() {
@@ -155,9 +186,12 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
             add( AROLE1 );
         }};
         final RuleViolations violations =
-                tested.evaluate( AROLE1, labels, 0, EdgeCardinalityRule.Type.OUTGOING, RuleManager.Operation.DELETE );
+                tested.evaluate( AROLE1,
+                                 labels,
+                                 0,
+                                 EdgeCardinalityRule.Type.OUTGOING,
+                                 RuleManager.Operation.DELETE );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
-
 }

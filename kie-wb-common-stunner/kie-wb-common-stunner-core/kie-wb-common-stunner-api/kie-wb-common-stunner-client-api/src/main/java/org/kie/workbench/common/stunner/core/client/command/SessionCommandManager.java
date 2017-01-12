@@ -21,6 +21,6 @@ import org.kie.workbench.common.stunner.core.command.HasCommandRegistry;
 
 public interface SessionCommandManager<H extends CanvasHandler>
         extends CanvasCommandManager<H>,
-        HasCommandRegistry<H, CanvasViolation> {
+                HasCommandRegistry<H, CanvasViolation> {
 
 }

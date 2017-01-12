@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.shapes.client.view.animatiion;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationProperty;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.shape.Group;
 import org.kie.workbench.common.stunner.shapes.client.BasicConnector;
 import org.kie.workbench.common.stunner.shapes.client.view.BasicConnectorView;
-
-import java.util.LinkedList;
-import java.util.List;
 
 public class BasicConnectorAnimation
         extends AbstractBasicAnimation<BasicConnector> {
@@ -42,9 +42,11 @@ public class BasicConnectorAnimation
         final long duration = getDuration();
         // Shape property animations.
         final AnimationProperties _ps = translate( decoratableLineAnimationProperties );
-        group.animate( tweener, _ps, duration, getAnimationCallback() );
+        group.animate( tweener,
+                       _ps,
+                       duration,
+                       getAnimationCallback() );
         decoratableLineAnimationProperties.clear();
-
     }
 
     private AnimationProperties translate( final List<AnimationProperty> ps ) {
@@ -70,5 +72,4 @@ public class BasicConnectorAnimation
     public void animateStrokeWidth( final Double value ) {
         decoratableLineAnimationProperties.add( AnimationProperty.Properties.STROKE_WIDTH( value ) );
     }
-
 }

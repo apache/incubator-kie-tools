@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -39,11 +43,8 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
 
 @Portable
 @Bindable
@@ -67,7 +68,7 @@ public class IntermediateTimerEvent implements BPMNDefinition {
     private BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
+    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
     @Valid
     protected IntermediateTimerEventExecutionSet executionSet;
 
@@ -112,19 +113,20 @@ public class IntermediateTimerEvent implements BPMNDefinition {
         @Override
         public IntermediateTimerEvent build() {
             return new IntermediateTimerEvent( new BPMNGeneralSet( "Timer" ),
-                    new IntermediateTimerEventExecutionSet(),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet(),
-                    new CircleDimensionSet( new Radius( RADIUS ) ) );
+                                               new IntermediateTimerEventExecutionSet(),
+                                               new BackgroundSet( COLOR,
+                                                                  BORDER_COLOR,
+                                                                  BORDER_SIZE ),
+                                               new FontSet(),
+                                               new CircleDimensionSet( new Radius( RADIUS ) ) );
         }
-
     }
 
     public IntermediateTimerEvent() {
     }
 
     public IntermediateTimerEvent( @MapsTo( "general" ) BPMNGeneralSet general,
-                                   @MapsTo("executionSet") IntermediateTimerEventExecutionSet executionSet,
+                                   @MapsTo( "executionSet" ) IntermediateTimerEventExecutionSet executionSet,
                                    @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                                    @MapsTo( "fontSet" ) FontSet fontSet,
                                    @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
@@ -187,7 +189,7 @@ public class IntermediateTimerEvent implements BPMNDefinition {
         return executionSet;
     }
 
-    public void setExecutionSet(IntermediateTimerEventExecutionSet executionSet) {
+    public void setExecutionSet( IntermediateTimerEventExecutionSet executionSet ) {
         this.executionSet = executionSet;
     }
 }

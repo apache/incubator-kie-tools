@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignmen
 public interface ActivityDataIOEditorWidgetView {
 
     interface Presenter {
+
         void handleAddClick();
     }
 

@@ -50,5 +50,4 @@ public class Bpmn2OryxManager extends BaseOryxManager {
         final Set<Class<?>> defClasses = BackendBindableDefinitionUtils.getDefinitions( set );
         return defClasses;
     }
-
 }

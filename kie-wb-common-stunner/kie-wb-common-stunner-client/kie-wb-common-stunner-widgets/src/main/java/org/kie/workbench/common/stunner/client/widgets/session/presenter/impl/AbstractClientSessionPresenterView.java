@@ -23,7 +23,7 @@ public abstract class AbstractClientSessionPresenterView
         extends Composite {
 
     protected void setWidgetForPanel( final Panel panel,
-                                    final IsWidget widget ) {
+                                      final IsWidget widget ) {
         panel.clear();
         panel.add( widget );
     }
@@ -31,5 +31,4 @@ public abstract class AbstractClientSessionPresenterView
     public void destroy() {
         this.removeFromParent();
     }
-
 }

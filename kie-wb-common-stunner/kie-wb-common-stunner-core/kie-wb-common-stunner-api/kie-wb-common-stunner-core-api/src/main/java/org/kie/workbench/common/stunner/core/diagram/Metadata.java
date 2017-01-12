@@ -24,24 +24,23 @@ public interface Metadata {
 
     String getTitle();
 
-    void setTitle( String title );
+    void setTitle( final String title );
 
     String getShapeSetId();
 
-    void setShapeSetId( String id );
+    void setShapeSetId( final String id );
 
     String getCanvasRootUUID();
 
-    void setCanvasRootUUID( String uuid );
+    void setCanvasRootUUID( final String uuid );
 
     String getThumbData();
 
-    void setThumbData( String data );
+    void setThumbData( final String data );
 
     Path getPath();
 
-    void setPath( Path path );
+    void setPath( final Path path );
 
     Class<? extends Metadata> getMetadataType();
-
 }

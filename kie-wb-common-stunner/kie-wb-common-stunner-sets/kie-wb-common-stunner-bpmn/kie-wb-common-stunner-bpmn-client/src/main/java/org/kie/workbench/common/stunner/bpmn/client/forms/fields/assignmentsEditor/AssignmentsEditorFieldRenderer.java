@@ -69,5 +69,4 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
     public String getSupportedCode() {
         return AssignmentsEditorFieldDefinition.CODE;
     }
-
 }

@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.resource;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
@@ -27,27 +32,30 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.XMLSave;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 public class JBPMBpmn2ResourceImpl extends Bpmn2ResourceImpl {
 
     public HashMap xmlNameToFeatureMap = new HashMap();
 
     public JBPMBpmn2ResourceImpl( URI uri ) {
         super( uri );
-        this.getDefaultLoadOptions().put( XMLResource.OPTION_DEFER_IDREF_RESOLUTION, true );
-        this.getDefaultLoadOptions().put( XMLResource.OPTION_DISABLE_NOTIFY, true );
-        this.getDefaultLoadOptions().put( XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, xmlNameToFeatureMap );
+        this.getDefaultLoadOptions().put( XMLResource.OPTION_DEFER_IDREF_RESOLUTION,
+                                          true );
+        this.getDefaultLoadOptions().put( XMLResource.OPTION_DISABLE_NOTIFY,
+                                          true );
+        this.getDefaultLoadOptions().put( XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP,
+                                          xmlNameToFeatureMap );
         // Switch off DTD external entity processing
         Map parserFeatures = new HashMap();
-        parserFeatures.put( "http://xml.org/sax/features/external-general-entities", false );
-        parserFeatures.put( "http://xml.org/sax/features/external-parameter-entities", false );
-        this.getDefaultLoadOptions().put( XMLResource.OPTION_PARSER_FEATURES, parserFeatures );
-        this.getDefaultSaveOptions().put( XMLResource.OPTION_ENCODING, "UTF-8" );
-        this.getDefaultSaveOptions().put( XMLResource.OPTION_PROCESS_DANGLING_HREF, XMLResource.OPTION_PROCESS_DANGLING_HREF_DISCARD );
+        parserFeatures.put( "http://xml.org/sax/features/external-general-entities",
+                            false );
+        parserFeatures.put( "http://xml.org/sax/features/external-parameter-entities",
+                            false );
+        this.getDefaultLoadOptions().put( XMLResource.OPTION_PARSER_FEATURES,
+                                          parserFeatures );
+        this.getDefaultSaveOptions().put( XMLResource.OPTION_ENCODING,
+                                          "UTF-8" );
+        this.getDefaultSaveOptions().put( XMLResource.OPTION_PROCESS_DANGLING_HREF,
+                                          XMLResource.OPTION_PROCESS_DANGLING_HREF_DISCARD );
     }
 
     @Override
@@ -55,12 +63,16 @@ public class JBPMBpmn2ResourceImpl extends Bpmn2ResourceImpl {
         prepareSave();
         return new JBPMXMLSaveImpl( createXMLHelper() ) {
             @Override
-            protected boolean shouldSaveFeature( EObject o, EStructuralFeature f ) {
-                if ( Bpmn2Package.eINSTANCE.getDocumentation_Text().equals( f ) )
+            protected boolean shouldSaveFeature( EObject o,
+                                                 EStructuralFeature f ) {
+                if ( Bpmn2Package.eINSTANCE.getDocumentation_Text().equals( f ) ) {
                     return false;
-                if ( Bpmn2Package.eINSTANCE.getFormalExpression_Body().equals( f ) )
+                }
+                if ( Bpmn2Package.eINSTANCE.getFormalExpression_Body().equals( f ) ) {
                     return false;
-                return super.shouldSaveFeature( o, f );
+                }
+                return super.shouldSaveFeature( o,
+                                                f );
             }
         };
     }
@@ -72,9 +84,13 @@ public class JBPMBpmn2ResourceImpl extends Bpmn2ResourceImpl {
         return new XMLLoadImpl( createXMLHelper() ) {
 
             @Override
-            public void load( XMLResource resource, InputStream inputStream, Map<?, ?> options ) throws IOException {
+            public void load( XMLResource resource,
+                              InputStream inputStream,
+                              Map<?, ?> options ) throws IOException {
                 try {
-                    super.load( resource, inputStream, options );
+                    super.load( resource,
+                                inputStream,
+                                options );
                 } catch ( Exception e ) {
                     DiagnosticWrappedException error = new DiagnosticWrappedException( e );
                     resource.getErrors().add( error );
@@ -84,6 +100,7 @@ public class JBPMBpmn2ResourceImpl extends Bpmn2ResourceImpl {
     }
 
     class DiagnosticWrappedException extends WrappedException implements Diagnostic {
+
         private static final long serialVersionUID = 1L;
         private String location;
         private int column;

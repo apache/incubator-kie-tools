@@ -16,6 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractRuntimeAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
@@ -32,18 +41,10 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Dependent
 public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
-        implements DefinitionAdapter<T>, HasInheritance {
+        implements DefinitionAdapter<T>,
+                   HasInheritance {
 
     private static final Logger LOG = LoggerFactory.getLogger( RuntimeDefinitionAdapter.class );
 
@@ -73,13 +74,15 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public Object getMetaProperty( PropertyMetaTypes metaType, T pojo ) {
+    public Object getMetaProperty( final PropertyMetaTypes metaType,
+                                   final T pojo ) {
         Set<?> properties = getProperties( pojo );
         if ( null != properties ) {
             return properties
                     .stream()
                     .filter( property -> {
-                        Property p = getClassAnnotation( property.getClass(), Property.class );
+                        Property p = getClassAnnotation( property.getClass(),
+                                                         Property.class );
                         return null != p && metaType.equals( p.meta() );
                     } )
                     .findFirst()
@@ -89,9 +92,10 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public String getCategory( T definition ) {
+    public String getCategory( final T definition ) {
         try {
-            return getAnnotatedFieldValue( definition, Category.class );
+            return getAnnotatedFieldValue( definition,
+                                           Category.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated category for Definition with id " + getId( definition ) );
         }
@@ -99,9 +103,10 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public String getTitle( T definition ) {
+    public String getTitle( final T definition ) {
         try {
-            return getAnnotatedFieldValue( definition, Title.class );
+            return getAnnotatedFieldValue( definition,
+                                           Title.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated title for Definition with id " + getId( definition ) );
         }
@@ -109,9 +114,10 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public String getDescription( T definition ) {
+    public String getDescription( final T definition ) {
         try {
-            return getAnnotatedFieldValue( definition, Description.class );
+            return getAnnotatedFieldValue( definition,
+                                           Description.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated description for Definition with id " + getId( definition ) );
         }
@@ -119,9 +125,10 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public Set<String> getLabels( T definition ) {
+    public Set<String> getLabels( final T definition ) {
         try {
-            return getAnnotatedFieldValue( definition, Labels.class );
+            return getAnnotatedFieldValue( definition,
+                                           Labels.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated labels for Definition with id " + getId( definition ) );
         }
@@ -130,12 +137,15 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
 
     @Override
     public Set<?> getPropertySets( final T definition ) {
-        Collection<Field> fields = getFieldAnnotations( definition.getClass(), PropertySet.class );
+        Collection<Field> fields = getFieldAnnotations( definition.getClass(),
+                                                        PropertySet.class );
         if ( null != fields ) {
             Set<Object> result = new LinkedHashSet<>();
             fields.forEach( field -> {
                 try {
-                    Object v = _getValue( field, PropertySet.class, definition );
+                    Object v = _getValue( field,
+                                          PropertySet.class,
+                                          definition );
                     result.add( v );
                 } catch ( Exception e ) {
                     LOG.error( "Error obtaining annotated property sets for Definition with id " + getId( definition ) );
@@ -155,11 +165,14 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
             if ( null != propertySetProperties ) {
                 result.addAll( propertySetProperties );
             }
-            Collection<Field> fields = getFieldAnnotations( definition.getClass(), Property.class );
+            Collection<Field> fields = getFieldAnnotations( definition.getClass(),
+                                                            Property.class );
             if ( null != fields ) {
                 fields.forEach( field -> {
                     try {
-                        Object v = _getValue( field, Property.class, definition );
+                        Object v = _getValue( field,
+                                              Property.class,
+                                              definition );
                         result.add( v );
                     } catch ( Exception e ) {
                         LOG.error( "Error obtaining annotated properties for Definition with id " + getId( definition ) );
@@ -172,7 +185,9 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @SuppressWarnings( "unchecked" )
-    private <V> V _getValue( Field field, Object annotation, T definition ) throws IllegalAccessException {
+    private <V> V _getValue( final Field field,
+                             final Object annotation,
+                             final T definition ) throws IllegalAccessException {
         if ( null != annotation ) {
             field.setAccessible( true );
             return ( V ) field.get( definition );
@@ -191,9 +206,10 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
         return null != annotation ? annotation.graphFactory() : null;
     }
 
-    protected static Definition getDefinitionAnnotation( Class<?> type ) {
+    protected static Definition getDefinitionAnnotation( final Class<?> type ) {
         if ( null != type ) {
-            Definition annotation = getClassAnnotation( type, Definition.class );
+            Definition annotation = getClassAnnotation( type,
+                                                        Definition.class );
             if ( null != annotation ) {
                 return annotation;
             }
@@ -202,9 +218,10 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public String getBaseType( Class<?> type ) {
+    public String getBaseType( final Class<?> type ) {
         if ( null != type ) {
-            Definition annotation = getClassAnnotation( type, Definition.class );
+            Definition annotation = getClassAnnotation( type,
+                                                        Definition.class );
             if ( null != annotation ) {
                 Class<?> parentType = type.getSuperclass();
                 if ( isBaseType( parentType ) ) {
@@ -216,11 +233,11 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public String[] getTypes( String baseType ) {
+    public String[] getTypes( final String baseType ) {
         throw new UnsupportedOperationException( "Not implemented yet. Must keep some collection for this. " );
     }
 
-    private boolean isBaseType( Class<?> type ) {
+    private boolean isBaseType( final Class<?> type ) {
         Field[] fields = type.getDeclaredFields();
         if ( null != fields ) {
             for ( Field field : fields ) {

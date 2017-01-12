@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,11 +31,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.logging.Logger;
 
 @Dependent
 public class TreeExplorerItem implements IsWidget {
@@ -80,7 +80,9 @@ public class TreeExplorerItem implements IsWidget {
         final ShapeFactory factory = shapeManager.getShapeSet( shapeSetId ).getShapeFactory();
         view.setUUID( element.getUUID() )
                 .setName( getItemText( element ) )
-                .setGlyph( factory.glyph( defId, 25, 25 ) );
+                .setGlyph( factory.glyph( defId,
+                                          25,
+                                          25 ) );
     }
 
     private String getItemText( final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> item ) {

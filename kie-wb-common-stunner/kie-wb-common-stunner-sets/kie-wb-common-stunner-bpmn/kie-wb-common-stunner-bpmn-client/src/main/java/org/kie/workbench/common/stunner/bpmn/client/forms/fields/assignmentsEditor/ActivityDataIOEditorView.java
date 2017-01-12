@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 public interface ActivityDataIOEditorView {
 
     interface Presenter {
+
         void handleSaveClick();
 
         void handleCancelClick();

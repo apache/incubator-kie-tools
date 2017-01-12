@@ -16,12 +16,23 @@
 
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.ShapeSetsMenuItemsBuilder;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.diagrams.DiagramsNavigator;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.WorkbenchContextId;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
@@ -31,13 +42,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -76,7 +80,9 @@ public class NavigatorScreen {
                         .newTopLevelMenu( "Load" )
                         .respondsWith( getLoadDiagramsCommand() )
                         .endMenu();
-        m.newTopLevelMenu( newDiagramMenuItemsBuilder.build( "Create", "Create a new", NavigatorScreen.this::create ) ).endMenu();
+        m.newTopLevelMenu( newDiagramMenuItemsBuilder.build( "Create",
+                                                             "Create a new",
+                                                             NavigatorScreen.this::create ) ).endMenu();
         return m.build();
     }
 
@@ -114,10 +120,12 @@ public class NavigatorScreen {
     }
 
     void onLoadDiagramEvent( @Observes LoadDiagramEvent loadDiagramEvent ) {
-        checkNotNull( "loadDiagramEvent", loadDiagramEvent );
+        checkNotNull( "loadDiagramEvent",
+                      loadDiagramEvent );
         final String name = loadDiagramEvent.getName();
         Map<String, String> params = new HashMap<String, String>();
-        params.put( "name", name );
+        params.put( "name",
+                    name );
         open( params );
     }
 
@@ -125,14 +133,18 @@ public class NavigatorScreen {
         final String shapSetName = shapeSet.getName();
         final String defSetId = shapeSet.getDefinitionSetId();
         Map<String, String> params = new HashMap<String, String>();
-        params.put( "defSetId", defSetId );
-        params.put( "shapeSetId", shapeSet.getId() );
-        params.put( "title", "New " + shapSetName + " diagram" );
+        params.put( "defSetId",
+                    defSetId );
+        params.put( "shapeSetId",
+                    shapeSet.getId() );
+        params.put( "title",
+                    "New " + shapSetName + " diagram" );
         open( params );
     }
 
     private void open( final Map<String, String> params ) {
-        PlaceRequest diagramScreenPlaceRequest = new DefaultPlaceRequest( DiagramScreen.SCREEN_ID, params );
+        PlaceRequest diagramScreenPlaceRequest = new DefaultPlaceRequest( DiagramScreen.SCREEN_ID,
+                                                                          params );
         placeManager.goTo( diagramScreenPlaceRequest );
     }
 }

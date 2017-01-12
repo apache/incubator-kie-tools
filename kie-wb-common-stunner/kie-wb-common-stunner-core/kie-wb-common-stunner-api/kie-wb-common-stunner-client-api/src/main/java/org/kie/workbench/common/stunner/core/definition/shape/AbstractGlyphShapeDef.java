@@ -29,5 +29,4 @@ public abstract class AbstractGlyphShapeDef<W>
     public String getGlyphDefinitionId( final String definitionId ) {
         return definitionId;
     }
-
 }

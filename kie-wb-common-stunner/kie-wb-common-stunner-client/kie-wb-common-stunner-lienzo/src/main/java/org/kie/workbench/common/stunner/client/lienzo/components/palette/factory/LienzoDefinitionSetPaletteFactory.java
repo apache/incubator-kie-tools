@@ -21,4 +21,5 @@ import org.kie.workbench.common.stunner.core.client.components.palette.factory.P
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 
 public interface LienzoDefinitionSetPaletteFactory extends PaletteFactory<DefinitionSetPalette, LienzoDefinitionSetPalette> {
+
 }

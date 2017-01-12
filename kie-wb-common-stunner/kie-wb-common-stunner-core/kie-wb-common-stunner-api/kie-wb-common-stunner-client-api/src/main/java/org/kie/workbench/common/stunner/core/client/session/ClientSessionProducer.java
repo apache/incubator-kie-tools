@@ -36,5 +36,4 @@ public interface ClientSessionProducer<C extends Canvas, H extends CanvasHandler
      * Creates a new client session with all features.
      */
     ClientFullSession<C, H> newFullSession();
-
 }

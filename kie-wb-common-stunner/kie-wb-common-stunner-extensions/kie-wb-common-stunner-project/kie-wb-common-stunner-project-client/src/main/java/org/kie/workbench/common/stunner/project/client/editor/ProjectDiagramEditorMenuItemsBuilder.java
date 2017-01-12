@@ -15,6 +15,9 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -30,9 +33,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 // TODO: I18n.
 @ApplicationScoped
@@ -103,8 +103,8 @@ public class ProjectDiagramEditorMenuItemsBuilder {
             setIcon( IconType.ERASER );
             setTitle( "Clear" );
             addClickHandler( clickEvent ->
-                    ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command,
-                            getConfirmMessage() + " This operation cannot be reverted." ) );
+                                     ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command,
+                                                                                                   getConfirmMessage() + " This operation cannot be reverted." ) );
         }};
     }
 
@@ -220,17 +220,21 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         }};
     }
 
-    private  void executeWithConfirm( final Command command ) {
-        this.executeWithConfirm( command, getConfirmMessage() );
+    private void executeWithConfirm( final Command command ) {
+        this.executeWithConfirm( command,
+                                 getConfirmMessage() );
     }
 
-    private  void executeWithConfirm( final Command command,
-                                      final String message ) {
+    private void executeWithConfirm( final Command command,
+                                     final String message ) {
         final Command yesCommand = command::execute;
         final Command noCommand = () -> {
         };
         final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup( getConfirmTitle(),
-                message, yesCommand, noCommand, noCommand );
+                                                                             message,
+                                                                             yesCommand,
+                                                                             noCommand,
+                                                                             noCommand );
         popup.show();
     }
 
@@ -259,5 +263,4 @@ public class ProjectDiagramEditorMenuItemsBuilder {
             }
         }.build();
     }
-
 }

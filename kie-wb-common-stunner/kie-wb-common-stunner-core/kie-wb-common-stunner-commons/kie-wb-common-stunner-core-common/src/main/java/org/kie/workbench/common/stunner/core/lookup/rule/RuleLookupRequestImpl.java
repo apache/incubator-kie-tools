@@ -16,24 +16,26 @@
 
 package org.kie.workbench.common.stunner.core.lookup.rule;
 
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequestBuilder;
 
-import java.util.Set;
-
 @Portable
 public final class RuleLookupRequestImpl extends AbstractLookupRequest implements RuleLookupRequest {
 
     private final String definitionSetId;
 
-    public RuleLookupRequestImpl( @MapsTo( "criteria" ) String criteria,
-                                  @MapsTo( "page" ) int page,
-                                  @MapsTo( "pageSize" ) int pageSize,
-                                  @MapsTo( "definitionSetId" ) String definitionSetId ) {
-        super( criteria, page, pageSize );
+    public RuleLookupRequestImpl( final @MapsTo( "criteria" ) String criteria,
+                                  final @MapsTo( "page" ) int page,
+                                  final @MapsTo( "pageSize" ) int pageSize,
+                                  final @MapsTo( "definitionSetId" ) String definitionSetId ) {
+        super( criteria,
+               page,
+               pageSize );
         this.definitionSetId = definitionSetId;
     }
 
@@ -46,11 +48,15 @@ public final class RuleLookupRequestImpl extends AbstractLookupRequest implement
     public static class Builder extends AbstractLookupRequestBuilder<Builder> {
 
         public enum RuleType {
-            CONNECTION, CONTAINMENT, CARDINALITY, EDGECARDINALITY;
+            CONNECTION,
+            CONTAINMENT,
+            CARDINALITY,
+            EDGECARDINALITY;
         }
 
         public enum EdgeType {
-            INCOMING, OUTGOING;
+            INCOMING,
+            OUTGOING;
         }
 
         private String defSetId;
@@ -92,9 +98,10 @@ public final class RuleLookupRequestImpl extends AbstractLookupRequest implement
         }
 
         public RuleLookupRequest build() {
-            return new RuleLookupRequestImpl( criteria.toString(), page, pageSize, defSetId );
+            return new RuleLookupRequestImpl( criteria.toString(),
+                                              page,
+                                              pageSize,
+                                              defSetId );
         }
-
     }
-
 }

@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -29,9 +32,6 @@ import org.kie.workbench.common.stunner.shapes.def.WrappedBasicNamedShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.IconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class IntermediateTimerEventShapeDef
         extends AbstractShapeDef<IntermediateTimerEvent>
@@ -109,12 +109,18 @@ public final class IntermediateTimerEventShapeDef
     @Override
     public Map<ShapeDef<IntermediateTimerEvent>, HasChildren.Layout> getChildShapeDefs() {
         return new HashMap<ShapeDef<IntermediateTimerEvent>, HasChildren.Layout>() {{
-            put( new Circle1Proxy( IntermediateTimerEventShapeDef.this ), HasChildren.Layout.CENTER );
-            put( new Circle2Proxy( IntermediateTimerEventShapeDef.this ), HasChildren.Layout.CENTER );
-            put( new Circle3Proxy( IntermediateTimerEventShapeDef.this ), HasChildren.Layout.CENTER );
-            put( new Circle4Proxy( IntermediateTimerEventShapeDef.this ), HasChildren.Layout.CENTER );
-            put( new Circle5Proxy( IntermediateTimerEventShapeDef.this ), HasChildren.Layout.CENTER );
-            put( new TimerIconProxy(), HasChildren.Layout.CENTER );
+            put( new Circle1Proxy( IntermediateTimerEventShapeDef.this ),
+                 HasChildren.Layout.CENTER );
+            put( new Circle2Proxy( IntermediateTimerEventShapeDef.this ),
+                 HasChildren.Layout.CENTER );
+            put( new Circle3Proxy( IntermediateTimerEventShapeDef.this ),
+                 HasChildren.Layout.CENTER );
+            put( new Circle4Proxy( IntermediateTimerEventShapeDef.this ),
+                 HasChildren.Layout.CENTER );
+            put( new Circle5Proxy( IntermediateTimerEventShapeDef.this ),
+                 HasChildren.Layout.CENTER );
+            put( new TimerIconProxy(),
+                 HasChildren.Layout.CENTER );
         }};
     }
 
@@ -146,8 +152,6 @@ public final class IntermediateTimerEventShapeDef
         public Icons getIcon( final IntermediateTimerEvent element ) {
             return Icons.TIMER;
         }
-
-
     }
 
     // Outer circle #1.
@@ -160,7 +164,8 @@ public final class IntermediateTimerEventShapeDef
 
         @Override
         public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element, 1 );
+            return percent( element,
+                            1 );
         }
 
         @Override
@@ -189,7 +194,8 @@ public final class IntermediateTimerEventShapeDef
 
         @Override
         public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element, 0.8 );
+            return percent( element,
+                            0.8 );
         }
 
         @Override
@@ -218,7 +224,8 @@ public final class IntermediateTimerEventShapeDef
 
         @Override
         public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element, 1 );
+            return percent( element,
+                            1 );
         }
 
         @Override
@@ -247,7 +254,8 @@ public final class IntermediateTimerEventShapeDef
 
         @Override
         public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element, 0.8 );
+            return percent( element,
+                            0.8 );
         }
 
         @Override
@@ -276,7 +284,8 @@ public final class IntermediateTimerEventShapeDef
 
         @Override
         public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element, 0.67 );
+            return percent( element,
+                            0.67 );
         }
 
         @Override
@@ -295,13 +304,15 @@ public final class IntermediateTimerEventShapeDef
         }
     }
 
-    private double percent( final IntermediateTimerEvent element, final double pct ) {
+    private double percent( final IntermediateTimerEvent element,
+                            final double pct ) {
         final double radius = IntermediateTimerEventShapeDef.this.getRadius( element );
-        return percent( radius, pct );
+        return percent( radius,
+                        pct );
     }
 
-    private static double percent( final double value, final double pct ) {
+    private static double percent( final double value,
+                                   final double pct ) {
         return ( value * pct );
     }
-
 }

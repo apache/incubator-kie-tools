@@ -24,5 +24,4 @@ public final class CanvasClearSelectionEvent extends AbstractCanvasHandlerEvent<
     public CanvasClearSelectionEvent( final CanvasHandler canvasHandler ) {
         super( canvasHandler );
     }
-
 }

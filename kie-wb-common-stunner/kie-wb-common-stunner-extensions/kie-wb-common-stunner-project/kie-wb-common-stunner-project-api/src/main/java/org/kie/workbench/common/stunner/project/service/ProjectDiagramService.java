@@ -25,7 +25,9 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 
 @Remote
-public interface ProjectDiagramService extends BaseDiagramService<ProjectMetadata, ProjectDiagram>, SupportsUpdate<ProjectDiagram>, SupportsDelete {
+public interface ProjectDiagramService extends BaseDiagramService<ProjectMetadata, ProjectDiagram>,
+                                               SupportsUpdate<ProjectDiagram>,
+                                               SupportsDelete {
 
     Path create( final Path path,
                  final String name,

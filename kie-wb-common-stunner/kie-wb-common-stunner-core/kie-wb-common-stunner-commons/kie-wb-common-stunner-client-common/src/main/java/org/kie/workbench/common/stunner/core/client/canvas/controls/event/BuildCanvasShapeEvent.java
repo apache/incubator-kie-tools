@@ -75,5 +75,4 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
         return "PaletteShapeSelectedEvent [definition=" + definition + ", factory=" + shapeFactory.toString() +
                 ", x=" + x + ", y=" + y + "]";
     }
-
 }

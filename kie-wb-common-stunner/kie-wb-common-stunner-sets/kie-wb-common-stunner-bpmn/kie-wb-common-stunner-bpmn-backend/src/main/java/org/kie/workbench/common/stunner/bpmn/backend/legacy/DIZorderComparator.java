@@ -15,42 +15,51 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.legacy;
 
-import org.eclipse.bpmn2.*;
+import java.util.Comparator;
+import java.util.List;
+
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.LaneSet;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.dd.di.DiagramElement;
 
-import java.util.Comparator;
-import java.util.List;
-
 public final class DIZorderComparator implements Comparator<DiagramElement> {
+
     @Override
-    public int compare( DiagramElement a, DiagramElement b ) {
+    public int compare( DiagramElement a,
+                        DiagramElement b ) {
         boolean aShape = a instanceof BPMNShape;
         boolean bShape = b instanceof BPMNShape;
         boolean aEdge = a instanceof BPMNEdge;
         boolean bEdge = b instanceof BPMNEdge;
         if ( aShape && bEdge ) {
             return -1;
-
         } else if ( aEdge && bShape ) {
             return 1;
         }
         if ( aShape && bShape ) {
-            return compareShape( ( BPMNShape ) a, ( BPMNShape ) b );
+            return compareShape( ( BPMNShape ) a,
+                                 ( BPMNShape ) b );
         }
         return 0;
     }
 
-    private int compareShape( BPMNShape a, BPMNShape b ) {
+    private int compareShape( BPMNShape a,
+                              BPMNShape b ) {
         BaseElement aElem = a.getBpmnElement();
         BaseElement bElem = b.getBpmnElement();
         boolean aIsSecondTier = aElem instanceof Lane || aElem instanceof SubProcess;
         boolean bIsSecondTier = bElem instanceof Lane || bElem instanceof SubProcess;
         if ( aIsSecondTier && bIsSecondTier ) {
-            if ( isParent( aElem, bElem ) ) {
+            if ( isParent( aElem,
+                           bElem ) ) {
                 return -1;
-            } else if ( isParent( bElem, aElem ) ) {
+            } else if ( isParent( bElem,
+                                  aElem ) ) {
                 return 1;
             }
             return 0;
@@ -62,12 +71,14 @@ public final class DIZorderComparator implements Comparator<DiagramElement> {
         return 0;
     }
 
-    private boolean isParent( BaseElement parent, BaseElement child ) {
+    private boolean isParent( BaseElement parent,
+                              BaseElement child ) {
         if ( child instanceof FlowNode ) {
             if ( ( ( FlowNode ) child ).getLanes().contains( parent ) ) {
                 return true;
             } else if ( parent instanceof Lane ) {
-                return isChildParent( parent, child );
+                return isChildParent( parent,
+                                      child );
             }
         } else if ( parent instanceof Lane ) {
             if ( child instanceof Lane ) {
@@ -78,24 +89,26 @@ public final class DIZorderComparator implements Comparator<DiagramElement> {
                 if ( ( ( Lane ) parent ).getChildLaneSet().getLanes().contains( child ) ) {
                     return true;
                 }
-                return isChildParent( parent, child );
+                return isChildParent( parent,
+                                      child );
             }
         }
         return false;
     }
 
-    private boolean isChildParent( BaseElement parent, BaseElement child ) {
+    private boolean isChildParent( BaseElement parent,
+                                   BaseElement child ) {
         LaneSet childLaneSet = ( ( Lane ) parent ).getChildLaneSet();
         if ( childLaneSet == null ) {
             return false;
         }
         List<Lane> lanes = childLaneSet.getLanes();
         for ( Lane lane : lanes ) {
-            if ( isParent( lane, child ) ) {
+            if ( isParent( lane,
+                           child ) ) {
                 return true;
             }
         }
         return false;
     }
-
 }

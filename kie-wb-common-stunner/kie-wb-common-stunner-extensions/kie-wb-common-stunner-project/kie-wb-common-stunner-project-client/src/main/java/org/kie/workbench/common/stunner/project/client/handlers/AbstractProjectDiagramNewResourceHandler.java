@@ -15,6 +15,9 @@
 
 package org.kie.workbench.common.stunner.project.client.handlers;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -30,9 +33,6 @@ import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientResourceType> extends DefaultNewResourceHandler {
 
@@ -69,22 +69,27 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
         final String setId = getId( type );
         final String projPkg = pkg.getPackageName();
         final String projName = pkg.getProjectRootPath().getFileName();
-        projectDiagramServices.create( path, name, setId, projName, projPkg, new ServiceCallback<Path>() {
-            @Override
-            public void onSuccess( Path path ) {
-                BusyPopup.close();
-                presenter.complete();
-                notifySuccess();
-                PlaceRequest place = new PathPlaceRequest( path, getEditorIdentifier() );
-                placeManager.goTo( place );
-            }
+        projectDiagramServices.create( path,
+                                       name,
+                                       setId,
+                                       projName,
+                                       projPkg,
+                                       new ServiceCallback<Path>() {
+                                           @Override
+                                           public void onSuccess( Path path ) {
+                                               BusyPopup.close();
+                                               presenter.complete();
+                                               notifySuccess();
+                                               PlaceRequest place = new PathPlaceRequest( path,
+                                                                                          getEditorIdentifier() );
+                                               placeManager.goTo( place );
+                                           }
 
-            @Override
-            public void onError( ClientRuntimeError error ) {
-                showError( error );
-            }
-        } );
-
+                                           @Override
+                                           public void onError( ClientRuntimeError error ) {
+                                               showError( error );
+                                           }
+                                       } );
     }
 
     private String getId( final Class<?> type ) {
@@ -94,15 +99,17 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
 
     private void showError( final ClientRuntimeError error ) {
         final String msg = error.toString();
-        log( Level.SEVERE, msg );
+        log( Level.SEVERE,
+             msg );
         ErrorPopup.showMessage( msg );
         BusyPopup.close();
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
-
 }

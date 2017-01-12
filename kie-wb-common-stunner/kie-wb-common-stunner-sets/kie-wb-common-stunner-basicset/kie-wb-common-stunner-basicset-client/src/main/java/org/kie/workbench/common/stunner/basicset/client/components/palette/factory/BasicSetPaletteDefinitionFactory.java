@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.basicset.client.components.palette.factory;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.basicset.BasicSet;
 import org.kie.workbench.common.stunner.basicset.definition.BasicConnector;
 import org.kie.workbench.common.stunner.basicset.definition.Categories;
@@ -26,27 +31,30 @@ import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-
 // TODO: i18n.
 @Dependent
 public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
 
     private static final Map<String, String> CAT_TITLES = new HashMap<String, String>( 6 ) {{
-        put( Categories.BASIC, "Basic shapes" );
-        put( Categories.BASIC_WITH_ICONS, "Basic shapes with inner icons" );
-        put( Categories.ICONS, "Icons" );
-        put( Categories.CONNECTORS, "Connectors" );
+        put( Categories.BASIC,
+             "Basic shapes" );
+        put( Categories.BASIC_WITH_ICONS,
+             "Basic shapes with inner icons" );
+        put( Categories.ICONS,
+             "Icons" );
+        put( Categories.CONNECTORS,
+             "Connectors" );
     }};
 
     private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>( 1 ) {{
-        put( Categories.BASIC, Rectangle.class );
-        put( Categories.BASIC_WITH_ICONS, PolygonWithIcon.class );
-        put( Categories.ICONS, UserIcon.class );
-        put( Categories.CONNECTORS, BasicConnector.class );
+        put( Categories.BASIC,
+             Rectangle.class );
+        put( Categories.BASIC_WITH_ICONS,
+             PolygonWithIcon.class );
+        put( Categories.ICONS,
+             UserIcon.class );
+        put( Categories.CONNECTORS,
+             BasicConnector.class );
     }};
 
     private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>( 0 ) {{
@@ -55,7 +63,8 @@ public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefin
     @Inject
     public BasicSetPaletteDefinitionFactory( final ShapeManager shapeManager,
                                              final DefinitionSetPaletteBuilder paletteBuilder ) {
-        super( shapeManager, paletteBuilder );
+        super( shapeManager,
+               paletteBuilder );
     }
 
     @Override
@@ -96,5 +105,4 @@ public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefin
     protected Class<?> getDefinitionSetType() {
         return BasicSet.class;
     }
-
 }

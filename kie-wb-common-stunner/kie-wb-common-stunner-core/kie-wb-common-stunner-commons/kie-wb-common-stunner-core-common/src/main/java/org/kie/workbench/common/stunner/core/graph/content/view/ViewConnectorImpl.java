@@ -22,13 +22,14 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 @Portable
 public final class ViewConnectorImpl<W> implements ViewConnector<W> {
+
     protected W definition;
     protected Bounds bounds;
     protected Integer sourceMagnetIndex;
     protected Integer targetMagnetIndex;
 
-    public ViewConnectorImpl( @MapsTo( "definition" ) W definition,
-                              @MapsTo( "bounds" ) Bounds bounds ) {
+    public ViewConnectorImpl( final @MapsTo( "definition" ) W definition,
+                              final @MapsTo( "bounds" ) Bounds bounds ) {
         this.definition = definition;
         this.bounds = bounds;
         this.sourceMagnetIndex = 0;

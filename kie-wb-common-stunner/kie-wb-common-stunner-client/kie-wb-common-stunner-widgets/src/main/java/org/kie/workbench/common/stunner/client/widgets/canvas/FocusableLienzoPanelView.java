@@ -17,7 +17,11 @@ package org.kie.workbench.common.stunner.client.widgets.canvas;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -29,7 +33,7 @@ public class FocusableLienzoPanelView extends com.ait.lienzo.client.widget.Lienz
     public FocusableLienzoPanelView( final int width,
                                      final int height ) {
         super( width,
-                height );
+               height );
         //Basic support to loose focus on other Widgets when a WiresCanvas is clicked
         addMouseDownHandler( new MouseDownHandler() {
             @Override
@@ -50,8 +54,7 @@ public class FocusableLienzoPanelView extends com.ait.lienzo.client.widget.Lienz
         for ( int i = 0; i < RootPanel.get().getWidgetCount(); i++ ) {
             final Widget w = RootPanel.get().getWidget( i );
             DomEvent.fireNativeEvent( blur,
-                    w );
+                                      w );
         }
     }
-
 }

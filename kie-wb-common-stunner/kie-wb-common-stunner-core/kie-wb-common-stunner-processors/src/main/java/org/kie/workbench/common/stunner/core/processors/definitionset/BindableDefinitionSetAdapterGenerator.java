@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.processors.definitionset;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.processing.Messager;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapterProxy;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingDefinitionSetAnnotations;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BindableDefinitionSetAdapterGenerator extends AbstractBindableAdapterGenerator {
 
@@ -33,25 +33,36 @@ public class BindableDefinitionSetAdapterGenerator extends AbstractBindableAdapt
         return "BindableDefinitionSetAdapter.ftl";
     }
 
-    public StringBuffer generate( String packageName, String className,
-                                  ProcessingDefinitionSetAnnotations processingDefinitionSetAnnotations,
-                                  Messager messager ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final String className,
+                                  final ProcessingDefinitionSetAnnotations processingDefinitionSetAnnotations,
+                                  final Messager messager ) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
-                packageName );
+                  packageName );
         root.put( "className",
-                className );
+                  className );
         root.put( "parentAdapterClassName",
-                BindableDefinitionSetAdapterProxy.class.getName() );
-        root.put( "adapterFactoryClassName", BindableAdapterFactory.class.getName() );
+                  BindableDefinitionSetAdapterProxy.class.getName() );
+        root.put( "adapterFactoryClassName",
+                  BindableAdapterFactory.class.getName() );
         root.put( "generatedByClassName",
-                BindableDefinitionSetAdapterGenerator.class.getName() );
-        addFields( "graphFactoryTypes", root, processingDefinitionSetAnnotations.getGraphFactoryTypes() );
-        addFields( "valuePropNames", root, processingDefinitionSetAnnotations.getDescriptionFieldNames() );
-        root.put( "definitionIds", processingDefinitionSetAnnotations.getDefinitionIds() );
-        root.put( "definitionIdsSize", processingDefinitionSetAnnotations.getDefinitionIds().size() );
-        //Generate code
-        return writeTemplate( packageName, className, root, messager );
-    }
+                  BindableDefinitionSetAdapterGenerator.class.getName() );
+        addFields( "graphFactoryTypes",
+                   root,
+                   processingDefinitionSetAnnotations.getGraphFactoryTypes() );
+        addFields( "valuePropNames",
+                   root,
+                   processingDefinitionSetAnnotations.getDescriptionFieldNames() );
+        root.put( "definitionIds",
+                  processingDefinitionSetAnnotations.getDefinitionIds() );
+        root.put( "definitionIdsSize",
+                  processingDefinitionSetAnnotations.getDefinitionIds().size() );
 
+        //Generate code
+        return writeTemplate( packageName,
+                              className,
+                              root,
+                              messager );
+    }
 }

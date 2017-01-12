@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -30,18 +37,10 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -55,7 +54,16 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
     private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
 
     protected ObserverBuilderControl() {
-        this( null, null, null, null, null, null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -69,15 +77,22 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                                    final GraphBoundsIndexer graphBoundsIndexer,
                                    final CanvasLayoutUtils canvasLayoutUtils,
                                    final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
-        super( clientDefinitionManager, clientFactoryServices, canvasCommandManager, graphUtils,
-                modelContainmentRuleManager, modelCardinalityRuleManager, canvasCommandFactory,
-                graphBoundsIndexer, canvasLayoutUtils );
+        super( clientDefinitionManager,
+               clientFactoryServices,
+               canvasCommandManager,
+               graphUtils,
+               modelContainmentRuleManager,
+               modelCardinalityRuleManager,
+               canvasCommandFactory,
+               graphBoundsIndexer,
+               canvasLayoutUtils );
         this.elementSelectedEvent = elementSelectedEvent;
     }
 
     @SuppressWarnings( "unchecked" )
-    void onBuildCanvasShape( @Observes BuildCanvasShapeEvent buildCanvasShapeEvent ) {
-        checkNotNull( "buildCanvasShapeEvent", buildCanvasShapeEvent );
+    void onBuildCanvasShape( final @Observes BuildCanvasShapeEvent buildCanvasShapeEvent ) {
+        checkNotNull( "buildCanvasShapeEvent",
+                      buildCanvasShapeEvent );
         if ( null != canvasHandler ) {
             final CanvasHandler context = buildCanvasShapeEvent.getCanvasHandler();
             if ( null != context && context.equals( canvasHandler ) ) {
@@ -86,22 +101,25 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                 final double y = buildCanvasShapeEvent.getY();
                 final double _x = x >= 0 ? x - canvasHandler.getCanvas().getAbsoluteX() : -1;
                 final double _y = y >= 0 ? y - canvasHandler.getCanvas().getAbsoluteY() : -1;
-                final ElementBuildRequest<AbstractCanvasHandler> request =
-                        new ElementBuildRequestImpl( _x, _y, definition );
-                ObserverBuilderControl.this.build( request, new BuildCallback() {
-                    @Override
-                    public void onSuccess( final String uuid ) {
-                        canvasHandler.getCanvas().draw();
-                        elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler, uuid ) );
-                    }
+                final ElementBuildRequest<AbstractCanvasHandler> request = new ElementBuildRequestImpl( _x,
+                                                                                                        _y,
+                                                                                                        definition );
+                ObserverBuilderControl.this.build( request,
+                                                   new BuildCallback() {
+                                                       @Override
+                                                       public void onSuccess( final String uuid ) {
+                                                           canvasHandler.getCanvas().draw();
+                                                           elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
+                                                                                                                      uuid ) );
+                                                       }
 
-                    @Override
-                    public void onError( final ClientRuntimeError error ) {
-                        LOGGER.log( Level.SEVERE, error.toString() );
-                    }
-                } );
+                                                       @Override
+                                                       public void onError( final ClientRuntimeError error ) {
+                                                           LOGGER.log( Level.SEVERE,
+                                                                       error.toString() );
+                                                       }
+                                                   } );
             }
         }
     }
-
 }

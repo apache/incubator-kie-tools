@@ -20,6 +20,5 @@ public interface Definition<T> {
 
     T getDefinition();
 
-    void setDefinition( T definition );
-
+    void setDefinition( final T definition );
 }

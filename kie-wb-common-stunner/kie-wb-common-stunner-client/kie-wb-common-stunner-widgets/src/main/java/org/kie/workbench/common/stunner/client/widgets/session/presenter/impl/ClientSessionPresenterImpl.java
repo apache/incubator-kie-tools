@@ -15,8 +15,12 @@
 
 package org.kie.workbench.common.stunner.client.widgets.session.presenter.impl;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
-import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.ClientSessionPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
@@ -30,11 +34,6 @@ import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasVali
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
@@ -46,14 +45,18 @@ public class ClientSessionPresenterImpl
         extends AbstractClientSessionPresenter<AbstractClientSession, ClientSessionPresenter.View> {
 
     protected ClientSessionPresenterImpl() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
     public ClientSessionPresenterImpl( final AbstractClientSessionManager canvasSessionManager,
                                        final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
                                        final ClientSessionPresenter.View view ) {
-        super( canvasSessionManager, sessionDiagramOpenedEvent, view );
+        super( canvasSessionManager,
+               sessionDiagramOpenedEvent,
+               view );
     }
 
     @Override
@@ -64,21 +67,23 @@ public class ClientSessionPresenterImpl
     protected void doPauseSession() {
     }
 
-    private void onCanvasSessionDisposed( @Observes SessionDisposedEvent sessionDisposedEvent ) {
-        checkNotNull( "sessionDisposedEvent", sessionDisposedEvent );
+    private void onCanvasSessionDisposed( final @Observes SessionDisposedEvent sessionDisposedEvent ) {
+        checkNotNull( "sessionDisposedEvent",
+                      sessionDisposedEvent );
         if ( null != getSession() && getSession().equals( sessionDisposedEvent.getSession() ) ) {
             disposeSession();
         }
     }
 
-    private void onCanvasSessionPaused( @Observes SessionPausedEvent sessionPausedEvent ) {
-        checkNotNull( "sessionPausedEvent", sessionPausedEvent );
+    private void onCanvasSessionPaused( final @Observes SessionPausedEvent sessionPausedEvent ) {
+        checkNotNull( "sessionPausedEvent",
+                      sessionPausedEvent );
         if ( null != getSession() && getSession().equals( sessionPausedEvent.getSession() ) ) {
             pauseSession();
         }
     }
 
-    void onGraphCommandExecuted( @Observes CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent ) {
+    void onGraphCommandExecuted( final @Observes CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent ) {
         if ( accepts( commandExecutedEvent.getCanvasHandler() ) ) {
             final CommandResult<CanvasViolation> result = commandExecutedEvent.getResult();
             if ( isDisplayErrors() && CommandUtils.isError( result ) ) {
@@ -89,13 +94,13 @@ public class ClientSessionPresenterImpl
         }
     }
 
-    void onCanvasValidationSuccessEvent( @Observes CanvasValidationSuccessEvent validationSuccessEvent ) {
+    void onCanvasValidationSuccessEvent( final @Observes CanvasValidationSuccessEvent validationSuccessEvent ) {
         if ( isDisplayNotifications() && accepts( validationSuccessEvent.getEntity() ) ) {
             getView().showMessage( "Validation successful" );
         }
     }
 
-    void onCanvasValidationFailEvent( @Observes CanvasValidationFailEvent validationFailEvent ) {
+    void onCanvasValidationFailEvent( final @Observes CanvasValidationFailEvent validationFailEvent ) {
         if ( isDisplayErrors() && accepts( validationFailEvent.getEntity() ) ) {
             getView().showError( "Validation failed" );
         }
@@ -106,7 +111,4 @@ public class ClientSessionPresenterImpl
                 && null != getSession().getCanvasHandler()
                 && getSession().getCanvasHandler().equals( handler );
     }
-
-
-
 }

@@ -25,5 +25,4 @@ public interface Diagram<G extends Graph, S extends Metadata> {
     G getGraph();
 
     S getMetadata();
-
 }

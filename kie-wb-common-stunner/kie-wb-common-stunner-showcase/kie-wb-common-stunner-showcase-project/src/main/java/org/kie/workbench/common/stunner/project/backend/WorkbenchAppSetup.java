@@ -15,6 +15,14 @@
 
 package org.kie.workbench.common.stunner.project.backend;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -30,16 +38,8 @@ import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 @ApplicationScoped
-@Startup(StartupType.BOOTSTRAP)
+@Startup( StartupType.BOOTSTRAP )
 public class WorkbenchAppSetup extends BaseAppSetup {
 
     public static final String GIT_REPO_NAME = "org.kie.workbench.common.stunner.project.demo.name";
@@ -56,13 +56,18 @@ public class WorkbenchAppSetup extends BaseAppSetup {
     }
 
     @Inject
-    public WorkbenchAppSetup( @Named("ioStrategy") final IOService ioService,
+    public WorkbenchAppSetup( @Named( "ioStrategy" ) final IOService ioService,
                               final RepositoryService repositoryService,
                               final OrganizationalUnitService organizationalUnitService,
                               final KieProjectService projectService,
                               final ConfigurationService configurationService,
                               final ConfigurationFactory configurationFactory ) {
-        super( ioService, repositoryService, organizationalUnitService, projectService, configurationService, configurationFactory );
+        super( ioService,
+               repositoryService,
+               organizationalUnitService,
+               projectService,
+               configurationService,
+               configurationFactory );
     }
 
     @PostConstruct
@@ -80,12 +85,12 @@ public class WorkbenchAppSetup extends BaseAppSetup {
 
                     final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
                     configurations.setOrigin( repoUrl );
-                    configurations.setUserName( credentials[0] );
-                    configurations.setPassword( credentials[1] );
+                    configurations.setUserName( credentials[ 0 ] );
+                    configurations.setPassword( credentials[ 1 ] );
 
                     jbpmRepo = repositoryService.createRepository( "git",
-                            repoName,
-                            configurations );
+                                                                   repoName,
+                                                                   configurations );
                 }
 
                 // TODO in case groups are not defined
@@ -96,40 +101,39 @@ public class WorkbenchAppSetup extends BaseAppSetup {
 //                repositories.add( guvnorRepo );
 
                     organizationalUnitService.createOrganizationalUnit( "demo",
-                            "demo@jbpm.org",
-                            null,
-                            repositories );
+                                                                        "demo@jbpm.org",
+                                                                        null,
+                                                                        repositories );
                 }
 
                 //Define mandatory properties
                 setupConfigurationGroup( ConfigType.GLOBAL,
-                        GLOBAL_SETTINGS,
-                        getGlobalConfiguration() );
+                                         GLOBAL_SETTINGS,
+                                         getGlobalConfiguration() );
             } catch ( Exception e ) {
-                throw new RuntimeException( "Error during stunner's repository initialization.", e );
+                throw new RuntimeException( "Error during stunner's repository initialization.",
+                                            e );
             }
-
         }
-
     }
 
     private ConfigGroup getGlobalConfiguration() {
         //Global Configurations used by many of Drools Workbench editors
         final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
-                GLOBAL_SETTINGS,
-                "" );
+                                                                       GLOBAL_SETTINGS,
+                                                                       "" );
         group.addConfigItem( configurationFactory.newConfigItem( "drools.dateformat",
-                "dd-MMM-yyyy" ) );
+                                                                 "dd-MMM-yyyy" ) );
         group.addConfigItem( configurationFactory.newConfigItem( "drools.datetimeformat",
-                "dd-MMM-yyyy hh:mm:ss" ) );
+                                                                 "dd-MMM-yyyy hh:mm:ss" ) );
         group.addConfigItem( configurationFactory.newConfigItem( "drools.defaultlanguage",
-                "en" ) );
+                                                                 "en" ) );
         group.addConfigItem( configurationFactory.newConfigItem( "drools.defaultcountry",
-                "US" ) );
+                                                                 "US" ) );
         group.addConfigItem( configurationFactory.newConfigItem( "build.enable-incremental",
-                "true" ) );
+                                                                 "true" ) );
         group.addConfigItem( configurationFactory.newConfigItem( "rule-modeller-onlyShowDSLStatements",
-                "false" ) );
+                                                                 "false" ) );
         return group;
     }
 
@@ -153,9 +157,9 @@ public class WorkbenchAppSetup extends BaseAppSetup {
         String user = System.getProperty( GIT_USERNAME );
         String pass = System.getProperty( GIT_PASS );
         if ( isEmpty( user ) || isEmpty( pass ) ) {
-            return new String[] { USER, PASS };
+            return new String[]{ USER, PASS };
         }
-        return new String[] { user, pass };
+        return new String[]{ user, pass };
     }
 
     private boolean isEmpty( String s ) {

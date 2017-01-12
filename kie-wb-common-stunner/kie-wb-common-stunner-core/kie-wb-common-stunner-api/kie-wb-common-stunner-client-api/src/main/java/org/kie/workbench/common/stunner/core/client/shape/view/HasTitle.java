@@ -19,27 +19,30 @@ package org.kie.workbench.common.stunner.core.client.shape.view;
 public interface HasTitle<T> {
 
     enum Position {
-        CENTER, LEFT, RIGHT, TOP, BOTTOM;
+        CENTER,
+        LEFT,
+        RIGHT,
+        TOP,
+        BOTTOM
     }
 
-    T setTitle( String title );
+    T setTitle( final String title );
 
-    T setTitlePosition( Position position );
+    T setTitlePosition( final Position position );
 
-    T setTitleRotation( double degrees );
+    T setTitleRotation( final double degrees );
 
-    T setTitleStrokeColor( String color );
+    T setTitleStrokeColor( final String color );
 
-    T setTitleFontFamily( String fontFamily );
+    T setTitleFontFamily( final String fontFamily );
 
-    T setTitleFontSize( double fontSize );
+    T setTitleFontSize( final double fontSize );
 
-    T setTitleStrokeWidth( double strokeWidth );
+    T setTitleStrokeWidth( final double strokeWidth );
 
-    T setTitleAlpha( double alpha );
+    T setTitleAlpha( final double alpha );
 
     T moveTitleToTop();
 
     T refreshTitle();
-
 }

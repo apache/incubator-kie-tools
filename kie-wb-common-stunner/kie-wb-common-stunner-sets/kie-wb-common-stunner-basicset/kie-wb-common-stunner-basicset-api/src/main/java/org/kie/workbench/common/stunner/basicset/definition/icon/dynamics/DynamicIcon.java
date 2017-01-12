@@ -32,5 +32,4 @@ public interface DynamicIcon {
     Width getWidth();
 
     Height getHeight();
-
 }

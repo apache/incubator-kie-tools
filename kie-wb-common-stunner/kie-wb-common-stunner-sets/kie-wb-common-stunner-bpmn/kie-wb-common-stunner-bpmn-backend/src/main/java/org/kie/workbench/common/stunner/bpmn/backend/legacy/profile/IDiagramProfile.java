@@ -15,17 +15,16 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.profile;
 
+import java.util.Collection;
+import javax.servlet.ServletContext;
+
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.repository.Repository;
 
-import javax.servlet.ServletContext;
-import java.util.Collection;
-
 /**
  * A profile for the editor to choose which stencilset
  * and which plugins should be loaded.
- *
  * @author Antoine Toulme
  */
 public interface IDiagramProfile {
@@ -109,7 +108,6 @@ public interface IDiagramProfile {
 
     /**
      * Parser to produce the final model to be saved.
-     *
      * @author Antoine Toulme
      */
     public interface IDiagramMarshaller {
@@ -118,28 +116,31 @@ public interface IDiagramProfile {
          * @param jsonModel the model
          * @return the string representation of the serialized model.
          */
-        public String parseModel( String jsonModel, String preProcessingData ) throws Exception;
+        public String parseModel( String jsonModel,
+                                  String preProcessingData ) throws Exception;
 
-        public Definitions getDefinitions( String jsonModel, String preProcessingData ) throws Exception;
+        public Definitions getDefinitions( String jsonModel,
+                                           String preProcessingData ) throws Exception;
 
-        public Resource getResource( String jsonModel, String preProcessingData ) throws Exception;
+        public Resource getResource( String jsonModel,
+                                     String preProcessingData ) throws Exception;
     }
 
     /**
      * Parser to produce the final model to be saved.
-     *
      * @author Tihomir Surdilovic
      */
     public interface IDiagramUnmarshaller {
 
         /**
          * @param xmlModel xml model
-         * @param profile  process profile.
+         * @param profile process profile.
          * @return the json model
          */
-        public String parseModel( String xmlModel, IDiagramProfile profile, String preProcessingData ) throws Exception;
+        public String parseModel( String xmlModel,
+                                  IDiagramProfile profile,
+                                  String preProcessingData ) throws Exception;
     }
 
     public void init( ServletContext context );
-
 }

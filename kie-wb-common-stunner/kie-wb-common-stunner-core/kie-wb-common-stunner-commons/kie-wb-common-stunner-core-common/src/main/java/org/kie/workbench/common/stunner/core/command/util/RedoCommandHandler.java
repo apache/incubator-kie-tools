@@ -15,17 +15,15 @@
 
 package org.kie.workbench.common.stunner.core.command.util;
 
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.logging.Logger;
 
 /**
  * This handler is an util class that achieves command "re-do" features.
@@ -41,14 +39,12 @@ import java.util.logging.Logger;
  * - Check <code>isEnabled</code> to figure out if a re-do operation can be done.
  * - Call <code>clear</code> to clear the internal commands registry and reset the re-do status.
  * - If <code>isEnabled</code> is <code>true</code>, you can run the <code>execute</code> method. It runs last undone command on found this handler's registry.
- *
  * @param <C> The command type.
  */
 @Dependent
 public class RedoCommandHandler<C extends Command> {
 
     private static Logger LOGGER = Logger.getLogger( RedoCommandHandler.class.getName() );
-
 
     private final CommandRegistry<C> registry;
 
@@ -75,8 +71,9 @@ public class RedoCommandHandler<C extends Command> {
     public CommandResult<?> execute( final Object context,
                                      final CommandManager commandManager ) {
         if ( !registry.isEmpty() ) {
-            final C last =  registry.peek();
-            return commandManager.execute( context, last );
+            final C last = registry.peek();
+            return commandManager.execute( context,
+                                           last );
         }
         return null;
     }
@@ -104,5 +101,4 @@ public class RedoCommandHandler<C extends Command> {
         }
         return isEnabled();
     }
-
 }

@@ -16,16 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.processors.morph;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.processing.Messager;
+
 import org.kie.workbench.common.stunner.core.definition.morph.BindableMorphProperty;
 import org.kie.workbench.common.stunner.core.definition.morph.BindablePropertyMorphDefinition;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingMorphProperty;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MorphPropertyDefinitionGenerator extends AbstractBindableAdapterGenerator {
 
@@ -34,33 +34,36 @@ public class MorphPropertyDefinitionGenerator extends AbstractBindableAdapterGen
         return "MorphPropertyDefinition.ftl";
     }
 
-    public StringBuffer generate( String packageName,
-                                  String className,
-                                  String baseMorphType,
-                                  Collection<ProcessingMorphProperty> morphProperties,
-                                  String defaultMorphType,
-                                  Messager messager ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final String className,
+                                  final String baseMorphType,
+                                  final Collection<ProcessingMorphProperty> morphProperties,
+                                  final String defaultMorphType,
+                                  final Messager messager ) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
-                packageName );
+                  packageName );
         root.put( "className",
-                className );
+                  className );
         root.put( "parentClassName",
-                BindablePropertyMorphDefinition.class.getName() );
+                  BindablePropertyMorphDefinition.class.getName() );
         root.put( "bindableMorphPropertyParentClassName",
-                BindableMorphProperty.class.getName() );
+                  BindableMorphProperty.class.getName() );
         root.put( "generatedByClassName",
-                MorphPropertyDefinitionGenerator.class.getName() );
+                  MorphPropertyDefinitionGenerator.class.getName() );
         root.put( "morphBaseClassName",
-                baseMorphType );
+                  baseMorphType );
         root.put( "defaultTypeClassName",
-                defaultMorphType );
+                  defaultMorphType );
         root.put( "morphPropertiesSize",
-                morphProperties.size() );
+                  morphProperties.size() );
         root.put( "morphProperties",
-                morphProperties );
-        //Generate code
-        return writeTemplate( packageName, className, root, messager );
-    }
+                  morphProperties );
 
+        //Generate code
+        return writeTemplate( packageName,
+                              className,
+                              root,
+                              messager );
+    }
 }

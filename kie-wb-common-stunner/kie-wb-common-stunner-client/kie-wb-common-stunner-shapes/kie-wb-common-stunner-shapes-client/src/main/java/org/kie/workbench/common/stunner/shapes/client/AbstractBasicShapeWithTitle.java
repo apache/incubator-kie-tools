@@ -42,7 +42,8 @@ public abstract class AbstractBasicShapeWithTitle<W, V extends BasicShapeView, P
         getShapeView().setTitlePosition( proxy.getFontPosition( getDefinition( element ) ) );
         getShapeView().setTitleRotation( proxy.getFontRotation( getDefinition( element ) ) );
         // Apply other font styles on parent.
-        super.applyProperties( element, mutationContext );
+        super.applyProperties( element,
+                               mutationContext );
     }
 
     @Override
@@ -94,5 +95,4 @@ public abstract class AbstractBasicShapeWithTitle<W, V extends BasicShapeView, P
     protected Double getFontBorderSize( final Node<View<W>, Edge> element ) {
         return proxy.getFontBorderSize( getDefinition( element ) );
     }
-
 }

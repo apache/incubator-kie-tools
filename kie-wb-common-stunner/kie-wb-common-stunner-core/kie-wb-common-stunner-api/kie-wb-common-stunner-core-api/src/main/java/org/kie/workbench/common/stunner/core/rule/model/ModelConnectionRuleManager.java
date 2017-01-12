@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.rule.model;
 
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.rule.ConnectionRuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-
-import java.util.Set;
 
 /**
  * Manager for connection rules specific for the Stunner's domain model.
@@ -33,8 +33,7 @@ public interface ModelConnectionRuleManager extends ConnectionRuleManager {
      * @param outgoingLabels The roles/labels for the outgoing node.
      * @param incomingLabels The roles/labels for the incoming node.
      */
-    RuleViolations evaluate( String edgeId,
-                             Set<String> outgoingLabels,
-                             Set<String> incomingLabels );
-
+    RuleViolations evaluate( final String edgeId,
+                             final Set<String> outgoingLabels,
+                             final Set<String> incomingLabels );
 }

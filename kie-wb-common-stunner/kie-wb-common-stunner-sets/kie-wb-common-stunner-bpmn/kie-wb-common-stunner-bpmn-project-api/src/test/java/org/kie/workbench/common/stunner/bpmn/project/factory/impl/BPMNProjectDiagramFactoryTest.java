@@ -44,10 +44,14 @@ public class BPMNProjectDiagramFactoryTest {
     private static final String NAME = "name1";
     private static final String PKG = "org.kie.wb.common.stunner.bpmn.project.test";
 
-    @Mock ProjectMetadata metadata;
-    @Mock Graph graph;
-    @Mock Node diagramNode;
-    @Mock Bounds bounds;
+    @Mock
+    ProjectMetadata metadata;
+    @Mock
+    Graph graph;
+    @Mock
+    Node diagramNode;
+    @Mock
+    Bounds bounds;
     BPMNDiagram diagram;
     private View<BPMNDiagram> diagramNodeContent;
     private final List<Node> graphNodes = new ArrayList<>( 1 );
@@ -57,7 +61,8 @@ public class BPMNProjectDiagramFactoryTest {
     @Before
     public void setup() throws Exception {
         diagram = new BPMNDiagram.BPMNDiagramBuilder().build();
-        diagramNodeContent = new ViewImpl<BPMNDiagram>( diagram, bounds );
+        diagramNodeContent = new ViewImpl<BPMNDiagram>( diagram,
+                                                        bounds );
         graphNodes.add( diagramNode );
         when( diagramNode.getContent() ).thenReturn( diagramNodeContent );
         when( graph.nodes() ).thenReturn( graphNodes );
@@ -67,24 +72,31 @@ public class BPMNProjectDiagramFactoryTest {
     @Test
     public void testMetadataType() {
         Class<? extends Metadata> type = tested.getMetadataType();
-        assertEquals( ProjectMetadata.class, type );
+        assertEquals( ProjectMetadata.class,
+                      type );
     }
 
     @Test
     public void testDefinitionSetType() {
         Class<?> type = tested.getDefinitionSetType();
-        assertEquals( BPMNDefinitionSet.class, type );
+        assertEquals( BPMNDefinitionSet.class,
+                      type );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testBuildNoPackageSpecified() {
         when( metadata.getProjectPackage() ).thenReturn( null );
-        ProjectDiagram pdiagram = tested.build( NAME, metadata, graph);
+        ProjectDiagram pdiagram = tested.build( NAME,
+                                                metadata,
+                                                graph );
         assertNotNull( pdiagram );
-        assertEquals( graph, pdiagram.getGraph() );
-        assertEquals( NAME, diagram.getDiagramSet().getId().getValue() );
-        assertEquals( Package.DEFAULT_PACKAGE, diagram.getDiagramSet().getPackageProperty().getValue() );
+        assertEquals( graph,
+                      pdiagram.getGraph() );
+        assertEquals( NAME,
+                      diagram.getDiagramSet().getId().getValue() );
+        assertEquals( Package.DEFAULT_PACKAGE,
+                      diagram.getDiagramSet().getPackageProperty().getValue() );
     }
 
     @Test
@@ -93,11 +105,15 @@ public class BPMNProjectDiagramFactoryTest {
         final String pName = "p1";
         when( metadata.getProjectPackage() ).thenReturn( PKG );
         when( metadata.getProjectName() ).thenReturn( pName );
-        ProjectDiagram pdiagram = tested.build( NAME, metadata, graph);
+        ProjectDiagram pdiagram = tested.build( NAME,
+                                                metadata,
+                                                graph );
         assertNotNull( pdiagram );
-        assertEquals( graph, pdiagram.getGraph() );
-        assertEquals( pName + "." + NAME, diagram.getDiagramSet().getId().getValue() );
-        assertEquals( PKG, diagram.getDiagramSet().getPackageProperty().getValue() );
+        assertEquals( graph,
+                      pdiagram.getGraph() );
+        assertEquals( pName + "." + NAME,
+                      diagram.getDiagramSet().getId().getValue() );
+        assertEquals( PKG,
+                      diagram.getDiagramSet().getPackageProperty().getValue() );
     }
-
 }

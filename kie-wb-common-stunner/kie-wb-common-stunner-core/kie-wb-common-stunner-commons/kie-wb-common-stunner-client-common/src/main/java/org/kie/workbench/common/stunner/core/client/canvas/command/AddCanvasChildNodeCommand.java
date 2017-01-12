@@ -37,7 +37,8 @@ public final class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrat
                                       final Node parent,
                                       final Node candidate,
                                       final String shapeSetId ) {
-        super( treeWalkTraverseProcessor, candidate );
+        super( treeWalkTraverseProcessor,
+               candidate );
         this.parent = parent;
         this.shapeSetId = shapeSetId;
     }
@@ -45,7 +46,8 @@ public final class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrat
     AddCanvasChildNodeCommand( final Node parent,
                                final Node candidate,
                                final String shapeSetId ) {
-        super( new TreeWalkTraverseProcessorImpl(), candidate );
+        super( new TreeWalkTraverseProcessorImpl(),
+               candidate );
         this.parent = parent;
         this.shapeSetId = shapeSetId;
     }
@@ -57,19 +59,25 @@ public final class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrat
 
     @Override
     @SuppressWarnings( "unchecked" )
-    protected boolean registerCandidate( AbstractCanvasHandler context ) {
-        context.register( shapeSetId, getCandidate() );
-        context.addChild( parent, getCandidate() );
-        context.applyElementMutation( parent, MutationContext.STATIC );
-        context.applyElementMutation( getCandidate(), MutationContext.STATIC );
+    protected boolean registerCandidate( final AbstractCanvasHandler context ) {
+        context.register( shapeSetId,
+                          getCandidate() );
+        context.addChild( parent,
+                          getCandidate() );
+        context.applyElementMutation( parent,
+                                      MutationContext.STATIC );
+        context.applyElementMutation( getCandidate(),
+                                      MutationContext.STATIC );
         return true;
     }
 
     @Override
     public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
         return new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
-                .addCommand( new RemoveCanvasChildCommand( parent, getCandidate() ) )
-                .addCommand( new DeleteCanvasNodeCommand( getCandidate(), parent ) )
+                .addCommand( new RemoveCanvasChildCommand( parent,
+                                                           getCandidate() ) )
+                .addCommand( new DeleteCanvasNodeCommand( getCandidate(),
+                                                          parent ) )
                 .build()
                 .execute( context );
     }

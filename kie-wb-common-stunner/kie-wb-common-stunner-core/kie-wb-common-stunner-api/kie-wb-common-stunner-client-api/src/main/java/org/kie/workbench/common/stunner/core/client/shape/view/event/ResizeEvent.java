@@ -27,7 +27,10 @@ public final class ResizeEvent extends AbstractMouseEvent {
                         final double clientY,
                         final double width,
                         final double height ) {
-        super( mouseX, mouseY, clientX, clientY );
+        super( mouseX,
+               mouseY,
+               clientX,
+               clientY );
         this.width = width;
         this.height = height;
     }

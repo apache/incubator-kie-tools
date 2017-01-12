@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.index.bounds;
 
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoLayerUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -26,8 +28,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.BoundsIndexer;
-
-import javax.enterprise.context.Dependent;
 
 @Dependent
 public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanvasHandler> {
@@ -40,18 +40,19 @@ public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanv
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public Node<View<?>, Edge> getAt( final double x,
                                       final double y ) {
         final AbstractCanvas canvas = canvasHandler.getCanvas();
         final LienzoLayer lienzoLayer = ( LienzoLayer ) canvas.getLayer();
-        final String viewUUID = LienzoLayerUtils.getUUID_At( lienzoLayer, x, y );
+        final String viewUUID = LienzoLayerUtils.getUUID_At( lienzoLayer,
+                                                             x,
+                                                             y );
         if ( null != viewUUID && viewUUID.trim().length() > 0 ) {
             final Shape<?> shape = canvas.getShape( viewUUID );
             if ( null != shape ) {
                 return canvasHandler.getGraphIndex().getNode( shape.getUUID() );
-
             }
-
         }
         return null;
     }
@@ -66,5 +67,4 @@ public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanv
     public void destroy() {
         this.canvasHandler = null;
     }
-
 }

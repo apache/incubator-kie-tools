@@ -22,10 +22,13 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public class LienzoLayerUtils {
 
-    public static String getUUID_At( final LienzoLayer lienzoLayer, final double x, final double y ) {
+    public static String getUUID_At( final LienzoLayer lienzoLayer,
+                                     final double x,
+                                     final double y ) {
         int sx = ( int ) x;
         int sy = ( int ) y;
-        final Shape<?> shape = lienzoLayer.getLienzoLayer().getLayer().findShapeAtPoint( sx, sy );
+        final Shape<?> shape = lienzoLayer.getLienzoLayer().getLayer().findShapeAtPoint( sx,
+                                                                                         sy );
         final String viewUUID = getShapeUUID( shape );
         return viewUUID;
     }
@@ -53,7 +56,7 @@ public class LienzoLayerUtils {
 
     private static String getNodeViewUUID( final com.ait.lienzo.client.core.shape.Node<?> node ) {
         final String userData = ( String ) node.getUserData();
-        return userData.substring( ShapeView.UUID_PREFIX.length(), userData.length() - 1 );
+        return userData.substring( ShapeView.UUID_PREFIX.length(),
+                                   userData.length() - 1 );
     }
-
 }

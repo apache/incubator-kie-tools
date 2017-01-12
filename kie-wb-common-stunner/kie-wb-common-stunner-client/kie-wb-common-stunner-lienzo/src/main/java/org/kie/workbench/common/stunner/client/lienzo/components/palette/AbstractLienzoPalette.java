@@ -34,7 +34,8 @@ public abstract class AbstractLienzoPalette<D extends HasPaletteItems, V extends
     protected boolean isExpandable;
 
     protected AbstractLienzoPalette() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     public AbstractLienzoPalette( final ShapeManager shapeManager,
@@ -148,5 +149,4 @@ public abstract class AbstractLienzoPalette<D extends HasPaletteItems, V extends
     public V getView() {
         return view;
     }
-
 }

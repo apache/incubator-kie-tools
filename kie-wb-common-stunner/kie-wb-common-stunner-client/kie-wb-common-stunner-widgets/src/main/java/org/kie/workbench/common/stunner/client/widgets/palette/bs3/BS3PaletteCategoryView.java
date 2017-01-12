@@ -16,21 +16,31 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.bs3;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.Container;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
-
-import javax.enterprise.context.Dependent;
 
 // TODO: i18n.
 @Dependent
@@ -68,25 +78,29 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
     public BS3PaletteCategory.View setHeight( final int px ) {
         mainContainer.setHeight( px + "px" );
         return this;
-
     }
 
     @Override
     public BS3PaletteCategory.View addTitle( final String title ) {
-        addHeader( title, HeadingSize.H1, false );
+        addHeader( title,
+                   HeadingSize.H1,
+                   false );
         return this;
     }
 
     @Override
     public BS3PaletteCategory.View addHeader( final String text ) {
-        addHeader( text, HeadingSize.H3, false );
+        addHeader( text,
+                   HeadingSize.H3,
+                   false );
         return this;
     }
 
     @Override
     public BS3PaletteCategory.View addSeparator( final double height ) {
         final FlowPanel panel = new FlowPanel();
-        panel.getElement().getStyle().setHeight( height, Style.Unit.PX );
+        panel.getElement().getStyle().setHeight( height,
+                                                 Style.Unit.PX );
         final Row separatorRow = createRow1Col( panel );
         mainContainer.add( separatorRow );
         return this;
@@ -105,7 +119,10 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
                                             final String description,
                                             final String glyphDefId,
                                             final IsWidget view ) {
-        final String itemDesc = getDescription( id, text, description, glyphDefId );
+        final String itemDesc = getDescription( id,
+                                                text,
+                                                description,
+                                                glyphDefId );
         final Column iconColumn = new Column( ColumnSize.MD_2 );
         iconColumn.add( view );
         final HTML itemText = new HTML( text );
@@ -121,54 +138,59 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
         row.setPaddingBottom( 5 );
         row.setPaddingTop( 5 );
         row.addDomHandler( clickEvent -> {
-            clearItemMouseDownTimer();
-            BS3PaletteCategoryView.this.onMouseClick( id,
-                    clickEvent.getClientX(), clickEvent.getClientY(),
-                    clickEvent.getX(), clickEvent.getY() );
-
-        }, ClickEvent.getType() );
+                               clearItemMouseDownTimer();
+                               BS3PaletteCategoryView.this.onMouseClick( id,
+                                                                         clickEvent.getClientX(),
+                                                                         clickEvent.getClientY(),
+                                                                         clickEvent.getX(),
+                                                                         clickEvent.getY() );
+                           },
+                           ClickEvent.getType() );
         row.addDomHandler( mouseMoveEvent -> {
-            if ( null != BS3PaletteCategoryView.this.itemMouseDownTimer ) {
-                BS3PaletteCategoryView.this.itemMouseDownTimer.run();
-                BS3PaletteCategoryView.this.clearItemMouseDownTimer();
-
-            }
-
-        }, MouseMoveEvent.getType() );
+                               if ( null != BS3PaletteCategoryView.this.itemMouseDownTimer ) {
+                                   BS3PaletteCategoryView.this.itemMouseDownTimer.run();
+                                   BS3PaletteCategoryView.this.clearItemMouseDownTimer();
+                               }
+                           },
+                           MouseMoveEvent.getType() );
         row.addDomHandler( mouseDownEvent -> {
-            final int mX = mouseDownEvent.getClientX();
-            final int mY = mouseDownEvent.getClientY();
-            final int iX = mouseDownEvent.getX();
-            final int iY = mouseDownEvent.getY();
-            // This timeout is used to differentiate between mouse down and click events.
-            // If calling presenter login when mouse down and presenter clear the palette view,
-            // the click event is never fired on the DOM.
-            // So using this timer the mouse down job is postponed, so if after MOUSE_DOWN_TIMER_DURATION
-            // there is no click event, this timer fires and shows the drag def. If click event fires, will
-            // cancer the timer so the mouse down job is not performed, as expected. Same for mouse move event just
-            // after the mouse down one.
-            BS3PaletteCategoryView.this.itemMouseDownTimer = new Timer() {
+                               final int mX = mouseDownEvent.getClientX();
+                               final int mY = mouseDownEvent.getClientY();
+                               final int iX = mouseDownEvent.getX();
+                               final int iY = mouseDownEvent.getY();
+                               // This timeout is used to differentiate between mouse down and click events.
+                               // If calling presenter login when mouse down and presenter clear the palette view,
+                               // the click event is never fired on the DOM.
+                               // So using this timer the mouse down job is postponed, so if after MOUSE_DOWN_TIMER_DURATION
+                               // there is no click event, this timer fires and shows the drag def. If click event fires, will
+                               // cancer the timer so the mouse down job is not performed, as expected. Same for mouse move event just
+                               // after the mouse down one.
+                               BS3PaletteCategoryView.this.itemMouseDownTimer = new Timer() {
 
-                @Override
-                public void run() {
-                    BS3PaletteCategoryView.this.onMouseDown( id, mX, mY, iX, iY );
-
-                }
-
-            };
-            BS3PaletteCategoryView.this.itemMouseDownTimer.schedule( MOUSE_DOWN_TIMER_DURATION );
-
-        }, MouseDownEvent.getType() );
-        row.addDomHandler( mouseOverEvent -> BS3PaletteCategoryView.this.onMouseOver( row ), MouseOverEvent.getType() );
-        row.addDomHandler( mouseOutEvent -> BS3PaletteCategoryView.this.onMouseOut( row ), MouseOutEvent.getType() );
+                                   @Override
+                                   public void run() {
+                                       BS3PaletteCategoryView.this.onMouseDown( id,
+                                                                                mX,
+                                                                                mY,
+                                                                                iX,
+                                                                                iY );
+                                   }
+                               };
+                               BS3PaletteCategoryView.this.itemMouseDownTimer.schedule( MOUSE_DOWN_TIMER_DURATION );
+                           },
+                           MouseDownEvent.getType() );
+        row.addDomHandler( mouseOverEvent -> BS3PaletteCategoryView.this.onMouseOver( row ),
+                           MouseOverEvent.getType() );
+        row.addDomHandler( mouseOutEvent -> BS3PaletteCategoryView.this.onMouseOut( row ),
+                           MouseOutEvent.getType() );
         mainContainer.add( row );
         return this;
     }
 
-    private String getDescription(  final String id,
-                                    final String text,
-                                    final String description,
-                                    final String glyphDefId ) {
+    private String getDescription( final String id,
+                                   final String text,
+                                   final String description,
+                                   final String glyphDefId ) {
         return null == glyphDefId ? description :
                 description + CLICK_OR_DRAG_TOOLTIP_TEXT;
     }
@@ -186,7 +208,11 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
                               final int mouseY,
                               final int itemX,
                               final int itemY ) {
-        presenter.onMouseDown( id, mouseX, mouseY, itemX, itemY );
+        presenter.onMouseDown( id,
+                               mouseX,
+                               mouseY,
+                               itemX,
+                               itemY );
     }
 
     private void onMouseClick( final String id,
@@ -194,7 +220,11 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
                                final int mouseY,
                                final int itemX,
                                final int itemY ) {
-        presenter.onMouseClick( id, mouseX, mouseY, itemX, itemY );
+        presenter.onMouseClick( id,
+                                mouseX,
+                                mouseY,
+                                itemX,
+                                itemY );
     }
 
     @Override
@@ -211,7 +241,6 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
             }
             this.itemMouseDownTimer = null;
         }
-
     }
 
     private void addHeader( final String text,
@@ -236,5 +265,4 @@ public class BS3PaletteCategoryView extends Composite implements BS3PaletteCateg
         column.add( widget );
         return row;
     }
-
 }

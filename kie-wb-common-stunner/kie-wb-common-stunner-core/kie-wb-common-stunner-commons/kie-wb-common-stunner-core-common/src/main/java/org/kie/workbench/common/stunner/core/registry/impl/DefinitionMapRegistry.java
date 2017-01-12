@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
+import java.util.HashMap;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionRegistry;
-
-import java.util.HashMap;
 
 class DefinitionMapRegistry<T> extends AbstractDynamicRegistryWrapper<T, MapRegistry<T>> implements TypeDefinitionRegistry<T> {
 
@@ -42,9 +42,8 @@ class DefinitionMapRegistry<T> extends AbstractDynamicRegistryWrapper<T, MapRegi
 
     @Override
     public T getDefinitionByType( final Class<T> type ) {
-        final String id = BindableAdapterUtils.getDefinitionId( type, adapterManager.registry() );
+        final String id = BindableAdapterUtils.getDefinitionId( type,
+                                                                adapterManager.registry() );
         return getDefinitionById( id );
-
     }
-
 }

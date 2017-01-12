@@ -15,14 +15,14 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Specializes;
+
 import org.gwtbootstrap3.extras.animate.client.ui.Animate;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingWidgetView;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Specializes;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Extension for the Stunner's common floating views which adds support for Bootstrap3 animations.
@@ -40,19 +40,25 @@ public class AnimatedFloatingWidgetView extends FloatingWidgetView {
     protected void doShow() {
         getPanel().getElement().getStyle().setOpacity( 0 );
         super.doShow();
-        LOGGER.log( Level.FINE, "Showing animated floating view." );
-        aid = Animate.animate( getPanel(), Animation.FADE_IN, 1, DURATION );
+        LOGGER.log( Level.FINE,
+                    "Showing animated floating view." );
+        aid = Animate.animate( getPanel(),
+                               Animation.FADE_IN,
+                               1,
+                               DURATION );
     }
 
     @Override
     protected void doHide() {
-        LOGGER.log( Level.FINE, "Hiding animated floating view." );
+        LOGGER.log( Level.FINE,
+                    "Hiding animated floating view." );
         if ( null != aid ) {
-            LOGGER.log( Level.FINE, "Stopping last animation [" + aid + "]" );
-            Animate.stopAnimation( getPanel(), aid );
+            LOGGER.log( Level.FINE,
+                        "Stopping last animation [" + aid + "]" );
+            Animate.stopAnimation( getPanel(),
+                                   aid );
             this.aid = null;
         }
         super.doHide();
     }
-
 }

@@ -21,5 +21,4 @@ import java.util.List;
 public interface HasPaletteItems<I extends PaletteItem> {
 
     List<I> getItems();
-
 }

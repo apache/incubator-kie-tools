@@ -27,8 +27,7 @@ import org.uberfire.client.workbench.docks.UberfireDocks;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class ProjectDiagramWorkbenchDocksTest {
@@ -47,7 +46,8 @@ public class ProjectDiagramWorkbenchDocksTest {
     public void testSetup() {
         String pId = "p1";
         tested.setup( pId );
-        assertEquals( "p1", tested.perspectiveId );
+        assertEquals( "p1",
+                      tested.perspectiveId );
     }
 
     @Test
@@ -55,7 +55,9 @@ public class ProjectDiagramWorkbenchDocksTest {
         String pId = "p1";
         tested.perspectiveId = pId;
         tested.enableDocks();
-        verify( uberfireDocks, times( 1 ) ).enable( any( UberfireDockPosition.class ), eq( pId ) );
+        verify( uberfireDocks,
+                times( 1 ) ).enable( any( UberfireDockPosition.class ),
+                                     eq( pId ) );
         assertTrue( tested.isEnabled() );
     }
 
@@ -65,7 +67,9 @@ public class ProjectDiagramWorkbenchDocksTest {
         tested.perspectiveId = pId;
         tested.enabled = true;
         tested.disableDocks();
-        verify( uberfireDocks, times( 1 ) ).disable( any( UberfireDockPosition.class ), eq( pId ) );
+        verify( uberfireDocks,
+                times( 1 ) ).disable( any( UberfireDockPosition.class ),
+                                      eq( pId ) );
         assertFalse( tested.isEnabled() );
     }
 }

@@ -16,23 +16,24 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButtonGrid;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.ToolboxBuilder;
 
-import java.util.List;
-
 public interface ToolboxControlProvider<C extends CanvasHandler, T> {
 
-    boolean supports( Object definition );
+    boolean supports( final Object definition );
 
-    ToolboxButtonGrid getGrid( C context, T item );
+    ToolboxButtonGrid getGrid( final C context,
+                               final T item );
 
     ToolboxBuilder.Direction getOn();
 
     ToolboxBuilder.Direction getTowards();
 
-    List<ToolboxCommand<C, ?>> getCommands( C context, T item );
-
+    List<ToolboxCommand<C, ?>> getCommands( final C context,
+                                            final T item );
 }

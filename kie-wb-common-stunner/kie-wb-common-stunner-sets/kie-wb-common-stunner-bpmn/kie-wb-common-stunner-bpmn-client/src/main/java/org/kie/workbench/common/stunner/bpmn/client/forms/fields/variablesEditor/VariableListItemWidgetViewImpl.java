@@ -50,13 +50,14 @@ import org.uberfire.workbench.events.NotificationEvent;
 /**
  * A templated widget that will be used to display a row in a table of
  * {@link VariableRow}s.
- * <p>
+ * <p/>
  * The Name field of VariableRow is Bound, but other fields are not bound because
  * they use a combination of ListBox and TextBox to implement a drop-down combo
  * to hold the values.
  */
 @Templated( "VariablesEditorWidget.html#variableRow" )
-public class VariableListItemWidgetViewImpl implements VariableListItemWidgetView, ComboBoxView.ModelPresenter {
+public class VariableListItemWidgetViewImpl implements VariableListItemWidgetView,
+                                                       ComboBoxView.ModelPresenter {
 
     /**
      * Errai's data binding module will automatically bind the provided instance
@@ -90,7 +91,8 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
             return s;
         }
 
-        public void render( String object, Appendable appendable ) throws IOException {
+        public void render( String object,
+                            Appendable appendable ) throws IOException {
             String s = render( object );
             appendable.append( s );
         }
@@ -120,12 +122,14 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     }
 
     @Override
-    public void setTextBoxModelValue( final TextBox textBox, String value ) {
+    public void setTextBoxModelValue( final TextBox textBox,
+                                      String value ) {
         setCustomDataType( value );
     }
 
     @Override
-    public void setListBoxModelValue( final ValueListBox<String> listBox, String value ) {
+    public void setListBoxModelValue( final ValueListBox<String> listBox,
+                                      String value ) {
         setDataTypeDisplayName( value );
     }
 
@@ -141,12 +145,17 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     @PostConstruct
     public void init() {
         // Configure dataType and customDataType controls
-        dataTypeComboBox.init( this, true, dataType, customDataType, false, true,
-                CUSTOM_PROMPT,
-                ENTER_TYPE_PROMPT );
+        dataTypeComboBox.init( this,
+                               true,
+                               dataType,
+                               customDataType,
+                               false,
+                               true,
+                               CUSTOM_PROMPT,
+                               ENTER_TYPE_PROMPT );
         name.setRegExp( "^[a-zA-Z0-9\\-\\.\\_]*$",
-                "Removed invalid characters from name",
-                "Invalid character in name" );
+                        "Removed invalid characters from name",
+                        "Invalid character in name" );
         customDataType.addKeyDownHandler( new KeyDownHandler() {
             @Override
             public void onKeyDown( KeyDownEvent event ) {
@@ -162,15 +171,16 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
                 if ( !allowDuplicateNames ) {
                     String value = name.getText();
                     if ( isDuplicateName( value ) ) {
-                        notification.fire( new NotificationEvent( duplicateNameErrorMessage, NotificationEvent.NotificationType.ERROR ) );
+                        notification.fire( new NotificationEvent( duplicateNameErrorMessage,
+                                                                  NotificationEvent.NotificationType.ERROR ) );
                         name.setValue( "" );
-                        ValueChangeEvent.fire( name, "" );
+                        ValueChangeEvent.fire( name,
+                                               "" );
                     }
                 }
                 notifyModelChanged();
             }
         } );
-
     }
 
     @Override
@@ -217,7 +227,8 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
         dataTypeComboBox.setShowCustomValues( true );
         String cdt = getCustomDataType();
         if ( cdt != null && !cdt.isEmpty() ) {
-            dataTypeComboBox.addCustomValueToListBoxValues( cdt, "" );
+            dataTypeComboBox.addCustomValueToListBoxValues( cdt,
+                                                            "" );
         }
     }
 
@@ -258,5 +269,4 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
             parentWidget.notifyModelChanged();
         }
     }
-
 }

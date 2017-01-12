@@ -26,16 +26,13 @@ public interface DefinitionManager {
 
     /**
      * The registry that contains the Definition Sets present on the context.
-     *
      * @return The definition set registry.
      */
     TypeDefinitionSetRegistry<?> definitionSets();
 
     /**
      * The manager for the different adapters present on the context.
-     *
      * @return The adapter manager.
      */
     AdapterManager adapters();
-
 }

@@ -26,5 +26,4 @@ public interface ProjectScreenView {
     ProjectScreenView hideLoading();
 
     IsWidget asWidget();
-
 }

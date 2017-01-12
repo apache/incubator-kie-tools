@@ -30,5 +30,4 @@ public abstract class AbstractCanvasHandlerEvent<H extends CanvasHandler> implem
     public H getCanvasHandler() {
         return canvasHandler;
     }
-
 }

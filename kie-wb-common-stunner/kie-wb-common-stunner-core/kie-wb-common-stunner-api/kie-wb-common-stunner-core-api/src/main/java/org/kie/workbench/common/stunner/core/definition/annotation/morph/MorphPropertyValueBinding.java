@@ -23,5 +23,4 @@ public interface MorphPropertyValueBinding<P, V> {
     V getValue( P property );
 
     Map<V, Class<?>> getMorphTargets();
-
 }

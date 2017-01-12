@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.processors.propertyset;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.processing.Messager;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertySetAdapterProxy;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingPropertySetAnnotations;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BindablePropertySetAdapterGenerator extends AbstractBindableAdapterGenerator {
 
@@ -33,22 +33,32 @@ public class BindablePropertySetAdapterGenerator extends AbstractBindableAdapter
         return "BindablePropertySetAdapter.ftl";
     }
 
-    public StringBuffer generate( String packageName, String className,
-                                  ProcessingPropertySetAnnotations processingPropertySetAnnotations,
-                                  Messager messager ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final String className,
+                                  final ProcessingPropertySetAnnotations processingPropertySetAnnotations,
+                                  final Messager messager ) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
-                packageName );
+                  packageName );
         root.put( "className",
-                className );
+                  className );
         root.put( "parentAdapterClassName",
-                BindablePropertySetAdapterProxy.class.getName() );
-        root.put( "adapterFactoryClassName", BindableAdapterFactory.class.getName() );
+                  BindablePropertySetAdapterProxy.class.getName() );
+        root.put( "adapterFactoryClassName",
+                  BindableAdapterFactory.class.getName() );
         root.put( "generatedByClassName",
-                BindablePropertySetAdapterGenerator.class.getName() );
-        addFields( "nameFieldNames", root, processingPropertySetAnnotations.getNameFieldNames() );
-        addSetFields( "propertiesFieldNames", root, processingPropertySetAnnotations.getPropertiesFieldNames() );
+                  BindablePropertySetAdapterGenerator.class.getName() );
+        addFields( "nameFieldNames",
+                   root,
+                   processingPropertySetAnnotations.getNameFieldNames() );
+        addSetFields( "propertiesFieldNames",
+                      root,
+                      processingPropertySetAnnotations.getPropertiesFieldNames() );
+
         //Generate code
-        return writeTemplate( packageName, className, root, messager );
+        return writeTemplate( packageName,
+                              className,
+                              root,
+                              messager );
     }
 }

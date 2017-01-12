@@ -31,7 +31,10 @@ public final class DefinitionPaletteItemImpl
                                        final String description,
                                        final String tooltip,
                                        final String definitionId ) {
-        super( itemId, title, description, tooltip );
+        super( itemId,
+               title,
+               description,
+               tooltip );
         this.definitionId = definitionId;
     }
 
@@ -55,9 +58,11 @@ public final class DefinitionPaletteItemImpl
 
         @Override
         public DefinitionPaletteItemImpl build() {
-            return new DefinitionPaletteItemImpl( id, title, description, tooltip, definitionId );
+            return new DefinitionPaletteItemImpl( id,
+                                                  title,
+                                                  description,
+                                                  tooltip,
+                                                  definitionId );
         }
-
     }
-
 }

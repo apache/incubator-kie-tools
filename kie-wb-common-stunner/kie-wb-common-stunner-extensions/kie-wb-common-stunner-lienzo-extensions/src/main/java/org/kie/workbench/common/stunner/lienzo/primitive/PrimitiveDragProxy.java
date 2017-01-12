@@ -27,28 +27,35 @@ public class PrimitiveDragProxy extends AbstractDragProxy<IPrimitive<?>> {
                                final int y,
                                final int timeout,
                                final Callback callback ) {
-        super( layer, shape, x, y, timeout, callback );
-
+        super( layer,
+               shape,
+               x,
+               y,
+               timeout,
+               callback );
     }
 
     @Override
-    protected void addToLayer( final Layer layer, final IPrimitive<?> shape ) {
+    protected void addToLayer( final Layer layer,
+                               final IPrimitive<?> shape ) {
         layer.add( shape );
     }
 
     @Override
-    protected void removeFromLayer( final Layer layer, final IPrimitive<?> shape ) {
+    protected void removeFromLayer( final Layer layer,
+                                    final IPrimitive<?> shape ) {
         shape.removeFromParent();
     }
 
     @Override
-    protected void setX( final IPrimitive<?> shape, final int x ) {
+    protected void setX( final IPrimitive<?> shape,
+                         final int x ) {
         shape.setX( x );
     }
 
     @Override
-    protected void setY( final IPrimitive<?> shape, final int y ) {
+    protected void setY( final IPrimitive<?> shape,
+                         final int y ) {
         shape.setY( y );
     }
-
 }

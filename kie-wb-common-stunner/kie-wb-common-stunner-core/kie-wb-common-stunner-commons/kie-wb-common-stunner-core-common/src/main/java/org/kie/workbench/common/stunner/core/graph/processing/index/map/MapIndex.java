@@ -16,14 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.index.map;
 
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
-
-import java.util.Map;
 
 public class MapIndex implements MutableIndex<Node, Edge> {
 
@@ -65,7 +64,8 @@ public class MapIndex implements MutableIndex<Node, Edge> {
 
     @Override
     public MutableIndex<Node, Edge> addNode( final Node node ) {
-        nodes.put( node.getUUID(), node );
+        nodes.put( node.getUUID(),
+                   node );
         return this;
     }
 
@@ -77,7 +77,8 @@ public class MapIndex implements MutableIndex<Node, Edge> {
 
     @Override
     public MutableIndex<Node, Edge> addEdge( final Edge edge ) {
-        edges.put( edge.getUUID(), edge );
+        edges.put( edge.getUUID(),
+                   edge );
         return this;
     }
 
@@ -92,5 +93,4 @@ public class MapIndex implements MutableIndex<Node, Edge> {
         nodes.clear();
         edges.clear();
     }
-
 }

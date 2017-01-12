@@ -42,40 +42,40 @@ import javax.annotation.Generated;
 @ApplicationScoped
 public class ${className} extends ${parentClassName} {
 
-    <#list shapeDefFactoryEntities as pc>
-        ${pc.className} ${pc.id};
-    </#list>
+<#list shapeDefFactoryEntities as pc>
+${pc.className} ${pc.id};
+</#list>
 
-    protected ${className}() {
-    }
+protected ${className}() {
+}
 
-    @Inject
-    public ${className}(
-            <#list shapeDefFactoryEntities as pc>
-                final ${pc.className} ${pc.id}
-            </#list>) {
+@Inject
+public ${className}(
+<#list shapeDefFactoryEntities as pc>
+final ${pc.className} ${pc.id}
+</#list>) {
 
-        <#list shapeDefFactoryEntities as pc>
-            this.${pc.id} = ${pc.id};
-        </#list>
+<#list shapeDefFactoryEntities as pc>
+this.${pc.id} = ${pc.id};
+</#list>
 
-    }
-    
-    @PostConstruct
-    @SuppressWarnings("unchecked")
-    public void init() {
+}
 
-        <#list addProxySentences as ps>
-            ${ps}
-        </#list>
-    
-    }
+@PostConstruct
+@SuppressWarnings("unchecked")
+public void init() {
 
-    <#list shapeDefFactoryEntities as pc>
-        @Override
-        protected ShapeFactory getFactory() {
-            return this.${pc.id};
-        }
-    </#list>
+<#list addProxySentences as ps>
+${ps}
+</#list>
+
+}
+
+<#list shapeDefFactoryEntities as pc>
+@Override
+protected ShapeFactory getFactory() {
+return this.${pc.id};
+}
+</#list>
 
 }

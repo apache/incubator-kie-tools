@@ -40,12 +40,13 @@ public final class UpdateElementPropertyCommand extends AbstractCanvasGraphComma
     @Override
     @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new UpdateElementPropertyValueCommand( (Node ) element, propertyId, value );
+        return new UpdateElementPropertyValueCommand( ( Node ) element,
+                                                      propertyId,
+                                                      value );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
         return new UpdateCanvasElementPropertyCommand( element );
     }
-
 }

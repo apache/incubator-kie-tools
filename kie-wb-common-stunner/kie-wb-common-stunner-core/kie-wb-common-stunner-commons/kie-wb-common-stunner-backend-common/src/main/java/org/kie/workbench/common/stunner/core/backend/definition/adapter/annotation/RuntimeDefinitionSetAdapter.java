@@ -15,6 +15,10 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation;
 
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractRuntimeDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
@@ -22,10 +26,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Set;
 
 @Dependent
 public class RuntimeDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSetAdapter<T> implements DefinitionSetAdapter<T> {
@@ -35,12 +35,12 @@ public class RuntimeDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSet
     RuntimeDefinitionAdapter annotatedDefinitionAdapter;
 
     @Inject
-    public RuntimeDefinitionSetAdapter( RuntimeDefinitionAdapter annotatedDefinitionAdapter ) {
+    public RuntimeDefinitionSetAdapter( final RuntimeDefinitionAdapter annotatedDefinitionAdapter ) {
         this.annotatedDefinitionAdapter = annotatedDefinitionAdapter;
     }
 
     @Override
-    public boolean accepts( Class<?> pojo ) {
+    public boolean accepts( final Class<?> pojo ) {
         return pojo.getAnnotation( DefinitionSet.class ) != null;
     }
 
@@ -54,13 +54,13 @@ public class RuntimeDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSet
             }
         }
         return result;
-
     }
 
     @Override
-    public String getDescription( T definitionSet ) {
+    public String getDescription( final T definitionSet ) {
         try {
-            return getAnnotatedFieldValue( definitionSet, Description.class );
+            return getAnnotatedFieldValue( definitionSet,
+                                           Description.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated category for DefinitionSet with id " + getId( definitionSet ) );
         }
@@ -68,8 +68,7 @@ public class RuntimeDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSet
     }
 
     @Override
-    public Set<String> getDefinitions( T definitionSet ) {
+    public Set<String> getDefinitions( final T definitionSet ) {
         return getAnnotatedDefinitions( definitionSet );
     }
-
 }

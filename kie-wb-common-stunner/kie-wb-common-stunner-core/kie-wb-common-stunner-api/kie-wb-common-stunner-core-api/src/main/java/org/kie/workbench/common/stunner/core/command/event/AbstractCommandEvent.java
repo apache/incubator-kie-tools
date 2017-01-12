@@ -19,8 +19,6 @@ package org.kie.workbench.common.stunner.core.command.event;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 
-import java.util.ArrayList;
-
 public abstract class AbstractCommandEvent<C, V> {
 
     private final Command<C, V> command;

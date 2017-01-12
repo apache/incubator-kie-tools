@@ -31,7 +31,8 @@ public final class UpdateCanvasElementPositionCommand extends AbstractCanvasComm
 
     @Override
     public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.updateElementPosition( element, MutationContext.STATIC );
+        context.updateElementPosition( element,
+                                       MutationContext.STATIC );
         return buildResult();
     }
 

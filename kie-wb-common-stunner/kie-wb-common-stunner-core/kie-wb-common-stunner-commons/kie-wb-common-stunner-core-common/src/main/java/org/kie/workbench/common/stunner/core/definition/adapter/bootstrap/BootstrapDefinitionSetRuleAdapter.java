@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.bootstrap;
 
+import java.util.Collection;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.rule.Rule;
-
-import java.util.Collection;
 
 class BootstrapDefinitionSetRuleAdapter implements DefinitionSetRuleAdapter<Object> {
 

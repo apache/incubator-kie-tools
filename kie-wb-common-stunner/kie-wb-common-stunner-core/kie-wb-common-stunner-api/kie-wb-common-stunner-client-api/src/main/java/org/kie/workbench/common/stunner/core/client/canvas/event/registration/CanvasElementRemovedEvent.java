@@ -25,7 +25,7 @@ public final class CanvasElementRemovedEvent extends AbstractCanvasHandlerElemen
 
     public CanvasElementRemovedEvent( final CanvasHandler canvasHandler,
                                       final Element<?> element ) {
-        super( canvasHandler, element );
+        super( canvasHandler,
+               element );
     }
-
 }

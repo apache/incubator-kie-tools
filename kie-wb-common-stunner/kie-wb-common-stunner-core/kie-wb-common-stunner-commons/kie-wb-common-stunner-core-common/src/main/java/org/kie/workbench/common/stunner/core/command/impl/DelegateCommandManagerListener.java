@@ -33,7 +33,9 @@ public class DelegateCommandManagerListener<C, V> implements CommandListener<C, 
                          final Command<C, V> command,
                          final CommandResult<V> result ) {
         if ( null != delegate ) {
-            delegate.onAllow( context, command, result );
+            delegate.onAllow( context,
+                              command,
+                              result );
         }
     }
 
@@ -42,7 +44,9 @@ public class DelegateCommandManagerListener<C, V> implements CommandListener<C, 
                            final Command<C, V> command,
                            final CommandResult<V> result ) {
         if ( null != delegate ) {
-            delegate.onExecute( context, command, result );
+            delegate.onExecute( context,
+                                command,
+                                result );
         }
     }
 
@@ -51,8 +55,9 @@ public class DelegateCommandManagerListener<C, V> implements CommandListener<C, 
                         final Command<C, V> command,
                         final CommandResult<V> result ) {
         if ( null != delegate ) {
-            delegate.onUndo( context, command, result );
+            delegate.onUndo( context,
+                             command,
+                             result );
         }
     }
-
 }

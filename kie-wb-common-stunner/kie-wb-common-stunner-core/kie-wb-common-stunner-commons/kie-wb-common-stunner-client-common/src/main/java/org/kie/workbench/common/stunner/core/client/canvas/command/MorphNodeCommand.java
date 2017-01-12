@@ -46,12 +46,15 @@ public final class MorphNodeCommand extends AbstractCanvasGraphCommand {
     @Override
     @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.MorphNodeCommand( ( Node ) candidate, morphDefinition, morphTarget );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.MorphNodeCommand( ( Node ) candidate,
+                                                                                              morphDefinition,
+                                                                                              morphTarget );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new MorphCanvasNodeCommand( candidate, morphDefinition, shapeSetId );
+        return new MorphCanvasNodeCommand( candidate,
+                                           morphDefinition,
+                                           shapeSetId );
     }
-
 }

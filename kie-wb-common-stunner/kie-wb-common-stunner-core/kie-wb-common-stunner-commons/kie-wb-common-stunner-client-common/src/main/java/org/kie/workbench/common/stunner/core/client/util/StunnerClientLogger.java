@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.util;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -30,10 +34,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientS
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class StunnerClientLogger {
 
@@ -111,7 +111,8 @@ public class StunnerClientLogger {
         } else {
             final int[] x = { 0 };
             history.stream().forEach( command -> {
-                logCommand( x[ 0 ], command );
+                logCommand( x[ 0 ],
+                            command );
                 x[ 0 ]++;
             } );
             log( " ( FOUND " + x[ 0 ] + " ENTRIES )" );
@@ -155,13 +156,16 @@ public class StunnerClientLogger {
 
     private static void log( final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( Level.INFO, message );
+            LOGGER.log( Level.INFO,
+                        message );
         }
     }
 
-    private static void log( final Level level, final String message ) {
+    private static void log( final Level level,
+                             final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

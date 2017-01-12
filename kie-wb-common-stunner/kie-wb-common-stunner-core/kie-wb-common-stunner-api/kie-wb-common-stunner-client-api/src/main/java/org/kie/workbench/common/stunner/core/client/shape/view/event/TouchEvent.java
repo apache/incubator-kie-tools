@@ -23,5 +23,4 @@ public interface TouchEvent extends ViewEvent {
     double getTouchY();
 
     boolean isShiftKeyDown();
-
 }

@@ -42,6 +42,7 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
      * edited Assignments data.
      */
     public interface GetDataCallback {
+
         void getData( String assignmentData );
     }
 
@@ -69,8 +70,13 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
     public void handleSaveClick() {
         if ( callback != null ) {
             AssignmentData data = new AssignmentData( view.getInputAssignmentData(),
-                    view.getOutputAssignmentData(), dataTypes, dataTypeDisplayNames );
-            data.setVariableCountsString( hasInputVars, isSingleInputVar, hasOutputVars, isSingleOutputVar );
+                                                      view.getOutputAssignmentData(),
+                                                      dataTypes,
+                                                      dataTypeDisplayNames );
+            data.setVariableCountsString( hasInputVars,
+                                          isSingleInputVar,
+                                          hasOutputVars,
+                                          isSingleOutputVar );
             String sData = marshallToJson( data );
             callback.getData( sData );
         }
@@ -86,7 +92,8 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
         view.hideView();
     }
 
-    public void setDataTypes( List<String> dataTypes, List<String> dataTypeDisplayNames ) {
+    public void setDataTypes( List<String> dataTypes,
+                              List<String> dataTypeDisplayNames ) {
         this.dataTypes = dataTypes;
         this.dataTypeDisplayNames = dataTypeDisplayNames;
         view.setPossibleInputAssignmentsDataTypes( dataTypeDisplayNames );
@@ -97,7 +104,11 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
         this.assignmentData = assignmentData;
     }
 
-    public void configureDialog( String taskName, boolean hasInputVars, boolean isSingleInputVar, boolean hasOutputVars, boolean isSingleOutputVar ) {
+    public void configureDialog( String taskName,
+                                 boolean hasInputVars,
+                                 boolean isSingleInputVar,
+                                 boolean hasOutputVars,
+                                 boolean isSingleOutputVar ) {
         this.hasInputVars = hasInputVars;
         this.isSingleInputVar = isSingleInputVar;
         this.hasOutputVars = hasOutputVars;

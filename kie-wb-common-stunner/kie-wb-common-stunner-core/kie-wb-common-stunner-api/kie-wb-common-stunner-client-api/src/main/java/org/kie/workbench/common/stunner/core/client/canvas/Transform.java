@@ -36,6 +36,6 @@ public interface Transform {
      * Returns the cartesian coordinates resulting after applying this
      * instance' transforms.
      */
-    Point2D transform( double x, double y );
-
+    Point2D transform( final double x,
+                       final double y );
 }

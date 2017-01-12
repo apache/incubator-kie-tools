@@ -28,5 +28,4 @@ public abstract class AbstractValidationViolation<E> implements ValidationViolat
     public E getEntity() {
         return entity;
     }
-
 }

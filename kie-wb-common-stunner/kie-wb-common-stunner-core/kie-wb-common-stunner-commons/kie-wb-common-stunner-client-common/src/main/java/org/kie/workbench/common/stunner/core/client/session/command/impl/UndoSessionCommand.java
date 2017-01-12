@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
@@ -25,10 +29,6 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -50,7 +50,8 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<AbstractCli
     @Override
     @SuppressWarnings( "unchecked" )
     public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback", callback );
+        checkNotNull( "callback",
+                      callback );
         final SessionCommandManager<AbstractCanvasHandler> scm = getSessionCommandManager();
         if ( null != scm ) {
             final CommandResult<CanvasViolation> result = getSessionCommandManager().undo( getSession().getCanvasHandler() );
@@ -59,13 +60,15 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<AbstractCli
         }
     }
 
-    void onCommandExecuted( @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {
-        checkNotNull( "commandExecutedEvent", commandExecutedEvent );
+    void onCommandExecuted( final @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {
+        checkNotNull( "commandExecutedEvent",
+                      commandExecutedEvent );
         checkState();
     }
 
-    void onCommandUndoExecuted( @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
-        checkNotNull( "commandUndoExecutedEvent", commandUndoExecutedEvent );
+    void onCommandUndoExecuted( final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
+        checkNotNull( "commandUndoExecutedEvent",
+                      commandUndoExecutedEvent );
         checkState();
     }
 

@@ -23,5 +23,4 @@ public interface Toolbox {
     void hide();
 
     void remove();
-
 }

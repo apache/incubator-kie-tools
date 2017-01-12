@@ -36,18 +36,14 @@ public class StaticIcons {
             case TIMER:
                 type = TimerIcon.class;
                 break;
-
         }
         if ( null != type ) {
             return getDefinitionId( type );
-
         }
         return null;
-
     }
 
     private static String getDefinitionId( final Class<?> type ) {
         return BindableAdapterUtils.getDefinitionId( type );
     }
-
 }

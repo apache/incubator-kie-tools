@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -23,25 +25,23 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-import java.util.List;
-
 // TODO: Handle other edge contents (dock) - generic or hardcoded?
 
 public class SafeDeleteNodeProcessor {
 
     public interface Callback {
 
-        void deleteChildNode( Node<Definition<?>, Edge> node );
+        void deleteChildNode( final Node<Definition<?>, Edge> node );
 
-        void deleteInViewEdge( Edge<View<?>, Node> edge );
+        void deleteInViewEdge( final Edge<View<?>, Node> edge );
 
-        void deleteInChildEdge( Edge<Child, Node> edge );
+        void deleteInChildEdge( final Edge<Child, Node> edge );
 
-        void deleteInDockEdge( Edge<Dock, Node> edge );
+        void deleteInDockEdge( final Edge<Dock, Node> edge );
 
-        void deleteOutViewEdge( Edge<? extends View<?>, Node> edge );
+        void deleteOutViewEdge( final Edge<? extends View<?>, Node> edge );
 
-        void deleteNode( Node<Definition<?>, Edge> node );
+        void deleteNode( final Node<Definition<?>, Edge> node );
     }
 
     private final Node<Definition<?>, Edge> candidate;

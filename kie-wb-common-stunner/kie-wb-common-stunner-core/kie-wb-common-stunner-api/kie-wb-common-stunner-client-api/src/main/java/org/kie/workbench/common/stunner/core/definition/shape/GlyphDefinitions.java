@@ -29,15 +29,18 @@ public class GlyphDefinitions {
     }
 
     public static class GlyphShapeDefImpl<W> extends AbstractGlyphShapeDef<W> {
+
     }
 
     public static class GlyphShapeDefMap<W> extends AbstractGlyphShapeDef<W> {
 
         private final Map<Class<?>, String> MAPPINGS = new LinkedHashMap<>();
 
+        @SuppressWarnings( "unchecked" )
         public <W> GlyphShapeDefMap<W> addMapping( final Class<?> type,
-                                               final String id ) {
-            MAPPINGS.put( type, id );
+                                                   final String id ) {
+            MAPPINGS.put( type,
+                          id );
             return ( GlyphShapeDefMap<W> ) this;
         }
 
@@ -47,5 +50,4 @@ public class GlyphDefinitions {
             return null != id ? id : super.getGlyphDefinitionId( clazz );
         }
     }
-
 }

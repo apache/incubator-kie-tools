@@ -33,22 +33,22 @@ public class PropertyImpl<C> {
     protected C value;
     private final PropertyType type;
 
-    public PropertyImpl( @MapsTo( "id" ) final String id,
-                         @MapsTo( "caption" ) final String caption,
-                         @MapsTo( "description" ) final String description,
-                         @MapsTo( "isReadOnly" ) final boolean isReadOnly,
-                         @MapsTo( "isOptional" ) final boolean isOptional,
-                         @MapsTo( "defaultValue" ) final C defaultValue,
-                         @MapsTo( "value" ) final C value,
-                         @MapsTo( "type" ) final PropertyType type ) {
+    public PropertyImpl( final @MapsTo( "id" ) String id,
+                         final @MapsTo( "caption" ) String caption,
+                         final @MapsTo( "description" ) String description,
+                         final @MapsTo( "isReadOnly" ) boolean isReadOnly,
+                         final @MapsTo( "isOptional" ) boolean isOptional,
+                         final @MapsTo( "defaultValue" ) C defaultValue,
+                         final @MapsTo( "value" ) C value,
+                         final @MapsTo( "type" ) PropertyType type ) {
         this.id = PortablePreconditions.checkNotNull( "id",
-                id );
+                                                      id );
         this.caption = PortablePreconditions.checkNotNull( "caption",
-                caption );
+                                                           caption );
         this.description = PortablePreconditions.checkNotNull( "description",
-                description );
+                                                               description );
         this.type = PortablePreconditions.checkNotNull( "type",
-                type );
+                                                        type );
         this.isReadOnly = isReadOnly;
         this.isOptional = isOptional;
         this.defaultValue = defaultValue;
@@ -169,5 +169,4 @@ public class PropertyImpl<C> {
                 ", isOptional=" + isOptional +
                 '}';
     }
-
 }

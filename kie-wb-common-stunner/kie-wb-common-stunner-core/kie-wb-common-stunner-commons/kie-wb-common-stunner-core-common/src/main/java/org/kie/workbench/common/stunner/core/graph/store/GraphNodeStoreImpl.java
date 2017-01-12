@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.graph.store;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.stunner.core.graph.Node;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.graph.Node;
 
 @Portable
 public class GraphNodeStoreImpl implements GraphNodeStore<Node> {
@@ -30,7 +30,8 @@ public class GraphNodeStoreImpl implements GraphNodeStore<Node> {
 
     @Override
     public Node add( final Node node ) {
-        return nodes.put( node.getUUID(), node );
+        return nodes.put( node.getUUID(),
+                          node );
     }
 
     @Override

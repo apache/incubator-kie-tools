@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 // TODO: I18n.
 @Dependent
@@ -72,5 +72,4 @@ public class ClearToolbarCommand extends AbstractToolbarSessionCommand<AbstractC
         super.afterDraw();
         checkState();
     }
-
 }

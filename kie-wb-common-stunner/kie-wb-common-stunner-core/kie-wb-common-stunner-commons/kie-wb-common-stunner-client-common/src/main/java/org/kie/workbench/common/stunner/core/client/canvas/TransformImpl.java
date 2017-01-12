@@ -20,7 +20,8 @@ public class TransformImpl implements Transform {
     private final Point2D translate;
     private final Point2D scale;
 
-    TransformImpl( final Point2D translate, final Point2D scale ) {
+    TransformImpl( final Point2D translate,
+                   final Point2D scale ) {
         this.translate = translate;
         this.scale = scale;
     }
@@ -37,7 +38,7 @@ public class TransformImpl implements Transform {
 
     @Override
     public Point2D transform( final double x,
-                               final double y ) {
+                              final double y ) {
         return new Point2D(
                 ( x * scale.getX() ) + translate.getX(),
                 ( y * scale.getY() ) + translate.getY()

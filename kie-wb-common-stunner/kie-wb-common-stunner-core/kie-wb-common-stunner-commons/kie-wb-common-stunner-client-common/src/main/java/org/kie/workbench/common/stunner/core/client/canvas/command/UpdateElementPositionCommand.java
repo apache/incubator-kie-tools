@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -41,12 +40,13 @@ public final class UpdateElementPositionCommand extends AbstractCanvasGraphComma
     @Override
     @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand( element, x, y );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand( element,
+                                                                                                          x,
+                                                                                                          y );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
         return new UpdateCanvasElementPositionCommand( element );
     }
-
 }

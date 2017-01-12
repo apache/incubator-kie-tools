@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.resize;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
@@ -26,8 +33,16 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.*;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.*;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CommandResultImpl;
@@ -44,13 +59,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 @Dependent
 public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl implements ResizeControl<AbstractCanvasHandler, Element> {
 
@@ -60,7 +68,8 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
 
     protected ResizeControlImpl() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     @Inject
@@ -76,8 +85,10 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
         final AbstractCanvas<?> canvas = canvasHandler.getCanvas();
         final Shape<?> shape = canvas.getShape( element.getUUID() );
         if ( supportsResize( shape ) ) {
-            registerCPHandlers( element, shape.getShapeView() );
-            registerResizeHandlers( element, shape );
+            registerCPHandlers( element,
+                                shape.getShapeView() );
+            registerResizeHandlers( element,
+                                    shape );
         }
     }
 
@@ -85,7 +96,11 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
     public CommandResult<CanvasViolation> resize( final Element element,
                                                   final double width,
                                                   final double height ) {
-        return doResize( element, null, null, width, height );
+        return doResize( element,
+                         null,
+                         null,
+                         width,
+                         height );
     }
 
     @Override
@@ -94,7 +109,11 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
                                                   final double y,
                                                   final double width,
                                                   final double height ) {
-        return doResize( element, x, y, width, height );
+        return doResize( element,
+                         x,
+                         y,
+                         width,
+                         height );
     }
 
     /**
@@ -131,8 +150,10 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
                     canvasHandler.getCanvas().getLayer().draw();
                 }
             };
-            hasEventHandlers.addHandler( ViewEventType.MOUSE_CLICK, clickHandler );
-            registerHandler( element.getUUID(), clickHandler );
+            hasEventHandlers.addHandler( ViewEventType.MOUSE_CLICK,
+                                         clickHandler );
+            registerHandler( element.getUUID(),
+                             clickHandler );
         }
     }
 
@@ -152,26 +173,30 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
 
                 @Override
                 public void end( final ResizeEvent event ) {
-                    LOGGER.log( Level.FINE, "Shape [" + element.getUUID() + "] resized to size {"
-                            + event.getWidth() + ", " + event.getHeight() + "] " +
-                            "& Coordinates [" + event.getX() + ", " + event.getY() + "]" );
+                    LOGGER.log( Level.FINE,
+                                "Shape [" + element.getUUID() + "] resized to size {"
+                                        + event.getWidth() + ", " + event.getHeight() + "] " +
+                                        "& Coordinates [" + event.getX() + ", " + event.getY() + "]" );
                     final Shape shape = canvasHandler.getCanvas().getShape( element.getUUID() );
                     final double x = shape.getShapeView().getShapeX();
                     final double y = shape.getShapeView().getShapeY();
                     final CommandResult<CanvasViolation> result =
                             doResize( element,
-                                    shape,
-                                    x + event.getX(),
-                                    y + event.getY(),
-                                    event.getWidth(),
-                                    event.getHeight() );
+                                      shape,
+                                      x + event.getX(),
+                                      y + event.getY(),
+                                      event.getWidth(),
+                                      event.getHeight() );
                     if ( CommandUtils.isError( result ) ) {
-                        LOGGER.log( Level.WARNING, "Command failed at resize end [result=" + result + "]" );
+                        LOGGER.log( Level.WARNING,
+                                    "Command failed at resize end [result=" + result + "]" );
                     }
                 }
             };
-            hasEventHandlers.addHandler( ViewEventType.RESIZE, resizeHandler );
-            registerHandler( element.getUUID(), resizeHandler );
+            hasEventHandlers.addHandler( ViewEventType.RESIZE,
+                                         resizeHandler );
+            registerHandler( element.getUUID(),
+                             resizeHandler );
         }
     }
 
@@ -181,7 +206,12 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
                                                      final double w,
                                                      final double h ) {
         final Shape shape = canvasHandler.getCanvas().getShape( element.getUUID() );
-        return doResize( element, shape, x, y, w, h );
+        return doResize( element,
+                         shape,
+                         x,
+                         y,
+                         w,
+                         h );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -192,13 +222,17 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
                                                      final double w,
                                                      final double h ) {
         // Calculate the new graph element's bounds.
-        final Point2D current = ( null != x && null != y ) ? new Point2D( x, y ) : GraphUtils.getPosition( element.getContent() );
+        final Point2D current = ( null != x && null != y ) ? new Point2D( x,
+                                                                          y ) : GraphUtils.getPosition( element.getContent() );
         final BoundsImpl newBounds = new BoundsImpl(
-                new BoundImpl( current.getX(), current.getY() ),
-                new BoundImpl( current.getX() + w, current.getY() + h )
+                new BoundImpl( current.getX(),
+                               current.getY() ),
+                new BoundImpl( current.getX() + w,
+                               current.getY() + h )
         );
         // Check the new bound values that come from the user's action do not exceed graph ones.
-        if ( !GraphUtils.checkBounds( canvasHandler.getDiagram().getGraph(), newBounds ) ) {
+        if ( !GraphUtils.checkBounds( canvasHandler.getDiagram().getGraph(),
+                                      newBounds ) ) {
             return new CommandResultImpl<>(
                     CommandResult.Type.ERROR,
                     "Bounds exceeded",
@@ -206,18 +240,22 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
             );
         }
         // Execute the update position and update property/ies command/s on the bean instance to achieve the new bounds.
-        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands =
-                getResizeCommands( element, shape, w, h );
-        final CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> commandBuilder =
-                new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>();
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = getResizeCommands( element,
+                                                                                                  shape,
+                                                                                                  w,
+                                                                                                  h );
+        final CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>();
         if ( null != commands ) {
             if ( null != x && null != y ) {
                 commandBuilder
-                        .addCommand( canvasCommandFactory.updatePosition( ( Node<View<?>, Edge> ) element, x, y ) );
+                        .addCommand( canvasCommandFactory.updatePosition( ( Node<View<?>, Edge> ) element,
+                                                                          x,
+                                                                          y ) );
             }
             commands.stream().forEach( commandBuilder::addCommand );
         }
-        final CommandResult<CanvasViolation> resizeResults = canvasCommandManager.execute( canvasHandler, commandBuilder.build() );
+        final CommandResult<CanvasViolation> resizeResults = canvasCommandManager.execute( canvasHandler,
+                                                                                           commandBuilder.build() );
         // Update the view bounds on the node content after successful resize.
         if ( !CommandUtils.isError( resizeResults ) ) {
             element.getContent().setBounds( newBounds );
@@ -236,36 +274,47 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
                                                                                      final double h ) {
         final Definition content = ( Definition ) element.getContent();
         final Object def = content.getDefinition();
-        final DefinitionAdapter<Object> adapter =
-                canvasHandler.getClientDefinitionManager()
-                        .adapters().registry().getDefinitionAdapter( def.getClass() );
+        final DefinitionAdapter<Object> adapter = canvasHandler
+                .getClientDefinitionManager()
+                .adapters()
+                .registry()
+                .getDefinitionAdapter( def.getClass() );
         final ShapeView<?> shapeView = shape.getShapeView();
-        final List<Command<AbstractCanvasHandler, CanvasViolation>> result =
-                new LinkedList<>();
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> result = new LinkedList<>();
         if ( shapeView instanceof HasSize ) {
-            final Object width = adapter.getMetaProperty( PropertyMetaTypes.WIDTH, def );
-            final Object height = adapter.getMetaProperty( PropertyMetaTypes.HEIGHT, def );
+            final Object width = adapter.getMetaProperty( PropertyMetaTypes.WIDTH,
+                                                          def );
+            final Object height = adapter.getMetaProperty( PropertyMetaTypes.HEIGHT,
+                                                           def );
             final String wId = null != width ? canvasHandler.getClientDefinitionManager().adapters().forProperty().getId( width ) : null;
             final String hId = null != width ? canvasHandler.getClientDefinitionManager().adapters().forProperty().getId( height ) : null;
             if ( null != wId && null != hId ) {
-                result.add( canvasCommandFactory.updatePropertyValue( element, wId, w ) );
-                result.add( canvasCommandFactory.updatePropertyValue( element, hId, h ) );
+                result.add( canvasCommandFactory.updatePropertyValue( element,
+                                                                      wId,
+                                                                      w ) );
+                result.add( canvasCommandFactory.updatePropertyValue( element,
+                                                                      hId,
+                                                                      h ) );
             } else {
-                LOGGER.log( Level.WARNING, "Not width/height properties found for element [" + element.getUUID()
-                        + "], but the shape for it supports size." );
+                LOGGER.log( Level.WARNING,
+                            "Not width/height properties found for element [" + element.getUUID()
+                                    + "], but the shape for it supports size." );
             }
         } else if ( shapeView instanceof HasRadius ) {
-            final Object radius = adapter.getMetaProperty( PropertyMetaTypes.RADIUS, def );
+            final Object radius = adapter.getMetaProperty( PropertyMetaTypes.RADIUS,
+                                                           def );
             final String rId = null != radius ? canvasHandler.getClientDefinitionManager().adapters().forProperty().getId( radius ) : null;
             if ( null != rId ) {
                 final double r = w > h ? ( h / 2 ) : ( w / 2 );
-                result.add( canvasCommandFactory.updatePropertyValue( element, rId, r ) );
+                result.add( canvasCommandFactory.updatePropertyValue( element,
+                                                                      rId,
+                                                                      r ) );
             } else {
-                LOGGER.log( Level.WARNING, "Not radius property found for element [" + element.getUUID()
-                        + "], but the shape for it supports radius." );
+                LOGGER.log( Level.WARNING,
+                            "Not radius property found for element [" + element.getUUID()
+                                    + "], but the shape for it supports radius." );
             }
         }
         return result;
     }
-
 }

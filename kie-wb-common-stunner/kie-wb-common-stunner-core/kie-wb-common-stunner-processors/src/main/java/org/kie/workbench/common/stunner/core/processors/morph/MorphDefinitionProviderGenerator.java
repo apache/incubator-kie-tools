@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.processors.morph;
 
-import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinitionProvider;
-import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.processing.Messager;
+
+import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinitionProvider;
+import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
+import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 public class MorphDefinitionProviderGenerator extends AbstractBindableAdapterGenerator {
 
@@ -32,25 +32,28 @@ public class MorphDefinitionProviderGenerator extends AbstractBindableAdapterGen
         return "MorphDefinitionProvider.ftl";
     }
 
-    public StringBuffer generate( String packageName,
-                                  String className,
-                                  Collection<String> morphDeinitions,
-                                  Messager messager ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final String className,
+                                  final Collection<String> morphDeinitions,
+                                  final Messager messager ) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
-                packageName );
+                  packageName );
         root.put( "className",
-                className );
+                  className );
         root.put( "parentClassName",
-                MorphDefinitionProvider.class.getName() );
+                  MorphDefinitionProvider.class.getName() );
         root.put( "generatedByClassName",
-                MorphDefinitionProviderGenerator.class.getName() );
+                  MorphDefinitionProviderGenerator.class.getName() );
         root.put( "morphDefinitionClassNameSize",
-                morphDeinitions.size() );
+                  morphDeinitions.size() );
         root.put( "morphDefinitionClassNames",
-                morphDeinitions );
-        //Generate code
-        return writeTemplate( packageName, className, root, messager );
-    }
+                  morphDeinitions );
 
+        //Generate code
+        return writeTemplate( packageName,
+                              className,
+                              root,
+                              messager );
+    }
 }

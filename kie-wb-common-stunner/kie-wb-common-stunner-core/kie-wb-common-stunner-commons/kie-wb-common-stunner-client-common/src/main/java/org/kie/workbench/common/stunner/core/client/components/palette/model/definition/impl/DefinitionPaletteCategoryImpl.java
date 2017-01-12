@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.model.definition.impl;
 
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.components.palette.model.AbstractPaletteGroup;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.AbstractPaletteGroupBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
-
-import java.util.List;
 
 public final class DefinitionPaletteCategoryImpl extends AbstractPaletteGroup<DefinitionPaletteItem> implements DefinitionPaletteCategory {
 
@@ -31,8 +31,12 @@ public final class DefinitionPaletteCategoryImpl extends AbstractPaletteGroup<De
                                            final String tooltip,
                                            final String glyphDefinitionId,
                                            final List<DefinitionPaletteItem> items ) {
-        super( itemId, title, description, tooltip, glyphDefinitionId, items );
-
+        super( itemId,
+               title,
+               description,
+               tooltip,
+               glyphDefinitionId,
+               items );
     }
 
     static class DefinitionPaletteCategoryBuilder extends AbstractPaletteGroupBuilder<DefinitionPaletteCategoryBuilder,
@@ -47,11 +51,13 @@ public final class DefinitionPaletteCategoryImpl extends AbstractPaletteGroup<De
             if ( null == definitionId && !items.isEmpty() ) {
                 final DefinitionPaletteItem item = items.get( 0 );
                 this.definitionId = item.getDefinitionId();
-
             }
-            return new DefinitionPaletteCategoryImpl( id, title, description, tooltip, definitionId, items );
+            return new DefinitionPaletteCategoryImpl( id,
+                                                      title,
+                                                      description,
+                                                      tooltip,
+                                                      definitionId,
+                                                      items );
         }
-
     }
-
 }

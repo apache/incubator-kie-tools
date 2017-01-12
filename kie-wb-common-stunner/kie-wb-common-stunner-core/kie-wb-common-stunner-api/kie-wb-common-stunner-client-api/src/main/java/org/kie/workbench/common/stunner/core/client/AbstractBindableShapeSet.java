@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
@@ -39,7 +38,6 @@ public abstract class AbstractBindableShapeSet<F extends ShapeFactory> implement
     public void doInit() {
         final Object defSet = definitionManager.definitionSets().getDefinitionSetById( getDefinitionSetId() );
         this.description = definitionManager.adapters().forDefinitionSet().getDescription( defSet );
-
     }
 
     @Override

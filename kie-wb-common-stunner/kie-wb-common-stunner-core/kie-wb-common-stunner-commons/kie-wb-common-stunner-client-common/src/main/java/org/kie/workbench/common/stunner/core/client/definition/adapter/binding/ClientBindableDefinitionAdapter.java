@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
+import java.util.Collection;
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import java.util.Collection;
-import java.util.Set;
 
 class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<Object>
         implements BindableDefinitionAdapter<Object> {
@@ -31,40 +31,54 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
     }
 
     public String getCategory( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyCategoryFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyCategoryFieldNames().get( pojo.getClass() ) );
     }
 
     public String getTitle( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyTitleFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyTitleFieldNames().get( pojo.getClass() ) );
     }
 
     public String getDescription( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyDescriptionFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyDescriptionFieldNames().get( pojo.getClass() ) );
     }
 
     public Set<String> getLabels( final Object pojo ) {
         final String fName = getPropertyLabelsFieldNames().get( pojo.getClass() );
-        return getProxiedValue( pojo, fName );
+        return getProxiedValue( pojo,
+                                fName );
     }
 
     public Set<?> getPropertySets( final Object pojo ) {
-        return getProxiedSet( pojo, getPropertySetsFieldNames().get( pojo.getClass() ) );
+        return getProxiedSet( pojo,
+                              getPropertySetsFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
     protected Set<?> getBindProperties( final Object pojo ) {
-        return getProxiedSet( pojo, getPropertiesFieldNames().get( pojo.getClass() ) );
+        return getProxiedSet( pojo,
+                              getPropertiesFieldNames().get( pojo.getClass() ) );
     }
 
-    private <T, R> R getProxiedValue( final T pojo, final String fieldName ) {
-        return ClientBindingUtils.getProxiedValue( pojo, fieldName );
+    private <T, R> R getProxiedValue( final T pojo,
+                                      final String fieldName ) {
+        return ClientBindingUtils.getProxiedValue( pojo,
+                                                   fieldName );
     }
 
-    private <T, R> Set<R> getProxiedSet( final T pojo, final Collection<String> fieldNames ) {
-        return ClientBindingUtils.getProxiedSet( pojo, fieldNames );
+    private <T, R> Set<R> getProxiedSet( final T pojo,
+                                         final Collection<String> fieldNames ) {
+        return ClientBindingUtils.getProxiedSet( pojo,
+                                                 fieldNames );
     }
 
-    private <T, V> void setProxiedValue( final T pojo, final String fieldName, final V value ) {
-        ClientBindingUtils.setProxiedValue( pojo, fieldName, value );
+    private <T, V> void setProxiedValue( final T pojo,
+                                         final String fieldName,
+                                         final V value ) {
+        ClientBindingUtils.setProxiedValue( pojo,
+                                            fieldName,
+                                            value );
     }
 }

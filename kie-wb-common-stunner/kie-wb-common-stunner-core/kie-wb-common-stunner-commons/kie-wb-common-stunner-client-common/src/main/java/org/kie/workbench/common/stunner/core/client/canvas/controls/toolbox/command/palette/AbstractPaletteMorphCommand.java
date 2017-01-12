@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.palette;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import javax.enterprise.event.Event;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -35,12 +41,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import javax.enterprise.event.Event;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteCommand<I> {
 
@@ -64,8 +64,15 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
                                         final GraphBoundsIndexer graphBoundsIndexer,
                                         final I icon,
                                         final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
-        super( clientFactoryServices, commonLookups, shapeManager, definitionsPaletteBuilder, palette,
-                nodeDragProxyFactory, nodeBuilderControl, graphBoundsIndexer, icon );
+        super( clientFactoryServices,
+               commonLookups,
+               shapeManager,
+               definitionsPaletteBuilder,
+               palette,
+               nodeDragProxyFactory,
+               nodeBuilderControl,
+               graphBoundsIndexer,
+               icon );
         this.definitionUtils = definitionUtils;
         this.commandFactory = commandFactory;
         this.canvasCommandManager = canvasCommandManager;
@@ -82,11 +89,13 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
         final Iterable<MorphDefinition> morphDefinitions = morphAdapter.getMorphDefinitions( source );
         if ( null != morphDefinitions && morphDefinitions.iterator().hasNext() ) {
             for ( final MorphDefinition morphDefinition : morphDefinitions ) {
-                final Iterable<String> morphTargets = morphAdapter.getTargets( source, morphDefinition );
+                final Iterable<String> morphTargets = morphAdapter.getTargets( source,
+                                                                               morphDefinition );
                 if ( null != morphTargets && morphTargets.iterator().hasNext() ) {
                     for ( final String morphTarget : morphTargets ) {
                         if ( !id.equals( morphTarget ) ) {
-                            this.morphDefinitions.put( morphTarget, morphDefinition );
+                            this.morphDefinitions.put( morphTarget,
+                                                       morphDefinition );
                         }
                     }
                 }
@@ -107,10 +116,15 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
         final Node node = ( Node ) sourceNode;
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
         canvasCommandManager.execute( canvasHandler,
-                commandFactory.morphNode( node, morphDefinition, definitionId, ssid ) );
+                                      commandFactory.morphNode( node,
+                                                                morphDefinition,
+                                                                definitionId,
+                                                                ssid ) );
         this.morphDefinitions.clear();
         clear();
-        fireElementSelectedEvent( elementSelectedEvent, canvasHandler, node.getUUID() );
+        fireElementSelectedEvent( elementSelectedEvent,
+                                  canvasHandler,
+                                  node.getUUID() );
     }
 
     protected DefinitionManager getDefinitionManager() {

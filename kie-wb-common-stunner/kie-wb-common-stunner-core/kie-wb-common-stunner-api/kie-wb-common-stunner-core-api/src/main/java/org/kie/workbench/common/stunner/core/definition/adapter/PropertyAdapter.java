@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-
 import java.util.Map;
+
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 
 /**
  * A Property pojo adapter..
@@ -28,52 +28,52 @@ public interface PropertyAdapter<T, V> extends PriorityAdapter {
     /**
      * Returns the property's identifier for a given pojo.
      */
-    String getId( T pojo );
+    String getId( final T pojo );
 
     /**
      * Returns the property's type for a given pojo.
      */
-    PropertyType getType( T pojo );
+    PropertyType getType( final T pojo );
 
     /**
      * Returns the property's caption for a given pojo.
      */
-    String getCaption( T pojo );
+    String getCaption( final T pojo );
 
     /**
      * Returns the property's description for a given pojo.
      */
-    String getDescription( T pojo );
+    String getDescription( final T pojo );
 
     /**
      * Specifies if the property is read only.
      */
-    boolean isReadOnly( T pojo );
+    boolean isReadOnly( final T pojo );
 
     /**
      * Specifies if the property is optional.
      */
-    boolean isOptional( T pojo );
+    boolean isOptional( final T pojo );
 
     /**
      * Returns the property's value for a given pojo.
      */
-    V getValue( T pojo );
+    V getValue( final T pojo );
 
     /**
      * Returns the property's default value for a given pojo.
      */
-    V getDefaultValue( T pojo );
+    V getDefaultValue( final T pojo );
 
     /**
      * Returns allowed values for this property, if multiple.
      * Otherwise returns null,.
      */
-    Map<V, String> getAllowedValues( T pojo );
+    Map<V, String> getAllowedValues( final T pojo );
 
     /**
      * Update's the property value for a given pojo..
      */
-    void setValue( T pojo, V value );
-
+    void setValue( final T pojo,
+                   final V value );
 }

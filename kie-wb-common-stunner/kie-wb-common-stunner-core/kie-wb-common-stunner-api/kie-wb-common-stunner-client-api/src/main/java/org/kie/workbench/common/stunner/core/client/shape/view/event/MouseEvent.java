@@ -25,5 +25,4 @@ public interface MouseEvent extends ViewEvent {
     double getClientX();
 
     double getClientY();
-
 }

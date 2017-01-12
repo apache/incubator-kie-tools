@@ -31,12 +31,12 @@ public abstract class AbstractDefinitionSetService implements DefinitionSetServi
         this( null );
     }
 
-    public AbstractDefinitionSetService( DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> diagramMarshaller ) {
+    public AbstractDefinitionSetService( final DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> diagramMarshaller ) {
         this.diagramMarshaller = diagramMarshaller;
     }
 
     @Override
-    public boolean accepts( String defSetId ) {
+    public boolean accepts( final String defSetId ) {
         final String id = BindableAdapterUtils.getDefinitionSetId( getResourceType().getDefinitionSetType() );
         return defSetId != null && defSetId.equals( id );
     }
@@ -45,5 +45,4 @@ public abstract class AbstractDefinitionSetService implements DefinitionSetServi
     public DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> getDiagramMarshaller() {
         return diagramMarshaller;
     }
-
 }

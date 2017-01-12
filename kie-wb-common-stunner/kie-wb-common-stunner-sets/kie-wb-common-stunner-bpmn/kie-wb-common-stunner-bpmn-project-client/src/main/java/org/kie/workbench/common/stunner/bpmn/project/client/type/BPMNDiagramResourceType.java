@@ -15,14 +15,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.project.client.type;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNProjectImageResources;
 import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class BPMNDiagramResourceType extends AbstractStunnerClientResourceType<BPMNDefinitionSetResourceType> {
@@ -42,5 +42,4 @@ public class BPMNDiagramResourceType extends AbstractStunnerClientResourceType<B
     public IsWidget getIcon() {
         return ICON;
     }
-
 }

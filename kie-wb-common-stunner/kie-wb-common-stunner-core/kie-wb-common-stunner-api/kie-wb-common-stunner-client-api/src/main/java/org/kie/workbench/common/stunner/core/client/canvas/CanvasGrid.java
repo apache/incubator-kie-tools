@@ -29,5 +29,4 @@ public interface CanvasGrid {
     double getSecondaryAlpha();
 
     String getSecondaryColor();
-
 }

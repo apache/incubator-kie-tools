@@ -26,7 +26,6 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
     public interface CloseCallback {
 
         void onClose();
-
     }
 
     private Rectangle decorator;
@@ -50,7 +49,11 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
                                final double y,
                                final double itemX,
                                final double itemY ) {
-        super.doShowItem( index, x, y, itemX, itemY );
+        super.doShowItem( index,
+                          x,
+                          y,
+                          itemX,
+                          itemY );
         stopTimeout();
     }
 
@@ -99,7 +102,8 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
 
     private void addPaletteDecorator() {
         if ( null == decorator ) {
-            decorator = new Rectangle( 1, 1 )
+            decorator = new Rectangle( 1,
+                                       1 )
                     .setFillColor( ColorName.LIGHTGREY );
             this.add( decorator );
             itemsGroup.moveToTop();
@@ -109,9 +113,7 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
             handlerRegistrationManager.register(
                     decorator.addNodeMouseExitHandler( event -> startTimeout() )
             );
-
         }
-
     }
 
     private void removePaletteDecorator() {
@@ -120,15 +122,12 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
         if ( null != decorator ) {
             this.decorator.removeFromParent();
             this.decorator = null;
-
         }
-
     }
 
     private void drawPaletteDecorator() {
         if ( null == decorator ) {
             addPaletteDecorator();
-
         }
         if ( null != decorator ) {
             final double halfOfPadding = padding != 0 ? padding / 2 : 0;
@@ -142,9 +141,7 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
                     .setHeight( h )
                     .setX( x + ( halfOfPadding / 2 ) )
                     .setY( y + halfOfPadding );
-
         }
-
     }
 
     private void registerHoverEventHandlers() {
@@ -154,7 +151,6 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
         handlerRegistrationManager.register(
                 this.addNodeMouseExitHandler( event -> startTimeout() )
         );
-
     }
 
     public void startTimeout() {
@@ -168,16 +164,12 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
                 }
             };
             timer.schedule( timeout );
-
         }
-
     }
 
     public void stopTimeout() {
         if ( null != timer && timer.isRunning() ) {
             timer.cancel();
         }
-
     }
-
 }

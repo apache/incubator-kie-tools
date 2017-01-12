@@ -15,11 +15,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client;
 
-import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
 /**
  * Used to provide qualifiers for widgets and views when using Stunner and
@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
  */
 @Qualifier
 @Retention( RetentionPolicy.RUNTIME )
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
+@Target( { ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER } )
 public @interface StunnerSpecific {
+
 }

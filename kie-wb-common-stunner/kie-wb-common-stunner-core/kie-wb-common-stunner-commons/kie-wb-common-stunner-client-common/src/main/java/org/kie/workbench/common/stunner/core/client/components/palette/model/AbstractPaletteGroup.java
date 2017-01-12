@@ -31,7 +31,10 @@ public abstract class AbstractPaletteGroup<I extends PaletteItem>
                                  final String tooltip,
                                  final String definitionId,
                                  final List<I> items ) {
-        super( itemId, title, description, tooltip );
+        super( itemId,
+               title,
+               description,
+               tooltip );
         this.definitionId = definitionId;
         this.items = items;
     }
@@ -44,5 +47,4 @@ public abstract class AbstractPaletteGroup<I extends PaletteItem>
     public String getDefinitionId() {
         return definitionId;
     }
-
 }

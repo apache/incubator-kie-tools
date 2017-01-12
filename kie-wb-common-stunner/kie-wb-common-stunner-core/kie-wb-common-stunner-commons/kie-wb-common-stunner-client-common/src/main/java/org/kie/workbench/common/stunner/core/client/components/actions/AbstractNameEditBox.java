@@ -21,7 +21,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.uberfire.mvp.Command;
 
-public abstract class AbstractNameEditBox<E extends Element> implements NameEditBox<AbstractCanvasHandler, E>, IsWidget {
+public abstract class AbstractNameEditBox<E extends Element> implements NameEditBox<AbstractCanvasHandler, E>,
+                                                                        IsWidget {
 
     protected AbstractCanvasHandler canvasHandler;
     protected Command closeCallback;
@@ -31,7 +32,5 @@ public abstract class AbstractNameEditBox<E extends Element> implements NameEdit
                             final Command closeCallback ) {
         this.canvasHandler = canvasHandler;
         this.closeCallback = closeCallback;
-
     }
-
 }

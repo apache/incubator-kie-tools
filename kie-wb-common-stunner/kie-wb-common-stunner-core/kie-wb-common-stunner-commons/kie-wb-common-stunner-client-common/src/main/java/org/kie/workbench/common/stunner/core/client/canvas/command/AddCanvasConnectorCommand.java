@@ -40,9 +40,13 @@ public final class AddCanvasConnectorCommand extends AbstractCanvasCommand {
     @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.register( shapeSetId, candidate );
-        context.applyElementMutation( candidate, MutationContext.STATIC );
-        ShapeUtils.applyConnections( candidate, context, MutationContext.STATIC );
+        context.register( shapeSetId,
+                          candidate );
+        context.applyElementMutation( candidate,
+                                      MutationContext.STATIC );
+        ShapeUtils.applyConnections( candidate,
+                                     context,
+                                     MutationContext.STATIC );
         final Node source = candidate.getSourceNode();
         if ( null != source ) {
             context.fireCanvasElementUpdated( source );

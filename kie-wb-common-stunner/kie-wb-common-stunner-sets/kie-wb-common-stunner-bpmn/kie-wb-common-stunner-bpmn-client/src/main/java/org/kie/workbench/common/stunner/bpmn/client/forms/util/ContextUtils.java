@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
-
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 
 public class ContextUtils {

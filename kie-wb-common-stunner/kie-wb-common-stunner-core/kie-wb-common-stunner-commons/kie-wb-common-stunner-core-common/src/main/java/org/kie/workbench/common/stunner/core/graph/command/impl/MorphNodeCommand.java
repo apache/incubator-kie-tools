@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -29,8 +31,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.Set;
-
 /**
  * A Command to morph a node in a graph.
  */
@@ -42,17 +42,16 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
     private String morphTarget;
     private String oldMorphTarget;
 
-    public MorphNodeCommand( @MapsTo( "candidate" ) Node<Definition, Edge> candidate,
-                             @MapsTo( "morphDefinition" ) MorphDefinition morphDefinition,
-                             @MapsTo( "morphTarget" ) String morphTarget ) {
+    public MorphNodeCommand( final @MapsTo( "candidate" ) Node<Definition, Edge> candidate,
+                             final @MapsTo( "morphDefinition" ) MorphDefinition morphDefinition,
+                             final @MapsTo( "morphTarget" ) String morphTarget ) {
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                candidate );
+                                                             candidate );
         this.morphDefinition = PortablePreconditions.checkNotNull( "morphDefinition",
-                morphDefinition );
+                                                                   morphDefinition );
         this.morphTarget = PortablePreconditions.checkNotNull( "morphTarget",
-                morphTarget );
+                                                               morphTarget );
         this.oldMorphTarget = null;
-
     }
 
     @Override
@@ -67,15 +66,16 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
             final MorphAdapter<Object> morphAdapter = context.getDefinitionManager().adapters().registry().getMorphAdapter( currentDef.getClass() );
             if ( null == morphAdapter ) {
                 throw new RuntimeException( "No morph adapter found for definition [" + currentDef.toString() + "] " +
-                        "and target morph [" + morphTarget + "]" );
-
+                                                    "and target morph [" + morphTarget + "]" );
             }
-            final Object newDef = morphAdapter.morph( currentDef, morphDefinition, morphTarget );
+            final Object newDef = morphAdapter.morph( currentDef,
+                                                      morphDefinition,
+                                                      morphTarget );
             if ( null == newDef ) {
                 throw new RuntimeException( "No morph resulting Definition. [ morphSource=" + currentDefId + ", " +
-                        "morphTarget=" + morphTarget + "]" );
-
+                                                    "morphTarget=" + morphTarget + "]" );
             }
+
             // Morph the node definition to the new one.
             candidate.getContent().setDefinition( newDef );
             // Update candidate roles.
@@ -83,9 +83,7 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
             candidate.getLabels().clear();
             if ( null != newLabels ) {
                 candidate.getLabels().addAll( newLabels );
-
             }
-
         }
         return results;
     }
@@ -97,8 +95,10 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        final MorphNodeCommand undoCommand = new MorphNodeCommand( candidate, morphDefinition, oldMorphTarget );
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
+        final MorphNodeCommand undoCommand = new MorphNodeCommand( candidate,
+                                                                   morphDefinition,
+                                                                   oldMorphTarget );
         return undoCommand.execute( context );
     }
 

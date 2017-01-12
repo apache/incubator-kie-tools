@@ -27,5 +27,4 @@ public abstract class AbstractValidationEvent<E> {
     public E getEntity() {
         return entity;
     }
-
 }

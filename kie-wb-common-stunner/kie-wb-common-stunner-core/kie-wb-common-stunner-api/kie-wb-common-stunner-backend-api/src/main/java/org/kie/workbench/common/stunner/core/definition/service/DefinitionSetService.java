@@ -28,24 +28,20 @@ public interface DefinitionSetService {
 
     /**
      * Check if the service implementation supports the <code>defSetId</code>.
-     *
      * @param defSetId The DefinitionSet's-
      * @return <code>true</code> in case this services are supported for the given <code>defSetId</code>, <code>false</code> otherwise.
      */
-    boolean accepts( String defSetId );
+    boolean accepts( final String defSetId );
 
     /**
      * Provides the resource type implementation for the DefinitionSet accepted by this service.
-     *
      * @return The resource type.
      */
     DefinitionSetResourceType getResourceType();
 
     /**
      * The diagram marshaller implementation for the DefinitionSet accepted by this service.
-     *
      * @return An instance of a diagram marshaller.
      */
     DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> getDiagramMarshaller();
-
 }

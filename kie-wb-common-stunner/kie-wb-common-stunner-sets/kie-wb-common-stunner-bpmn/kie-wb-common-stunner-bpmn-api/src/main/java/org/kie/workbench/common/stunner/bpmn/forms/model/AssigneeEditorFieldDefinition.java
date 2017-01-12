@@ -22,7 +22,8 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssigneeEditor;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DEFAULT_VALUE;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TYPE;
 
 @Portable
 @Bindable

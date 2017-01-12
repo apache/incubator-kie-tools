@@ -23,7 +23,9 @@ public abstract class AbstractViewEvent implements ViewEvent {
     protected boolean isMetaKeyDown;
 
     public AbstractViewEvent() {
-        this( false, false, false );
+        this( false,
+              false,
+              false );
     }
 
     public AbstractViewEvent( final boolean isShiftKeyDown,
@@ -38,7 +40,7 @@ public abstract class AbstractViewEvent implements ViewEvent {
         return isShiftKeyDown;
     }
 
-    public void setShiftKeyDown( boolean shiftKeyDown ) {
+    public void setShiftKeyDown( final boolean shiftKeyDown ) {
         isShiftKeyDown = shiftKeyDown;
     }
 
@@ -46,7 +48,7 @@ public abstract class AbstractViewEvent implements ViewEvent {
         return isAltKeyDown;
     }
 
-    public void setAltKeyDown( boolean altKeyDown ) {
+    public void setAltKeyDown( final boolean altKeyDown ) {
         isAltKeyDown = altKeyDown;
     }
 
@@ -54,8 +56,7 @@ public abstract class AbstractViewEvent implements ViewEvent {
         return isMetaKeyDown;
     }
 
-    public void setMetaKeyDown( boolean metaKeyDown ) {
+    public void setMetaKeyDown( final boolean metaKeyDown ) {
         isMetaKeyDown = metaKeyDown;
     }
-
 }

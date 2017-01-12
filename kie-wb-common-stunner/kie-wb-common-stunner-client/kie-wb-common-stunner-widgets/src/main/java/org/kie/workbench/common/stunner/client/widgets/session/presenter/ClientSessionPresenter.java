@@ -26,32 +26,33 @@ public interface ClientSessionPresenter<C extends Canvas, H extends CanvasHandle
 
     interface View extends IsWidget {
 
-        View setCanvas( IsWidget widget );
+        View setCanvas( final IsWidget widget );
 
-        View setLoading( boolean loading );
+        View setLoading( final boolean loading );
 
-        View setToolbar( IsWidget widget );
+        View setToolbar( final IsWidget widget );
 
-        View setPalette( IsWidget widget );
+        View setPalette( final IsWidget widget );
 
-        View showError( String error );
+        View showError( final String error );
 
-        View showMessage( String message );
+        View showMessage( final String message );
 
         void destroy();
-
     }
 
-    ClientSessionPresenter<C, H, S, V> initialize( S session, int width, int height );
+    ClientSessionPresenter<C, H, S, V> initialize( final S session,
+                                                   final int width,
+                                                   final int height );
 
-    ClientSessionPresenter<C, H, S, V> open( Diagram diagram, Command callback );
+    ClientSessionPresenter<C, H, S, V> open( final Diagram diagram,
+                                             final Command callback );
 
-    ClientSessionPresenter<C, H, S, V> setDisplayNotifications( boolean showNotifications );
+    ClientSessionPresenter<C, H, S, V> setDisplayNotifications( final boolean showNotifications );
 
-    ClientSessionPresenter<C, H, S, V> setDisplayErrors( boolean showErrors );
+    ClientSessionPresenter<C, H, S, V> setDisplayErrors( final boolean showErrors );
 
     H getCanvasHandler();
 
     V getView();
-
 }

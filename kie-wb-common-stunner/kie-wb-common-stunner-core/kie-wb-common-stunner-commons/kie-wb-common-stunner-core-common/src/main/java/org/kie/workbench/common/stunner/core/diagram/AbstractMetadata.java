@@ -31,7 +31,7 @@ public abstract class AbstractMetadata implements Metadata {
     public AbstractMetadata() {
     }
 
-    public AbstractMetadata( @MapsTo( "definitionSetId" ) String definitionSetId ) {
+    public AbstractMetadata( final @MapsTo( "definitionSetId" ) String definitionSetId ) {
         this.definitionSetId = definitionSetId;
     }
 
@@ -90,8 +90,7 @@ public abstract class AbstractMetadata implements Metadata {
         this.path = path;
     }
 
-    public void setDefinitionSetId( String defSetId ) {
+    public void setDefinitionSetId( final String defSetId ) {
         this.definitionSetId = defSetId;
     }
-
 }

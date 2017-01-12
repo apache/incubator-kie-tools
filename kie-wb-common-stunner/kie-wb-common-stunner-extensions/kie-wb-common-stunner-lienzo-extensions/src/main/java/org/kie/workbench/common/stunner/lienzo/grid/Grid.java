@@ -16,18 +16,22 @@
 
 package org.kie.workbench.common.stunner.lienzo.grid;
 
-import com.ait.lienzo.shared.core.types.Direction;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.ait.lienzo.shared.core.types.Direction;
+
 public class Grid implements Iterable<Grid.Point> {
+
     private int padding;
     private int iconSize;
     private int rows;
     private int cols;
 
-    public Grid( int padding, int iconSize, int rows, int cols ) {
+    public Grid( int padding,
+                 int iconSize,
+                 int rows,
+                 int cols ) {
         if ( padding < 0 || iconSize < 0 || rows < 1 || cols < 1 ) {
             throw new IllegalArgumentException( "Not possible to instantiate grid." );
         }
@@ -37,7 +41,8 @@ public class Grid implements Iterable<Grid.Point> {
         this.cols = cols;
     }
 
-    public Point findPosition( Point anchorPoint, Direction direction ) {
+    public Point findPosition( Point anchorPoint,
+                               Direction direction ) {
         int width = getWidth();
         int height = getHeight();
         int x = anchorPoint.getX();
@@ -76,30 +81,36 @@ public class Grid implements Iterable<Grid.Point> {
             default:
                 throw new UnsupportedOperationException();
         }
-        return new Point( x, y );
+        return new Point( x,
+                          y );
     }
 
-    public Point findPosition( int row, int col ) {
-        if ( !isInRange( row, getRows() ) ) {
+    public Point findPosition( int row,
+                               int col ) {
+        if ( !isInRange( row,
+                         getRows() ) ) {
             throw new IllegalArgumentException(
                     row + " is incorrect row value. Value have to be from 0 to " + ( getRows() - 1 )
             );
         }
-        if ( !isInRange( col, getCols() ) ) {
+        if ( !isInRange( col,
+                         getCols() ) ) {
             throw new IllegalArgumentException(
                     col + " is incorrect col value. Value have to be from 0 to " + ( getCols() - 1 )
             );
         }
         int x = calculateDistance( col );
         int y = calculateDistance( row );
-        return new Point( x, y );
+        return new Point( x,
+                          y );
     }
 
     private int calculateDistance( int position ) {
         return padding + ( position * ( padding + iconSize ) );
     }
 
-    private boolean isInRange( int value, int max ) {
+    private boolean isInRange( int value,
+                               int max ) {
         return value >= 0 && value < max;
     }
 
@@ -129,10 +140,12 @@ public class Grid implements Iterable<Grid.Point> {
     }
 
     public static class Point {
+
         private final int x;
         private final int y;
 
-        public Point( int x, int y ) {
+        public Point( int x,
+                      int y ) {
             this.x = x;
             this.y = y;
         }
@@ -147,6 +160,7 @@ public class Grid implements Iterable<Grid.Point> {
     }
 
     protected static class GridIterator implements Iterator<Point> {
+
         private final Grid grid;
         private int currentRow = 0;
         private int currentColumn = 0;
@@ -181,7 +195,8 @@ public class Grid implements Iterable<Grid.Point> {
             } else {
                 currentColumn++;
             }
-            return this.grid.findPosition( row, column );
+            return this.grid.findPosition( row,
+                                           column );
         }
 
         @Override

@@ -15,10 +15,10 @@
 
 package org.kie.workbench.common.stunner.core.command.util;
 
-import org.kie.workbench.common.stunner.core.command.CommandResult;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 
 public class CommandUtils {
 
@@ -35,5 +35,4 @@ public class CommandUtils {
     private static boolean isCommandResultError( final CommandResult<?> result ) {
         return result != null && CommandResult.Type.ERROR.equals( result.getType() );
     }
-
 }

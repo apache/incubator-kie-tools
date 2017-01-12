@@ -44,10 +44,10 @@ abstract class BasicDecoratorAnimation<S extends Shape> extends AbstractBasicAni
     public void run() {
         getDecorator().animate(
                 AnimationTweener.LINEAR,
-                AnimationProperties.toPropertyList( STROKE_ALPHA( strokeAlpha ), STROKE_COLOR( color ), STROKE_WIDTH( strokeWidth ) ),
+                AnimationProperties.toPropertyList( STROKE_ALPHA( strokeAlpha ),
+                                                    STROKE_COLOR( color ),
+                                                    STROKE_WIDTH( strokeWidth ) ),
                 getDuration(),
                 getAnimationCallback() );
-
     }
-
 }

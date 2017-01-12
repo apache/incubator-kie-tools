@@ -106,16 +106,20 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
 
     @Override
     public void setValue( String value ) {
-        setValue( value, false );
+        setValue( value,
+                  false );
     }
 
     @Override
-    public void setValue( String value, boolean fireEvents ) {
+    public void setValue( String value,
+                          boolean fireEvents ) {
         String oldValue = assignmentsInfo;
         assignmentsInfo = value;
         initTextBox();
         if ( fireEvents ) {
-            ValueChangeEvent.fireIfNotEqual( this, oldValue, assignmentsInfo );
+            ValueChangeEvent.fireIfNotEqual( this,
+                                             oldValue,
+                                             assignmentsInfo );
         }
     }
 
@@ -138,27 +142,32 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
 
     protected void initTextBox() {
         Map<String, String> assignmentsProperties = parseAssignmentsInfo();
-        String variableCountsString = getVariableCountsString( assignmentsProperties.get( "datainput" ), assignmentsProperties.get( "datainputset" ),
-                assignmentsProperties.get( "dataoutput" ), assignmentsProperties.get( "dataoutputset" ),
-                getProcessVariables(), assignmentsProperties.get( "assignments" ), getDisallowedPropertyNames() );
+        String variableCountsString = getVariableCountsString( assignmentsProperties.get( "datainput" ),
+                                                               assignmentsProperties.get( "datainputset" ),
+                                                               assignmentsProperties.get( "dataoutput" ),
+                                                               assignmentsProperties.get( "dataoutputset" ),
+                                                               getProcessVariables(),
+                                                               assignmentsProperties.get( "assignments" ),
+                                                               getDisallowedPropertyNames() );
         assignmentsTextBox.setText( variableCountsString );
     }
 
     @Override
     public HandlerRegistration addValueChangeHandler( ValueChangeHandler<String> handler ) {
-        return addHandler( handler, ValueChangeEvent.getType() );
+        return addHandler( handler,
+                           ValueChangeEvent.getType() );
     }
 
     public void showAssignmentsDialog() {
         // Get data types to show the editor
-        getDataTypes( );
+        getDataTypes();
     }
 
     protected void getDataTypes() {
 
         final String simpleDataTypes = "Boolean:Boolean,Float:Float,Integer:Integer,Object:Object,String:String";
         MessageBuilder.createCall(
-                new RemoteCallback< List<String> >() {
+                new RemoteCallback<List<String>>() {
                     public void callback( List<String> dataTypes ) {
                         String formattedDataTypes = formatDataTypes( dataTypes );
                         String allDataTypes = simpleDataTypes + "," + formattedDataTypes;
@@ -166,15 +175,16 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                     }
                 },
                 new BusErrorCallback() {
-                    public boolean error(Message message, Throwable t) {
-                        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(), NotificationEvent.NotificationType.ERROR ) );
+                    public boolean error( Message message,
+                                          Throwable t ) {
+                        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(),
+                                                                  NotificationEvent.NotificationType.ERROR ) );
                         showDataIOEditor( simpleDataTypes );
                         return false;
                     }
                 },
-                DataTypesService.class).getDataTypeNames();
+                DataTypesService.class ).getDataTypeNames();
     }
-
 
     public void showDataIOEditor( final String datatypes ) {
         String taskName = getTaskName();
@@ -203,15 +213,25 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         if ( dataoutputset != null ) {
             outputvars = dataoutputset;
         }
-        AssignmentData assignmentData = new AssignmentData( inputvars, outputvars, processvars, assignments, datatypes, disallowedpropertynames );
-        assignmentData.setVariableCountsString( hasInputVars, isSingleInputVar, hasOutputVars, isSingleOutputVar );
+        AssignmentData assignmentData = new AssignmentData( inputvars,
+                                                            outputvars,
+                                                            processvars,
+                                                            assignments,
+                                                            datatypes,
+                                                            disallowedpropertynames );
+        assignmentData.setVariableCountsString( hasInputVars,
+                                                isSingleInputVar,
+                                                hasOutputVars,
+                                                isSingleOutputVar );
 
         ActivityDataIOEditor.GetDataCallback callback = new ActivityDataIOEditor.GetDataCallback() {
             @Override
             public void getData( String assignmentDataJson ) {
-                AssignmentData assignmentData = Marshalling.fromJSON( assignmentDataJson, AssignmentData.class );
+                AssignmentData assignmentData = Marshalling.fromJSON( assignmentDataJson,
+                                                                      AssignmentData.class );
                 String assignmentsInfoString = createAssignmentsInfoString( assignmentData );
-                setValue( assignmentsInfoString, true );
+                setValue( assignmentsInfoString,
+                          true );
             }
         };
         activityDataIOEditor.setCallback( callback );
@@ -220,9 +240,14 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         activityDataIOEditor.setDisallowedPropertyNames( assignmentData.getDisallowedPropertyNames() );
         activityDataIOEditor.setInputAssignmentRows( assignmentData.getAssignmentRows( Variable.VariableType.INPUT ) );
         activityDataIOEditor.setOutputAssignmentRows( assignmentData.getAssignmentRows( Variable.VariableType.OUTPUT ) );
-        activityDataIOEditor.setDataTypes( assignmentData.getDataTypes(), assignmentData.getDataTypeDisplayNames() );
+        activityDataIOEditor.setDataTypes( assignmentData.getDataTypes(),
+                                           assignmentData.getDataTypeDisplayNames() );
         activityDataIOEditor.setProcessVariables( assignmentData.getProcessVariableNames() );
-        activityDataIOEditor.configureDialog( taskName, hasInputVars, isSingleInputVar, hasOutputVars, isSingleOutputVar );
+        activityDataIOEditor.configureDialog( taskName,
+                                              hasInputVars,
+                                              isSingleInputVar,
+                                              hasOutputVars,
+                                              isSingleOutputVar );
         activityDataIOEditor.show();
     }
 
@@ -262,14 +287,14 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         StringBuilder sb = new StringBuilder();
         if ( dataTypes != null && !dataTypes.isEmpty() ) {
             List<String> formattedDataTypes = new ArrayList<String>( dataTypes.size() );
-            for (String dataType : dataTypes ) {
+            for ( String dataType : dataTypes ) {
                 int i = dataType.lastIndexOf( '.' );
                 StringBuilder formattedDataType = new StringBuilder( StringUtils.createDataTypeDisplayName( dataType ) );
-                formattedDataType.append(":").append(dataType);
+                formattedDataType.append( ":" ).append( dataType );
                 formattedDataTypes.add( formattedDataType.toString() );
             }
             Collections.sort( formattedDataTypes );
-            for (String formattedDataType:formattedDataTypes ) {
+            for ( String formattedDataType : formattedDataTypes ) {
                 sb.append( formattedDataType ).append( ',' );
             }
             sb.setLength( sb.length() - 1 );
@@ -282,19 +307,24 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         if ( assignmentsInfo != null ) {
             String[] parts = assignmentsInfo.split( "\\|" );
             if ( parts.length > 0 && parts[ 0 ] != null && parts[ 0 ].length() > 0 ) {
-                properties.put( "datainput", parts[ 0 ] );
+                properties.put( "datainput",
+                                parts[ 0 ] );
             }
             if ( parts.length > 1 && parts[ 1 ] != null && parts[ 1 ].length() > 0 ) {
-                properties.put( "datainputset", parts[ 1 ] );
+                properties.put( "datainputset",
+                                parts[ 1 ] );
             }
             if ( parts.length > 2 && parts[ 2 ] != null && parts[ 2 ].length() > 0 ) {
-                properties.put( "dataoutput", parts[ 2 ] );
+                properties.put( "dataoutput",
+                                parts[ 2 ] );
             }
             if ( parts.length > 3 && parts[ 3 ] != null && parts[ 3 ].length() > 0 ) {
-                properties.put( "dataoutputset", parts[ 3 ] );
+                properties.put( "dataoutputset",
+                                parts[ 3 ] );
             }
             if ( parts.length > 4 && parts[ 4 ] != null && parts[ 4 ].length() > 0 ) {
-                properties.put( "assignments", parts[ 4 ] );
+                properties.put( "assignments",
+                                parts[ 4 ] );
             }
         }
         return properties;
@@ -307,14 +337,14 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         String dataOutput = "";
         String dataOutputs = "";
         if ( hasInputVars ) {
-            if (  isSingleInputVar ) {
+            if ( isSingleInputVar ) {
                 dataInput = assignmentData.getInputVariablesString();
             } else {
                 dataInputs = assignmentData.getInputVariablesString();
             }
         }
         if ( hasOutputVars ) {
-            if (  isSingleOutputVar ) {
+            if ( isSingleOutputVar ) {
                 dataOutput = assignmentData.getOutputVariablesString();
             } else {
                 dataOutputs = assignmentData.getOutputVariablesString();
@@ -327,8 +357,13 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         return sb.toString();
     }
 
-    protected String getVariableCountsString( String datainput, String datainputset, String dataoutput, String dataoutputset,
-                                              String processvars, String assignments, String disallowedpropertynames ) {
+    protected String getVariableCountsString( String datainput,
+                                              String datainputset,
+                                              String dataoutput,
+                                              String dataoutputset,
+                                              String processvars,
+                                              String assignments,
+                                              String disallowedpropertynames ) {
         String inputvars = null;
         if ( datainput != null ) {
             inputvars = datainput;
@@ -343,8 +378,15 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         if ( dataoutputset != null ) {
             outputvars = dataoutputset;
         }
-        AssignmentData assignmentData = new AssignmentData( inputvars, outputvars, processvars, assignments, disallowedpropertynames );
-        return assignmentData.getVariableCountsString( hasInputVars, isSingleInputVar, hasOutputVars, isSingleOutputVar );
+        AssignmentData assignmentData = new AssignmentData( inputvars,
+                                                            outputvars,
+                                                            processvars,
+                                                            assignments,
+                                                            disallowedpropertynames );
+        return assignmentData.getVariableCountsString( hasInputVars,
+                                                       isSingleInputVar,
+                                                       hasOutputVars,
+                                                       isSingleOutputVar );
     }
 
     protected String getDisallowedPropertyNames() {

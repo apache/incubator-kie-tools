@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.command.impl;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.CompositeCommand;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A generic composite command implementation. Feel free to add commands into it.
@@ -34,7 +34,7 @@ public class CompositeCommandImpl<T, V> extends AbstractCompositeCommand<T, V> {
 
     private final boolean reverse;
 
-    public CompositeCommandImpl( @MapsTo( "reverse" ) boolean reverse ) {
+    public CompositeCommandImpl( final @MapsTo( "reverse" ) boolean reverse ) {
         this.reverse = reverse;
     }
 
@@ -58,7 +58,8 @@ public class CompositeCommandImpl<T, V> extends AbstractCompositeCommand<T, V> {
 
     @Override
     public CommandResult<V> undo( final T context ) {
-        return undo( context, reverse );
+        return undo( context,
+                     reverse );
     }
 
     @NonPortable

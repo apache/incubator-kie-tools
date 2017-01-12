@@ -57,58 +57,63 @@ public abstract class BasicShape<W, V extends BasicShapeView>
         super( shapeView );
     }
 
-    protected abstract String getBackgroundColor( Node<View<W>, Edge> element );
+    protected abstract String getBackgroundColor( final Node<View<W>, Edge> element );
 
-    protected abstract Double getBackgroundAlpha( Node<View<W>, Edge> element );
+    protected abstract Double getBackgroundAlpha( final Node<View<W>, Edge> element );
 
-    protected abstract String getBorderColor( Node<View<W>, Edge> element );
+    protected abstract String getBorderColor( final Node<View<W>, Edge> element );
 
-    protected abstract Double getBorderSize( Node<View<W>, Edge> element );
+    protected abstract Double getBorderSize( final Node<View<W>, Edge> element );
 
-    protected abstract Double getBorderAlpha( Node<View<W>, Edge> element );
+    protected abstract Double getBorderAlpha( final Node<View<W>, Edge> element );
 
     protected W getDefinition( final Node<View<W>, Edge> element ) {
         return element.getContent().getDefinition();
     }
 
     @Override
-    public void applyProperties( Node<View<W>, Edge> element, MutationContext mutationContext ) {
-        super.applyProperties( element, mutationContext );
+    public void applyProperties( final Node<View<W>, Edge> element,
+                                 final MutationContext mutationContext ) {
+        super.applyProperties( element,
+                               mutationContext );
         // Fill color.
         final String color = getBackgroundColor( element );
-        super.applyFillColor( color, mutationContext );
+        super.applyFillColor( color,
+                              mutationContext );
         // Fill alpha.
         final Double alpha = getBackgroundAlpha( element );
-        super.applyFillAlpha( alpha, mutationContext );
+        super.applyFillAlpha( alpha,
+                              mutationContext );
         // Apply border styles.
         _strokeColor = getBorderColor( element );
         _strokeWidth = getBorderSize( element );
-        super.applyBorders( _strokeColor, _strokeWidth, mutationContext );
+        super.applyBorders( _strokeColor,
+                            _strokeWidth,
+                            mutationContext );
         // Apply border alpha.
         _strokeAlpha = getBorderAlpha( element );
-        super.applyBorderAlpha( _strokeAlpha, mutationContext );
+        super.applyBorderAlpha( _strokeAlpha,
+                                mutationContext );
     }
 
     @Override
     public void beforeDraw() {
         super.beforeDraw();
         if ( hasAnimation() ) {
-            getAnimation()
-                    .setCallback( new Animation.AnimationCallback() {
-                        @Override
-                        public void onStart() {
-                        }
+            getAnimation().setCallback( new Animation.AnimationCallback() {
+                @Override
+                public void onStart() {
+                }
 
-                        @Override
-                        public void onFrame() {
-                        }
+                @Override
+                public void onFrame() {
+                }
 
-                        @Override
-                        public void onComplete() {
-                            BasicShape.this.animation = null;
-                        }
-                    } )
-                    .run();
+                @Override
+                public void onComplete() {
+                    BasicShape.this.animation = null;
+                }
+            } ).run();
         }
     }
 
@@ -141,13 +146,15 @@ public abstract class BasicShape<W, V extends BasicShapeView>
     }
 
     private void applyActiveState( final String color ) {
-        new BasicShapeDecoratorAnimation( color, 1.5, 1 ).forShape( this ).run();
+        new BasicShapeDecoratorAnimation( color,
+                                          1.5,
+                                          1 ).forShape( this ).run();
     }
 
     private void applyNoneState() {
         new BasicShapeDecoratorAnimation( this._strokeColor,
-                null != this._strokeWidth ? this._strokeWidth : 1,
-                null != this._strokeAlpha ? this._strokeAlpha : 1 )
+                                          null != this._strokeWidth ? this._strokeWidth : 1,
+                                          null != this._strokeAlpha ? this._strokeAlpha : 1 )
                 .forShape( this )
                 .run();
     }
@@ -162,7 +169,8 @@ public abstract class BasicShape<W, V extends BasicShapeView>
                 && isAnimationMutation( mutationContext ) ) {
             getAnimation().animateFillColor( color );
         } else {
-            super.applyFillColor( color, mutationContext );
+            super.applyFillColor( color,
+                                  mutationContext );
         }
     }
 
@@ -174,7 +182,9 @@ public abstract class BasicShape<W, V extends BasicShapeView>
         if ( isAnimation ) {
             getAnimation().animateFontAlpha( alpha );
         } else {
-            super.applyFontAlpha( hasTitle, alpha, mutationContext );
+            super.applyFontAlpha( hasTitle,
+                                  alpha,
+                                  mutationContext );
         }
     }
 
@@ -182,7 +192,10 @@ public abstract class BasicShape<W, V extends BasicShapeView>
                                          final Double width,
                                          final Double height,
                                          final MutationContext mutationContext ) {
-        applySize( ( HasSize ) getShapeView(), width, height, mutationContext );
+        applySize( ( HasSize ) getShapeView(),
+                   width,
+                   height,
+                   mutationContext );
     }
 
     @Override
@@ -192,9 +205,13 @@ public abstract class BasicShape<W, V extends BasicShapeView>
                               final MutationContext mutationContext ) {
         // TODO: Shape (multipath) resize animations.
         if ( false && isAnimationMutation( mutationContext ) ) {
-            getAnimation().animateSize( width, height );
+            getAnimation().animateSize( width,
+                                        height );
         } else {
-            super.applySize( hasSize, width, height, mutationContext );
+            super.applySize( hasSize,
+                             width,
+                             height,
+                             mutationContext );
         }
     }
 
@@ -202,7 +219,9 @@ public abstract class BasicShape<W, V extends BasicShapeView>
                                  final Double radius,
                                  final MutationContext mutationContext ) {
         if ( null != radius ) {
-            applyRadius( ( HasRadius ) getShapeView(), radius, mutationContext );
+            applyRadius( ( HasRadius ) getShapeView(),
+                         radius,
+                         mutationContext );
         }
     }
 
@@ -215,7 +234,9 @@ public abstract class BasicShape<W, V extends BasicShapeView>
             if ( false && isAnimationMutation( mutationContext ) ) {
                 getAnimation().animateRadius( radius );
             } else {
-                super.applyRadius( hasRadius, radius, mutationContext );
+                super.applyRadius( hasRadius,
+                                   radius,
+                                   mutationContext );
             }
         }
     }

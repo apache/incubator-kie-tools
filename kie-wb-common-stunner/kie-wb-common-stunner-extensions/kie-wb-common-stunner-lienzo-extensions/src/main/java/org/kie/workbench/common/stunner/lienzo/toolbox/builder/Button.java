@@ -33,5 +33,4 @@ public interface Button {
     Button setMouseExitHandler( ToolboxButtonEventHandler handler );
 
     ButtonsOrRegister end();
-
 }

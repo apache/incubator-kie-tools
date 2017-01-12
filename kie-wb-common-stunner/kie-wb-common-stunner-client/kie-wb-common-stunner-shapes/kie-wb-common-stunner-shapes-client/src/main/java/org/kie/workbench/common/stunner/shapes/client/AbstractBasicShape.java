@@ -38,8 +38,7 @@ public abstract class AbstractBasicShape<W, V extends BasicShapeView, P extends 
     @SuppressWarnings( "unchecked" )
     public void applyProperties( final Node<View<W>, Edge> element,
                                  final MutationContext mutationContext ) {
-        super.applyProperties( element, mutationContext );
-
+        super.applyProperties( element,
+                               mutationContext );
     }
-
 }

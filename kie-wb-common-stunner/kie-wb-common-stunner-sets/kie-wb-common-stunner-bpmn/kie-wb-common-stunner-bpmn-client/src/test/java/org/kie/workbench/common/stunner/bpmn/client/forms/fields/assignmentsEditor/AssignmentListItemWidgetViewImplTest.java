@@ -118,18 +118,22 @@ public class AssignmentListItemWidgetViewImplTest {
         doCallRealMethod().when( view ).getModel();
         doCallRealMethod().when( view ).setModel( any( AssignmentRow.class ) );
         doCallRealMethod().when( view ).getModelValue( any( ValueListBox.class ) );
-        doCallRealMethod().when( view ).setTextBoxModelValue( any( TextBox.class ), anyString() );
-        doCallRealMethod().when( view ).setListBoxModelValue( any( ValueListBox.class ), anyString() );
+        doCallRealMethod().when( view ).setTextBoxModelValue( any( TextBox.class ),
+                                                              anyString() );
+        doCallRealMethod().when( view ).setListBoxModelValue( any( ValueListBox.class ),
+                                                              anyString() );
         doCallRealMethod().when( view ).getDataType();
         doCallRealMethod().when( view ).setDataType( anyString() );
         doCallRealMethod().when( view ).getProcessVar();
         doCallRealMethod().when( view ).setProcessVar( anyString() );
         doCallRealMethod().when( view ).getVariableType();
-        doCallRealMethod().when( view ).setAllowDuplicateNames( anyBoolean(), anyString() );
+        doCallRealMethod().when( view ).setAllowDuplicateNames( anyBoolean(),
+                                                                anyString() );
         doCallRealMethod().when( view ).setParentWidget( any( ActivityDataIOEditorWidget.class ) );
         doCallRealMethod().when( view ).isDuplicateName( anyString() );
         doCallRealMethod().when( view ).setShowConstants( anyBoolean() );
-        doCallRealMethod().when( view ).setDisallowedNames( anySet(), anyString() );
+        doCallRealMethod().when( view ).setDisallowedNames( anySet(),
+                                                            anyString() );
         doCallRealMethod().when( view ).handleDeleteButton( any( ClickEvent.class ) );
         AssignmentRow row = new AssignmentRow();
         doReturn( row ).when( assignment ).getModel();
@@ -146,13 +150,20 @@ public class AssignmentListItemWidgetViewImplTest {
         row.setVariableType( Variable.VariableType.INPUT );
         doReturn( row ).when( assignment ).getModel();
         view.setModel( row );
-        verify( assignment, times( 1 ) ).setModel( row );
-        verify( deleteButton, times( 1 ) ).setIcon( IconType.TRASH );
-        verify( constant, never() ).setVisible( false );
-        verify( customDataType, times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
-        verify( dataType, times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
-        verify( processVar, times( 1 ) ).setValue( VARIABLE_NAME );
-        verify( constant, never() ).setValue( anyString() );
+        verify( assignment,
+                times( 1 ) ).setModel( row );
+        verify( deleteButton,
+                times( 1 ) ).setIcon( IconType.TRASH );
+        verify( constant,
+                never() ).setVisible( false );
+        verify( customDataType,
+                times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
+        verify( dataType,
+                times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
+        verify( processVar,
+                times( 1 ) ).setValue( VARIABLE_NAME );
+        verify( constant,
+                never() ).setValue( anyString() );
     }
 
     @Test
@@ -166,70 +177,92 @@ public class AssignmentListItemWidgetViewImplTest {
         row.setVariableType( Variable.VariableType.OUTPUT );
         doReturn( row ).when( assignment ).getModel();
         view.setModel( row );
-        verify( assignment, times( 1 ) ).setModel( row );
-        verify( deleteButton, times( 1 ) ).setIcon( IconType.TRASH );
-        verify( constant, times( 1 ) ).setVisible( false );
-        verify( customDataType, never() ).setValue( DATA_TYPE_NAME );
-        verify( dataType, times( 1 ) ).setValue( DATA_TYPE_NAME );
-        verify( constant, times( 1 ) ).setValue( CONSTANT_NAME );
+        verify( assignment,
+                times( 1 ) ).setModel( row );
+        verify( deleteButton,
+                times( 1 ) ).setIcon( IconType.TRASH );
+        verify( constant,
+                times( 1 ) ).setVisible( false );
+        verify( customDataType,
+                never() ).setValue( DATA_TYPE_NAME );
+        verify( dataType,
+                times( 1 ) ).setValue( DATA_TYPE_NAME );
+        verify( constant,
+                times( 1 ) ).setValue( CONSTANT_NAME );
     }
 
     @Test
     public void testSetTextBoxModelValueCustomDataType() {
         assertNull( view.getModel().getCustomDataType() );
-        view.setTextBoxModelValue( customDataType, "abc" );
-        assertEquals( "abc", view.getModel().getCustomDataType() );
+        view.setTextBoxModelValue( customDataType,
+                                   "abc" );
+        assertEquals( "abc",
+                      view.getModel().getCustomDataType() );
         assertNull( view.getModel().getConstant() );
-        assertEquals( "abc", view.getModelValue( dataType ) );
+        assertEquals( "abc",
+                      view.getModelValue( dataType ) );
     }
 
     @Test
     public void testSetTextBoxModelValueConstant() {
         assertNull( view.getModel().getConstant() );
-        view.setTextBoxModelValue( constant, "abc" );
-        assertEquals( "abc", view.getModel().getConstant() );
+        view.setTextBoxModelValue( constant,
+                                   "abc" );
+        assertEquals( "abc",
+                      view.getModel().getConstant() );
         assertNull( view.getModel().getCustomDataType() );
-        assertEquals( "abc", view.getModelValue( processVar ) );
+        assertEquals( "abc",
+                      view.getModelValue( processVar ) );
     }
 
     @Test
     public void testSetListBoxModelValueDataType() {
         assertNull( view.getModel().getDataType() );
-        view.setListBoxModelValue( dataType, "abc" );
-        assertEquals( "abc", view.getModel().getDataType() );
+        view.setListBoxModelValue( dataType,
+                                   "abc" );
+        assertEquals( "abc",
+                      view.getModel().getDataType() );
         assertNull( view.getModel().getCustomDataType() );
         assertNull( view.getModel().getProcessVar() );
-        assertEquals( "abc", view.getModelValue( dataType ) );
+        assertEquals( "abc",
+                      view.getModelValue( dataType ) );
     }
 
     @Test
     public void testSetListBoxModelValueProcessVar() {
         assertNull( view.getModel().getProcessVar() );
-        view.setListBoxModelValue( processVar, "abc" );
-        assertEquals( "abc", view.getModel().getProcessVar() );
+        view.setListBoxModelValue( processVar,
+                                   "abc" );
+        assertEquals( "abc",
+                      view.getModel().getProcessVar() );
         assertNull( view.getModel().getConstant() );
         assertNull( view.getModel().getDataType() );
-        assertEquals( "abc", view.getModelValue( processVar ) );
+        assertEquals( "abc",
+                      view.getModelValue( processVar ) );
     }
 
     @Test
     public void testDataTypeHandlerSpace() {
         view.init();
-        verify( customDataType, times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify( customDataType,
+                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
         doReturn( Integer.valueOf( ' ' ) ).when( keyDownEvent ).getNativeKeyCode();
         handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent, times( 1 ) ).preventDefault();
+        verify( keyDownEvent,
+                times( 1 ) ).preventDefault();
     }
 
     @Test
     public void testDataTypeHandlerAlphabetical() {
         view.init();
-        verify( customDataType, times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify( customDataType,
+                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
         doReturn( Integer.valueOf( 'a' ) ).when( keyDownEvent ).getNativeKeyCode();
         handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent, never() ).preventDefault();
+        verify( keyDownEvent,
+                never() ).preventDefault();
     }
 
     @Test
@@ -237,15 +270,21 @@ public class AssignmentListItemWidgetViewImplTest {
         ActivityDataIOEditorWidget parent = mock( ActivityDataIOEditorWidget.class );
         when( parent.isDuplicateName( anyString() ) ).thenReturn( true );
         doReturn( "anyName" ).when( name ).getText();
-        view.setAllowDuplicateNames( false, "ErrorMessage" );
+        view.setAllowDuplicateNames( false,
+                                     "ErrorMessage" );
         view.setParentWidget( parent );
         view.init();
-        verify( name, times( 1 ) ).addBlurHandler( blurHandlerCaptor.capture() );
+        verify( name,
+                times( 1 ) ).addBlurHandler( blurHandlerCaptor.capture() );
         BlurHandler handler = blurHandlerCaptor.getValue();
         handler.onBlur( mock( BlurEvent.class ) );
-        verify( parent, times( 1 ) ).isDuplicateName( "anyName" );
-        verify( notification, times( 1 ) ).fire( new NotificationEvent( "ErrorMessage", NotificationEvent.NotificationType.ERROR ) );
-        verify( name, times( 1 ) ).setValue( "" );
+        verify( parent,
+                times( 1 ) ).isDuplicateName( "anyName" );
+        verify( notification,
+                times( 1 ) ).fire( new NotificationEvent( "ErrorMessage",
+                                                          NotificationEvent.NotificationType.ERROR ) );
+        verify( name,
+                times( 1 ) ).setValue( "" );
     }
 
     @Test
@@ -264,8 +303,11 @@ public class AssignmentListItemWidgetViewImplTest {
     public void testSetDisallowedNames() {
         Set<String> disallowedNames = new HashSet<String>();
         String disallowedNameErrorMessage = "error value";
-        view.setDisallowedNames( disallowedNames, disallowedNameErrorMessage );
-        verify( name ).setInvalidValues( disallowedNames, false, disallowedNameErrorMessage );
+        view.setDisallowedNames( disallowedNames,
+                                 disallowedNameErrorMessage );
+        verify( name ).setInvalidValues( disallowedNames,
+                                         false,
+                                         disallowedNameErrorMessage );
     }
 
     @Test
@@ -277,5 +319,4 @@ public class AssignmentListItemWidgetViewImplTest {
         view.handleDeleteButton( null );
         verify( widget ).removeAssignment( model );
     }
-
 }

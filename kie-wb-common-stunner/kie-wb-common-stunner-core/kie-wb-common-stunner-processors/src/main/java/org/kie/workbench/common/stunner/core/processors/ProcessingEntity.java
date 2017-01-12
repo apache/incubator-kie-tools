@@ -21,7 +21,8 @@ public class ProcessingEntity {
     private final String className;
     private final String id;
 
-    public ProcessingEntity( String className, String id ) {
+    public ProcessingEntity( final String className,
+                             final String id ) {
         this.className = className;
         this.id = id;
     }
@@ -33,5 +34,4 @@ public class ProcessingEntity {
     public String getId() {
         return id;
     }
-
 }

@@ -31,14 +31,17 @@ public class PrimitivePopup extends FlowPanel {
 
     public PrimitivePopup() {
         attach();
-
     }
 
     public PrimitivePopup show( final double width,
                                 final double height,
                                 final double x,
                                 final double y ) {
-        doShow( null, width, height, x, y );
+        doShow( null,
+                width,
+                height,
+                x,
+                y );
         lienzoPanel.draw();
         return this;
     }
@@ -48,7 +51,11 @@ public class PrimitivePopup extends FlowPanel {
                                 final double height,
                                 final double x,
                                 final double y ) {
-        doShow( _primitive, width, height, x, y );
+        doShow( _primitive,
+                width,
+                height,
+                x,
+                y );
         lienzoPanel.draw();
         return this;
     }
@@ -59,18 +66,19 @@ public class PrimitivePopup extends FlowPanel {
                            final double x,
                            final double y ) {
         reset();
-        lienzoPanel = new LienzoPanel( ( int ) width, ( int ) height );
+        lienzoPanel = new LienzoPanel( ( int ) width,
+                                       ( int ) height );
         this.add( lienzoPanel );
         lienzoPanel.getScene().add( canvasLayer );
         if ( null != _primitive ) {
             canvasLayer.add( _primitive );
-
         }
-        this.getElement().getStyle().setLeft( x, Style.Unit.PX );
-        this.getElement().getStyle().setTop( y, Style.Unit.PX );
+        this.getElement().getStyle().setLeft( x,
+                                              Style.Unit.PX );
+        this.getElement().getStyle().setTop( y,
+                                             Style.Unit.PX );
         this.getElement().getStyle().setZIndex( zIndex );
         this.getElement().getStyle().setDisplay( Style.Display.INLINE );
-
     }
 
     public PrimitivePopup hide() {
@@ -109,5 +117,4 @@ public class PrimitivePopup extends FlowPanel {
         canvasLayer = new Layer();
         lienzoPanel = null;
     }
-
 }

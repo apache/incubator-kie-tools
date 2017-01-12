@@ -27,7 +27,10 @@ public final class DragEvent extends AbstractMouseEvent {
                       final double clientY,
                       final int dx,
                       final int dy ) {
-        super( mouseX, mouseY, clientX, clientY );
+        super( mouseX,
+               mouseY,
+               clientX,
+               clientY );
         this.dx = dx;
         this.dy = dy;
     }
@@ -39,5 +42,4 @@ public final class DragEvent extends AbstractMouseEvent {
     public int getDy() {
         return dy;
     }
-
 }

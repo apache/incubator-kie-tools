@@ -16,18 +16,22 @@
 
 package org.kie.workbench.common.stunner.core.processors;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.processing.Messager;
+import javax.tools.Diagnostic;
+
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
-import javax.tools.Diagnostic;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.*;
 
 public abstract class AbstractAdapterGenerator {
 
@@ -37,7 +41,8 @@ public abstract class AbstractAdapterGenerator {
     public AbstractAdapterGenerator() {
         try {
             this.config = new Configuration();
-            this.config.setClassForTemplateLoading( this.getClass(), "templates" );
+            this.config.setClassForTemplateLoading( this.getClass(),
+                                                    "templates" );
             this.config.setObjectWrapper( new DefaultObjectWrapper() );
         } catch ( NoClassDefFoundError var2 ) {
             if ( var2.getCause() == null ) {
@@ -52,14 +57,17 @@ public abstract class AbstractAdapterGenerator {
 
     protected abstract String getTemplatePath();
 
-    protected StringBuffer writeTemplate( String packageName, String className, Map<String, Object> ctxt, Messager messager ) throws GenerationException {
+    protected StringBuffer writeTemplate( final String packageName,
+                                          final String className,
+                                          final Map<String, Object> ctxt,
+                                          final Messager messager ) throws GenerationException {
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter( sw );
         try {
             final Template template = config.getTemplate( getTemplatePath() );
             template.process( ctxt,
-                    bw );
+                              bw );
         } catch ( IOException ioe ) {
             throw new GenerationException( ioe );
         } catch ( TemplateException te ) {
@@ -72,35 +80,40 @@ public abstract class AbstractAdapterGenerator {
                 throw new GenerationException( ioe );
             }
         }
-        messager.printMessage( Diagnostic.Kind.NOTE, "Successfully generated code for [" + packageName + "." + className + "]" );
+        messager.printMessage( Diagnostic.Kind.NOTE,
+                               "Successfully generated code for [" + packageName + "." + className + "]" );
         return sw.getBuffer();
     }
 
-    protected List<ProcessingElement> toElements( Map<String, String> map ) {
+    protected List<ProcessingElement> toElements( final Map<String, String> map ) {
         List<ProcessingElement> result = new LinkedList<>();
         for ( Map.Entry<String, String> entry : map.entrySet() ) {
-            result.add( new ProcessingElement( entry.getKey(), entry.getValue() ) );
+            result.add( new ProcessingElement( entry.getKey(),
+                                               entry.getValue() ) );
         }
         return result;
     }
 
-    protected List<ProcessingElementSet> toElementSet( Map<String, Set<String>> map ) {
+    protected List<ProcessingElementSet> toElementSet( final Map<String, Set<String>> map ) {
         List<ProcessingElementSet> result = new LinkedList<>();
         for ( Map.Entry<String, Set<String>> entry : map.entrySet() ) {
-            result.add( new ProcessingElementSet( entry.getKey(), entry.getValue() ) );
+            result.add( new ProcessingElementSet( entry.getKey(),
+                                                  entry.getValue() ) );
         }
         return result;
     }
 
-    protected List<ProcessingElementMap> toElementMap( Map<String, Map<String, String>> map ) {
+    protected List<ProcessingElementMap> toElementMap( final Map<String, Map<String, String>> map ) {
         List<ProcessingElementMap> result = new LinkedList<>();
         map.entrySet().stream()
                 .forEach( entry1 -> {
                     final Map<String, String> entryMap = new LinkedHashMap<String, String>();
                     entry1.getValue().entrySet().stream().forEach( entry2 -> {
-                        entryMap.put( entry2.getKey(), entry2.getValue() );
+                        entryMap.put( entry2.getKey(),
+                                      entry2.getValue() );
                     } );
-                    final ProcessingElementMap elementMap = new ProcessingElementMap( entry1.getKey(), entryMap );
+                    final ProcessingElementMap elementMap = new ProcessingElementMap( entry1.getKey(),
+                                                                                      entryMap );
                     result.add( elementMap );
                 } );
         return result;

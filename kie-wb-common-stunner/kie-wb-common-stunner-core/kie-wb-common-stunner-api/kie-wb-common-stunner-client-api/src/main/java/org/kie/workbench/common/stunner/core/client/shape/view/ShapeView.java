@@ -29,7 +29,7 @@ public interface ShapeView<T> {
     /**
      * Set the unique view uuid.
      */
-    T setUUID( String uuid );
+    T setUUID( final String uuid );
 
     /**
      * Returns the unique view uuid.
@@ -57,12 +57,12 @@ public interface ShapeView<T> {
     /**
      * Set the cartesian coordinate value on the X axis.
      */
-    T setShapeX( double x );
+    T setShapeX( final double x );
 
     /**
      * Set the cartesian coordinate value on the Y axis.
      */
-    T setShapeY( double y );
+    T setShapeY( final double y );
 
     /**
      * Returns the RGB fill color value.
@@ -72,7 +72,7 @@ public interface ShapeView<T> {
     /**
      * Set the RGB fill color value.
      */
-    T setFillColor( String color );
+    T setFillColor( final String color );
 
     /**
      * Returns the fill alpha value.
@@ -82,7 +82,7 @@ public interface ShapeView<T> {
     /**
      * Set the fill alpha value.
      */
-    T setFillAlpha( double alpha );
+    T setFillAlpha( final double alpha );
 
     /**
      * Returns the RGB stroke color value.
@@ -92,7 +92,7 @@ public interface ShapeView<T> {
     /**
      * Set the RGB stroke color value.
      */
-    T setStrokeColor( String color );
+    T setStrokeColor( final String color );
 
     /**
      * Returns the stroke aplha value.
@@ -102,7 +102,7 @@ public interface ShapeView<T> {
     /**
      * Set the stroke alpha value.
      */
-    T setStrokeAlpha( double alpha );
+    T setStrokeAlpha( final double alpha );
 
     /**
      * Returns the stroke width value.
@@ -112,12 +112,15 @@ public interface ShapeView<T> {
     /**
      * Set the stroke width value.
      */
-    T setStrokeWidth( double width );
+    T setStrokeWidth( final double width );
 
     /**
      * Set the drag bounds.
      */
-    T setDragBounds( double x1, double y1, double x2, double y2 );
+    T setDragBounds( final double x1,
+                     final double y1,
+                     final double x2,
+                     final double y2 );
 
     /**
      * Move shape view to top.
@@ -142,7 +145,7 @@ public interface ShapeView<T> {
     /**
      * Set the ordering index value.
      */
-    T setZIndex( int zindez );
+    T setZIndex( final int zindez );
 
     /**
      * Returns ordering index value.
@@ -159,5 +162,4 @@ public interface ShapeView<T> {
      * removes it from the tree.
      */
     void destroy();
-
 }

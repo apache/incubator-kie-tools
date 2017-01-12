@@ -35,7 +35,8 @@ public class AssigneeRow {
         this.id = lastId++;
     }
 
-    public AssigneeRow( String name, String customName ) {
+    public AssigneeRow( String name,
+                        String customName ) {
         this.id = lastId++;
         this.name = name;
         this.customName = customName;
@@ -98,12 +99,11 @@ public class AssigneeRow {
 
     @Override
     public int hashCode() {
-        return ~~ (int) (id ^ (id >>> 32));
+        return ~~( int ) ( id ^ ( id >>> 32 ) );
     }
 
     @Override
     public String toString() {
         return "AssigneeRow [name=" + name + ",customName=" + customName + "]";
     }
-
 }

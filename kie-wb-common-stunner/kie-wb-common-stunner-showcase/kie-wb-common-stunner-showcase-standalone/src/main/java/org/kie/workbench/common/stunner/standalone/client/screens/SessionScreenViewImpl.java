@@ -53,14 +53,18 @@ public class SessionScreenViewImpl extends FlowPanel implements SessionScreenVie
 
     @Override
     public void setMarginTop( final int px ) {
-        this.emptyViewPanel.getElement().getStyle().setMarginTop( px, Style.Unit.PX );
-        this.screenViewPanel.getElement().getStyle().setMarginTop( px, Style.Unit.PX );
+        this.emptyViewPanel.getElement().getStyle().setMarginTop( px,
+                                                                  Style.Unit.PX );
+        this.screenViewPanel.getElement().getStyle().setMarginTop( px,
+                                                                   Style.Unit.PX );
     }
 
     @Override
     public void setPaddingTop( final int px ) {
-        this.emptyViewPanel.getElement().getStyle().setPaddingTop( px, Style.Unit.PX );
-        this.screenViewPanel.getElement().getStyle().setPaddingTop( px, Style.Unit.PX );
+        this.emptyViewPanel.getElement().getStyle().setPaddingTop( px,
+                                                                   Style.Unit.PX );
+        this.screenViewPanel.getElement().getStyle().setPaddingTop( px,
+                                                                    Style.Unit.PX );
     }
 
     @Override
@@ -82,5 +86,4 @@ public class SessionScreenViewImpl extends FlowPanel implements SessionScreenVie
         this.screenViewPanel.add( view );
         return this;
     }
-
 }

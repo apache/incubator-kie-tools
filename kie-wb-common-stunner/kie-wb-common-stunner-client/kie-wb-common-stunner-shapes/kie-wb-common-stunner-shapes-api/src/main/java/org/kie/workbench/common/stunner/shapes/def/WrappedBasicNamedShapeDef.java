@@ -77,6 +77,4 @@ public abstract class WrappedBasicNamedShapeDef<W>
     public double getBorderAlpha( final W element ) {
         return parent.getBorderAlpha( element );
     }
-
-
 }

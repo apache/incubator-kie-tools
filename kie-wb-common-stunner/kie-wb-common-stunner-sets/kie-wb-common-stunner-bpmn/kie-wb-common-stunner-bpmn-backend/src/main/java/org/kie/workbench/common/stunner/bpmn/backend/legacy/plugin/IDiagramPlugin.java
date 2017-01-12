@@ -20,7 +20,6 @@ import java.util.Map;
 
 /**
  * The interface defining a plugin.
- *
  * @author Antoine Toulme
  */
 public interface IDiagramPlugin {
@@ -34,7 +33,7 @@ public interface IDiagramPlugin {
     /**
      * @return the contents of a plugin.
      * The contents of the plugin file.
-     * <p>
+     * <p/>
      * The object returned by this method MUST be closed explicitely.
      */
     public InputStream getContents();

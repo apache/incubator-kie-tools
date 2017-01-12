@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -24,8 +30,6 @@ import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactor
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.registry.factory.TypeFactoryRegistry;
-
-import java.util.*;
 
 class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T> {
 
@@ -64,7 +68,8 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
                         && factory.accepts( defSetId )
                         && metadataType.equals( factory.getMetadataType() ) )
                 .findFirst()
-                .orElse( getDefaultDiagramFactory( defSetId, metadataType ) );
+                .orElse( getDefaultDiagramFactory( defSetId,
+                                                   metadataType ) );
     }
 
     private DiagramFactory<?, ?> getDefaultDiagramFactory( final String defSetId,
@@ -83,7 +88,8 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
         if ( item instanceof DefinitionFactory ) {
             definitionFactories.add( ( DefinitionFactory<?> ) item );
         } else if ( item instanceof ElementFactory ) {
-            graphFactories.put( ( ( ElementFactory ) item ).getFactoryType(), ( ElementFactory<?, ?, ?> ) item );
+            graphFactories.put( ( ( ElementFactory ) item ).getFactoryType(),
+                                ( ElementFactory<?, ?, ?> ) item );
         } else if ( item instanceof DiagramFactory ) {
             diagramFactories.add( ( DiagramFactory<?, ?> ) item );
         }
@@ -137,7 +143,8 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
 
     @Override
     public DefinitionFactory<?> getDefinitionFactory( final Class<?> type ) {
-        final String id = BindableAdapterUtils.getDefinitionId( type, adapterManager.registry() );
+        final String id = BindableAdapterUtils.getDefinitionId( type,
+                                                                adapterManager.registry() );
         return getDefinitionFactory( id );
     }
 }

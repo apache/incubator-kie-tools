@@ -16,12 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.HasProperties;
-import org.jboss.errai.databinding.client.NonExistingPropertyException;
-import org.jboss.errai.databinding.client.PropertyType;
-import org.jboss.errai.databinding.client.api.DataBinder;
-
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -29,12 +23,19 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jboss.errai.databinding.client.BindableProxy;
+import org.jboss.errai.databinding.client.HasProperties;
+import org.jboss.errai.databinding.client.NonExistingPropertyException;
+import org.jboss.errai.databinding.client.PropertyType;
+import org.jboss.errai.databinding.client.api.DataBinder;
+
 public class ClientBindingUtils {
 
     private static Logger LOGGER = Logger.getLogger( ClientBindingUtils.class.getName() );
 
     @SuppressWarnings( "unchecked" )
-    public static <T, R> R getProxiedValue( final T pojo, final String fieldName ) {
+    public static <T, R> R getProxiedValue( final T pojo,
+                                            final String fieldName ) {
         R result = null;
         if ( null != pojo && null != fieldName ) {
             HasProperties hasProperties = ( HasProperties ) DataBinder.forModel( pojo ).getModel();
@@ -44,7 +45,8 @@ public class ClientBindingUtils {
     }
 
     @SuppressWarnings( "unchecked" )
-    public static <T, R> Set<R> getProxiedSet( final T pojo, final Collection<String> fieldNames ) {
+    public static <T, R> Set<R> getProxiedSet( final T pojo,
+                                               final Collection<String> fieldNames ) {
         Set<R> result = null;
         if ( null != pojo && null != fieldNames && !fieldNames.isEmpty() ) {
             result = new LinkedHashSet<>();
@@ -57,10 +59,13 @@ public class ClientBindingUtils {
     }
 
     @SuppressWarnings( "unchecked" )
-    public static <T, V> void setProxiedValue( final T pojo, final String fieldName, final V value ) {
+    public static <T, V> void setProxiedValue( final T pojo,
+                                               final String fieldName,
+                                               final V value ) {
         if ( null != pojo && null != fieldName ) {
             HasProperties hasProperties = ( HasProperties ) DataBinder.forModel( pojo ).getModel();
-            hasProperties.set( fieldName, value );
+            hasProperties.set( fieldName,
+                               value );
         }
     }
 
@@ -68,7 +73,6 @@ public class ClientBindingUtils {
     public static <T> T newInstance( final Class<?> pojoType ) {
         if ( null != pojoType ) {
             return ( T ) DataBinder.forType( pojoType ).getModel();
-
         }
         return null;
     }
@@ -78,7 +82,6 @@ public class ClientBindingUtils {
         if ( null != pojo ) {
             final BindableProxy proxy = ( BindableProxy ) DataBinder.forModel( pojo ).getModel();
             return ( T ) proxy.deepUnwrap();
-
         }
         return null;
     }
@@ -95,23 +98,18 @@ public class ClientBindingUtils {
                     for ( final Map.Entry<String, PropertyType> entry : propertyTypeMap.entrySet() ) {
                         final String pId = entry.getKey();
                         try {
-                            targetProperties.set( pId, hasProperties.get( pId ) );
-
+                            targetProperties.set( pId,
+                                                  hasProperties.get( pId ) );
                         } catch ( NonExistingPropertyException exception ) {
                             // Just skip it, Go to next property.
-                            LOGGER.log( Level.INFO, "BindableAdapterUtils#merge - Skipping merge property [" + pId + "]" );
-
+                            LOGGER.log( Level.INFO,
+                                        "BindableAdapterUtils#merge - Skipping merge property [" + pId + "]" );
                         }
-
                     }
                     return ( R ) target;
-
                 }
-
             }
-
         }
         return null;
     }
-
 }

@@ -35,5 +35,4 @@ public abstract class AbstractDynamicRegistryWrapper<T, R extends DynamicRegistr
     public boolean remove( final T item ) {
         return getWrapped().remove( item );
     }
-
 }

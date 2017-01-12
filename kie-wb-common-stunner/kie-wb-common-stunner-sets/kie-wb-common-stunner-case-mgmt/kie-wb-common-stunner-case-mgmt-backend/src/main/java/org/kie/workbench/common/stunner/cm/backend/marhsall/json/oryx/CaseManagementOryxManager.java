@@ -54,5 +54,4 @@ public class CaseManagementOryxManager extends BaseOryxManager {
         final Set<Class<?>> defClasses = BackendBindableDefinitionUtils.getDefinitions( set );
         return defClasses;
     }
-
 }

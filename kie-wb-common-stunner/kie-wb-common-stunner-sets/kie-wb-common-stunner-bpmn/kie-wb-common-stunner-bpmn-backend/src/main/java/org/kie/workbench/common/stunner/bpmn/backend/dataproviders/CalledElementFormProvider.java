@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.dataproviders;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 public class CalledElementFormProvider implements SelectorDataProvider {
     // NOTE - this provides dummy data for now until integration with
@@ -34,9 +34,13 @@ public class CalledElementFormProvider implements SelectorDataProvider {
     @Override
     public SelectorData getSelectorData( FormRenderingContext context ) {
         Map<Object, String> values = new TreeMap<>();
-        values.put( "/my/samples/businessprocess1.bpmn2", "/my/samples/businessprocess1.bpmn2" );
-        values.put( "/my/samples/businessprocess2.bpmn2", "/my/samples/businessprocess2.bpmn2" );
-        values.put( "/my/samples/businessprocess3.bpmn2", "/my/samples/businessprocess3.bpmn2" );
-        return new SelectorData( values, null );
+        values.put( "/my/samples/businessprocess1.bpmn2",
+                    "/my/samples/businessprocess1.bpmn2" );
+        values.put( "/my/samples/businessprocess2.bpmn2",
+                    "/my/samples/businessprocess2.bpmn2" );
+        values.put( "/my/samples/businessprocess3.bpmn2",
+                    "/my/samples/businessprocess3.bpmn2" );
+        return new SelectorData( values,
+                                 null );
     }
 }

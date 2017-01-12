@@ -68,5 +68,4 @@ public class LienzoToolboxButtonBuilder implements ToolboxButtonBuilder<IPrimiti
                 .setMouseEnterHandler( mouseEnterHandler )
                 .setMouseExitHandler( mouseExitHandler );
     }
-
 }

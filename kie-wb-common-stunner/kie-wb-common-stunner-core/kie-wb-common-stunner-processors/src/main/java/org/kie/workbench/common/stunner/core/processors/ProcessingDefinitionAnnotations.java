@@ -72,5 +72,4 @@ public class ProcessingDefinitionAnnotations {
     public Map<String, String[]> getShapeDefinitions() {
         return shapeDefs;
     }
-
 }

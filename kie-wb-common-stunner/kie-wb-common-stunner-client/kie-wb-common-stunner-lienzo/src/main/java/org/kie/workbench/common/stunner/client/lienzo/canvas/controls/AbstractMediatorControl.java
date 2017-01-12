@@ -46,5 +46,4 @@ public abstract class AbstractMediatorControl<M extends IMediator> extends Abstr
     public M getMediator() {
         return mediator;
     }
-
 }

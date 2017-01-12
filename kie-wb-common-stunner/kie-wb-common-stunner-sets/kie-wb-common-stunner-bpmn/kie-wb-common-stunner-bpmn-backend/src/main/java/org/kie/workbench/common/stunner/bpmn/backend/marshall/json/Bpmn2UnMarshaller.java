@@ -91,7 +91,7 @@ public class Bpmn2UnMarshaller extends Bpmn2JsonMarshaller {
     }
 
     public Graph unmarshall( final String content ) throws IOException {
-        final XMLResource outResource = (XMLResource) resourceSet.createResource( URI.createURI( "inputStream://" + UUID.uuid() + ".xml" ) );
+        final XMLResource outResource = ( XMLResource ) resourceSet.createResource( URI.createURI( "inputStream://" + UUID.uuid() + ".xml" ) );
         outResource.getDefaultLoadOptions().put( XMLResource.OPTION_ENCODING,
                                                  "UTF-8" );
         outResource.setEncoding( "UTF-8" );
@@ -102,7 +102,7 @@ public class Bpmn2UnMarshaller extends Bpmn2JsonMarshaller {
         outResource.load( new BufferedInputStream( new ByteArrayInputStream( content.getBytes( "UTF-8" ) ) ),
                           options );
 
-        final DocumentRoot root = (DocumentRoot) outResource.getContents().get( 0 );
+        final DocumentRoot root = ( DocumentRoot ) outResource.getContents().get( 0 );
         final Definitions definitions = root.getDefinitions();
 
         return unmarshall( definitions,
@@ -118,5 +118,4 @@ public class Bpmn2UnMarshaller extends Bpmn2JsonMarshaller {
                         preProcessingData );
         return bpmnGraphGenerator.getGraph();
     }
-
 }

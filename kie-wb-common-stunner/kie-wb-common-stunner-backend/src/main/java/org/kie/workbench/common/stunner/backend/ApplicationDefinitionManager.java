@@ -16,17 +16,23 @@
 
 package org.kie.workbench.common.stunner.backend;
 
-import org.kie.workbench.common.stunner.core.api.AbstractDefinitionManager;
-import org.kie.workbench.common.stunner.core.definition.DefinitionSetProxy;
-import org.kie.workbench.common.stunner.core.definition.adapter.*;
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.kie.workbench.common.stunner.core.api.AbstractDefinitionManager;
+import org.kie.workbench.common.stunner.core.definition.DefinitionSetProxy;
+import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
+import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class ApplicationDefinitionManager extends AbstractDefinitionManager {
@@ -46,16 +52,17 @@ public class ApplicationDefinitionManager extends AbstractDefinitionManager {
     }
 
     @Inject
-    public ApplicationDefinitionManager( RegistryFactory registryFactory,
-                                         AdapterManager adapterManager,
-                                         Instance<DefinitionSetProxy<?>> definitionSetsInstances,
-                                         Instance<DefinitionSetAdapter<?>> definitionSetAdapterInstances,
-                                         Instance<DefinitionSetRuleAdapter<?>> definitionSetRuleAdapterInstances,
-                                         Instance<DefinitionAdapter<?>> definitionAdapterInstances,
-                                         Instance<PropertySetAdapter<?>> propertySetAdapterInstances,
-                                         Instance<PropertyAdapter<?, ?>> propertyAdapterInstances,
-                                         Instance<MorphAdapter<?>> morphAdapterInstances ) {
-        super( registryFactory, adapterManager );
+    public ApplicationDefinitionManager( final RegistryFactory registryFactory,
+                                         final AdapterManager adapterManager,
+                                         final Instance<DefinitionSetProxy<?>> definitionSetsInstances,
+                                         final Instance<DefinitionSetAdapter<?>> definitionSetAdapterInstances,
+                                         final Instance<DefinitionSetRuleAdapter<?>> definitionSetRuleAdapterInstances,
+                                         final Instance<DefinitionAdapter<?>> definitionAdapterInstances,
+                                         final Instance<PropertySetAdapter<?>> propertySetAdapterInstances,
+                                         final Instance<PropertyAdapter<?, ?>> propertyAdapterInstances,
+                                         final Instance<MorphAdapter<?>> morphAdapterInstances ) {
+        super( registryFactory,
+               adapterManager );
         this.definitionSetsInstances = definitionSetsInstances;
         this.definitionSetAdapterInstances = definitionSetAdapterInstances;
         this.definitionSetRuleAdapterInstances = definitionSetRuleAdapterInstances;
@@ -102,6 +109,5 @@ public class ApplicationDefinitionManager extends AbstractDefinitionManager {
             addAdapter( morphAdapter );
         }
     }
-
 }
 

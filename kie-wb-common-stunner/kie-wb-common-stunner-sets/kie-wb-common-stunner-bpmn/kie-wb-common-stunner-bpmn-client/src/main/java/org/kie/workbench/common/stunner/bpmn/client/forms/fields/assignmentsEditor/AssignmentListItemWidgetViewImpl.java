@@ -53,13 +53,14 @@ import org.uberfire.workbench.events.NotificationEvent;
 /**
  * A templated widget that will be used to display a row in a table of
  * {@link AssignmentRow}s.
- * <p>
+ * <p/>
  * The Name field of AssignmentRow is Bound, but other fields are not bound because
  * they use a combination of ListBox and TextBox to implement a drop-down combo
  * to hold the values.
  */
 @Templated( "ActivityDataIOEditorWidget.html#assignment" )
-public class AssignmentListItemWidgetViewImpl extends Composite implements AssignmentListItemWidgetView, ComboBoxView.ModelPresenter {
+public class AssignmentListItemWidgetViewImpl extends Composite implements AssignmentListItemWidgetView,
+                                                                           ComboBoxView.ModelPresenter {
 
     /**
      * Errai's data binding module will automatically bind the provided instance
@@ -91,7 +92,8 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
             return s;
         }
 
-        public void render( String object, Appendable appendable ) throws IOException {
+        public void render( String object,
+                            Appendable appendable ) throws IOException {
             String s = render( object );
             appendable.append( s );
         }
@@ -111,7 +113,8 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
             return s;
         }
 
-        public void render( String object, Appendable appendable ) throws IOException {
+        public void render( String object,
+                            Appendable appendable ) throws IOException {
             String s = render( object );
             appendable.append( s );
         }
@@ -145,7 +148,8 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     }
 
     @Override
-    public void setTextBoxModelValue( final TextBox textBox, String value ) {
+    public void setTextBoxModelValue( final TextBox textBox,
+                                      String value ) {
         if ( textBox == customDataType ) {
             setCustomDataType( value );
         } else if ( textBox == constant ) {
@@ -154,7 +158,8 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     }
 
     @Override
-    public void setListBoxModelValue( final ValueListBox<String> listBox, String value ) {
+    public void setListBoxModelValue( final ValueListBox<String> listBox,
+                                      String value ) {
         if ( listBox == dataType ) {
             setDataType( value );
         } else if ( listBox == processVar ) {
@@ -184,16 +189,26 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     @PostConstruct
     public void init() {
         // Configure dataType and customDataType controls
-        dataTypeComboBox.init( this, false, dataType, customDataType, false, true,
-                CUSTOM_PROMPT,
-                ENTER_TYPE_PROMPT );
+        dataTypeComboBox.init( this,
+                               false,
+                               dataType,
+                               customDataType,
+                               false,
+                               true,
+                               CUSTOM_PROMPT,
+                               ENTER_TYPE_PROMPT );
         // Configure processVar and constant controls
-        processVarComboBox.init( this, false, processVar, constant, true, true,
-                CONSTANT_PROMPT,
-                ENTER_CONSTANT_PROMPT );
+        processVarComboBox.init( this,
+                                 false,
+                                 processVar,
+                                 constant,
+                                 true,
+                                 true,
+                                 CONSTANT_PROMPT,
+                                 ENTER_CONSTANT_PROMPT );
         name.setRegExp( "^[a-zA-Z0-9\\-\\.\\_]*$",
-                StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
-                StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name() );
+                        StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
+                        StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name() );
         customDataType.addKeyDownHandler( new KeyDownHandler() {
             @Override
             public void onKeyDown( KeyDownEvent event ) {
@@ -209,14 +224,15 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
                 if ( !allowDuplicateNames ) {
                     String value = name.getText();
                     if ( isDuplicateName( value ) ) {
-                        notification.fire( new NotificationEvent( duplicateNameErrorMessage, NotificationEvent.NotificationType.ERROR ) );
+                        notification.fire( new NotificationEvent( duplicateNameErrorMessage,
+                                                                  NotificationEvent.NotificationType.ERROR ) );
                         name.setValue( "" );
-                        ValueChangeEvent.fire( name, "" );
+                        ValueChangeEvent.fire( name,
+                                               "" );
                     }
                 }
             }
         } );
-
     }
 
     @Override
@@ -282,7 +298,8 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
         dataTypeComboBox.setShowCustomValues( true );
         String cdt = getCustomDataType();
         if ( cdt != null && !cdt.isEmpty() ) {
-            dataTypeComboBox.addCustomValueToListBoxValues( cdt, "" );
+            dataTypeComboBox.addCustomValueToListBoxValues( cdt,
+                                                            "" );
         }
     }
 
@@ -293,7 +310,8 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
         String con = getConstant();
         // processVar set here because the ListBoxValues must already have been set
         if ( con != null && !con.isEmpty() ) {
-            String displayValue = processVarComboBox.addCustomValueToListBoxValues( con, "" );
+            String displayValue = processVarComboBox.addCustomValueToListBoxValues( con,
+                                                                                    "" );
             processVar.setValue( displayValue );
         }
     }
@@ -304,12 +322,16 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     }
 
     @Override
-    public void setDisallowedNames( Set<String> disallowedNames, String disallowedNameErrorMessage ) {
-        name.setInvalidValues( disallowedNames, false, disallowedNameErrorMessage );
+    public void setDisallowedNames( Set<String> disallowedNames,
+                                    String disallowedNameErrorMessage ) {
+        name.setInvalidValues( disallowedNames,
+                               false,
+                               disallowedNameErrorMessage );
     }
 
     @Override
-    public void setAllowDuplicateNames( boolean allowDuplicateNames, String duplicateNameErrorMessage ) {
+    public void setAllowDuplicateNames( boolean allowDuplicateNames,
+                                        String duplicateNameErrorMessage ) {
         this.allowDuplicateNames = allowDuplicateNames;
         this.duplicateNameErrorMessage = duplicateNameErrorMessage;
     }
@@ -352,5 +374,4 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     public void notifyModelChanged() {
         // Ignore
     }
-
 }

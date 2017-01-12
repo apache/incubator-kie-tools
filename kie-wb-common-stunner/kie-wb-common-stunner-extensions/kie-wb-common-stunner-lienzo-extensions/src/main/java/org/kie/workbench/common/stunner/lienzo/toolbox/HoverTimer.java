@@ -22,7 +22,8 @@ import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.google.gwt.user.client.Timer;
 
-public class HoverTimer implements NodeMouseEnterHandler, NodeMouseExitHandler {
+public class HoverTimer implements NodeMouseEnterHandler,
+                                   NodeMouseExitHandler {
 
     public static final int TIMEOUT = 100;
 
@@ -33,6 +34,7 @@ public class HoverTimer implements NodeMouseEnterHandler, NodeMouseExitHandler {
     }
 
     public interface Actions {
+
         void onMouseEnter();
 
         void onMouseExit();

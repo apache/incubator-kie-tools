@@ -21,8 +21,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.command.impl.ClearGraphCommand;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class ClearCommandTest extends AbstractCanvasCommandTest {
@@ -39,14 +38,13 @@ public class ClearCommandTest extends AbstractCanvasCommandTest {
     public void testGetGraphCommand() {
         final ClearGraphCommand graphCommand = ( ClearGraphCommand ) tested.newGraphCommand( canvasHandler );
         assertNotNull( graphCommand );
-        assertEquals( CANVAS_ROOT_UUID, graphCommand.getRootUUID() );
+        assertEquals( CANVAS_ROOT_UUID,
+                      graphCommand.getRootUUID() );
     }
-
 
     @Test
     public void testGetCanvasCommand() {
         final ClearCanvasCommand canvasCommand = ( ClearCanvasCommand ) tested.newCanvasCommand( canvasHandler );
         assertNotNull( canvasCommand );
     }
-
 }

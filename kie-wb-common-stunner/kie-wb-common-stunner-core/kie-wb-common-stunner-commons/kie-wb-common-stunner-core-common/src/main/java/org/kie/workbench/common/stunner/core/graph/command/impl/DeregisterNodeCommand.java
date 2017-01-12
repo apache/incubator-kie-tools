@@ -15,6 +15,10 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -29,10 +33,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * A Command to deregister a node from the graph storage.
  */
@@ -45,9 +45,9 @@ public class DeregisterNodeCommand extends AbstractGraphCommand {
     transient Node<?, Edge> node;
     transient Node<?, Edge> removed;
 
-    public DeregisterNodeCommand( @MapsTo( "uuid" ) String uuid ) {
+    public DeregisterNodeCommand( final @MapsTo( "uuid" ) String uuid ) {
         this.uuid = PortablePreconditions.checkNotNull( "uuid",
-                uuid );
+                                                        uuid );
         this.removed = null;
     }
 
@@ -60,19 +60,21 @@ public class DeregisterNodeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         CommandResult<RuleViolation> results = allow( context );
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            LOGGER.log( Level.FINE, "Executing..." );
+            LOGGER.log( Level.FINE,
+                        "Executing..." );
             final Graph<?, Node> graph = getGraph( context );
             final Node<?, Edge> candidate = getCandidate( context );
             this.removed = candidate;
             graph.removeNode( candidate.getUUID() );
             getMutableIndex( context ).removeNode( candidate );
-            LOGGER.log( Level.FINE, "Node [" + uuid + " removed from strcture and index." );
+            LOGGER.log( Level.FINE,
+                        "Node [" + uuid + " removed from strcture and index." );
         }
         return results;
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
         final RegisterNodeCommand undoCommand = new RegisterNodeCommand( removed );
         return undoCommand.execute( context );
     }
@@ -87,8 +89,8 @@ public class DeregisterNodeCommand extends AbstractGraphCommand {
                 ( Collection<RuleViolation> ) context.getRulesManager()
                         .cardinality()
                         .evaluate( graph,
-                                candidate,
-                                RuleManager.Operation.DELETE )
+                                   candidate,
+                                   RuleManager.Operation.DELETE )
                         .violations();
         builder.addViolations( cardinalityRuleViolations );
         return builder.build();
@@ -105,7 +107,8 @@ public class DeregisterNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings( "unchecked" )
     protected Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
         if ( null == node ) {
-            node = getNode( context, uuid );
+            node = getNode( context,
+                            uuid );
         }
         return node;
     }
@@ -113,7 +116,9 @@ public class DeregisterNodeCommand extends AbstractGraphCommand {
     protected Node<?, Edge> checkCandidateNotNull( final GraphCommandExecutionContext context ) {
         final Node<?, Edge> e = getCandidate( context );
         if ( null == e ) {
-            throw new BadCommandArgumentsException( this, uuid, "Node not found for [" + uuid + "]." );
+            throw new BadCommandArgumentsException( this,
+                                                    uuid,
+                                                    "Node not found for [" + uuid + "]." );
         }
         return e;
     }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.api;
 
+import java.util.Iterator;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -31,8 +33,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.kie.workbench.common.stunner.core.util.UUID;
-
-import java.util.Iterator;
 
 public abstract class AbstractFactoryManager {
 
@@ -52,7 +52,8 @@ public abstract class AbstractFactoryManager {
     }
 
     public <T> T newDefinition( final Class<T> type ) {
-        final String id = BindableAdapterUtils.getDefinitionId( type, definitionManager.adapters().registry() );
+        final String id = BindableAdapterUtils.getDefinitionId( type,
+                                                                definitionManager.adapters().registry() );
         return newDefinition( id );
     }
 
@@ -60,13 +61,17 @@ public abstract class AbstractFactoryManager {
                                   final String id ) {
         final Object defSet = getDefinitionSet( id );
         final boolean isDefSet = null != defSet;
-        return !isDefSet ? doBuildElement( uuid, id ) : doBuildGraph( uuid, id, defSet );
+        return !isDefSet ? doBuildElement( uuid,
+                                           id ) : doBuildGraph( uuid,
+                                                                id,
+                                                                defSet );
     }
 
     public Element<?> newElement( final String uuid,
                                   final Class<?> type ) {
         final String id = BindableAdapterUtils.getGenericClassName( type );
-        return newElement( uuid, id );
+        return newElement( uuid,
+                           id );
     }
 
     private Object getDefinitionSet( final String id ) {
@@ -77,21 +82,26 @@ public abstract class AbstractFactoryManager {
     public <M extends Metadata, D extends Diagram> D newDiagram( final String name,
                                                                  final String id,
                                                                  final M metadata ) {
-        final Graph<DefinitionSet, ?> graph = ( Graph<DefinitionSet, ?> ) newElement( UUID.uuid(), id );
+        final Graph<DefinitionSet, ?> graph = ( Graph<DefinitionSet, ?> ) newElement( UUID.uuid(),
+                                                                                      id );
         final String rootId = getCanvasRoot( graph );
         if ( null != rootId ) {
             metadata.setCanvasRootUUID( rootId );
         }
-        return ( D ) checkDiagramFactoryNotNull( graph.getContent().getDefinition(), metadata )
-                .build( name, metadata, graph );
+        return ( D ) checkDiagramFactoryNotNull( graph.getContent().getDefinition(),
+                                                 metadata ).build( name,
+                                                                   metadata,
+                                                                   graph );
     }
 
     @SuppressWarnings( "unchecked" )
-    private <M extends Metadata> DiagramFactory<M, ?> checkDiagramFactoryNotNull( final String defSetid, final M metadata ) {
-        final DiagramFactory<M, ?> factory = registry().getDiagramFactory( defSetid, metadata.getMetadataType() );
+    private <M extends Metadata> DiagramFactory<M, ?> checkDiagramFactoryNotNull( final String defSetid,
+                                                                                  final M metadata ) {
+        final DiagramFactory<M, ?> factory = registry().getDiagramFactory( defSetid,
+                                                                           metadata.getMetadataType() );
         if ( null == factory ) {
             throw new IllegalArgumentException( "No diagram factory found for [" + defSetid + "] and " +
-                    "metadata type [" + metadata.getClass() + "]" );
+                                                        "metadata type [" + metadata.getClass() + "]" );
         }
         return factory;
     }
@@ -99,8 +109,11 @@ public abstract class AbstractFactoryManager {
     public <M extends Metadata, D extends Diagram> D newDiagram( final String uuid,
                                                                  final Class<?> type,
                                                                  final M metadata ) {
-        final String id = BindableAdapterUtils.getDefinitionSetId( type, definitionManager.adapters().registry() );
-        return newDiagram( uuid, id, metadata );
+        final String id = BindableAdapterUtils.getDefinitionSetId( type,
+                                                                   definitionManager.adapters().registry() );
+        return newDiagram( uuid,
+                           id,
+                           metadata );
     }
 
     public FactoryRegistry registry() {
@@ -115,22 +128,20 @@ public abstract class AbstractFactoryManager {
     private <T, C extends Definition<T>> Element<C> doBuildElement( final String uuid,
                                                                     final String definitionId ) {
         final T definition = newDefinition( definitionId );
-        final Class<? extends ElementFactory> factoryType =
-                definitionManager.adapters().forDefinition().getGraphFactoryType( definition );
-        final ElementFactory<T, C, Element<C>> factory =
-                factoryRegistry.getElementFactory( factoryType );
-        return factory.build( uuid, definition );
+        final Class<? extends ElementFactory> factoryType = definitionManager.adapters().forDefinition().getGraphFactoryType( definition );
+        final ElementFactory<T, C, Element<C>> factory = factoryRegistry.getElementFactory( factoryType );
+        return factory.build( uuid,
+                              definition );
     }
 
     @SuppressWarnings( "unchecked" )
     private <C extends DefinitionSet> Element<C> doBuildGraph( final String uuid,
                                                                final String defSetId,
                                                                final Object defSet ) {
-        final Class<? extends ElementFactory> factoryType =
-                definitionManager.adapters().forDefinitionSet().getGraphFactoryType( defSet );
-        final ElementFactory<String, DefinitionSet, Element<DefinitionSet>> factory =
-                factoryRegistry.getElementFactory( factoryType );
-        return ( Element<C> ) factory.build( uuid, defSetId );
+        final Class<? extends ElementFactory> factoryType = definitionManager.adapters().forDefinitionSet().getGraphFactoryType( defSet );
+        final ElementFactory<String, DefinitionSet, Element<DefinitionSet>> factory = factoryRegistry.getElementFactory( factoryType );
+        return ( Element<C> ) factory.build( uuid,
+                                             defSetId );
     }
 
     // TODO: Refactor this - do not apply by default this behavior?
@@ -138,7 +149,6 @@ public abstract class AbstractFactoryManager {
         final Node view = getFirstGraphViewNode( graph );
         if ( null != view ) {
             return view.getUUID();
-
         }
         return null;
     }
@@ -156,13 +166,10 @@ public abstract class AbstractFactoryManager {
                         if ( content instanceof View ) {
                             return node;
                         }
-
                     }
                 }
             }
-
         }
         return null;
     }
-
 }

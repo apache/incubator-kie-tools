@@ -15,12 +15,12 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.DefaultCanvasGrid;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
-
-import javax.enterprise.context.Dependent;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -41,9 +41,9 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
     }
 
     @Override
-    public <T> void execute( Callback<T> callback ) {
-        checkNotNull( "callback", callback );
-
+    public <T> void execute( final Callback<T> callback ) {
+        checkNotNull( "callback",
+                      callback );
         if ( isGridVisible() ) {
             hideGrid();
         } else {
@@ -66,5 +66,4 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
     private boolean isGridVisible() {
         return null != grid;
     }
-
 }

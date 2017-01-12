@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -30,9 +33,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
 /**
  * Creates a dock relationship (edge + Dock content type) from the child node to the target node.
  */
@@ -44,17 +44,18 @@ public final class DockNodeCommand extends AbstractGraphCommand {
     private transient Node<?, Edge> parent;
     private transient Node<?, Edge> candidate;
 
-    public DockNodeCommand( @MapsTo( "parentUUID" ) String parentUUID,
-                            @MapsTo( "candidate" ) String candidateUUID ) {
+    public DockNodeCommand( final @MapsTo( "parentUUID" ) String parentUUID,
+                            final @MapsTo( "candidate" ) String candidateUUID ) {
         this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
-                parentUUID );
+                                                              parentUUID );
         this.candidateUUID = PortablePreconditions.checkNotNull( "candidate",
-                candidateUUID );
+                                                                 candidateUUID );
     }
 
-    public DockNodeCommand( Node<?, Edge> parent,
-                            Node<?, Edge> candidate ) {
-        this( parent.getUUID(), candidate.getUUID() );
+    public DockNodeCommand( final Node<?, Edge> parent,
+                            final Node<?, Edge> candidate ) {
+        this( parent.getUUID(),
+              candidate.getUUID() );
         this.parent = parent;
         this.candidate = candidate;
     }
@@ -75,7 +76,6 @@ public final class DockNodeCommand extends AbstractGraphCommand {
             parent.getOutEdges().add( edge );
             candidate.getInEdges().add( edge );
             getMutableIndex( context ).addEdge( edge );
-
         }
         return results;
     }
@@ -85,7 +85,8 @@ public final class DockNodeCommand extends AbstractGraphCommand {
         final Node<?, Edge> parent = getParent( context );
         final Node<Definition<?>, Edge> candidate = ( Node<Definition<?>, Edge> ) getCandidate( context );
         final Collection<RuleViolation> dockingRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager().docking().evaluate( parent, candidate ).violations();
+                ( Collection<RuleViolation> ) context.getRulesManager().docking().evaluate( parent,
+                                                                                            candidate ).violations();
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
         violations.addAll( dockingRuleViolations );
         return new GraphCommandResultBuilder( violations ).build();
@@ -93,7 +94,8 @@ public final class DockNodeCommand extends AbstractGraphCommand {
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final UnDockNodeCommand undoCommand = new UnDockNodeCommand( parent, candidate );
+        final UnDockNodeCommand undoCommand = new UnDockNodeCommand( parent,
+                                                                     candidate );
         return undoCommand.execute( context );
     }
 
@@ -108,7 +110,8 @@ public final class DockNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings( "unchecked" )
     private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
         if ( null == parent ) {
-            parent = checkNodeNotNull( context, parentUUID );
+            parent = checkNodeNotNull( context,
+                                       parentUUID );
         }
         return parent;
     }
@@ -116,7 +119,8 @@ public final class DockNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings( "unchecked" )
     private Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
         if ( null == candidate ) {
-            candidate = checkNodeNotNull( context, candidateUUID );
+            candidate = checkNodeNotNull( context,
+                                          candidateUUID );
         }
         return candidate;
     }

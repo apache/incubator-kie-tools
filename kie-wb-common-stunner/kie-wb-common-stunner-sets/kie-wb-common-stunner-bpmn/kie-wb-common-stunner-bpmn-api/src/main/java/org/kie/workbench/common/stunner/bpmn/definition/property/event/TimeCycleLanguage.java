@@ -20,7 +20,12 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Optional;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 
@@ -28,6 +33,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @Bindable
 @Property
 public class TimeCycleLanguage implements BPMNProperty {
+
     @Caption
     public static final transient String caption = "Time Cycle Language";
 
@@ -52,7 +58,7 @@ public class TimeCycleLanguage implements BPMNProperty {
     public TimeCycleLanguage() {
     }
 
-    public TimeCycleLanguage(final String value ) {
+    public TimeCycleLanguage( final String value ) {
         this.value = value;
     }
 
@@ -84,7 +90,7 @@ public class TimeCycleLanguage implements BPMNProperty {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue( String value ) {
         this.value = value;
     }
 }

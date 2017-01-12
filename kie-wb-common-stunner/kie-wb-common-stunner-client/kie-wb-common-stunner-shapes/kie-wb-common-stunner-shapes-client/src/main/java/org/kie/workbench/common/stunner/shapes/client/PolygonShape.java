@@ -27,21 +27,24 @@ public class PolygonShape<W> extends AbstractBasicShapeWithTitle<W, PolygonView,
 
     public PolygonShape( final PolygonView view,
                          final PolygonShapeDef<W> proxy ) {
-        super( view, proxy );
+        super( view,
+               proxy );
     }
 
     @Override
-    public void applyProperties( final Node<View<W>, Edge> element, final MutationContext mutationContext ) {
-        super.applyProperties( element, mutationContext );
+    public void applyProperties( final Node<View<W>, Edge> element,
+                                 final MutationContext mutationContext ) {
+        super.applyProperties( element,
+                               mutationContext );
         // Radius.
         final Double radius = proxy.getRadius( getDefinition( element ) );
-        _applyRadius( element, radius, mutationContext );
-
+        _applyRadius( element,
+                      radius,
+                      mutationContext );
     }
 
     @Override
     public String toString() {
         return "PolygonShape{}";
     }
-
 }

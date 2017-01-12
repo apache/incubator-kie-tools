@@ -22,5 +22,4 @@ public interface ProjectMetadata extends Metadata {
     String getProjectPackage();
 
     String getProjectName();
-
 }

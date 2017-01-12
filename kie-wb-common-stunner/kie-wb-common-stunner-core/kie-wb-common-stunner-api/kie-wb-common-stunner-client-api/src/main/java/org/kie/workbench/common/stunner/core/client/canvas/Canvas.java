@@ -16,16 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-
 import java.util.List;
+
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
 public interface Canvas<S extends Shape> {
 
     /**
      * Initializes a canvas with the given size.
      */
-    Canvas initialize( int width, int height );
+    Canvas initialize( final int width,
+                       final int height );
 
     /**
      * Draws or batches the updates on the canvas.
@@ -35,7 +36,7 @@ public interface Canvas<S extends Shape> {
     /**
      * Set the background grid for the canvas.
      */
-    Canvas setGrid( CanvasGrid grid );
+    Canvas setGrid( final CanvasGrid grid );
 
     /**
      * Get a list of all Shapes on the Canvas
@@ -45,17 +46,17 @@ public interface Canvas<S extends Shape> {
     /**
      * Returns the shape with the given identifier.
      */
-    S getShape( String id );
+    S getShape( final String id );
 
     /**
      * Add a Shape to the Canvas
      */
-    Canvas addShape( S shape );
+    Canvas addShape( final S shape );
 
     /**
      * Delete a Shape from the Canvas. Implementations may prompt the User for confirmation.
      */
-    Canvas deleteShape( S shape );
+    Canvas deleteShape( final S shape );
 
     /**
      * Clears the canvas.
@@ -81,5 +82,4 @@ public interface Canvas<S extends Shape> {
      * Destroy whatever canvas state present, it will be no longer used.
      */
     void destroy();
-
 }

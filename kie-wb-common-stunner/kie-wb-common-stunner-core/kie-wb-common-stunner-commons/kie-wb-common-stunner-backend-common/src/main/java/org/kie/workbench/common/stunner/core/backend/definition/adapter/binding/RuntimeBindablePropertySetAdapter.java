@@ -15,14 +15,14 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.binding;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractRuntimeAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertySetAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.Set;
 
 class RuntimeBindablePropertySetAdapter<T> extends AbstractRuntimeAdapter<T>
         implements BindablePropertySetAdapter<T> {
@@ -40,15 +40,16 @@ class RuntimeBindablePropertySetAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public String getId( T propertySet ) {
+    public String getId( final T propertySet ) {
         return BindableAdapterUtils.getPropertySetId( propertySet.getClass() );
     }
 
     @Override
-    public String getName( T propertySet ) {
+    public String getName( final T propertySet ) {
         Class<?> type = propertySet.getClass();
         try {
-            return getFieldValue( propertySet, propertyNameFieldNames.get( type ) );
+            return getFieldValue( propertySet,
+                                  propertyNameFieldNames.get( type ) );
         } catch ( IllegalAccessException e ) {
             LOG.error( "Error obtaining name for Property Set with id " + getId( propertySet ) );
         }
@@ -56,11 +57,12 @@ class RuntimeBindablePropertySetAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public Set<?> getProperties( T propertySet ) {
+    public Set<?> getProperties( final T propertySet ) {
         Class<?> type = propertySet.getClass();
         Set<String> fields = propertiesFieldNames.get( type );
         try {
-            return getFieldValues( propertySet, fields );
+            return getFieldValues( propertySet,
+                                   fields );
         } catch ( IllegalAccessException e ) {
             LOG.error( "Error obtaining properties for Property Set with id " + getId( propertySet ) );
         }
@@ -68,8 +70,7 @@ class RuntimeBindablePropertySetAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public boolean accepts( Class<?> type ) {
+    public boolean accepts( final Class<?> type ) {
         return null != propertyNameFieldNames && propertyNameFieldNames.containsKey( type );
     }
-
 }

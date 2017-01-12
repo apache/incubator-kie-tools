@@ -16,10 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.processors;
 
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
-
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.lang.model.element.Element;
-import java.util.*;
+
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 
 public class ProcessingContext {
 
@@ -51,15 +56,21 @@ public class ProcessingContext {
         return definitionSet;
     }
 
-    public void setDefinitionSet( String packageName, String className ) {
+    public void setDefinitionSet( final String packageName,
+                                  final String className ) {
         if ( null != this.definitionSet ) {
             throw new RuntimeException( "Only a single definition set allowed for a single processing." );
         }
-        this.definitionSet = new ProcessingEntity( packageName + "." + className, className );
+        this.definitionSet = new ProcessingEntity( packageName + "." + className,
+                                                   className );
     }
 
-    public void addRule( String id, ProcessingRule.TYPE type, StringBuffer content ) {
-        rules.add( new ProcessingRule( id, type, content ) );
+    public void addRule( final String id,
+                         final ProcessingRule.TYPE type,
+                         final StringBuffer content ) {
+        rules.add( new ProcessingRule( id,
+                                       type,
+                                       content ) );
     }
 
     public List<ProcessingRule> getRules() {

@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.basicset;
 
-import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
-
 import javax.enterprise.context.ApplicationScoped;
+
+import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
 
 // TODO: I18n.
 @ApplicationScoped

@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
@@ -35,9 +38,6 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * A Command to update an element's bounds.
  */
@@ -53,31 +53,38 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     private Double oldY;
     private transient Node<?, Edge> node;
 
-    public UpdateElementPositionCommand( @MapsTo( "uuid" ) String uuid,
-                                         @MapsTo( "x" ) Double x,
-                                         @MapsTo( "y" ) Double y ) {
-        this.uuid = PortablePreconditions.checkNotNull( "uuid", uuid );
+    public UpdateElementPositionCommand( final @MapsTo( "uuid" ) String uuid,
+                                         final @MapsTo( "x" ) Double x,
+                                         final @MapsTo( "y" ) Double y ) {
+        this.uuid = PortablePreconditions.checkNotNull( "uuid",
+                                                        uuid );
+        this.x = PortablePreconditions.checkNotNull( "x",
+                                                     x );
+        this.y = PortablePreconditions.checkNotNull( "y",
+                                                     y );
         this.node = null;
-        this.x = PortablePreconditions.checkNotNull( "x", x );
-        this.y = PortablePreconditions.checkNotNull( "y", y );
     }
 
     public UpdateElementPositionCommand( final Node<?, Edge> node,
                                          final Double x,
                                          final Double y ) {
-        this( node.getUUID(), x, y );
-        this.node = PortablePreconditions.checkNotNull( "node", node );
+        this( node.getUUID(),
+              x,
+              y );
+        this.node = PortablePreconditions.checkNotNull( "node",
+                                                        node );
     }
 
     @Override
-    protected CommandResult<RuleViolation> check( GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
         checkNodeNotNull( context );
         return GraphCommandResultBuilder.SUCCESS;
     }
 
-    private Node<?, Edge> checkNodeNotNull( GraphCommandExecutionContext context ) {
+    private Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context ) {
         if ( null == node ) {
-            node = super.checkNodeNotNull( context, uuid );
+            node = super.checkNodeNotNull( context,
+                                           uuid );
         }
         return node;
     }
@@ -91,13 +98,15 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
         this.oldY = oldPosition.getY();
         final double w = oldSize[ 0 ];
         final double h = oldSize[ 1 ];
-        final BoundsImpl newBounds = new BoundsImpl(
-                new BoundImpl( x, y ),
-                new BoundImpl( x + w, y + h )
-        );
-        checkBounds( context, newBounds );
+        final BoundsImpl newBounds = new BoundsImpl( new BoundImpl( x,
+                                                                    y ),
+                                                     new BoundImpl( x + w,
+                                                                    y + h ) );
+        checkBounds( context,
+                     newBounds );
         ( ( View ) element.getContent() ).setBounds( newBounds );
-        LOGGER.log( Level.FINE, "Moving element bounds to [" + x + "," + y + "] [" + ( x + w ) + "," + ( y + h ) + "]" );
+        LOGGER.log( Level.FINE,
+                    "Moving element bounds to [" + x + "," + y + "] [" + ( x + w ) + "," + ( y + h ) + "]" );
         return GraphCommandResultBuilder.SUCCESS;
     }
 
@@ -105,16 +114,21 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     private void checkBounds( final GraphCommandExecutionContext context,
                               final Bounds bounds ) {
         final Graph<DefinitionSet, Node> graph = ( Graph<DefinitionSet, Node> ) getGraph( context );
-        if ( !GraphUtils.checkBounds( graph, bounds ) ) {
+        if ( !GraphUtils.checkBounds( graph,
+                                      bounds ) ) {
             final Bounds graphBounds = graph.getContent().getBounds();
-            throw new BoundsExceededException( this, bounds, graphBounds.getLowerRight().getX(), graphBounds.getLowerRight().getY() );
+            throw new BoundsExceededException( this,
+                                               bounds,
+                                               graphBounds.getLowerRight().getX(),
+                                               graphBounds.getLowerRight().getY() );
         }
     }
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final UpdateElementPositionCommand undoCommand =
-                new UpdateElementPositionCommand( checkNodeNotNull( context ), oldX, oldY );
+        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand( checkNodeNotNull( context ),
+                                                                                           oldX,
+                                                                                           oldY );
         return undoCommand.execute( context );
     }
 
@@ -146,5 +160,4 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     public String toString() {
         return "UpdateElementPositionCommand [element=" + uuid + ", x=" + x + ", y=" + y + "]";
     }
-
 }

@@ -53,11 +53,12 @@ public class ParallelGateway extends BaseGateway {
         @Override
         public ParallelGateway build() {
             return new ParallelGateway( new BPMNGeneralSet( "Gateway" ),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet(),
-                    new CircleDimensionSet( new Radius( RADIUS ) ) );
+                                        new BackgroundSet( COLOR,
+                                                           BORDER_COLOR,
+                                                           BORDER_SIZE ),
+                                        new FontSet(),
+                                        new CircleDimensionSet( new Radius( RADIUS ) ) );
         }
-
     }
 
     public ParallelGateway() {
@@ -67,8 +68,10 @@ public class ParallelGateway extends BaseGateway {
                             @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                             @MapsTo( "fontSet" ) FontSet fontSet,
                             @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
-        super( general, backgroundSet, fontSet, dimensionsSet );
-
+        super( general,
+               backgroundSet,
+               fontSet,
+               dimensionsSet );
     }
 
     public String getTitle() {
@@ -78,5 +81,4 @@ public class ParallelGateway extends BaseGateway {
     public String getDescription() {
         return description;
     }
-
 }

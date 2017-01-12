@@ -41,5 +41,4 @@ public class LienzoToolbox implements Toolbox {
     public void remove() {
         toolbox.remove();
     }
-
 }

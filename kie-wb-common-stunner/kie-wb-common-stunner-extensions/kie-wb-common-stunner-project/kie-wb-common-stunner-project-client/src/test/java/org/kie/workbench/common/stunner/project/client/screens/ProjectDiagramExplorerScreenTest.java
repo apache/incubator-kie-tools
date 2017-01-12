@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -55,26 +55,32 @@ public class ProjectDiagramExplorerScreenTest {
     public void setup() throws Exception {
         when( treeExplorer.asWidget() ).thenReturn( treeExplorerWidget );
         when( session.getCanvasHandler() ).thenReturn( canvasHandler );
-        this.tested = new ProjectDiagramExplorerScreen( clientSessionManager, treeExplorer, changeTitleNotificationEvent );
+        this.tested = new ProjectDiagramExplorerScreen( clientSessionManager,
+                                                        treeExplorer,
+                                                        changeTitleNotificationEvent );
     }
 
     @Test
     public void testView() {
-        assertEquals( treeExplorerWidget, tested.getWidget() );
+        assertEquals( treeExplorerWidget,
+                      tested.getWidget() );
     }
 
     @Test
     public void testShow() {
         tested.show( session );
-        verify( treeExplorer, times( 1 ) ).show( eq( canvasHandler ) );
-        verify( treeExplorer, times( 0 ) ).clear();
+        verify( treeExplorer,
+                times( 1 ) ).show( eq( canvasHandler ) );
+        verify( treeExplorer,
+                times( 0 ) ).clear();
     }
 
     @Test
     public void testClose() {
         tested.close();
-        verify( treeExplorer, times( 1 ) ).clear();
-        verify( treeExplorer, times( 0 ) ).show( any( AbstractCanvasHandler.class ) );
+        verify( treeExplorer,
+                times( 1 ) ).clear();
+        verify( treeExplorer,
+                times( 0 ) ).show( any( AbstractCanvasHandler.class ) );
     }
-
 }

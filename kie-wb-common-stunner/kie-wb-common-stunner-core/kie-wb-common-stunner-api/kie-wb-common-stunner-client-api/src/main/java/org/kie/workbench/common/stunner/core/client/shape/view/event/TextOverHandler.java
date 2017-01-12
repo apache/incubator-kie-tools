@@ -21,5 +21,4 @@ public abstract class TextOverHandler extends AbstractViewHandler<TextOverEvent>
     public ViewEventType getType() {
         return ViewEventType.TEXT_OVER;
     }
-
 }

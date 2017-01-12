@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common;
 
+import java.util.Queue;
+
 import org.codehaus.jackson.JsonToken;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.Parser;
-
-import java.util.Queue;
 
 public class ArrayParser extends CompositeParser<ArrayParser> {
 
@@ -27,8 +27,10 @@ public class ArrayParser extends CompositeParser<ArrayParser> {
         super( name );
     }
 
-    public ArrayParser( String name, Queue<Parser> _parsers ) {
-        super( name, _parsers );
+    public ArrayParser( String name,
+                        Queue<Parser> _parsers ) {
+        super( name,
+               _parsers );
     }
 
     @Override
@@ -40,5 +42,4 @@ public class ArrayParser extends CompositeParser<ArrayParser> {
     protected JsonToken getEndToken() {
         return JsonToken.END_ARRAY;
     }
-
 }

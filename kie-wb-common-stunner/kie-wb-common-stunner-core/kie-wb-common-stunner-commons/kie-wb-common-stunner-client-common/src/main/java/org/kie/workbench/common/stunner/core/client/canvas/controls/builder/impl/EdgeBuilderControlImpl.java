@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -37,11 +42,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 @Dependent
 public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl implements EdgeBuilderControl<AbstractCanvasHandler> {
 
@@ -54,7 +54,11 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
     private final EdgeMagnetsHelper magnetsHelper;
 
     protected EdgeBuilderControlImpl() {
-        this( null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -81,13 +85,17 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
         boolean allowsSourceConn = true;
         if ( null != inNode ) {
             final CommandResult<CanvasViolation> cr1 = canvasCommandManager.allow( wch,
-                    commandFactory.setSourceNode( inNode, edge, 0 ) );
+                                                                                   commandFactory.setSourceNode( inNode,
+                                                                                                                 edge,
+                                                                                                                 0 ) );
             allowsSourceConn = isAllowed( cr1 );
         }
         boolean allowsTargetConn = true;
         if ( null != outNode ) {
             final CommandResult<CanvasViolation> cr2 = canvasCommandManager.allow( wch,
-                    commandFactory.setTargetNode( outNode, edge, 0 ) );
+                                                                                   commandFactory.setTargetNode( outNode,
+                                                                                                                 edge,
+                                                                                                                 0 ) );
             allowsTargetConn = isAllowed( cr2 );
         }
         return allowsSourceConn & allowsTargetConn;
@@ -112,22 +120,28 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
         int[] magnetIndexes = new int[]{ 0, 0 };
         if ( targetShape != null ) {
             magnetIndexes = magnetsHelper.getDefaultMagnetsIndex( sourceShape.getShapeView(),
-                    targetShape.getShapeView() );
+                                                                  targetShape.getShapeView() );
         }
         final Object edgeDef = edge.getContent().getDefinition();
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
-        final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
-                new CompositeCommandImpl.CompositeCommandBuilder()
-                        .addCommand( commandFactory.addConnector( inNode, edge, magnetIndexes[ 0 ], ssid ) );
+        final CompositeCommandImpl.CompositeCommandBuilder commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder()
+                .addCommand( commandFactory.addConnector( inNode,
+                                                          edge,
+                                                          magnetIndexes[ 0 ],
+                                                          ssid ) );
         if ( null != outNode ) {
-            commandBuilder.addCommand( commandFactory.setTargetNode( outNode, edge, magnetIndexes[ 1 ] ) );
+            commandBuilder.addCommand( commandFactory.setTargetNode( outNode,
+                                                                     edge,
+                                                                     magnetIndexes[ 1 ] ) );
         }
-        final CommandResult<CanvasViolation> results =
-                canvasCommandManager.execute( wch, commandBuilder.build() );
+        final CommandResult<CanvasViolation> results = canvasCommandManager.execute( wch,
+                                                                                     commandBuilder.build() );
         if ( CommandUtils.isError( results ) ) {
-            LOGGER.log( Level.SEVERE, results.toString() );
+            LOGGER.log( Level.SEVERE,
+                        results.toString() );
         }
-        canvasHandler.applyElementMutation( edge, MutationContext.STATIC );
+        canvasHandler.applyElementMutation( edge,
+                                            MutationContext.STATIC );
         buildCallback.onSuccess( edge.getUUID() );
     }
 
@@ -135,7 +149,7 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
     protected void doDisable() {
     }
 
-    private boolean isAllowed( CommandResult<CanvasViolation> result ) {
+    private boolean isAllowed( final CommandResult<CanvasViolation> result ) {
         return !CommandResult.Type.ERROR.equals( result.getType() );
     }
 }

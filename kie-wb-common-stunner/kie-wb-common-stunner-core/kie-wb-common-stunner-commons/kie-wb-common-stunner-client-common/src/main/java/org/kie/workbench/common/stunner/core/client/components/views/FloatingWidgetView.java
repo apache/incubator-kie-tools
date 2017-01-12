@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.components.views;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -25,8 +27,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 import org.uberfire.mvp.Command;
-
-import javax.enterprise.context.Dependent;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -53,7 +53,8 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
         this.ox = 0;
         this.oy = 0;
         this.visible = false;
-        this.hideCallback = () -> {};
+        this.hideCallback = () -> {
+        };
     }
 
     @Override
@@ -99,7 +100,8 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public FloatingView<IsWidget> setHideCallback( final Command hideCallback ) {
-        checkNotNull( "hideCallback", hideCallback );
+        checkNotNull( "hideCallback",
+                      hideCallback );
         this.hideCallback = hideCallback;
         return this;
     }
@@ -111,12 +113,14 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public FloatingWidgetView show() {
-        if ( !visible )  {
+        if ( !visible ) {
             visible = true;
             attach();
             startTimeout();
-            panel.getElement().getStyle().setLeft( ox + x, Style.Unit.PX );
-            panel.getElement().getStyle().setTop( oy + y, Style.Unit.PX );
+            panel.getElement().getStyle().setLeft( ox + x,
+                                                   Style.Unit.PX );
+            panel.getElement().getStyle().setTop( oy + y,
+                                                  Style.Unit.PX );
             doShow();
         }
         return this;
@@ -149,9 +153,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
             panel.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
             doHide();
             attached = true;
-
         }
-
     }
 
     @Override
@@ -165,7 +167,6 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
             RootPanel.get().remove( panel );
             attached = false;
         }
-
     }
 
     public void startTimeout() {
@@ -178,16 +179,13 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
                 }
             };
             timer.schedule( timeout );
-
         }
-
     }
 
     public void stopTimeout() {
         if ( null != timer && timer.isRunning() ) {
             timer.cancel();
         }
-
     }
 
     protected FlowPanel getPanel() {
@@ -196,12 +194,12 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     private void registerHoverEventHandlers() {
         handlerRegistrationManager.register(
-                panel.addDomHandler( mouseOverEvent -> stopTimeout(), MouseOverEvent.getType() )
+                panel.addDomHandler( mouseOverEvent -> stopTimeout(),
+                                     MouseOverEvent.getType() )
         );
         handlerRegistrationManager.register(
-                panel.addDomHandler( mouseOutEvent -> startTimeout(), MouseOutEvent.getType() )
+                panel.addDomHandler( mouseOutEvent -> startTimeout(),
+                                     MouseOutEvent.getType() )
         );
-
     }
-
 }

@@ -55,13 +55,14 @@ public class EndNoneEvent extends BaseEndEvent {
         @Override
         public EndNoneEvent build() {
             return new EndNoneEvent( new BPMNGeneralSet( "End" ),
-                    new DataIOSet(),
-                    new BackgroundSet( BG_COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet(),
-                    new ThrowEventAttributes(),
-                    new CircleDimensionSet( new Radius( RADIUS ) ) );
+                                     new DataIOSet(),
+                                     new BackgroundSet( BG_COLOR,
+                                                        BORDER_COLOR,
+                                                        BORDER_SIZE ),
+                                     new FontSet(),
+                                     new ThrowEventAttributes(),
+                                     new CircleDimensionSet( new Radius( RADIUS ) ) );
         }
-
     }
 
     public EndNoneEvent() {
@@ -73,8 +74,12 @@ public class EndNoneEvent extends BaseEndEvent {
                          @MapsTo( "fontSet" ) FontSet fontSet,
                          @MapsTo( "throwEventAttributes" ) ThrowEventAttributes throwEventAttributes,
                          @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
-        super( general, dataIOSet, backgroundSet, fontSet, throwEventAttributes, dimensionsSet );
-
+        super( general,
+               dataIOSet,
+               backgroundSet,
+               fontSet,
+               throwEventAttributes,
+               dimensionsSet );
     }
 
     public String getTitle() {
@@ -84,5 +89,4 @@ public class EndNoneEvent extends BaseEndEvent {
     public String getDescription() {
         return description;
     }
-
 }

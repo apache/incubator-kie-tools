@@ -33,5 +33,4 @@ public abstract class AbstractCanvasShapeEvent extends AbstractCanvasEvent {
     public Shape getShape() {
         return shape;
     }
-
 }

@@ -25,7 +25,16 @@ import org.kie.workbench.common.stunner.client.widgets.session.presenter.ClientS
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenErrorView;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.*;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.RefreshSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
@@ -135,34 +144,60 @@ public class ProjectDiagramEditorTest {
         when( clientSessionManager.newFullSession() ).thenReturn( fullSession );
         when( clientSessionPresenter.getView() ).thenReturn( clientSessionPresenterView );
         when( clientSessionPresenter.setDisplayErrors( anyBoolean() ) ).thenReturn( clientSessionPresenter );
-        this.tested = new ProjectDiagramEditorStub( view, placeManager, errorPopupPresenter,
-                changeTitleNotificationEvent, savePopUpPresenter, resourceType, projectDiagramServices,
-                clientSessionManager, clientSessionPresenter, editorErrorView, paletteFactory, sessionUtils,
-                sessionCommandFactory, menuItemsBuilder );
+        this.tested = new ProjectDiagramEditorStub( view,
+                                                    placeManager,
+                                                    errorPopupPresenter,
+                                                    changeTitleNotificationEvent,
+                                                    savePopUpPresenter,
+                                                    resourceType,
+                                                    projectDiagramServices,
+                                                    clientSessionManager,
+                                                    clientSessionPresenter,
+                                                    editorErrorView,
+                                                    paletteFactory,
+                                                    sessionUtils,
+                                                    sessionCommandFactory,
+                                                    menuItemsBuilder );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testInit() {
         tested.init();
-        verify( clientSessionPresenter, times( 1 ) ).initialize( eq( fullSession ), anyInt(), anyInt() );
-        verify( view, times( 1 ) ).init( eq( tested ) );
-        verify( view, times( 1 ) ).setWidget( eq( clientSessionPresenterView ) );
-        verify( sessionClearSelectionCommand, times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionVisitGraphCommand, times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionSwitchGridCommand, times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionClearCommand, times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionDeleteSelectionCommand, times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionUndoCommand, times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionRedoCommand, times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionValidateCommand, times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionRefreshCommand, times( 1 ) ).bind( eq( fullSession ) );
+        verify( clientSessionPresenter,
+                times( 1 ) ).initialize( eq( fullSession ),
+                                         anyInt(),
+                                         anyInt() );
+        verify( view,
+                times( 1 ) ).init( eq( tested ) );
+        verify( view,
+                times( 1 ) ).setWidget( eq( clientSessionPresenterView ) );
+        verify( sessionClearSelectionCommand,
+                times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionVisitGraphCommand,
+                times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionSwitchGridCommand,
+                times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionClearCommand,
+                times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionDeleteSelectionCommand,
+                times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionUndoCommand,
+                times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionRedoCommand,
+                times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionValidateCommand,
+                times( 1 ) ).bind( eq( fullSession ) );
+        verify( sessionRefreshCommand,
+                times( 1 ) ).bind( eq( fullSession ) );
     }
 
     // TODO: @Test - versionRecordManager is not being set.
     @SuppressWarnings( "unchecked" )
     public void testLoadContent() {
         tested.loadContent();
-        verify( projectDiagramServices, times( 1 ) ).getByPath( eq( path ), any( ServiceCallback.class ) );
+        verify( projectDiagramServices,
+                times( 1 ) ).getByPath( eq( path ),
+                                        any( ServiceCallback.class ) );
     }
 }

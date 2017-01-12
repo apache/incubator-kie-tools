@@ -36,5 +36,4 @@ public final class Point2D {
     public double getY() {
         return y;
     }
-
 }

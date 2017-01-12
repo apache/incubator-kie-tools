@@ -30,5 +30,4 @@ public abstract class AbstractToolboxControlProvider implements ToolboxControlPr
     public AbstractToolboxControlProvider( final ToolboxFactory toolboxFactory ) {
         this.toolboxFactory = toolboxFactory;
     }
-
 }

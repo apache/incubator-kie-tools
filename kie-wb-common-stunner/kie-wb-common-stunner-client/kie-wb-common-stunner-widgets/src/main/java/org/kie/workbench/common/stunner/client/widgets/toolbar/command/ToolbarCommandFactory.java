@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 
 @Dependent
 public class ToolbarCommandFactory {
@@ -35,7 +35,15 @@ public class ToolbarCommandFactory {
     private final ManagedInstance<RefreshToolbarCommand> refreshCommand;
 
     protected ToolbarCommandFactory() {
-        this( null, null, null, null, null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject

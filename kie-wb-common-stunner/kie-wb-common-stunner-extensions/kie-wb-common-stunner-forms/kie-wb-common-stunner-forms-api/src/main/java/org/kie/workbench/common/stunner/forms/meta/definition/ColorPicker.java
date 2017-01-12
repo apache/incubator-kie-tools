@@ -22,5 +22,6 @@ import java.lang.annotation.RetentionPolicy;
 @java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
 @java.lang.annotation.Target( { ElementType.TYPE, ElementType.FIELD } )
 public @interface ColorPicker {
+
     String defaultValue() default "#000000";
 }

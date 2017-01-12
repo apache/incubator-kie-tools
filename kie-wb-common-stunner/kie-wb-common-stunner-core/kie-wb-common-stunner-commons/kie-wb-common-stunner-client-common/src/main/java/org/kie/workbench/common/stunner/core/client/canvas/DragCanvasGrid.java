@@ -20,7 +20,11 @@ public final class DragCanvasGrid extends AbstractCanvasGrid {
     public static final DragCanvasGrid INSTANCE = new DragCanvasGrid();
 
     private DragCanvasGrid() {
-        super( 50, 0.4, "#bfbfbf", 25, 0.5, "#e6e6e6" );
+        super( 50,
+               0.4,
+               "#bfbfbf",
+               25,
+               0.5,
+               "#e6e6e6" );
     }
-
 }

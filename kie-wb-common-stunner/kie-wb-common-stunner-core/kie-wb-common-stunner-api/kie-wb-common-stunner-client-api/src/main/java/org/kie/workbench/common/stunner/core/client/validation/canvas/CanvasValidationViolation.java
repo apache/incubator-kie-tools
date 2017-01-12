@@ -22,5 +22,4 @@ import org.kie.workbench.common.stunner.core.validation.ValidationViolation;
 public interface CanvasValidationViolation extends ValidationViolation<CanvasHandler> {
 
     ValidationViolation<?> getRootViolation();
-
 }

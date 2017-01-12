@@ -27,5 +27,4 @@ public interface DockingRule extends RuleById {
      * The Roles of Elements permitted to be docked to another Element.
      */
     Set<String> getPermittedRoles();
-
 }

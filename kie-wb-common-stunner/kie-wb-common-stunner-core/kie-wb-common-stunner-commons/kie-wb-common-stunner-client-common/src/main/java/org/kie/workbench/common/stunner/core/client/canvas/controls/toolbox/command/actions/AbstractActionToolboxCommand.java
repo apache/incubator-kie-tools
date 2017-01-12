@@ -39,32 +39,35 @@ public abstract class AbstractActionToolboxCommand<I> extends AbstractToolboxCom
     }
 
     @Override
-    public I getIcon( final AbstractCanvasHandler context, final double width, final double height ) {
+    public I getIcon( final AbstractCanvasHandler context,
+                      final double width,
+                      final double height ) {
         return icon;
     }
 
     @Override
     public void mouseEnter( final Context<AbstractCanvasHandler> context,
                             final Element element ) {
-        super.mouseEnter( context, element );
+        super.mouseEnter( context,
+                          element );
         final Transform transform = context.getCanvasHandler().getCanvas().getLayer().getTransform();
         final double ax = context.getCanvasHandler().getCanvas().getView().getAbsoluteX();
         final double ay = context.getCanvasHandler().getCanvas().getView().getAbsoluteY();
         // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
         // using current transform attributes to obtain the right absolute position on the screen.
-        final Point2D t = transform.transform( context.getX(), context.getY() );
-        glyphTooltip
-                .show( getTitle(),
-                        ax + t.getX() + 20,
-                        ay + t.getY(),
-                        GlyphTooltip.Direction.WEST );
+        final Point2D t = transform.transform( context.getX(),
+                                               context.getY() );
+        glyphTooltip.show( getTitle(),
+                           ax + t.getX() + 20,
+                           ay + t.getY(),
+                           GlyphTooltip.Direction.WEST );
     }
 
     @Override
     public void mouseExit( final Context<AbstractCanvasHandler> context,
-                           Element element ) {
-        super.mouseExit( context, element );
+                           final Element element ) {
+        super.mouseExit( context,
+                         element );
         glyphTooltip.hide();
     }
-
 }

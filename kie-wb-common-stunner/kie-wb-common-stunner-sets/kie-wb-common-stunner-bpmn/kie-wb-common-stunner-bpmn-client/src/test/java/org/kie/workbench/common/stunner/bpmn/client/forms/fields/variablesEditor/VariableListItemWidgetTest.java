@@ -85,8 +85,10 @@ public class VariableListItemWidgetTest {
         widget.name = name;
         widget.deleteButton = deleteButton;
         widget.variableRow = variable;
-        Mockito.doCallRealMethod().when( widget ).setTextBoxModelValue( any( TextBox.class ), anyString() );
-        Mockito.doCallRealMethod().when( widget ).setListBoxModelValue( any( ValueListBox.class ), anyString() );
+        Mockito.doCallRealMethod().when( widget ).setTextBoxModelValue( any( TextBox.class ),
+                                                                        anyString() );
+        Mockito.doCallRealMethod().when( widget ).setListBoxModelValue( any( ValueListBox.class ),
+                                                                        anyString() );
         Mockito.doCallRealMethod().when( widget ).getModelValue( any( ValueListBox.class ) );
         Mockito.doCallRealMethod().when( widget ).setDataTypeDisplayName( anyString() );
         Mockito.doCallRealMethod().when( widget ).getDataTypeDisplayName();
@@ -96,34 +98,53 @@ public class VariableListItemWidgetTest {
         Mockito.doCallRealMethod().when( widget ).init();
         Mockito.doCallRealMethod().when( widget ).setModel( any( VariableRow.class ) );
         when( widget.getModel() ).thenReturn( variableRow );
-
     }
 
     @Test
     public void testInitWidget() {
         widget.init();
-        verify( widget, times( 1 ) ).init();
-        verify( dataTypeComboBox, times( 1 ) ).init( widget, true, dataType, customDataType, false, true,
-                VariableListItemWidgetView.CUSTOM_PROMPT, VariableListItemWidgetView.ENTER_TYPE_PROMPT );
-        verify( name, times( 1 ) ).setRegExp( regExpCaptor.capture(), anyString(), anyString() );
+        verify( widget,
+                times( 1 ) ).init();
+        verify( dataTypeComboBox,
+                times( 1 ) ).init( widget,
+                                   true,
+                                   dataType,
+                                   customDataType,
+                                   false,
+                                   true,
+                                   VariableListItemWidgetView.CUSTOM_PROMPT,
+                                   VariableListItemWidgetView.ENTER_TYPE_PROMPT );
+        verify( name,
+                times( 1 ) ).setRegExp( regExpCaptor.capture(),
+                                        anyString(),
+                                        anyString() );
         RegExp regExp = RegExp.compile( regExpCaptor.getValue() );
-        assertEquals( false, regExp.test( "a 1" ) );
-        assertEquals( false, regExp.test( "a@1" ) );
-        assertEquals( true, regExp.test( "a1" ) );
-        verify( customDataType, times( 1 ) ).addKeyDownHandler( any( KeyDownHandler.class ) );
-        verify( name, times( 1 ) ).addBlurHandler( any( BlurHandler.class ) );
+        assertEquals( false,
+                      regExp.test( "a 1" ) );
+        assertEquals( false,
+                      regExp.test( "a@1" ) );
+        assertEquals( true,
+                      regExp.test( "a1" ) );
+        verify( customDataType,
+                times( 1 ) ).addKeyDownHandler( any( KeyDownHandler.class ) );
+        verify( name,
+                times( 1 ) ).addBlurHandler( any( BlurHandler.class ) );
     }
 
     @Test
     public void testSetTextBoxModelValue() {
-        widget.setTextBoxModelValue( customDataType, "com.test.Pencil" );
-        verify( widget, times( 1 ) ).setCustomDataType( "com.test.Pencil" );
+        widget.setTextBoxModelValue( customDataType,
+                                     "com.test.Pencil" );
+        verify( widget,
+                times( 1 ) ).setCustomDataType( "com.test.Pencil" );
     }
 
     @Test
     public void testSetListBoxModelValue() {
-        widget.setListBoxModelValue( dataType, "Paper [org.stationery" );
-        verify( widget, times( 1 ) ).setDataTypeDisplayName( "Paper [org.stationery" );
+        widget.setListBoxModelValue( dataType,
+                                     "Paper [org.stationery" );
+        verify( widget,
+                times( 1 ) ).setDataTypeDisplayName( "Paper [org.stationery" );
     }
 
     @Test
@@ -138,31 +159,39 @@ public class VariableListItemWidgetTest {
     @Test
     public void testSetGetCustomDataType() {
         String customDataType = "com.test.MyType";
-        widget.setTextBoxModelValue( widget.customDataType, customDataType );
+        widget.setTextBoxModelValue( widget.customDataType,
+                                     customDataType );
         String returnedCustomDataType1 = widget.getCustomDataType();
-        assertEquals( customDataType, returnedCustomDataType1 );
+        assertEquals( customDataType,
+                      returnedCustomDataType1 );
         String returnedCustomDataType2 = widget.getModelValue( widget.dataType );
-        assertEquals( customDataType, returnedCustomDataType2 );
+        assertEquals( customDataType,
+                      returnedCustomDataType2 );
     }
 
     @Test
     public void testSetGetDataType() {
         String sDataType = "Boolean";
-        widget.setListBoxModelValue( widget.dataType, sDataType );
+        widget.setListBoxModelValue( widget.dataType,
+                                     sDataType );
         String returnedDataType1 = widget.getDataTypeDisplayName();
-        assertEquals( sDataType, returnedDataType1 );
+        assertEquals( sDataType,
+                      returnedDataType1 );
         String returnedDataType2 = widget.getModelValue( widget.dataType );
-        assertEquals( sDataType, returnedDataType2 );
+        assertEquals( sDataType,
+                      returnedDataType2 );
     }
 
     @Test
     public void testSetDataTypes() {
-        ListBoxValues dataTypeListBoxValues = new ListBoxValues( null, null, null );
+        ListBoxValues dataTypeListBoxValues = new ListBoxValues( null,
+                                                                 null,
+                                                                 null );
         String sCustomType = "com.test.CustomType";
         widget.setCustomDataType( sCustomType );
         widget.setDataTypes( dataTypeListBoxValues );
         verify( dataTypeComboBox ).setListBoxValues( dataTypeListBoxValues );
-        verify( dataTypeComboBox ).addCustomValueToListBoxValues( sCustomType, "" );
+        verify( dataTypeComboBox ).addCustomValueToListBoxValues( sCustomType,
+                                                                  "" );
     }
-
 }

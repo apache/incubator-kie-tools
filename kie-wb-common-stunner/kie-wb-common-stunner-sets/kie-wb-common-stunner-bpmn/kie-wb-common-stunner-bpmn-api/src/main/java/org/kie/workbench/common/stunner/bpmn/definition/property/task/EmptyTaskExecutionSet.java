@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 @Bindable
 @PropertySet
 public class EmptyTaskExecutionSet implements BPMNPropertySet {
+
     @Name
     public static final transient String propertySetName = "Empty Implementation/Execution";
 }

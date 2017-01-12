@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.rule.model;
 
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.rule.DockingRuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-
-import java.util.Set;
 
 /**
  * Manager for docking rules specific for the Stunner's domain model.
@@ -28,10 +28,9 @@ public interface ModelDockingRuleManager extends DockingRuleManager {
 
     /**
      * It checks docking rules and evaluates if the given candidate can be dock into another parent.
-     *
      * @param targetId The parent definition's identifier.
      * @param candidateRoles The roles for the candidate to be dock into parent.
      */
-    RuleViolations evaluate( String targetId, Set<String> candidateRoles );
-
+    RuleViolations evaluate( final String targetId,
+                             final Set<String> candidateRoles );
 }

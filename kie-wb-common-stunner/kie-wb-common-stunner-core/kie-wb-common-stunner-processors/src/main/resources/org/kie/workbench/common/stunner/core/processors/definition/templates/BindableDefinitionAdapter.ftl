@@ -57,19 +57,19 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
               put( ${descriptionFieldName.className}.class, "${descriptionFieldName.methodName}" );
         </#list>
     }};
-    
+
     private static final Map<Class, String> labelsFieldNames = new HashMap<Class, String>(${labelsFieldNamesSize}) {{
         <#list labelsFieldNames as labelsFieldName>
               put( ${labelsFieldName.className}.class, "${labelsFieldName.methodName}" );
         </#list>
     }};
-    
+
     private static final Map<Class, Class> graphFactoryFieldNames = new HashMap<Class, Class>(${graphFactoryFieldNamesSize}) {{
         <#list graphFactoryFieldNames as graphFactoryFieldName>
               put( ${graphFactoryFieldName.className}.class, ${graphFactoryFieldName.methodName}.class );
         </#list>
     }};
-    
+
     private static final Map<Class, Set<String>> propertySetsFieldNames = new HashMap<Class, Set<String>>(${propertySetsFieldNamesSize}) {{
         <#list propertySetsFieldNames as propertySetsFieldName>
            put( ${propertySetsFieldName.className}.class, new HashSet<String>() {{
@@ -103,7 +103,7 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
     public ${className}(${adapterFactoryClassName} adapterFactory) {
         super(adapterFactory);
     }
-    
+
     @Override
     protected void setBindings(final BindableDefinitionAdapter<Object> adapter) {
         adapter.setBindings( metaPropertyTypes,
@@ -116,5 +116,5 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
                 categoryFieldNames,
                 descriptionFieldNames);
     }
-                
+
 }

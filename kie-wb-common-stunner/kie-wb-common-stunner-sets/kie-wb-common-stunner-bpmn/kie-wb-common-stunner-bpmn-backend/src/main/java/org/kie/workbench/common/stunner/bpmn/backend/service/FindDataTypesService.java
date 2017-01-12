@@ -31,9 +31,9 @@ import org.kie.workbench.common.services.refactoring.service.RefactoringQuerySer
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 
-
 @Service
 public class FindDataTypesService implements DataTypesService {
+
     @Inject
     protected RefactoringQueryService queryService;
 
@@ -42,11 +42,13 @@ public class FindDataTypesService implements DataTypesService {
         List<RefactoringPageRow> results = queryService.query(
                 FindDataTypesQuery.NAME,
                 new HashSet<ValueIndexTerm>() {{
-                    add(new ValueResourceIndexTerm("*", ResourceType.JAVA, ValueIndexTerm.TermSearchType.WILDCARD));
-                }});
+                    add( new ValueResourceIndexTerm( "*",
+                                                     ResourceType.JAVA,
+                                                     ValueIndexTerm.TermSearchType.WILDCARD ) );
+                }} );
         final List<String> dataTypeNames = new ArrayList<String>();
         for ( RefactoringPageRow row : results ) {
-            dataTypeNames.add( (String) row.getValue() );
+            dataTypeNames.add( ( String ) row.getValue() );
         }
         Collections.sort( dataTypeNames );
 

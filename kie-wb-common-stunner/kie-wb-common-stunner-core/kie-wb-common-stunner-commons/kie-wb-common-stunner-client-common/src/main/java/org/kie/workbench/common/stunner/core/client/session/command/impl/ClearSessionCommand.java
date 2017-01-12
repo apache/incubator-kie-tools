@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.Iterator;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
@@ -29,12 +35,6 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.Iterator;
-import java.util.logging.Logger;
 
 import static java.util.logging.Level.FINE;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
@@ -53,7 +53,8 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<AbstractCl
     private final SessionCommandManager sessionCommandManager;
 
     protected ClearSessionCommand() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     @Inject
@@ -65,7 +66,7 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<AbstractCl
     }
 
     @Override
-    public AbstractClientSessionCommand<AbstractClientFullSession> bind( AbstractClientFullSession session ) {
+    public AbstractClientSessionCommand<AbstractClientFullSession> bind( final AbstractClientFullSession session ) {
         super.bind( session );
         checkState();
         return this;
@@ -74,11 +75,12 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<AbstractCl
     @Override
     @SuppressWarnings( "unchecked" )
     public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback", callback );
-        final CommandResult<CanvasViolation> result =
-                getSession().getCommandManager()
-                        .execute( getSession().getCanvasHandler(),
-                                canvasCommandFactory.clearCanvas() );
+        checkNotNull( "callback",
+                      callback );
+        final CommandResult<CanvasViolation> result = getSession()
+                .getCommandManager()
+                .execute( getSession().getCanvasHandler(),
+                          canvasCommandFactory.clearCanvas() );
         if ( !CommandUtils.isError( result ) ) {
             cleanSessionRegistry();
         }
@@ -86,17 +88,20 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<AbstractCl
     }
 
     private void cleanSessionRegistry() {
-        LOGGER.log( FINE, "Clear Session Command executed - Cleaning the session's command registry..." );
+        LOGGER.log( FINE,
+                    "Clear Session Command executed - Cleaning the session's command registry..." );
         sessionCommandManager.getRegistry().clear();
     }
 
-    void onCommandExecuted( @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {
-        checkNotNull( "commandExecutedEvent", commandExecutedEvent );
+    void onCommandExecuted( final @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {
+        checkNotNull( "commandExecutedEvent",
+                      commandExecutedEvent );
         checkState();
     }
 
-    void onCommandUndoExecuted( @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
-        checkNotNull( "commandUndoExecutedEvent", commandUndoExecutedEvent );
+    void onCommandUndoExecuted( final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
+        checkNotNull( "commandUndoExecutedEvent",
+                      commandUndoExecutedEvent );
         checkState();
     }
 

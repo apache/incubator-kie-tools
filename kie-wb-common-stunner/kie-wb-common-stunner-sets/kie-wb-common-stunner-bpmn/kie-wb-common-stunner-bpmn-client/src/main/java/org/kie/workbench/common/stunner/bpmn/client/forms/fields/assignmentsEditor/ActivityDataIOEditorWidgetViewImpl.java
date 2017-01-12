@@ -86,7 +86,8 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
 
     @Override
     public void showOnlySingleEntryAllowed() {
-        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Only_single_entry_allowed(), NotificationEvent.NotificationType.ERROR ) );
+        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Only_single_entry_allowed(),
+                                                  NotificationEvent.NotificationType.ERROR ) );
     }
 
     @Override

@@ -29,5 +29,4 @@ public interface ToolboxButton<I> {
     ToolboxButtonEventHandler getMouseEnterHandler();
 
     ToolboxButtonEventHandler getMouseExitHandler();
-
 }

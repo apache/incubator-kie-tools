@@ -32,16 +32,16 @@ public final class SetChildNodeCommand extends AbstractCanvasGraphCommand {
         this.candidate = candidate;
     }
 
-
     @Override
     @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.SetChildNodeCommand( parent, candidate );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.SetChildNodeCommand( parent,
+                                                                                                 candidate );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new SetCanvasChildNodeCommand( parent, candidate );
+        return new SetCanvasChildNodeCommand( parent,
+                                              candidate );
     }
-
 }

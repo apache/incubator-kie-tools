@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.processors.shape;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.processing.Messager;
+
 import org.kie.workbench.common.stunner.core.client.AbstractBindableShapeSet;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BindableShapeSetGenerator extends AbstractBindableAdapterGenerator {
 
@@ -31,26 +31,29 @@ public class BindableShapeSetGenerator extends AbstractBindableAdapterGenerator 
         return "BindableShapeSet.ftl";
     }
 
-    public StringBuffer generate( String packageName,
-                                  String className,
-                                  String defSetClassName,
-                                  String shapeFactoryClassName,
-                                  Messager messager ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final String className,
+                                  final String defSetClassName,
+                                  final String shapeFactoryClassName,
+                                  final Messager messager ) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
-                packageName );
+                  packageName );
         root.put( "className",
-                className );
+                  className );
         root.put( "generatedByClassName",
-                BindableShapeSetGenerator.class.getName() );
+                  BindableShapeSetGenerator.class.getName() );
         root.put( "parentClassName",
-                AbstractBindableShapeSet.class.getName() );
+                  AbstractBindableShapeSet.class.getName() );
         root.put( "defSetClass",
-                defSetClassName );
+                  defSetClassName );
         root.put( "shapeFactoryClassName",
-                shapeFactoryClassName );
-        //Generate code
-        return writeTemplate( packageName, className, root, messager );
-    }
+                  shapeFactoryClassName );
 
+        //Generate code
+        return writeTemplate( packageName,
+                              className,
+                              root,
+                              messager );
+    }
 }

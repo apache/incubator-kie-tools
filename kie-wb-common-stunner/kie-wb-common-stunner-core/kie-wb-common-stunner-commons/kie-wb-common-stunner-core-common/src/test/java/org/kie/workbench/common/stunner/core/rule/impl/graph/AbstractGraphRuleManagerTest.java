@@ -15,6 +15,11 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.graph;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -27,14 +32,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public abstract class AbstractGraphRuleManagerTest {
 
@@ -54,16 +53,25 @@ public abstract class AbstractGraphRuleManagerTest {
         add( CANDIDATE_ROLE2 );
     }};
 
-    @Mock protected DefinitionManager definitionManager;
-    @Mock protected AdapterManager adapterManager;
-    @Mock protected DefinitionAdapter<Object> definitionAdapter;
+    @Mock
+    protected DefinitionManager definitionManager;
+    @Mock
+    protected AdapterManager adapterManager;
+    @Mock
+    protected DefinitionAdapter<Object> definitionAdapter;
 
-    @Mock protected Element element;
-    @Mock protected View elementContent;
-    @Mock protected Object elementDefinition;
-    @Mock protected Element candidate;
-    @Mock protected View candidateContent;
-    @Mock protected Object candidateDefinition;
+    @Mock
+    protected Element element;
+    @Mock
+    protected View elementContent;
+    @Mock
+    protected Object elementDefinition;
+    @Mock
+    protected Element candidate;
+    @Mock
+    protected View candidateContent;
+    @Mock
+    protected Object candidateDefinition;
 
     public void setup() {
         MockitoAnnotations.initMocks( this );
@@ -82,7 +90,8 @@ public abstract class AbstractGraphRuleManagerTest {
     }
 
     @SuppressWarnings( "unchecked" )
-    protected Element<View<?>> mockElement( String id, Set<String> labels ) {
+    protected Element<View<?>> mockElement( String id,
+                                            Set<String> labels ) {
         Element<View<?>> e = mock( Element.class );
         View v = mock( View.class );
         Object d = mock( Object.class );
@@ -95,7 +104,8 @@ public abstract class AbstractGraphRuleManagerTest {
     }
 
     @SuppressWarnings( "unchecked" )
-    protected Node mockNode( String id, Set<String> labels ) {
+    protected Node mockNode( String id,
+                             Set<String> labels ) {
         Node e = mock( Node.class );
         View v = mock( View.class );
         Object d = mock( Object.class );
@@ -108,7 +118,8 @@ public abstract class AbstractGraphRuleManagerTest {
     }
 
     @SuppressWarnings( "unchecked" )
-    protected Edge mockEdge( String id, Set<String> labels ) {
+    protected Edge mockEdge( String id,
+                             Set<String> labels ) {
         Edge e = mock( Edge.class );
         View v = mock( View.class );
         Object d = mock( Object.class );
@@ -133,10 +144,9 @@ public abstract class AbstractGraphRuleManagerTest {
         when( v1.getMessage() ).thenReturn( "error" );
         RuleViolations violations = mock( RuleViolations.class );
         List<RuleViolation> result = new ArrayList<RuleViolation>( 1 ) {{
-           add( v1 );
+            add( v1 );
         }};
         when( violations.violations( eq( RuleViolation.Type.ERROR ) ) ).thenReturn( result );
         return violations;
     }
-
 }

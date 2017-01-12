@@ -15,11 +15,15 @@
  */
 package org.kie.workbench.common.stunner.core.definition.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.definition.builder.VoidBuilder;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-
-import java.lang.annotation.*;
 
 @Inherited
 @Retention( RetentionPolicy.RUNTIME )
@@ -31,5 +35,4 @@ public @interface DefinitionSet {
     Class<? extends Builder<?>> builder() default VoidBuilder.class;
 
     Class<? extends ElementFactory> graphFactory();
-
 }

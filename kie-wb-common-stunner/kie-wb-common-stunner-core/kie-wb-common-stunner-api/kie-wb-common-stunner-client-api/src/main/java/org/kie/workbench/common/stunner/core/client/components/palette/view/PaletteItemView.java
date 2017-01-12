@@ -21,5 +21,4 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Pal
 public interface PaletteItemView<I extends PaletteItem, V> extends PaletteElementView<V> {
 
     I getPaletteItem();
-
 }

@@ -92,7 +92,7 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public String marshall( final Diagram diagram ) throws IOException {
         LOG.debug( "Starting diagram marshalling..." );
 
@@ -107,7 +107,6 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
             // Update diagram's settings.
             updateRootUUID( diagram.getMetadata(),
                             diagram.getGraph() );
-
         } catch ( IOException e ) {
             LOG.error( "Error marshalling file.",
                        e );
@@ -145,7 +144,6 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
             // Update diagram's settings.
             updateRootUUID( metadata,
                             result );
-
         } catch ( IOException e ) {
             LOG.error( "Error unmarshalling file.",
                        e );
@@ -188,7 +186,7 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
             resourceSet.getPackageRegistry().put( "http://www.jboss.org/drools",
                                                   DroolsPackage.eINSTANCE );
 
-            final JBPMBpmn2ResourceImpl resource = (JBPMBpmn2ResourceImpl) resourceSet.createResource( URI.createURI( "inputStream://dummyUriWithValidSuffix.xml" ) );
+            final JBPMBpmn2ResourceImpl resource = ( JBPMBpmn2ResourceImpl ) resourceSet.createResource( URI.createURI( "inputStream://dummyUriWithValidSuffix.xml" ) );
             resource.getDefaultLoadOptions().put( JBPMBpmn2ResourceImpl.OPTION_ENCODING,
                                                   "UTF-8" );
             resource.setEncoding( "UTF-8" );
@@ -206,9 +204,8 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
             resource.load( inputStream,
                            options );
 
-            final DocumentRoot root = (DocumentRoot) resource.getContents().get( 0 );
+            final DocumentRoot root = ( DocumentRoot ) resource.getContents().get( 0 );
             return root.getDefinitions();
-
         } catch ( Exception e ) {
             e.printStackTrace();
         } finally {

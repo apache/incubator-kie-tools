@@ -18,6 +18,5 @@ package org.kie.workbench.common.stunner.core.factory;
 
 public interface Factory<S> {
 
-    boolean accepts( S source );
-
+    boolean accepts( final S source );
 }

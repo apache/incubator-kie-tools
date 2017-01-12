@@ -16,6 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.util;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -32,14 +40,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 @ApplicationScoped
 public class DefinitionUtils {
 
@@ -49,7 +49,8 @@ public class DefinitionUtils {
     private final FactoryManager factoryManager;
 
     protected DefinitionUtils() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     @Inject
@@ -60,29 +61,26 @@ public class DefinitionUtils {
         this.factoryManager = factoryManager;
     }
 
-    public <T> Object getProperty( final T definition, final String propertyId ) {
+    public <T> Object getProperty( final T definition,
+                                   final String propertyId ) {
         final Set<?> properties = definitionManager.adapters().forDefinition().getProperties( definition );
         if ( null != properties && !properties.isEmpty() ) {
             for ( final Object property : properties ) {
                 final String pId = definitionManager.adapters().forProperty().getId( property );
                 if ( pId.equals( propertyId ) ) {
                     return property;
-
                 }
-
             }
-
         }
         return null;
-
     }
 
     public <T> String getName( final T definition ) {
         final Object name =
-                definitionManager.adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME, definition );
+                definitionManager.adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME,
+                                                                              definition );
         if ( null != name ) {
             return ( String ) definitionManager.adapters().forProperty().getValue( name );
-
         }
         return null;
     }
@@ -91,9 +89,9 @@ public class DefinitionUtils {
     public Bounds buildBounds( final Object definition,
                                final double x,
                                final double y ) {
-        final DefinitionAdapter<Object> adapter =
-                definitionManager.adapters().registry().getDefinitionAdapter( definition.getClass() );
-        final Object r = adapter.getMetaProperty( PropertyMetaTypes.RADIUS, definition );
+        final DefinitionAdapter<Object> adapter = definitionManager.adapters().registry().getDefinitionAdapter( definition.getClass() );
+        final Object r = adapter.getMetaProperty( PropertyMetaTypes.RADIUS,
+                                                  definition );
         double width = 30;
         double height = 30;
         boolean found = false;
@@ -103,26 +101,32 @@ public class DefinitionUtils {
             height = width;
             found = true;
         } else {
-            final Object w = adapter.getMetaProperty( PropertyMetaTypes.WIDTH, definition );
-            final Object h = adapter.getMetaProperty( PropertyMetaTypes.HEIGHT, definition );
+            final Object w = adapter.getMetaProperty( PropertyMetaTypes.WIDTH,
+                                                      definition );
+            final Object h = adapter.getMetaProperty( PropertyMetaTypes.HEIGHT,
+                                                      definition );
             if ( null != w && null != h ) {
                 width = ( double ) definitionManager.adapters().forProperty().getValue( w );
                 height = ( double ) definitionManager.adapters().forProperty().getValue( h );
                 found = true;
             }
         }
+
         if ( !found ) {
-            LOGGER.log( Level.WARNING, "Cannot build Bounds for [" + definition.getClass() + "]. Using defaults..." );
+            LOGGER.log( Level.WARNING,
+                        "Cannot build Bounds for [" + definition.getClass() + "]. Using defaults..." );
         }
-        return new BoundsImpl( new BoundImpl( x, y ), new BoundImpl( x + width, y + height ) );
+        return new BoundsImpl( new BoundImpl( x,
+                                              y ),
+                               new BoundImpl( x + width,
+                                              y + height ) );
     }
 
     public <T> String getNameIdentifier( final T definition ) {
-        final Object name =
-                definitionManager.adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME, definition );
+        final Object name = definitionManager.adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME,
+                                                                                          definition );
         if ( null != name ) {
             return definitionManager.adapters().forProperty().getId( name );
-
         }
         return null;
     }
@@ -132,10 +136,8 @@ public class DefinitionUtils {
         final Iterable<MorphDefinition> definitions = adapter.getMorphDefinitions( definition );
         if ( null != definitions && definitions.iterator().hasNext() ) {
             return definitions.iterator().next();
-
         }
         return null;
-
     }
 
     public boolean hasMorphTargets( final Object definition ) {
@@ -143,7 +145,8 @@ public class DefinitionUtils {
         final Iterable<MorphDefinition> morphDefinitions = morphAdapter.getMorphDefinitions( definition );
         if ( null != morphDefinitions && morphDefinitions.iterator().hasNext() ) {
             for ( final MorphDefinition morphDefinition : morphDefinitions ) {
-                final Iterable<String> morphTargets = morphAdapter.getTargets( definition, morphDefinition );
+                final Iterable<String> morphTargets = morphAdapter.getTargets( definition,
+                                                                               morphDefinition );
                 if ( null != morphTargets && morphTargets.iterator().hasNext() ) {
                     return true;
                 }
@@ -162,10 +165,8 @@ public class DefinitionUtils {
         String baseId = null;
         if ( definitionAdapter instanceof HasInheritance ) {
             baseId = ( ( HasInheritance ) definitionAdapter ).getBaseType( type );
-
         }
         return new String[]{ definitionId, baseId };
-
     }
 
     public String getDefaultConnectorId( final String definitionSetId ) {
@@ -178,17 +179,13 @@ public class DefinitionUtils {
                     final Object def = factoryManager.newDefinition( defId );
                     if ( null != def ) {
                         final Class<? extends ElementFactory> graphElement = definitionManager.adapters().forDefinition().getGraphFactoryType( def );
-                        if ( isEdgeFactory( graphElement, factoryManager.registry() ) ) {
+                        if ( isEdgeFactory( graphElement,
+                                            factoryManager.registry() ) ) {
                             return defId;
-
                         }
-
                     }
-
                 }
-
             }
-
         }
         return null;
     }
@@ -240,11 +237,8 @@ public class DefinitionUtils {
                 final String v = entry.getValue();
                 if ( value.equals( v ) ) {
                     return entry.getKey();
-
                 }
-
             }
-
         }
         return null;
     }
@@ -254,10 +248,8 @@ public class DefinitionUtils {
         if ( !graphFactoryClass.equals( NodeFactory.class ) ) {
             ElementFactory factory = registry.getElementFactory( graphFactoryClass );
             return factory instanceof NodeFactory;
-
         }
         return true;
-
     }
 
     public static boolean isEdgeFactory( final Class<? extends ElementFactory> graphFactoryClass,
@@ -265,10 +257,7 @@ public class DefinitionUtils {
         if ( !graphFactoryClass.equals( EdgeFactory.class ) ) {
             ElementFactory factory = registry.getElementFactory( graphFactoryClass );
             return factory instanceof EdgeFactory;
-
         }
         return true;
-
     }
-
 }

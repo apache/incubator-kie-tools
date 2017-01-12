@@ -76,7 +76,7 @@ public class CaseManagementDiagramMarshaller extends BaseDiagramMarshaller<CaseM
     @Override
     public String getTitle( final Graph graph ) {
         final Node<Definition<CaseManagementDiagram>, ?> diagramNode = getFirstDiagramNode( graph );
-        final CaseManagementDiagram diagramBean = null != diagramNode ? (CaseManagementDiagram) ( (Definition) diagramNode.getContent() ).getDefinition() : null;
+        final CaseManagementDiagram diagramBean = null != diagramNode ? ( CaseManagementDiagram ) ( ( Definition ) diagramNode.getContent() ).getDefinition() : null;
         return getTitle( diagramBean );
     }
 
@@ -86,9 +86,8 @@ public class CaseManagementDiagramMarshaller extends BaseDiagramMarshaller<CaseM
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode( final Graph graph ) {
         return CaseManagementUtils.getFirstDiagramNode( graph );
     }
-
 }

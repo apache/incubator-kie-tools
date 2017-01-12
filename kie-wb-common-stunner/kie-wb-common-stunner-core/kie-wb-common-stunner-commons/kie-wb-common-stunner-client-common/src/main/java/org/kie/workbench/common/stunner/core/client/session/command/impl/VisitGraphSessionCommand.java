@@ -15,11 +15,11 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.util.CanvasHighlightVisitor;
-
-import javax.enterprise.context.Dependent;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -32,12 +32,10 @@ public class VisitGraphSessionCommand extends AbstractClientSessionCommand<Abstr
 
     @Override
     public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback", callback );
+        checkNotNull( "callback",
+                      callback );
 
-        new CanvasHighlightVisitor()
-                .run( getSession().getCanvasHandler(), () -> {
-                    callback.onSuccess( null );
-                } );
+        new CanvasHighlightVisitor().run( getSession().getCanvasHandler(),
+                                          () -> callback.onSuccess( null ) );
     }
-
 }

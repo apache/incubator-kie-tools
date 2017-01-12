@@ -39,7 +39,7 @@ public @interface EdgeOccurrences {
     int max() default -1;
 
     enum EdgeType {
-        OUTGOING, INCOMING;
+        OUTGOING,
+        INCOMING;
     }
-
 }

@@ -20,12 +20,11 @@ public interface PaletteItemBuilder<B, I> {
 
     String getId();
 
-    B title( String title );
+    B title( final String title );
 
-    B description( String description );
+    B description( final String description );
 
-    B tooltip( String tooltip );
+    B tooltip( final String tooltip );
 
     I build();
-
 }

@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.components.drag;
 
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
 @Dependent
 public class ShapeDragProxyImpl implements ShapeDragProxy<AbstractCanvas> {
@@ -43,9 +43,11 @@ public class ShapeDragProxyImpl implements ShapeDragProxy<AbstractCanvas> {
                                                                         final int x,
                                                                         final int y,
                                                                         final DragProxyCallback callback ) {
-        this.shapeViewDragProxyFactory.show( item.getShapeView(), x, y, callback );
+        this.shapeViewDragProxyFactory.show( item.getShapeView(),
+                                             x,
+                                             y,
+                                             callback );
         return this;
-
     }
 
     @Override
@@ -62,5 +64,4 @@ public class ShapeDragProxyImpl implements ShapeDragProxy<AbstractCanvas> {
         }
         this.shapeViewDragProxyFactory = null;
     }
-
 }

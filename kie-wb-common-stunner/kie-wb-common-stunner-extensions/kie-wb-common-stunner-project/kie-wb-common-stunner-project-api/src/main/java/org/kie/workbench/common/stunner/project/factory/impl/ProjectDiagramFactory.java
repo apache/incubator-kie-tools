@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.project.factory.impl;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -23,8 +25,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
-
-import javax.enterprise.context.ApplicationScoped;
 
 /**
  * The default factory for ProjectDiagrams.
@@ -42,7 +42,9 @@ public class ProjectDiagramFactory
     public ProjectDiagram build( final String name,
                                  final ProjectMetadata metadata,
                                  final Graph<DefinitionSet, ?> graph ) {
-        return new ProjectDiagramImpl( name, graph, metadata );
+        return new ProjectDiagramImpl( name,
+                                       graph,
+                                       metadata );
     }
 
     @Override

@@ -55,5 +55,4 @@ public interface OryxIdMappings {
     String getPropertyId( final Class<?> clazz );
 
     String getDefinitionId( final Class<?> clazz );
-
 }

@@ -37,14 +37,16 @@ public abstract class ShapeFactoryWrapper<W, C, S extends Shape> implements Shap
     @SuppressWarnings( "unchecked" )
     public S build( final W definition,
                     final C context ) {
-        return ( S ) getFactory().build( definition, context );
+        return ( S ) getFactory().build( definition,
+                                         context );
     }
 
     @Override
     public Glyph glyph( final String definitionId,
                         final double width,
                         final double height ) {
-        return getFactory().glyph( definitionId, width, height );
+        return getFactory().glyph( definitionId,
+                                   width,
+                                   height );
     }
-
 }

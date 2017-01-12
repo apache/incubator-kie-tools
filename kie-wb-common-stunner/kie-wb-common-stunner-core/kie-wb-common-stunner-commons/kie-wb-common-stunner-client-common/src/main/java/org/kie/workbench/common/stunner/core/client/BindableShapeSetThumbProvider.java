@@ -26,7 +26,7 @@ public abstract class BindableShapeSetThumbProvider implements ShapeSetThumbProv
         this.definitionManager = definitionManager;
     }
 
-    protected abstract boolean thumbFor( Class<?> clazz );
+    protected abstract boolean thumbFor( final Class<?> clazz );
 
     @Override
     public Class<String> getSourceType() {

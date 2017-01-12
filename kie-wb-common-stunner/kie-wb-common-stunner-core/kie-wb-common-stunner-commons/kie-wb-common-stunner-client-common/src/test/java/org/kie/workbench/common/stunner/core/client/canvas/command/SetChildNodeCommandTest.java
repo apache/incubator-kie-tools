@@ -22,9 +22,8 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class SetChildNodeCommandTest extends AbstractCanvasCommandTest {
@@ -32,8 +31,10 @@ public class SetChildNodeCommandTest extends AbstractCanvasCommandTest {
     private static final String P_ID = "p1";
     private static final String ID = "e1";
 
-    @Mock private Node parent;
-    @Mock private Node candidate;
+    @Mock
+    private Node parent;
+    @Mock
+    private Node candidate;
 
     private SetChildNodeCommand tested;
 
@@ -42,7 +43,8 @@ public class SetChildNodeCommandTest extends AbstractCanvasCommandTest {
         super.setup();
         when( candidate.getUUID() ).thenReturn( ID );
         when( parent.getUUID() ).thenReturn( P_ID );
-        this.tested = new SetChildNodeCommand( parent, candidate );
+        this.tested = new SetChildNodeCommand( parent,
+                                               candidate );
     }
 
     @Test
@@ -50,18 +52,20 @@ public class SetChildNodeCommandTest extends AbstractCanvasCommandTest {
         final org.kie.workbench.common.stunner.core.graph.command.impl.SetChildNodeCommand graphCommand =
                 ( org.kie.workbench.common.stunner.core.graph.command.impl.SetChildNodeCommand ) tested.newGraphCommand( canvasHandler );
         assertNotNull( graphCommand );
-        assertEquals( candidate, graphCommand.getCandidate() );
-        assertEquals( parent, graphCommand.getParent() );
+        assertEquals( candidate,
+                      graphCommand.getCandidate() );
+        assertEquals( parent,
+                      graphCommand.getParent() );
     }
-
 
     @Test
     public void testGetCanvasCommand() {
         final SetCanvasChildNodeCommand canvasCommand =
                 ( SetCanvasChildNodeCommand ) tested.newCanvasCommand( canvasHandler );
         assertNotNull( canvasCommand );
-        assertEquals( candidate, canvasCommand.getCandidate() );
-        assertEquals( parent, canvasCommand.getParent() );
+        assertEquals( candidate,
+                      canvasCommand.getCandidate() );
+        assertEquals( parent,
+                      canvasCommand.getParent() );
     }
-
 }

@@ -25,5 +25,4 @@ public interface BindableAdapterFactory {
     BindablePropertyAdapter newBindablePropertyAdapter();
 
     BindablePropertySetAdapter newBindablePropertySetAdapter();
-
 }

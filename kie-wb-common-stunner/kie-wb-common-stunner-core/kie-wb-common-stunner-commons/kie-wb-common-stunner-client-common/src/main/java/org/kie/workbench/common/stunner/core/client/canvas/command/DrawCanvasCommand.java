@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.logging.Logger;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
@@ -24,8 +26,6 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-
-import java.util.logging.Logger;
 
 public final class DrawCanvasCommand extends AbstractCanvasCommand {
 
@@ -45,7 +45,9 @@ public final class DrawCanvasCommand extends AbstractCanvasCommand {
         Command<AbstractCanvasHandler, CanvasViolation> command = null;
         if ( null != rootUUID ) {
             final Node root = context.getGraphIndex().getNode( rootUUID );
-            command = new AddCanvasNodeCommand( treeWalkTraverseProcessor, root, shapeSetId );
+            command = new AddCanvasNodeCommand( treeWalkTraverseProcessor,
+                                                root,
+                                                shapeSetId );
         } else {
             command = new CanvasNodesRegistrationCommand();
         }
@@ -67,7 +69,8 @@ public final class DrawCanvasCommand extends AbstractCanvasCommand {
     private final class CanvasNodesRegistrationCommand extends AbstractCanvasNodeRegistrationCommand {
 
         private CanvasNodesRegistrationCommand() {
-            super( treeWalkTraverseProcessor, null );
+            super( treeWalkTraverseProcessor,
+                   null );
         }
 
         @Override
@@ -78,8 +81,10 @@ public final class DrawCanvasCommand extends AbstractCanvasCommand {
         @Override
         @SuppressWarnings( "unchecked" )
         protected boolean registerCandidate( final AbstractCanvasHandler context ) {
-            context.register( getShapeSetId( context ), getCandidate() );
-            context.applyElementMutation( getCandidate(), MutationContext.STATIC );
+            context.register( getShapeSetId( context ),
+                              getCandidate() );
+            context.applyElementMutation( getCandidate(),
+                                          MutationContext.STATIC );
             return true;
         }
 

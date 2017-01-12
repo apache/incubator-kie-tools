@@ -32,7 +32,10 @@ public final class CanvasCommandNotification
                                final Type type,
                                final CanvasCommandNotificationSource source,
                                final CanvasNotificationContext context ) {
-        super( uuid, type, source, context );
+        super( uuid,
+               type,
+               source,
+               context );
     }
 
     public static class CanvasCommandNotificationBuilder<H extends CanvasHandler> {
@@ -41,7 +44,7 @@ public final class CanvasCommandNotification
         Command<H, CanvasViolation> command;
         CommandResult<CanvasViolation> result;
 
-        public CanvasCommandNotificationBuilder<H> canvasHander( H canvasHander ) {
+        public CanvasCommandNotificationBuilder<H> canvasHander( final H canvasHander ) {
             this.canvasHander = canvasHander;
             return this;
         }
@@ -62,15 +65,19 @@ public final class CanvasCommandNotification
             }
             final StringBuilder builder = new StringBuilder( command.toString() );
             final String resultMsg = getResultMessage( result );
-            final CanvasCommandNotificationSource source = new CanvasCommandNotificationSource( builder.toString(), resultMsg );
+            final CanvasCommandNotificationSource source = new CanvasCommandNotificationSource( builder.toString(),
+                                                                                                resultMsg );
             final Diagram diagram = canvasHander.getDiagram();
             final String diagramUUID = diagram.getName();
             final String title = diagram.getMetadata().getTitle();
-            final CanvasNotificationContext context =
-                    new CanvasNotificationContext( canvasHander.toString(), diagramUUID, title );
+            final CanvasNotificationContext context = new CanvasNotificationContext( canvasHander.toString(),
+                                                                                     diagramUUID,
+                                                                                     title );
             final Notification.Type type = getNotificationType( result );
-            return new CanvasCommandNotification( UUID.uuid(), type, source, context );
-
+            return new CanvasCommandNotification( UUID.uuid(),
+                                                  type,
+                                                  source,
+                                                  context );
         }
 
         private Notification.Type getNotificationType( final CommandResult<CanvasViolation> result ) {
@@ -83,7 +90,5 @@ public final class CanvasCommandNotification
         private String getResultMessage( final CommandResult<CanvasViolation> result ) {
             return result.getMessage();
         }
-
     }
-
 }

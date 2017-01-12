@@ -33,5 +33,4 @@ public interface GraphCommandExecutionContext {
     GraphRulesManager getRulesManager();
 
     Index<?, ?> getGraphIndex();
-
 }

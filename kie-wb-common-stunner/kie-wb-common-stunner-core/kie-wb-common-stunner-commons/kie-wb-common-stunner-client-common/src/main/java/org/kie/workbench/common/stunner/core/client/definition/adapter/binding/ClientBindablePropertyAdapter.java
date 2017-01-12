@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object> implements BindablePropertyAdapter<Object, Object> {
 
@@ -60,60 +60,68 @@ class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object
 
     @Override
     public PropertyType getType( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyTypeFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyTypeFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
     public String getCaption( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyCaptionFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyCaptionFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
     public String getDescription( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyDescriptionFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyDescriptionFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
     public boolean isReadOnly( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyReadOnlyFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyReadOnlyFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
     public boolean isOptional( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyOptionalFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyOptionalFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
     public Object getValue( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyValueFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyValueFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
     public Object getDefaultValue( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyDefaultValueFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyDefaultValueFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
-    public void setValue( final Object pojo, final Object value ) {
+    public void setValue( final Object pojo,
+                          final Object value ) {
         if ( isReadOnly( pojo ) ) {
             throw new RuntimeException( "Cannot set new value for property [" + getId( pojo ) + "] as it is read only! " );
-
         }
-        setProxiedValue( pojo, getPropertyValueFieldNames().get( pojo.getClass() ), value );
-
+        setProxiedValue( pojo,
+                         getPropertyValueFieldNames().get( pojo.getClass() ),
+                         value );
     }
 
     @Override
     public Map<Object, String> getAllowedValues( final Object pojo ) {
-        final Iterable<Object> result = getProxiedValue( pojo, getPropertyAllowedValuesFieldNames().get( pojo.getClass() ) );
+        final Iterable<Object> result = getProxiedValue( pojo,
+                                                         getPropertyAllowedValuesFieldNames().get( pojo.getClass() ) );
         if ( null != result ) {
             final Map<Object, String> allowedValues = new LinkedHashMap<>();
             for ( final Object o : result ) {
-                allowedValues.put( o, o.toString() );
-
+                allowedValues.put( o,
+                                   o.toString() );
             }
             return allowedValues;
-
         }
         return null;
     }
@@ -157,5 +165,4 @@ class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object
     private Map<Class, String> getPropertyAllowedValuesFieldNames() {
         return propertyAllowedValuesFieldNames;
     }
-
 }

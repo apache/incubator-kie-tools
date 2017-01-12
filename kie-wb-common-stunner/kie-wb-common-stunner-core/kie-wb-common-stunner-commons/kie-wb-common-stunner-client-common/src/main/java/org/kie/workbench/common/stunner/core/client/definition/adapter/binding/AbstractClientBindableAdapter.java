@@ -16,30 +16,38 @@
 
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.PriorityAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-
 import java.util.Collection;
 import java.util.Set;
+
+import org.kie.workbench.common.stunner.core.definition.adapter.PriorityAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
 public abstract class AbstractClientBindableAdapter<T> implements PriorityAdapter {
 
     @SuppressWarnings( "unchecked" )
-    protected <R> R getProxiedValue( final T pojo, final String fieldName ) {
-        return ClientBindingUtils.getProxiedValue( pojo, fieldName );
+    protected <R> R getProxiedValue( final T pojo,
+                                     final String fieldName ) {
+        return ClientBindingUtils.getProxiedValue( pojo,
+                                                   fieldName );
     }
 
     @SuppressWarnings( "unchecked" )
-    protected <R> Set<R> getProxiedSet( final T pojo, final Collection<String> fieldNames ) {
-        return ClientBindingUtils.getProxiedSet( pojo, fieldNames );
+    protected <R> Set<R> getProxiedSet( final T pojo,
+                                        final Collection<String> fieldNames ) {
+        return ClientBindingUtils.getProxiedSet( pojo,
+                                                 fieldNames );
     }
 
     @SuppressWarnings( "unchecked" )
-    protected <V> void setProxiedValue( final T pojo, final String fieldName, final V value ) {
-        ClientBindingUtils.setProxiedValue( pojo, fieldName, value );
+    protected <V> void setProxiedValue( final T pojo,
+                                        final String fieldName,
+                                        final V value ) {
+        ClientBindingUtils.setProxiedValue( pojo,
+                                            fieldName,
+                                            value );
     }
 
-    protected String getDefinitionId( Class<?> type ) {
+    protected String getDefinitionId( final Class<?> type ) {
         return BindableAdapterUtils.getDefinitionId( type );
     }
 
@@ -52,5 +60,4 @@ public abstract class AbstractClientBindableAdapter<T> implements PriorityAdapte
     public int getPriority() {
         return 0;
     }
-
 }

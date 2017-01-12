@@ -21,8 +21,7 @@ public interface HasInheritance {
     /**
      * Returns the definition's base type identifier for a given type, if any.
      */
-    String getBaseType( Class<?> type );
+    String getBaseType( final Class<?> type );
 
-    String[] getTypes( String baseType );
-
+    String[] getTypes( final String baseType );
 }

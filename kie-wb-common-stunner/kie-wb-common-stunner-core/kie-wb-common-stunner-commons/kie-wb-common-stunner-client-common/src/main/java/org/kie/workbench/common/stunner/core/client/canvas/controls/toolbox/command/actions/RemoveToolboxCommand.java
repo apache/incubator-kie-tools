@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Window;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
@@ -26,9 +29,6 @@ import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionG
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 @Dependent
 public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
 
@@ -36,7 +36,9 @@ public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
 
     protected RemoveToolboxCommand() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
@@ -57,10 +59,12 @@ public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
     @Override
     public void click( final Context<AbstractCanvasHandler> context,
                        final Element element ) {
-        super.click( context, element );
+        super.click( context,
+                     element );
         // TODO: Remove use of hardcoded confirm box here & I18n.
         if ( Window.confirm( "Are you sure?" ) ) {
-            canvasCommandManager.execute( context.getCanvasHandler(), commandFactory.deleteNode( ( Node ) element ) );
+            canvasCommandManager.execute( context.getCanvasHandler(),
+                                          commandFactory.deleteNode( ( Node ) element ) );
         }
     }
 

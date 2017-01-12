@@ -20,15 +20,15 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * The client scope for request components.
- * <p>
+ * <p/>
  * A client request starts once a user starts a new interaction and
  * ends once the interaction finishes. Multiple client requests/interactions
  * can occur in the same client session.
- * <p>
+ * <p/>
  * The request lifecycle depends on the current context,
  * application's client, etc, so it depends
  * on the current context.
- * <p>
+ * <p/>
  * For example, a mouse down event starts a new request and it ends once mouse up event if captured.
  */
 @java.lang.annotation.Documented

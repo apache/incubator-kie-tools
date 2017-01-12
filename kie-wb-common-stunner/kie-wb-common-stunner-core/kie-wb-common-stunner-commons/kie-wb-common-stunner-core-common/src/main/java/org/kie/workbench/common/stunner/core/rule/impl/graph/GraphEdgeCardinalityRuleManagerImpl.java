@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.graph;
 
+import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -25,10 +29,6 @@ import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphEdgeCardinalityRuleManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelEdgeCardinalityRuleManager;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.List;
 
 @Dependent
 public class GraphEdgeCardinalityRuleManagerImpl extends AbstractGraphRuleManager<EdgeCardinalityRule, ModelEdgeCardinalityRuleManager>
@@ -67,10 +67,13 @@ public class GraphEdgeCardinalityRuleManagerImpl extends AbstractGraphRuleManage
         // The edge defintiion's identifier.
         final String edgeId = getElementDefinitionId( edge );
         // Edge count.
-        final int count = graphUtils.countEdges( edgeId, edges );
+        final int count = graphUtils.countEdges( edgeId,
+                                                 edges );
         // Delegate to the domain model cardinality rule manager.
-        return modelEdgeCardinalityRuleManager.evaluate( edgeId, getLabels( node ), count, ruleType, operation );
-
+        return modelEdgeCardinalityRuleManager.evaluate( edgeId,
+                                                         getLabels( node ),
+                                                         count,
+                                                         ruleType,
+                                                         operation );
     }
-
 }

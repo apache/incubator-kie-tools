@@ -30,7 +30,7 @@ public class LienzoPanelView extends FocusableLienzoPanelView implements LienzoP
     public LienzoPanelView( final int width,
                             final int height ) {
         super( width,
-                height );
+               height );
         handlerRegistrationManager.register(
                 addMouseOverHandler( mouseOverEvent -> presenter.onMouseOver() )
         );
@@ -45,21 +45,24 @@ public class LienzoPanelView extends FocusableLienzoPanelView implements LienzoP
         );
         handlerRegistrationManager.register(
                 RootPanel.get().addDomHandler( keyPressEvent -> {
-                    final int unicodeChar = keyPressEvent.getUnicodeCharCode();
-                    presenter.onKeyPress( unicodeChar );
-                }, KeyPressEvent.getType() )
+                                                   final int unicodeChar = keyPressEvent.getUnicodeCharCode();
+                                                   presenter.onKeyPress( unicodeChar );
+                                               },
+                                               KeyPressEvent.getType() )
         );
         handlerRegistrationManager.register(
                 RootPanel.get().addDomHandler( keyDownEvent -> {
-                    final int unicodeChar = keyDownEvent.getNativeKeyCode();
-                    presenter.onKeyDown( unicodeChar );
-                }, KeyDownEvent.getType() )
+                                                   final int unicodeChar = keyDownEvent.getNativeKeyCode();
+                                                   presenter.onKeyDown( unicodeChar );
+                                               },
+                                               KeyDownEvent.getType() )
         );
         handlerRegistrationManager.register(
                 RootPanel.get().addDomHandler( keyUpEvent -> {
-                    final int unicodeChar = keyUpEvent.getNativeKeyCode();
-                    presenter.onKeyUp( unicodeChar );
-                }, KeyUpEvent.getType() )
+                                                   final int unicodeChar = keyUpEvent.getNativeKeyCode();
+                                                   presenter.onKeyUp( unicodeChar );
+                                               },
+                                               KeyUpEvent.getType() )
         );
     }
 

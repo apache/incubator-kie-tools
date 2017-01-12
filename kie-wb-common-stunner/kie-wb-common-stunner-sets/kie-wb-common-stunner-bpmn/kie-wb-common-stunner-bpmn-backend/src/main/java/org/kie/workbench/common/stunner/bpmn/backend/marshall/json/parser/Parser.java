@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser;
 
+import java.io.IOException;
+
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonToken;
-
-import java.io.IOException;
 
 public interface Parser {
 
@@ -32,5 +32,4 @@ public interface Parser {
     int getIntValue() throws IOException, JsonParseException;
 
     boolean isConsumed();
-
 }

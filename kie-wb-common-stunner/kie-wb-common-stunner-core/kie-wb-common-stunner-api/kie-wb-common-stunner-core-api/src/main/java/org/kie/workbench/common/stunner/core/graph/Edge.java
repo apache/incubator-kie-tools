@@ -24,10 +24,9 @@ public interface Edge<C, N extends Node> extends Element<C> {
 
     N getSourceNode();
 
-    void setSourceNode( N node );
+    void setSourceNode( final N node );
 
     N getTargetNode();
 
-    void setTargetNode( N node );
-
+    void setTargetNode( final N node );
 }

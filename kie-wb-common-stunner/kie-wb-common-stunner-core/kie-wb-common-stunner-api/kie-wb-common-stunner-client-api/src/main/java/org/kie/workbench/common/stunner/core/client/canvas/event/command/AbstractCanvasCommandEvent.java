@@ -35,7 +35,6 @@ public abstract class AbstractCanvasCommandEvent<H extends CanvasHandler> extend
         this.result = result;
     }
 
-
     public Command<H, CanvasViolation> getCommand() {
         return command;
     }

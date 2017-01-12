@@ -23,47 +23,53 @@ public interface Palette<I extends HasPaletteItems> {
     interface CloseCallback {
 
         boolean onClose();
-
     }
 
     interface ItemHoverCallback {
 
-        boolean onItemHover( String id, double mouseX, double mouseY, double itemX, double itemY );
-
+        boolean onItemHover( final String id,
+                             final double mouseX,
+                             final double mouseY,
+                             final double itemX,
+                             final double itemY );
     }
 
     interface ItemOutCallback {
 
-        boolean onItemOut( String id );
-
+        boolean onItemOut( final String id );
     }
 
     interface ItemMouseDownCallback {
 
-        boolean onItemMouseDown( String id, double mouseX, double mouseY, double itemX, double itemY );
-
+        boolean onItemMouseDown( final String id,
+                                 final double mouseX,
+                                 final double mouseY,
+                                 final double itemX,
+                                 final double itemY );
     }
 
     interface ItemClickCallback {
 
-        boolean onItemClick( String id, double mouseX, double mouseY, double itemX, double itemY );
-
+        boolean onItemClick( final String id,
+                             final double mouseX,
+                             final double mouseY,
+                             final double itemX,
+                             final double itemY );
     }
 
-    Palette<I> onItemHover( ItemHoverCallback callback );
+    Palette<I> onItemHover( final ItemHoverCallback callback );
 
-    Palette<I> onItemOut( ItemOutCallback callback );
+    Palette<I> onItemOut( final ItemOutCallback callback );
 
-    Palette<I> onItemMouseDown( ItemMouseDownCallback callback );
+    Palette<I> onItemMouseDown( final ItemMouseDownCallback callback );
 
-    Palette<I> onItemClick( ItemClickCallback callback );
+    Palette<I> onItemClick( final ItemClickCallback callback );
 
-    Palette<I> onClose( CloseCallback callback );
+    Palette<I> onClose( final CloseCallback callback );
 
-    Palette<I> bind( I paletteDefinition );
+    Palette<I> bind( final I paletteDefinition );
 
     I getDefinition();
 
     void destroy();
-
 }

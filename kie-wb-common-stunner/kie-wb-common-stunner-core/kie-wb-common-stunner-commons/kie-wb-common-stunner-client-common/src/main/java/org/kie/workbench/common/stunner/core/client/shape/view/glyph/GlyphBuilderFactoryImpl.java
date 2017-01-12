@@ -15,14 +15,14 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view.glyph;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-
+import java.util.LinkedList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 
 @ApplicationScoped
 public class GlyphBuilderFactoryImpl implements GlyphBuilderFactory {
@@ -50,17 +50,16 @@ public class GlyphBuilderFactoryImpl implements GlyphBuilderFactory {
         final GlyphBuilder<?, D> result = _getBuilder( glyphDefinition );
         if ( null == result ) {
             throw new UnsupportedOperationException( "No glyph builder instance for glyph definition type ["
-                    + glyphDefinition.getClass() + "]" );
+                                                             + glyphDefinition.getClass() + "]" );
         }
         return result;
     }
 
     @SuppressWarnings( "unchecked" )
-    private  <D extends GlyphDef<?>> GlyphBuilder<?, D> _getBuilder( final D glyphDefinition ) {
+    private <D extends GlyphDef<?>> GlyphBuilder<?, D> _getBuilder( final D glyphDefinition ) {
         return builders.stream()
                 .filter( builder -> builder.getType().equals( glyphDefinition.getType() ) )
                 .findFirst()
                 .orElse( null );
     }
-
 }

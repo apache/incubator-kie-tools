@@ -54,5 +54,4 @@ public class LienzoToolboxButtonGrid implements ToolboxButtonGrid {
     public int getColumns() {
         return cols;
     }
-
 }

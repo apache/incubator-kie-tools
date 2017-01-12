@@ -47,7 +47,8 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
     @Override
     public Map<Class<?>, String> getCustomMappings() {
         final Map<Class<?>, String> customMappings = new HashMap<Class<?>, String>() {{
-            put( CaseManagementDiagram.class, "BPMNDiagram" );
+            put( CaseManagementDiagram.class,
+                 "BPMNDiagram" );
         }};
 
         return customMappings;
@@ -93,5 +94,4 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
 
         return definitionMappings;
     }
-
 }

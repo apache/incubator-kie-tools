@@ -46,5 +46,4 @@ public final class CanvasNotificationContext {
     public String toString() {
         return "[Diagram='" + diagramTitle + "' (" + diagramUUID + "), Canvas=" + canvasUUID + "]";
     }
-
 }

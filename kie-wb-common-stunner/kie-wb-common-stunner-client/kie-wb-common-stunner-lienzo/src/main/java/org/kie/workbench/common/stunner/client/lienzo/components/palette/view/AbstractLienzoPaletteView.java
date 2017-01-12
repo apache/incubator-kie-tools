@@ -19,7 +19,11 @@ package org.kie.workbench.common.stunner.client.lienzo.components.palette.view;
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationProperty;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
-import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.Arrow;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ArrowType;
 import com.ait.lienzo.shared.core.types.ColorName;
@@ -48,7 +52,6 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
         if ( null == palette ) {
             this.palette = buildPalette();
             initPaletteCallbacks();
-
         }
         return palette;
     }
@@ -62,9 +65,7 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
         if ( getPalette().isVisible() && getPalette().getAlpha() > 0 ) {
             getPalette().setAlpha( 0 );
             draw();
-
         }
-
     }
 
     protected boolean isExpandable() {
@@ -77,28 +78,23 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
         if ( null == colExpButton && isExpandable() ) {
             colExpButton = createExpandCollapseButton();
             layer.add( colExpButton );
-
         }
         layer.add( getPalette() );
         return ( V ) this;
-
     }
 
     public Layer getLayer() {
         return getPalette().getLayer();
-
     }
 
     public void draw() {
         getPalette().redraw();
-
     }
 
     @SuppressWarnings( "unchecked" )
     public V show() {
         if ( null == getPalette().getParent() ) {
             throw new IllegalStateException( "Palette must be attached to a layer before calling #show." );
-
         }
         if ( !items.isEmpty() ) {
             final AbstractPalette.Item[] primitives = new AbstractPalette.Item[ items.size() ];
@@ -107,14 +103,12 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                 final AbstractPalette.Item i = buildLienzoPaletteItem( paletteItemView );
                 primitives[ _x ] = i;
                 _x++;
-
             }
             double paletteStartY = 0;
             if ( null != colExpButton && isExpandable() ) {
                 colExpButton.setX( x + getGrid().getPadding() );
                 colExpButton.setY( y );
                 paletteStartY = colExpButton.getBoundingBox().getHeight() + getGrid().getPadding();
-
             }
             getPalette().setX( x );
             getPalette().setY( paletteStartY + y );
@@ -125,16 +119,13 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
             getPalette().build( primitives );
             getPalette().setAlpha( 0 );
             getPalette().animate( AnimationTweener.LINEAR,
-                    AnimationProperties.toPropertyList( AnimationProperty.Properties.ALPHA( 1 ) ),
-                    animationDuration );
+                                  AnimationProperties.toPropertyList( AnimationProperty.Properties.ALPHA( 1 ) ),
+                                  animationDuration );
             draw();
-
         } else {
             clear();
-
         }
         return ( V ) this;
-
     }
 
     @Override
@@ -152,8 +143,8 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                 decorator = AbstractPalette.ItemDecorator.DEFAULT;
             }
         }
-        return new AbstractPalette.Item( paletteItemView.getView(), decorator );
-
+        return new AbstractPalette.Item( paletteItemView.getView(),
+                                         decorator );
     }
 
     @Override
@@ -170,7 +161,6 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
     public V clear() {
         removeExpandCollapseButton();
         return super.clear();
-
     }
 
     @Override
@@ -181,26 +171,41 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
             palette.clear();
             palette.removeFromParent();
             palette = null;
-
         }
-
     }
 
     protected IPrimitive<?> createExpandCollapseButton() {
         final boolean isExpanded = presenter.isExpanded();
         final double w = getGrid().getIconSize();
         final double h = getGrid().getIconSize() / 1.5;
-        final Rectangle rectangle = new Rectangle( w, h )
+        final Rectangle rectangle = new Rectangle( w,
+                                                   h )
                 .setFillAlpha( 0.01 )
                 .setStrokeWidth( 0 )
                 .setStrokeAlpha( 0 );
         final Arrow expandArrow =
-                new Arrow( new Point2D( 0, h / 2 ), new Point2D( w, h / 2 ), h / 2, h, 45, 90, ArrowType.AT_END_TAPERED )
+                new Arrow( new Point2D( 0,
+                                        h / 2 ),
+                           new Point2D( w,
+                                        h / 2 ),
+                           h / 2,
+                           h,
+                           45,
+                           90,
+                           ArrowType.AT_END_TAPERED )
                         .setFillColor( getArrowOutColor() )
                         .setFillAlpha( 0.5 )
                         .setVisible( !isExpanded );
         final Arrow collapseArrow =
-                new Arrow( new Point2D( w, h / 2 ), new Point2D( 0, h / 2 ), h / 2, h, 45, 90, ArrowType.AT_END_TAPERED )
+                new Arrow( new Point2D( w,
+                                        h / 2 ),
+                           new Point2D( 0,
+                                        h / 2 ),
+                           h / 2,
+                           h,
+                           45,
+                           90,
+                           ArrowType.AT_END_TAPERED )
                         .setFillColor( getArrowOutColor() )
                         .setFillAlpha( 0.5 )
                         .setVisible( isExpanded );
@@ -210,12 +215,10 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                         expandArrow.setVisible( true );
                         collapseArrow.setVisible( false );
                         presenter.collapse();
-
                     } else {
                         expandArrow.setVisible( false );
                         collapseArrow.setVisible( true );
                         presenter.expand();
-
                     }
                 } )
         );
@@ -223,11 +226,15 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                 rectangle.addNodeMouseEnterHandler( nodeMouseEnterEvent -> {
                     stopHoverTimeoutPalette();
                     if ( presenter.isExpanded() ) {
-                        animate( collapseArrow, getArrowHoverColor(), 1, 1 );
-
+                        animate( collapseArrow,
+                                 getArrowHoverColor(),
+                                 1,
+                                 1 );
                     } else {
-                        animate( expandArrow, getArrowHoverColor(), 1, 1 );
-
+                        animate( expandArrow,
+                                 getArrowHoverColor(),
+                                 1,
+                                 1 );
                     }
                 } )
         );
@@ -235,13 +242,16 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                 rectangle.addNodeMouseExitHandler( nodeMouseExitEvent -> {
                     startHoverTimeoutPalette();
                     if ( presenter.isExpanded() ) {
-                        animate( collapseArrow, getArrowOutColor(), 0.5, 0.5 );
-
+                        animate( collapseArrow,
+                                 getArrowOutColor(),
+                                 0.5,
+                                 0.5 );
                     } else {
-                        animate( expandArrow, getArrowOutColor(), 0.5, 0.5 );
-
+                        animate( expandArrow,
+                                 getArrowOutColor(),
+                                 0.5,
+                                 0.5 );
                     }
-
                 } )
         );
         return new Group()
@@ -263,7 +273,6 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                 ),
                 200
         );
-
     }
 
     protected void removeExpandCollapseButton() {
@@ -271,9 +280,7 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
         if ( null != colExpButton ) {
             colExpButton.removeFromParent();
             colExpButton = null;
-
         }
-
     }
 
     protected void initPaletteCallbacks() {
@@ -286,19 +293,19 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                                      final double itemX,
                                      final double itemY ) {
                 if ( null != presenter ) {
-                    presenter.onItemHover( index, mouseX, mouseY, itemX, itemY );
-
+                    presenter.onItemHover( index,
+                                           mouseX,
+                                           mouseY,
+                                           itemX,
+                                           itemY );
                 }
-
             }
 
             @Override
             public void onItemOut( final int index ) {
                 if ( null != presenter ) {
                     presenter.onItemOut( index );
-
                 }
-
             }
 
             @Override
@@ -308,10 +315,12 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                                          final double itemX,
                                          final double itemY ) {
                 if ( null != presenter ) {
-                    presenter.onItemMouseDown( index, mouseX, mouseY, itemX, itemY );
-
+                    presenter.onItemMouseDown( index,
+                                               mouseX,
+                                               mouseY,
+                                               itemX,
+                                               itemY );
                 }
-
             }
 
             @Override
@@ -321,32 +330,28 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
                                      final double itemX,
                                      final double itemY ) {
                 if ( null != presenter ) {
-                    presenter.onItemClick( index, mouseX, mouseY, itemX, itemY );
-
+                    presenter.onItemClick( index,
+                                           mouseX,
+                                           mouseY,
+                                           itemX,
+                                           itemY );
                 }
-
             }
-
         } );
-
     }
 
     protected void stopHoverTimeoutPalette() {
         if ( palette instanceof HoverPalette ) {
             final HoverPalette hoverPalette = ( HoverPalette ) palette;
             hoverPalette.stopTimeout();
-
         }
-
     }
 
     protected void startHoverTimeoutPalette() {
         if ( palette instanceof HoverPalette ) {
             final HoverPalette hoverPalette = ( HoverPalette ) palette;
             hoverPalette.startTimeout();
-
         }
-
     }
 
     protected String getArrowHoverColor() {
@@ -360,5 +365,4 @@ public abstract class AbstractLienzoPaletteView<V extends LienzoPaletteView>
     protected PaletteGrid getGrid() {
         return presenter.getGrid();
     }
-
 }

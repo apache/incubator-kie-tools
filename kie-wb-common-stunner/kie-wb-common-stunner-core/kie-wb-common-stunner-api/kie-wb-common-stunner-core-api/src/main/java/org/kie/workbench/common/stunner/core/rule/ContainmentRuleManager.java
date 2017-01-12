@@ -18,10 +18,10 @@ package org.kie.workbench.common.stunner.core.rule;
 
 /**
  * Base manager type for containment rules.
- *
+ * <p/>
  * It checks containment rules and evaluates if the given candidate can be added or removed
  * into/from other nodes. Containment rules are role based.
- *
+ * <p/>
  * Each domain specific implementation can provide its own argument types to evaluate internally the rules.
  * See <a>org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager</a>
  * See <a>org.kie.workbench.common.stunner.core.rule.graph.GraphContainmentRuleManager</a>

@@ -18,10 +18,10 @@
 
 <module>
 
-     <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
 
-     <source path="api"/>
-     <source path="definition"/>
-     <source path="service"/>
+  <source path="api"/>
+  <source path="definition"/>
+  <source path="service"/>
 
 </module>

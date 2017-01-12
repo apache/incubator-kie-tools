@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 
 @ApplicationScoped
 public class SessionCommandFactory {
@@ -35,7 +35,15 @@ public class SessionCommandFactory {
     private final ManagedInstance<RefreshSessionCommand> refreshSessionCommand;
 
     protected SessionCommandFactory() {
-        this( null, null, null, null, null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject

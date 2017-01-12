@@ -39,12 +39,13 @@ public final class SetConnectionTargetNodeCommand extends AbstractCanvasGraphCom
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand( node, edge, magnetIndex );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand( node,
+                                                                                                            edge,
+                                                                                                            magnetIndex );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
         return new SetCanvasConnectionCommand( edge );
     }
-
 }

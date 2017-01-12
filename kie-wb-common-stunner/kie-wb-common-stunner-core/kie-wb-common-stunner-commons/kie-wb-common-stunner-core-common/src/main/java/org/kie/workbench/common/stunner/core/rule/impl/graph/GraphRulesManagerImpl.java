@@ -16,11 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.graph;
 
-import org.kie.workbench.common.stunner.core.rule.graph.*;
-import org.kie.workbench.common.stunner.core.rule.impl.AbstractRulesManager;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.kie.workbench.common.stunner.core.rule.graph.GraphCardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphConnectionRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphDockingRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphEdgeCardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
+import org.kie.workbench.common.stunner.core.rule.impl.AbstractRulesManager;
 
 @Dependent
 public class GraphRulesManagerImpl extends AbstractRulesManager<GraphContainmentRuleManager, GraphConnectionRuleManager,
@@ -34,13 +39,15 @@ public class GraphRulesManagerImpl extends AbstractRulesManager<GraphContainment
                                   final GraphCardinalityRuleManager cardinalityRuleManager,
                                   final GraphEdgeCardinalityRuleManager edgeCardinalityRuleManager,
                                   final GraphDockingRuleManager graphDockingRuleManager ) {
-        super( containmentRuleManager, connectionRuleManager, cardinalityRuleManager,
-                edgeCardinalityRuleManager, graphDockingRuleManager );
+        super( containmentRuleManager,
+               connectionRuleManager,
+               cardinalityRuleManager,
+               edgeCardinalityRuleManager,
+               graphDockingRuleManager );
     }
 
     @Override
     public String getName() {
         return NAME;
     }
-
 }

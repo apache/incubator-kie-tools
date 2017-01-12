@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.palette;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoDefinitionSetPalette;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoPalette;
@@ -31,10 +35,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.view.Pale
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 @Dependent
 public class LienzoCanvasPaletteControl extends AbstractCanvasPaletteControl {
 
@@ -49,7 +49,10 @@ public class LienzoCanvasPaletteControl extends AbstractCanvasPaletteControl {
                                        final ClientFactoryService factoryServices,
                                        final ShapeManager shapeManager,
                                        final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
-        super( paletteFactory, elementBuilderControl, factoryServices, shapeManager );
+        super( paletteFactory,
+               elementBuilderControl,
+               factoryServices,
+               shapeManager );
         this.elementSelectedEvent = elementSelectedEvent;
     }
 
@@ -74,12 +77,14 @@ public class LienzoCanvasPaletteControl extends AbstractCanvasPaletteControl {
 
     @Override
     protected PaletteGrid getGrid() {
-        return new PaletteGridImpl( ICON_SIZE, PADDING );
+        return new PaletteGridImpl( ICON_SIZE,
+                                    PADDING );
     }
 
     @Override
     protected void onItemBuilt( final String uuid ) {
         super.onItemBuilt( uuid );
-        elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler, uuid ) );
+        elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
+                                                                   uuid ) );
     }
 }

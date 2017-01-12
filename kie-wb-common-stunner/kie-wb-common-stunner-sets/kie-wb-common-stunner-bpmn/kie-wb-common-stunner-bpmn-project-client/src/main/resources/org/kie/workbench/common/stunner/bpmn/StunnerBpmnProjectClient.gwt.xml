@@ -18,10 +18,10 @@
 
 <module>
 
-     <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnProjectApi"/>
-     <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient"/>
-     <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectClient"/>
+  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnProjectApi"/>
+  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient"/>
+  <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectClient"/>
 
-     <source path="project/client"/>
+  <source path="project/client"/>
 
 </module>

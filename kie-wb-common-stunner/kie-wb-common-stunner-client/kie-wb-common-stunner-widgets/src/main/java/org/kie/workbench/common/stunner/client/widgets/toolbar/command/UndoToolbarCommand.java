@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class UndoToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, UndoSessionCommand> {
@@ -52,5 +52,4 @@ public class UndoToolbarCommand extends AbstractToolbarSessionCommand<AbstractCl
     protected boolean requiresConfirm() {
         return false;
     }
-
 }

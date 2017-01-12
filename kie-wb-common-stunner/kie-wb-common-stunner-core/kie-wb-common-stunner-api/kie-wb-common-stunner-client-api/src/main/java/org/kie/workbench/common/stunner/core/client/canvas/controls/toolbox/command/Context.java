@@ -21,7 +21,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 public interface Context<H extends CanvasHandler> {
 
     enum EventType {
-        CLICK, MOUSE_ENTER, MOUSE_EXIT, MOUSE_DOWN;
+        CLICK,
+        MOUSE_ENTER,
+        MOUSE_EXIT,
+        MOUSE_DOWN;
     }
 
     /**

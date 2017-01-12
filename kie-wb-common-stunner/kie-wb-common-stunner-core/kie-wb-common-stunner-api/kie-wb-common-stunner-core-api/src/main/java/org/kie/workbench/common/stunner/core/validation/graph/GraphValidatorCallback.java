@@ -22,12 +22,13 @@ import org.kie.workbench.common.stunner.core.validation.ValidatorCallback;
 
 public interface GraphValidatorCallback extends ValidatorCallback<GraphValidationViolation> {
 
-    boolean onValidateNode( Node node );
+    boolean onValidateNode( final Node node );
 
-    void afterValidateNode( Node node, Iterable<GraphValidationViolation> violations );
+    void afterValidateNode( final Node node,
+                            final Iterable<GraphValidationViolation> violations );
 
-    boolean onValidateEdge( Edge edge );
+    boolean onValidateEdge( final Edge edge );
 
-    void afterValidateEdge( Edge edge, Iterable<GraphValidationViolation> violations );
-
+    void afterValidateEdge( final Edge edge,
+                            final Iterable<GraphValidationViolation> violations );
 }

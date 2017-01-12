@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.forms.backend.processors.impl;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.AbstractFieldAnnotationProcessor;
@@ -23,9 +26,6 @@ import org.kie.workbench.common.forms.dynamic.service.context.generation.Transfo
 import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
 import org.kie.workbench.common.stunner.forms.service.fieldProviders.ColorPickerFieldProvider;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class ColorPickerAnnotationProcessor extends AbstractFieldAnnotationProcessor<ColorPickerFieldDefinition, ColorPickerFieldProvider> {

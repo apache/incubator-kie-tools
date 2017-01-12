@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -35,9 +35,12 @@ public class DeleteCanvasConnectorCommandTest extends AbstractCanvasCommandTest 
     private static final String EDGE_ID = "e1";
     private static final String SOURCE_ID = "s1";
 
-    @Mock private Edge candidate;
-    @Mock private Node source;
-    @Mock private Node target;
+    @Mock
+    private Edge candidate;
+    @Mock
+    private Node source;
+    @Mock
+    private Node target;
 
     private DeleteCanvasConnectorCommand tested;
 
@@ -55,10 +58,13 @@ public class DeleteCanvasConnectorCommandTest extends AbstractCanvasCommandTest 
     @SuppressWarnings( "unchecked" )
     public void testExecute() {
         final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR, result.getType() );
-        verify( canvasHandler, times( 1 ) ).deregister( eq( candidate ) );
-        verify( canvasHandler, times( 1 ) ).fireCanvasElementUpdated( eq( source ) );
-        verify( canvasHandler, times( 1 ) ).fireCanvasElementUpdated( eq( target ) );
+        assertNotEquals( CommandResult.Type.ERROR,
+                         result.getType() );
+        verify( canvasHandler,
+                times( 1 ) ).deregister( eq( candidate ) );
+        verify( canvasHandler,
+                times( 1 ) ).fireCanvasElementUpdated( eq( source ) );
+        verify( canvasHandler,
+                times( 1 ) ).fireCanvasElementUpdated( eq( target ) );
     }
-
 }

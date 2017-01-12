@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.bpmn.util;
 
 public final class FieldLabelConstants {
+
     public static final String FIELDDEF_ID = "ID";
     public static final String FIELDDEF_NAME = "Name";
     public static final String FIELDDEF_BACKGROUND_AND_BORDERS = "Background and Borders";
@@ -70,5 +71,4 @@ public final class FieldLabelConstants {
     public static final String FIELDDEF_UNITCOST = "Unit Cost";
     public static final String FIELDDEF_VERSION = "Version";
     public static final String FIELDDEF_WORKINGHOURS = "Working Hours";
-
 }

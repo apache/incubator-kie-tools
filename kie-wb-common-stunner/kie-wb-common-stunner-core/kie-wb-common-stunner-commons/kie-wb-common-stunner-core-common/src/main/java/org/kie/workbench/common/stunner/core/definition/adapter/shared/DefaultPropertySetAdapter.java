@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.shared;
 
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.definition.impl.PropertySetImpl;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.util.Set;
 
 // TODO
 @ApplicationScoped
@@ -55,5 +55,4 @@ public class DefaultPropertySetAdapter implements PropertySetAdapter<PropertySet
     public int getPriority() {
         return 1;
     }
-
 }

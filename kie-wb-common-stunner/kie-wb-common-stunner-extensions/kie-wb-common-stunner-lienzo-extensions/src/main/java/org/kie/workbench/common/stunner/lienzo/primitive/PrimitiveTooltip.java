@@ -16,7 +16,11 @@
 
 package org.kie.workbench.common.stunner.lienzo.primitive;
 
-import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.Triangle;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.user.client.Timer;
@@ -33,7 +37,6 @@ public class PrimitiveTooltip extends PrimitivePopup {
     private static final double TEXT_WIDTH = 1d;
     private static final int HIDE_TIMEOUT = 3500;
 
-
     /**
      * This internal timer ensures that if any error on its usage occurs,
      * it will get removed from the canvas at some point.
@@ -48,7 +51,8 @@ public class PrimitiveTooltip extends PrimitivePopup {
     };
 
     public enum Direction {
-        NORTH, WEST;
+        NORTH,
+        WEST;
     }
 
     public PrimitiveTooltip() {
@@ -80,7 +84,9 @@ public class PrimitiveTooltip extends PrimitivePopup {
         final double descTextBbH = descTextBB.getHeight();
         final double dw = ( descTextBbW > width ? ( descTextBbW + PADDING ) : ( width + PADDING ) );
         final double dh = height + descTextBbH + PADDING;
-        final IPrimitive<?> decorator = buildDecorator( dw, dh, direction );
+        final IPrimitive<?> decorator = buildDecorator( dw,
+                                                        dh,
+                                                        direction );
         final double w = dw + ( isWest( direction ) ? TRIANGLE_SIZE * 2 : 0 );
         final double h = dh + ( isNorth( direction ) ? TRIANGLE_SIZE * 2 : 0 );
         ;
@@ -90,7 +96,11 @@ public class PrimitiveTooltip extends PrimitivePopup {
             g.add( glyph );
         }
         g.add( descText );
-        super.show( g, w, h, x, y );
+        super.show( g,
+                    w,
+                    h,
+                    x,
+                    y );
         double _x = ( w / 2 ) + ( isWest( direction ) ? PADDING / 2 : 0 );
         double _y = PADDING / 2 + ( isNorth( direction ) ? TRIANGLE_SIZE : 0 );
         if ( null != glyph ) {
@@ -98,7 +108,6 @@ public class PrimitiveTooltip extends PrimitivePopup {
             glyph.setY( _y );
             _x += width;
             _y += height;
-
         }
         descText.setX( _x - ( descTextBbW / 2 ) );
         descText.setY( _y + descTextBbH );
@@ -121,16 +130,26 @@ public class PrimitiveTooltip extends PrimitivePopup {
         return super.remove();
     }
 
-    private IPrimitive<?> buildDecorator( final double width, final double height, final Direction direction ) {
+    private IPrimitive<?> buildDecorator( final double width,
+                                          final double height,
+                                          final Direction direction ) {
         final boolean isWest = isWest( direction );
         final boolean isNorth = isNorth( direction );
         final double h2 = height / 2;
         final double w2 = width / 2;
         final double s2 = TRIANGLE_SIZE / 2;
-        final Point2D a = isWest ? new Point2D( 0, h2 ) : new Point2D( 10, 0 );
-        final Point2D b = isWest ? new Point2D( TRIANGLE_SIZE, h2 + s2 ) : new Point2D( 10 + s2, TRIANGLE_SIZE );
-        final Point2D c = isWest ? new Point2D( TRIANGLE_SIZE, h2 - s2 ) : new Point2D( 10 - s2, TRIANGLE_SIZE );
-        final Triangle triangle = new Triangle( a, b, c )
+        final Point2D a = isWest ? new Point2D( 0,
+                                                h2 ) : new Point2D( 10,
+                                                                    0 );
+        final Point2D b = isWest ? new Point2D( TRIANGLE_SIZE,
+                                                h2 + s2 ) : new Point2D( 10 + s2,
+                                                                         TRIANGLE_SIZE );
+        final Point2D c = isWest ? new Point2D( TRIANGLE_SIZE,
+                                                h2 - s2 ) : new Point2D( 10 - s2,
+                                                                         TRIANGLE_SIZE );
+        final Triangle triangle = new Triangle( a,
+                                                b,
+                                                c )
                 .setFillColor( BG_COLOR )
                 .setFillAlpha( ALPHA )
                 .setStrokeWidth( 0 );
@@ -170,5 +189,4 @@ public class PrimitiveTooltip extends PrimitivePopup {
             }
         }
     }
-
 }

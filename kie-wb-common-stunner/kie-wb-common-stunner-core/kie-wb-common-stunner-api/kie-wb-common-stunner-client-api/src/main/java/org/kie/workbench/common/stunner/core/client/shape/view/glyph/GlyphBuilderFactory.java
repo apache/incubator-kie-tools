@@ -22,5 +22,5 @@ import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
  */
 public interface GlyphBuilderFactory {
 
-    <D extends GlyphDef<?>> GlyphBuilder<?, D> getBuilder( D glyphDefinition );
+    <D extends GlyphDef<?>> GlyphBuilder<?, D> getBuilder( final D glyphDefinition );
 }

@@ -149,24 +149,24 @@
     <form action="j_security_check" method="post">
       <c:if test="${param.message != null}">
         <div class="">
-          <%=request.getParameter("message")%>
+          <%=request.getParameter( "message" )%>
         </div>
       </c:if>
       <p>
         <label>Username</label>
-        <input value="" id="j_username" name="j_username" class="text-input" type="text" placeholder="admin" tabindex="1" />
+        <input value="" id="j_username" name="j_username" class="text-input" type="text" placeholder="admin" tabindex="1"/>
       </p>
       <br style="clear: both;"/>
 
       <p>
         <label>Password</label>
-        <input id="j_password" name="j_password" class="text-input" type="password" placeholder="admin" tabindex="2" />
+        <input id="j_password" name="j_password" class="text-input" type="password" placeholder="admin" tabindex="2"/>
       </p>
       <br style="clear: both;"/>
 
       <p>
-        <% if (request.getParameter("gwt.codesvr") != null) { %>
-          <input type="hidden" name="gwt.codesvr" value="<%= org.owasp.encoder.Encode.forHtmlAttribute(request.getParameter("gwt.codesvr")) %>"/>
+        <% if ( request.getParameter( "gwt.codesvr" ) != null ) { %>
+        <input type="hidden" name="gwt.codesvr" value="<%= org.owasp.encoder.Encode.forHtmlAttribute(request.getParameter("gwt.codesvr")) %>"/>
         <% } %>
         <input class="button" type="submit" value="Sign In"/>
       </p>

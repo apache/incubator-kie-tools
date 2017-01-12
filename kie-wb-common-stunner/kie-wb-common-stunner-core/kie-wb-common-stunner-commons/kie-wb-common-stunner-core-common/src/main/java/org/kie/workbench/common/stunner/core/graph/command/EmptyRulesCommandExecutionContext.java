@@ -27,13 +27,14 @@ public class EmptyRulesCommandExecutionContext extends AbstractGraphCommandExecu
 
     public EmptyRulesCommandExecutionContext( final DefinitionManager definitionManager,
                                               final FactoryManager factoryManager,
-                                              final Index<?, ?> graphIndex) {
-        super( definitionManager, factoryManager, graphIndex );
+                                              final Index<?, ?> graphIndex ) {
+        super( definitionManager,
+               factoryManager,
+               graphIndex );
     }
 
     @Override
     public GraphRulesManager getRulesManager() {
         return null;
     }
-
 }

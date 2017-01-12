@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.impl;
 
-import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.ConfigurationProvider;
-
-import javax.servlet.ServletContext;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import javax.servlet.ServletContext;
+
+import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.ConfigurationProvider;
 
 /**
  * @author Antoine Toulme
@@ -31,14 +31,17 @@ public class LocalResource {
     private String _path;
     private String _name;
 
-    public LocalResource( String name, String path, ServletContext context ) {
+    public LocalResource( String name,
+                          String path,
+                          ServletContext context ) {
         this._name = name;
         StringBuilder localPath = new StringBuilder();
         localPath.append( ConfigurationProvider.getInstance().getDesignerContext() ).append( "js" ).append( "/" ).append( "Plugins" ).append( "/" ).append( path );
         this._path = context.getRealPath( localPath.toString() );
     }
 
-    public LocalResource( String name, String path ) {
+    public LocalResource( String name,
+                          String path ) {
         this._name = name;
         this._path = path;
     }

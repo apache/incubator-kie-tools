@@ -26,34 +26,37 @@ public abstract class BindableDefSetPaletteDefinitionFactory
 
     public BindableDefSetPaletteDefinitionFactory( final ShapeManager shapeManager,
                                                    final DefinitionSetPaletteBuilder paletteBuilder ) {
-        super( shapeManager, paletteBuilder );
+        super( shapeManager,
+               paletteBuilder );
     }
 
     /**
      * Returns the title to show for the category with the given id.
      */
-    protected abstract String getCategoryTitle( String id );
+    protected abstract String getCategoryTitle( final String id );
 
     /**
      * Returns the Definition type that will be created as by this category.
      * Return <code>null</code> if no definition associated with this category.
      */
-    protected abstract Class<?> getCategoryTargetDefinitionId( String id );
+    protected abstract Class<?> getCategoryTargetDefinitionId( final String id );
 
     /**
      * Returns the description to show for the category with the given id.
      */
-    protected abstract String getCategoryDescription( String id );
+    protected abstract String getCategoryDescription( final String id );
 
     /**
      * Returns the title to show for the morph group with the given id.
      */
-    protected abstract String getMorphGroupTitle( String morphBaseId, Object definition );
+    protected abstract String getMorphGroupTitle( final String morphBaseId,
+                                                  final Object definition );
 
     /**
      * Returns the description to show for the morph group with the given id.
      */
-    protected abstract String getMorphGroupDescription( String morphBaseId, Object definition );
+    protected abstract String getMorphGroupDescription( final String morphBaseId,
+                                                        final Object definition );
 
     @Override
     protected DefinitionSetPaletteBuilder newBuilder() {
@@ -62,13 +65,11 @@ public abstract class BindableDefSetPaletteDefinitionFactory
             @Override
             public String getTitle( final String id ) {
                 return getCategoryTitle( id );
-
             }
 
             @Override
             public String getDescription( final String id ) {
                 return getCategoryDescription( id );
-
             }
 
             @Override
@@ -83,17 +84,16 @@ public abstract class BindableDefSetPaletteDefinitionFactory
             @Override
             public String getTitle( final String morphBaseId,
                                     final Object definition ) {
-                return getMorphGroupTitle( morphBaseId, definition );
-
+                return getMorphGroupTitle( morphBaseId,
+                                           definition );
             }
 
             @Override
             public String getDescription( final String morphBaseId,
                                           final Object definition ) {
-                return getMorphGroupDescription( morphBaseId, definition );
-
+                return getMorphGroupDescription( morphBaseId,
+                                                 definition );
             }
-
         } );
 
         configureBuilder();
@@ -111,5 +111,4 @@ public abstract class BindableDefSetPaletteDefinitionFactory
     protected void excludeCategory( final String id ) {
         paletteBuilder.excludeCategory( id );
     }
-
 }

@@ -16,9 +16,16 @@
 
 package org.kie.workbench.common.stunner.basicset;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.basicset.definition.*;
+import org.kie.workbench.common.stunner.basicset.definition.BasicConnector;
+import org.kie.workbench.common.stunner.basicset.definition.Circle;
+import org.kie.workbench.common.stunner.basicset.definition.Polygon;
+import org.kie.workbench.common.stunner.basicset.definition.PolygonWithIcon;
+import org.kie.workbench.common.stunner.basicset.definition.Rectangle;
+import org.kie.workbench.common.stunner.basicset.definition.Ring;
 import org.kie.workbench.common.stunner.basicset.definition.icon.dynamics.MinusIcon;
 import org.kie.workbench.common.stunner.basicset.definition.icon.dynamics.PlusIcon;
 import org.kie.workbench.common.stunner.basicset.definition.icon.dynamics.XORIcon;
@@ -32,8 +39,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.ShapeSet;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Bindable
@@ -57,7 +62,6 @@ import javax.enterprise.context.ApplicationScoped;
                 ScriptIcon.class,
                 BusinessRuleIcon.class,
                 TimerIcon.class
-
         },
         builder = BasicSet.BasicSetBuilder.class
 )
@@ -75,7 +79,6 @@ public class BasicSet {
         public BasicSet build() {
             return new BasicSet();
         }
-
     }
 
     public BasicSet() {
@@ -84,5 +87,4 @@ public class BasicSet {
     public String getDescription() {
         return description;
     }
-
 }

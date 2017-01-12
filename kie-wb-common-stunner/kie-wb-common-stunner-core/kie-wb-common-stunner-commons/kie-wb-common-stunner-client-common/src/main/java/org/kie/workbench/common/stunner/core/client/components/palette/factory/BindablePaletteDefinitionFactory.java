@@ -25,7 +25,8 @@ public abstract class BindablePaletteDefinitionFactory<B extends PaletteDefiniti
 
     public BindablePaletteDefinitionFactory( final ShapeManager shapeManager,
                                              final B paletteBuilder ) {
-        super( shapeManager, paletteBuilder );
+        super( shapeManager,
+               paletteBuilder );
     }
 
     protected abstract Class<?> getDefinitionSetType();
@@ -46,5 +47,4 @@ public abstract class BindablePaletteDefinitionFactory<B extends PaletteDefiniti
     protected String getId( final Class<?> defSetType ) {
         return BindableAdapterUtils.getDefinitionSetId( defSetType );
     }
-
 }

@@ -16,16 +16,22 @@
 
 package org.kie.workbench.common.stunner.basicset.definition.property;
 
+import java.util.ArrayList;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.AllowedValues;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Optional;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.EnumType;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
-
-import java.util.ArrayList;
 
 @Portable
 @Bindable
@@ -102,5 +108,4 @@ public class IconType {
     public Iterable<Icons> getAllowedValues() {
         return allowedValues;
     }
-
 }

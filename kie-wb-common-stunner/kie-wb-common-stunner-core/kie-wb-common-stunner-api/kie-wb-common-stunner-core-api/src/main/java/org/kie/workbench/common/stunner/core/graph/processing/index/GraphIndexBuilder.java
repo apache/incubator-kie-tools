@@ -23,4 +23,5 @@ import org.kie.workbench.common.stunner.core.graph.Node;
  * A generic index builder for default Graph types.
  */
 public interface GraphIndexBuilder<I extends Index<Node, Edge>> extends IndexBuilder<Graph<?, Node>, Node, Edge, I> {
+
 }

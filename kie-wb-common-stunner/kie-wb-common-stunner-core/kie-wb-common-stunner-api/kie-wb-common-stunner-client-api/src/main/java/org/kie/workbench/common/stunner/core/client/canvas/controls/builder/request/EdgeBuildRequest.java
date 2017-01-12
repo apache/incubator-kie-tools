@@ -28,5 +28,4 @@ public interface EdgeBuildRequest extends BuildRequest {
     Node<View<?>, Edge> getInNode();
 
     Node<View<?>, Edge> getOutNode();
-
 }

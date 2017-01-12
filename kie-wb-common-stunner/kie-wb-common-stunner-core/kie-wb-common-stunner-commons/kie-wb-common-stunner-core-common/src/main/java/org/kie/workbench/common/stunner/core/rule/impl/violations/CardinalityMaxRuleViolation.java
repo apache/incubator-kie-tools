@@ -22,16 +22,18 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class CardinalityMaxRuleViolation extends AbstractCardinalityRuleViolation {
 
-    public CardinalityMaxRuleViolation( @MapsTo( "target" ) String target,
-                                        @MapsTo( "candidate" ) String candidate,
-                                        @MapsTo( "restrictedOccurrences" ) Integer restrictedOccurrences,
-                                        @MapsTo( "currentOccurrences" ) Integer currentOccurrences ) {
-        super( target, candidate, restrictedOccurrences, currentOccurrences );
+    public CardinalityMaxRuleViolation( final @MapsTo( "target" ) String target,
+                                        final @MapsTo( "candidate" ) String candidate,
+                                        final @MapsTo( "restrictedOccurrences" ) Integer restrictedOccurrences,
+                                        final @MapsTo( "currentOccurrences" ) Integer currentOccurrences ) {
+        super( target,
+               candidate,
+               restrictedOccurrences,
+               currentOccurrences );
     }
 
     @Override
     public String getMessage() {
         return "Label ['" + target + "'] can have a maximum '" + restrictedOccurrences + "' of '" + candidate + "' roles. Found '" + currentOccurrences + "'.";
     }
-
 }

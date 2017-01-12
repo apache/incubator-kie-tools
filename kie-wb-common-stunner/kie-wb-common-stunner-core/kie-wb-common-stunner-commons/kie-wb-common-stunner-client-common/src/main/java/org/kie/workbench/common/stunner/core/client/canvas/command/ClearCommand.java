@@ -37,6 +37,4 @@ public final class ClearCommand extends AbstractCanvasGraphCommand {
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
         return new ClearCanvasCommand();
     }
-
-
 }

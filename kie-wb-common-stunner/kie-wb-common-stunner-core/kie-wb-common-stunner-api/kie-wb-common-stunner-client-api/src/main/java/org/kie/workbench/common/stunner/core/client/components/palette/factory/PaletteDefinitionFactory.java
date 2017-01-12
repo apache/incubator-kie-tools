@@ -23,11 +23,10 @@ public interface PaletteDefinitionFactory<B extends PaletteDefinitionBuilder> {
     /**
      * Returns if this provider accepts the given Definition Set identifier.
      */
-    boolean accepts( String defSetId );
+    boolean accepts( final String defSetId );
 
     /**
      * Builds the palette definition for the given Definition Set identifier.
      */
-    B newBuilder( String defSetId );
-
+    B newBuilder( final String defSetId );
 }

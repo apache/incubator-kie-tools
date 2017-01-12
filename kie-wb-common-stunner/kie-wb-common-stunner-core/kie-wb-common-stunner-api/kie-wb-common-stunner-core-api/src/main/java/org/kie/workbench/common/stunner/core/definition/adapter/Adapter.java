@@ -24,11 +24,10 @@ public interface Adapter {
     /**
      * Check if the adapter instance supports the pojo's given type.
      */
-    boolean accepts( Class<?> type );
+    boolean accepts( final Class<?> type );
 
     /**
      * Returns if the adapter targets Java POJO domain classes or targets other kind of soft models.
      */
     boolean isPojoModel();
-
 }

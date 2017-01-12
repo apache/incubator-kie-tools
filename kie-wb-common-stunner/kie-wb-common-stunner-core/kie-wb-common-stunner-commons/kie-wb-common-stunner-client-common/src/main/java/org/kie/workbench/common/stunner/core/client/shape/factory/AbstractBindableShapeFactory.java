@@ -16,25 +16,29 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.factory;
 
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-
-import java.util.Set;
 
 public abstract class AbstractBindableShapeFactory<W, S extends Shape> extends AbstractShapeFactory<W, S> {
 
     public abstract Set<Class<?>> getSupportedModelClasses();
 
-    protected abstract String getDescription( Class<?> clazz );
+    protected abstract String getDescription( final Class<?> clazz );
 
-    protected abstract Glyph glyph( Class<?> clazz, double width, double height );
+    protected abstract Glyph glyph( final Class<?> clazz,
+                                    final double width,
+                                    final double height );
 
     @Override
     public Glyph glyph( final String definitionId,
                         final double width,
                         final double height ) {
-        return glyph( getDefinitionClass( definitionId ), width, height );
+        return glyph( getDefinitionClass( definitionId ),
+                      width,
+                      height );
     }
 
     @Override
@@ -73,5 +77,4 @@ public abstract class AbstractBindableShapeFactory<W, S extends Shape> extends A
         }
         return null;
     }
-
 }

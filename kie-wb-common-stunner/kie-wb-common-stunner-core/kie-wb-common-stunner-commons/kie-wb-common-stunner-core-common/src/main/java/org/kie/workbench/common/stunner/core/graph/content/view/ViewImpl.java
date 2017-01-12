@@ -22,10 +22,12 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 @Portable
 public final class ViewImpl<W> implements View<W> {
+
     protected W definition;
     protected Bounds bounds;
 
-    public ViewImpl( @MapsTo( "definition" ) W definition, @MapsTo( "bounds" ) Bounds bounds ) {
+    public ViewImpl( final @MapsTo( "definition" ) W definition,
+                     final @MapsTo( "bounds" ) Bounds bounds ) {
         this.definition = definition;
         this.bounds = bounds;
     }
@@ -49,5 +51,4 @@ public final class ViewImpl<W> implements View<W> {
     public void setBounds( final Bounds bounds ) {
         this.bounds = bounds;
     }
-
 }

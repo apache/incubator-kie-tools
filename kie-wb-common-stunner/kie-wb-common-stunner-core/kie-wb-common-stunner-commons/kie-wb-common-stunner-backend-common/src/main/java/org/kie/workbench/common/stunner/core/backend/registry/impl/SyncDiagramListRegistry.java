@@ -15,16 +15,15 @@
 
 package org.kie.workbench.common.stunner.core.backend.registry.impl;
 
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.registry.impl.AbstractDiagramListRegistry;
-
 import java.util.ArrayList;
 import java.util.Collections;
+
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.registry.impl.AbstractDiagramListRegistry;
 
 class SyncDiagramListRegistry<D extends Diagram> extends AbstractDiagramListRegistry<D> {
 
     SyncDiagramListRegistry() {
         super( Collections.synchronizedList( new ArrayList<D>() ) );
     }
-
 }

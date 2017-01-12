@@ -21,16 +21,15 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.event.Too
 
 public interface ToolboxButtonBuilder<I> {
 
-    ToolboxButtonBuilder<I> setIcon( I icon );
+    ToolboxButtonBuilder<I> setIcon( final I icon );
 
-    ToolboxButtonBuilder<I> setClickHandler( ToolboxButtonEventHandler handler );
+    ToolboxButtonBuilder<I> setClickHandler( final ToolboxButtonEventHandler handler );
 
-    ToolboxButtonBuilder<I> setMouseDownHandler( ToolboxButtonEventHandler handler );
+    ToolboxButtonBuilder<I> setMouseDownHandler( final ToolboxButtonEventHandler handler );
 
-    ToolboxButtonBuilder<I> setMouseEnterHandler( ToolboxButtonEventHandler handler );
+    ToolboxButtonBuilder<I> setMouseEnterHandler( final ToolboxButtonEventHandler handler );
 
-    ToolboxButtonBuilder<I> setMouseExitHandler( ToolboxButtonEventHandler handler );
+    ToolboxButtonBuilder<I> setMouseExitHandler( final ToolboxButtonEventHandler handler );
 
     ToolboxButton<I> build();
-
 }

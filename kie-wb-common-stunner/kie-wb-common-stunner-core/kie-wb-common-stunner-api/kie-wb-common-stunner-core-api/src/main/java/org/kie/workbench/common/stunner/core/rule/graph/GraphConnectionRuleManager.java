@@ -36,7 +36,7 @@ public interface GraphConnectionRuleManager
      * @param incomingNode The incoming node.
      * @param outgoingNode The outgoing node
      */
-    RuleViolations evaluate( Edge<? extends View<?>, ? extends Node> edge,
-                             Node<? extends View<?>, ? extends Edge> outgoingNode,
-                             Node<? extends View<?>, ? extends Edge> incomingNode );
+    RuleViolations evaluate( final Edge<? extends View<?>, ? extends Node> edge,
+                             final Node<? extends View<?>, ? extends Edge> outgoingNode,
+                             final Node<? extends View<?>, ? extends Edge> incomingNode );
 }

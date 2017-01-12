@@ -15,30 +15,33 @@
 
 package org.kie.workbench.common.stunner.bpmn.project.client.handlers;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.project.client.editor.BPMNDiagramEditor;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
-import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.project.client.handlers.AbstractProjectDiagramNewResourceHandler;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewResourceHandler<BPMNDiagramResourceType> {
 
     protected BPMNDiagramNewResourceHandler() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
     public BPMNDiagramNewResourceHandler( final DefinitionManager definitionManager,
                                           final ClientProjectDiagramService projectDiagramServices,
                                           final BPMNDiagramResourceType projectDiagramResourceType ) {
-        super( definitionManager, projectDiagramServices, projectDiagramResourceType );
+        super( definitionManager,
+               projectDiagramServices,
+               projectDiagramResourceType );
     }
 
     @Override
@@ -64,5 +67,4 @@ public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewReso
     private BPMNDiagramResourceType getBPMNDiagramResourceType() {
         return ( BPMNDiagramResourceType ) super.getResourceType();
     }
-
 }

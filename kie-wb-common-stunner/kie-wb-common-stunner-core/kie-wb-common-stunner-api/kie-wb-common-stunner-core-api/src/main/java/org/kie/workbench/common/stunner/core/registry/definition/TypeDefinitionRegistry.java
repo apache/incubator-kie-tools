@@ -27,6 +27,5 @@ public interface TypeDefinitionRegistry<D> extends DefinitionRegistry<D> {
      * @param type The Definition's type criteria.
      * @return The Definition of type <code>D</code> that this registry contains, <code>null</code> otherwise.
      */
-    D getDefinitionByType( Class<D> type );
-
+    D getDefinitionByType( final Class<D> type );
 }

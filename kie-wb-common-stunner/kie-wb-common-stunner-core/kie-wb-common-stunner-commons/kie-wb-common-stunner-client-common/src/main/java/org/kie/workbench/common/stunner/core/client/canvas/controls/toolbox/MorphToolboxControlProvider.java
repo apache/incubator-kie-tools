@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.palette.AbstractPaletteMorphCommand;
@@ -26,13 +33,6 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.T
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A toolbox control provider implementation that provides buttons for each of the target
@@ -47,7 +47,9 @@ public class MorphToolboxControlProvider extends AbstractToolboxControlProvider 
     private final DefinitionUtils definitionUtils;
 
     protected MorphToolboxControlProvider() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
@@ -100,8 +102,10 @@ public class MorphToolboxControlProvider extends AbstractToolboxControlProvider 
             final Object def = ( ( Definition<?> ) item.getContent() ).getDefinition();
             return definitionUtils.hasMorphTargets( def );
         } catch ( final ClassCastException e ) {
-            LOGGER.log( Level.SEVERE, "Only contents for type Definition are expected on the toolbox " +
-                    "morphing control provider.", e );
+            LOGGER.log( Level.SEVERE,
+                        "Only contents for type Definition are expected on the toolbox " +
+                                "morphing control provider.",
+                        e );
             return false;
         }
     }

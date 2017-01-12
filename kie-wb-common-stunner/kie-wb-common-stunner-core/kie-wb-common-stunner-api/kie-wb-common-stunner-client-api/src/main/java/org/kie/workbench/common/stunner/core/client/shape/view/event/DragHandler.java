@@ -23,7 +23,7 @@ public abstract class DragHandler extends AbstractViewHandler<DragEvent> {
         return ViewEventType.DRAG;
     }
 
-    public abstract void start( DragEvent event );
+    public abstract void start( final DragEvent event );
 
-    public abstract void end( DragEvent event );
+    public abstract void end( final DragEvent event );
 }

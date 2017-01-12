@@ -19,13 +19,13 @@
 
 <module>
 
-     <inherits name='com.google.gwt.user.User' />
-     <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
-     <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesApi"/>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
+  <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesApi"/>
 
-     <source path="definition"/>
-     <source path="shape/def"/>
-     <source path="" includes="BasicSet.java"/>
-     <source path="" includes="BasicSetResourceType.java"/>
+  <source path="definition"/>
+  <source path="shape/def"/>
+  <source path="" includes="BasicSet.java"/>
+  <source path="" includes="BasicSetResourceType.java"/>
 
 </module>

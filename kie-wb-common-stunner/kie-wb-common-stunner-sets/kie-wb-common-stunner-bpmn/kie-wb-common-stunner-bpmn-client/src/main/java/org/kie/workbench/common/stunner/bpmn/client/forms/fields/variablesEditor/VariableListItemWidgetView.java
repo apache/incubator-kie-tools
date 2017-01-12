@@ -45,5 +45,4 @@ public interface VariableListItemWidgetView extends HasModel<VariableRow> {
     String getCustomDataType();
 
     void setCustomDataType( String customDataType );
-
 }

@@ -59,10 +59,12 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     public static final String DATA_OUTPUT = "output1:com.test.Employee";
     public static final String DATA_OUTPUT_SET = "output1:com.test.Employee,output2:String";
     public static final String PROCESS_VARS = "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String";
-    public static final String ASSIGNMENTS_SINGLE_INPUT ="[din]employee->input1";
-    public static final String ASSIGNMENTS_SINGLE_OUTPUT ="[dout]output1->employee";
-    public static final String ASSIGNMENTS_MULTIPLE ="[din]employee->input1,[din]input2=ab%7Ccd%7Cef,[din]input3=yes,[din]input4=%22Hello%22+then+%22Goodbye%22,[dout]output1->employee,[dout]output2->reason";
-    public static final List<String> DATATYPES = new ArrayList<String>( Arrays.asList("myorg.myproject1.Cardboard", "yourorg.materials.Paper", "org.documents.Articles" ) );
+    public static final String ASSIGNMENTS_SINGLE_INPUT = "[din]employee->input1";
+    public static final String ASSIGNMENTS_SINGLE_OUTPUT = "[dout]output1->employee";
+    public static final String ASSIGNMENTS_MULTIPLE = "[din]employee->input1,[din]input2=ab%7Ccd%7Cef,[din]input3=yes,[din]input4=%22Hello%22+then+%22Goodbye%22,[dout]output1->employee,[dout]output2->reason";
+    public static final List<String> DATATYPES = new ArrayList<String>( Arrays.asList( "myorg.myproject1.Cardboard",
+                                                                                       "yourorg.materials.Paper",
+                                                                                       "org.documents.Articles" ) );
     public static final String FORMATTED_DATATYPES = "Articles [org.documents]:org.documents.Articles,Cardboard [myorg.myproject1]:myorg.myproject1.Cardboard,Paper [yourorg.materials]:yourorg.materials.Paper";
 
     @GwtMock
@@ -120,8 +122,13 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         widget.activityDataIOEditor = activityDataIOEditor;
         activityDataIOEditor.view = activityDataIOEditorView;
         doCallRealMethod().when( widget ).parseAssignmentsInfo();
-        doCallRealMethod().when( widget ).getVariableCountsString( anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString() );
+        doCallRealMethod().when( widget ).getVariableCountsString( anyString(),
+                                                                   anyString(),
+                                                                   anyString(),
+                                                                   anyString(),
+                                                                   anyString(),
+                                                                   anyString(),
+                                                                   anyString() );
         doCallRealMethod().when( widget ).showAssignmentsDialog();
         doCallRealMethod().when( widget ).showDataIOEditor( anyString() );
         doCallRealMethod().when( widget ).setBPMNModel( any( BPMNDefinition.class ) );
@@ -151,8 +158,11 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         doCallRealMethod().when( endNoneEvent ).isSingleInputVar();
         doCallRealMethod().when( endNoneEvent ).hasOutputVars();
         doCallRealMethod().when( endNoneEvent ).isSingleOutputVar();
-        doCallRealMethod().when( activityDataIOEditor ).configureDialog( anyString(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean() );
+        doCallRealMethod().when( activityDataIOEditor ).configureDialog( anyString(),
+                                                                         anyBoolean(),
+                                                                         anyBoolean(),
+                                                                         anyBoolean(),
+                                                                         anyBoolean() );
 
         widget.setBPMNModel( userTask );
     }
@@ -166,16 +176,25 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     public void testParseAssignmentsInfo() {
         widget.assignmentsInfo = ASSIGNMENTS_INFO;
         Map<String, String> assignmentsProperties = widget.parseAssignmentsInfo();
-        assertEquals( DATA_INPUT_SET, assignmentsProperties.get( "datainputset" ) );
-        assertEquals( DATA_OUTPUT_SET, assignmentsProperties.get( "dataoutputset" ) );
-        assertEquals( ASSIGNMENTS_MULTIPLE, assignmentsProperties.get( "assignments" ) );
+        assertEquals( DATA_INPUT_SET,
+                      assignmentsProperties.get( "datainputset" ) );
+        assertEquals( DATA_OUTPUT_SET,
+                      assignmentsProperties.get( "dataoutputset" ) );
+        assertEquals( ASSIGNMENTS_MULTIPLE,
+                      assignmentsProperties.get( "assignments" ) );
     }
 
     @Test
     public void testGetVariableCountsString() {
-        String variableCountsString = widget.getVariableCountsString( null, DATA_INPUT_SET, null,
-                DATA_OUTPUT_SET, PROCESS_VARS, ASSIGNMENTS_MULTIPLE, widget.getDisallowedPropertyNames() );
-        assertEquals( "4 Data_Inputs, 2 Data_Outputs", variableCountsString );
+        String variableCountsString = widget.getVariableCountsString( null,
+                                                                      DATA_INPUT_SET,
+                                                                      null,
+                                                                      DATA_OUTPUT_SET,
+                                                                      PROCESS_VARS,
+                                                                      ASSIGNMENTS_MULTIPLE,
+                                                                      widget.getDisallowedPropertyNames() );
+        assertEquals( "4 Data_Inputs, 2 Data_Outputs",
+                      variableCountsString );
     }
 
     @Test
@@ -186,107 +205,170 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
 
         widget.showAssignmentsDialog();
 
-        verify( widget ).getDataTypes( );
+        verify( widget ).getDataTypes();
     }
 
     @Test
     public void testShowDataIOEditor() {
         widget.showDataIOEditor( null );
 
-        verify ( activityDataIOEditor ).configureDialog( taskNameCaptor.capture(),
-                hasInputVarsCaptor.capture(), isSingleInputVarCaptor.capture(),
-                hasOutputVarsCaptor.capture(), isSingleOutputVarCaptor.capture() );
-        assertEquals( TASK_NAME, taskNameCaptor.getValue() );
-        assertEquals( true, hasInputVarsCaptor.getValue() );
-        assertEquals( false, isSingleInputVarCaptor.getValue() );
-        assertEquals( true, hasOutputVarsCaptor.getValue() );
-        assertEquals( false, isSingleOutputVarCaptor.getValue() );
+        verify( activityDataIOEditor ).configureDialog( taskNameCaptor.capture(),
+                                                        hasInputVarsCaptor.capture(),
+                                                        isSingleInputVarCaptor.capture(),
+                                                        hasOutputVarsCaptor.capture(),
+                                                        isSingleOutputVarCaptor.capture() );
+        assertEquals( TASK_NAME,
+                      taskNameCaptor.getValue() );
+        assertEquals( true,
+                      hasInputVarsCaptor.getValue() );
+        assertEquals( false,
+                      isSingleInputVarCaptor.getValue() );
+        assertEquals( true,
+                      hasOutputVarsCaptor.getValue() );
+        assertEquals( false,
+                      isSingleOutputVarCaptor.getValue() );
     }
 
     @Test
     public void testFormatDataTypes() {
         String formattedDataTypes = widget.formatDataTypes( DATATYPES );
-        assertEquals( FORMATTED_DATATYPES,  formattedDataTypes);
+        assertEquals( FORMATTED_DATATYPES,
+                      formattedDataTypes );
     }
 
     @Test
     public void testGetTaskName() {
         String taskName = widget.getTaskName();
-        assertEquals( TASK_NAME, taskName);
+        assertEquals( TASK_NAME,
+                      taskName );
     }
 
     @Test
     public void testSetBPMNModelUserTask() {
         widget.setBPMNModel( userTask );
-        assertEquals( true, widget.hasInputVars );
-        assertEquals( false, widget.isSingleInputVar );
-        assertEquals( true, widget.hasOutputVars );
-        assertEquals( false, widget.isSingleOutputVar );
+        assertEquals( true,
+                      widget.hasInputVars );
+        assertEquals( false,
+                      widget.isSingleInputVar );
+        assertEquals( true,
+                      widget.hasOutputVars );
+        assertEquals( false,
+                      widget.isSingleOutputVar );
 
-        String assignmentsInfoString = widget.getVariableCountsString( null, DATA_INPUT_SET, null, DATA_OUTPUT_SET, PROCESS_VARS, ASSIGNMENTS_MULTIPLE,
-                widget.getDisallowedPropertyNames() );
-        assertEquals( "4 Data_Inputs, 2 Data_Outputs", assignmentsInfoString );
+        String assignmentsInfoString = widget.getVariableCountsString( null,
+                                                                       DATA_INPUT_SET,
+                                                                       null,
+                                                                       DATA_OUTPUT_SET,
+                                                                       PROCESS_VARS,
+                                                                       ASSIGNMENTS_MULTIPLE,
+                                                                       widget.getDisallowedPropertyNames() );
+        assertEquals( "4 Data_Inputs, 2 Data_Outputs",
+                      assignmentsInfoString );
     }
 
     @Test
     public void testSetBPMNModelBusinessRuleTask() {
         widget.setBPMNModel( businessRuleTask );
-        assertEquals( true, widget.hasInputVars );
-        assertEquals( false, widget.isSingleInputVar );
-        assertEquals( true, widget.hasOutputVars );
-        assertEquals( false, widget.isSingleOutputVar );
+        assertEquals( true,
+                      widget.hasInputVars );
+        assertEquals( false,
+                      widget.isSingleInputVar );
+        assertEquals( true,
+                      widget.hasOutputVars );
+        assertEquals( false,
+                      widget.isSingleOutputVar );
 
-        String assignmentsInfoString = widget.getVariableCountsString( null, DATA_INPUT_SET, null, DATA_OUTPUT_SET, PROCESS_VARS, ASSIGNMENTS_MULTIPLE,
-                widget.getDisallowedPropertyNames() );
-        assertEquals( "5 Data_Inputs, 2 Data_Outputs", assignmentsInfoString );
+        String assignmentsInfoString = widget.getVariableCountsString( null,
+                                                                       DATA_INPUT_SET,
+                                                                       null,
+                                                                       DATA_OUTPUT_SET,
+                                                                       PROCESS_VARS,
+                                                                       ASSIGNMENTS_MULTIPLE,
+                                                                       widget.getDisallowedPropertyNames() );
+        assertEquals( "5 Data_Inputs, 2 Data_Outputs",
+                      assignmentsInfoString );
     }
 
     @Test
     public void testSetBPMNModelStartNoneEvent() {
         widget.setBPMNModel( startNoneEvent );
-        assertEquals( false, widget.hasInputVars );
-        assertEquals( false, widget.isSingleInputVar );
-        assertEquals( true, widget.hasOutputVars );
-        assertEquals( true, widget.isSingleOutputVar );
+        assertEquals( false,
+                      widget.hasInputVars );
+        assertEquals( false,
+                      widget.isSingleInputVar );
+        assertEquals( true,
+                      widget.hasOutputVars );
+        assertEquals( true,
+                      widget.isSingleOutputVar );
 
-        String assignmentsInfoString = widget.getVariableCountsString( null, null, DATA_OUTPUT, null, PROCESS_VARS, ASSIGNMENTS_SINGLE_OUTPUT,
-                widget.getDisallowedPropertyNames() );
-        assertEquals( "1 Data_Output", assignmentsInfoString );
+        String assignmentsInfoString = widget.getVariableCountsString( null,
+                                                                       null,
+                                                                       DATA_OUTPUT,
+                                                                       null,
+                                                                       PROCESS_VARS,
+                                                                       ASSIGNMENTS_SINGLE_OUTPUT,
+                                                                       widget.getDisallowedPropertyNames() );
+        assertEquals( "1 Data_Output",
+                      assignmentsInfoString );
     }
 
     @Test
     public void testSetBPMNModelEndTerminateEvent() {
         widget.setBPMNModel( endTerminateEvent );
-        assertEquals( true, widget.hasInputVars );
-        assertEquals( true, widget.isSingleInputVar );
-        assertEquals( false, widget.hasOutputVars );
-        assertEquals( false, widget.isSingleOutputVar );
+        assertEquals( true,
+                      widget.hasInputVars );
+        assertEquals( true,
+                      widget.isSingleInputVar );
+        assertEquals( false,
+                      widget.hasOutputVars );
+        assertEquals( false,
+                      widget.isSingleOutputVar );
 
-        String assignmentsInfoString = widget.getVariableCountsString( DATA_INPUT, null, null, null, PROCESS_VARS, ASSIGNMENTS_SINGLE_OUTPUT,
-                widget.getDisallowedPropertyNames() );
-        assertEquals( "1 Data_Input", assignmentsInfoString );
+        String assignmentsInfoString = widget.getVariableCountsString( DATA_INPUT,
+                                                                       null,
+                                                                       null,
+                                                                       null,
+                                                                       PROCESS_VARS,
+                                                                       ASSIGNMENTS_SINGLE_OUTPUT,
+                                                                       widget.getDisallowedPropertyNames() );
+        assertEquals( "1 Data_Input",
+                      assignmentsInfoString );
     }
 
     @Test
     public void testSetBPMNModelEndNoneEvent() {
         widget.setBPMNModel( endNoneEvent );
-        assertEquals( true, widget.hasInputVars );
-        assertEquals( true, widget.isSingleInputVar );
-        assertEquals( false, widget.hasOutputVars );
-        assertEquals( false, widget.isSingleOutputVar );
+        assertEquals( true,
+                      widget.hasInputVars );
+        assertEquals( true,
+                      widget.isSingleInputVar );
+        assertEquals( false,
+                      widget.hasOutputVars );
+        assertEquals( false,
+                      widget.isSingleOutputVar );
 
-        String assignmentsInfoString = widget.getVariableCountsString( DATA_INPUT, null, null, null, PROCESS_VARS, ASSIGNMENTS_SINGLE_OUTPUT,
-                widget.getDisallowedPropertyNames() );
-        assertEquals( "1 Data_Input", assignmentsInfoString );
+        String assignmentsInfoString = widget.getVariableCountsString( DATA_INPUT,
+                                                                       null,
+                                                                       null,
+                                                                       null,
+                                                                       PROCESS_VARS,
+                                                                       ASSIGNMENTS_SINGLE_OUTPUT,
+                                                                       widget.getDisallowedPropertyNames() );
+        assertEquals( "1 Data_Input",
+                      assignmentsInfoString );
     }
 
     @Test
-        public void testSetBPMNModelNoDataIO() {
+    public void testSetBPMNModelNoDataIO() {
         widget.setBPMNModel( sequenceFlow );
-        assertEquals( false, widget.hasInputVars );
-        assertEquals( false, widget.isSingleInputVar );
-        assertEquals( false, widget.hasOutputVars );
-        assertEquals( false, widget.isSingleOutputVar );
+        assertEquals( false,
+                      widget.hasInputVars );
+        assertEquals( false,
+                      widget.isSingleInputVar );
+        assertEquals( false,
+                      widget.hasOutputVars );
+        assertEquals( false,
+                      widget.isSingleOutputVar );
     }
 }
 

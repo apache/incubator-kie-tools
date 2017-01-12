@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property;
 
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-
+import java.util.LinkedList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
+
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 
 /**
  * Provides the Property Serializers for the serialization expected by oryx/jbpmdesigner marshallers.
@@ -58,15 +58,21 @@ public class Bpmn2OryxPropertyManager {
     }
 
     @SuppressWarnings( "unchecked" )
-    public <T> T parse( Object property, PropertyType propertyType, String value ) {
+    public <T> T parse( Object property,
+                        PropertyType propertyType,
+                        String value ) {
         Bpmn2OryxPropertySerializer<T> serializer = ( Bpmn2OryxPropertySerializer<T> ) getSerializer( propertyType );
-        return serializer.parse( property, value );
+        return serializer.parse( property,
+                                 value );
     }
 
     @SuppressWarnings( "unchecked" )
-    public <T> String serialize( Object property, PropertyType propertyType, T value ) {
+    public <T> String serialize( Object property,
+                                 PropertyType propertyType,
+                                 T value ) {
         Bpmn2OryxPropertySerializer<T> serializer = ( Bpmn2OryxPropertySerializer<T> ) getSerializer( propertyType );
-        return serializer.serialize( property, value );
+        return serializer.serialize( property,
+                                     value );
     }
 
     protected Bpmn2OryxPropertySerializer<?> getSerializer( PropertyType type ) {
@@ -77,5 +83,4 @@ public class Bpmn2OryxPropertyManager {
         }
         throw new RuntimeException( "No property serializer found for type [" + type + "]" );
     }
-
 }

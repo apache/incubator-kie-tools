@@ -31,5 +31,4 @@ public interface DiagramRepresentation {
     Path getPath();
 
     String getThumbImageData();
-
 }

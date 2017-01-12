@@ -52,11 +52,11 @@ public class CatchEventAttributes implements BPMNPropertySet {
 
     public CatchEventAttributes() {
         this( new Min(),
-                new Max(),
-                new Mean(),
-                new TimeUnit(),
-                new StandardDeviation(),
-                new DistributionType() );
+              new Max(),
+              new Mean(),
+              new TimeUnit(),
+              new StandardDeviation(),
+              new DistributionType() );
     }
 
     public CatchEventAttributes( @MapsTo( "min" ) Min min,

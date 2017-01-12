@@ -27,5 +27,4 @@ public interface LienzoPaletteView<V extends LienzoPaletteView, I extends Lienzo
     void setPresenter( AbstractLienzoPalette palette );
 
     void draw();
-
 }

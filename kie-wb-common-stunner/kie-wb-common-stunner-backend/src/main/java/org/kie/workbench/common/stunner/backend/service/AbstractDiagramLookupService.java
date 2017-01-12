@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.backend.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.core.backend.lookup.impl.AbstractVFSLookupManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -33,51 +36,49 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 
-import java.util.List;
-import java.util.Map;
-
 public abstract class AbstractDiagramLookupService<M extends Metadata, D extends Diagram<Graph, M>>
         extends AbstractVFSLookupManager<D, DiagramRepresentation, DiagramLookupRequest>
-        implements DiagramLookupManager, DiagramLookupService {
+        implements DiagramLookupManager,
+                   DiagramLookupService {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger( AbstractDiagramLookupService.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractDiagramLookupService.class.getName() );
 
     private final BaseDiagramService<M, D> diagramService;
 
-    public AbstractDiagramLookupService( IOService ioService,
-                                         BaseDiagramService<M, D> diagramService ) {
+    public AbstractDiagramLookupService( final IOService ioService,
+                                         final BaseDiagramService<M, D> diagramService ) {
         super( ioService );
         this.diagramService = diagramService;
     }
 
     @Override
-    protected boolean acceptsPath( Path path ) {
+    protected boolean acceptsPath( final Path path ) {
         return diagramService.accepts( path );
     }
 
     @Override
-    protected D getItemByPath( Path path ) {
+    protected D getItemByPath( final Path path ) {
         return diagramService.getDiagramByPath( path );
     }
 
     @Override
-    protected List<D> getItems( DiagramLookupRequest request ) {
+    protected List<D> getItems( final DiagramLookupRequest request ) {
         org.uberfire.java.nio.file.Path root = parseCriteriaPath( request );
         return getItemsByPath( root );
     }
 
     @Override
-    protected boolean matches( String criteria, Diagram item ) {
+    protected boolean matches( final String criteria,
+                               final Diagram item ) {
         return true;
     }
 
     @Override
-    protected DiagramRepresentation buildResult( Diagram item ) {
+    protected DiagramRepresentation buildResult( final Diagram item ) {
         return new DiagramRepresentationImpl.DiagramRepresentationBuilder( item ).build();
     }
 
-    protected org.uberfire.java.nio.file.Path parseCriteriaPath( DiagramLookupRequest request ) {
+    protected org.uberfire.java.nio.file.Path parseCriteriaPath( final DiagramLookupRequest request ) {
         String criteria = request.getCriteria();
         if ( StringUtils.isEmpty( criteria ) ) {
             LOG.error( "Empty criteria not supported." );

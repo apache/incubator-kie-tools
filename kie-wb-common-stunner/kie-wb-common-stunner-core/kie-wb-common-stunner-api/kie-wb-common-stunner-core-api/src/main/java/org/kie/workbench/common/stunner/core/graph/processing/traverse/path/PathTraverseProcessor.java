@@ -21,4 +21,5 @@ package org.kie.workbench.common.stunner.core.graph.processing.traverse.path;
  * following a given path.</p>
  */
 public interface PathTraverseProcessor {
+
 }

@@ -57,8 +57,10 @@ public class CompositeCommandTest {
     public void testAllow() {
         CommandResult<RuleViolation> result = tested.allow( commandExecutionContext );
         assertNotNull( result );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( tested, times( 1 ) ).addCommand( any( CommandStub.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( tested,
+                times( 1 ) ).addCommand( any( CommandStub.class ) );
     }
 
     @Test
@@ -66,8 +68,10 @@ public class CompositeCommandTest {
     public void testExecute() {
         CommandResult<RuleViolation> result = tested.execute( commandExecutionContext );
         assertNotNull( result );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( tested, times( 1 ) ).addCommand( any( CommandStub.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( tested,
+                times( 1 ) ).addCommand( any( CommandStub.class ) );
     }
 
     private static class CompositeCommandStub extends AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation> {
@@ -80,23 +84,27 @@ public class CompositeCommandTest {
         }
 
         @Override
-        protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
+        protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context,
+                                                        Command<GraphCommandExecutionContext, RuleViolation> command ) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
         @Override
-        protected CommandResult<RuleViolation> doExecute( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
+        protected CommandResult<RuleViolation> doExecute( GraphCommandExecutionContext context,
+                                                          Command<GraphCommandExecutionContext, RuleViolation> command ) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
         @Override
-        protected CommandResult<RuleViolation> doUndo( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
+        protected CommandResult<RuleViolation> doUndo( GraphCommandExecutionContext context,
+                                                       Command<GraphCommandExecutionContext, RuleViolation> command ) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
         @Override
         public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-            return super.undo( context, true );
+            return super.undo( context,
+                               true );
         }
     }
 
@@ -106,7 +114,6 @@ public class CompositeCommandTest {
         protected CommandResult<RuleViolation> check( GraphCommandExecutionContext context ) {
             return GraphCommandResultBuilder.SUCCESS;
         }
-
 
         @Override
         public CommandResult<RuleViolation> allow( GraphCommandExecutionContext context ) {
@@ -123,5 +130,4 @@ public class CompositeCommandTest {
             return GraphCommandResultBuilder.SUCCESS;
         }
     }
-
 }

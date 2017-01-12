@@ -15,6 +15,23 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.profile.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.ServletContext;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import bpsim.impl.BpsimFactoryImpl;
 import org.codehaus.jackson.JsonParseException;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -38,17 +55,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.ConfigurationPr
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.ServletContext;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.*;
-import java.util.*;
-
 /**
  * The implementation of the default profile for Process Designer.
- *
  * @author Antoine Toulme
  */
 @ApplicationScoped
@@ -75,10 +83,12 @@ public class DefaultProfileImpl implements IDiagramProfile {
     }
 
     public DefaultProfileImpl( ServletContext servletContext ) {
-        this( servletContext, true );
+        this( servletContext,
+              true );
     }
 
-    public DefaultProfileImpl( ServletContext servletContext, boolean initializeLocalPlugins ) {
+    public DefaultProfileImpl( ServletContext servletContext,
+                               boolean initializeLocalPlugins ) {
         if ( initializeLocalPlugins ) {
             initializeLocalPlugins( servletContext );
         }
@@ -112,7 +122,8 @@ public class DefaultProfileImpl implements IDiagramProfile {
                 throw new RuntimeException( e );
             }
             XMLInputFactory factory = XMLInputFactory.newInstance();
-            XMLStreamReader reader = factory.createXMLStreamReader( fileStream, "UTF-8" );
+            XMLStreamReader reader = factory.createXMLStreamReader( fileStream,
+                                                                    "UTF-8" );
             while ( reader.hasNext() ) {
                 if ( reader.next() == XMLStreamReader.START_ELEMENT ) {
                     if ( "profile".equals( reader.getLocalName() ) ) {
@@ -128,12 +139,14 @@ public class DefaultProfileImpl implements IDiagramProfile {
                                 name = reader.getAttributeValue( i );
                             }
                         }
-                        _plugins.put( name, registry.get( name ) );
+                        _plugins.put( name,
+                                      registry.get( name ) );
                     }
                 }
             }
         } catch ( XMLStreamException e ) {
-            _logger.error( e.getMessage(), e );
+            _logger.error( e.getMessage(),
+                           e );
             throw new RuntimeException( e ); // stop initialization
         } finally {
             if ( fileStream != null ) {
@@ -217,24 +230,33 @@ public class DefaultProfileImpl implements IDiagramProfile {
 
     public IDiagramMarshaller createMarshaller() {
         return new IDiagramMarshaller() {
-            public String parseModel( String jsonModel, String preProcessingData ) {
+            public String parseModel( String jsonModel,
+                                      String preProcessingData ) {
                 Bpmn2JsonUnmarshaller unmarshaller = new Bpmn2JsonUnmarshaller();
                 //Definitions def;
                 Resource res;
                 try {
-                    res = unmarshaller.unmarshall( jsonModel, preProcessingData );
+                    res = unmarshaller.unmarshall( jsonModel,
+                                                   preProcessingData );
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     Map saveMap = new HashMap();
-                    saveMap.put( XMLResource.OPTION_ENCODING, "UTF-8" );
-                    saveMap.put( XMLResource.OPTION_DEFER_IDREF_RESOLUTION, true );
-                    saveMap.put( XMLResource.OPTION_DISABLE_NOTIFY, true );
-                    saveMap.put( XMLResource.OPTION_PROCESS_DANGLING_HREF, XMLResource.OPTION_PROCESS_DANGLING_HREF_RECORD );
-                    res.save( outputStream, saveMap );
+                    saveMap.put( XMLResource.OPTION_ENCODING,
+                                 "UTF-8" );
+                    saveMap.put( XMLResource.OPTION_DEFER_IDREF_RESOLUTION,
+                                 true );
+                    saveMap.put( XMLResource.OPTION_DISABLE_NOTIFY,
+                                 true );
+                    saveMap.put( XMLResource.OPTION_PROCESS_DANGLING_HREF,
+                                 XMLResource.OPTION_PROCESS_DANGLING_HREF_RECORD );
+                    res.save( outputStream,
+                              saveMap );
                     return outputStream.toString();
                 } catch ( JsonParseException e ) {
-                    _logger.error( e.getMessage(), e );
+                    _logger.error( e.getMessage(),
+                                   e );
                 } catch ( IOException e ) {
-                    _logger.error( e.getMessage(), e );
+                    _logger.error( e.getMessage(),
+                                   e );
                 }
                 return "";
             }
@@ -243,24 +265,31 @@ public class DefaultProfileImpl implements IDiagramProfile {
                                                String preProcessingData ) {
                 try {
                     Bpmn2JsonUnmarshaller unmarshaller = new Bpmn2JsonUnmarshaller();
-                    JBPMBpmn2ResourceImpl res = ( JBPMBpmn2ResourceImpl ) unmarshaller.unmarshall( jsonModel, preProcessingData );
+                    JBPMBpmn2ResourceImpl res = ( JBPMBpmn2ResourceImpl ) unmarshaller.unmarshall( jsonModel,
+                                                                                                   preProcessingData );
                     return ( Definitions ) res.getContents().get( 0 );
                 } catch ( JsonParseException e ) {
-                    _logger.error( e.getMessage(), e );
+                    _logger.error( e.getMessage(),
+                                   e );
                 } catch ( IOException e ) {
-                    _logger.error( e.getMessage(), e );
+                    _logger.error( e.getMessage(),
+                                   e );
                 }
                 return null;
             }
 
-            public Resource getResource( String jsonModel, String preProcessingData ) {
+            public Resource getResource( String jsonModel,
+                                         String preProcessingData ) {
                 try {
                     Bpmn2JsonUnmarshaller unmarshaller = new Bpmn2JsonUnmarshaller();
-                    return ( JBPMBpmn2ResourceImpl ) unmarshaller.unmarshall( jsonModel, preProcessingData );
+                    return ( JBPMBpmn2ResourceImpl ) unmarshaller.unmarshall( jsonModel,
+                                                                              preProcessingData );
                 } catch ( JsonParseException e ) {
-                    _logger.error( e.getMessage(), e );
+                    _logger.error( e.getMessage(),
+                                   e );
                 } catch ( IOException e ) {
-                    _logger.error( e.getMessage(), e );
+                    _logger.error( e.getMessage(),
+                                   e );
                 }
                 return null;
             }
@@ -269,13 +298,17 @@ public class DefaultProfileImpl implements IDiagramProfile {
 
     public IDiagramUnmarshaller createUnmarshaller() {
         return new IDiagramUnmarshaller() {
-            public String parseModel( String xmlModel, IDiagramProfile profile, String preProcessingData ) {
+            public String parseModel( String xmlModel,
+                                      IDiagramProfile profile,
+                                      String preProcessingData ) {
                 Bpmn2JsonMarshaller marshaller = new Bpmn2JsonMarshaller();
                 marshaller.setProfile( profile );
                 try {
-                    return marshaller.marshall( getDefinitions( xmlModel ), preProcessingData );
+                    return marshaller.marshall( getDefinitions( xmlModel ),
+                                                preProcessingData );
                 } catch ( Exception e ) {
-                    _logger.error( e.getMessage(), e );
+                    _logger.error( e.getMessage(),
+                                   e );
                 }
                 return "";
             }
@@ -288,11 +321,14 @@ public class DefaultProfileImpl implements IDiagramProfile {
             BpsimFactoryImpl.init();
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-                    .put( Resource.Factory.Registry.DEFAULT_EXTENSION, new Bpmn2ResourceFactoryImpl() );
-            resourceSet.getPackageRegistry().put( "http://www.omg.org/spec/BPMN/20100524/MODEL", Bpmn2Package.eINSTANCE );
+                    .put( Resource.Factory.Registry.DEFAULT_EXTENSION,
+                          new Bpmn2ResourceFactoryImpl() );
+            resourceSet.getPackageRegistry().put( "http://www.omg.org/spec/BPMN/20100524/MODEL",
+                                                  Bpmn2Package.eINSTANCE );
             Resource resource = resourceSet.createResource( URI.createURI( "inputStream://dummyUriWithValidSuffix.xml" ) );
             InputStream is = new ByteArrayInputStream( xml.getBytes( "UTF-8" ) );
-            resource.load( is, Collections.EMPTY_MAP );
+            resource.load( is,
+                           Collections.EMPTY_MAP );
             resource.load( Collections.EMPTY_MAP );
             return ( ( DocumentRoot ) resource.getContents().get( 0 ) ).getDefinitions();
         } catch ( Throwable t ) {
@@ -312,5 +348,4 @@ public class DefaultProfileImpl implements IDiagramProfile {
     public String getStencilSetExtensionURL() {
         return "http://oryx-editor.org/stencilsets/extensions/bpmncosts-2.0#";
     }
-
 }

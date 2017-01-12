@@ -21,5 +21,4 @@ public interface BuildRequest {
     double getX();
 
     double getY();
-
 }

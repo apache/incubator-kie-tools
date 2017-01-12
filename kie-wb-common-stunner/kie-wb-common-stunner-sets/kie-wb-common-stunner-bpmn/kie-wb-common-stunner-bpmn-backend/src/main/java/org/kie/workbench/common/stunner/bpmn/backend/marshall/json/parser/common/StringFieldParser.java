@@ -16,17 +16,18 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common;
 
+import java.io.IOException;
+
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonToken;
-
-import java.io.IOException;
 
 public class StringFieldParser extends AbstractParser {
 
     private final String name;
     private final String value;
 
-    public StringFieldParser( String name, String value ) {
+    public StringFieldParser( String name,
+                              String value ) {
         this.name = name;
         this.value = value;
     }
@@ -55,5 +56,4 @@ public class StringFieldParser extends AbstractParser {
     public boolean isConsumed() {
         return tokenCount == 2;
     }
-
 }

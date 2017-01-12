@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.command.impl;
 
-import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.kie.workbench.common.stunner.core.command.CommandResult;
-
 import java.util.Collection;
 import java.util.LinkedList;
+
+import org.jboss.errai.common.client.api.annotations.NonPortable;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 
 @NonPortable
 public abstract class CommandResultBuilder<V> {
@@ -32,9 +32,9 @@ public abstract class CommandResultBuilder<V> {
     private String message = RESULT_SUCCESS;
     private final Collection<V> violations = new LinkedList<>();
 
-    public abstract boolean isError( V violation );
+    public abstract boolean isError( final V violation );
 
-    public abstract String getMessage( V violation );
+    public abstract String getMessage( final V violation );
 
     public CommandResultBuilder() {
     }
@@ -53,11 +53,11 @@ public abstract class CommandResultBuilder<V> {
         return this;
     }
 
-    public void setType( CommandResult.Type type ) {
+    public void setType( final CommandResult.Type type ) {
         this.type = type;
     }
 
-    public void setMessage( String message ) {
+    public void setMessage( final String message ) {
         this.message = message;
     }
 
@@ -85,7 +85,8 @@ public abstract class CommandResultBuilder<V> {
         this.type = this.type == null ? CommandResult.Type.INFO : this.type;
         this.message = ( this.message == null || this.message.trim().length() == 0 )
                 ? RESULT_SUCCESS : this.message;
-        return new CommandResultImpl<>( this.type, this.message, this.violations );
+        return new CommandResultImpl<>( this.type,
+                                        this.message,
+                                        this.violations );
     }
-
 }

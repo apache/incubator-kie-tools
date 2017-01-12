@@ -23,16 +23,13 @@ public interface CardinalityRule extends RuleByRole {
 
     /**
      * The minimum number of occurrences that an Element can have in a diagram.
-     *
      * @return
      */
     int getMinOccurrences();
 
     /**
      * The maximum number of occurrences that an Element can have in a diagram.
-     *
      * @return
      */
     int getMaxOccurrences();
-
 }

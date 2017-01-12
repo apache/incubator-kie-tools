@@ -37,5 +37,4 @@ public final class SessionDiagramOpenedEvent implements UberFireEvent {
     public String toString() {
         return "SessionDiagramOpenedEvent [session=" + session.toString() + "]";
     }
-
 }

@@ -25,7 +25,8 @@ class ToolbarImpl extends AbstractToolbar<ClientSession> {
 
     ToolbarImpl( final ManagedInstance<AbstractToolbarItem<ClientSession>> toolbarItems,
                  final ToolbarView view ) {
-        super( toolbarItems, view );
+        super( toolbarItems,
+               view );
         doInit();
     }
 }

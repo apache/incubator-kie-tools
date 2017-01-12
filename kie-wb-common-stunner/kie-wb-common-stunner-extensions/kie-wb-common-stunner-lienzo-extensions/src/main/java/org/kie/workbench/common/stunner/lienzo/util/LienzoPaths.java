@@ -21,51 +21,70 @@ public class LienzoPaths {
 
     /**
      * Append the path parts for creating a rectangle multi-path shape.
-     *
-     * @param w    The rectangle width
-     * @param h    The rectangle height
-     * @param r    The rectangle corner radius
+     * @param w The rectangle width
+     * @param h The rectangle height
+     * @param r The rectangle corner radius
      */
     public static MultiPath rectangle( final double w,
                                        final double h,
                                        final double r ) {
-        return rectangle( new MultiPath(), w, h, r );
-
+        return rectangle( new MultiPath(),
+                          w,
+                          h,
+                          r );
     }
 
     /**
      * Append the path parts for creating a rectangle multi-path shape.
-     *
      * @param path The source multipath
-     * @param w    The rectangle width
-     * @param h    The rectangle height
-     * @param r    The rectangle corner radius
+     * @param w The rectangle width
+     * @param h The rectangle height
+     * @param r The rectangle corner radius
      */
     public static MultiPath rectangle( final MultiPath path,
-                                     final double w,
-                                     final double h,
-                                     final double r ) {
+                                       final double w,
+                                       final double h,
+                                       final double r ) {
         if ( ( w > 0 ) && ( h > 0 ) ) {
             if ( ( r > 0 ) && ( r < ( w / 2 ) ) && ( r < ( h / 2 ) ) ) {
-                path.M( r, 0 );
-                path.L( w - r, 0 );
-                path.A( w, 0, w, r, r );
-                path.L( w, h - r );
-                path.A( w, h, w - r, h, r );
-                path.L( r, h );
-                path.A( 0, h, 0, h - r, r );
-                path.L( 0, r );
-                path.A( 0, 0, r, 0, r );
-
+                path.M( r,
+                        0 );
+                path.L( w - r,
+                        0 );
+                path.A( w,
+                        0,
+                        w,
+                        r,
+                        r );
+                path.L( w,
+                        h - r );
+                path.A( w,
+                        h,
+                        w - r,
+                        h,
+                        r );
+                path.L( r,
+                        h );
+                path.A( 0,
+                        h,
+                        0,
+                        h - r,
+                        r );
+                path.L( 0,
+                        r );
+                path.A( 0,
+                        0,
+                        r,
+                        0,
+                        r );
             } else {
-                path.rect( 0, 0, w, h );
-
+                path.rect( 0,
+                           0,
+                           w,
+                           h );
             }
             path.Z();
-
         }
         return path;
-
     }
-
 }

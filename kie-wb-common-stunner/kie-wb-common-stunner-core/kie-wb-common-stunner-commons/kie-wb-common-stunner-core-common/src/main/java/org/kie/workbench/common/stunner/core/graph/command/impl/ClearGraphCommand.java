@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Iterator;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -25,8 +27,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-import java.util.Iterator;
-
 /**
  * A Command to clear all elements in the graph structure
  * TODO: Undo not supported yet.
@@ -36,7 +36,7 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
 
     private final String rootUUID;
 
-    public ClearGraphCommand( @MapsTo( "rootUUID" ) String rootUUID ) {
+    public ClearGraphCommand( final @MapsTo( "rootUUID" ) String rootUUID ) {
         this.rootUUID = rootUUID;
     }
 
@@ -70,14 +70,15 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
 
     protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
         if ( hasRootUUID() ) {
-            checkNodeNotNull( context, rootUUID );
+            checkNodeNotNull( context,
+                              rootUUID );
         }
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        throw new UnsupportedOperationException( "Undo pperation for Clear Graph Command is still not supported. " );
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
+        throw new UnsupportedOperationException( "Undo operation for Clear Graph Command is still not supported. " );
     }
 
     public String getRootUUID() {

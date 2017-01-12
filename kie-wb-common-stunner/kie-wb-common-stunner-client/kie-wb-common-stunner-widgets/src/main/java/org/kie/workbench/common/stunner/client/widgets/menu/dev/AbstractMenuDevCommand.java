@@ -51,5 +51,4 @@ public abstract class AbstractMenuDevCommand
     protected Graph getGraph() {
         return null != getDiagram() ? getDiagram().getGraph() : null;
     }
-
 }

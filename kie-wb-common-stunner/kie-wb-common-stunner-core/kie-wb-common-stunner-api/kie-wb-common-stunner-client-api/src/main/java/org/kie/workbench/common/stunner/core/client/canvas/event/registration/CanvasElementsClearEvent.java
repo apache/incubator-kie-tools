@@ -26,5 +26,4 @@ public final class CanvasElementsClearEvent extends AbstractCanvasHandlerEvent<C
     public CanvasElementsClearEvent( final CanvasHandler canvasHandler ) {
         super( canvasHandler );
     }
-
 }

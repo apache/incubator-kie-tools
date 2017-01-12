@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.palette.factory;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoDefinitionSetPalette;
@@ -24,10 +28,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.factory.A
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.DefaultDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class LienzoDefinitionSetPaletteFactoryImpl
@@ -39,7 +39,10 @@ public class LienzoDefinitionSetPaletteFactoryImpl
                                                   final SyncBeanManager beanManager,
                                                   final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
                                                   final LienzoDefinitionSetPalette palette ) {
-        super( shapeManager, beanManager, defaultPaletteDefinitionFactoryInstance, palette );
+        super( shapeManager,
+               beanManager,
+               defaultPaletteDefinitionFactoryInstance,
+               palette );
     }
 
     @PostConstruct
@@ -51,7 +54,8 @@ public class LienzoDefinitionSetPaletteFactoryImpl
     @Override
     protected void beforeBindPalette( final DefinitionSetPalette paletteDefinition,
                                       final String shapeSetId ) {
-        super.beforeBindPalette( paletteDefinition, shapeSetId );
+        super.beforeBindPalette( paletteDefinition,
+                                 shapeSetId );
         palette.setShapeSetId( shapeSetId );
     }
 

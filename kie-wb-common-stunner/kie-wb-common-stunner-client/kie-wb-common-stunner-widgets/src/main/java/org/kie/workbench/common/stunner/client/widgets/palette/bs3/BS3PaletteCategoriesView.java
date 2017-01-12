@@ -16,9 +16,16 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.bs3;
 
+import java.util.LinkedList;
+import java.util.List;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -32,10 +39,6 @@ import org.gwtbootstrap3.client.ui.NavPills;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
-import javax.enterprise.context.Dependent;
-import java.util.LinkedList;
-import java.util.List;
 
 // TODO: i18n.
 @Dependent
@@ -96,7 +99,9 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
                                           final IsWidget view ) {
         final AnchorListItem item = new AnchorListItem();
         item.setId( categoryId );
-        item.setTitle( getCategoryTitle( categoryId, categoryTitle, categoryGlyphId ) );
+        item.setTitle( getCategoryTitle( categoryId,
+                                         categoryTitle,
+                                         categoryGlyphId ) );
         if ( null != view ) {
             if ( view instanceof Icon ) {
                 final Icon icon = ( Icon ) view;
@@ -107,50 +112,64 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
                 if ( null != rotate ) {
                     item.setIconRotate( rotate );
                 }
-
             } else {
                 item.add( view );
-
             }
-
         } else {
             item.setText( categoryTitle );
         }
+
         // Styling.
         final double w = iconWidth + padding;
         final double h = iconHeight + padding;
-        item.getElement().getStyle().setWidth( w, Style.Unit.PX );
-        item.getElement().getStyle().setHeight( h, Style.Unit.PX );
+        item.getElement().getStyle().setWidth( w,
+                                               Style.Unit.PX );
+        item.getElement().getStyle().setHeight( h,
+                                                Style.Unit.PX );
         item.getElement().getStyle().setTextAlign( Style.TextAlign.CENTER );
         final HandlerRegistration handlerRegistration = item.addDomHandler( mouseOverEvent ->
-                presenter.onItemHover( categoryId, mouseOverEvent.getX(), mouseOverEvent.getY(), mouseOverEvent.getX(), mouseOverEvent.getY() ), MouseOverEvent.getType() );
+                                                                                    presenter.onItemHover( categoryId,
+                                                                                                           mouseOverEvent.getX(),
+                                                                                                           mouseOverEvent.getY(),
+                                                                                                           mouseOverEvent.getX(),
+                                                                                                           mouseOverEvent.getY() ),
+                                                                            MouseOverEvent.getType() );
         final HandlerRegistration handlerRegistration1 = item.addClickHandler( clickEvent -> {
             clearItemMouseDownTimer();
-            presenter.onItemClick( categoryId, clickEvent.getX(), clickEvent.getY(), clickEvent.getX(), clickEvent.getY() );
-
+            presenter.onItemClick( categoryId,
+                                   clickEvent.getX(),
+                                   clickEvent.getY(),
+                                   clickEvent.getX(),
+                                   clickEvent.getY() );
         } );
         final HandlerRegistration handlerRegistration2 = item.addDomHandler( mouseOutEvent ->
-                presenter.onItemOut( categoryId ), MouseOutEvent.getType() );
+                                                                                     presenter.onItemOut( categoryId ),
+                                                                             MouseOutEvent.getType() );
         final HandlerRegistration handlerRegistration3 = item.addDomHandler( mouseDownEvent -> {
-            final int mX = mouseDownEvent.getClientX();
-            final int mY = mouseDownEvent.getClientY();
-            final int iX = mouseDownEvent.getX();
-            final int iY = mouseDownEvent.getY();
-            BS3PaletteCategoriesView.this.itemMouseDownTimer = new Timer() {
-                @Override
-                public void run() {
-                    presenter.onItemMouseDown( categoryId, mX, mY, iX, iY );
-                }
-            };
-            BS3PaletteCategoriesView.this.itemMouseDownTimer.schedule( MOUSE_DOWN_TIMER_DURATION );
-        }, MouseDownEvent.getType() );
+                                                                                 final int mX = mouseDownEvent.getClientX();
+                                                                                 final int mY = mouseDownEvent.getClientY();
+                                                                                 final int iX = mouseDownEvent.getX();
+                                                                                 final int iY = mouseDownEvent.getY();
+                                                                                 BS3PaletteCategoriesView.this.itemMouseDownTimer = new Timer() {
+                                                                                     @Override
+                                                                                     public void run() {
+                                                                                         presenter.onItemMouseDown( categoryId,
+                                                                                                                    mX,
+                                                                                                                    mY,
+                                                                                                                    iX,
+                                                                                                                    iY );
+                                                                                     }
+                                                                                 };
+                                                                                 BS3PaletteCategoriesView.this.itemMouseDownTimer.schedule( MOUSE_DOWN_TIMER_DURATION );
+                                                                             },
+                                                                             MouseDownEvent.getType() );
         final HandlerRegistration handlerRegistration4 = item.addDomHandler( mouseMoveEvent -> {
-            if ( null != BS3PaletteCategoriesView.this.itemMouseDownTimer ) {
-                BS3PaletteCategoriesView.this.itemMouseDownTimer.run();
-                BS3PaletteCategoriesView.this.clearItemMouseDownTimer();
-
-            }
-        }, MouseMoveEvent.getType() );
+                                                                                 if ( null != BS3PaletteCategoriesView.this.itemMouseDownTimer ) {
+                                                                                     BS3PaletteCategoriesView.this.itemMouseDownTimer.run();
+                                                                                     BS3PaletteCategoriesView.this.clearItemMouseDownTimer();
+                                                                                 }
+                                                                             },
+                                                                             MouseMoveEvent.getType() );
         handlerRegistrationList.add( handlerRegistration );
         handlerRegistrationList.add( handlerRegistration1 );
         handlerRegistrationList.add( handlerRegistration2 );
@@ -166,8 +185,9 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
                                      final String categoryGlyphId ) {
         return null == categoryGlyphId ? categoryTitle :
                 categoryTitle + CLICK_OR_DRAG_TOOLTIP_TEXT +
-                        categoryGlyphId.substring( categoryGlyphId.lastIndexOf( "." ) + 1, categoryGlyphId.length() )
-                + ")";
+                        categoryGlyphId.substring( categoryGlyphId.lastIndexOf( "." ) + 1,
+                                                   categoryGlyphId.length() )
+                        + ")";
     }
 
     private void setPadding( final AnchorListItem item ) {
@@ -176,7 +196,6 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
         item.setPaddingTop( p );
         item.setPaddingLeft( p );
         item.setPaddingRight( p );
-
     }
 
     @Override
@@ -194,15 +213,11 @@ public class BS3PaletteCategoriesView extends Composite implements BS3PaletteCat
             }
             this.itemMouseDownTimer = null;
         }
-
     }
 
     private void clearHandlers() {
         for ( final HandlerRegistration registration : handlerRegistrationList ) {
             registration.removeHandler();
-
         }
-
     }
-
 }

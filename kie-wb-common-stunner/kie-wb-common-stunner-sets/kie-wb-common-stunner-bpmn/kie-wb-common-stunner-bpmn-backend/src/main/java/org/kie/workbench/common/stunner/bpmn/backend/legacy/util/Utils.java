@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.util;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
@@ -26,16 +28,16 @@ import org.jboss.drools.DroolsFactory;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.MetaDataType;
 
-import java.util.List;
-
 public class Utils {
 
-    public static String getMetaDataValue( List<ExtensionAttributeValue> extensionValues, String metaDataName ) {
+    public static String getMetaDataValue( List<ExtensionAttributeValue> extensionValues,
+                                           String metaDataName ) {
         if ( extensionValues != null && extensionValues.size() > 0 ) {
             for ( ExtensionAttributeValue extattrval : extensionValues ) {
                 FeatureMap extensionElements = extattrval.getValue();
                 List<MetaDataType> metadataExtensions = ( List<MetaDataType> ) extensionElements
-                        .get( DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA, true );
+                        .get( DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA,
+                              true );
                 for ( MetaDataType metaType : metadataExtensions ) {
                     if ( metaType.getName() != null && metaType.getName().equals( metaDataName ) && metaType.getMetaValue() != null && metaType.getMetaValue().length() > 0 ) {
                         return metaType.getMetaValue();
@@ -46,7 +48,9 @@ public class Utils {
         return null;
     }
 
-    public static void setMetaDataExtensionValue( BaseElement element, String metaDataName, String metaDataValue ) {
+    public static void setMetaDataExtensionValue( BaseElement element,
+                                                  String metaDataName,
+                                                  String metaDataValue ) {
         if ( element != null ) {
             MetaDataType eleMetadata = DroolsFactory.eINSTANCE.createMetaDataType();
             eleMetadata.setName( metaDataName );
@@ -56,7 +60,8 @@ public class Utils {
                 element.getExtensionValues().add( extensionElement );
             }
             FeatureMap.Entry eleExtensionElementEntry = new EStructuralFeatureImpl.SimpleFeatureMapEntry(
-                    ( EStructuralFeature.Internal ) DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA, eleMetadata );
+                    ( EStructuralFeature.Internal ) DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA,
+                    eleMetadata );
             element.getExtensionValues().get( 0 ).getValue().add( eleExtensionElementEntry );
         }
     }

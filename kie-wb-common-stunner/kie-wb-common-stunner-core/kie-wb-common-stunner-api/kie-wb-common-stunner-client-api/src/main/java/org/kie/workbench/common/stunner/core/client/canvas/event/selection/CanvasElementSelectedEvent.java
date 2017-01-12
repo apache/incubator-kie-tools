@@ -32,5 +32,4 @@ public final class CanvasElementSelectedEvent extends AbstractCanvasHandlerEvent
     public String getElementUUID() {
         return elementUUID;
     }
-
 }

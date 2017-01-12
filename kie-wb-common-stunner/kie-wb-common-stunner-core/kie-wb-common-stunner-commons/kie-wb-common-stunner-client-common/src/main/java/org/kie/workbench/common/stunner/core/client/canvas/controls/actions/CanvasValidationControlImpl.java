@@ -16,14 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
 
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.*;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationFailEvent;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationSuccessEvent;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationViolation;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidator;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 
 @Dependent
 public class CanvasValidationControlImpl
@@ -48,7 +52,6 @@ public class CanvasValidationControlImpl
         this.canvasValidator = null;
         this.validationSuccessEvent = null;
         this.validationFailEvent = null;
-
     }
 
     @Override
@@ -62,28 +65,26 @@ public class CanvasValidationControlImpl
             final GraphRulesManager rulesManager = canvasHandler.getGraphRulesManager();
             canvasValidator
                     .withRulesManager( rulesManager )
-                    .validate( canvasHandler, new CanvasValidatorCallback() {
+                    .validate( canvasHandler,
+                               new CanvasValidatorCallback() {
 
-                        @Override
-                        public void onSuccess() {
-                            if ( null != validatorCallback ) {
-                                validatorCallback.onSuccess();
-                            }
-                            validationSuccessEvent.fire( new CanvasValidationSuccessEvent( canvasHandler ) );
-                        }
+                                   @Override
+                                   public void onSuccess() {
+                                       if ( null != validatorCallback ) {
+                                           validatorCallback.onSuccess();
+                                       }
+                                       validationSuccessEvent.fire( new CanvasValidationSuccessEvent( canvasHandler ) );
+                                   }
 
-                        @Override
-                        public void onFail( final Iterable<CanvasValidationViolation> violations ) {
-                            if ( null != validatorCallback ) {
-                                validatorCallback.onFail( violations );
-                            }
-                            validationFailEvent.fire( new CanvasValidationFailEvent( canvasHandler, violations ) );
-                        }
-
-                    } );
-
+                                   @Override
+                                   public void onFail( final Iterable<CanvasValidationViolation> violations ) {
+                                       if ( null != validatorCallback ) {
+                                           validatorCallback.onFail( violations );
+                                       }
+                                       validationFailEvent.fire( new CanvasValidationFailEvent( canvasHandler,
+                                                                                                violations ) );
+                                   }
+                               } );
         }
-
     }
-
 }

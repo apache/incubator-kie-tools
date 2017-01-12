@@ -31,7 +31,8 @@ public final class EdgeBuildRequestImpl extends AbstractBuildRequest implements 
                                  final Edge<View<?>, Node> edge,
                                  final Node<View<?>, Edge> inNode,
                                  final Node<View<?>, Edge> outNode ) {
-        super( x, y );
+        super( x,
+               y );
         this.edge = edge;
         this.inNode = inNode;
         this.outNode = outNode;
@@ -40,7 +41,8 @@ public final class EdgeBuildRequestImpl extends AbstractBuildRequest implements 
     public EdgeBuildRequestImpl( final double x,
                                  final double y,
                                  final Edge<View<?>, Node> edge ) {
-        super( x, y );
+        super( x,
+               y );
         this.edge = edge;
     }
 
@@ -58,5 +60,4 @@ public final class EdgeBuildRequestImpl extends AbstractBuildRequest implements 
     public Node<View<?>, Edge> getOutNode() {
         return outNode;
     }
-
 }

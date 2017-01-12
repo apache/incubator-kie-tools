@@ -25,8 +25,9 @@ import org.kie.workbench.common.stunner.core.graph.Element;
  */
 public interface CanvasNameEditionControl<C extends CanvasHandler, E extends Element> extends CanvasRegistationControl<C, E> {
 
-    CanvasNameEditionControl<C, E> show( E item, double x, double y );
+    CanvasNameEditionControl<C, E> show( final E item,
+                                         final double x,
+                                         final double y );
 
     CanvasNameEditionControl<C, E> hide();
-
 }

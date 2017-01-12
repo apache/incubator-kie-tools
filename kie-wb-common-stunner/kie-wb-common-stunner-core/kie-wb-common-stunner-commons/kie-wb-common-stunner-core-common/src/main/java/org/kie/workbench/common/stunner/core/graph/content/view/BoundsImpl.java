@@ -26,8 +26,8 @@ public final class BoundsImpl implements Bounds {
     private BoundImpl lr;
     private BoundImpl ul;
 
-    public BoundsImpl( @MapsTo( "ul" ) BoundImpl ul,
-                       @MapsTo( "lr" ) BoundImpl lr ) {
+    public BoundsImpl( final @MapsTo( "ul" ) BoundImpl ul,
+                       final @MapsTo( "lr" ) BoundImpl lr ) {
         this.ul = ul;
         this.lr = lr;
     }
@@ -42,11 +42,11 @@ public final class BoundsImpl implements Bounds {
         return ul;
     }
 
-    public void setLowerRight( BoundImpl lr ) {
+    public void setLowerRight( final BoundImpl lr ) {
         this.lr = lr;
     }
 
-    public void setUpperLeft( BoundImpl ul ) {
+    public void setUpperLeft( final BoundImpl ul ) {
         this.ul = ul;
     }
 
@@ -54,5 +54,4 @@ public final class BoundsImpl implements Bounds {
     public String toString() {
         return "UL=" + ul + " | LR=" + lr;
     }
-
 }

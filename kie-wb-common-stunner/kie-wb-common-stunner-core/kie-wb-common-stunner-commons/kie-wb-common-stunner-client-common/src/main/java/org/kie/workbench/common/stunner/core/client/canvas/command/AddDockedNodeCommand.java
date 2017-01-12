@@ -31,7 +31,9 @@ public final class AddDockedNodeCommand extends AbstractCanvasGraphCommand {
     private final Node candidate;
     private final String ssid;
 
-    public AddDockedNodeCommand( final Node parent, final Node candidate, final String ssid ) {
+    public AddDockedNodeCommand( final Node parent,
+                                 final Node candidate,
+                                 final String ssid ) {
         this.parent = parent;
         this.candidate = candidate;
         this.ssid = ssid;
@@ -39,12 +41,14 @@ public final class AddDockedNodeCommand extends AbstractCanvasGraphCommand {
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddDockedNodeCommand( parent, candidate );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddDockedNodeCommand( parent,
+                                                                                                  candidate );
     }
 
     @Override
     protected org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new AddCanvasDockedNodeCommand( parent, candidate, ssid );
+        return new AddCanvasDockedNodeCommand( parent,
+                                               candidate,
+                                               ssid );
     }
-
 }

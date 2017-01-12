@@ -28,33 +28,40 @@ public class WiresShapeDragProxy extends AbstractDragProxy<WiresShape> {
                                 final int y,
                                 final int timeout,
                                 final Callback callback ) {
-        super( layer, shape, x, y, timeout, callback );
-
+        super( layer,
+               shape,
+               x,
+               y,
+               timeout,
+               callback );
     }
 
     @Override
-    protected void addToLayer( final Layer layer, final WiresShape shape ) {
+    protected void addToLayer( final Layer layer,
+                               final WiresShape shape ) {
         getWiresManager( layer ).register( shape );
         getWiresManager( layer ).getMagnetManager().createMagnets( shape );
     }
 
     @Override
-    protected void removeFromLayer( final Layer layer, final WiresShape shape ) {
+    protected void removeFromLayer( final Layer layer,
+                                    final WiresShape shape ) {
         getWiresManager( layer ).deregister( shape );
     }
 
     @Override
-    protected void setX( final WiresShape shape, final int x ) {
+    protected void setX( final WiresShape shape,
+                         final int x ) {
         shape.setX( x );
     }
 
     @Override
-    protected void setY( final WiresShape shape, final int y ) {
+    protected void setY( final WiresShape shape,
+                         final int y ) {
         shape.setY( y );
     }
 
     protected WiresManager getWiresManager( final Layer layer ) {
         return WiresManager.get( layer );
     }
-
 }

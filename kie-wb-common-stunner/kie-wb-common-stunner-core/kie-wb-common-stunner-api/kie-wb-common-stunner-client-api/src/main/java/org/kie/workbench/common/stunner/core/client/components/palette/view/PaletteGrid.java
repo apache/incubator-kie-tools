@@ -25,5 +25,4 @@ public interface PaletteGrid {
     int getIconSize();
 
     int getPadding();
-
 }

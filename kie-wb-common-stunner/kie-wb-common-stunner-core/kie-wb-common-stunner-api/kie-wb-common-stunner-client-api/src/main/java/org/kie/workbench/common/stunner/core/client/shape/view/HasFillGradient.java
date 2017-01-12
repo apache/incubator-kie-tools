@@ -19,9 +19,10 @@ package org.kie.workbench.common.stunner.core.client.shape.view;
 public interface HasFillGradient<T> {
 
     enum Type {
-        LINEAR;
+        LINEAR
     }
 
-    T setFillGradient( Type type, String startColor, String endColor );
-
+    T setFillGradient( final Type type,
+                       final String startColor,
+                       final String endColor );
 }

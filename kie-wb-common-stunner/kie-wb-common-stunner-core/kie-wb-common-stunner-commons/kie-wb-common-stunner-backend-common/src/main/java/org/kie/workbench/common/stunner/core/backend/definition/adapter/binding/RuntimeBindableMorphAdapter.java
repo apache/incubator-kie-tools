@@ -16,17 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.binding;
 
+import java.util.Collection;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.BindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinitionProvider;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.util.Collection;
 
 @Dependent
 public class RuntimeBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
@@ -34,17 +34,19 @@ public class RuntimeBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
     Instance<MorphDefinitionProvider> morphDefinitionInstances;
 
     @Inject
-    public RuntimeBindableMorphAdapter( DefinitionUtils definitionUtils,
-                                        FactoryManager factoryManager,
-                                        Instance<MorphDefinitionProvider> morphDefinitionInstances ) {
-        super( definitionUtils, factoryManager );
+    public RuntimeBindableMorphAdapter( final DefinitionUtils definitionUtils,
+                                        final FactoryManager factoryManager,
+                                        final Instance<MorphDefinitionProvider> morphDefinitionInstances ) {
+        super( definitionUtils,
+               factoryManager );
         this.morphDefinitionInstances = morphDefinitionInstances;
     }
 
-    public RuntimeBindableMorphAdapter( DefinitionUtils definitionUtils,
-                                        FactoryManager factoryManager,
-                                        Collection<MorphDefinition> morphDefinitions1 ) {
-        super( definitionUtils, factoryManager );
+    public RuntimeBindableMorphAdapter( final DefinitionUtils definitionUtils,
+                                        final FactoryManager factoryManager,
+                                        final Collection<MorphDefinition> morphDefinitions1 ) {
+        super( definitionUtils,
+               factoryManager );
         morphDefinitions.addAll( morphDefinitions1 );
     }
 
@@ -71,7 +73,7 @@ public class RuntimeBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
     }
 
     @Override
-    public boolean accepts( Class<?> type ) {
+    public boolean accepts( final Class<?> type ) {
         return true;
     }
 }

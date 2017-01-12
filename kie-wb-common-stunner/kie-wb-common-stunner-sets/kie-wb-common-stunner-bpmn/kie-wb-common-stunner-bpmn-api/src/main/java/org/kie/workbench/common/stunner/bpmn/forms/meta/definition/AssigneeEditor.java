@@ -24,6 +24,8 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 @java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
 @java.lang.annotation.Target( { ElementType.TYPE, ElementType.FIELD } )
 public @interface AssigneeEditor {
+
     String defaultValue() default "";
+
     AssigneeType type() default AssigneeType.USER;
 }

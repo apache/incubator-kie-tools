@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class DefaultRuleViolations implements RuleViolations {
@@ -52,5 +52,4 @@ public class DefaultRuleViolations implements RuleViolations {
     public Iterable<RuleViolation> violations( final RuleViolation.Type violationType ) {
         return violations;
     }
-
 }

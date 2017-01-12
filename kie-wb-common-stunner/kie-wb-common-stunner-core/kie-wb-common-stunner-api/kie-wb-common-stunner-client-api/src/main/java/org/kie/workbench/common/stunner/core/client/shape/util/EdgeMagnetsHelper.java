@@ -20,6 +20,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public interface EdgeMagnetsHelper {
 
-    int[] getDefaultMagnetsIndex( ShapeView<?> sourceView, ShapeView<?> targetView );
-
+    int[] getDefaultMagnetsIndex( final ShapeView<?> sourceView,
+                                  final ShapeView<?> targetView );
 }

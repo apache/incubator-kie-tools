@@ -15,10 +15,20 @@
 
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormPropertiesWidget;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.WorkbenchContextId;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
@@ -27,12 +37,6 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 @Dependent
 @WorkbenchScreen( identifier = FormsPropertiesScreen.SCREEN_ID )
@@ -103,8 +107,7 @@ public class FormsPropertiesScreen {
     private void updateTitle( final String title ) {
         // Change screen title.
         FormsPropertiesScreen.this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest, this.title ) );
-
+        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                       this.title ) );
     }
-
 }

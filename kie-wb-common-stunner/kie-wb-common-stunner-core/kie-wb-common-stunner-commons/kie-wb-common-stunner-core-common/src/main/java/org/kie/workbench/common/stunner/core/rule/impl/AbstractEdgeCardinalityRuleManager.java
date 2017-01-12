@@ -27,5 +27,4 @@ public abstract class AbstractEdgeCardinalityRuleManager extends AbstractRuleMan
     public boolean supports( final Rule rule ) {
         return rule instanceof EdgeCardinalityRule;
     }
-
 }

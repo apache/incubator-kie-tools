@@ -25,15 +25,13 @@ public interface Animation<S> {
         void onFrame();
 
         void onComplete();
-
     }
 
     S getSource();
 
-    Animation setCallback( AnimationCallback callback );
+    Animation setCallback( final AnimationCallback callback );
 
-    Animation setDuration( long duration );
+    Animation setDuration( final long duration );
 
     void run();
-
 }

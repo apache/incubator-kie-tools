@@ -16,18 +16,18 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.bs3;
 
+import java.util.List;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.logging.Logger;
 
 @Dependent
 public class BS3PaletteCategories
@@ -38,18 +38,20 @@ public class BS3PaletteCategories
 
     public interface View extends UberView<BS3PaletteCategories> {
 
-        View setPadding( int padding );
+        View setPadding( final int padding );
 
-        View setIconWidth( int iconSize );
+        View setIconWidth( final int iconSize );
 
-        View setIconHeight( int iconSize );
+        View setIconHeight( final int iconSize );
 
-        View setBackgroundColor( String color );
+        View setBackgroundColor( final String color );
 
-        View add( String categoryId, String categoryTitle, String categoryGlyphId, IsWidget view );
+        View add( final String categoryId,
+                  final String categoryTitle,
+                  final String categoryGlyphId,
+                  final IsWidget view );
 
         View clear();
-
     }
 
     View view;
@@ -97,20 +99,20 @@ public class BS3PaletteCategories
         final List<DefinitionPaletteCategory> categories = categoryItems.getItems();
         if ( null != categories && !categories.isEmpty() ) {
             for ( final DefinitionPaletteCategory category : categories ) {
-                view.add( category.getId(), category.getTitle(), category.getDefinitionId(), bs3PaletteWidget.getCategoryView( category.getId() ) );
-
+                view.add( category.getId(),
+                          category.getTitle(),
+                          category.getDefinitionId(),
+                          bs3PaletteWidget.getCategoryView( category.getId() ) );
             }
-
         } else {
             clear();
-
         }
+
         return null;
     }
 
     public void clear() {
         view.clear();
-
     }
 
     public View getView() {
@@ -121,7 +123,6 @@ public class BS3PaletteCategories
     protected void doDestroy() {
         view.clear();
         this.view = null;
-
     }
 
     @Override
@@ -130,7 +131,6 @@ public class BS3PaletteCategories
         final List<DefinitionPaletteCategory> categories = categoryItems.getItems();
         if ( null != categories && categories.size() > index ) {
             return categories.get( index ).getId();
-
         }
         return null;
     }
@@ -141,18 +141,18 @@ public class BS3PaletteCategories
                       final int itemX,
                       final int itemY ) {
         if ( null != itemHoverCallback ) {
-            itemHoverCallback.onItemHover( id, mouseX, mouseY, itemX, itemY );
-
+            itemHoverCallback.onItemHover( id,
+                                           mouseX,
+                                           mouseY,
+                                           itemX,
+                                           itemY );
         }
-
     }
 
     void onItemOut( final String id ) {
         if ( null != itemOutCallback ) {
             itemOutCallback.onItemOut( id );
-
         }
-
     }
 
     void onItemClick( final String id,
@@ -161,22 +161,26 @@ public class BS3PaletteCategories
                       final int itemX,
                       final int itemY ) {
         if ( null != itemClickCallback ) {
-            itemClickCallback.onItemClick( id, mouseX, mouseY, itemX, itemY );
-
+            itemClickCallback.onItemClick( id,
+                                           mouseX,
+                                           mouseY,
+                                           itemX,
+                                           itemY );
         }
-
     }
 
     void onItemMouseDown( final String id,
-                      final int mouseX,
-                      final int mouseY,
-                      final int itemX,
-                      final int itemY ) {
+                          final int mouseX,
+                          final int mouseY,
+                          final int itemX,
+                          final int itemY ) {
         if ( null != itemMouseDownCallback ) {
-            itemMouseDownCallback.onItemMouseDown( id, mouseX, mouseY, itemX, itemY );
-
+            itemMouseDownCallback.onItemMouseDown( id,
+                                                   mouseX,
+                                                   mouseY,
+                                                   itemX,
+                                                   itemY );
         }
-
     }
 
     private int getIndex( final String categoryId ) {
@@ -186,14 +190,10 @@ public class BS3PaletteCategories
             for ( final DefinitionPaletteCategory category : categories ) {
                 if ( category.getId().equals( categoryId ) ) {
                     return x;
-
                 }
                 x++;
-
             }
-
         }
         return -1;
     }
-
 }

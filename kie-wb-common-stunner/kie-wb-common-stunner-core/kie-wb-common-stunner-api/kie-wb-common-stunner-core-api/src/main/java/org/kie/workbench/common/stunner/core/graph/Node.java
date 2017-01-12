@@ -26,5 +26,4 @@ public interface Node<C, E extends Edge> extends Element<C> {
     List<E> getInEdges();
 
     List<E> getOutEdges();
-
 }

@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -27,9 +30,6 @@ import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.DynamicIconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class SubprocessShapeDef
         extends AbstractShapeDef<ReusableSubprocess>
@@ -100,8 +100,8 @@ public final class SubprocessShapeDef
     @Override
     public Map<ShapeDef<ReusableSubprocess>, HasChildren.Layout> getChildShapeDefs() {
         return new HashMap<ShapeDef<ReusableSubprocess>, HasChildren.Layout>() {{
-            put( new ProcessIconProxy(), HasChildren.Layout.TOP );
-
+            put( new ProcessIconProxy(),
+                 HasChildren.Layout.TOP );
         }};
     }
 
@@ -123,16 +123,16 @@ public final class SubprocessShapeDef
     private static final PictureGlyphDef<ReusableSubprocess, BPMNPictures> SUBPROCESS_GLYPH_DEF =
             new PictureGlyphDef<ReusableSubprocess, BPMNPictures>() {
 
-        @Override
-        public String getGlyphDescription( ReusableSubprocess element ) {
-            return element.getDescription();
-        }
+                @Override
+                public String getGlyphDescription( ReusableSubprocess element ) {
+                    return element.getDescription();
+                }
 
-        @Override
-        public BPMNPictures getSource( final Class<?> type ) {
-            return BPMNPictures.SUB_PROCESS;
-        }
-    };
+                @Override
+                public BPMNPictures getSource( final Class<?> type ) {
+                    return BPMNPictures.SUB_PROCESS;
+                }
+            };
 
     @Override
     public GlyphDef<ReusableSubprocess> getGlyphDef() {
@@ -184,7 +184,5 @@ public final class SubprocessShapeDef
         public Icons getIcon( final ReusableSubprocess definition ) {
             return Icons.PLUS;
         }
-
     }
-
 }

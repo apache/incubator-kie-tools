@@ -21,5 +21,4 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public interface DefinitionSetResourceType extends ResourceTypeDefinition {
 
     Class<?> getDefinitionSetType();
-
 }

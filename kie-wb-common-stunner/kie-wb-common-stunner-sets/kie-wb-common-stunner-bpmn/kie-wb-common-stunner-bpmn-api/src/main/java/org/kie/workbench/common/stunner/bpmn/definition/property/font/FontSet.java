@@ -46,9 +46,9 @@ public class FontSet implements BPMNPropertySet {
 
     public FontSet() {
         this( new FontFamily(),
-                new FontColor(),
-                new FontSize(),
-                new FontBorderSize() );
+              new FontColor(),
+              new FontSize(),
+              new FontBorderSize() );
     }
 
     public FontSet( @MapsTo( "fontFamily" ) FontFamily fontFamily,

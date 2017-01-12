@@ -25,12 +25,13 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 public interface ModelCardinalityRuleManager extends CardinalityRuleManager {
 
     /**
-     *  It checks cardinality rules and evaluates if the given candidate role can be added or removed
+     * It checks cardinality rules and evaluates if the given candidate role can be added or removed
      * as the given count value .for this role.
      * @param label The role/label to add or remove.
      * @param count The count value for this roles.
      * @param operation Add or remove
      */
-    RuleViolations evaluate( String label, int count, Operation operation );
-
+    RuleViolations evaluate( final String label,
+                             final int count,
+                             final Operation operation );
 }

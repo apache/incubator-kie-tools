@@ -16,15 +16,19 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
+import java.util.logging.Logger;
+
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
-import org.kie.workbench.common.stunner.core.client.shape.view.*;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-
-import java.util.logging.Logger;
 
 /**
  * A base shape impl for handling contents of node graph elements.
@@ -75,18 +79,19 @@ public abstract class AbstractShape<W, E extends Node<View<W>, Edge>, V extends 
     }
 
     @Override
-    public void applyPosition( final E element, final MutationContext mutationContext ) {
+    public void applyPosition( final E element,
+                               final MutationContext mutationContext ) {
         final Point2D position = GraphUtils.getPosition( element.getContent() );
         view.setShapeX( position.getX() );
         view.setShapeY( position.getY() );
-
     }
 
     @Override
-    public void applyProperties( final E element, final MutationContext mutationContext ) {
+    public void applyProperties( final E element,
+                                 final MutationContext mutationContext ) {
         // The graph element's name.
-        _applyElementName( element, mutationContext );
-
+        _applyElementName( element,
+                           mutationContext );
     }
 
     @Override
@@ -97,27 +102,30 @@ public abstract class AbstractShape<W, E extends Node<View<W>, Edge>, V extends 
         // TODO
     }
 
-    protected void applyFillColor( final String color, final MutationContext mutationContext ) {
+    protected void applyFillColor( final String color,
+                                   final MutationContext mutationContext ) {
         if ( color != null && color.trim().length() > 0 ) {
             final boolean hasGradient = view instanceof HasFillGradient;
             if ( !hasGradient ) {
                 view.setFillColor( color );
-
             } else {
-                ( ( HasFillGradient ) view ).setFillGradient( HasFillGradient.Type.LINEAR, color, "#FFFFFF" );
-
+                ( ( HasFillGradient ) view ).setFillGradient( HasFillGradient.Type.LINEAR,
+                                                              color,
+                                                              "#FFFFFF" );
             }
-
         }
     }
 
-    protected void applyFillAlpha( final Double alpha, final MutationContext mutationContext ) {
+    protected void applyFillAlpha( final Double alpha,
+                                   final MutationContext mutationContext ) {
         if ( null != alpha ) {
             view.setFillAlpha( alpha );
         }
     }
 
-    protected void applyBorders( final String color, final Double width, final MutationContext mutationContext ) {
+    protected void applyBorders( final String color,
+                                 final Double width,
+                                 final MutationContext mutationContext ) {
         if ( color != null && color.trim().length() > 0 ) {
             view.setStrokeColor( color );
         }
@@ -126,7 +134,8 @@ public abstract class AbstractShape<W, E extends Node<View<W>, Edge>, V extends 
         }
     }
 
-    protected void applyBorderAlpha( final Double alpha, final MutationContext mutationContext ) {
+    protected void applyBorderAlpha( final Double alpha,
+                                     final MutationContext mutationContext ) {
         if ( null != alpha ) {
             view.setStrokeAlpha( alpha );
         }
@@ -148,15 +157,15 @@ public abstract class AbstractShape<W, E extends Node<View<W>, Edge>, V extends 
             }
             if ( size != null && size > 0 ) {
                 hasTitle.setTitleFontSize( size );
-
             }
-            applyFontAlpha( hasTitle, alpha, mutationContext );
+            applyFontAlpha( hasTitle,
+                            alpha,
+                            mutationContext );
             if ( borderSize != null && borderSize > 0 ) {
                 hasTitle.setTitleStrokeWidth( borderSize );
             }
             // Refresh to update size changes etc.
             hasTitle.refreshTitle();
-
         }
     }
 
@@ -166,35 +175,36 @@ public abstract class AbstractShape<W, E extends Node<View<W>, Edge>, V extends 
         if ( null != alpha ) {
             hasTitle.setTitleAlpha( alpha );
         }
-
     }
 
-    protected void applySize( final HasSize hasSize, final double width, final double height, final MutationContext mutationContext ) {
-        hasSize.setSize( width, height );
-
+    protected void applySize( final HasSize hasSize,
+                              final double width,
+                              final double height,
+                              final MutationContext mutationContext ) {
+        hasSize.setSize( width,
+                         height );
     }
 
-    protected void applyRadius( final HasRadius hasRadius, final double radius, final MutationContext mutationContext ) {
+    protected void applyRadius( final HasRadius hasRadius,
+                                final double radius,
+                                final MutationContext mutationContext ) {
         if ( radius > 0 ) {
             hasRadius.setRadius( radius );
-
         }
-
     }
 
     protected String getNamePropertyValue( final E element ) {
         return null;
     }
 
-    protected void _applyElementName( final E element, final MutationContext mutationContext ) {
+    protected void _applyElementName( final E element,
+                                      final MutationContext mutationContext ) {
         if ( view instanceof HasTitle ) {
             final HasTitle hasTitle = ( HasTitle ) view;
             final String name = getNamePropertyValue( element );
             hasTitle.setTitle( name );
             hasTitle.refreshTitle();
-
         }
-
     }
 
     protected abstract void doDestroy();
@@ -210,7 +220,8 @@ public abstract class AbstractShape<W, E extends Node<View<W>, Edge>, V extends 
     }
 
     protected boolean isAnimationMutation( final MutationContext mutationContext ) {
-        return ShapeUtils.isAnimationMutation( view, mutationContext );
+        return ShapeUtils.isAnimationMutation( view,
+                                               mutationContext );
     }
 
     @Override

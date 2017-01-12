@@ -32,5 +32,4 @@ public interface OryxManager {
     Bpmn2OryxPropertyManager getPropertyManager();
 
     List<Class<?>> getDefinitions();
-
 }

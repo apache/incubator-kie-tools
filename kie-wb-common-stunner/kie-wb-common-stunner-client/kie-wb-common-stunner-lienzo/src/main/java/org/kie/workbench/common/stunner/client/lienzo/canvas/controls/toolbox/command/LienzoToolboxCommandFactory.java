@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.toolbox.command;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.ait.lienzo.client.core.shape.Shape;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.util.SVGUtils;
@@ -25,9 +28,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.comm
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.RemoveToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewNodeCommand;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class LienzoToolboxCommandFactory extends ToolboxCommandFactory {
@@ -42,7 +42,8 @@ public class LienzoToolboxCommandFactory extends ToolboxCommandFactory {
                                         final ManagedInstance<MoveShapeDownToolboxCommand> moveShapeDownToolboxCommands,
                                         final ManagedInstance<NewNodeCommand> newNodeCommands,
                                         final ManagedInstance<NewConnectorCommand> newConnectorCommands ) {
-        super( newNodeCommands, newConnectorCommands );
+        super( newNodeCommands,
+               newConnectorCommands );
         this.removeToolboxCommands = removeToolboxCommands;
         this.moveShapeUpToolboxCommands = moveShapeUpToolboxCommands;
         this.moveShapeDownToolboxCommands = moveShapeDownToolboxCommands;

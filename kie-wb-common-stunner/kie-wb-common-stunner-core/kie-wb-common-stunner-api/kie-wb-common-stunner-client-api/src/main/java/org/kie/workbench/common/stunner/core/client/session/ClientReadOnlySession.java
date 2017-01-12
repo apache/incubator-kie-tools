@@ -36,5 +36,4 @@ public interface ClientReadOnlySession<C extends Canvas, H extends CanvasHandler
     ZoomControl<C> getZoomControl();
 
     PanControl<C> getPanControl();
-
 }

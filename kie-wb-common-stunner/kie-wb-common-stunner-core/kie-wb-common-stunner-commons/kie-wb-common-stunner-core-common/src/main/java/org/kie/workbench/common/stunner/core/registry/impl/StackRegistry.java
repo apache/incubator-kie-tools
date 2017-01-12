@@ -16,18 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
-import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
-
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Stack;
+
+import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 
 class StackRegistry<T> implements DynamicRegistry<T> {
 
     private final KeyProvider<T> keyProvider;
     private final Stack<T> items;
 
-    public StackRegistry( final KeyProvider<T> keyProvider, final Stack<T> items ) {
+    public StackRegistry( final KeyProvider<T> keyProvider,
+                          final Stack<T> items ) {
         this.keyProvider = keyProvider;
         this.items = items;
     }
@@ -82,5 +81,4 @@ class StackRegistry<T> implements DynamicRegistry<T> {
     Stack<T> getStack() {
         return items;
     }
-
 }

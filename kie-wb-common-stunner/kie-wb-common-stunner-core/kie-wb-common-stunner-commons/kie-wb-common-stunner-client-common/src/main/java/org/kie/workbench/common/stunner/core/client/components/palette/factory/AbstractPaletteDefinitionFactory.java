@@ -35,5 +35,4 @@ public abstract class AbstractPaletteDefinitionFactory<B extends PaletteDefiniti
     public B newBuilder( final String defSetId ) {
         return paletteBuilder;
     }
-
 }

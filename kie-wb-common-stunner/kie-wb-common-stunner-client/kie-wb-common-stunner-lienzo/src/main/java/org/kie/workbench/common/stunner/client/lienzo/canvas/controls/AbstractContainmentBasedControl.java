@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -34,10 +38,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> implements CanvasControl<AbstractCanvasHandler> {
 
     private static Logger LOGGER = Logger.getLogger( AbstractContainmentBasedControl.class.getName() );
@@ -50,15 +50,17 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
         this.canvasCommandManager = canvasCommandManager;
     }
 
-    protected abstract void doEnable( WiresCanvas.View view );
+    protected abstract void doEnable( final WiresCanvas.View view );
 
-    protected abstract void doDisable( WiresCanvas.View view );
+    protected abstract void doDisable( final WiresCanvas.View view );
 
-    protected abstract boolean isEdgeAccepted( Edge edge );
+    protected abstract boolean isEdgeAccepted( final Edge edge );
 
-    protected abstract Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand( Node parent, Node child );
+    protected abstract Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand( final Node parent,
+                                                                                          final Node child );
 
-    protected abstract Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand( Node parent, Node child );
+    protected abstract Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand( final Node parent,
+                                                                                             final Node child );
 
     @Override
     public void enable( final AbstractCanvasHandler canvasHandler ) {
@@ -84,15 +86,21 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
         }
         boolean isAllow = false;
         final Edge dockEdge = getTheEdge( child );
-        final boolean isSameParent = isSameParent( parent, dockEdge );
+        final boolean isSameParent = isSameParent( parent,
+                                                   dockEdge );
         if ( isSameParent ) {
-            log( Level.FINE, "Is same parent. isAllow=true" );
+            log( Level.FINE,
+                 "Is same parent. isAllow=true" );
             isAllow = true;
         } else {
-            final Command<AbstractCanvasHandler, CanvasViolation> command = getAddEdgeCommand( parent, child );
-            CommandResult<CanvasViolation> violations = canvasCommandManager.allow( canvasHandler, command );
+            final Command<AbstractCanvasHandler, CanvasViolation> command = getAddEdgeCommand( parent,
+                                                                                               child );
+            CommandResult<CanvasViolation> violations = canvasCommandManager.allow( canvasHandler,
+                                                                                    command );
             isAllow = isAccept( violations );
-            logResults( "isAllow", command, violations );
+            logResults( "isAllow",
+                        command,
+                        violations );
         }
         return isAllow;
     }
@@ -104,7 +112,8 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
             return false;
         }
         final Edge dockEdge = getTheEdge( child );
-        final boolean isSameParent = isSameParent( parent, dockEdge );
+        final boolean isSameParent = isSameParent( parent,
+                                                   dockEdge );
         boolean isAccept = true;
         if ( !isSameParent ) {
             CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> builder = null;
@@ -113,21 +122,27 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
                 builder = new CompositeCommandImpl
                         .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
                         .reverse()
-                        .addCommand( getDeleteEdgeCommand( dockEdge.getSourceNode(), child ) );
+                        .addCommand( getDeleteEdgeCommand( dockEdge.getSourceNode(),
+                                                           child ) );
             }
             // Add a new relationship.
-            final Command<AbstractCanvasHandler, CanvasViolation> c = getAddEdgeCommand( parent, child );
+            final Command<AbstractCanvasHandler, CanvasViolation> c = getAddEdgeCommand( parent,
+                                                                                         child );
             final Command<AbstractCanvasHandler, CanvasViolation> command =
                     null == builder ?
                             c :
                             builder
                                     .addCommand( c )
                                     .build();
-            final CommandResult<CanvasViolation> violations = canvasCommandManager.execute( canvasHandler, command );
+            final CommandResult<CanvasViolation> violations = canvasCommandManager.execute( canvasHandler,
+                                                                                            command );
             isAccept = isAccept( violations );
-            logResults( "isAccept", command, violations );
+            logResults( "isAccept",
+                        command,
+                        violations );
         } else {
-            log( Level.FINE, "isAccept = TRUE" );
+            log( Level.FINE,
+                 "isAccept = TRUE" );
         }
         return isAccept;
     }
@@ -195,18 +210,24 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
         if ( LogConfiguration.loggingIsEnabled() ) {
             final boolean isOk = isAccept( violations );
             if ( isOk ) {
-                log( Level.FINE, prefix + "= TRUE" );
+                log( Level.FINE,
+                     prefix + "= TRUE" );
             } else {
-                log( Level.FINE, prefix + "= FALSE " );
-                log( Level.FINE, "*************** Command = { " + command.toString() + " } " );
-                log( Level.FINE, "*************** Violations = { " + violations.getMessage() + " } " );
+                log( Level.FINE,
+                     prefix + "= FALSE " );
+                log( Level.FINE,
+                     "*************** Command = { " + command.toString() + " } " );
+                log( Level.FINE,
+                     "*************** Violations = { " + violations.getMessage() + " } " );
             }
         }
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

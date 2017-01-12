@@ -47,6 +47,7 @@ public class ConfigurationProvider {
     }
 
     public String getDesignerContext() {
-        return configurationProps.getProperty( "application.context", "/org.jbpm.designer.jBPMDesigner/" );
+        return configurationProps.getProperty( "application.context",
+                                               "/org.jbpm.designer.jBPMDesigner/" );
     }
 }

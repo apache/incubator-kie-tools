@@ -25,9 +25,11 @@
       min-height: 20px;
       min-width: 80px;
     }
+
     .nameBox {
       border: 1px solid grey;
     }
+
     .button {
       background-color: black;
       padding: 2px;
@@ -46,6 +48,6 @@
     </g:HorizontalPanel>
 
   </g:FlowPanel>
-  
+
 
 </ui:UiBinder>

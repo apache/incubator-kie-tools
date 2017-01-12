@@ -21,5 +21,4 @@ import com.google.gwt.safehtml.shared.SafeUri;
 public interface ShapeSetThumbProvider extends ThumbProvider<String> {
 
     SafeUri getThumbnailUri();
-
 }

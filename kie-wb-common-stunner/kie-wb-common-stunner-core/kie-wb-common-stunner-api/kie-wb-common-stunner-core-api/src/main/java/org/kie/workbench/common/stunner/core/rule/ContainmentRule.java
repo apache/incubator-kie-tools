@@ -25,9 +25,7 @@ public interface ContainmentRule extends RuleById {
 
     /**
      * The Roles of Elements permitted to be held within another Element.
-     *
      * @return
      */
     Set<String> getPermittedRoles();
-
 }

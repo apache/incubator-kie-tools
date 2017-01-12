@@ -90,11 +90,12 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
         }
 
         public ProjectMetadataImpl build() {
-            final ProjectMetadataImpl result = new ProjectMetadataImpl( defSetId, pPkg, pName );
+            final ProjectMetadataImpl result = new ProjectMetadataImpl( defSetId,
+                                                                        pPkg,
+                                                                        pName );
             result.setPath( path );
             result.setTitle( title );
             return result;
         }
-
     }
 }

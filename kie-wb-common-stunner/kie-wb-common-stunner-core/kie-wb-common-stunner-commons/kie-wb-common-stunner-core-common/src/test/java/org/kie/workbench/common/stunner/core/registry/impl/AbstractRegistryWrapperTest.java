@@ -23,11 +23,10 @@ import org.kie.workbench.common.stunner.core.registry.Registry;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class AbstractRegistryWrapperTest {
@@ -69,5 +68,4 @@ public class AbstractRegistryWrapperTest {
         boolean empty = registry.isEmpty();
         assertFalse( empty );
     }
-
 }

@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.*;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertySetAdapter;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
 public class ClientBindableAdapterFactory implements BindableAdapterFactory {

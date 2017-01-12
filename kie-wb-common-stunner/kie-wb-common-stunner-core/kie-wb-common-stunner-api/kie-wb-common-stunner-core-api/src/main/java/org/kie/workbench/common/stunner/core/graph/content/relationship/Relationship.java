@@ -23,5 +23,4 @@ package org.kie.workbench.common.stunner.core.graph.content.relationship;
 public interface Relationship {
 
     String getName();
-
 }

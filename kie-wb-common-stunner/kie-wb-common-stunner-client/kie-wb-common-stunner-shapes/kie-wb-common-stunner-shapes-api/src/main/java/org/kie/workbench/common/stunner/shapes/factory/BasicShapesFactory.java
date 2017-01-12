@@ -24,4 +24,5 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 public interface BasicShapesFactory<W, H extends CanvasHandler>
         extends ShapeDefFactory<W, H, MutableShape<W, ShapeView>, ShapeDef<W>> {
+
 }

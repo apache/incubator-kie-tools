@@ -19,11 +19,11 @@
 
 <module>
 
-     <inherits name='com.google.gwt.user.User' />
-     <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnApi"/>
-     <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesClient"/>
-     <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnApi"/>
+  <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesClient"/>
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
 
-     <source path="client"/>
+  <source path="client"/>
 
 </module>

@@ -22,5 +22,4 @@ public abstract class MouseDoubleClickHandler extends AbstractViewHandler<MouseD
     public ViewEventType getType() {
         return ViewEventType.MOUSE_DBL_CLICK;
     }
-
 }

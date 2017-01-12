@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
@@ -24,8 +26,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
-
-import java.util.List;
 
 /**
  * Deletes a node shape from the canvas.
@@ -40,7 +40,8 @@ public final class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
         this.parent = getParent( candidate );
     }
 
-    public DeleteCanvasNodeCommand( final Node candidate, final Node parent ) {
+    public DeleteCanvasNodeCommand( final Node candidate,
+                                    final Node parent ) {
         this.candidate = candidate;
         this.parent = parent;
     }
@@ -48,11 +49,13 @@ public final class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
     @Override
     public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
         if ( null != parent ) {
-            context.removeChild( parent.getUUID(), candidate.getUUID() );
+            context.removeChild( parent.getUUID(),
+                                 candidate.getUUID() );
         }
         context.deregister( candidate );
         if ( null != parent ) {
-            context.applyElementMutation( parent, MutationContext.STATIC );
+            context.applyElementMutation( parent,
+                                          MutationContext.STATIC );
         }
         return buildResult();
     }
@@ -60,8 +63,8 @@ public final class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
     @Override
     public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
         final String ssid = context.getDiagram().getMetadata().getShapeSetId();
-        final AbstractCanvasCommand command =
-                new AddCanvasNodeCommand( candidate, ssid );
+        final AbstractCanvasCommand command = new AddCanvasNodeCommand( candidate,
+                                                                        ssid );
         return command.execute( context );
     }
 

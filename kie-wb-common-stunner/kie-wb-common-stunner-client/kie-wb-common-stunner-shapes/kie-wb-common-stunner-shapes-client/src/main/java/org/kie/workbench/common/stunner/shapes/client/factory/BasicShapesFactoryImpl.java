@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.shapes.client.factory;
 
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -29,19 +33,33 @@ import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.GlyphBuilderFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
-import org.kie.workbench.common.stunner.shapes.client.*;
-import org.kie.workbench.common.stunner.shapes.client.view.*;
+import org.kie.workbench.common.stunner.shapes.client.CircleShape;
+import org.kie.workbench.common.stunner.shapes.client.ConnectorShape;
+import org.kie.workbench.common.stunner.shapes.client.DynamicIconShape;
+import org.kie.workbench.common.stunner.shapes.client.PictureShape;
+import org.kie.workbench.common.stunner.shapes.client.PolygonShape;
+import org.kie.workbench.common.stunner.shapes.client.RectangleShape;
+import org.kie.workbench.common.stunner.shapes.client.RingShape;
+import org.kie.workbench.common.stunner.shapes.client.StaticIconShape;
+import org.kie.workbench.common.stunner.shapes.client.view.CircleView;
+import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
+import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
+import org.kie.workbench.common.stunner.shapes.client.view.PolygonView;
+import org.kie.workbench.common.stunner.shapes.client.view.RectangleView;
+import org.kie.workbench.common.stunner.shapes.client.view.RingView;
+import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
 import org.kie.workbench.common.stunner.shapes.client.view.icon.dynamics.DynamicIconShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.icon.statics.StaticIconShapeView;
-import org.kie.workbench.common.stunner.shapes.def.*;
+import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
+import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.RingShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.IconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Map;
 
 @ApplicationScoped
 public class BasicShapesFactoryImpl
@@ -52,7 +70,10 @@ public class BasicShapesFactoryImpl
     private final GlyphBuilderFactory glyphBuilderFactory;
 
     protected BasicShapesFactoryImpl() {
-        this( null, null, null, null );
+        this( null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -60,7 +81,8 @@ public class BasicShapesFactoryImpl
                                    final ShapeViewFactory shapeViewFactory,
                                    final DefinitionManager definitionManager,
                                    final GlyphBuilderFactory glyphBuilderFactory ) {
-        super( definitionManager, factoryManager );
+        super( definitionManager,
+               factoryManager );
         this.shapeViewFactory = shapeViewFactory;
         this.glyphBuilderFactory = glyphBuilderFactory;
     }
@@ -71,7 +93,9 @@ public class BasicShapesFactoryImpl
                                                   final AbstractCanvasHandler context ) {
         final String id = definitionManager.adapters().forDefinition().getId( definition );
         final ShapeDef<Object> proxy = getShapeDef( id );
-        return build( definition, proxy, context );
+        return build( definition,
+                      proxy,
+                      context );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -83,17 +107,17 @@ public class BasicShapesFactoryImpl
         if ( isCircle( proxy ) ) {
             final CircleShapeDef<Object> circleProxy = ( CircleShapeDef<Object> ) proxy;
             final double radius = circleProxy.getRadius( definition );
-            final CircleView view =
-                    shapeViewFactory.circle( radius );
-            shape = new CircleShape( view, circleProxy );
+            final CircleView view = shapeViewFactory.circle( radius );
+            shape = new CircleShape( view,
+                                     circleProxy );
             found = true;
         }
         if ( isRing( proxy ) ) {
             final RingShapeDef<Object> ringProxy = ( RingShapeDef<Object> ) proxy;
             final double oRadius = ringProxy.getOuterRadius( definition );
-            final RingView view =
-                    shapeViewFactory.ring( oRadius );
-            shape = new RingShape( view, ringProxy );
+            final RingView view = shapeViewFactory.ring( oRadius );
+            shape = new RingShape( view,
+                                   ringProxy );
             found = true;
         }
         if ( isRectangle( proxy ) ) {
@@ -101,34 +125,39 @@ public class BasicShapesFactoryImpl
             final double width = rectangleProxy.getWidth( definition );
             final double height = rectangleProxy.getHeight( definition );
             final double cr = rectangleProxy.getCornerRadius( definition );
-            final RectangleView view =
-                    shapeViewFactory.rectangle( width, height, cr );
-            shape = new RectangleShape( view, rectangleProxy );
+            final RectangleView view = shapeViewFactory.rectangle( width,
+                                                                   height,
+                                                                   cr );
+            shape = new RectangleShape( view,
+                                        rectangleProxy );
             found = true;
         }
         if ( isPolygon( proxy ) ) {
             final PolygonShapeDef<Object> polygonProxy = ( PolygonShapeDef<Object> ) proxy;
             final double radius = polygonProxy.getRadius( definition );
             final String fillColor = polygonProxy.getBackgroundColor( definition );
-            final PolygonView view =
-                    shapeViewFactory.polygon( radius,
-                            fillColor );
-            shape = new PolygonShape( view, polygonProxy );
+            final PolygonView view = shapeViewFactory.polygon( radius,
+                                                               fillColor );
+            shape = new PolygonShape( view,
+                                      polygonProxy );
             found = true;
         }
         if ( isConnector( proxy ) ) {
             final ConnectorShapeDef<Object> polygonProxy = ( ConnectorShapeDef<Object> ) proxy;
-            final ConnectorView view = shapeViewFactory.connector( 0, 0, 100, 100 );
-            shape = new ConnectorShape( view, polygonProxy );
+            final ConnectorView view = shapeViewFactory.connector( 0,
+                                                                   0,
+                                                                   100,
+                                                                   100 );
+            shape = new ConnectorShape( view,
+                                        polygonProxy );
             found = true;
         }
         if ( isStaticIcon( proxy ) ) {
-            final IconShapeDef<Object> iconProxy =
-                    ( IconShapeDef<Object> ) proxy;
+            final IconShapeDef<Object> iconProxy = ( IconShapeDef<Object> ) proxy;
             final org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons icon = iconProxy.getIcon( definition );
-            final StaticIconShapeView view =
-                    shapeViewFactory.staticIcon( icon );
-            shape = new StaticIconShape( view, iconProxy );
+            final StaticIconShapeView view = shapeViewFactory.staticIcon( icon );
+            shape = new StaticIconShape( view,
+                                         iconProxy );
             found = true;
         }
         if ( isPicture( proxy ) ) {
@@ -137,20 +166,25 @@ public class BasicShapesFactoryImpl
             if ( null != pictureSource ) {
                 final double width = pictureProxy.getWidth( definition );
                 final double height = pictureProxy.getHeight( definition );
-                final PictureShapeView view = shapeViewFactory.picture( pictureSource, width, height );
-                shape = new PictureShape( view, pictureProxy );
+                final PictureShapeView view = shapeViewFactory.picture( pictureSource,
+                                                                        width,
+                                                                        height );
+                shape = new PictureShape( view,
+                                          pictureProxy );
             }
             found = true;
         }
         if ( isDynamicIcon( proxy ) ) {
-            final org.kie.workbench.common.stunner.shapes.def.icon.dynamics.IconShapeDef iconProxy =
-                    ( org.kie.workbench.common.stunner.shapes.def.icon.dynamics.IconShapeDef ) proxy;
-            final Icons icon = DynamicIconShape.getIcon( definition, iconProxy );
+            final org.kie.workbench.common.stunner.shapes.def.icon.dynamics.IconShapeDef iconProxy = ( org.kie.workbench.common.stunner.shapes.def.icon.dynamics.IconShapeDef ) proxy;
+            final Icons icon = DynamicIconShape.getIcon( definition,
+                                                         iconProxy );
             final double width = iconProxy.getWidth( definition );
             final double height = iconProxy.getHeight( definition );
-            final DynamicIconShapeView view =
-                    shapeViewFactory.dynamicIcon( icon, width, height );
-            shape = new DynamicIconShape( view, iconProxy );
+            final DynamicIconShapeView view = shapeViewFactory.dynamicIcon( icon,
+                                                                            width,
+                                                                            height );
+            shape = new DynamicIconShape( view,
+                                          iconProxy );
             found = true;
         }
         // Add children, if any.
@@ -163,9 +197,12 @@ public class BasicShapesFactoryImpl
                 for ( final Map.Entry<ShapeDef<Object>, HasChildren.Layout> entry : childShapeDefs.entrySet() ) {
                     final ShapeDef<Object> child = entry.getKey();
                     final HasChildren.Layout layout = entry.getValue();
-                    final MutableShape<Object, ShapeView> childShape = this.build( definition, child, context );
+                    final MutableShape<Object, ShapeView> childShape = this.build( definition,
+                                                                                   child,
+                                                                                   context );
                     if ( null != childShape ) {
-                        ( ( AbstractCompositeShape ) shape ).addChild( ( AbstractShape ) childShape, layout );
+                        ( ( AbstractCompositeShape ) shape ).addChild( ( AbstractShape ) childShape,
+                                                                       layout );
                     }
                 }
             }
@@ -225,5 +262,4 @@ public class BasicShapesFactoryImpl
                 .width( width )
                 .build();
     }
-
 }

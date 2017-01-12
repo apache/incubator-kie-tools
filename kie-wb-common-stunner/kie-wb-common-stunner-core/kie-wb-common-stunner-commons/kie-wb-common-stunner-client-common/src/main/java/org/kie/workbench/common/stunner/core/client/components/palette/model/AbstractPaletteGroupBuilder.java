@@ -32,7 +32,7 @@ public abstract class AbstractPaletteGroupBuilder<B, G, I> extends AbstractPalet
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public B addItem( PaletteItemBuilder item ) {
+    public B addItem( final PaletteItemBuilder item ) {
         items.add( item );
         return ( B ) this;
     }
@@ -42,16 +42,16 @@ public abstract class AbstractPaletteGroupBuilder<B, G, I> extends AbstractPalet
     public B addItem( final int index,
                       final PaletteItemBuilder item ) {
         if ( index < items.size() ) {
-            items.add( index, item );
+            items.add( index,
+                       item );
             return ( B ) this;
-
         } else {
             return addItem( item );
         }
-
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public PaletteItemBuilder getItem( final String id ) {
         for ( final PaletteItemBuilder<?, I> item : items ) {
             if ( item.getId().equals( id ) ) {
@@ -73,9 +73,7 @@ public abstract class AbstractPaletteGroupBuilder<B, G, I> extends AbstractPalet
         final List<I> result = new LinkedList<>();
         for ( final PaletteItemBuilder<?, I> itemBuilder : items ) {
             result.add( itemBuilder.build() );
-
         }
         return doBuild( result );
     }
-
 }

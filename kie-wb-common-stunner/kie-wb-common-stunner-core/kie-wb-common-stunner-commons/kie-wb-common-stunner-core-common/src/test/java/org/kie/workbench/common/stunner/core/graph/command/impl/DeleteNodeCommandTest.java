@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,13 +27,15 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.rule.*;
+import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.impl.violations.CardinalityMaxRuleViolation;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -46,7 +50,8 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init( 500, 500 );
+        super.init( 500,
+                    500 );
         node = mockNode( UUID );
         graphNodes.add( node );
         when( graph.getNode( eq( UUID ) ) ).thenReturn( node );
@@ -58,13 +63,28 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
     @SuppressWarnings( "unchecked" )
     public void testAllow() {
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( cardinalityRuleManager, times( 1 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
-                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( cardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( graph ),
+                                       eq( node ),
+                                       eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( List.class ),
+                                       any( EdgeCardinalityRule.Type.class ),
+                                       any( RuleManager.Operation.class ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( connectionRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( Node.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
     }
 
     @Test
@@ -72,24 +92,45 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
     public void testAllowNoRules() {
         when( graphCommandExecutionContext.getRulesManager() ).thenReturn( null );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( cardinalityRuleManager, times( 0 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
-                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( cardinalityRuleManager,
+                times( 0 ) ).evaluate( eq( graph ),
+                                       eq( node ),
+                                       eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( List.class ),
+                                       any( EdgeCardinalityRule.Type.class ),
+                                       any( RuleManager.Operation.class ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( connectionRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( Node.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testNotAllowed() {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
-                .addViolation( new CardinalityMaxRuleViolation( "target", "candidate", 1, 2 ) );
-        when( cardinalityRuleManager.evaluate( any( Graph.class ), any( Node.class ), any( RuleManager.Operation.class ) ) )
+                .addViolation( new CardinalityMaxRuleViolation( "target",
+                                                                "candidate",
+                                                                1,
+                                                                2 ) );
+        when( cardinalityRuleManager.evaluate( any( Graph.class ),
+                                               any( Node.class ),
+                                               any( RuleManager.Operation.class ) ) )
                 .thenReturn( FAILED_VIOLATIONS );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR, result.getType() );
+        assertEquals( CommandResult.Type.ERROR,
+                      result.getType() );
     }
 
     @Test( expected = BadCommandArgumentsException.class )
@@ -98,7 +139,8 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
         graphNodes.clear();
         when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( null );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR, result.getType() );
+        assertEquals( CommandResult.Type.ERROR,
+                      result.getType() );
     }
 
     @Test( expected = BadCommandArgumentsException.class )
@@ -106,34 +148,51 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
     public void testNodeNotPresentOnIndex() {
         when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( null );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR, result.getType() );
+        assertEquals( CommandResult.Type.ERROR,
+                      result.getType() );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecute() {
         CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( graph, times( 1 ) ).removeNode( eq( UUID ) );
-        verify( graphIndex, times( 1 ) ).removeNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).addNode( any( Node.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( graph,
+                times( 1 ) ).removeNode( eq( UUID ) );
+        verify( graphIndex,
+                times( 1 ) ).removeNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).removeEdge( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).addEdge( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).addNode( any( Node.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecuteCheckFailed() {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
-                .addViolation( new CardinalityMaxRuleViolation( "target", "candidate", 1, 2 ) );
-        when( cardinalityRuleManager.evaluate( any( Graph.class ), any( Node.class ), any( RuleManager.Operation.class ) ) )
+                .addViolation( new CardinalityMaxRuleViolation( "target",
+                                                                "candidate",
+                                                                1,
+                                                                2 ) );
+        when( cardinalityRuleManager.evaluate( any( Graph.class ),
+                                               any( Node.class ),
+                                               any( RuleManager.Operation.class ) ) )
                 .thenReturn( FAILED_VIOLATIONS );
         CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR, result.getType() );
-        verify( graphIndex, times( 0 ) ).removeNode( any( Node.class ) );
-        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).addNode( any( Node.class ) );
+        assertEquals( CommandResult.Type.ERROR,
+                      result.getType() );
+        verify( graphIndex,
+                times( 0 ) ).removeNode( any( Node.class ) );
+        verify( graphIndex,
+                times( 0 ) ).removeEdge( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).addEdge( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).addNode( any( Node.class ) );
     }
 
     @Test
@@ -141,12 +200,19 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
     public void testUndo() {
         tested.removed = node;
         CommandResult<RuleViolation> result = tested.undo( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( graph, times( 1 ) ).addNode( any( Node.class ) );
-        verify( graphIndex, times( 1 ) ).addNode( any( Node.class ) );
-        verify( graph, times( 0 ) ).removeNode( eq( UUID ) );
-        verify( graphIndex, times( 0 ) ).removeNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( graph,
+                times( 1 ) ).addNode( any( Node.class ) );
+        verify( graphIndex,
+                times( 1 ) ).addNode( any( Node.class ) );
+        verify( graph,
+                times( 0 ) ).removeNode( eq( UUID ) );
+        verify( graphIndex,
+                times( 0 ) ).removeNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).removeEdge( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).addEdge( any( Edge.class ) );
     }
 }

@@ -60,5 +60,4 @@ public interface RegistryFactory {
      * Creates a new registry instance for diagrams.
      */
     <T extends Diagram> DiagramRegistry<T> newDiagramRegistry();
-
 }

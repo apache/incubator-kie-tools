@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.graph.content.view;
 
 /**
  * Indicates that the view for the node/edge represents a physical connector that will the drawn in the canvas.
- *
  * @param <W> The Definition of the connector's graphical view representation.
  */
 public interface ViewConnector<W> extends View<W> {
@@ -27,8 +26,7 @@ public interface ViewConnector<W> extends View<W> {
 
     Integer getTargetMagnetIndex();
 
-    void setSourceMagnetIndex( Integer index );
+    void setSourceMagnetIndex( final Integer index );
 
-    void setTargetMagnetIndex( Integer index );
-
+    void setTargetMagnetIndex( final Integer index );
 }

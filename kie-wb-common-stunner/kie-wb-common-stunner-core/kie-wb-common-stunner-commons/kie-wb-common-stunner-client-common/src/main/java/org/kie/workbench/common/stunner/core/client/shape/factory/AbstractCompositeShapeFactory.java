@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.factory;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
-
-import java.util.LinkedList;
-import java.util.List;
 
 public abstract class AbstractCompositeShapeFactory<W, S extends Shape>
         extends AbstractShapeFactory<W, S>
@@ -49,7 +49,6 @@ public abstract class AbstractCompositeShapeFactory<W, S extends Shape>
             if ( factory.accepts( definitionId ) ) {
                 return true;
             }
-
         }
         return false;
     }
@@ -59,9 +58,7 @@ public abstract class AbstractCompositeShapeFactory<W, S extends Shape>
         for ( final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories ) {
             if ( factory.accepts( definitionId ) ) {
                 return factory.getDescription( definitionId );
-
             }
-
         }
         throw new RuntimeException( "This factory supports Definition [" + definitionId + "] but cannot obtain the description for it." );
     }
@@ -72,13 +69,11 @@ public abstract class AbstractCompositeShapeFactory<W, S extends Shape>
         final String id = definitionManager.adapters().forDefinition().getId( definition );
         for ( final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories ) {
             if ( factory.accepts( id ) ) {
-                return factory.build( definition, context );
-
+                return factory.build( definition,
+                                      context );
             }
-
         }
         throw new RuntimeException( "This factory supports Definition [" + id + "] but cannot build the sthape for it." );
-
     }
 
     @Override
@@ -87,10 +82,10 @@ public abstract class AbstractCompositeShapeFactory<W, S extends Shape>
                         final double height ) {
         for ( final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories ) {
             if ( factory.accepts( definitionId ) ) {
-                return factory.glyph( definitionId, width, height );
-
+                return factory.glyph( definitionId,
+                                      width,
+                                      height );
             }
-
         }
         throw new RuntimeException( "This factory supports Definition [" + definitionId + "] but cannot obtain the description for it." );
     }

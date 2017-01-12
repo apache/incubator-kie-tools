@@ -16,17 +16,17 @@
 
 package org.kie.workbench.common.stunner.backend.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.marshalling.server.ServerMarshalling;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.io.IOException;
-import java.io.InputStream;
 
 @ApplicationScoped
 public class ErraiDiagramMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> {
@@ -38,20 +38,21 @@ public class ErraiDiagramMarshaller implements DiagramMarshaller<Graph, Metadata
     }
 
     @Inject
-    public ErraiDiagramMarshaller( XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller ) {
+    public ErraiDiagramMarshaller( final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller ) {
         this.diagramMetadataMarshaller = diagramMetadataMarshaller;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public Graph unmarshall( Metadata metadata, InputStream input ) throws IOException {
+    public Graph unmarshall( final Metadata metadata,
+                             final InputStream input ) throws IOException {
         Graph result = ( Graph ) ServerMarshalling.fromJSON( input );
         return result;
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public String marshall( Diagram<Graph, Metadata> diagram ) throws IOException {
+    public String marshall( final Diagram<Graph, Metadata> diagram ) throws IOException {
         String result = ServerMarshalling.toJSON( diagram.getGraph() );
         return result;
     }

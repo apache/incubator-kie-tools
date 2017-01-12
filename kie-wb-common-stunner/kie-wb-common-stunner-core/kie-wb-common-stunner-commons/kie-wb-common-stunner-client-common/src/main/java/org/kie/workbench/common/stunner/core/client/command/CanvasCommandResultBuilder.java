@@ -16,27 +16,25 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CommandResultBuilder;
 import org.kie.workbench.common.stunner.core.command.impl.CommandResultImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 public class CanvasCommandResultBuilder extends CommandResultBuilder<CanvasViolation> {
 
-    public static final CommandResult<CanvasViolation> SUCCESS = new CommandResultImpl<>(
-            CommandResult.Type.INFO,
-            RESULT_SUCCESS,
-            new LinkedList<>()
+    public static final CommandResult<CanvasViolation> SUCCESS = new CommandResultImpl<>( CommandResult.Type.INFO,
+                                                                                          RESULT_SUCCESS,
+                                                                                          new LinkedList<>()
     );
 
-    public static final CommandResult<CanvasViolation> FAILED = new CommandResultImpl<>(
-            CommandResult.Type.ERROR,
-            RESULT_FAILED,
-            new LinkedList<>()
+    public static final CommandResult<CanvasViolation> FAILED = new CommandResultImpl<>( CommandResult.Type.ERROR,
+                                                                                         RESULT_FAILED,
+                                                                                         new LinkedList<>()
     );
 
     public CanvasCommandResultBuilder() {
@@ -56,9 +54,7 @@ public class CanvasCommandResultBuilder extends CommandResultBuilder<CanvasViola
             final Iterator<RuleViolation> violationsIt = violations.iterator();
             while ( violationsIt.hasNext() ) {
                 final RuleViolation ruleViolation = violationsIt.next();
-                final CanvasViolation canvasViolation =
-                        new CanvasViolationImpl.CanvasViolationBuilder( ruleViolation )
-                                .build();
+                final CanvasViolation canvasViolation = new CanvasViolationImpl.CanvasViolationBuilder( ruleViolation ).build();
                 addViolation( canvasViolation );
             }
         }

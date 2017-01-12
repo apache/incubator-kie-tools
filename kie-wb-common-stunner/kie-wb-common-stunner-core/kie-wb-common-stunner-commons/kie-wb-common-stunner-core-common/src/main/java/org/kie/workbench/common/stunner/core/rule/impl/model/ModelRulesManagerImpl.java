@@ -16,11 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.model;
 
-import org.kie.workbench.common.stunner.core.rule.impl.AbstractRulesManager;
-import org.kie.workbench.common.stunner.core.rule.model.*;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.kie.workbench.common.stunner.core.rule.impl.AbstractRulesManager;
+import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.model.ModelConnectionRuleManager;
+import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.model.ModelDockingRuleManager;
+import org.kie.workbench.common.stunner.core.rule.model.ModelEdgeCardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
 
 @Dependent
 public class ModelRulesManagerImpl extends AbstractRulesManager<ModelContainmentRuleManager, ModelConnectionRuleManager,
@@ -34,13 +39,15 @@ public class ModelRulesManagerImpl extends AbstractRulesManager<ModelContainment
                                   final ModelCardinalityRuleManager cardinalityRuleManager,
                                   final ModelEdgeCardinalityRuleManager edgeCardinalityRuleManager,
                                   final ModelDockingRuleManager dockingRuleManager ) {
-        super( containmentRuleManager, connectionRuleManager, cardinalityRuleManager,
-                edgeCardinalityRuleManager, dockingRuleManager );
+        super( containmentRuleManager,
+               connectionRuleManager,
+               cardinalityRuleManager,
+               edgeCardinalityRuleManager,
+               dockingRuleManager );
     }
 
     @Override
     public String getName() {
         return NAME;
     }
-
 }

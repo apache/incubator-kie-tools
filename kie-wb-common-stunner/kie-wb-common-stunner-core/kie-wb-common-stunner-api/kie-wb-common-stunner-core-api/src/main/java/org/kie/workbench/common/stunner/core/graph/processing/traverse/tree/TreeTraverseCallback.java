@@ -22,16 +22,15 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 
 public interface TreeTraverseCallback<G extends Graph, N extends Node, E extends Edge> {
 
-    void startGraphTraversal( G graph );
+    void startGraphTraversal( final G graph );
 
-    boolean startNodeTraversal( N node );
+    boolean startNodeTraversal( final N node );
 
-    boolean startEdgeTraversal( E edge );
+    boolean startEdgeTraversal( final E edge );
 
-    void endNodeTraversal( N node );
+    void endNodeTraversal( final N node );
 
-    void endEdgeTraversal( E edge );
+    void endEdgeTraversal( final E edge );
 
     void endGraphTraversal();
-
 }

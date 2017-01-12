@@ -40,12 +40,13 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
 
     /**
      * Sets the invalid values for the TextBox
-     *
      * @param invalidValues
      * @param isCaseSensitive
      * @param invalidValueErrorMessage
      */
-    public void setInvalidValues( final Set<String> invalidValues, final boolean isCaseSensitive, final String invalidValueErrorMessage ) {
+    public void setInvalidValues( final Set<String> invalidValues,
+                                  final boolean isCaseSensitive,
+                                  final String invalidValueErrorMessage ) {
         if ( isCaseSensitive ) {
             this.invalidValues = invalidValues;
         } else {
@@ -60,11 +61,11 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
 
     /**
      * Sets the RegExp pattern for the TextBox
-     *
      * @param pattern
      * @param invalidCharactersInNameErrorMessage
      */
-    public void setRegExp( final String pattern, final String invalidCharactersInNameErrorMessage,
+    public void setRegExp( final String pattern,
+                           final String invalidCharactersInNameErrorMessage,
                            final String invalidCharacterTypedMessage ) {
         regExp = RegExp.compile( pattern );
         this.invalidCharactersInNameErrorMessage = invalidCharactersInNameErrorMessage;
@@ -72,7 +73,8 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
     }
 
     @Override
-    public String isValidValue( final String value, final boolean isOnFocusLost ) {
+    public String isValidValue( final String value,
+                                final boolean isOnFocusLost ) {
         if ( invalidValues != null && !invalidValues.isEmpty() ) {
             if ( isOnFocusLost ) {
                 String err = testForInvalidValue( value );
@@ -94,7 +96,6 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
 
     /**
      * Tests whether a value is in the list of invalid values
-     *
      * @param value
      * @return error message if value is invalid; otherwise null
      */

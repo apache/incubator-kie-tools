@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,9 +31,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -55,7 +55,8 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
     @Before
     @SuppressWarnings( "unchecked" )
     public void setup() throws Exception {
-        super.init( 500, 500 );
+        super.init( 500,
+                    500 );
         node = mockNode( NODE_UUID );
         lastTargetNode = mockNode( LAST_TARGET_NODE_UUID );
         source = mockNode( SOURCET_UUID );
@@ -69,22 +70,42 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         when( edge.getContent() ).thenReturn( edgeContent );
         when( edge.getSourceNode() ).thenReturn( source );
         when( edge.getTargetNode() ).thenReturn( lastTargetNode );
-        this.tested = new SetConnectionTargetNodeCommand( node, edge, MAGNET_INDEX );
+        this.tested = new SetConnectionTargetNodeCommand( node,
+                                                          edge,
+                                                          MAGNET_INDEX );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testAllow() {
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( connectionRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( source ), eq( node ) );
-        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( lastTargetNode ),
-                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( node ),
-                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.ADD ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( connectionRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( source ),
+                                       eq( node ) );
+        verify( edgeCardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( lastTargetNode ),
+                                       any( List.class ),
+                                       eq( EdgeCardinalityRule.Type.INCOMING ),
+                                       eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( node ),
+                                       any( List.class ),
+                                       eq( EdgeCardinalityRule.Type.INCOMING ),
+                                       eq( RuleManager.Operation.ADD ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
     }
 
     @Test
@@ -92,31 +113,69 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
     public void testAllowNoRules() {
         when( graphCommandExecutionContext.getRulesManager() ).thenReturn( null );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( connectionRuleManager, times( 0 ) ).evaluate( eq( edge ), eq( source ), eq( node ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( eq( edge ), eq( lastTargetNode ),
-                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( eq( edge ), eq( node ),
-                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.ADD ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( connectionRuleManager,
+                times( 0 ) ).evaluate( eq( edge ),
+                                       eq( source ),
+                                       eq( node ) );
+        verify( edgeCardinalityRuleManager,
+                times( 0 ) ).evaluate( eq( edge ),
+                                       eq( lastTargetNode ),
+                                       any( List.class ),
+                                       eq( EdgeCardinalityRule.Type.INCOMING ),
+                                       eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager,
+                times( 0 ) ).evaluate( eq( edge ),
+                                       eq( node ),
+                                       any( List.class ),
+                                       eq( EdgeCardinalityRule.Type.INCOMING ),
+                                       eq( RuleManager.Operation.ADD ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testAllowNoTargetConnection() {
-        this.tested = new SetConnectionTargetNodeCommand( null, edge, MAGNET_INDEX );
+        this.tested = new SetConnectionTargetNodeCommand( null,
+                                                          edge,
+                                                          MAGNET_INDEX );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( connectionRuleManager, times( 1 ) ).evaluate( eq( edge ), any( Node.class ), any( Node.class ) );
-        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( lastTargetNode ),
-                any( List.class ), any( EdgeCardinalityRule.Type.class ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( eq( edge ), any( Node.class ),
-                any( List.class ), any( EdgeCardinalityRule.Type.class ), eq( RuleManager.Operation.ADD ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( connectionRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       any( Node.class ),
+                                       any( Node.class ) );
+        verify( edgeCardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( lastTargetNode ),
+                                       any( List.class ),
+                                       any( EdgeCardinalityRule.Type.class ),
+                                       eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager,
+                times( 0 ) ).evaluate( eq( edge ),
+                                       any( Node.class ),
+                                       any( List.class ),
+                                       any( EdgeCardinalityRule.Type.class ),
+                                       eq( RuleManager.Operation.ADD ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
     }
 
     @Test
@@ -129,31 +188,60 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         when( lastTargetNode.getInEdges() ).thenReturn( lastTargetInEdges );
         when( node.getInEdges() ).thenReturn( targetInEdges );
         CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        verify( connectionRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( source ), eq( node ) );
-        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( lastTargetNode ),
-                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( node ),
-                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.ADD ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( lastTargetInEdges, times( 1 ) ).remove( eq( edge ) );
-        verify( targetInEdges, times( 1 ) ).add( eq( edge ) );
-        verify( edgeContent, times( 1 ) ).setTargetMagnetIndex( eq( MAGNET_INDEX ) );
-        verify( edge, times( 1 ) ).setTargetNode( eq( node ) );
-        verify( targetInEdges, times( 0 ) ).remove( any( Edge.class ) );
-        verify( sourceOutEdges, times( 0 ) ).add( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).addNode( any( Node.class ) );
-        verify( graphIndex, times( 0 ) ).removeNode( any( Node.class ) );
+        verify( connectionRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( source ),
+                                       eq( node ) );
+        verify( edgeCardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( lastTargetNode ),
+                                       any( List.class ),
+                                       eq( EdgeCardinalityRule.Type.INCOMING ),
+                                       eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( node ),
+                                       any( List.class ),
+                                       eq( EdgeCardinalityRule.Type.INCOMING ),
+                                       eq( RuleManager.Operation.ADD ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( lastTargetInEdges,
+                times( 1 ) ).remove( eq( edge ) );
+        verify( targetInEdges,
+                times( 1 ) ).add( eq( edge ) );
+        verify( edgeContent,
+                times( 1 ) ).setTargetMagnetIndex( eq( MAGNET_INDEX ) );
+        verify( edge,
+                times( 1 ) ).setTargetNode( eq( node ) );
+        verify( targetInEdges,
+                times( 0 ) ).remove( any( Edge.class ) );
+        verify( sourceOutEdges,
+                times( 0 ) ).add( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).removeEdge( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).addEdge( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).addNode( any( Node.class ) );
+        verify( graphIndex,
+                times( 0 ) ).removeNode( any( Node.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecuteNoMagnets() {
-        this.tested = new SetConnectionTargetNodeCommand( node, edge );
+        this.tested = new SetConnectionTargetNodeCommand( node,
+                                                          edge );
         final List lastTargetInEdges = mock( List.class );
         final List sourceOutEdges = mock( List.class );
         final List targetInEdges = mock( List.class );
@@ -161,24 +249,52 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
         when( lastTargetNode.getInEdges() ).thenReturn( lastTargetInEdges );
         when( node.getInEdges() ).thenReturn( targetInEdges );
         CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        verify( connectionRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( source ), eq( node ) );
-        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( lastTargetNode ),
-                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager, times( 1 ) ).evaluate( eq( edge ), eq( node ),
-                any( List.class ), eq( EdgeCardinalityRule.Type.INCOMING ), eq( RuleManager.Operation.ADD ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( lastTargetInEdges, times( 1 ) ).remove( eq( edge ) );
-        verify( targetInEdges, times( 1 ) ).add( eq( edge ) );
-        verify( edgeContent, times( 0 ) ).setTargetMagnetIndex( eq( MAGNET_INDEX ) );
-        verify( edge, times( 1 ) ).setTargetNode( eq( node ) );
-        verify( targetInEdges, times( 0 ) ).remove( any( Edge.class ) );
-        verify( sourceOutEdges, times( 0 ) ).add( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
-        verify( graphIndex, times( 0 ) ).addNode( any( Node.class ) );
-        verify( graphIndex, times( 0 ) ).removeNode( any( Node.class ) );
+        verify( connectionRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( source ),
+                                       eq( node ) );
+        verify( edgeCardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( lastTargetNode ),
+                                       any( List.class ),
+                                       eq( EdgeCardinalityRule.Type.INCOMING ),
+                                       eq( RuleManager.Operation.DELETE ) );
+        verify( edgeCardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( edge ),
+                                       eq( node ),
+                                       any( List.class ),
+                                       eq( EdgeCardinalityRule.Type.INCOMING ),
+                                       eq( RuleManager.Operation.ADD ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( lastTargetInEdges,
+                times( 1 ) ).remove( eq( edge ) );
+        verify( targetInEdges,
+                times( 1 ) ).add( eq( edge ) );
+        verify( edgeContent,
+                times( 0 ) ).setTargetMagnetIndex( eq( MAGNET_INDEX ) );
+        verify( edge,
+                times( 1 ) ).setTargetNode( eq( node ) );
+        verify( targetInEdges,
+                times( 0 ) ).remove( any( Edge.class ) );
+        verify( sourceOutEdges,
+                times( 0 ) ).add( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).removeEdge( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).addEdge( any( Edge.class ) );
+        verify( graphIndex,
+                times( 0 ) ).addNode( any( Node.class ) );
+        verify( graphIndex,
+                times( 0 ) ).removeNode( any( Node.class ) );
     }
 }

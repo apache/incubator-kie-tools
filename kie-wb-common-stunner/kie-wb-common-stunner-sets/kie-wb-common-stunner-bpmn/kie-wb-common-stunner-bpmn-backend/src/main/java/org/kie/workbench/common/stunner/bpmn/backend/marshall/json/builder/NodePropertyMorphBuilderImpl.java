@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
@@ -23,9 +26,6 @@ import org.kie.workbench.common.stunner.core.definition.morph.BindablePropertyMo
 import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import java.util.Collection;
-import java.util.LinkedList;
 
 public class NodePropertyMorphBuilderImpl extends NodeBuilderImpl {
 
@@ -58,12 +58,16 @@ public class NodePropertyMorphBuilderImpl extends NodeBuilderImpl {
         }
         final MorphProperty morphProperty = mps.iterator().next();
         final Object defaultDefinition = context.getFactoryManager().newDefinition( defaultDefinitionId );
-        final DefinitionUtils definitionUtils = new DefinitionUtils( context.getDefinitionManager(), context.getFactoryManager() );
-        final Object mp = definitionUtils.getProperty( defaultDefinition, morphProperty.getProperty() );
+        final DefinitionUtils definitionUtils = new DefinitionUtils( context.getDefinitionManager(),
+                                                                     context.getFactoryManager() );
+        final Object mp = definitionUtils.getProperty( defaultDefinition,
+                                                       morphProperty.getProperty() );
         final PropertyType propertyType = context.getDefinitionManager().adapters().forProperty().getType( mp );
         final String oryxId = context.getOryxManager().getMappingsManager().getOryxPropertyId( mp.getClass() );
         final String pRawValue = properties.get( oryxId );
-        final Object pValue = context.getOryxManager().getPropertyManager().parse( mp, propertyType, pRawValue );
+        final Object pValue = context.getOryxManager().getPropertyManager().parse( mp,
+                                                                                   propertyType,
+                                                                                   pRawValue );
         return morphProperty.getMorphTarget( pValue );
     }
 }

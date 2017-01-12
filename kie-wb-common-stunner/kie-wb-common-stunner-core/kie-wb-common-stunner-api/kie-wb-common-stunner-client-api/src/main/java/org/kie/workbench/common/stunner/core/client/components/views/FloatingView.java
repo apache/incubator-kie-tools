@@ -20,28 +20,27 @@ import org.uberfire.mvp.Command;
 
 public interface FloatingView<V> {
 
-    void add( V item );
+    void add( final V item );
 
-    FloatingView<V> setOffsetX( double ox );
+    FloatingView<V> setOffsetX( final double ox );
 
-    FloatingView<V> setOffsetY( double oy );
+    FloatingView<V> setOffsetY( final double oy );
 
-    FloatingView<V> setX( double x );
+    FloatingView<V> setX( final double x );
 
-    FloatingView<V> setY( double y );
+    FloatingView<V> setY( final double y );
 
     FloatingView<V> show();
 
     FloatingView<V> hide();
 
-    FloatingView<V> setTimeOut( int timeOut );
+    FloatingView<V> setTimeOut( final int timeOut );
 
     FloatingView<V> clearTimeOut();
 
-    FloatingView<V> setHideCallback( Command hideCallback );
+    FloatingView<V> setHideCallback( final Command hideCallback );
 
     void clear();
 
     void destroy();
-
 }

@@ -25,5 +25,4 @@ public interface ToolboxButtonGrid {
     int getRows();
 
     int getColumns();
-
 }

@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
@@ -35,9 +38,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomCon
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class ClientFullSessionImpl extends AbstractClientFullSession {
@@ -60,9 +60,22 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
                                   final @Observer ElementBuilderControl<AbstractCanvasHandler> builderControl,
                                   final ZoomControl<AbstractCanvas> zoomControl,
                                   final PanControl<AbstractCanvas> panControl ) {
-        super( canvas, canvasHandler, resizeControl, canvasValidationControl, canvasPaletteControl,
-                selectionControl, zoomControl, panControl, canvasCommandManager,
-                registryFactory.newCommandRegistry(), connectionAcceptorControl, containmentAcceptorControl,
-                dockingAcceptorControl, canvasNameEditionControl, dragControl, toolboxControl, builderControl );
+        super( canvas,
+               canvasHandler,
+               resizeControl,
+               canvasValidationControl,
+               canvasPaletteControl,
+               selectionControl,
+               zoomControl,
+               panControl,
+               canvasCommandManager,
+               registryFactory.newCommandRegistry(),
+               connectionAcceptorControl,
+               containmentAcceptorControl,
+               dockingAcceptorControl,
+               canvasNameEditionControl,
+               dragControl,
+               toolboxControl,
+               builderControl );
     }
 }

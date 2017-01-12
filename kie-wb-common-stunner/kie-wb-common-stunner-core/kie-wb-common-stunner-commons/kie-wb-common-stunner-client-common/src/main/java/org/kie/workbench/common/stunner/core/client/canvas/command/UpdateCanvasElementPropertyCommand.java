@@ -31,7 +31,8 @@ public final class UpdateCanvasElementPropertyCommand extends AbstractCanvasComm
 
     @Override
     public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.updateElementProperties( element, MutationContext.STATIC );
+        context.updateElementProperties( element,
+                                         MutationContext.STATIC );
         return buildResult();
     }
 
@@ -39,5 +40,4 @@ public final class UpdateCanvasElementPropertyCommand extends AbstractCanvasComm
     public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
         return execute( context );
     }
-
 }

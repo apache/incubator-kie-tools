@@ -19,19 +19,19 @@
 
 <module>
 
-     <inherits name='com.google.gwt.user.User' />
-     <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
 
-     <source path="api"/>
-     <source path="command"/>
-     <source path="definition"/>
-     <source path="diagram"/>
-     <source path="factory"/>
-     <source path="graph"/>
-     <source path="lookup"/>
-     <source path="registry"/>
-     <source path="rule"/>
-     <source path="validation"/>
-     <source path="util"/>
+  <source path="api"/>
+  <source path="command"/>
+  <source path="definition"/>
+  <source path="diagram"/>
+  <source path="factory"/>
+  <source path="graph"/>
+  <source path="lookup"/>
+  <source path="registry"/>
+  <source path="rule"/>
+  <source path="validation"/>
+  <source path="util"/>
 
 </module>

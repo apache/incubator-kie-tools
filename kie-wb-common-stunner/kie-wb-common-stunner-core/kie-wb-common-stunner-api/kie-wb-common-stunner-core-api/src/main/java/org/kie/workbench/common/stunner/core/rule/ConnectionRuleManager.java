@@ -18,10 +18,10 @@ package org.kie.workbench.common.stunner.core.rule;
 
 /**
  * Base manager type for connection rules.
- *
+ * <p/>
  * It checks connection rules and evaluates if the given connector candidate can attached to
  * the source/target node/s.
- *
+ * <p/>
  * Each domain specific implementation can provide its own argument types to evaluate internally the rules.
  * See <a>org.kie.workbench.common.stunner.core.rule.model.ModelConnectionRuleManager</a>
  * See <a>org.kie.workbench.common.stunner.core.rule.graph.GraphConnectionRuleManager</a>

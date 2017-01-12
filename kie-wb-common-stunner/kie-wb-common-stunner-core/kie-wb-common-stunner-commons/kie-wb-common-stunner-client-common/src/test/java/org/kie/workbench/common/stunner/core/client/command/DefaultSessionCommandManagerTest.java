@@ -32,8 +32,7 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -55,7 +54,6 @@ public class DefaultSessionCommandManagerTest {
         protected CommandListener<AbstractCanvasHandler, CanvasViolation> getRegistryListener() {
             return commandListener;
         }
-
     }
 
     private class SuccessCanvasCommandManager extends CanvasCommandManagerStub {
@@ -64,7 +62,6 @@ public class DefaultSessionCommandManagerTest {
         protected CommandResult<CanvasViolation> getResult() {
             return CanvasCommandResultBuilder.SUCCESS;
         }
-
     }
 
     private class CommandExceptionCanvasCommandManager extends CanvasCommandManagerStub {
@@ -73,7 +70,6 @@ public class DefaultSessionCommandManagerTest {
         protected CommandResult<CanvasViolation> getResult() {
             throw new CommandException( command );
         }
-
     }
 
     private class RuntimeExceptionCanvasCommandManager extends CanvasCommandManagerStub {
@@ -82,12 +78,11 @@ public class DefaultSessionCommandManagerTest {
         protected CommandResult<CanvasViolation> getResult() {
             throw new RuntimeException();
         }
-
     }
 
     private abstract class CanvasCommandManagerStub
             implements CanvasCommandManager<AbstractCanvasHandler>,
-            HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> {
+                       HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> {
 
         CommandListener<AbstractCanvasHandler, CanvasViolation> listener;
 
@@ -115,7 +110,6 @@ public class DefaultSessionCommandManagerTest {
         public void setCommandListener( CommandListener<AbstractCanvasHandler, CanvasViolation> listener ) {
             this.listener = listener;
         }
-
     }
 
     @Mock
@@ -146,12 +140,17 @@ public class DefaultSessionCommandManagerTest {
                 new SuccessCanvasCommandManager();
         when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
         this.tested = new SessionCommandManagerStub();
-        CommandResult<CanvasViolation> result = tested.execute( canvasHandler, mock( Command.class ) );
+        CommandResult<CanvasViolation> result = tested.execute( canvasHandler,
+                                                                mock( Command.class ) );
         assertNotNull( result );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        assertEquals( commandListener, commandManager.listener );
-        verify( clientSessionManager, times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager, times( 0 ) ).handleCommandError( any( CommandException.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        assertEquals( commandListener,
+                      commandManager.listener );
+        verify( clientSessionManager,
+                times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
+        verify( clientSessionManager,
+                times( 0 ) ).handleCommandError( any( CommandException.class ) );
     }
 
     @Test
@@ -161,10 +160,14 @@ public class DefaultSessionCommandManagerTest {
                 new CommandExceptionCanvasCommandManager();
         when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
         this.tested = new SessionCommandManagerStub();
-        CommandResult<CanvasViolation> result = tested.execute( canvasHandler, mock( Command.class ) );
-        assertEquals( commandListener, commandManager.listener );
-        verify( clientSessionManager, times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager, times( 1 ) ).handleCommandError( any( CommandException.class ) );
+        CommandResult<CanvasViolation> result = tested.execute( canvasHandler,
+                                                                mock( Command.class ) );
+        assertEquals( commandListener,
+                      commandManager.listener );
+        verify( clientSessionManager,
+                times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
+        verify( clientSessionManager,
+                times( 1 ) ).handleCommandError( any( CommandException.class ) );
     }
 
     @Test
@@ -174,10 +177,14 @@ public class DefaultSessionCommandManagerTest {
                 new RuntimeExceptionCanvasCommandManager();
         when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
         this.tested = new SessionCommandManagerStub();
-        tested.execute( canvasHandler, mock( Command.class ) );
-        assertEquals( commandListener, commandManager.listener );
-        verify( clientSessionManager, times( 1 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager, times( 0 ) ).handleCommandError( any( CommandException.class ) );
+        tested.execute( canvasHandler,
+                        mock( Command.class ) );
+        assertEquals( commandListener,
+                      commandManager.listener );
+        verify( clientSessionManager,
+                times( 1 ) ).handleClientError( any( ClientRuntimeError.class ) );
+        verify( clientSessionManager,
+                times( 0 ) ).handleCommandError( any( CommandException.class ) );
     }
 
     @Test
@@ -187,12 +194,17 @@ public class DefaultSessionCommandManagerTest {
                 new SuccessCanvasCommandManager();
         when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
         this.tested = new SessionCommandManagerStub();
-        CommandResult<CanvasViolation> result = tested.undo( canvasHandler, mock( Command.class ) );
+        CommandResult<CanvasViolation> result = tested.undo( canvasHandler,
+                                                             mock( Command.class ) );
         assertNotNull( result );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        assertEquals( commandListener, commandManager.listener );
-        verify( clientSessionManager, times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager, times( 0 ) ).handleCommandError( any( CommandException.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        assertEquals( commandListener,
+                      commandManager.listener );
+        verify( clientSessionManager,
+                times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
+        verify( clientSessionManager,
+                times( 0 ) ).handleCommandError( any( CommandException.class ) );
     }
 
     @Test( expected = CommandException.class )
@@ -202,10 +214,14 @@ public class DefaultSessionCommandManagerTest {
                 new CommandExceptionCanvasCommandManager();
         when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
         this.tested = new SessionCommandManagerStub();
-        tested.undo( canvasHandler, mock( Command.class ) );
-        assertEquals( commandListener, commandManager.listener );
-        verify( clientSessionManager, times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager, times( 1 ) ).handleCommandError( any( CommandException.class ) );
+        tested.undo( canvasHandler,
+                     mock( Command.class ) );
+        assertEquals( commandListener,
+                      commandManager.listener );
+        verify( clientSessionManager,
+                times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
+        verify( clientSessionManager,
+                times( 1 ) ).handleCommandError( any( CommandException.class ) );
     }
 
     @Test( expected = RuntimeException.class )
@@ -215,10 +231,13 @@ public class DefaultSessionCommandManagerTest {
                 new RuntimeExceptionCanvasCommandManager();
         when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
         this.tested = new SessionCommandManagerStub();
-        tested.undo( canvasHandler, mock( Command.class ) );
-        assertEquals( commandListener, commandManager.listener );
-        verify( clientSessionManager, times( 1 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager, times( 0 ) ).handleCommandError( any( CommandException.class ) );
+        tested.undo( canvasHandler,
+                     mock( Command.class ) );
+        assertEquals( commandListener,
+                      commandManager.listener );
+        verify( clientSessionManager,
+                times( 1 ) ).handleClientError( any( ClientRuntimeError.class ) );
+        verify( clientSessionManager,
+                times( 0 ) ).handleCommandError( any( CommandException.class ) );
     }
-
 }

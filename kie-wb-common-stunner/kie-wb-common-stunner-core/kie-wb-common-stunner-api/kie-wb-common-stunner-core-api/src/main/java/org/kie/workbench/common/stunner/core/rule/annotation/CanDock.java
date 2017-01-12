@@ -16,7 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.rule.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Annotation for specifying a docking rule.
@@ -31,5 +35,4 @@ public @interface CanDock {
     String id() default "";
 
     String[] roles();
-
 }

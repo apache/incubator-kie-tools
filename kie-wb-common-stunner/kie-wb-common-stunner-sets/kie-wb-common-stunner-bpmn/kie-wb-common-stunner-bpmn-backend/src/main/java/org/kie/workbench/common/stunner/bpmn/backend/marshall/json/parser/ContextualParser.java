@@ -29,9 +29,7 @@ public interface ContextualParser extends Parser {
         GraphUtils getGraphUtils();
 
         OryxManager getOryxManager();
-
     }
 
     void initialize( Context context );
-
 }

@@ -66,9 +66,7 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
             getView().clear();
             getView().showEmptyView( true );
             this.paletteDefinition = null;
-
         }
-
     }
 
     @Override
@@ -89,8 +87,9 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
     }
 
     public void onDragProxyComplete( final String definitionId ) {
-        onDragProxyComplete( definitionId, -1, -1 );
-
+        onDragProxyComplete( definitionId,
+                             -1,
+                             -1 );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -101,24 +100,27 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
             final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition( definitionId );
             final ShapeFactory<?, ?, ? extends Shape> factory = getShapeFactory();
             // Fire the callback as shape dropped onto the target canvas.
-            itemDropCallback.onDropItem( definition, factory, x, y );
+            itemDropCallback.onDropItem( definition,
+                                         factory,
+                                         x,
+                                         y );
         }
     }
 
     public Glyph<?> getShapeGlyph( final String definitionId ) {
-        return getShapeFactory().glyph( definitionId, getIconSize(), getIconSize() );
+        return getShapeFactory().glyph( definitionId,
+                                        getIconSize(),
+                                        getIconSize() );
     }
 
     @Override
     protected void doDestroy() {
         getView().destroy();
         this.itemDropCallback = null;
-
     }
 
     @Override
     public V getView() {
         return view;
     }
-
 }

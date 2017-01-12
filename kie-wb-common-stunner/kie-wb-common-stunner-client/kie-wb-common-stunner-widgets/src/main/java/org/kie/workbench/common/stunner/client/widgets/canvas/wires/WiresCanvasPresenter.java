@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.canvas.wires;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
@@ -29,10 +33,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEv
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 @Dependent
 public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
 
@@ -41,7 +41,14 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     private final LienzoPanel lienzoPanel;
 
     protected WiresCanvasPresenter() {
-        this( null, null, null, null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -53,8 +60,13 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
                                  final @Lienzo Layer layer,
                                  final WiresCanvas.View view,
                                  final LienzoPanel lienzoPanel ) {
-        super( canvasClearEvent, canvasShapeAddedEvent, canvasShapeRemovedEvent,
-                canvasDrawnEvent, canvasFocusedEvent, layer, view );
+        super( canvasClearEvent,
+               canvasShapeAddedEvent,
+               canvasShapeRemovedEvent,
+               canvasDrawnEvent,
+               canvasFocusedEvent,
+               layer,
+               view );
         this.lienzoPanel = lienzoPanel;
     }
 
@@ -64,9 +76,13 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     }
 
     @Override
-    public Canvas initialize( final int width, final int height ) {
-        lienzoPanel.show( width, height, PADDING );
-        show( lienzoPanel.asWidget(), layer );
+    public Canvas initialize( final int width,
+                              final int height ) {
+        lienzoPanel.show( width,
+                          height,
+                          PADDING );
+        show( lienzoPanel.asWidget(),
+              layer );
         layer.onAfterDraw( WiresCanvasPresenter.this::afterDrawCanvas );
         return this;
     }

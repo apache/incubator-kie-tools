@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.bs3;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
@@ -25,13 +32,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
 
 @Dependent
 public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategory> implements IsWidget {
@@ -45,15 +45,19 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
 
         View setHeight( final int px );
 
-        View addTitle( String title );
+        View addTitle( final String title );
 
-        View addHeader( String text );
+        View addHeader( final String text );
 
         View addSeparator( final double height );
 
-        View setBackgroundColor( String color );
+        View setBackgroundColor( final String color );
 
-        View addItem( String id, String text, String description, String glyphDefId, IsWidget view );
+        View addItem( final String id,
+                      final String text,
+                      final String description,
+                      final String glyphDefId,
+                      final IsWidget view );
 
         View clear();
     }
@@ -151,13 +155,16 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
         final String title = item.getTitle();
         final String desc = item.getDescription();
         final String glyphId = item.getDefinitionId();
-        view.addItem( id, title, desc, glyphId, bs3PaletteWidget.getDefinitionView( glyphId ) );
+        view.addItem( id,
+                      title,
+                      desc,
+                      glyphId,
+                      bs3PaletteWidget.getDefinitionView( glyphId ) );
         itemIds.add( id );
     }
 
     private void addSeparator() {
         view.addSeparator( VERT_SEPARATOR_H );
-        ;
     }
 
     @Override
@@ -179,7 +186,11 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
                       final int itemX,
                       final int itemY ) {
         if ( null != itemMouseDownCallback ) {
-            itemMouseDownCallback.onItemMouseDown( id, mouseX, mouseY, itemX, itemY );
+            itemMouseDownCallback.onItemMouseDown( id,
+                                                   mouseX,
+                                                   mouseY,
+                                                   itemX,
+                                                   itemY );
         }
     }
 
@@ -189,7 +200,11 @@ public class BS3PaletteCategory extends AbstractPalette<DefinitionPaletteCategor
                        final int itemX,
                        final int itemY ) {
         if ( null != itemClickCallback ) {
-            itemClickCallback.onItemClick( id, mouseX, mouseY, itemX, itemY );
+            itemClickCallback.onItemClick( id,
+                                           mouseX,
+                                           mouseY,
+                                           itemX,
+                                           itemY );
         }
     }
 

@@ -26,7 +26,6 @@ public interface AdapterManager {
     /**
      * A generic definition set adapter for any type. It provides a shortcut
      * for introspecting definition sets.
-     *
      * @return The definition set adapter.
      */
     DefinitionSetAdapter<Object> forDefinitionSet();
@@ -34,7 +33,6 @@ public interface AdapterManager {
     /**
      * A generic rule adapter for any type. It provides a shortcut
      * for introspecting the rules on for the different definition sets.
-     *
      * @return The rule adapter.
      */
     DefinitionSetRuleAdapter<Object> forRules();
@@ -42,7 +40,6 @@ public interface AdapterManager {
     /**
      * A generic definition adapter for any type. It provides a shortcut
      * for introspecting definitions.
-     *
      * @return The definition adapter.
      */
     DefinitionAdapter<Object> forDefinition();
@@ -50,7 +47,6 @@ public interface AdapterManager {
     /**
      * A generic property set adapter for any type. It provides a shortcut
      * for introspecting property sets.
-     *
      * @return The property set adapter.
      */
     PropertySetAdapter<Object> forPropertySet();
@@ -58,16 +54,13 @@ public interface AdapterManager {
     /**
      * A generic property adapter for any type. It provides a shortcut
      * for introspecting properties.
-     *
      * @return The property adapter.
      */
     PropertyAdapter<Object, Object> forProperty();
 
     /**
      * The registry that contains all the adapters present on the context.
-     *
      * @return The adapter registry.
      */
     AdapterRegistry registry();
-
 }

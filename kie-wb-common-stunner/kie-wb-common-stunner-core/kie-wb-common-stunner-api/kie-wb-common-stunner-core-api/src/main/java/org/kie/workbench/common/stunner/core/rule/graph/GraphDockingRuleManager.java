@@ -28,10 +28,9 @@ public interface GraphDockingRuleManager extends DockingRuleManager {
 
     /**
      * It checks docking rules and evaluates if the given candidate can be dock into another parent.
-     *
      * @param parent The parent node.
      * @param candidate The candidate to be dock into parent.
      */
-    RuleViolations evaluate( Element<?> parent, Element<? extends Definition<?>> candidate );
-
+    RuleViolations evaluate( final Element<?> parent,
+                             final Element<? extends Definition<?>> candidate );
 }

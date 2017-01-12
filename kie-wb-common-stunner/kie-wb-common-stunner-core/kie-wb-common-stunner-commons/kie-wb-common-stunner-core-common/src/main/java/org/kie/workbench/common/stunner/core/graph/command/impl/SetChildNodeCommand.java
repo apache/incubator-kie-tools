@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -30,9 +33,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
 /**
  * Creates/defines a new parent-child relationship (edge + Child content type)  from the given nodes.
  * Both nodes must already be crated and present on the graph storage.
@@ -45,17 +45,18 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
     private transient Node<?, Edge> parent;
     private transient Node<?, Edge> candidate;
 
-    public SetChildNodeCommand( @MapsTo( "parentUUID" ) String parentUUID,
-                                @MapsTo( "candidateUUID" ) String candidateUUID ) {
+    public SetChildNodeCommand( final @MapsTo( "parentUUID" ) String parentUUID,
+                                final @MapsTo( "candidateUUID" ) String candidateUUID ) {
         this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
-                parentUUID );
+                                                              parentUUID );
         this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
-                candidateUUID );
+                                                                 candidateUUID );
     }
 
-    public SetChildNodeCommand( Node<?, Edge> parent,
-                                Node<?, Edge> candidate ) {
-        this( parent.getUUID(), candidate.getUUID() );
+    public SetChildNodeCommand( final Node<?, Edge> parent,
+                                final Node<?, Edge> candidate ) {
+        this( parent.getUUID(),
+              candidate.getUUID() );
         this.parent = parent;
         this.candidate = candidate;
     }
@@ -76,7 +77,6 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
             parent.getOutEdges().add( edge );
             candidate.getInEdges().add( edge );
             getMutableIndex( context ).addEdge( edge );
-
         }
         return results;
     }
@@ -85,8 +85,8 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
     protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
         final Node<?, Edge> parent = getParent( context );
         final Node<Definition<?>, Edge> candidate = ( Node<Definition<?>, Edge> ) getCandidate( context );
-        final Collection<RuleViolation> containmentRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( parent, candidate ).violations();
+        final Collection<RuleViolation> containmentRuleViolations = ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( parent,
+                                                                                                                                                    candidate ).violations();
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
         violations.addAll( containmentRuleViolations );
         return new GraphCommandResultBuilder( violations ).build();
@@ -96,7 +96,8 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
         final Node<?, Edge> parent = getParent( context );
         final Node<?, Edge> candidate = getCandidate( context );
-        RemoveChildCommand undoCommand = new RemoveChildCommand( parent, candidate );
+        RemoveChildCommand undoCommand = new RemoveChildCommand( parent,
+                                                                 candidate );
         return undoCommand.execute( context );
     }
 
@@ -111,7 +112,8 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings( "unchecked" )
     private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
         if ( null == parent ) {
-            parent = checkNodeNotNull( context, parentUUID );
+            parent = checkNodeNotNull( context,
+                                       parentUUID );
         }
         return parent;
     }
@@ -119,7 +121,8 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings( "unchecked" )
     private Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
         if ( null == candidate ) {
-            candidate = checkNodeNotNull( context, candidateUUID );
+            candidate = checkNodeNotNull( context,
+                                          candidateUUID );
         }
         return candidate;
     }

@@ -23,11 +23,13 @@ public abstract class AbstractLookupRequestBuilder<T> {
     protected int page = 0;
     protected int pageSize = 10;
 
+    @SuppressWarnings( "unchecked" )
     public T page( final int page ) {
         this.page = page;
         return ( T ) this;
     }
 
+    @SuppressWarnings( "unchecked" )
     public T pageSize( final int pageSize ) {
         this.pageSize = pageSize;
         return ( T ) this;
@@ -45,9 +47,7 @@ public abstract class AbstractLookupRequestBuilder<T> {
                 x++;
             }
             return builder.append( "]" ).toString();
-
         }
         return null;
     }
-
 }

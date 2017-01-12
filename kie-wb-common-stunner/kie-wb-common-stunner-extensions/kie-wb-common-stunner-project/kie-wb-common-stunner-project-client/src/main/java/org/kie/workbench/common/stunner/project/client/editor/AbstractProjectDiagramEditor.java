@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.BS3PaletteWidget;
@@ -27,7 +34,16 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.*;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.RefreshSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
@@ -52,13 +68,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static java.util.logging.Level.FINE;
 
 // TODO: i18n.
@@ -66,7 +75,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private static Logger LOGGER = Logger.getLogger( AbstractProjectDiagramEditor.class.getName() );
 
-    public interface View extends UberView<AbstractProjectDiagramEditor>, KieEditorView, IsWidget {
+    public interface View extends UberView<AbstractProjectDiagramEditor>,
+                                  KieEditorView,
+                                  IsWidget {
 
         void setWidget( IsWidget widget );
     }
@@ -150,8 +161,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         clientSessionPresenter
                 .setDisplayErrors( true )
                 .initialize( session,
-                        getCanvasWidth(),
-                        getCanvasHeight() );
+                             getCanvasWidth(),
+                             getCanvasHeight() );
         // Use the session presenter's view.
         getView().setWidget( clientSessionPresenter.getView() );
         // Initialize toolbar's commands.
@@ -160,22 +171,25 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected void doStartUp( final ObservablePath path,
                               final PlaceRequest place ) {
-        init( path, place, resourceType );
+        init( path,
+              place,
+              resourceType );
     }
 
     @Override
     protected void loadContent() {
-        projectDiagramServices.getByPath( versionRecordManager.getCurrentPath(), new ServiceCallback<ProjectDiagram>() {
-            @Override
-            public void onSuccess( ProjectDiagram item ) {
-                open( item );
-            }
+        projectDiagramServices.getByPath( versionRecordManager.getCurrentPath(),
+                                          new ServiceCallback<ProjectDiagram>() {
+                                              @Override
+                                              public void onSuccess( ProjectDiagram item ) {
+                                                  open( item );
+                                              }
 
-            @Override
-            public void onError( ClientRuntimeError error ) {
-                showError( error );
-            }
-        } );
+                                              @Override
+                                              public void onError( ClientRuntimeError error ) {
+                                                  showError( error );
+                                              }
+                                          } );
     }
 
     protected void open( final ProjectDiagram diagram ) {
@@ -187,7 +201,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.paletteWidget = buildPalette( diagram );
         getView().setWidget( clientSessionPresenter.getView() );
         clientSessionPresenter.getView().setPalette( this.paletteWidget.getView() );
-        clientSessionPresenter.open( diagram, callback );
+        clientSessionPresenter.open( diagram,
+                                     callback );
         updateTitle( diagram.getMetadata().getTitle() );
     }
 
@@ -211,7 +226,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
             @Override
             public void onFail( Iterable<CanvasValidationViolation> violations ) {
-                log( Level.WARNING, "Validation failed [violations=" + violations.toString() + "]." );
+                log( Level.WARNING,
+                     "Validation failed [violations=" + violations.toString() + "]." );
                 hideLoadingViews();
             }
         } );
@@ -227,20 +243,21 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         diagram.getMetadata().setThumbData( thumbData );
         // Perform update operation remote call.
         projectDiagramServices.saveOrUpdate( versionRecordManager.getCurrentPath(),
-                getDiagram(),
-                metadata,
-                commitMessage, new ServiceCallback<ProjectDiagram>() {
-                    @Override
-                    public void onSuccess( ProjectDiagram item ) {
-                        getSaveSuccessCallback( item.hashCode() );
-                        hideLoadingViews();
-                    }
+                                             getDiagram(),
+                                             metadata,
+                                             commitMessage,
+                                             new ServiceCallback<ProjectDiagram>() {
+                                                 @Override
+                                                 public void onSuccess( ProjectDiagram item ) {
+                                                     getSaveSuccessCallback( item.hashCode() );
+                                                     hideLoadingViews();
+                                                 }
 
-                    @Override
-                    public void onError( ClientRuntimeError error ) {
-                        showError( error );
-                    }
-                } );
+                                                 @Override
+                                                 public void onError( ClientRuntimeError error ) {
+                                                     showError( error );
+                                                 }
+                                             } );
     }
 
     @Override
@@ -282,8 +299,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         menus = menuBuilder
                 // Project editor menus.
                 .addSave( versionRecordManager.newSaveMenuItem( () -> onSave() ) )
-                .addCopy( versionRecordManager.getCurrentPath(), fileNameValidator )
-                .addRename( versionRecordManager.getPathToLatest(), fileNameValidator )
+                .addCopy( versionRecordManager.getCurrentPath(),
+                          fileNameValidator )
+                .addRename( versionRecordManager.getPathToLatest(),
+                            fileNameValidator )
                 .addDelete( versionRecordManager.getPathToLatest() )
                 .addNewTopLevelMenu( versionRecordManager.buildMenu() )
                 // Build the menu.
@@ -328,7 +347,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionRefreshCommand.execute( new ClientSessionCommand.Callback<Diagram>() {
             @Override
             public void onSuccess( final Diagram result ) {
-                log( FINE, "Diagram refresh successful." );
+                log( FINE,
+                     "Diagram refresh successful." );
                 hideLoadingViews();
             }
 
@@ -360,11 +380,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     protected void doFocus() {
-        log( FINE, "Focusing Stunner Project Diagram Editor..." );
+        log( FINE,
+             "Focusing Stunner Project Diagram Editor..." );
         if ( !isSameSession( clientSessionManager.getCurrentSession() ) ) {
             clientSessionManager.open( session );
         } else {
-            log( FINE, "Session already active, no action." );
+            log( FINE,
+                 "Session already active, no action." );
         }
     }
 
@@ -375,7 +397,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     void onSessionErrorEvent( @Observes OnSessionErrorEvent errorEvent ) {
         if ( isSameSession( errorEvent.getSession() ) ) {
             executeWithConfirm( "An error happened [" + errorEvent.getError() + "]. Do you want" +
-                    "to refresh the diagram (Last changes can be lost)? ", this::menu_refresh );
+                                        "to refresh the diagram (Last changes can be lost)? ",
+                                this::menu_refresh );
         }
     }
 
@@ -456,7 +479,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private void updateTitle( final String title ) {
         // Change editor's title.
         this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( this.place, this.title ) );
+        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( this.place,
+                                                                       this.title ) );
     }
 
     private void hidePaletteFloatingView() {
@@ -483,12 +507,17 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return null != clientSessionPresenter.getCanvasHandler() ? ( ProjectDiagram ) clientSessionPresenter.getCanvasHandler().getDiagram() : null;
     }
 
-    private void executeWithConfirm( final String message, final Command command ) {
+    private void executeWithConfirm( final String message,
+                                     final Command command ) {
         final Command yesCommand = command::execute;
         final Command noCommand = () -> {
         };
         final YesNoCancelPopup popup =
-                YesNoCancelPopup.newYesNoCancelPopup( message, null, yesCommand, noCommand, noCommand );
+                YesNoCancelPopup.newYesNoCancelPopup( message,
+                                                      null,
+                                                      yesCommand,
+                                                      noCommand,
+                                                      noCommand );
         popup.show();
     }
 
@@ -496,9 +525,11 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return ( View ) baseView;
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

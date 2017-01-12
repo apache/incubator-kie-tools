@@ -22,7 +22,7 @@
     @external item fa;
 
     .item .fa {
-        color: grey;
+      color: grey;
     }
   </ui:style>
 

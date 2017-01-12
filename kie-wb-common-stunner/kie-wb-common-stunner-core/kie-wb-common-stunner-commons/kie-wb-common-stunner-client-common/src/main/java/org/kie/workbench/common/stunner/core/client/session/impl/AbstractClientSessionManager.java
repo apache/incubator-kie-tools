@@ -15,15 +15,15 @@
 
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class AbstractClientSessionManager implements ClientSessionManager<AbstractCanvas, AbstractCanvasHandler, AbstractClientSession> {
 
@@ -50,22 +50,25 @@ public abstract class AbstractClientSessionManager implements ClientSessionManag
             this.pause();
         }
         if ( !session.equals( this.current ) ) {
-            log( Level.FINE, "Opening session [" + session.toString() + "] ..." );
+            log( Level.FINE,
+                 "Opening session [" + session.toString() + "] ..." );
             this.current = session;
             this.current.open();
             postOpen();
-            log( Level.FINE, "Session [" + current.toString() + "] opened" );
+            log( Level.FINE,
+                 "Session [" + current.toString() + "] opened" );
         }
-
     }
 
     @Override
     public void pause() {
         if ( null != current ) {
-            log( Level.FINE, "Pausing session [" + current.toString() + "] ..." );
+            log( Level.FINE,
+                 "Pausing session [" + current.toString() + "] ..." );
             this.current.pause();
             postPause();
-            log( Level.FINE, "Session [" + current.toString() + "] paused" );
+            log( Level.FINE,
+                 "Session [" + current.toString() + "] paused" );
         }
     }
 
@@ -75,44 +78,56 @@ public abstract class AbstractClientSessionManager implements ClientSessionManag
             pause();
         }
         if ( !session.equals( current ) ) {
-            log( Level.FINE, "Resuming session [" + session.toString() + "] ..." );
+            log( Level.FINE,
+                 "Resuming session [" + session.toString() + "] ..." );
             this.current = session;
             this.current.resume();
             postResume();
-            log( Level.FINE, "Session [" + current.toString() + "] resumed" );
+            log( Level.FINE,
+                 "Session [" + current.toString() + "] resumed" );
         }
-
     }
 
     @Override
     public void dispose() {
         if ( null != current ) {
-            log( Level.FINE, "Disposing session [" + current.toString() + "] ..." );
+            log( Level.FINE,
+                 "Disposing session [" + current.toString() + "] ..." );
             this.current.dispose();
             postDispose();
-            log( Level.FINE, "Session [" + current.toString() + "] disposed" );
+            log( Level.FINE,
+                 "Session [" + current.toString() + "] disposed" );
             this.current = null;
         }
     }
 
     public void handleCommandError( final CommandException ce ) {
-        log( Level.SEVERE, "Command execution failed", ce );
+        log( Level.SEVERE,
+             "Command execution failed",
+             ce );
     }
 
     public void handleClientError( final ClientRuntimeError error ) {
-        log( Level.SEVERE, "An error on client side happened", error.getThrowable() );
+        log( Level.SEVERE,
+             "An error on client side happened",
+             error.getThrowable() );
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 
-    private void log( final Level level, final String message, final Throwable t ) {
+    private void log( final Level level,
+                      final String message,
+                      final Throwable t ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message, t );
+            LOGGER.log( level,
+                        message,
+                        t );
         }
     }
-
 }

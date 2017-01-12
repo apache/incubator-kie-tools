@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.palette;
 
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -42,10 +46,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.Graph
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I> {
 
     private static Logger LOGGER = Logger.getLogger( NewPaletteNodeCommand.class.getName() );
@@ -59,8 +59,15 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                   final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
                                   final GraphBoundsIndexer graphBoundsIndexer,
                                   final I icon ) {
-        super( clientFactoryServices, commonLookups, shapeManager, definitionsPaletteBuilder, palette,
-                nodeDragProxyFactory, nodeBuilderControl, graphBoundsIndexer, icon );
+        super( clientFactoryServices,
+               commonLookups,
+               shapeManager,
+               definitionsPaletteBuilder,
+               palette,
+               nodeDragProxyFactory,
+               nodeBuilderControl,
+               graphBoundsIndexer,
+               icon );
     }
 
     protected abstract String getDefinitionSetIdentifier();
@@ -72,15 +79,14 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
     protected Set<String> getDefinitions() {
         // TODO: Finish this implementation & Handle all response buckets/pages. Currently no palettes
         // are used on toolbox ( no implementation for this class )
-        final Set<Object> allowedDefinitions =
-                commonLookups.getAllowedTargetDefinitions(
-                        canvasHandler.getModelRulesManager(),
-                        getDefinitionSetIdentifier(),
-                        canvasHandler.getDiagram().getGraph(),
-                        this.sourceNode,
-                        getEdgeIdentifier(),
-                        0,
-                        10 );
+        final Set<Object> allowedDefinitions = commonLookups.getAllowedTargetDefinitions(
+                canvasHandler.getModelRulesManager(),
+                getDefinitionSetIdentifier(),
+                canvasHandler.getDiagram().getGraph(),
+                this.sourceNode,
+                getEdgeIdentifier(),
+                0,
+                10 );
         return null;
     }
 
@@ -89,122 +95,139 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
     protected void onItemSelected( final String definitionId,
                                    final double x,
                                    final double y ) {
-        clientFactoryServices.newElement( UUID.uuid(), getEdgeIdentifier(), new ServiceCallback<Element>() {
+        clientFactoryServices.newElement( UUID.uuid(),
+                                          getEdgeIdentifier(),
+                                          new ServiceCallback<Element>() {
 
-            @Override
-            public void onSuccess( final Element edgeItem ) {
-                final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) edgeItem;
-                // Manually set the source node as the drag def will need it.
-                edge.setSourceNode( sourceNode );
-                final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
-                final ShapeFactory<?, AbstractCanvasHandler, ?> shapeFactory =
-                        shapeManager.getShapeSet( ssid ).getShapeFactory();
-                clientFactoryServices.newElement( UUID.uuid(), definitionId, new ServiceCallback<Element>() {
-                    @Override
-                    public void onSuccess( final Element nodeItem ) {
-                        final Node<View<?>, Edge> node = ( Node<View<?>, Edge> ) nodeItem;
-                        final NodeDragProxy.Item<AbstractCanvasHandler> item =
-                                new NodeDragProxy.Item<AbstractCanvasHandler>() {
-                                    @Override
-                                    public Node<View<?>, Edge> getNode() {
-                                        return node;
-                                    }
+                                              @Override
+                                              public void onSuccess( final Element edgeItem ) {
+                                                  final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) edgeItem;
+                                                  // Manually set the source node as the drag def will need it.
+                                                  edge.setSourceNode( sourceNode );
+                                                  final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
+                                                  final ShapeFactory<?, AbstractCanvasHandler, ?> shapeFactory = shapeManager.getShapeSet( ssid ).getShapeFactory();
+                                                  clientFactoryServices.newElement( UUID.uuid(),
+                                                                                    definitionId,
+                                                                                    new ServiceCallback<Element>() {
+                                                                                        @Override
+                                                                                        public void onSuccess( final Element nodeItem ) {
+                                                                                            final Node<View<?>, Edge> node = ( Node<View<?>, Edge> ) nodeItem;
+                                                                                            final NodeDragProxy.Item<AbstractCanvasHandler> item = new NodeDragProxy.Item<AbstractCanvasHandler>() {
+                                                                                                @Override
+                                                                                                public Node<View<?>, Edge> getNode() {
+                                                                                                    return node;
+                                                                                                }
 
-                                    @Override
-                                    public ShapeFactory<?, AbstractCanvasHandler, ?> getNodeShapeFactory() {
-                                        return shapeFactory;
-                                    }
+                                                                                                @Override
+                                                                                                public ShapeFactory<?, AbstractCanvasHandler, ?> getNodeShapeFactory() {
+                                                                                                    return shapeFactory;
+                                                                                                }
 
-                                    @Override
-                                    public Edge<View<?>, Node> getInEdge() {
-                                        return edge;
-                                    }
+                                                                                                @Override
+                                                                                                public Edge<View<?>, Node> getInEdge() {
+                                                                                                    return edge;
+                                                                                                }
 
-                                    @Override
-                                    public Node<View<?>, Edge> getInEdgeSourceNode() {
-                                        return edge.getSourceNode();
-                                    }
+                                                                                                @Override
+                                                                                                public Node<View<?>, Edge> getInEdgeSourceNode() {
+                                                                                                    return edge.getSourceNode();
+                                                                                                }
 
-                                    @Override
-                                    public ShapeFactory<?, AbstractCanvasHandler, ?> getInEdgeShapeFactory() {
-                                        return shapeFactory;
-                                    }
+                                                                                                @Override
+                                                                                                public ShapeFactory<?, AbstractCanvasHandler, ?> getInEdgeShapeFactory() {
+                                                                                                    return shapeFactory;
+                                                                                                }
+                                                                                            };
+                                                                                            nodeBuilderControl.enable( canvasHandler );
+                                                                                            canvasHighlight = new CanvasHighlight( canvasHandler );
+                                                                                            graphBoundsIndexer.build( canvasHandler.getDiagram().getGraph() );
+                                                                                            nodeDragProxyFactory
+                                                                                                    .proxyFor( canvasHandler )
+                                                                                                    .show( item,
+                                                                                                           ( int ) x,
+                                                                                                           ( int ) y,
+                                                                                                           new NodeDragProxyCallback() {
 
-                                };
-                        nodeBuilderControl.enable( canvasHandler );
-                        canvasHighlight = new CanvasHighlight( canvasHandler );
-                        graphBoundsIndexer.build( canvasHandler.getDiagram().getGraph() );
-                        nodeDragProxyFactory
-                                .proxyFor( canvasHandler )
-                                .show( item, ( int ) x, ( int ) y, new NodeDragProxyCallback() {
+                                                                                                               @Override
+                                                                                                               public void onStart( final int x,
+                                                                                                                                    final int y ) {
+                                                                                                               }
 
-                                    @Override
-                                    public void onStart( final int x,
-                                                         final int y ) {
-                                    }
+                                                                                                               @Override
+                                                                                                               public void onMove( final int x,
+                                                                                                                                   final int y ) {
+                                                                                                                   final NodeBuildRequest request = new NodeBuildRequestImpl( x,
+                                                                                                                                                                              y,
+                                                                                                                                                                              node,
+                                                                                                                                                                              edge );
+                                                                                                                   final boolean accepts = nodeBuilderControl.allows( request );
+                                                                                                                   if ( accepts ) {
+                                                                                                                       final Node parent = graphBoundsIndexer.getAt( x,
+                                                                                                                                                                     y );
+                                                                                                                       if ( null != parent ) {
+                                                                                                                           canvasHighlight.highLight( parent );
+                                                                                                                       }
+                                                                                                                   } else {
+                                                                                                                       canvasHighlight.unhighLight();
+                                                                                                                   }
+                                                                                                               }
 
-                                    @Override
-                                    public void onMove( final int x,
-                                                        final int y ) {
-                                        final NodeBuildRequest request = new NodeBuildRequestImpl( x, y, node, edge );
-                                        final boolean accepts = nodeBuilderControl.allows( request );
-                                        if ( accepts ) {
-                                            final Node parent = graphBoundsIndexer.getAt( x, y );
-                                            if ( null != parent ) {
-                                                canvasHighlight.highLight( parent );
-                                            }
+                                                                                                               @Override
+                                                                                                               public void onComplete( final int x,
+                                                                                                                                       final int y ) {
+                                                                                                               }
 
-                                        } else {
-                                            canvasHighlight.unhighLight();
-                                        }
-                                    }
+                                                                                                               @Override
+                                                                                                               public void onComplete( final int x,
+                                                                                                                                       final int y,
+                                                                                                                                       final int sourceMagnet,
+                                                                                                                                       final int targetMagnet ) {
+                                                                                                                   final NodeBuildRequest request = new NodeBuildRequestImpl( x,
+                                                                                                                                                                              y,
+                                                                                                                                                                              node,
+                                                                                                                                                                              edge,
+                                                                                                                                                                              sourceMagnet,
+                                                                                                                                                                              targetMagnet );
+                                                                                                                   nodeBuilderControl.build( request,
+                                                                                                                                             new BuilderControl.BuildCallback() {
 
-                                    @Override
-                                    public void onComplete( final int x,
-                                                            final int y ) {
-                                    }
+                                                                                                                                                 @Override
+                                                                                                                                                 public void onSuccess( final String uuid ) {
+                                                                                                                                                     nodeBuilderControl.disable();
+                                                                                                                                                     canvasHighlight.unhighLight();
+                                                                                                                                                 }
 
-                                    @Override
-                                    public void onComplete( int x, int y, int sourceMagnet, int targetMagnet ) {
-                                        final NodeBuildRequest request = new NodeBuildRequestImpl( x, y, node, edge, sourceMagnet, targetMagnet );
-                                        nodeBuilderControl.build( request, new BuilderControl.BuildCallback() {
+                                                                                                                                                 @Override
+                                                                                                                                                 public void onError( final ClientRuntimeError error ) {
+                                                                                                                                                     log( Level.SEVERE,
+                                                                                                                                                          error.toString() );
+                                                                                                                                                 }
+                                                                                                                                             } );
+                                                                                                               }
+                                                                                                           } );
+                                                                                        }
 
-                                            @Override
-                                            public void onSuccess( final String uuid ) {
-                                                nodeBuilderControl.disable();
-                                                canvasHighlight.unhighLight();
-                                            }
+                                                                                        @Override
+                                                                                        public void onError( final ClientRuntimeError error ) {
+                                                                                            log( Level.SEVERE,
+                                                                                                 error.toString() );
+                                                                                        }
+                                                                                    } );
+                                              }
 
-                                            @Override
-                                            public void onError( final ClientRuntimeError error ) {
-                                                log( Level.SEVERE, error.toString() );
-                                            }
-                                        } );
-
-                                    }
-                                } );
-
-                    }
-
-                    @Override
-                    public void onError( final ClientRuntimeError error ) {
-                        log( Level.SEVERE, error.toString() );
-                    }
-                } );
-            }
-
-            @Override
-            public void onError( final ClientRuntimeError error ) {
-                log( Level.SEVERE, error.toString() );
-            }
-        } );
-
+                                              @Override
+                                              public void onError( final ClientRuntimeError error ) {
+                                                  log( Level.SEVERE,
+                                                       error.toString() );
+                                              }
+                                          } );
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
-
 }

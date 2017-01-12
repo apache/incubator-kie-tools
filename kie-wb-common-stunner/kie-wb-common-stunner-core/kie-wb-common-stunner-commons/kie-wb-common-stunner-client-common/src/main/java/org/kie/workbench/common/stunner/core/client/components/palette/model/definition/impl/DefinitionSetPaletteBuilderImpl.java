@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.model.definition.impl;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.AbstractPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
@@ -26,12 +32,6 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Provides a palette builder for a DefinitionSetPalette.
@@ -51,7 +51,8 @@ public class DefinitionSetPaletteBuilderImpl
     private PaletteMorphGroupProvider paletteMorphGroupProvider;
 
     protected DefinitionSetPaletteBuilderImpl() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     @Inject
@@ -74,78 +75,80 @@ public class DefinitionSetPaletteBuilderImpl
             for ( final String defId : definitions ) {
                 // Check if this concrete definition is excluded from the palette model.
                 if ( !isDefinitionExcluded( defId ) ) {
-                    clientFactoryServices.newDefinition( defId, new ServiceCallback<Object>() {
-                        @Override
-                        public void onSuccess( final Object definition ) {
-                            final String id = getDefinitionManager().adapters().forDefinition().getId( definition );
-                            final String category = getDefinitionManager().adapters().forDefinition().getCategory( definition );
-                            final String categoryId = toValidId( category );
-                            // Check if this concrete category excluded from the palette model.
-                            if ( !isCategoryExcluded( categoryId ) ) {
-                                DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder categoryGroupBuilder =
-                                        getItemBuilder( categoryBuilders, categoryId );
-                                if ( null == categoryGroupBuilder ) {
-                                    categoryGroupBuilder =
-                                            new DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder( categoryId )
-                                                    .definitionId( paletteCategoryProvider.getDefinitionId( categoryId ) )
-                                                    .title( paletteCategoryProvider.getTitle( categoryId ) )
-                                                    .tooltip( paletteCategoryProvider.getTitle( categoryId ) )
-                                                    .description( paletteCategoryProvider.getDescription( categoryId ) );
-                                    categoryBuilders.add( categoryGroupBuilder );
-                                }
-                                final MorphDefinition morphDefinition = definitionUtils.getMorphDefinition( definition );
-                                final boolean hasMorphBase = null != morphDefinition;
-                                DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder morphGroupBuilder = null;
-                                String morphDefault = null;
-                                if ( hasMorphBase ) {
-                                    final String morphBase = morphDefinition.getBase();
-                                    morphDefault = morphDefinition.getDefault();
-                                    final String morphBaseId = toValidId( morphBase );
-                                    morphGroupBuilder = ( DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder ) categoryGroupBuilder.getItem( morphBaseId );
-                                    if ( null == morphGroupBuilder ) {
-                                        morphGroupBuilder =
-                                                new DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder( morphBaseId )
-                                                        .definitionId( morphDefault )
-                                                        .title( paletteMorphGroupProvider.getTitle( morphBase, morphDefinition ) )
-                                                        .description( paletteMorphGroupProvider.getDescription( morphBase, morphDefinition ) )
-                                                        .tooltip( paletteMorphGroupProvider.getTitle( morphBase, morphDefinition ) );
-                                        categoryGroupBuilder.addItem( morphGroupBuilder );
-                                    }
-                                }
-                                final String title = getDefinitionManager().adapters().forDefinition().getTitle( definition );
-                                final String description = getDefinitionManager().adapters().forDefinition().getDescription( definition );
-                                final DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder itemBuilder =
-                                        new DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder( id )
-                                                .definitionId( id )
-                                                .title( title )
-                                                .description( description )
-                                                .tooltip( description );
-                                if ( null != morphGroupBuilder ) {
-                                    if ( null != morphDefault && morphDefault.equals( id ) ) {
-                                        morphGroupBuilder.addItem( 0, itemBuilder );
-                                    } else {
-                                        morphGroupBuilder.addItem( itemBuilder );
-                                    }
-                                } else {
-                                    categoryGroupBuilder.addItem( itemBuilder );
-                                }
-                            }
-                        }
+                    clientFactoryServices.newDefinition( defId,
+                                                         new ServiceCallback<Object>() {
+                                                             @Override
+                                                             public void onSuccess( final Object definition ) {
+                                                                 final String id = getDefinitionManager().adapters().forDefinition().getId( definition );
+                                                                 final String category = getDefinitionManager().adapters().forDefinition().getCategory( definition );
+                                                                 final String categoryId = toValidId( category );
+                                                                 // Check if this concrete category excluded from the palette model.
+                                                                 if ( !isCategoryExcluded( categoryId ) ) {
+                                                                     DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder categoryGroupBuilder = getItemBuilder( categoryBuilders,
+                                                                                                                                                                           categoryId );
+                                                                     if ( null == categoryGroupBuilder ) {
+                                                                         categoryGroupBuilder = new DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder( categoryId )
+                                                                                 .definitionId( paletteCategoryProvider.getDefinitionId( categoryId ) )
+                                                                                 .title( paletteCategoryProvider.getTitle( categoryId ) )
+                                                                                 .tooltip( paletteCategoryProvider.getTitle( categoryId ) )
+                                                                                 .description( paletteCategoryProvider.getDescription( categoryId ) );
+                                                                         categoryBuilders.add( categoryGroupBuilder );
+                                                                     }
+                                                                     final MorphDefinition morphDefinition = definitionUtils.getMorphDefinition( definition );
+                                                                     final boolean hasMorphBase = null != morphDefinition;
+                                                                     DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder morphGroupBuilder = null;
+                                                                     String morphDefault = null;
+                                                                     if ( hasMorphBase ) {
+                                                                         final String morphBase = morphDefinition.getBase();
+                                                                         morphDefault = morphDefinition.getDefault();
+                                                                         final String morphBaseId = toValidId( morphBase );
+                                                                         morphGroupBuilder = ( DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder ) categoryGroupBuilder.getItem( morphBaseId );
+                                                                         if ( null == morphGroupBuilder ) {
+                                                                             morphGroupBuilder = new DefinitionPaletteGroupImpl.DefinitionPaletteGroupBuilder( morphBaseId )
+                                                                                     .definitionId( morphDefault )
+                                                                                     .title( paletteMorphGroupProvider.getTitle( morphBase,
+                                                                                                                                 morphDefinition ) )
+                                                                                     .description( paletteMorphGroupProvider.getDescription( morphBase,
+                                                                                                                                             morphDefinition ) )
+                                                                                     .tooltip( paletteMorphGroupProvider.getTitle( morphBase,
+                                                                                                                                   morphDefinition ) );
+                                                                             categoryGroupBuilder.addItem( morphGroupBuilder );
+                                                                         }
+                                                                     }
+                                                                     final String title = getDefinitionManager().adapters().forDefinition().getTitle( definition );
+                                                                     final String description = getDefinitionManager().adapters().forDefinition().getDescription( definition );
+                                                                     final DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder itemBuilder = new DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder( id )
+                                                                             .definitionId( id )
+                                                                             .title( title )
+                                                                             .description( description )
+                                                                             .tooltip( description );
+                                                                     if ( null != morphGroupBuilder ) {
+                                                                         if ( null != morphDefault && morphDefault.equals( id ) ) {
+                                                                             morphGroupBuilder.addItem( 0,
+                                                                                                        itemBuilder );
+                                                                         } else {
+                                                                             morphGroupBuilder.addItem( itemBuilder );
+                                                                         }
+                                                                     } else {
+                                                                         categoryGroupBuilder.addItem( itemBuilder );
+                                                                     }
+                                                                 }
+                                                             }
 
-                        @Override
-                        public void onError( final ClientRuntimeError error ) {
-                            callback.onError( error );
-                        }
-                    } );
+                                                             @Override
+                                                             public void onError( final ClientRuntimeError error ) {
+                                                                 callback.onError( error );
+                                                             }
+                                                         } );
                 }
             }
             if ( !categoryBuilders.isEmpty() ) {
                 final List<DefinitionPaletteCategory> categories = new LinkedList<>();
-                for ( final DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder builder :
-                        categoryBuilders ) {
+                for ( final DefinitionPaletteCategoryImpl.DefinitionPaletteCategoryBuilder builder : categoryBuilders ) {
                     categories.add( builder.build() );
                 }
-                final DefinitionSetPaletteImpl definitionPalette = new DefinitionSetPaletteImpl( categories, defSetId );
+                final DefinitionSetPaletteImpl definitionPalette = new DefinitionSetPaletteImpl( categories,
+                                                                                                 defSetId );
                 callback.onSuccess( definitionPalette );
             } else {
                 callback.onError( new ClientRuntimeError( "No categories found." ) );

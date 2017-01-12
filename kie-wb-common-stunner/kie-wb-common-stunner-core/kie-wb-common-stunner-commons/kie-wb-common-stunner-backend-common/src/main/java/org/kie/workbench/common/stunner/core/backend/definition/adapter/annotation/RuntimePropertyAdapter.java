@@ -16,21 +16,27 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation;
 
+import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractRuntimeAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.AllowedValues;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Optional;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.Dependent;
-import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Dependent
 public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> implements PropertyAdapter<T, Object> {
@@ -38,14 +44,15 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     private static final Logger LOG = LoggerFactory.getLogger( RuntimePropertyAdapter.class );
 
     @Override
-    public String getId( T property ) {
+    public String getId( final T property ) {
         return BindableAdapterUtils.getPropertyId( property.getClass() );
     }
 
     @Override
-    public PropertyType getType( T property ) {
+    public PropertyType getType( final T property ) {
         try {
-            return getAnnotatedFieldValue( property, Type.class );
+            return getAnnotatedFieldValue( property,
+                                           Type.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated category for Property with id " + getId( property ) );
         }
@@ -53,9 +60,10 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @Override
-    public String getCaption( T property ) {
+    public String getCaption( final T property ) {
         try {
-            return getAnnotatedFieldValue( property, Caption.class );
+            return getAnnotatedFieldValue( property,
+                                           Caption.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated category for Property with id " + getId( property ) );
         }
@@ -63,9 +71,10 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @Override
-    public String getDescription( T property ) {
+    public String getDescription( final T property ) {
         try {
-            return getAnnotatedFieldValue( property, Description.class );
+            return getAnnotatedFieldValue( property,
+                                           Description.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated category for Property with id " + getId( property ) );
         }
@@ -73,9 +82,10 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @Override
-    public boolean isReadOnly( T property ) {
+    public boolean isReadOnly( final T property ) {
         try {
-            return getAnnotatedFieldValue( property, ReadOnly.class );
+            return getAnnotatedFieldValue( property,
+                                           ReadOnly.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated category for Property with id " + getId( property ) );
         }
@@ -83,9 +93,10 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @Override
-    public boolean isOptional( T property ) {
+    public boolean isOptional( final T property ) {
         try {
-            return getAnnotatedFieldValue( property, Optional.class );
+            return getAnnotatedFieldValue( property,
+                                           Optional.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated category for Property with id " + getId( property ) );
         }
@@ -93,7 +104,7 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @Override
-    public Object getValue( T property ) {
+    public Object getValue( final T property ) {
         if ( null != property ) {
             Class<?> c = property.getClass();
             while ( !c.getName().equals( Object.class.getName() ) ) {
@@ -103,9 +114,12 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
                         Value annotation = field.getAnnotation( Value.class );
                         if ( null != annotation ) {
                             try {
-                                return _getValue( field, annotation, property );
+                                return _getValue( field,
+                                                  annotation,
+                                                  property );
                             } catch ( Exception e ) {
-                                LOG.error( "Error obtaining annotated value for Property with id " + getId( property ), e );
+                                LOG.error( "Error obtaining annotated value for Property with id " + getId( property ),
+                                           e );
                             }
                         }
                     }
@@ -117,7 +131,7 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @Override
-    public Object getDefaultValue( T property ) {
+    public Object getDefaultValue( final T property ) {
         if ( null != property ) {
             Class<?> c = property.getClass();
             while ( !c.getName().equals( Object.class.getName() ) ) {
@@ -127,7 +141,9 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
                         DefaultValue annotation = field.getAnnotation( DefaultValue.class );
                         if ( null != annotation ) {
                             try {
-                                return _getValue( field, annotation, property );
+                                return _getValue( field,
+                                                  annotation,
+                                                  property );
                             } catch ( Exception e ) {
                                 LOG.error( "Error obtaining annotated default value for Property with id " + getId( property ) );
                             }
@@ -141,7 +157,7 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @Override
-    public Map<Object, String> getAllowedValues( T property ) {
+    public Map<Object, String> getAllowedValues( final T property ) {
         Map<Object, String> result = new LinkedHashMap<>();
         if ( null != property ) {
             Class<?> c = property.getClass();
@@ -153,12 +169,15 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
                         AllowedValues annotation = field.getAnnotation( AllowedValues.class );
                         if ( null != annotation ) {
                             try {
-                                Iterable<?> value = _getValue( field, annotation, property );
+                                Iterable<?> value = _getValue( field,
+                                                               annotation,
+                                                               property );
                                 if ( null != value && value.iterator().hasNext() ) {
                                     Iterator<?> vIt = value.iterator();
                                     while ( vIt.hasNext() ) {
                                         Object v = vIt.next();
-                                        result.put( v, v.toString() );
+                                        result.put( v,
+                                                    v.toString() );
                                     }
                                 }
                                 done = true;
@@ -175,7 +194,9 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @SuppressWarnings( "unchecked" )
-    private <V> V _getValue( Field field, Object annotation, T property ) throws IllegalAccessException {
+    private <V> V _getValue( final Field field,
+                             final Object annotation,
+                             final T property ) throws IllegalAccessException {
         if ( null != annotation ) {
             field.setAccessible( true );
             V result = ( V ) field.get( property );
@@ -185,7 +206,8 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @Override
-    public void setValue( final T property, final Object value ) {
+    public void setValue( final T property,
+                          final Object value ) {
         if ( null != property ) {
             if ( isReadOnly( property ) ) {
                 // throw new RuntimeException( "Cannot set new value for property [" + getId( property ) + "] as it is read only! " );
@@ -201,12 +223,13 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
                         if ( null != annotation ) {
                             try {
                                 field.setAccessible( true );
-                                field.set( property, value );
+                                field.set( property,
+                                           value );
                                 done = true;
                                 break;
                             } catch ( Exception e ) {
                                 LOG.error( "Error setting value for Property with id [" + getId( property ) + "] " +
-                                        "and value [" + ( value != null ? value.toString() : "null" ) + "]" );
+                                                   "and value [" + ( value != null ? value.toString() : "null" ) + "]" );
                             }
                         }
                     }
@@ -217,7 +240,7 @@ public class RuntimePropertyAdapter<T> extends AbstractRuntimeAdapter<T> impleme
     }
 
     @Override
-    public boolean accepts( Class<?> pojo ) {
+    public boolean accepts( final Class<?> pojo ) {
         return pojo.getAnnotation( Property.class ) != null;
     }
 }

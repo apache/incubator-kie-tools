@@ -18,10 +18,15 @@ package org.kie.workbench.common.stunner.core.command;
 
 public interface CommandListener<T, V> {
 
-    void onAllow( T context, Command<T, V> command, CommandResult<V> result );
+    void onAllow( final T context,
+                  final Command<T, V> command,
+                  final CommandResult<V> result );
 
-    void onExecute( T context, Command<T, V> command, CommandResult<V> result );
+    void onExecute( final T context,
+                    final Command<T, V> command,
+                    final CommandResult<V> result );
 
-    void onUndo( T context, Command<T, V> command, CommandResult<V> result );
-
+    void onUndo( final T context,
+                 final Command<T, V> command,
+                 final CommandResult<V> result );
 }

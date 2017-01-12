@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.basicset.definition.icon.statics;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -31,9 +34,6 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Portable
 @Bindable

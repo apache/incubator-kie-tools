@@ -57,5 +57,4 @@ public abstract class AbstractBasicDynamicShape<W, V extends BasicShapeView, P e
     protected Double getBorderAlpha( final Node<View<W>, Edge> element ) {
         return proxy.getBackgroundAlpha( getDefinition( element ) );
     }
-
 }

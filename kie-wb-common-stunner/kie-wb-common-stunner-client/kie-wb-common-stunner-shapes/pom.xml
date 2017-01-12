@@ -29,7 +29,7 @@
   <name>Kie Workbench - Common - Stunner - Shapes</name>
   <description>Kie Workbench - Common - Stunner - Shapes</description>
   <packaging>pom</packaging>
-  
+
   <modules>
     <module>kie-wb-common-stunner-shapes-api</module>
     <module>kie-wb-common-stunner-shapes-client</module>

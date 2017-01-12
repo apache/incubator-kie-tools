@@ -29,11 +29,10 @@ public interface DiagramRegistry<D extends Diagram> extends DynamicRegistry<D> {
      * Returns the Diagram of type <code>D</code> that matches the UUID.
      * @param uuid The uuid for Diagram.
      */
-    D getDiagramByUUID( String uuid );
+    D getDiagramByUUID( final String uuid );
 
     /**
      * Updates the diagram on this registry.
      */
-    void update( D diagram );
-
+    void update( final D diagram );
 }

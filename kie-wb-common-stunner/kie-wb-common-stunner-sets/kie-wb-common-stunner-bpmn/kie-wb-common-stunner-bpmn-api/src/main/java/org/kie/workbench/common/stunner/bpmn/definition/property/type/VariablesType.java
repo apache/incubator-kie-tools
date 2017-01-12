@@ -55,5 +55,4 @@ public class VariablesType implements PropertyType {
                 "name='" + name + '\'' +
                 '}';
     }
-
 }

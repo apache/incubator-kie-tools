@@ -20,4 +20,5 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionProducer;
 
 public abstract class AbstractClientSessionProducer implements ClientSessionProducer<AbstractCanvas, AbstractCanvasHandler> {
+
 }

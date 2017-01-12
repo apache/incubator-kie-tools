@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.assignee;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -27,8 +29,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import javax.validation.Valid;
-
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_ACTORS;
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GROUPS;
 
@@ -36,23 +36,25 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 @Bindable
 @PropertySet
 public class AssigneeSet implements BPMNPropertySet {
+
     @Name
     public static final transient String propertySetName = "Assigned to";
 
     @Property
     @FieldDef( label = FIELDDEF_ACTORS, property = "value" )
-    @AssigneeEditor( type = AssigneeType.USER)
+    @AssigneeEditor( type = AssigneeType.USER )
     @Valid
     private Actors actors;
 
     @Property
     @FieldDef( label = FIELDDEF_GROUPS, property = "value" )
-    @AssigneeEditor( type = AssigneeType.GROUP)
+    @AssigneeEditor( type = AssigneeType.GROUP )
     @Valid
     private Groupid groupid;
 
     public AssigneeSet() {
-        this( new Actors(), new Groupid() );
+        this( new Actors(),
+              new Groupid() );
     }
 
     public AssigneeSet( @MapsTo( "actors" ) Actors actors,
@@ -86,5 +88,4 @@ public class AssigneeSet implements BPMNPropertySet {
     public void setGroupid( Groupid groupid ) {
         this.groupid = groupid;
     }
-
 }

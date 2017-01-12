@@ -48,26 +48,58 @@ public class AssignmentTest extends AssignmentBaseTest {
      */
     @Test
     public void testSerializeDeserialize() {
-        Assignment a = new Assignment( ad, "input1", Variable.VariableType.INPUT, "String", null, null, null );
-        serializeDeserialize( ad, a, "-_.!~*'( )  " );
-        serializeDeserialize( ad, a, ";/?:&=+$,#" );
-        serializeDeserialize( ad, a, "http://www.test.com/getit?a=1&b=2" );
-        serializeDeserialize( ad, a, "a,b=c:aa,,bb==cc" );
-        serializeDeserialize( ad, a, "a|=b=|c:a[=b=[c:a]=b=]c" );
-        serializeDeserialize( ad, a, "C:\\home\\joe bloggs\\test\\stuff.txt" );
-        serializeDeserialize( ad, a, "a bb  " );
-        serializeDeserialize( ad, a, "123" );
-        serializeDeserialize( ad, a, "123.456  " );
-        serializeDeserialize( ad, a, "\"hello\"" );
-        serializeDeserialize( ad, a, "greeting={\"hello\"}" );
+        Assignment a = new Assignment( ad,
+                                       "input1",
+                                       Variable.VariableType.INPUT,
+                                       "String",
+                                       null,
+                                       null,
+                                       null );
+        serializeDeserialize( ad,
+                              a,
+                              "-_.!~*'( )  " );
+        serializeDeserialize( ad,
+                              a,
+                              ";/?:&=+$,#" );
+        serializeDeserialize( ad,
+                              a,
+                              "http://www.test.com/getit?a=1&b=2" );
+        serializeDeserialize( ad,
+                              a,
+                              "a,b=c:aa,,bb==cc" );
+        serializeDeserialize( ad,
+                              a,
+                              "a|=b=|c:a[=b=[c:a]=b=]c" );
+        serializeDeserialize( ad,
+                              a,
+                              "C:\\home\\joe bloggs\\test\\stuff.txt" );
+        serializeDeserialize( ad,
+                              a,
+                              "a bb  " );
+        serializeDeserialize( ad,
+                              a,
+                              "123" );
+        serializeDeserialize( ad,
+                              a,
+                              "123.456  " );
+        serializeDeserialize( ad,
+                              a,
+                              "\"hello\"" );
+        serializeDeserialize( ad,
+                              a,
+                              "greeting={\"hello\"}" );
     }
 
-    public void serializeDeserialize( AssignmentData ad, Assignment assignment, String constant ) {
+    public void serializeDeserialize( AssignmentData ad,
+                                      Assignment assignment,
+                                      String constant ) {
         assignment.setConstant( constant );
         String s = assignment.toString();
-        Assignment newA = Assignment.deserialize( ad, s );
+        Assignment newA = Assignment.deserialize( ad,
+                                                  s );
         String deserializedConstant = newA.getConstant();
-        assertEquals( constant, deserializedConstant );
+        assertEquals( constant,
+                      deserializedConstant );
     }
 
     /**
@@ -76,33 +108,74 @@ public class AssignmentTest extends AssignmentBaseTest {
      */
     @Test
     public void testDeserialize() {
-        Assignment a = new Assignment( ad, "input1", Variable.VariableType.INPUT, "String", null, null, null );
-        deserialize( ad, a, "-_.!~*'( )", "-_.!~*'(+)", "-_.%21%7E*%27%28+%29" );
-        deserialize( ad, a, ";/?:&=+$,#", "%3B%2F%3F%3A%26%3D%2B%24%2C%23", "%3B%2F%3F%3A%26%3D%2B%24%2C%23" );
-        deserialize( ad, a, "http://www.test.com/getit?a=1&b=2", "http%3A%2F%2Fwww.test.com%2Fgetit%3Fa%3D1%26b%3D2",
-                "http%3A%2F%2Fwww.test.com%2Fgetit%3Fa%3D1%26b%3D2" );
-        deserialize( ad, a, "a,b=c:aa,,bb==cc", "a%2Cb%3Dc%3Aaa%2C%2Cbb%3D%3Dcc", "a%2Cb%3Dc%3Aaa%2C%2Cbb%3D%3Dcc" );
-        deserialize( ad, a, "a|=b=|c:a[=b=[c:a]=b=]c", "a%7C%3Db%3D%7Cc%3Aa%5B%3Db%3D%5Bc%3Aa%5D%3Db%3D%5Dc",
-                "a%7C%3Db%3D%7Cc%3Aa%5B%3Db%3D%5Bc%3Aa%5D%3Db%3D%5Dc" );
-        deserialize( ad, a, "C:\\home\\joe bloggs\\test\\stuff.txt", "C%3A%5Chome%5Cjoe+bloggs%5Ctest%5Cstuff.txt",
-                "C%3A%5Chome%5Cjoe+bloggs%5Ctest%5Cstuff.txt" );
-        deserialize( ad, a, "a bb  ", "a+bb++", "a%20bb%20%20" );
-        deserialize( ad, a, "a+bb++", "a%2Bbb%2B%2B", "a%2Bbb%2B%2B" );
-        deserialize( ad, a, "a+ a +bb++  bb  ++",
-                "a%2B%20a%20%2Bbb%2B%2B%20%20bb%20%20%2B%2B",
-                "a%2B%20a%20%2Bbb%2B%2B%20%20bb%20%20%2B%2B" );
-
+        Assignment a = new Assignment( ad,
+                                       "input1",
+                                       Variable.VariableType.INPUT,
+                                       "String",
+                                       null,
+                                       null,
+                                       null );
+        deserialize( ad,
+                     a,
+                     "-_.!~*'( )",
+                     "-_.!~*'(+)",
+                     "-_.%21%7E*%27%28+%29" );
+        deserialize( ad,
+                     a,
+                     ";/?:&=+$,#",
+                     "%3B%2F%3F%3A%26%3D%2B%24%2C%23",
+                     "%3B%2F%3F%3A%26%3D%2B%24%2C%23" );
+        deserialize( ad,
+                     a,
+                     "http://www.test.com/getit?a=1&b=2",
+                     "http%3A%2F%2Fwww.test.com%2Fgetit%3Fa%3D1%26b%3D2",
+                     "http%3A%2F%2Fwww.test.com%2Fgetit%3Fa%3D1%26b%3D2" );
+        deserialize( ad,
+                     a,
+                     "a,b=c:aa,,bb==cc",
+                     "a%2Cb%3Dc%3Aaa%2C%2Cbb%3D%3Dcc",
+                     "a%2Cb%3Dc%3Aaa%2C%2Cbb%3D%3Dcc" );
+        deserialize( ad,
+                     a,
+                     "a|=b=|c:a[=b=[c:a]=b=]c",
+                     "a%7C%3Db%3D%7Cc%3Aa%5B%3Db%3D%5Bc%3Aa%5D%3Db%3D%5Dc",
+                     "a%7C%3Db%3D%7Cc%3Aa%5B%3Db%3D%5Bc%3Aa%5D%3Db%3D%5Dc" );
+        deserialize( ad,
+                     a,
+                     "C:\\home\\joe bloggs\\test\\stuff.txt",
+                     "C%3A%5Chome%5Cjoe+bloggs%5Ctest%5Cstuff.txt",
+                     "C%3A%5Chome%5Cjoe+bloggs%5Ctest%5Cstuff.txt" );
+        deserialize( ad,
+                     a,
+                     "a bb  ",
+                     "a+bb++",
+                     "a%20bb%20%20" );
+        deserialize( ad,
+                     a,
+                     "a+bb++",
+                     "a%2Bbb%2B%2B",
+                     "a%2Bbb%2B%2B" );
+        deserialize( ad,
+                     a,
+                     "a+ a +bb++  bb  ++",
+                     "a%2B%20a%20%2Bbb%2B%2B%20%20bb%20%20%2B%2B",
+                     "a%2B%20a%20%2Bbb%2B%2B%20%20bb%20%20%2B%2B" );
     }
 
-    public void deserialize( AssignmentData ad, Assignment assignment, String constant, String jsonEncodedConstant,
+    public void deserialize( AssignmentData ad,
+                             Assignment assignment,
+                             String constant,
+                             String jsonEncodedConstant,
                              String bpmn2EncodedConstant ) {
         assignment.setConstant( constant );
         String s = assignment.toString();
         // replace the mocked encoded constant with the one that would occur at runtime
-        s = s.replace( bpmn2EncodedConstant, jsonEncodedConstant );
-        Assignment newA = Assignment.deserialize( ad, s );
+        s = s.replace( bpmn2EncodedConstant,
+                       jsonEncodedConstant );
+        Assignment newA = Assignment.deserialize( ad,
+                                                  s );
         String deserializedConstant = newA.getConstant();
-        assertEquals( constant, deserializedConstant );
+        assertEquals( constant,
+                      deserializedConstant );
     }
-
 }

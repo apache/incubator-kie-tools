@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -25,14 +23,18 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
+
 public class RuntimeAdapterUtils {
 
     @SuppressWarnings( "unchecked" )
-    public static <T, A extends Annotation, V> V getAnnotatedFieldValue( T object,
-                                                                         Class<A> annotationType ) throws IllegalAccessException {
+    public static <T, A extends Annotation, V> V getAnnotatedFieldValue( final T object,
+                                                                         final Class<A> annotationType ) throws IllegalAccessException {
         Class<?> c = object.getClass();
         while ( !c.getName().equals( Object.class.getName() ) ) {
-            V result = getAnnotatedFieldValue( object, c, annotationType );
+            V result = getAnnotatedFieldValue( object,
+                                               c,
+                                               annotationType );
             if ( null != result ) {
                 return result;
             }
@@ -41,13 +43,16 @@ public class RuntimeAdapterUtils {
         return null;
     }
 
-    public static <T, V> Set<V> getFieldValues( T object, Set<String> fieldNames ) throws IllegalAccessException {
+    public static <T, V> Set<V> getFieldValues( final T object,
+                                                final Set<String> fieldNames ) throws IllegalAccessException {
         Set<V> result = new LinkedHashSet<V>();
         if ( null != fieldNames ) {
             for ( String fieldName : fieldNames ) {
                 Class<?> c = object.getClass();
                 while ( !c.getName().equals( Object.class.getName() ) ) {
-                    V result1 = getFieldValue( object, c, fieldName );
+                    V result1 = getFieldValue( object,
+                                               c,
+                                               fieldName );
                     if ( null != result1 ) {
                         result.add( result1 );
                     }
@@ -58,10 +63,13 @@ public class RuntimeAdapterUtils {
         return result;
     }
 
-    public static <T, V> V getFieldValue( T object, String fieldName ) throws IllegalAccessException {
+    public static <T, V> V getFieldValue( final T object,
+                                          final String fieldName ) throws IllegalAccessException {
         Class<?> c = object.getClass();
         while ( !c.getName().equals( Object.class.getName() ) ) {
-            V result = getFieldValue( object, c, fieldName );
+            V result = getFieldValue( object,
+                                      c,
+                                      fieldName );
             if ( null != result ) {
                 return result;
             }
@@ -71,9 +79,9 @@ public class RuntimeAdapterUtils {
     }
 
     @SuppressWarnings( "unchecked" )
-    public static <T, A extends Annotation, V> V getAnnotatedFieldValue( T object,
-                                                                         Class<?> sourceType,
-                                                                         Class<A> annotationType ) throws IllegalAccessException {
+    public static <T, A extends Annotation, V> V getAnnotatedFieldValue( final T object,
+                                                                         final Class<?> sourceType,
+                                                                         final Class<A> annotationType ) throws IllegalAccessException {
         V result = null;
         Field[] fields = sourceType.getDeclaredFields();
         if ( null != fields ) {
@@ -89,9 +97,10 @@ public class RuntimeAdapterUtils {
         return result;
     }
 
-    public static <T, V> V getFieldValue( T object,
-                                          Class<?> sourceType,
-                                          String fieldName ) throws IllegalAccessException {
+    @SuppressWarnings( "unchecked" )
+    public static <T, V> V getFieldValue( final T object,
+                                          final Class<?> sourceType,
+                                          final String fieldName ) throws IllegalAccessException {
         V result = null;
         Field[] fields = sourceType.getDeclaredFields();
         if ( null != fields ) {
@@ -106,10 +115,12 @@ public class RuntimeAdapterUtils {
         return result;
     }
 
-    public static <T> Field getField( T object, String fieldName ) throws IllegalAccessException {
+    public static <T> Field getField( final T object,
+                                      final String fieldName ) throws IllegalAccessException {
         Class<?> c = object.getClass();
         while ( !c.getName().equals( Object.class.getName() ) ) {
-            Field result = getField( c, fieldName );
+            Field result = getField( c,
+                                     fieldName );
             if ( null != result ) {
                 return result;
             }
@@ -118,8 +129,8 @@ public class RuntimeAdapterUtils {
         return null;
     }
 
-    public static Field getField( Class<?> sourceType,
-                                  String fieldName ) throws IllegalAccessException {
+    public static Field getField( final Class<?> sourceType,
+                                  final String fieldName ) throws IllegalAccessException {
         Field[] fields = sourceType.getDeclaredFields();
         if ( null != fields ) {
             for ( Field field : fields ) {
@@ -131,7 +142,8 @@ public class RuntimeAdapterUtils {
         return null;
     }
 
-    public static <T extends Annotation> T getClassAnnotation( Class<?> type, Class<T> annotationType ) {
+    public static <T extends Annotation> T getClassAnnotation( final Class<?> type,
+                                                               final Class<T> annotationType ) {
         Class<?> c = type;
         while ( !c.getName().equals( Object.class.getName() ) ) {
             T result = c.getAnnotation( annotationType );
@@ -143,12 +155,14 @@ public class RuntimeAdapterUtils {
         return null;
     }
 
-    public static <T extends Annotation> Collection<Field> getFieldAnnotations( Class<?> type, Class<T> annotationType ) {
+    public static <T extends Annotation> Collection<Field> getFieldAnnotations( final Class<?> type,
+                                                                                final Class<T> annotationType ) {
         if ( null != type && null != annotationType ) {
             Collection<Field> result = new LinkedList<>();
             Class<?> c = type;
             while ( !c.getName().equals( Object.class.getName() ) ) {
-                Collection<Field> fields = _getFieldAnnotations( c, annotationType );
+                Collection<Field> fields = _getFieldAnnotations( c,
+                                                                 annotationType );
                 if ( null != fields && !fields.isEmpty() ) {
                     result.addAll( fields );
                 }
@@ -159,7 +173,8 @@ public class RuntimeAdapterUtils {
         return null;
     }
 
-    private static <T extends Annotation> Collection<Field> _getFieldAnnotations( Class<?> type, Class<T> annotationType ) {
+    private static <T extends Annotation> Collection<Field> _getFieldAnnotations( final Class<?> type,
+                                                                                  final Class<T> annotationType ) {
         Field[] fields = type.getDeclaredFields();
         if ( null != fields ) {
             Collection<Field> result = new LinkedList<>();

@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import java.util.*;
 
 public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDefinitionAdapter<T> {
 
@@ -43,7 +47,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
     protected abstract Set<?> getBindProperties( final T pojo );
 
     @Override
-    public void setBindings( Map<PropertyMetaTypes, Class> metaPropertyTypeClasses,
+    public void setBindings( final Map<PropertyMetaTypes, Class> metaPropertyTypeClasses,
                              final Map<Class, Class> baseTypes,
                              final Map<Class, Set<String>> propertySetsFieldNames,
                              final Map<Class, Set<String>> propertiesFieldNames,
@@ -95,7 +99,8 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
     }
 
     @Override
-    public Object getMetaProperty( final PropertyMetaTypes metaPropertyType, final T pojo ) {
+    public Object getMetaProperty( final PropertyMetaTypes metaPropertyType,
+                                   final T pojo ) {
         final Class pClass = metaPropertyTypeClasses.get( metaPropertyType );
         if ( null != pClass ) {
             final Set<?> properties = getProperties( pojo );

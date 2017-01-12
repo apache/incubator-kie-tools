@@ -15,10 +15,14 @@
  */
 package org.kie.workbench.common.stunner.core.definition.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
-
-import java.lang.annotation.*;
 
 @Inherited
 @Retention( RetentionPolicy.SOURCE )
@@ -28,5 +32,4 @@ public @interface Shape {
     Class<? extends ShapeDefFactory> factory();
 
     Class<? extends ShapeDef> def();
-
 }

@@ -55,11 +55,12 @@ public class NameEditBoxWidgetView extends Composite implements NameEditBoxWidge
             final String name = event.getValue();
             presenter.onChangeName( name );
         } );
-        nameBox.addKeyPressHandler( keyPressEvent -> presenter.onKeyPress( keyPressEvent.getUnicodeCharCode(), nameBox.getValue() ) );
-        nameBox.addKeyDownHandler( keyDownEvent -> presenter.onKeyDown( keyDownEvent.getNativeKeyCode(), nameBox.getValue() ) );
+        nameBox.addKeyPressHandler( keyPressEvent -> presenter.onKeyPress( keyPressEvent.getUnicodeCharCode(),
+                                                                           nameBox.getValue() ) );
+        nameBox.addKeyDownHandler( keyDownEvent -> presenter.onKeyDown( keyDownEvent.getNativeKeyCode(),
+                                                                        nameBox.getValue() ) );
         saveButton.addClickHandler( event -> presenter.onSave() );
         closeButton.addClickHandler( event -> presenter.onClose() );
-
     }
 
     @Override
@@ -75,5 +76,4 @@ public class NameEditBoxWidgetView extends Composite implements NameEditBoxWidge
         mainPanel.setVisible( false );
         return this;
     }
-
 }

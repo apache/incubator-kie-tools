@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-
-import java.util.LinkedList;
-import java.util.List;
 
 public abstract class AbstractCompositeShape<W, E extends Node<View<W>, Edge>, V extends ShapeView>
         extends AbstractShape<W, E, V>
@@ -38,21 +38,18 @@ public abstract class AbstractCompositeShape<W, E extends Node<View<W>, Edge>, V
     @SuppressWarnings( "unchecked" )
     public void addChild( final AbstractShape<W, Node<View<W>, Edge>, ?> child,
                           final Layout layout ) {
-        final HasChildren<ShapeView<?>> view =
-                ( HasChildren<ShapeView<?>> ) getShapeView();
+        final HasChildren<ShapeView<?>> view = ( HasChildren<ShapeView<?>> ) getShapeView();
         children.add( child );
-        view.addChild( child.getShapeView(), layout );
-
+        view.addChild( child.getShapeView(),
+                       layout );
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
     public void removeChild( final AbstractShape<W, Node<View<W>, Edge>, ?> child ) {
-        final HasChildren<ShapeView<?>> view =
-                ( HasChildren<ShapeView<?>> ) getShapeView();
+        final HasChildren<ShapeView<?>> view = ( HasChildren<ShapeView<?>> ) getShapeView();
         children.remove( child );
         view.removeChild( child.getShapeView() );
-
     }
 
     @Override
@@ -63,12 +60,13 @@ public abstract class AbstractCompositeShape<W, E extends Node<View<W>, Edge>, V
     @Override
     public void applyProperties( final E element,
                                  final MutationContext mutationContext ) {
-        super.applyProperties( element, mutationContext );
+        super.applyProperties( element,
+                               mutationContext );
         // Apply properties to children shapes.
         for ( final AbstractShape<W, Node<View<W>, Edge>, ?> child : children ) {
-            child.applyProperties( element, mutationContext );
+            child.applyProperties( element,
+                                   mutationContext );
         }
-
     }
 
     @Override
@@ -76,12 +74,17 @@ public abstract class AbstractCompositeShape<W, E extends Node<View<W>, Edge>, V
                                final String propertyId,
                                final Object value,
                                final MutationContext mutationContext ) {
-        super.applyProperty( element, propertyId, value, mutationContext );
+        super.applyProperty( element,
+                             propertyId,
+                             value,
+                             mutationContext );
         // Apply property to children shapes.
         for ( final AbstractShape<W, Node<View<W>, Edge>, ?> child : children ) {
-            child.applyProperty( element, propertyId, value, mutationContext );
+            child.applyProperty( element,
+                                 propertyId,
+                                 value,
+                                 mutationContext );
         }
-
     }
 
     @Override
@@ -89,12 +92,8 @@ public abstract class AbstractCompositeShape<W, E extends Node<View<W>, Edge>, V
         if ( !children.isEmpty() ) {
             for ( final AbstractShape<W, Node<View<W>, Edge>, ?> child : children ) {
                 child.destroy();
-
             }
-
         }
         children.clear();
-
     }
-
 }

@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.backend.service.AbstractDefinitionSetService;
 import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.core.definition.DefinitionSetResourceType;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class BPMNBackendService extends AbstractDefinitionSetService {
@@ -30,7 +30,8 @@ public class BPMNBackendService extends AbstractDefinitionSetService {
     private BPMNDefinitionSetResourceType bpmnResourceType;
 
     protected BPMNBackendService() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     @Inject
@@ -44,5 +45,4 @@ public class BPMNBackendService extends AbstractDefinitionSetService {
     public DefinitionSetResourceType getResourceType() {
         return bpmnResourceType;
     }
-
 }

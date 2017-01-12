@@ -77,5 +77,4 @@ public class LienzoToolboxButton implements ToolboxButton<IPrimitive<?>> {
         this.mouseExitHandler = mouseExitHandler;
         return this;
     }
-
 }

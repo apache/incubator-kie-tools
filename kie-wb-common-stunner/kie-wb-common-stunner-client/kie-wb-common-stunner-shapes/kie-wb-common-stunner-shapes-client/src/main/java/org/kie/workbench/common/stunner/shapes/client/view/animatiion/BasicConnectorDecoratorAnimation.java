@@ -25,7 +25,9 @@ public final class BasicConnectorDecoratorAnimation extends BasicDecoratorAnimat
     public BasicConnectorDecoratorAnimation( final String color,
                                              final double strokeWidth,
                                              final double strokeAlpha ) {
-        super( color, strokeWidth, strokeAlpha );
+        super( color,
+               strokeWidth,
+               strokeAlpha );
     }
 
     @Override
@@ -36,5 +38,4 @@ public final class BasicConnectorDecoratorAnimation extends BasicDecoratorAnimat
     private BasicConnectorView<?> getView() {
         return ( BasicConnectorView<?> ) getSource().getShapeView();
     }
-
 }

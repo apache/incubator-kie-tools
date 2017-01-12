@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.backend.service;
 
+import java.util.Collection;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -28,31 +34,26 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Collection;
-import java.util.Map;
-
 @ApplicationScoped
 @Service
 public class DiagramLookupServiceImpl
         extends AbstractDiagramLookupService<Metadata, Diagram<Graph, Metadata>> {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger( DiagramLookupServiceImpl.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( DiagramLookupServiceImpl.class.getName() );
 
     protected DiagramLookupServiceImpl() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     @Inject
-    public DiagramLookupServiceImpl( @Named( "ioStrategy" ) IOService ioService,
-                                     DiagramServiceImpl diagramService ) {
-        super( ioService, diagramService );
+    public DiagramLookupServiceImpl( final @Named( "ioStrategy" ) IOService ioService,
+                                     final DiagramServiceImpl diagramService ) {
+        super( ioService,
+               diagramService );
     }
 
-    protected org.uberfire.java.nio.file.Path parseCriteriaPath( DiagramLookupRequest request ) {
+    protected org.uberfire.java.nio.file.Path parseCriteriaPath( final DiagramLookupRequest request ) {
         String criteria = request.getCriteria();
         if ( StringUtils.isEmpty( criteria ) ) {
             return getServiceImpl().getDiagramsPath();

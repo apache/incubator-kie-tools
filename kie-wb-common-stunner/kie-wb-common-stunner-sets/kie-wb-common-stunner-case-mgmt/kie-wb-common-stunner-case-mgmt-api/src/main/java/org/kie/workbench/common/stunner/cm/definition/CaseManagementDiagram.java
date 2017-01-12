@@ -45,13 +45,15 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DATA;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_PROCESS_SETTINGS;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_SHAPE_DIMENSIONS;
 
 @Portable
 @Bindable
-@CanContain(roles = { "all" })
-@Definition(graphFactory = NodeFactory.class, builder = CaseManagementDiagram.CaseManagementDiagramBuilder.class)
-@Shape(factory = BasicShapesFactory.class, def = CaseManagementDiagramShapeDef.class)
+@CanContain( roles = { "all" } )
+@Definition( graphFactory = NodeFactory.class, builder = CaseManagementDiagram.CaseManagementDiagramBuilder.class )
+@Shape( factory = BasicShapesFactory.class, def = CaseManagementDiagramShapeDef.class )
 public class CaseManagementDiagram implements BPMNDefinition {
 
     @Category
@@ -64,12 +66,12 @@ public class CaseManagementDiagram implements BPMNDefinition {
     public static final transient String description = "Case Management Diagram";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_PROCESS_SETTINGS, position = 0)
+    @FieldDef( label = FIELDDEF_PROCESS_SETTINGS, position = 0 )
     @Valid
     private DiagramSet diagramSet;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_DATA, position = 1)
+    @FieldDef( label = FIELDDEF_DATA, position = 1 )
     @Valid
     protected ProcessData processData;
 
@@ -80,7 +82,7 @@ public class CaseManagementDiagram implements BPMNDefinition {
     private FontSet fontSet;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_SHAPE_DIMENSIONS, position = 5)
+    @FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 5 )
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
@@ -109,17 +111,16 @@ public class CaseManagementDiagram implements BPMNDefinition {
                                               new RectangleDimensionsSet( WIDTH,
                                                                           HEIGHT ) );
         }
-
     }
 
     public CaseManagementDiagram() {
     }
 
-    public CaseManagementDiagram( final @MapsTo("diagramSet") DiagramSet diagramSet,
-                                  final @MapsTo("processData") ProcessData processData,
-                                  final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                                  final @MapsTo("fontSet") FontSet fontSet,
-                                  final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet ) {
+    public CaseManagementDiagram( final @MapsTo( "diagramSet" ) DiagramSet diagramSet,
+                                  final @MapsTo( "processData" ) ProcessData processData,
+                                  final @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
+                                  final @MapsTo( "fontSet" ) FontSet fontSet,
+                                  final @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet ) {
         this.diagramSet = diagramSet;
         this.processData = processData;
         this.backgroundSet = backgroundSet;
@@ -182,5 +183,4 @@ public class CaseManagementDiagram implements BPMNDefinition {
     public void setFontSet( final FontSet fontSet ) {
         this.fontSet = fontSet;
     }
-
 }

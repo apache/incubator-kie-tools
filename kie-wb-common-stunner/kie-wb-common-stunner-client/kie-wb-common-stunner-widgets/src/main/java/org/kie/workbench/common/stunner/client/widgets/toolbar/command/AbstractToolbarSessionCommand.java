@@ -59,7 +59,7 @@ public abstract class AbstractToolbarSessionCommand<S extends ClientSession, C e
         }
     }
 
-    private  <T> void executeWithNoConfirm( final ToolbarCommandCallback<T> callback ) {
+    private <T> void executeWithNoConfirm( final ToolbarCommandCallback<T> callback ) {
         this.command.execute( new ClientSessionCommand.Callback<T>() {
             @Override
             public void onSuccess( final T result ) {
@@ -82,16 +82,18 @@ public abstract class AbstractToolbarSessionCommand<S extends ClientSession, C e
         return "Are you sure?";
     }
 
-    private  <T> void executeWithConfirm( final ToolbarCommandCallback<T> callback ) {
+    private <T> void executeWithConfirm( final ToolbarCommandCallback<T> callback ) {
         final Command yesCommand = () -> {
             this.executeWithNoConfirm( callback );
         };
         final Command noCommand = () -> {
         };
         final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup( getConfirmMessage(),
-                null, yesCommand, noCommand, noCommand );
+                                                                             null,
+                                                                             yesCommand,
+                                                                             noCommand,
+                                                                             noCommand );
         popup.show();
-
     }
 
     protected void checkState() {
@@ -100,7 +102,6 @@ public abstract class AbstractToolbarSessionCommand<S extends ClientSession, C e
         } else {
             disable();
         }
-
     }
 
     public void afterDraw() {
@@ -120,9 +121,11 @@ public abstract class AbstractToolbarSessionCommand<S extends ClientSession, C e
         };
         // TODO: I18n.
         final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup( "Are you sure?",
-                null, yesCommand, noCommand, noCommand );
+                                                                             null,
+                                                                             yesCommand,
+                                                                             noCommand,
+                                                                             noCommand );
         popup.show();
-
     }
 
     @Override
@@ -168,5 +171,4 @@ public abstract class AbstractToolbarSessionCommand<S extends ClientSession, C e
     protected void disable() {
         toolbar.disable( this );
     }
-
 }

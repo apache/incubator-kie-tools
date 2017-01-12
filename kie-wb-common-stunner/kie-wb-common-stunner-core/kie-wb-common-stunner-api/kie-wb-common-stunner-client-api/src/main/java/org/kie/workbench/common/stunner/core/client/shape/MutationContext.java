@@ -19,7 +19,8 @@ package org.kie.workbench.common.stunner.core.client.shape;
 public interface MutationContext {
 
     enum Type {
-        STATIC, ANIMATION;
+        STATIC,
+        ANIMATION
     }
 
     Type getType();
@@ -33,7 +34,6 @@ public interface MutationContext {
         public Type getType() {
             return Type.STATIC;
         }
-
     }
 
     class AnimationContext implements MutationContext {
@@ -42,7 +42,5 @@ public interface MutationContext {
         public Type getType() {
             return Type.ANIMATION;
         }
-
     }
-
 }

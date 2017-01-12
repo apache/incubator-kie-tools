@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.shared;
 
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.impl.PropertyImpl;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.util.Map;
 
 @ApplicationScoped
 public class HasValuePropertyAdapter implements PropertyAdapter<PropertyImpl, Object> {
@@ -74,10 +74,10 @@ public class HasValuePropertyAdapter implements PropertyAdapter<PropertyImpl, Ob
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public void setValue( final PropertyImpl pojo, final Object value ) {
+    public void setValue( final PropertyImpl pojo,
+                          final Object value ) {
         if ( pojo.isReadOnly() ) {
             throw new RuntimeException( "Cannot set new value for property [" + pojo.getId() + "] as it is read only! " );
-
         }
         pojo.setValue( value );
     }
@@ -96,5 +96,4 @@ public class HasValuePropertyAdapter implements PropertyAdapter<PropertyImpl, Ob
     public int getPriority() {
         return 1;
     }
-
 }

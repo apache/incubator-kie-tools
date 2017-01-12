@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,14 +25,16 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.rule.*;
+import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.impl.violations.ContainmentRuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -47,7 +51,8 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init( 500, 500 );
+        super.init( 500,
+                    500 );
         when( node.getUUID() ).thenReturn( UUID );
         when( graph.getNode( eq( UUID ) ) ).thenReturn( node );
         when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( node );
@@ -58,64 +63,105 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
     @SuppressWarnings( "unchecked" )
     public void testAllow() {
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( containmentRuleManager, times( 1 ) ).evaluate( eq( graph ), eq( node ) );
-        verify( cardinalityRuleManager, times( 1 ) ).evaluate( eq( graph ), eq( node ), eq( RuleManager.Operation.ADD ) );
-        verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
-                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( containmentRuleManager,
+                times( 1 ) ).evaluate( eq( graph ),
+                                       eq( node ) );
+        verify( cardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( graph ),
+                                       eq( node ),
+                                       eq( RuleManager.Operation.ADD ) );
+        verify( connectionRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( Node.class ) );
+        verify( edgeCardinalityRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( List.class ),
+                                       any( EdgeCardinalityRule.Type.class ),
+                                       any( RuleManager.Operation.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testNotAllowed() {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
-                .addViolation( new ContainmentRuleViolation( graph.getUUID(), UUID ) );
-        when( containmentRuleManager.evaluate( any( Element.class ), any( Element.class ) ) ).thenReturn( FAILED_VIOLATIONS );
+                .addViolation( new ContainmentRuleViolation( graph.getUUID(),
+                                                             UUID ) );
+        when( containmentRuleManager.evaluate( any( Element.class ),
+                                               any( Element.class ) ) ).thenReturn( FAILED_VIOLATIONS );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR, result.getType() );
+        assertEquals( CommandResult.Type.ERROR,
+                      result.getType() );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecute() {
         CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( graph, times( 1 ) ).addNode( eq( node ) );
-        verify( graphIndex, times( 1 ) ).addNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
-        verify( graph, times( 0 ) ).removeNode( eq( UUID ) );
-        verify( graphIndex, times( 0 ) ).removeNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( graph,
+                times( 1 ) ).addNode( eq( node ) );
+        verify( graphIndex,
+                times( 1 ) ).addNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).addEdge( any( Edge.class ) );
+        verify( graph,
+                times( 0 ) ).removeNode( eq( UUID ) );
+        verify( graphIndex,
+                times( 0 ) ).removeNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).removeEdge( any( Edge.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecuteCheckFailed() {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
-                .addViolation( new ContainmentRuleViolation( graph.getUUID(), UUID ) );
-        when( containmentRuleManager.evaluate( any( Element.class ), any( Element.class ) ) ).thenReturn( FAILED_VIOLATIONS );
+                .addViolation( new ContainmentRuleViolation( graph.getUUID(),
+                                                             UUID ) );
+        when( containmentRuleManager.evaluate( any( Element.class ),
+                                               any( Element.class ) ) ).thenReturn( FAILED_VIOLATIONS );
         CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR, result.getType() );
-        verify( graph, times( 0 ) ).addNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).addNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
-        verify( graph, times( 0 ) ).removeNode( eq( UUID ) );
-        verify( graphIndex, times( 0 ) ).removeNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
+        assertEquals( CommandResult.Type.ERROR,
+                      result.getType() );
+        verify( graph,
+                times( 0 ) ).addNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).addNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).addEdge( any( Edge.class ) );
+        verify( graph,
+                times( 0 ) ).removeNode( eq( UUID ) );
+        verify( graphIndex,
+                times( 0 ) ).removeNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).removeEdge( any( Edge.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testUndo() {
         CommandResult<RuleViolation> result = tested.undo( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( graph, times( 1 ) ).removeNode( eq( UUID ) );
-        verify( graphIndex, times( 1 ) ).removeNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).removeEdge( any( Edge.class ) );
-        verify( graph, times( 0 ) ).addNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).addNode( eq( node ) );
-        verify( graphIndex, times( 0 ) ).addEdge( any( Edge.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( graph,
+                times( 1 ) ).removeNode( eq( UUID ) );
+        verify( graphIndex,
+                times( 1 ) ).removeNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).removeEdge( any( Edge.class ) );
+        verify( graph,
+                times( 0 ) ).addNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).addNode( eq( node ) );
+        verify( graphIndex,
+                times( 0 ) ).addEdge( any( Edge.class ) );
     }
 }

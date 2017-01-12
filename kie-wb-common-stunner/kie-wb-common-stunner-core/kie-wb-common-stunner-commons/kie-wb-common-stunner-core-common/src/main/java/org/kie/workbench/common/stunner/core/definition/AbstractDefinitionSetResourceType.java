@@ -34,5 +34,4 @@ public abstract class AbstractDefinitionSetResourceType implements DefinitionSet
     public String getSimpleWildcardPattern() {
         return "*." + getSuffix();
     }
-
 }

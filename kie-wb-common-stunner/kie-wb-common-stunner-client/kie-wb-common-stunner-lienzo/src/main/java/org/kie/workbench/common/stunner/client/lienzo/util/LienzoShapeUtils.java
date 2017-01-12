@@ -30,9 +30,14 @@ public class LienzoShapeUtils {
                                                     final String endColor,
                                                     final Double width,
                                                     final Double height ) {
-        final LinearGradient linearGradient = new LinearGradient( 0, width, 0, -height / 2 );
-        linearGradient.addColorStop( 1, endColor );
-        linearGradient.addColorStop( 0, startColor );
+        final LinearGradient linearGradient = new LinearGradient( 0,
+                                                                  width,
+                                                                  0,
+                                                                  -height / 2 );
+        linearGradient.addColorStop( 1,
+                                     endColor );
+        linearGradient.addColorStop( 0,
+                                     startColor );
         return linearGradient;
     }
 
@@ -47,7 +52,8 @@ public class LienzoShapeUtils {
      * TODO: This is enough for the current line/arc support in stunner's shapes, but consider
      * improving this behavior on the future.
      */
-    public static int[] getDefaultMagnetsIndex( final WiresShape sourceShape, final WiresShape targetShape ) {
+    public static int[] getDefaultMagnetsIndex( final WiresShape sourceShape,
+                                                final WiresShape targetShape ) {
         final MagnetManager.Magnets sourceMagnets = sourceShape.getMagnets();
         final MagnetManager.Magnets targetMagnets = targetShape.getMagnets();
         int sMagnet = 0;
@@ -63,7 +69,10 @@ public class LienzoShapeUtils {
                         final IPrimitive<?> targetControl = targetMagnets.getMagnet( y ).getControl();
                         final double tX = targetControl.getX();
                         final double tY = targetControl.getY();
-                        final double _d = ShapeUtils.dist( sX, sY, tX, tY );
+                        final double _d = ShapeUtils.dist( sX,
+                                                           sY,
+                                                           tX,
+                                                           tY );
                         if ( _d < dist ) {
                             dist = _d;
                             sMagnet = x;
@@ -76,11 +85,13 @@ public class LienzoShapeUtils {
         return new int[]{ sMagnet, tMagnet };
     }
 
-    public static int[] getDefaultMagnetsIndex( final Shape sourceShape, final Shape targetShape ) {
+    public static int[] getDefaultMagnetsIndex( final Shape sourceShape,
+                                                final Shape targetShape ) {
         final ShapeView<?> sourceView = sourceShape.getShapeView();
         final ShapeView<?> targetView = targetShape.getShapeView();
         if ( sourceView instanceof WiresShape && targetView instanceof WiresShape ) {
-            return getDefaultMagnetsIndex( ( WiresShape ) sourceView, ( WiresShape ) targetView );
+            return getDefaultMagnetsIndex( ( WiresShape ) sourceView,
+                                           ( WiresShape ) targetView );
         }
         return new int[]{ 0, 0 };
     }
@@ -88,5 +99,4 @@ public class LienzoShapeUtils {
     private static boolean isOddNumber( final int i ) {
         return i % 2 > 0;
     }
-
 }

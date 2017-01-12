@@ -16,9 +16,23 @@
 
 package org.kie.workbench.common.stunner.bpmn;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.bpmn.definition.*;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
+import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
@@ -26,8 +40,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.ShapeSet;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Bindable
@@ -48,7 +60,6 @@ import javax.enterprise.context.ApplicationScoped;
                 ExclusiveDatabasedGateway.class,
                 ReusableSubprocess.class,
                 SequenceFlow.class
-
         },
         builder = BPMNDefinitionSet.BPMNDefinitionSetBuilder.class
 )
@@ -74,7 +85,6 @@ public class BPMNDefinitionSet {
         public BPMNDefinitionSet build() {
             return new BPMNDefinitionSet();
         }
-
     }
 
     public BPMNDefinitionSet() {
@@ -83,5 +93,4 @@ public class BPMNDefinitionSet {
     public String getDescription() {
         return description;
     }
-
 }

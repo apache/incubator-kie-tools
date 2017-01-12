@@ -22,7 +22,8 @@ public class PaletteGridLayoutBuilder extends AbstractPaletteGridBuilder<Palette
     public static final PaletteGridLayoutBuilder VERTICAL = new PaletteGridLayoutBuilder().layout( GridLayout.VERTICAL );
 
     public enum GridLayout {
-        HORIZONTAL, VERTICAL;
+        HORIZONTAL,
+        VERTICAL
     }
 
     protected GridLayout layout = GridLayout.HORIZONTAL;
@@ -36,8 +37,9 @@ public class PaletteGridLayoutBuilder extends AbstractPaletteGridBuilder<Palette
     public PaletteGrid build() {
         final int _r = ( layout.equals( GridLayout.HORIZONTAL ) ) ? 1 : -1;
         final int _c = ( layout.equals( GridLayout.VERTICAL ) ) ? 1 : -1;
-        return new PaletteGridImpl( _r, _c, iconSize, padding );
-
+        return new PaletteGridImpl( _r,
+                                    _c,
+                                    iconSize,
+                                    padding );
     }
-
 }

@@ -24,7 +24,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class DiagramListRegistryTest {
@@ -51,9 +51,12 @@ public class DiagramListRegistryTest {
     public void testGetDiagramByUUID() {
         registry.register( diagram1 );
         registry.register( diagram2 );
-        assertEquals( diagram1, registry.getDiagramByUUID( DIAGRAM_1_UUID ) );
-        assertEquals( diagram2, registry.getDiagramByUUID( DIAGRAM_2_UUID ) );
-        assertEquals( null, registry.getDiagramByUUID( DUMMY_STRING ) );
+        assertEquals( diagram1,
+                      registry.getDiagramByUUID( DIAGRAM_1_UUID ) );
+        assertEquals( diagram2,
+                      registry.getDiagramByUUID( DIAGRAM_2_UUID ) );
+        assertEquals( null,
+                      registry.getDiagramByUUID( DUMMY_STRING ) );
     }
 
     @Test
@@ -82,5 +85,4 @@ public class DiagramListRegistryTest {
         boolean empty = registry.isEmpty();
         assertFalse( empty );
     }
-
 }

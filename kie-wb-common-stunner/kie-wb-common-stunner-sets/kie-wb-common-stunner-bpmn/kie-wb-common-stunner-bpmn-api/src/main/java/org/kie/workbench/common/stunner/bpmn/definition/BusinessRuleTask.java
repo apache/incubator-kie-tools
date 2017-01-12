@@ -15,14 +15,16 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
@@ -38,8 +40,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ti
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
-
-import javax.validation.Valid;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TASK_DATA;
@@ -60,7 +60,7 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
     protected BusinessRuleTaskExecutionSet executionSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2)
+    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2 )
     @Valid
     protected DataIOSet dataIOSet;
 
@@ -69,17 +69,20 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
 
         @Override
         public BusinessRuleTask build() {
-            return new BusinessRuleTask( new TaskGeneralSet(new Name("Task"), new Documentation("")),
-                    new BusinessRuleTaskExecutionSet(),
-                    new DataIOSet(),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet(),
-                    new RectangleDimensionsSet( WIDTH, HEIGHT ),
-                    new SimulationSet(),
-                    new TaskType( TaskTypes.BUSINESS_RULE )
+            return new BusinessRuleTask( new TaskGeneralSet( new Name( "Task" ),
+                                                             new Documentation( "" ) ),
+                                         new BusinessRuleTaskExecutionSet(),
+                                         new DataIOSet(),
+                                         new BackgroundSet( COLOR,
+                                                            BORDER_COLOR,
+                                                            BORDER_SIZE ),
+                                         new FontSet(),
+                                         new RectangleDimensionsSet( WIDTH,
+                                                                     HEIGHT ),
+                                         new SimulationSet(),
+                                         new TaskType( TaskTypes.BUSINESS_RULE )
             );
         }
-
     }
 
     public BusinessRuleTask() {
@@ -94,7 +97,12 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
                              @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
                              @MapsTo( "simulationSet" ) SimulationSet simulationSet,
                              @MapsTo( "taskType" ) TaskType taskType ) {
-        super( general, backgroundSet, fontSet, dimensionsSet, simulationSet, taskType );
+        super( general,
+               backgroundSet,
+               fontSet,
+               dimensionsSet,
+               simulationSet,
+               taskType );
         this.executionSet = executionSet;
         this.dataIOSet = dataIOSet;
     }
@@ -115,7 +123,7 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
     }
 
     @Override
-    public boolean isSingleOutputVar(){
+    public boolean isSingleOutputVar() {
         return false;
     }
 

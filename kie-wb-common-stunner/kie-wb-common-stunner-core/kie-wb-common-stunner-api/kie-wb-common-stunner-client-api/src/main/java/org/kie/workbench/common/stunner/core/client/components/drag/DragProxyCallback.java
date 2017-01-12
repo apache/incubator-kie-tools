@@ -18,10 +18,12 @@ package org.kie.workbench.common.stunner.core.client.components.drag;
 
 public interface DragProxyCallback {
 
-    void onStart( int x, int y );
+    void onStart( final int x,
+                  final int y );
 
-    void onMove( int x, int y );
+    void onMove( final int x,
+                 final int y );
 
-    void onComplete( int x, int y );
-
+    void onComplete( final int x,
+                     final int y );
 }

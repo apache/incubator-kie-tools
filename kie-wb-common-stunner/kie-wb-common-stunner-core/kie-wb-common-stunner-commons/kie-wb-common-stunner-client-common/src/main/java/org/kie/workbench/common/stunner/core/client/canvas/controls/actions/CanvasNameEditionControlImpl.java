@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -31,16 +36,17 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.*;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDoubleClickEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDoubleClickHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOutEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOutHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOverEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOverHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.uberfire.mvp.Command;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -73,16 +79,17 @@ public class CanvasNameEditionControlImpl
     @Override
     public void enable( final AbstractCanvasHandler canvasHandler ) {
         super.enable( canvasHandler );
-        nameEditBox.initialize( canvasHandler, () -> {
-            CanvasNameEditionControlImpl.this.hide();
-            elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler, CanvasNameEditionControlImpl.this.uuid ) );
-        } );
+        nameEditBox.initialize( canvasHandler,
+                                () -> {
+                                    CanvasNameEditionControlImpl.this.hide();
+                                    elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
+                                                                                               CanvasNameEditionControlImpl.this.uuid ) );
+                                } );
         floatingView
                 .hide()
                 .setHideCallback( floatingHideCallback )
                 .setTimeOut( FLOATING_VIEW_TIMEOUT )
                 .add( nameEditBox.asWidget() );
-
     }
 
     @Override
@@ -97,11 +104,15 @@ public class CanvasNameEditionControlImpl
                     final MouseDoubleClickHandler doubleClickHandler = new MouseDoubleClickHandler() {
                         @Override
                         public void handle( final MouseDoubleClickEvent event ) {
-                            CanvasNameEditionControlImpl.this.show( element, event.getClientX(), event.getClientY() );
+                            CanvasNameEditionControlImpl.this.show( element,
+                                                                    event.getClientX(),
+                                                                    event.getClientY() );
                         }
                     };
-                    hasEventHandlers.addHandler( ViewEventType.MOUSE_DBL_CLICK, doubleClickHandler );
-                    registerHandler( shape.getUUID(), doubleClickHandler );
+                    hasEventHandlers.addHandler( ViewEventType.MOUSE_DBL_CLICK,
+                                                 doubleClickHandler );
+                    registerHandler( shape.getUUID(),
+                                     doubleClickHandler );
                     // TODO: Not firing - Text over event.
                     final TextOverHandler overHandler = new TextOverHandler() {
                         @Override
@@ -111,8 +122,10 @@ public class CanvasNameEditionControlImpl
                     };
                     if ( hasEventHandlers.supports( ViewEventType.TEXT_OVER ) &&
                             hasEventHandlers.supports( ViewEventType.TEXT_OUT ) ) {
-                        hasEventHandlers.addHandler( ViewEventType.TEXT_OVER, overHandler );
-                        registerHandler( shape.getUUID(), overHandler );
+                        hasEventHandlers.addHandler( ViewEventType.TEXT_OVER,
+                                                     overHandler );
+                        registerHandler( shape.getUUID(),
+                                         overHandler );
                         // TODO: Not firing - Text out event.
                         final TextOutHandler outHandler = new TextOutHandler() {
                             @Override
@@ -120,8 +133,10 @@ public class CanvasNameEditionControlImpl
                                 canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
                             }
                         };
-                        hasEventHandlers.addHandler( ViewEventType.TEXT_OUT, outHandler );
-                        registerHandler( shape.getUUID(), outHandler );
+                        hasEventHandlers.addHandler( ViewEventType.TEXT_OUT,
+                                                     outHandler );
+                        registerHandler( shape.getUUID(),
+                                         outHandler );
                     }
                 }
             }
@@ -204,17 +219,18 @@ public class CanvasNameEditionControlImpl
         return canvasHandler.getCanvas();
     }
 
-    void onKeyDownEvent( @Observes KeyDownEvent keyDownEvent ) {
-        checkNotNull( "keyDownEvent", keyDownEvent );
+    void onKeyDownEvent( final @Observes KeyDownEvent keyDownEvent ) {
+        checkNotNull( "keyDownEvent",
+                      keyDownEvent );
         final KeyboardEvent.Key key = keyDownEvent.getKey();
         if ( null != key && KeyboardEvent.Key.ESC.equals( key ) ) {
             hide();
         }
     }
 
-    void onCanvasFocusedEvent( @Observes CanvasFocusedEvent canvasFocusedEvent ) {
-        checkNotNull( "canvasFocusedEvent", canvasFocusedEvent );
+    void onCanvasFocusedEvent( final @Observes CanvasFocusedEvent canvasFocusedEvent ) {
+        checkNotNull( "canvasFocusedEvent",
+                      canvasFocusedEvent );
         hide();
     }
-
 }

@@ -25,7 +25,7 @@ public final class CanvasShapeAddedEvent extends AbstractCanvasShapeEvent {
 
     public CanvasShapeAddedEvent( final Canvas canvas,
                                   final Shape shape ) {
-        super( canvas, shape );
+        super( canvas,
+               shape );
     }
-
 }

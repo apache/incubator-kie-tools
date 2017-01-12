@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
@@ -24,18 +28,16 @@ import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
 
-    public BindableMorphAdapter( DefinitionUtils definitionUtils,
-                                 FactoryManager factoryManager ) {
-        super( definitionUtils, factoryManager );
+    public BindableMorphAdapter( final DefinitionUtils definitionUtils,
+                                 final FactoryManager factoryManager ) {
+        super( definitionUtils,
+               factoryManager );
     }
 
-    protected abstract <T> T doMerge( S source, T result );
+    protected abstract <T> T doMerge( final S source,
+                                      final T result );
 
     @Override
     @SuppressWarnings( "unchecked" )
@@ -46,16 +48,17 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
             return result;
         }
         if ( definitionUtils.isDefaultPolicy( morphDefinition ) ) {
-            final Object nameProperty =
-                    getDefinitionManager().adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME, source );
+            final Object nameProperty = getDefinitionManager().adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME,
+                                                                                                           source );
+            final Object targetNameProperty = getDefinitionManager().adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME,
+                                                                                                                 result );
             final Object namePropertyValue = getDefinitionManager().adapters().forProperty().getValue( nameProperty );
-            final Object targetNameProperty =
-                    getDefinitionManager().adapters().forDefinition().getMetaProperty( PropertyMetaTypes.NAME, result );
-            getDefinitionManager().adapters().forProperty().setValue( targetNameProperty, namePropertyValue );
-            ;
+            getDefinitionManager().adapters().forProperty().setValue( targetNameProperty,
+                                                                      namePropertyValue );
             return result;
         }
-        return doMerge( source, result );
+        return doMerge( source,
+                        result );
     }
 
     @Override
@@ -71,19 +74,23 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
     public Iterable<MorphDefinition> getMorphDefinitionsForType( final Class<?> type ) {
         final String dId = getDefinitionId( type );
         final String baseId = getBaseDefinitionId( type );
-        return super.getMorphDefinitions( dId, baseId );
+        return super.getMorphDefinitions( dId,
+                                          baseId );
     }
 
     public <T> Iterable<MorphProperty> getMorphPropertiesForType( final Class<?> type ) {
         final String dId = getDefinitionId( type );
         final String baseId = getBaseDefinitionId( type );
-        return super.getMorphProperties( dId, baseId );
+        return super.getMorphProperties( dId,
+                                         baseId );
     }
 
     public <T> Iterable<String> getTargetsForType( final Class<?> type ) {
         final String dId = getDefinitionId( type );
         final String baseId = getBaseDefinitionId( type );
-        return getTargets( type, dId, baseId );
+        return getTargets( type,
+                           dId,
+                           baseId );
     }
 
     @Override
@@ -95,13 +102,17 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
     protected Iterable<String> getTargets( final Class<?> type,
                                            final String definitionId,
                                            final String baseId ) {
-        final Iterable<String> superTargets = super.getTargets( type, definitionId, baseId );
+        final Iterable<String> superTargets = super.getTargets( type,
+                                                                definitionId,
+                                                                baseId );
         if ( null != superTargets && superTargets.iterator().hasNext() ) {
             final Set<String> result = new LinkedHashSet<>();
             for ( final String s : superTargets ) {
-                final String[] types = getTypes( type, s );
+                final String[] types = getTypes( type,
+                                                 s );
                 if ( null != types && types.length > 0 ) {
-                    Collections.addAll( result, types );
+                    Collections.addAll( result,
+                                        types );
                 } else {
                     result.add( s );
                 }
@@ -111,7 +122,8 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
         return null;
     }
 
-    protected String[] getTypes( final Class<?> adapterType, String baseType ) {
+    protected String[] getTypes( final Class<?> adapterType,
+                                 final String baseType ) {
         final DefinitionAdapter<Object> definitionAdapter = getDefinitionManager().adapters().registry().getDefinitionAdapter( adapterType );
         if ( definitionAdapter instanceof HasInheritance ) {
             return ( ( HasInheritance ) definitionAdapter ).getTypes( baseType );

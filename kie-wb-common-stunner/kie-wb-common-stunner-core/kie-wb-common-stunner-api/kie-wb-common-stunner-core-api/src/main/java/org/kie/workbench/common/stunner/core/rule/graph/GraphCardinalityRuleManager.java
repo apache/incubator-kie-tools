@@ -30,15 +30,13 @@ public interface GraphCardinalityRuleManager
         extends CardinalityRuleManager {
 
     /**
-     *  It checks cardinality rules and evaluates if the given candidate node can be added or removed
+     * It checks cardinality rules and evaluates if the given candidate node can be added or removed
      * from the graph.
      * @param graph The graph.
      * @param candidates The node to add or remove.
      * @param operation Add or remove
      */
-    RuleViolations evaluate( Graph<?, ? extends Node> graph,
-                             Node<? extends View<?>, ? extends Edge> candidates,
-                             Operation operation );
-
-
+    RuleViolations evaluate( final Graph<?, ? extends Node> graph,
+                             final Node<? extends View<?>, ? extends Edge> candidates,
+                             final Operation operation );
 }

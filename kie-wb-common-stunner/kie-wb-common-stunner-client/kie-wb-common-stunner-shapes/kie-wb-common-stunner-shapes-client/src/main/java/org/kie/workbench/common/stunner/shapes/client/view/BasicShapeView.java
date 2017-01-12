@@ -16,14 +16,28 @@
 
 package org.kie.workbench.common.stunner.shapes.client.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ait.lienzo.client.core.event.NodeMouseOverEvent;
 import com.ait.lienzo.client.core.event.NodeMouseOverHandler;
-import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Node;
+import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
-import com.ait.lienzo.client.core.shape.wires.event.*;
+import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresDragEvent;
+import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresResizeEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.shared.core.types.ColorName;
@@ -36,11 +50,16 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.*;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.DragEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOutEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOverEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.kie.workbench.common.stunner.shapes.client.util.BasicShapesUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class BasicShapeView<T>
         extends AbstractShapeView<T>
@@ -76,7 +95,8 @@ public abstract class BasicShapeView<T>
     public void addChild( final BasicShapeView<T> child,
                           final Layout layout ) {
         children.add( child );
-        super.addChild( ( IPrimitive<?> ) child.getContainer(), BasicShapesUtils.getWiresLayout( layout ) );
+        super.addChild( ( IPrimitive<?> ) child.getContainer(),
+                        BasicShapesUtils.getWiresLayout( layout ) );
     }
 
     @Override
@@ -105,7 +125,8 @@ public abstract class BasicShapeView<T>
     public T setTitle( final String title ) {
         if ( null == text ) {
             text = buildText( title );
-            this.addChild( text, getTextPosition() );
+            this.addChild( text,
+                           getTextPosition() );
             registerTextOverHandler();
             registerTextOutHandler();
         } else {
@@ -206,7 +227,8 @@ public abstract class BasicShapeView<T>
             final BoundingBox bb = getShape().getBoundingBox();
             final double width = bb.getWidth();
             final double height = bb.getHeight();
-            updateFillGradient( width, height );
+            updateFillGradient( width,
+                                height );
         }
         return ( T ) this;
     }
@@ -218,7 +240,9 @@ public abstract class BasicShapeView<T>
                 && this.fillGradientStartColor != null
                 && this.fillGradientEndColor != null ) {
             final LinearGradient gradient = LienzoShapeUtils.getLinearGradient( fillGradientStartColor,
-                    fillGradientEndColor, width, height );
+                                                                                fillGradientEndColor,
+                                                                                width,
+                                                                                height );
             getShape().setFillGradient( gradient );
         }
         return ( T ) this;
@@ -285,16 +309,16 @@ public abstract class BasicShapeView<T>
                          final ViewHandler<? extends ViewEvent> eventHandler ) {
         if ( supports( type ) ) {
             if ( ViewEventType.DRAG.equals( type ) ) {
-                final HandlerRegistration[] registrations =
-                        registerDragHandler( ( DragHandler ) eventHandler );
+                final HandlerRegistration[] registrations = registerDragHandler( ( DragHandler ) eventHandler );
                 if ( null != registrations ) {
-                    eventHandlerManager.addHandlersRegistration( type, registrations );
+                    eventHandlerManager.addHandlersRegistration( type,
+                                                                 registrations );
                 }
             } else if ( ViewEventType.RESIZE.equals( type ) ) {
-                final HandlerRegistration[] registrations =
-                        registerResizeHandler( ( ResizeHandler ) eventHandler );
+                final HandlerRegistration[] registrations = registerResizeHandler( ( ResizeHandler ) eventHandler );
                 if ( null != registrations ) {
-                    eventHandlerManager.addHandlersRegistration( type, registrations );
+                    eventHandlerManager.addHandlersRegistration( type,
+                                                                 registrations );
                 }
             }
             if ( ViewEventType.TEXT_OVER.equals( type ) ) {
@@ -303,7 +327,8 @@ public abstract class BasicShapeView<T>
             if ( ViewEventType.TEXT_OUT.equals( type ) ) {
                 textOutEventViewHandler = ( ViewHandler<TextOutEvent> ) eventHandler;
             } else {
-                eventHandlerManager.addHandler( type, eventHandler );
+                eventHandlerManager.addHandler( type,
+                                                eventHandler );
             }
         }
         return ( T ) this;
@@ -331,18 +356,20 @@ public abstract class BasicShapeView<T>
     }
 
     private void initialize( final ViewEventType[] supportedEventTypes ) {
-        createEventHandlerManager( getGroup(), supportedEventTypes );
+        createEventHandlerManager( getGroup(),
+                                   supportedEventTypes );
         refresh();
     }
 
     private void createEventHandlerManager( final Node<?> node,
                                             final ViewEventType[] supportedEventTypes ) {
         if ( null != node ) {
-            this.eventHandlerManager = new ViewEventHandlerManager( node, supportedEventTypes );
+            this.eventHandlerManager = new ViewEventHandlerManager( node,
+                                                                    supportedEventTypes );
         }
     }
 
-    private Text buildText( String _text ) {
+    private Text buildText( final String _text ) {
         Text text = new Text( _text )
                 .setFontSize( 14 )
                 .setFillColor( ColorName.BLACK )
@@ -350,7 +377,6 @@ public abstract class BasicShapeView<T>
                 .setRotationDegrees( textRotationDegrees );
         return text.moveToTop().setDraggable( false ).setAlpha( 0 );
     }
-
 
     private WiresLayoutContainer.Layout getTextPosition() {
         return textPosition;
@@ -383,23 +409,29 @@ public abstract class BasicShapeView<T>
             HandlerRegistration registration = getText().addNodeMouseOverHandler( new NodeMouseOverHandler() {
                 @Override
                 public void onNodeMouseOver( NodeMouseOverEvent nodeMouseOverEvent ) {
-                    final TextOverEvent event = new TextOverEvent( nodeMouseOverEvent.getX(), nodeMouseOverEvent.getY(),
-                            nodeMouseOverEvent.getMouseEvent().getClientX(), nodeMouseOverEvent.getMouseEvent().getClientY() );
+                    final TextOverEvent event = new TextOverEvent( nodeMouseOverEvent.getX(),
+                                                                   nodeMouseOverEvent.getY(),
+                                                                   nodeMouseOverEvent.getMouseEvent().getClientX(),
+                                                                   nodeMouseOverEvent.getMouseEvent().getClientY() );
                     textOverHandlerViewHandler.handle( event );
                 }
             } );
-            eventHandlerManager.addHandlersRegistration( ViewEventType.TEXT_OVER, registration );
+            eventHandlerManager.addHandlersRegistration( ViewEventType.TEXT_OVER,
+                                                         registration );
         }
     }
 
     private void registerTextOutHandler() {
         if ( null != textOutEventViewHandler ) {
             HandlerRegistration registration = getText().addNodeMouseOutHandler( nodeMouseOverEvent -> {
-                final TextOutEvent event = new TextOutEvent( nodeMouseOverEvent.getX(), nodeMouseOverEvent.getY(),
-                        nodeMouseOverEvent.getMouseEvent().getClientX(), nodeMouseOverEvent.getMouseEvent().getClientY() );
+                final TextOutEvent event = new TextOutEvent( nodeMouseOverEvent.getX(),
+                                                             nodeMouseOverEvent.getY(),
+                                                             nodeMouseOverEvent.getMouseEvent().getClientX(),
+                                                             nodeMouseOverEvent.getMouseEvent().getClientY() );
                 textOutEventViewHandler.handle( event );
             } );
-            eventHandlerManager.addHandlersRegistration( ViewEventType.TEXT_OUT, registration );
+            eventHandlerManager.addHandlersRegistration( ViewEventType.TEXT_OUT,
+                                                         registration );
         }
     }
 
@@ -408,21 +440,21 @@ public abstract class BasicShapeView<T>
         setResizable( true );
         HandlerRegistration r0 = addWiresResizeStartHandler( new WiresResizeStartHandler() {
             @Override
-            public void onShapeResizeStart( WiresResizeStartEvent wiresResizeStartEvent ) {
+            public void onShapeResizeStart( final WiresResizeStartEvent wiresResizeStartEvent ) {
                 final ResizeEvent event = buildResizeEvent( wiresResizeStartEvent );
                 resizeHandler.start( event );
             }
         } );
         HandlerRegistration r1 = addWiresResizeStepHandler( new WiresResizeStepHandler() {
             @Override
-            public void onShapeResizeStep( WiresResizeStepEvent wiresResizeStepEvent ) {
+            public void onShapeResizeStep( final WiresResizeStepEvent wiresResizeStepEvent ) {
                 final ResizeEvent event = buildResizeEvent( wiresResizeStepEvent );
                 resizeHandler.handle( event );
             }
         } );
         HandlerRegistration r2 = addWiresResizeEndHandler( new WiresResizeEndHandler() {
             @Override
-            public void onShapeResizeEnd( WiresResizeEndEvent wiresResizeEndEvent ) {
+            public void onShapeResizeEnd( final WiresResizeEndEvent wiresResizeEndEvent ) {
                 final ResizeEvent event = buildResizeEvent( wiresResizeEndEvent );
                 resizeHandler.end( event );
             }
@@ -437,7 +469,12 @@ public abstract class BasicShapeView<T>
         final double cy = sourceDragEvent.getNodeDragEvent().getY();
         final int dx = sourceDragEvent.getNodeDragEvent().getDragContext().getDx();
         final int dy = sourceDragEvent.getNodeDragEvent().getDragContext().getDy();
-        return new DragEvent( x, y, cx, cy, dx, dy );
+        return new DragEvent( x,
+                              y,
+                              cx,
+                              cy,
+                              dx,
+                              dy );
     }
 
     private ResizeEvent buildResizeEvent( final AbstractWiresResizeEvent sourceResizeEvent ) {
@@ -447,6 +484,11 @@ public abstract class BasicShapeView<T>
         final double cy = sourceResizeEvent.getNodeDragEvent().getY();
         final double w = sourceResizeEvent.getWidth();
         final double h = sourceResizeEvent.getHeight();
-        return new ResizeEvent( x, y, cx, cy, w, h );
+        return new ResizeEvent( x,
+                                y,
+                                cx,
+                                cy,
+                                w,
+                                h );
     }
 }

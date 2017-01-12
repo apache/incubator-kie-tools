@@ -51,7 +51,8 @@ public final class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
     @Override
     public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
         final String ssid = context.getDiagram().getMetadata().getShapeSetId();
-        return new AddCanvasConnectorCommand( candidate, ssid ).execute( context );
+        return new AddCanvasConnectorCommand( candidate,
+                                              ssid ).execute( context );
     }
 
     public Edge getCandidate() {

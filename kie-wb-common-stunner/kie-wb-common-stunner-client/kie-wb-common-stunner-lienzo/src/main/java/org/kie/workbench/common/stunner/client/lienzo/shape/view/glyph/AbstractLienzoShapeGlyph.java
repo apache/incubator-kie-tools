@@ -24,7 +24,8 @@ public abstract class AbstractLienzoShapeGlyph extends AbstractGlyph<Group> {
     public AbstractLienzoShapeGlyph( final Group group,
                                      final double width,
                                      final double height ) {
-        super( group, width, height );
+        super( group,
+               width,
+               height );
     }
-
 }

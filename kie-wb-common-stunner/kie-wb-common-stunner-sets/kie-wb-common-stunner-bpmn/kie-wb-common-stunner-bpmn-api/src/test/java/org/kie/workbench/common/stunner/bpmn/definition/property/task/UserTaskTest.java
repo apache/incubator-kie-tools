@@ -52,21 +52,24 @@ public class UserTaskTest {
     public void testTaskNameInvalid1() {
         TaskName taskName = new TaskName( TASK_NAME_INVALID );
         Set<ConstraintViolation<TaskName>> violations = this.validator.validate( taskName );
-        assertEquals( 1, violations.size() );
+        assertEquals( 1,
+                      violations.size() );
     }
 
     @Test
     public void testTaskNameInvalidEmpty() {
         TaskName taskName = new TaskName( "" );
         Set<ConstraintViolation<TaskName>> violations = this.validator.validate( taskName );
-        assertEquals( 2, violations.size() );
+        assertEquals( 2,
+                      violations.size() );
     }
 
     @Test
     public void testTaskNameInvalidNull() {
         TaskName taskName = new TaskName( null );
         Set<ConstraintViolation<TaskName>> violations = this.validator.validate( taskName );
-        assertEquals( 2, violations.size() );
+        assertEquals( 2,
+                      violations.size() );
     }
 
     @Test
@@ -82,7 +85,8 @@ public class UserTaskTest {
         UserTaskExecutionSet userTaskExecutionSet = new UserTaskExecutionSet();
         userTaskExecutionSet.setTaskName( new TaskName( TASK_NAME_INVALID ) );
         Set<ConstraintViolation<UserTaskExecutionSet>> violations = this.validator.validate( userTaskExecutionSet );
-        assertEquals( 1, violations.size() );
+        assertEquals( 1,
+                      violations.size() );
     }
 
     @Test
@@ -98,6 +102,7 @@ public class UserTaskTest {
         UserTask userTask = new UserTask.UserTaskBuilder().build();
         userTask.getExecutionSet().setTaskName( new TaskName( TASK_NAME_INVALID ) );
         Set<ConstraintViolation<UserTask>> violations = this.validator.validate( userTask );
-        assertEquals( 1, violations.size() );
+        assertEquals( 1,
+                      violations.size() );
     }
 }

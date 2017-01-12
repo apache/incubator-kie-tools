@@ -39,5 +39,4 @@ public class StaticIconShapeDefImpl
     public GlyphDef<StaticIcon> getGlyphDef() {
         return GlyphDefinitions.GLYPH_SHAPE();
     }
-
 }

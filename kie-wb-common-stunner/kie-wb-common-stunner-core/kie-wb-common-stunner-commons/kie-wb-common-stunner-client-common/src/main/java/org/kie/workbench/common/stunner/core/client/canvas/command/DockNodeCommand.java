@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public final class DockNodeCommand extends AbstractCanvasGraphCommand {
 
     private final Node parent;
-    private final  Node candidate;
+    private final Node candidate;
 
     public DockNodeCommand( final Node parent,
                             final Node candidate ) {
@@ -35,12 +35,13 @@ public final class DockNodeCommand extends AbstractCanvasGraphCommand {
     @Override
     @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.DockNodeCommand( parent, candidate );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.DockNodeCommand( parent,
+                                                                                             candidate );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new CanvasDockNodeCommand( parent, candidate );
+        return new CanvasDockNodeCommand( parent,
+                                          candidate );
     }
-
 }

@@ -33,7 +33,8 @@ public interface VariablesEditorWidgetView {
 
         String serializeVariables( List<VariableRow> variableRows );
 
-        void setDataTypes( List<String> dataTypes, List<String> dataTypeDisplayNames);
+        void setDataTypes( List<String> dataTypes,
+                           List<String> dataTypeDisplayNames );
 
         void addVariable();
 

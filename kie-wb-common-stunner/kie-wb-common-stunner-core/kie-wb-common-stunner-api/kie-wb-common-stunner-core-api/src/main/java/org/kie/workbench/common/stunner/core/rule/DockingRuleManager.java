@@ -18,10 +18,10 @@ package org.kie.workbench.common.stunner.core.rule;
 
 /**
  * Base manager type for docking rules.
- *
+ * <p/>
  * It checks cardinality rules and evaluates if the given candidate can be dock into another node.
  * Docking rules are role based.
- *
+ * <p/>
  * Each domain specific implementation can provide its own argument types to evaluate internally the rules.
  * See <a>org.kie.workbench.common.stunner.core.rule.model.ModelDockingRuleManager</a>
  * See <a>org.kie.workbench.common.stunner.core.rule.graph.GraphDockingRuleManager</a>

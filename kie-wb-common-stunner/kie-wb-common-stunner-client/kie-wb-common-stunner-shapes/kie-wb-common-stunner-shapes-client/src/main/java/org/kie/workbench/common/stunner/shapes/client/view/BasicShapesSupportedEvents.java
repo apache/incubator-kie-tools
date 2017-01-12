@@ -24,31 +24,41 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
 public class BasicShapesSupportedEvents {
 
     public static final ViewEventType[] ALL_EVENT_TYPES = new ViewEventType[]{
-            ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK,
-            ViewEventType.TEXT_OVER, ViewEventType.TEXT_OUT,
-            ViewEventType.DRAG, ViewEventType.RESIZE,
-            ViewEventType.TOUCH, ViewEventType.GESTURE
+            ViewEventType.MOUSE_CLICK,
+            ViewEventType.MOUSE_DBL_CLICK,
+            ViewEventType.TEXT_OVER,
+            ViewEventType.TEXT_OUT,
+            ViewEventType.DRAG,
+            ViewEventType.RESIZE,
+            ViewEventType.TOUCH,
+            ViewEventType.GESTURE
     };
 
     public static final ViewEventType[] ALL_DESKTOP_EVENT_TYPES = new ViewEventType[]{
-            ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK,
-            ViewEventType.TEXT_OVER, ViewEventType.TEXT_OUT,
-            ViewEventType.DRAG, ViewEventType.RESIZE
+            ViewEventType.MOUSE_CLICK,
+            ViewEventType.MOUSE_DBL_CLICK,
+            ViewEventType.TEXT_OVER,
+            ViewEventType.TEXT_OUT,
+            ViewEventType.DRAG,
+            ViewEventType.RESIZE
     };
 
     public static final ViewEventType[] DESKTOP_NO_RESIZE_EVENT_TYPES = new ViewEventType[]{
-            ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK,
-            ViewEventType.TEXT_OVER, ViewEventType.TEXT_OUT,
+            ViewEventType.MOUSE_CLICK,
+            ViewEventType.MOUSE_DBL_CLICK,
+            ViewEventType.TEXT_OVER,
+            ViewEventType.TEXT_OUT,
             ViewEventType.DRAG
     };
 
     public static final ViewEventType[] CONNECTOR_EVENT_TYPES = new ViewEventType[]{
-            ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK,
+            ViewEventType.MOUSE_CLICK,
+            ViewEventType.MOUSE_DBL_CLICK,
             ViewEventType.TOUCH
     };
 
     public static final ViewEventType[] DESKTOP_CONNECTOR_EVENT_TYPES = new ViewEventType[]{
-            ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK
+            ViewEventType.MOUSE_CLICK,
+            ViewEventType.MOUSE_DBL_CLICK
     };
-
 }

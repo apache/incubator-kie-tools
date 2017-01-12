@@ -40,5 +40,4 @@ public final class TouchEventImpl extends AbstractViewEvent implements TouchEven
     public double getTouchY() {
         return touchY;
     }
-
 }

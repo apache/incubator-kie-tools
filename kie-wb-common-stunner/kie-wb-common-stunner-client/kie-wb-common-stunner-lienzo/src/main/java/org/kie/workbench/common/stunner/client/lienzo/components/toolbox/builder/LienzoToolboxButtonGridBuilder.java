@@ -56,7 +56,9 @@ public class LienzoToolboxButtonGridBuilder implements ToolboxButtonGridBuilder 
 
     @Override
     public ToolboxButtonGrid build() {
-        return new LienzoToolboxButtonGrid( padding, iconSize, rows, cols );
+        return new LienzoToolboxButtonGrid( padding,
+                                            iconSize,
+                                            rows,
+                                            cols );
     }
-
 }

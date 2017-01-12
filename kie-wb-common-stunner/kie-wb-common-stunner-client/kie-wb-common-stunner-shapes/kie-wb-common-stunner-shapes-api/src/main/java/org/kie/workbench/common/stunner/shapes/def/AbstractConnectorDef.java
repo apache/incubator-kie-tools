@@ -45,5 +45,4 @@ public abstract class AbstractConnectorDef<W> extends AbstractGlyphShapeDef<W> i
     public double getFontBorderSize( final W element ) {
         return 0;
     }
-
 }

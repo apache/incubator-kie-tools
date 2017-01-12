@@ -72,40 +72,30 @@ public class BPMNGraphObjectBuilderFactory implements GraphObjectBuilderFactory 
                         }
                     }
                 }
-
             }
             if ( null != propertyMorphDefinition ) {
                 // Specific handle for morphing based on class inheritance.
-                return new NodePropertyMorphBuilderImpl( defClass, propertyMorphDefinition );
-
+                return new NodePropertyMorphBuilderImpl( defClass,
+                                                         propertyMorphDefinition );
             } else {
                 Class<? extends ElementFactory> elementFactory = RuntimeDefinitionAdapter.getGraphFactory( defClass );
                 if ( isNodeFactory( elementFactory ) ) {
                     return new NodeBuilderImpl( defClass );
-
                 } else if ( isEdgeFactory( elementFactory ) ) {
                     return new EdgeBuilderImpl( defClass );
-
                 } else {
                     throw new RuntimeException( "No graph element found for definition with class [" + defClass.getName() + "]" );
-
                 }
-
             }
-
         }
         throw new RuntimeException( "No definition found for oryx stencil with id [" + oryxId + "]" );
-
     }
 
     private static boolean isNodeFactory( Class<? extends ElementFactory> elementFactory ) {
         return elementFactory.isAssignableFrom( NodeFactory.class );
-
     }
 
     private static boolean isEdgeFactory( Class<? extends ElementFactory> elementFactory ) {
         return elementFactory.isAssignableFrom( EdgeFactory.class );
-
     }
-
 }

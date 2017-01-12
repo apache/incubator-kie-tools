@@ -23,32 +23,38 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class AbstractClientSessionTest {
 
-    @Mock AbstractCanvas canvas;
-    @Mock AbstractCanvasHandler canvasHandler;
+    @Mock
+    AbstractCanvas canvas;
+    @Mock
+    AbstractCanvasHandler canvasHandler;
 
     private AbstractClientSession tested;
 
     @Before
     public void setup() throws Exception {
         when( canvasHandler.getCanvas() ).thenReturn( canvas );
-        this.tested = spy( new AbstractClientSessionStub( canvas, canvasHandler ) );
+        this.tested = spy( new AbstractClientSessionStub( canvas,
+                                                          canvasHandler ) );
     }
 
     @Test
     public void testOpen() {
         tested.open();
         assertTrue( tested.isOpened() );
-        verify( tested, times( 1 ) ).doOpen();
-        verify( tested, times( 0 ) ).doPause();
-        verify( tested, times( 0 ) ).doResume();
-        verify( tested, times( 0 ) ).doDispose();
+        verify( tested,
+                times( 1 ) ).doOpen();
+        verify( tested,
+                times( 0 ) ).doPause();
+        verify( tested,
+                times( 0 ) ).doResume();
+        verify( tested,
+                times( 0 ) ).doDispose();
     }
 
     @Test
@@ -56,10 +62,14 @@ public class AbstractClientSessionTest {
         tested.isOpened = true;
         tested.pause();
         assertTrue( tested.isOpened() );
-        verify( tested, times( 0 ) ).doOpen();
-        verify( tested, times( 1 ) ).doPause();
-        verify( tested, times( 0 ) ).doResume();
-        verify( tested, times( 0 ) ).doDispose();
+        verify( tested,
+                times( 0 ) ).doOpen();
+        verify( tested,
+                times( 1 ) ).doPause();
+        verify( tested,
+                times( 0 ) ).doResume();
+        verify( tested,
+                times( 0 ) ).doDispose();
     }
 
     @Test( expected = java.lang.IllegalStateException.class )
@@ -73,10 +83,14 @@ public class AbstractClientSessionTest {
         tested.isOpened = true;
         tested.resume();
         assertTrue( tested.isOpened() );
-        verify( tested, times( 0 ) ).doOpen();
-        verify( tested, times( 0 ) ).doPause();
-        verify( tested, times( 1 ) ).doResume();
-        verify( tested, times( 0 ) ).doDispose();
+        verify( tested,
+                times( 0 ) ).doOpen();
+        verify( tested,
+                times( 0 ) ).doPause();
+        verify( tested,
+                times( 1 ) ).doResume();
+        verify( tested,
+                times( 0 ) ).doDispose();
     }
 
     @Test( expected = java.lang.IllegalStateException.class )
@@ -90,11 +104,16 @@ public class AbstractClientSessionTest {
         tested.isOpened = true;
         tested.dispose();
         assertFalse( tested.isOpened() );
-        verify( tested, times( 0 ) ).doOpen();
-        verify( tested, times( 0 ) ).doPause();
-        verify( tested, times( 0 ) ).doResume();
-        verify( tested, times( 1 ) ).doDispose();
-        verify( canvasHandler, times( 1 ) ).destroy();
+        verify( tested,
+                times( 0 ) ).doOpen();
+        verify( tested,
+                times( 0 ) ).doPause();
+        verify( tested,
+                times( 0 ) ).doResume();
+        verify( tested,
+                times( 1 ) ).doDispose();
+        verify( canvasHandler,
+                times( 1 ) ).destroy();
     }
 
     @Test( expected = java.lang.IllegalStateException.class )
@@ -107,7 +126,8 @@ public class AbstractClientSessionTest {
 
         AbstractClientSessionStub( AbstractCanvas canvas,
                                    AbstractCanvasHandler canvasHandler ) {
-            super( canvas, canvasHandler );
+            super( canvas,
+                   canvasHandler );
         }
 
         @Override
@@ -126,5 +146,4 @@ public class AbstractClientSessionTest {
         protected void doDispose() {
         }
     }
-
 }

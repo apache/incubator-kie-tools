@@ -43,5 +43,4 @@ public abstract class CommandRegistryListener<C, V> implements CommandListener<C
             getRegistry().pop();
         }
     }
-
 }

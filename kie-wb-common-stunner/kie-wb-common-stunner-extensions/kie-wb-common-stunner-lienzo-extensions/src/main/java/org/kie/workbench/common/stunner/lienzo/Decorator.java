@@ -16,7 +16,12 @@
 
 package org.kie.workbench.common.stunner.lienzo;
 
-import com.ait.lienzo.client.core.animation.*;
+import com.ait.lienzo.client.core.animation.AnimationCallback;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationProperty;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
+import com.ait.lienzo.client.core.animation.IAnimation;
+import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Rectangle;
@@ -27,10 +32,10 @@ public class Decorator extends Group {
 
     public interface ItemCallback {
 
-        void onShow( double x, double y );
+        void onShow( double x,
+                     double y );
 
         void onHide();
-
     }
 
     private static final int TIMER_DELAY = 200;
@@ -68,13 +73,17 @@ public class Decorator extends Group {
         return this;
     }
 
-    public IPrimitive<?> build( final IPrimitive<?> item, final double width, final double height ) {
-        decorator = createRectangle( width, height );
+    public IPrimitive<?> build( final IPrimitive<?> item,
+                                final double width,
+                                final double height ) {
+        decorator = createRectangle( width,
+                                     height );
         this.add( decorator );
         this.add( item );
         decorator.setX( item.getX() - ( padding / 4 ) );
         decorator.setY( item.getY() - ( padding / 4 ) );
-        decorator.addNodeMouseEnterHandler( nodeMouseEnterEvent -> show( nodeMouseEnterEvent.getMouseEvent().getClientX(), nodeMouseEnterEvent.getMouseEvent().getClientY() ) );
+        decorator.addNodeMouseEnterHandler( nodeMouseEnterEvent -> show( nodeMouseEnterEvent.getMouseEvent().getClientX(),
+                                                                         nodeMouseEnterEvent.getMouseEvent().getClientY() ) );
         decorator.addNodeMouseExitHandler( nodeMouseExitEvent -> hide() );
         decorator.addNodeMouseMoveHandler( nodeMouseMoveEvent -> timer.cancel() );
         item.setDraggable( false );
@@ -82,8 +91,10 @@ public class Decorator extends Group {
         return this;
     }
 
-    public Rectangle createRectangle( double width, double height ) {
-        return new Rectangle( width + padding, height + padding )
+    public Rectangle createRectangle( double width,
+                                      double height ) {
+        return new Rectangle( width + padding,
+                              height + padding )
                 .setCornerRadius( 5 )
                 .setFillColor( ColorName.BLACK )
                 .setFillAlpha( 0.01 )
@@ -92,23 +103,29 @@ public class Decorator extends Group {
                 .setStrokeAlpha( 0 );
     }
 
-    public Decorator show( final double x, final double y ) {
+    public Decorator show( final double x,
+                           final double y ) {
         if ( !timer.isRunning() ) {
             decorator.animate( AnimationTweener.LINEAR,
-                    AnimationProperties.toPropertyList( AnimationProperty.Properties.STROKE_ALPHA( 1 ) ),
-                    ANIMATION_DURATION,
-                    createShowAnimationCallback( x, y ) );
+                               AnimationProperties.toPropertyList( AnimationProperty.Properties.STROKE_ALPHA( 1 ) ),
+                               ANIMATION_DURATION,
+                               createShowAnimationCallback( x,
+                                                            y ) );
             timer.schedule( TIMER_DELAY );
         }
         return this;
     }
 
-    protected AnimationCallback createShowAnimationCallback( final double x, final double y ) {
+    protected AnimationCallback createShowAnimationCallback( final double x,
+                                                             final double y ) {
         return new AnimationCallback() {
             @Override
-            public void onClose( IAnimation animation, IAnimationHandle handle ) {
-                super.onClose( animation, handle );
-                fireShow( x, y );
+            public void onClose( IAnimation animation,
+                                 IAnimationHandle handle ) {
+                super.onClose( animation,
+                               handle );
+                fireShow( x,
+                          y );
             }
         };
     }
@@ -116,9 +133,9 @@ public class Decorator extends Group {
     public Decorator hide() {
         if ( !timer.isRunning() ) {
             decorator.animate( AnimationTweener.LINEAR,
-                    AnimationProperties.toPropertyList( AnimationProperty.Properties.STROKE_ALPHA( 0 ) ),
-                    ANIMATION_DURATION,
-                    createHideAnimationCallback() );
+                               AnimationProperties.toPropertyList( AnimationProperty.Properties.STROKE_ALPHA( 0 ) ),
+                               ANIMATION_DURATION,
+                               createHideAnimationCallback() );
         }
         return this;
     }
@@ -126,16 +143,20 @@ public class Decorator extends Group {
     protected AnimationCallback createHideAnimationCallback() {
         return new AnimationCallback() {
             @Override
-            public void onClose( IAnimation animation, IAnimationHandle handle ) {
-                super.onClose( animation, handle );
+            public void onClose( IAnimation animation,
+                                 IAnimationHandle handle ) {
+                super.onClose( animation,
+                               handle );
                 fireHide();
             }
         };
     }
 
-    protected void fireShow( double x, double y ) {
+    protected void fireShow( double x,
+                             double y ) {
         if ( null != callback ) {
-            callback.onShow( x, y );
+            callback.onShow( x,
+                             y );
         }
     }
 

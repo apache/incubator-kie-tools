@@ -25,36 +25,49 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class AddCanvasDockedNodeCommandTest extends AbstractCanvasCommandTest {
 
-    @Mock private Node parent;
-    @Mock private Node candidate;
+    @Mock
+    private Node parent;
+    @Mock
+    private Node candidate;
 
     private AddCanvasDockedNodeCommand tested;
 
     @Before
     public void setup() throws Exception {
         super.setup();
-        this.tested = new AddCanvasDockedNodeCommand( parent, candidate, SHAPE_SET_ID );
+        this.tested = new AddCanvasDockedNodeCommand( parent,
+                                                      candidate,
+                                                      SHAPE_SET_ID );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecute() {
         final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR, result.getType() );
-        verify( canvasHandler, times( 1 ) ).register( eq( SHAPE_SET_ID ),  eq( candidate ) );
-        verify( canvasHandler, times( 1 ) ).addChild( eq( parent ), eq( candidate ) );
-        verify( canvasHandler, times( 1 ) ).dock( eq( parent ), eq( candidate ) );
-        verify( canvasHandler, times( 1 ) ).applyElementMutation( eq( candidate ), any( MutationContext.class ) );
-        verify( canvasHandler, times( 1 ) ).applyElementMutation( eq( parent ), any( MutationContext.class ) );
+        assertNotEquals( CommandResult.Type.ERROR,
+                         result.getType() );
+        verify( canvasHandler,
+                times( 1 ) ).register( eq( SHAPE_SET_ID ),
+                                       eq( candidate ) );
+        verify( canvasHandler,
+                times( 1 ) ).addChild( eq( parent ),
+                                       eq( candidate ) );
+        verify( canvasHandler,
+                times( 1 ) ).dock( eq( parent ),
+                                   eq( candidate ) );
+        verify( canvasHandler,
+                times( 1 ) ).applyElementMutation( eq( candidate ),
+                                                   any( MutationContext.class ) );
+        verify( canvasHandler,
+                times( 1 ) ).applyElementMutation( eq( parent ),
+                                                   any( MutationContext.class ) );
     }
-
 }

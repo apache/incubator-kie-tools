@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -31,9 +34,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ti
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
-
-import javax.validation.Valid;
-import java.util.Set;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
 
@@ -64,12 +64,15 @@ public class SequenceFlow extends BaseConnector {
 
     @NonPortable
     public static class SequenceFlowBuilder extends BaseConnectorBuilder<SequenceFlow> {
+
         @Override
         public SequenceFlow build() {
             return new SequenceFlow( new BPMNGeneralSet( "Sequence" ),
-                    new SequenceFlowExecutionSet(),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet() );
+                                     new SequenceFlowExecutionSet(),
+                                     new BackgroundSet( COLOR,
+                                                        BORDER_COLOR,
+                                                        BORDER_SIZE ),
+                                     new FontSet() );
         }
     }
 
@@ -80,7 +83,9 @@ public class SequenceFlow extends BaseConnector {
                          @MapsTo( "executionSet" ) SequenceFlowExecutionSet executionSet,
                          @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
                          @MapsTo( "fontSet" ) FontSet fontSet ) {
-        super( general, backgroundSet, fontSet );
+        super( general,
+               backgroundSet,
+               fontSet );
         this.executionSet = executionSet;
     }
 

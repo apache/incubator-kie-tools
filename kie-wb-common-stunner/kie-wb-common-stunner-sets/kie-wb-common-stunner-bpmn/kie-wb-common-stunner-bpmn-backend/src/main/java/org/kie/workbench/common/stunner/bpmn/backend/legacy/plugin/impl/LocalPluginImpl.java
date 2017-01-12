@@ -15,11 +15,11 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.impl;
 
-import org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.IDiagramPlugin;
-
-import javax.servlet.ServletContext;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.ServletContext;
+
+import org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.IDiagramPlugin;
 
 /**
  * @author Antoine Toulme
@@ -30,9 +30,14 @@ public class LocalPluginImpl extends LocalResource implements IDiagramPlugin {
     private boolean _core;
     private Map<String, Object> _properties = new HashMap<String, Object>();
 
-    public LocalPluginImpl( String name, String path, ServletContext context,
-                            boolean core, Map<String, Object> props ) {
-        super( name, path, context );
+    public LocalPluginImpl( String name,
+                            String path,
+                            ServletContext context,
+                            boolean core,
+                            Map<String, Object> props ) {
+        super( name,
+               path,
+               context );
         StringBuilder localPath = new StringBuilder();
         localPath.append( "js" ).append( "/" );
         localPath.append( "Plugins" ).append( "/" ).append( path );

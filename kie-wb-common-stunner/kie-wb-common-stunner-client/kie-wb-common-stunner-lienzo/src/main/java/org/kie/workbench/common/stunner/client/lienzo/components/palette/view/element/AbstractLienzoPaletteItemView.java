@@ -35,11 +35,9 @@ public abstract class AbstractLienzoPaletteItemView<I extends PaletteItem, V>
 
     protected void batch() {
         getPaletteView().draw();
-
     }
 
     protected LienzoPaletteView getPaletteView() {
         return paletteView;
     }
-
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,11 +25,6 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.registry.exception.RegistrySizeExceededException;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -45,7 +42,6 @@ public class CommandRegistryImplTest {
     @Before
     public void setup() throws Exception {
         tested = new CommandRegistryImpl<>();
-
     }
 
     @Test( expected = UnsupportedOperationException.class )
@@ -63,8 +59,8 @@ public class CommandRegistryImplTest {
         tested.register( command );
         Command result = tested.peek();
         assertNotNull( result );
-        assertEquals( command, result );
-
+        assertEquals( command,
+                      result );
     }
 
     @Test
@@ -95,11 +91,11 @@ public class CommandRegistryImplTest {
         tested.register( command );
         Command result = tested.peek();
         assertNotNull( result );
-        assertEquals( command, result );
+        assertEquals( command,
+                      result );
         List<Command> result2 = tested.getCommandHistory();
         assertNotNull( result2 );
         assertFalse( result2.isEmpty() );
-
     }
 
     @Test
@@ -107,11 +103,11 @@ public class CommandRegistryImplTest {
         tested.register( command );
         Command result = tested.pop();
         assertNotNull( result );
-        assertEquals( command, result );
+        assertEquals( command,
+                      result );
         List<Command> result2 = tested.getCommandHistory();
         assertNotNull( result2 );
         assertTrue( result2.isEmpty() );
-
     }
 
     @Test( expected = RegistrySizeExceededException.class )
@@ -133,8 +129,8 @@ public class CommandRegistryImplTest {
         tested.register( command );
         tested.register( command1 );
         int size = tested.getCommandHistory().size();
-        assertEquals( 2, size );
-
+        assertEquals( 2,
+                      size );
     }
 
     @Test
@@ -145,10 +141,12 @@ public class CommandRegistryImplTest {
         assertNotNull( result );
         Command r1 = result.get( 0 );
         assertNotNull( r1 );
-        assertEquals( command1, r1 );
+        assertEquals( command1,
+                      r1 );
         Command r2 = result.get( 1 );
         assertNotNull( r2 );
-        assertEquals( command, r2 );
+        assertEquals( command,
+                      r2 );
     }
 
     @Test( expected = RegistrySizeExceededException.class )
@@ -156,7 +154,5 @@ public class CommandRegistryImplTest {
         tested.setMaxSize( 1 );
         tested.register( command );
         tested.register( command );
-
     }
-
 }

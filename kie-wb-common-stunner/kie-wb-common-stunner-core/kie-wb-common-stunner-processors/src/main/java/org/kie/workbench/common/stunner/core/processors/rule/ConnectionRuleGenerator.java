@@ -16,6 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.processors.rule;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
+
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.kie.workbench.common.stunner.core.processors.MainProcessor;
@@ -25,28 +40,15 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.uberfire.annotations.processors.AbstractGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class ConnectionRuleGenerator extends AbstractGenerator {
 
     public class ConnectionRuleEntry {
+
         private final String from;
         private final String to;
 
-        public ConnectionRuleEntry( String from, String to ) {
+        public ConnectionRuleEntry( final String from,
+                                    final String to ) {
             this.from = from;
             this.to = to;
         }
@@ -63,9 +65,14 @@ public class ConnectionRuleGenerator extends AbstractGenerator {
     private final ProcessingContext processingContext = ProcessingContext.getInstance();
 
     @Override
-    public StringBuffer generate( String packageName, PackageElement packageElement, String className, Element element, ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final PackageElement packageElement,
+                                  final String className,
+                                  final Element element,
+                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         final Messager messager = processingEnvironment.getMessager();
-        messager.printMessage( Diagnostic.Kind.NOTE, "Starting code generation for [" + className + "]" );
+        messager.printMessage( Diagnostic.Kind.NOTE,
+                               "Starting code generation for [" + className + "]" );
         final Elements elementUtils = processingEnvironment.getElementUtils();
         //Extract required information
         final TypeElement classElement = ( TypeElement ) element;
@@ -78,26 +85,26 @@ public class ConnectionRuleGenerator extends AbstractGenerator {
             for ( final CanConnect pc : pcs ) {
                 String startRole = pc.startRole();
                 String endRole = pc.endRole();
-                ruleEntries.add( new ConnectionRuleEntry( startRole, endRole ) );
+                ruleEntries.add( new ConnectionRuleEntry( startRole,
+                                                          endRole ) );
             }
-
         }
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "ruleId",
-                ruleId );
+                  ruleId );
         root.put( "ruleDefinitionId",
-                ruleDefinitionId );
+                  ruleDefinitionId );
         root.put( "connectionsSize",
-                ruleEntries.size() );
+                  ruleEntries.size() );
         root.put( "connections",
-                ruleEntries );
+                  ruleEntries );
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter( sw );
         try {
             final Template template = config.getTemplate( "ConnectionRule.ftl" );
             template.process( root,
-                    bw );
+                              bw );
         } catch ( IOException ioe ) {
             throw new GenerationException( ioe );
         } catch ( TemplateException te ) {
@@ -110,10 +117,11 @@ public class ConnectionRuleGenerator extends AbstractGenerator {
                 throw new GenerationException( ioe );
             }
         }
-        messager.printMessage( Diagnostic.Kind.NOTE, "Successfully generated code for [" + className + "]" );
-        processingContext.addRule( ruleId, ProcessingRule.TYPE.CONNECTION, sw.getBuffer() );
+        messager.printMessage( Diagnostic.Kind.NOTE,
+                               "Successfully generated code for [" + className + "]" );
+        processingContext.addRule( ruleId,
+                                   ProcessingRule.TYPE.CONNECTION,
+                                   sw.getBuffer() );
         return null;
-
     }
-
 }

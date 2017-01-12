@@ -19,10 +19,10 @@
 
 <module>
 
-     <inherits name='com.google.gwt.user.User' />
-     <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesApi"/>
-     <inherits name="org.kie.workbench.common.stunner.client.StunnerLienzo"/>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesApi"/>
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerLienzo"/>
 
-     <source path="client"/>
+  <source path="client"/>
 
 </module>

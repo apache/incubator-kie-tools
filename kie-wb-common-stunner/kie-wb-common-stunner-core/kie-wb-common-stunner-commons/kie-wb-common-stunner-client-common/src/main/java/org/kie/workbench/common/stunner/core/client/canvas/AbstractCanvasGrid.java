@@ -68,5 +68,4 @@ public abstract class AbstractCanvasGrid implements CanvasGrid {
     public String getSecondaryColor() {
         return secColor;
     }
-
 }

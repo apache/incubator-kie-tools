@@ -26,11 +26,10 @@ public interface CanvasControl<C> {
     /**
      * This method is called when the control is enabled for a canvas.
      */
-    void enable( C context );
+    void enable( final C context );
 
     /**
      * This method is called when the control is disabled for a canvas.
      */
     void disable();
-
 }

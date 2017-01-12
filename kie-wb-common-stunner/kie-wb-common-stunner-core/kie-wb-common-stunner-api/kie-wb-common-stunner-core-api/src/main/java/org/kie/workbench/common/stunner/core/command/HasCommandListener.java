@@ -18,6 +18,5 @@ package org.kie.workbench.common.stunner.core.command;
 
 public interface HasCommandListener<L extends CommandListener> {
 
-    void setCommandListener( L listener );
-
+    void setCommandListener( final L listener );
 }

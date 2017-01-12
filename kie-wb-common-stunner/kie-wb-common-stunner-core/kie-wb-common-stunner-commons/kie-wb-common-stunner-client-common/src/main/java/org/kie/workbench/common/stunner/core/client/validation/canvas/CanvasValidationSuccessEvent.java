@@ -26,5 +26,4 @@ public class CanvasValidationSuccessEvent extends AbstractValidationEvent<Canvas
     public CanvasValidationSuccessEvent( final CanvasHandler entity ) {
         super( entity );
     }
-
 }

@@ -99,5 +99,4 @@ public final class BPMNDiagramShapeDef
     public double getCornerRadius( final BPMNDiagram element ) {
         return 0;
     }
-
 }

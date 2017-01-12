@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.model.definition.impl;
 
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.components.palette.model.AbstractPaletteGroup;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.AbstractPaletteGroupBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteGroup;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
-
-import java.util.List;
 
 public final class DefinitionPaletteGroupImpl extends AbstractPaletteGroup<DefinitionPaletteItem> implements DefinitionPaletteGroup {
 
@@ -31,8 +31,12 @@ public final class DefinitionPaletteGroupImpl extends AbstractPaletteGroup<Defin
                                         final String tooltip,
                                         final List<DefinitionPaletteItem> items,
                                         final String definitionId ) {
-        super( itemId, title, description, tooltip, definitionId, items );
-
+        super( itemId,
+               title,
+               description,
+               tooltip,
+               definitionId,
+               items );
     }
 
     static class DefinitionPaletteGroupBuilder extends AbstractPaletteGroupBuilder<DefinitionPaletteGroupBuilder,
@@ -44,9 +48,12 @@ public final class DefinitionPaletteGroupImpl extends AbstractPaletteGroup<Defin
 
         @Override
         protected DefinitionPaletteGroupImpl doBuild( final List<DefinitionPaletteItem> items ) {
-            return new DefinitionPaletteGroupImpl( id, title, description, tooltip, items, definitionId );
+            return new DefinitionPaletteGroupImpl( id,
+                                                   title,
+                                                   description,
+                                                   tooltip,
+                                                   items,
+                                                   definitionId );
         }
-
     }
-
 }

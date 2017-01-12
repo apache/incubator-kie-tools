@@ -23,16 +23,17 @@
 package org.kie.workbench.common.stunner.core.util;
 
 public class UUID {
+
     private static final char[] CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
     /**
      * Generate a random uuid of the specified length. Example: uuid(15) returns
      * "VcydxgltxrVZSTV"
-     *
      * @param len the desired number of characters
      */
-    public static String uuid( int len ) {
-        return uuid( len, CHARS.length );
+    public static String uuid( final int len ) {
+        return uuid( len,
+                     CHARS.length );
     }
 
     /**
@@ -42,12 +43,12 @@ public class UUID {
      * <li>uuid(8, 10) returns "47473046" (8 character ID, base=10)
      * <li>uuid(8, 16) returns "098F4D35" (8 character ID, base=16)
      * </ul>
-     *
-     * @param len   the desired number of characters
+     * @param len the desired number of characters
      * @param radix the number of allowable values for each character (must be <=
-     *              62)
+     * 62)
      */
-    public static String uuid( int len, int radix ) {
+    public static String uuid( final int len,
+                               final int radix ) {
         if ( radix > CHARS.length ) {
             throw new IllegalArgumentException();
         }

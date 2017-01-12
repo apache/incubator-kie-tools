@@ -28,21 +28,18 @@ public interface Asset<T> extends Item {
 
     /**
      * Returns location in the repository where this asset is stored
-     *
      * @return - asset location
      */
     String getAssetLocation();
 
     /**
      * Returns type of the asset.
-     *
      * @return - asset type
      */
     String getAssetType();
 
     /**
      * Returns actual content of this asset
-     *
      * @return - asset content
      */
     T getAssetContent();

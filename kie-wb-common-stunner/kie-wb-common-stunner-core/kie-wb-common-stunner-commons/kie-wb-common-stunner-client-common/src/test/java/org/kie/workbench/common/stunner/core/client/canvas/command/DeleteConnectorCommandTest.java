@@ -22,16 +22,16 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class DeleteConnectorCommandTest extends AbstractCanvasCommandTest {
 
     private static final String EDGE_ID = "e1";
 
-    @Mock private Edge candidate;
+    @Mock
+    private Edge candidate;
 
     private DeleteConnectorCommand tested;
 
@@ -47,16 +47,16 @@ public class DeleteConnectorCommandTest extends AbstractCanvasCommandTest {
         final org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand graphCommand =
                 ( org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand ) tested.newGraphCommand( canvasHandler );
         assertNotNull( graphCommand );
-        assertEquals( candidate, graphCommand.getEdge() );
+        assertEquals( candidate,
+                      graphCommand.getEdge() );
     }
-
 
     @Test
     public void testGetCanvasCommand() {
         final DeleteCanvasConnectorCommand canvasCommand =
                 ( DeleteCanvasConnectorCommand ) tested.newCanvasCommand( canvasHandler );
         assertNotNull( canvasCommand );
-        assertEquals( candidate, canvasCommand.getCandidate() );
+        assertEquals( candidate,
+                      canvasCommand.getCandidate() );
     }
-
 }

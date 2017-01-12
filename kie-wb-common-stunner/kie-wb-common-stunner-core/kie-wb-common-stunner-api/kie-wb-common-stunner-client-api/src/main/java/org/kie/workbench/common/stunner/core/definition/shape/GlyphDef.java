@@ -31,6 +31,5 @@ public interface GlyphDef<W> {
      * The glyph's description. Can be used as tooltips or titles for widgets
      * or other client side components.
      */
-    String getGlyphDescription( W element );
-
+    String getGlyphDescription( final W element );
 }

@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.project.backend.service;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.stunner.backend.service.AbstractDiagramLookupService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
@@ -25,10 +29,6 @@ import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 @ApplicationScoped
 @Service
@@ -40,12 +40,14 @@ public class ProjectDiagramLookupServiceImpl
             LoggerFactory.getLogger( ProjectDiagramLookupServiceImpl.class.getName() );
 
     protected ProjectDiagramLookupServiceImpl() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     @Inject
     public ProjectDiagramLookupServiceImpl( @Named( "ioStrategy" ) IOService ioService,
                                             ProjectDiagramService diagramService ) {
-        super( ioService, diagramService );
+        super( ioService,
+               diagramService );
     }
 }

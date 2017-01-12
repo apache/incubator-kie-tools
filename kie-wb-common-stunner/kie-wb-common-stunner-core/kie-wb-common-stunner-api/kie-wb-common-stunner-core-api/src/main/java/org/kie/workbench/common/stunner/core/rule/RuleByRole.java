@@ -23,9 +23,7 @@ public interface RuleByRole extends Rule {
 
     /**
      * The Role for which the Rule applies. All Elements with this Role will be affected by the Rule.
-     *
      * @return
      */
     String getRole();
-
 }

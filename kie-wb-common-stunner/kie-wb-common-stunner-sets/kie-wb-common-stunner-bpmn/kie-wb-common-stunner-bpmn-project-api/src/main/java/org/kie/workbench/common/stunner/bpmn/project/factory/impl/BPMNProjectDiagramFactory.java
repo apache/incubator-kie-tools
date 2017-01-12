@@ -15,6 +15,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.project.factory.impl;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.util.BPMNUtils;
@@ -28,8 +30,6 @@ import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 
-import javax.enterprise.context.ApplicationScoped;
-
 /**
  * Custom BPMN factory instance for Diagrams on the Project context.
  * This factory initializes new BPMN diagrams with some specific project attributes ( given from the current
@@ -42,13 +42,16 @@ import javax.enterprise.context.ApplicationScoped;
 public class BPMNProjectDiagramFactory
         extends BindableDiagramFactory<ProjectMetadata, ProjectDiagram> {
 
-
     @Override
     public ProjectDiagram build( final String name,
                                  final ProjectMetadata metadata,
                                  final Graph<DefinitionSet, ?> graph ) {
-        updateDiagramProperties( name, graph, metadata );
-        return new ProjectDiagramImpl( name, graph, metadata );
+        updateDiagramProperties( name,
+                                 graph,
+                                 metadata );
+        return new ProjectDiagramImpl( name,
+                                       graph,
+                                       metadata );
     }
 
     @Override
@@ -63,7 +66,7 @@ public class BPMNProjectDiagramFactory
 
     private void updateDiagramProperties( final String name,
                                           final Graph<DefinitionSet, ?> graph,
-                                          final ProjectMetadata metadata) {
+                                          final ProjectMetadata metadata ) {
         final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode( graph );
         if ( null == diagramNode ) {
             throw new IllegalStateException( "A BPMN Diagram is expected to be present on BPMN Diagram graphs." );
@@ -75,7 +78,7 @@ public class BPMNProjectDiagramFactory
             diagram.getDiagramSet().getId().setValue( projectName + name );
         }
         final String p = diagram.getDiagramSet().getPackageProperty().getValue();
-        if (  null == p || p.isEmpty() ) {
+        if ( null == p || p.isEmpty() ) {
             String metadataPackage = metadata.getProjectPackage();
             if ( metadataPackage == null || metadataPackage.isEmpty() ) {
                 diagram.getDiagramSet().getPackageProperty().setValue( diagram.getDiagramSet().getPackageProperty().DEFAULT_PACKAGE );
@@ -93,5 +96,4 @@ public class BPMNProjectDiagramFactory
     private static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode( final Graph graph ) {
         return BPMNUtils.getFirstDiagramNode( graph );
     }
-
 }

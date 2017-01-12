@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class ValidateToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, ValidateSessionCommand> {
@@ -52,5 +52,4 @@ public class ValidateToolbarCommand extends AbstractToolbarSessionCommand<Abstra
     protected boolean requiresConfirm() {
         return false;
     }
-
 }

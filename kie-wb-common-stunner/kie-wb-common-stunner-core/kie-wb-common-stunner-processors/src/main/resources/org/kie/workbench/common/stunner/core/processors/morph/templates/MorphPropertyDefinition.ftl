@@ -67,12 +67,12 @@ public class ${className} extends ${parentClassName} {
             public Class<?> getPropertyClass() {
                 return ${morphProperty.className}.class;
             }
-    
+
             @Override
             public Map getMorphTargetClasses() {
                 return BINDER.getMorphTargets();
             }
-    
+
             @Override
             public Object getValue( final ${morphProperty.className} property ) {
                 return BINDER.getValue( property );

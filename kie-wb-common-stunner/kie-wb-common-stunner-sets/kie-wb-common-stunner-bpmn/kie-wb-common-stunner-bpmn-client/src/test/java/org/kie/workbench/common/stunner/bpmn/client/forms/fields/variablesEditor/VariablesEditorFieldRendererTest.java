@@ -52,13 +52,18 @@ public class VariablesEditorFieldRendererTest {
         when( variablesEditorWidgetView.getVariableWidget( anyInt() ) ).thenReturn( variableListItemWidgetView );
         when( variablesEditorWidgetView.getVariableRowsCount() ).thenReturn( 1 );
         variablesEditor.addVariable();
-        verify( variablesEditorWidgetView, times( 1 ) ).setTableDisplayStyle();
-        verify( variablesEditorWidgetView, times( 1 ) ).getVariableRowsCount();
-        verify( variablesEditorWidgetView, times( 1 ) ).getVariableWidget( 0 );
+        verify( variablesEditorWidgetView,
+                times( 1 ) ).setTableDisplayStyle();
+        verify( variablesEditorWidgetView,
+                times( 1 ) ).getVariableRowsCount();
+        verify( variablesEditorWidgetView,
+                times( 1 ) ).getVariableWidget( 0 );
         when( variablesEditorWidgetView.getVariableRowsCount() ).thenReturn( 2 );
         variablesEditor.addVariable();
-        verify( variablesEditorWidgetView, times( 2 ) ).getVariableRowsCount();
-        verify( variablesEditorWidgetView, times( 1 ) ).getVariableWidget( 1 );
+        verify( variablesEditorWidgetView,
+                times( 2 ) ).getVariableRowsCount();
+        verify( variablesEditorWidgetView,
+                times( 1 ) ).getVariableWidget( 1 );
     }
 
     @Test
@@ -68,61 +73,110 @@ public class VariablesEditorFieldRendererTest {
         variablesEditor.addVariable();
         variablesEditor.addVariable();
         variablesEditor.removeVariable( null );
-        verify( variablesEditorWidgetView, times( 3 ) ).getVariableRows();
-        verify( variablesEditorWidgetView, times( 1 ) ).doSave();
+        verify( variablesEditorWidgetView,
+                times( 3 ) ).getVariableRows();
+        verify( variablesEditorWidgetView,
+                times( 1 ) ).doSave();
         variablesEditor.removeVariable( null );
-        verify( variablesEditorWidgetView, times( 4 ) ).getVariableRows();
-        verify( variablesEditorWidgetView, times( 2 ) ).doSave();
+        verify( variablesEditorWidgetView,
+                times( 4 ) ).getVariableRows();
+        verify( variablesEditorWidgetView,
+                times( 2 ) ).doSave();
     }
 
     @Test
     public void testDeserializeVariables() {
-        List<String> dataTypes = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "org.veg.Potato", "String" ) );
-        List<String> dataTypeDisplayNames = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Potato [org.veg]", "Object", "String" ) );
+        List<String> dataTypes = new ArrayList<String>( Arrays.asList( "Boolean",
+                                                                       "Float",
+                                                                       "Integer",
+                                                                       "Object",
+                                                                       "org.veg.Potato",
+                                                                       "String" ) );
+        List<String> dataTypeDisplayNames = new ArrayList<String>( Arrays.asList( "Boolean",
+                                                                                  "Float",
+                                                                                  "Integer",
+                                                                                  "Potato [org.veg]",
+                                                                                  "Object",
+                                                                                  "String" ) );
 
-        variablesEditor.setDataTypes( dataTypes, dataTypeDisplayNames );
+        variablesEditor.setDataTypes( dataTypes,
+                                      dataTypeDisplayNames );
         List<VariableRow> variableRows = variablesEditor.deserializeVariables( "var1:String,var2:Integer,var3:org.stuff.Potato" );
-        assertEquals( 3, variableRows.size() );
+        assertEquals( 3,
+                      variableRows.size() );
         VariableRow var = variableRows.get( 0 );
-        assertEquals( "var1", var.getName() );
-        assertEquals( "String", var.getDataTypeDisplayName() );
-        assertEquals( Variable.VariableType.PROCESS, var.getVariableType() );
+        assertEquals( "var1",
+                      var.getName() );
+        assertEquals( "String",
+                      var.getDataTypeDisplayName() );
+        assertEquals( Variable.VariableType.PROCESS,
+                      var.getVariableType() );
         var = variableRows.get( 1 );
-        assertEquals( "var2", var.getName() );
-        assertEquals( "Integer", var.getDataTypeDisplayName() );
-        assertEquals( Variable.VariableType.PROCESS, var.getVariableType() );
+        assertEquals( "var2",
+                      var.getName() );
+        assertEquals( "Integer",
+                      var.getDataTypeDisplayName() );
+        assertEquals( Variable.VariableType.PROCESS,
+                      var.getVariableType() );
         var = variableRows.get( 2 );
-        assertEquals( "var3", var.getName() );
-        assertEquals( "org.stuff.Potato", var.getCustomDataType() );
-        assertEquals( Variable.VariableType.PROCESS, var.getVariableType() );
+        assertEquals( "var3",
+                      var.getName() );
+        assertEquals( "org.stuff.Potato",
+                      var.getCustomDataType() );
+        assertEquals( Variable.VariableType.PROCESS,
+                      var.getVariableType() );
     }
 
     @Test
     public void testSerializeVariables() {
-        Map<String, String> mapDataTypeDisplayNamesToNames = new HashMap<String, String>( );
-        mapDataTypeDisplayNamesToNames.put( "String", "String");
-        mapDataTypeDisplayNamesToNames.put( "Integer", "Integer");
-        mapDataTypeDisplayNamesToNames.put( "Potato [org.veg]", "org.veg.Potato");
+        Map<String, String> mapDataTypeDisplayNamesToNames = new HashMap<String, String>();
+        mapDataTypeDisplayNamesToNames.put( "String",
+                                            "String" );
+        mapDataTypeDisplayNamesToNames.put( "Integer",
+                                            "Integer" );
+        mapDataTypeDisplayNamesToNames.put( "Potato [org.veg]",
+                                            "org.veg.Potato" );
         variablesEditor.mapDataTypeDisplayNamesToNames = mapDataTypeDisplayNamesToNames;
 
         List<VariableRow> variableRows = new ArrayList<VariableRow>();
-        variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var1", "String", null ) );
-        variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var2", "Integer", null ) );
-        variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var3", "org.veg.Potato", null ) );
+        variableRows.add( new VariableRow( Variable.VariableType.PROCESS,
+                                           "var1",
+                                           "String",
+                                           null ) );
+        variableRows.add( new VariableRow( Variable.VariableType.PROCESS,
+                                           "var2",
+                                           "Integer",
+                                           null ) );
+        variableRows.add( new VariableRow( Variable.VariableType.PROCESS,
+                                           "var3",
+                                           "org.veg.Potato",
+                                           null ) );
         String s = variablesEditor.serializeVariables( variableRows );
-        assertEquals( "var1:String,var2:Integer,var3:org.veg.Potato", s );
+        assertEquals( "var1:String,var2:Integer,var3:org.veg.Potato",
+                      s );
     }
 
     @Test
     public void testIsDuplicateName() {
         List<VariableRow> variableRows = new ArrayList<VariableRow>();
-        variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var1", "String", null ) );
-        variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var2", "Integer", null ) );
-        variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var3", "org.stuff.Potato", null ) );
-        variableRows.add( new VariableRow( Variable.VariableType.PROCESS, "var2", "Integer", null ) );
+        variableRows.add( new VariableRow( Variable.VariableType.PROCESS,
+                                           "var1",
+                                           "String",
+                                           null ) );
+        variableRows.add( new VariableRow( Variable.VariableType.PROCESS,
+                                           "var2",
+                                           "Integer",
+                                           null ) );
+        variableRows.add( new VariableRow( Variable.VariableType.PROCESS,
+                                           "var3",
+                                           "org.stuff.Potato",
+                                           null ) );
+        variableRows.add( new VariableRow( Variable.VariableType.PROCESS,
+                                           "var2",
+                                           "Integer",
+                                           null ) );
         when( variablesEditorWidgetView.getVariableRows() ).thenReturn( variableRows );
         assertTrue( variablesEditor.isDuplicateName( "var2" ) );
         assertFalse( variablesEditor.isDuplicateName( "var1" ) );
-
     }
 }

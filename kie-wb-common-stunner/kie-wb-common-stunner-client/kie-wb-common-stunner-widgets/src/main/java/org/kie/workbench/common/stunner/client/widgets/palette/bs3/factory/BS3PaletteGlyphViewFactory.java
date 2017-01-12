@@ -36,19 +36,34 @@ class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {
     }
 
     @Override
-    public IsWidget getCategoryView( final String defSetId, final String categoryId, final int width, final int height ) {
+    public IsWidget getCategoryView( final String defSetId,
+                                     final String categoryId,
+                                     final int width,
+                                     final int height ) {
         return null;
     }
 
     @Override
-    public IsWidget getDefinitionView( final String defSetId, final String defId, final int width, final int height ) {
-        final Glyph<Group> glyph = getGlyph( defSetId, defId, width, height );
-        return LienzoPanelUtils.newPanel( glyph, width, height );
+    public IsWidget getDefinitionView( final String defSetId,
+                                       final String defId,
+                                       final int width,
+                                       final int height ) {
+        final Glyph<Group> glyph = getGlyph( defSetId,
+                                             defId,
+                                             width,
+                                             height );
+        return LienzoPanelUtils.newPanel( glyph,
+                                          width,
+                                          height );
     }
 
     @SuppressWarnings( "unchecked" )
-    private Glyph<Group> getGlyph( final String defSetId, final String id, final int width, final int height ) {
-        return shapeManager.getDefaultShapeSet( defSetId ).getShapeFactory().glyph( id, width, height );
+    private Glyph<Group> getGlyph( final String defSetId,
+                                   final String id,
+                                   final int width,
+                                   final int height ) {
+        return shapeManager.getDefaultShapeSet( defSetId ).getShapeFactory().glyph( id,
+                                                                                    width,
+                                                                                    height );
     }
-
 }

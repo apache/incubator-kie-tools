@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -27,9 +30,6 @@ import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.DynamicIconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public final class ExclusiveDatabasedGatewayShapeDef
         extends AbstractShapeDef<ExclusiveDatabasedGateway>
@@ -124,10 +124,9 @@ public final class ExclusiveDatabasedGatewayShapeDef
     @Override
     public Map<ShapeDef<ExclusiveDatabasedGateway>, HasChildren.Layout> getChildShapeDefs() {
         return new LinkedHashMap<ShapeDef<ExclusiveDatabasedGateway>, HasChildren.Layout>() {{
-            put( new IconProxy(), HasChildren.Layout.CENTER );
-
+            put( new IconProxy(),
+                 HasChildren.Layout.CENTER );
         }};
-
     }
 
     public final class IconProxy
@@ -173,7 +172,5 @@ public final class ExclusiveDatabasedGatewayShapeDef
         public double getBorderAlpha( final ExclusiveDatabasedGateway element ) {
             return 1;
         }
-
     }
-
 }

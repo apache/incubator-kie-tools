@@ -25,7 +25,7 @@ public final class CanvasShapeRemovedEvent extends AbstractCanvasShapeEvent {
 
     public CanvasShapeRemovedEvent( final Canvas canvas,
                                     final Shape shape ) {
-        super( canvas, shape );
+        super( canvas,
+               shape );
     }
-
 }

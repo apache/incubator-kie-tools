@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.factory.definition;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-
 import java.util.Set;
+
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
 public abstract class AbstractTypeDefinitionFactory<T> implements TypeDefinitionFactory<T> {
 
@@ -54,5 +54,4 @@ public abstract class AbstractTypeDefinitionFactory<T> implements TypeDefinition
         }
         return null;
     }
-
 }

@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -47,15 +47,21 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         super.setup();
         when( candidate.getUUID() ).thenReturn( "someUUID" );
         when( candidate.getContent() ).thenReturn( content );
-        this.tested = new AddCanvasNodeCommand( candidate, SHAPE_SET_ID );
+        this.tested = new AddCanvasNodeCommand( candidate,
+                                                SHAPE_SET_ID );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecute() {
         final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR, result.getType() );
-        verify( canvasHandler, times( 1 ) ).register( eq( SHAPE_SET_ID ), eq( candidate ) );
-        verify( canvasHandler, times( 1 ) ).applyElementMutation( eq( candidate ), any( MutationContext.class ) );
+        assertNotEquals( CommandResult.Type.ERROR,
+                         result.getType() );
+        verify( canvasHandler,
+                times( 1 ) ).register( eq( SHAPE_SET_ID ),
+                                       eq( candidate ) );
+        verify( canvasHandler,
+                times( 1 ) ).applyElementMutation( eq( candidate ),
+                                                   any( MutationContext.class ) );
     }
 }

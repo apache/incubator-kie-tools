@@ -33,9 +33,9 @@ public class ElementImpl<C> implements Element<C> {
     private final Set<String> labels = new LinkedHashSet<>();
     private C content;
 
-    public ElementImpl( @MapsTo( "uuid" ) String uuid ) {
+    public ElementImpl( final @MapsTo( "uuid" ) String uuid ) {
         this.uuid = PortablePreconditions.checkNotNull( "uuid",
-                uuid );
+                                                        uuid );
     }
 
     @Override
@@ -94,5 +94,4 @@ public class ElementImpl<C> implements Element<C> {
                 ", labels=" + labels +
                 '}';
     }
-
 }

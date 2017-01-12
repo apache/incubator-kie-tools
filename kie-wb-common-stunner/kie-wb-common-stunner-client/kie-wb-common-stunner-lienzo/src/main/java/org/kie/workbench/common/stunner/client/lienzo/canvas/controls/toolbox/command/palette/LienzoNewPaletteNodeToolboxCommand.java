@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.toolbox.command.palette;
 
+import javax.annotation.PostConstruct;
+
 import com.ait.lienzo.client.core.shape.Shape;
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.AbstractLienzoGlyphItemsPalette;
@@ -35,8 +37,6 @@ import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
 
-import javax.annotation.PostConstruct;
-
 /// Abstract for not being discovered by the CDI environment, for now...
 public abstract class LienzoNewPaletteNodeToolboxCommand extends NewPaletteNodeCommand<Shape<?>> {
 
@@ -48,9 +48,15 @@ public abstract class LienzoNewPaletteNodeToolboxCommand extends NewPaletteNodeC
                                                final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory,
                                                final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
                                                final GraphBoundsIndexer graphBoundsIndexer ) {
-        super( clientFactoryServices, commonLookups, shapeManager,
-                definitionsPaletteBuilder, palette, nodeDragProxyFactory,
-                nodeBuilderControl, graphBoundsIndexer, SVGUtils.createSVGIcon( SVGUtils.getAddIcon() ) );
+        super( clientFactoryServices,
+               commonLookups,
+               shapeManager,
+               definitionsPaletteBuilder,
+               palette,
+               nodeDragProxyFactory,
+               nodeBuilderControl,
+               graphBoundsIndexer,
+               SVGUtils.createSVGIcon( SVGUtils.getAddIcon() ) );
     }
 
     // TODO: i18n.
@@ -67,7 +73,8 @@ public abstract class LienzoNewPaletteNodeToolboxCommand extends NewPaletteNodeC
     @Override
     protected void beforeBindPalette( final DefinitionsPalette paletteDefinition,
                                       final Context<AbstractCanvasHandler> context ) {
-        super.beforeBindPalette( paletteDefinition, context );
+        super.beforeBindPalette( paletteDefinition,
+                                 context );
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
         getLienzoPalette().setShapeSetId( ssid );
     }

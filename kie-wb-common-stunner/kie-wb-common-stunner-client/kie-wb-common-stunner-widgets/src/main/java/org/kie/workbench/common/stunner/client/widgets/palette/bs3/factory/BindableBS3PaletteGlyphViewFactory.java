@@ -32,14 +32,17 @@ public abstract class BindableBS3PaletteGlyphViewFactory<V extends IsWidget> ext
                                        final String defId,
                                        final int width,
                                        final int height ) {
-        final IsWidget view = super.getDefinitionView( defSetId, defId, width, height );
+        final IsWidget view = super.getDefinitionView( defSetId,
+                                                       defId,
+                                                       width,
+                                                       height );
         if ( null != view ) {
             return view;
-
         } else {
-            return glyphViewFactory.getDefinitionView( defSetId, defId, width, height );
+            return glyphViewFactory.getDefinitionView( defSetId,
+                                                       defId,
+                                                       width,
+                                                       height );
         }
-
     }
-
 }

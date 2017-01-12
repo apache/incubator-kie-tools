@@ -42,5 +42,4 @@ public class CaseManagementDiagramResourceType extends AbstractStunnerClientReso
     public IsWidget getIcon() {
         return ICON;
     }
-
 }

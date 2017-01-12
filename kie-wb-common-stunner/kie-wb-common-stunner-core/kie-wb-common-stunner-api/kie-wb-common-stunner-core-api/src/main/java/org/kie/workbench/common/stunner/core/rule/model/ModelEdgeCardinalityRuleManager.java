@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.rule.model;
 
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-
-import java.util.Set;
 
 /**
  * Manager for connector's cardinality rules specific for the Stunner's domain model.
@@ -30,18 +30,16 @@ public interface ModelEdgeCardinalityRuleManager
 
     /**
      * It checks cardinality rules and evaluates if the given connector candidate added or removed into the structure.
-     *
      * @param edgeId The connector definition's identifier.
      * @param labels The roles/labels for the node.
      * @param count The current connector's count for the node.
      * @param ruleType if it's an incoming or outgoing connection.
      * @param operation Can be adding a new connector, removing an existing one, or NONE, eg: just to validate rules
-     *                  against current structure.
+     * against current structure.
      */
-    RuleViolations evaluate( String edgeId,
-                             Set<String> labels,
-                             int count,
-                             EdgeCardinalityRule.Type ruleType,
-                             Operation operation );
-
+    RuleViolations evaluate( final String edgeId,
+                             final Set<String> labels,
+                             final int count,
+                             final EdgeCardinalityRule.Type ruleType,
+                             final Operation operation );
 }

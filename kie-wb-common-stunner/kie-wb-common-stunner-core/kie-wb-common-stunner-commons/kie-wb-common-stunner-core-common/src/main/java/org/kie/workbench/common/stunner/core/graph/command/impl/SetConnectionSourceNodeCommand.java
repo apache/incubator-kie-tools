@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Collection;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -28,8 +30,6 @@ import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
-
-import java.util.Collection;
 
 /**
  * A Command to set the outgoing connection for an edge.
@@ -51,10 +51,11 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     private transient Node<? extends View<?>, Edge> sourceNode;
 
     @SuppressWarnings( "unchecked" )
-    public SetConnectionSourceNodeCommand( @MapsTo( "sourceNodeUUID" ) String sourceNodeUUID,
-                                           @MapsTo( "edgeUUID" ) String edgeUUID,
-                                           @MapsTo( "magnetIndex" ) Integer magnetIndex ) {
-        this.edgeUUID = PortablePreconditions.checkNotNull( "edgeUUID", edgeUUID );
+    public SetConnectionSourceNodeCommand( final @MapsTo( "sourceNodeUUID" ) String sourceNodeUUID,
+                                           final @MapsTo( "edgeUUID" ) String edgeUUID,
+                                           final @MapsTo( "magnetIndex" ) Integer magnetIndex ) {
+        this.edgeUUID = PortablePreconditions.checkNotNull( "edgeUUID",
+                                                            edgeUUID );
         this.sourceNodeUUID = sourceNodeUUID;
         this.magnetIndex = magnetIndex;
         this.lastSourceNodeUUID = null;
@@ -62,19 +63,23 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings( "unchecked" )
-    public SetConnectionSourceNodeCommand( Node<? extends View<?>, Edge> sourceNode,
-                                           Edge<? extends View, Node> edge,
-                                           Integer magnetIndex ) {
-        this( null != sourceNode ? sourceNode.getUUID() : null, edge.getUUID(), magnetIndex );
+    public SetConnectionSourceNodeCommand( final Node<? extends View<?>, Edge> sourceNode,
+                                           final Edge<? extends View, Node> edge,
+                                           final Integer magnetIndex ) {
+        this( null != sourceNode ? sourceNode.getUUID() : null,
+              edge.getUUID(),
+              magnetIndex );
         this.sourceNode = sourceNode;
         this.edge = edge;
         this.targetNode = edge.getTargetNode();
     }
 
     @SuppressWarnings( "unchecked" )
-    public SetConnectionSourceNodeCommand( Node<? extends View<?>, Edge> sourceNode,
-                                           Edge<? extends View, Node> edge ) {
-        this( sourceNode, edge, null );
+    public SetConnectionSourceNodeCommand( final Node<? extends View<?>, Edge> sourceNode,
+                                           final Edge<? extends View, Node> edge ) {
+        this( sourceNode,
+              edge,
+              null );
     }
 
     @Override
@@ -109,7 +114,9 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
         final GraphCommandResultBuilder resultBuilder = new GraphCommandResultBuilder();
         final Collection<RuleViolation> connectionRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager()
-                        .connection().evaluate( edge, sourceNode, targetNode ).violations();
+                        .connection().evaluate( edge,
+                                                sourceNode,
+                                                targetNode ).violations();
         resultBuilder.addViolations( connectionRuleViolations );
         final Node<View<?>, Edge> currentSource = edge.getSourceNode();
         // If the edge has an outoutgoing source node, check cardinality for removing it.
@@ -118,10 +125,10 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                     ( Collection<RuleViolation> ) context.getRulesManager()
                             .edgeCardinality()
                             .evaluate( edge,
-                                    currentSource,
-                                    currentSource.getOutEdges(),
-                                    EdgeCardinalityRule.Type.OUTGOING,
-                                    RuleManager.Operation.DELETE )
+                                       currentSource,
+                                       currentSource.getOutEdges(),
+                                       EdgeCardinalityRule.Type.OUTGOING,
+                                       RuleManager.Operation.DELETE )
                             .violations();
             resultBuilder.addViolations( cardinalityRuleViolations );
         }
@@ -131,10 +138,10 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                     ( Collection<RuleViolation> ) context.getRulesManager()
                             .edgeCardinality()
                             .evaluate( edge,
-                                    sourceNode,
-                                    sourceNode.getOutEdges(),
-                                    EdgeCardinalityRule.Type.OUTGOING,
-                                    RuleManager.Operation.ADD )
+                                       sourceNode,
+                                       sourceNode.getOutEdges(),
+                                       EdgeCardinalityRule.Type.OUTGOING,
+                                       RuleManager.Operation.ADD )
                             .violations();
             resultBuilder.addViolations( cardinalityRuleViolations );
         }
@@ -144,9 +151,10 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     @Override
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final SetConnectionSourceNodeCommand undoCommand =
-                new SetConnectionSourceNodeCommand( ( Node<? extends View<?>, Edge> ) getNode( context, lastSourceNodeUUID ),
-                        getEdge( context ), lastMagnetIndex );
+        final SetConnectionSourceNodeCommand undoCommand = new SetConnectionSourceNodeCommand( ( Node<? extends View<?>, Edge> ) getNode( context,
+                                                                                                                                          lastSourceNodeUUID ),
+                                                                                               getEdge( context ),
+                                                                                               lastMagnetIndex );
         return undoCommand.execute( context );
     }
 
@@ -161,14 +169,16 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings( "unchecked" )
     public Node<? extends View<?>, Edge> getSourceNode( final GraphCommandExecutionContext context ) {
         if ( null == sourceNode ) {
-            sourceNode = ( Node<? extends View<?>, Edge> ) getNode( context, sourceNodeUUID );
+            sourceNode = ( Node<? extends View<?>, Edge> ) getNode( context,
+                                                                    sourceNodeUUID );
         }
         return sourceNode;
     }
 
     public Edge<? extends View, Node> getEdge( final GraphCommandExecutionContext context ) {
         if ( null == this.edge ) {
-            this.edge = getViewEdge( context, edgeUUID );
+            this.edge = getViewEdge( context,
+                                     edgeUUID );
         }
         return this.edge;
     }

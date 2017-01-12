@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.bootstrap.BootstrapAdapterFactory;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class AdapterManagerImpl implements AdapterManager {
@@ -45,8 +45,8 @@ public class AdapterManagerImpl implements AdapterManager {
     @Inject
     public AdapterManagerImpl( final RegistryFactory registryFactory,
                                final BootstrapAdapterFactory bootstrapAdapterFactory ) {
-        this( registryFactory.newAdapterRegistry(), bootstrapAdapterFactory );
-
+        this( registryFactory.newAdapterRegistry(),
+              bootstrapAdapterFactory );
     }
 
     AdapterManagerImpl( final AdapterRegistry registry,
@@ -88,5 +88,4 @@ public class AdapterManagerImpl implements AdapterManager {
     public AdapterRegistry registry() {
         return registry;
     }
-
 }

@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
@@ -28,10 +32,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Set;
 
 @ApplicationScoped
 public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<Object>, Edge<Definition<Object>, Node>>
@@ -59,7 +59,8 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
                                                  final Object definition ) {
         final EdgeImpl edge = new EdgeImpl<>( uuid );
         if ( null != definition ) {
-            ViewConnector<Object> content = new ViewConnectorImpl<>( definition, buildBounds() );
+            ViewConnector<Object> content = new ViewConnectorImpl<>( definition,
+                                                                     buildBounds() );
             edge.setContent( content );
             edge.getLabels().addAll( getLabels( definition ) );
         }
@@ -72,6 +73,9 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
 
     // TODO: Review.
     private Bounds buildBounds() {
-        return new BoundsImpl( new BoundImpl( 0d, 0d ), new BoundImpl( 30d, 30d ) );
+        return new BoundsImpl( new BoundImpl( 0d,
+                                              0d ),
+                               new BoundImpl( 30d,
+                                              30d ) );
     }
 }

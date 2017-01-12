@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.shared;
 
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.impl.DefinitionSetImpl;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.util.Set;
 
 // TODO
 @ApplicationScoped
@@ -58,7 +58,7 @@ public class DefaultDefinitionSetAdapter implements DefinitionSetAdapter<Definit
     }
 
     @Override
-    public Class<? extends ElementFactory> getGraphFactoryType( DefinitionSetImpl pojo ) {
+    public Class<? extends ElementFactory> getGraphFactoryType( final DefinitionSetImpl pojo ) {
         return null;
     }
 
@@ -66,5 +66,4 @@ public class DefaultDefinitionSetAdapter implements DefinitionSetAdapter<Definit
     public int getPriority() {
         return 1;
     }
-
 }

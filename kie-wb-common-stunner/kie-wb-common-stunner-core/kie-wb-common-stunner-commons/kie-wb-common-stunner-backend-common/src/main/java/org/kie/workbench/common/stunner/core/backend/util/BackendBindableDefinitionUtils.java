@@ -15,11 +15,11 @@
 
 package org.kie.workbench.common.stunner.core.backend.util;
 
-import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 
 public class BackendBindableDefinitionUtils {
 
@@ -31,12 +31,11 @@ public class BackendBindableDefinitionUtils {
                 Class<?>[] definitions = annotation.definitions();
                 if ( definitions.length > 0 ) {
                     result = new HashSet<Class<?>>( definitions.length );
-                    Collections.addAll( result, definitions );
+                    Collections.addAll( result,
+                                        definitions );
                 }
             }
-
         }
         return result;
     }
-
 }

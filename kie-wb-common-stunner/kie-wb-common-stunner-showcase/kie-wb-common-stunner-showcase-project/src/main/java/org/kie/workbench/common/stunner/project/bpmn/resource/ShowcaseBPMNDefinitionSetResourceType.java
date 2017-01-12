@@ -15,12 +15,10 @@
 
 package org.kie.workbench.common.stunner.project.bpmn.resource;
 
-import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
-import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Specializes;
+
+import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
 
 /**
  * This resource override the extension used for bpmn files in this workbench project's showcase to the use of "bpmn2"
@@ -37,5 +35,4 @@ public class ShowcaseBPMNDefinitionSetResourceType extends BPMNDefinitionSetReso
     public String getSuffix() {
         return BPMN2_EXTENSION;
     }
-
 }

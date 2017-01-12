@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
+import javax.enterprise.context.Dependent;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.LienzoPanel;
@@ -28,8 +30,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
-
-import javax.enterprise.context.Dependent;
 
 // TODO: Refactor implementing DragProxy<T>
 @Dependent
@@ -48,18 +48,19 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Group> {
         dragShape.setX( proxyWidth / 2 );
         dragShape.setY( proxyHeight / 2 );
         final LienzoPanel dragProxyPanel = new LienzoPanel( ( ( int ) proxyWidth * 2 ),
-                ( ( int ) proxyHeight * 2 ) );
+                                                            ( ( int ) proxyHeight * 2 ) );
         dragProxyPanel.getElement().getStyle().setCursor( Style.Cursor.MOVE );
         final Layer dragProxyLayer = new Layer();
         dragProxyLayer.add( dragShape );
         dragProxyPanel.add( dragProxyLayer );
         dragProxyLayer.batch();
-        setDragProxyPosition(
-                dragProxyPanel,
-                proxyWidth,
-                proxyHeight,
-                x, y );
-        attachDragProxyHandlers( dragProxyPanel, callback );
+        setDragProxyPosition( dragProxyPanel,
+                              proxyWidth,
+                              proxyHeight,
+                              x,
+                              y );
+        attachDragProxyHandlers( dragProxyPanel,
+                                 callback );
         RootPanel.get().add( dragProxyPanel );
     }
 
@@ -71,42 +72,46 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Group> {
         Style style = dragProxyPanel.getElement().getStyle();
         style.setPosition( Style.Position.ABSOLUTE );
         style.setLeft( x - ( proxyWidth / 2 ),
-                Style.Unit.PX );
+                       Style.Unit.PX );
         style.setTop( y - ( proxyHeight / 2 ),
-                Style.Unit.PX );
+                      Style.Unit.PX );
         style.setZIndex( ZINDEX );
     }
 
-    private void attachDragProxyHandlers( final LienzoPanel floatingPanel, final Callback callback ) {
+    private void attachDragProxyHandlers( final LienzoPanel floatingPanel,
+                                          final Callback callback ) {
         final Style style = floatingPanel.getElement().getStyle();
         final HandlerRegistration[] handlerRegs = new HandlerRegistration[ 2 ];
         //MouseMoveEvents
         handlerRegs[ 0 ] = RootPanel.get().addDomHandler( new MouseMoveHandler() {
 
-            @Override
-            public void onMouseMove( final MouseMoveEvent mouseMoveEvent ) {
-                style.setLeft( mouseMoveEvent.getX() - ( floatingPanel.getWidth() / 2 ),
-                        Style.Unit.PX );
-                style.setTop( mouseMoveEvent.getY() - ( floatingPanel.getHeight() / 2 ),
-                        Style.Unit.PX );
-                final double x = mouseMoveEvent.getX();
-                final double y = mouseMoveEvent.getY();
-                callback.onMove( x, y );
-            }
-        }, MouseMoveEvent.getType() );
+                                                              @Override
+                                                              public void onMouseMove( final MouseMoveEvent mouseMoveEvent ) {
+                                                                  style.setLeft( mouseMoveEvent.getX() - ( floatingPanel.getWidth() / 2 ),
+                                                                                 Style.Unit.PX );
+                                                                  style.setTop( mouseMoveEvent.getY() - ( floatingPanel.getHeight() / 2 ),
+                                                                                Style.Unit.PX );
+                                                                  final double x = mouseMoveEvent.getX();
+                                                                  final double y = mouseMoveEvent.getY();
+                                                                  callback.onMove( x,
+                                                                                   y );
+                                                              }
+                                                          },
+                                                          MouseMoveEvent.getType() );
         //MouseUpEvent
         handlerRegs[ 1 ] = RootPanel.get().addDomHandler( new MouseUpHandler() {
 
-            @Override
-            public void onMouseUp( final MouseUpEvent mouseUpEvent ) {
-                handlerRegs[ 0 ].removeHandler();
-                handlerRegs[ 1 ].removeHandler();
-                RootPanel.get().remove( floatingPanel );
-                final double x = mouseUpEvent.getX();
-                final double y = mouseUpEvent.getY();
-                callback.onComplete( x, y );
-            }
-        }, MouseUpEvent.getType() );
+                                                              @Override
+                                                              public void onMouseUp( final MouseUpEvent mouseUpEvent ) {
+                                                                  handlerRegs[ 0 ].removeHandler();
+                                                                  handlerRegs[ 1 ].removeHandler();
+                                                                  RootPanel.get().remove( floatingPanel );
+                                                                  final double x = mouseUpEvent.getX();
+                                                                  final double y = mouseUpEvent.getY();
+                                                                  callback.onComplete( x,
+                                                                                       y );
+                                                              }
+                                                          },
+                                                          MouseUpEvent.getType() );
     }
-
 }

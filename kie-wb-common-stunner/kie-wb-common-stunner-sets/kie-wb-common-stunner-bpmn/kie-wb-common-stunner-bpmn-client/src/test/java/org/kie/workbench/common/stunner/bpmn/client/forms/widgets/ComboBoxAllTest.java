@@ -79,7 +79,10 @@ public class ComboBoxAllTest {
     private final String processVarEditPrefix = "Edit ";
     private final String processVarEditSuffix = " ...";
     List<String> processVarListBoxStartValues = Arrays.asList(
-            "** Variable Definitions **", "employee", "reason", "performance"
+            "** Variable Definitions **",
+            "employee",
+            "reason",
+            "performance"
     );
 
     private final boolean dataTypeNotifyModelChanges = false;
@@ -90,29 +93,46 @@ public class ComboBoxAllTest {
     private final String dataTypeEditPrefix = "Edit ";
     private final String dataTypeEditSuffix = " ...";
     List<String> dataTypeListBoxStartValues = Arrays.asList(
-            "String", "Integer", "Boolean", "Float", "Object", "Department [org.test.Department]", "Employee [org.test.Employee]",
+            "String",
+            "Integer",
+            "Boolean",
+            "Float",
+            "Object",
+            "Department [org.test.Department]",
+            "Employee [org.test.Employee]",
             "Organization [org.test.Organization]"
     );
 
-    private void initComboBoxTest( boolean notifyModelChanges, boolean quoteStringValues, boolean addCustomValues,
+    private void initComboBoxTest( boolean notifyModelChanges,
+                                   boolean quoteStringValues,
+                                   boolean addCustomValues,
                                    String customPrompt,
-                                   String placeholder, String editPrefix, String editSuffix,
+                                   String placeholder,
+                                   String editPrefix,
+                                   String editSuffix,
                                    List<String> listBoxStartValues ) {
         initPresenter();
         initListBox();
         initTextBox();
-        ListBoxValues listBoxValues = new ListBoxValues( customPrompt, editPrefix, null );
+        ListBoxValues listBoxValues = new ListBoxValues( customPrompt,
+                                                         editPrefix,
+                                                         null );
         listBoxValues.addValues( listBoxStartValues );
         comboBox.view = view;
-        comboBox.init( modelPresenter, notifyModelChanges, listBox,
-                textBox, quoteStringValues, addCustomValues, customPrompt, placeholder );
+        comboBox.init( modelPresenter,
+                       notifyModelChanges,
+                       listBox,
+                       textBox,
+                       quoteStringValues,
+                       addCustomValues,
+                       customPrompt,
+                       placeholder );
         comboBox.setListBoxValues( listBoxValues );
         comboBox.setShowCustomValues( true );
         this.quoteStringValues = quoteStringValues;
         this.editPrefix = editPrefix;
         this.editSuffix = editSuffix;
         this.customPrompt = customPrompt;
-
     }
 
     private void initPresenter() {
@@ -123,7 +143,8 @@ public class ComboBoxAllTest {
                 textBox.setValue( value );
                 return null;
             }
-        } ).when( modelPresenter ).setTextBoxModelValue( any( TextBox.class ), anyString() );
+        } ).when( modelPresenter ).setTextBoxModelValue( any( TextBox.class ),
+                                                         anyString() );
         doAnswer( new Answer<Object>() {
             @Override
             public Object answer( InvocationOnMock invocation ) throws Throwable {
@@ -131,14 +152,14 @@ public class ComboBoxAllTest {
                 listBox.setValue( value );
                 return null;
             }
-        } ).when( modelPresenter ).setListBoxModelValue( any( ValueListBox.class ), anyString() );
+        } ).when( modelPresenter ).setListBoxModelValue( any( ValueListBox.class ),
+                                                         anyString() );
         when( modelPresenter.getModelValue( any( ValueListBox.class ) ) ).thenAnswer( new Answer<Object>() {
             @Override
             public String answer( InvocationOnMock invocation ) throws Throwable {
                 return listBoxValue;
             }
         } );
-
     }
 
     private void initListBox() {
@@ -201,25 +222,36 @@ public class ComboBoxAllTest {
 
     @Test
     public void testProcessVarComboBox() {
-        initComboBoxTest( processVarNotifyModelChanges, processVarQuoteStringValues, processVarAddCustomValues,
-                processVarConstantPrompt, processVarConstantPlaceholder,
-                processVarEditPrefix, processVarEditSuffix, processVarListBoxStartValues );
-        setNonCustomValue( processVarListBoxStartValues.get( 2 ), 1 );
+        initComboBoxTest( processVarNotifyModelChanges,
+                          processVarQuoteStringValues,
+                          processVarAddCustomValues,
+                          processVarConstantPrompt,
+                          processVarConstantPlaceholder,
+                          processVarEditPrefix,
+                          processVarEditSuffix,
+                          processVarListBoxStartValues );
+        setNonCustomValue( processVarListBoxStartValues.get( 2 ),
+                           1 );
         String customStringValue1 = "first constant";
         setCustomValue( customStringValue1 );
-        setNonCustomValue( processVarListBoxStartValues.get( 2 ), 2 );
+        setNonCustomValue( processVarListBoxStartValues.get( 2 ),
+                           2 );
         String customNumericValue1 = "123";
         setCustomValue( customNumericValue1 );
-        setNonCustomValue( StringUtils.createQuotedConstant( customStringValue1 ), 2 );
+        setNonCustomValue( StringUtils.createQuotedConstant( customStringValue1 ),
+                           2 );
         String customNumericValue2 = "123.456";
         setCustomValue( customNumericValue2 );
-        aboutToEditCustomValue( customNumericValue2, 2 );
+        aboutToEditCustomValue( customNumericValue2,
+                                2 );
         String customNumericValue3 = "100";
         editCustomValue( customNumericValue3 );
         String customStringValue2 = "second constant";
         setCustomValue( customStringValue2 );
-        setNonCustomValue( StringUtils.createQuotedConstant( customStringValue1 ), 3 );
-        setNonCustomValue( processVarListBoxStartValues.get( 2 ), 3 );
+        setNonCustomValue( StringUtils.createQuotedConstant( customStringValue1 ),
+                           3 );
+        setNonCustomValue( processVarListBoxStartValues.get( 2 ),
+                           3 );
         assertTrue( getListBoxValues().getAcceptableValuesWithCustomValues().
                 contains( StringUtils.createQuotedConstant( customStringValue1 ) ) );
         assertTrue( getListBoxValues().getAcceptableValuesWithCustomValues().
@@ -235,53 +267,81 @@ public class ComboBoxAllTest {
 
     @Test
     public void testDataTypeComboBox() {
-        initComboBoxTest( dataTypeNotifyModelChanges, dataTypeQuoteStringValues, dataTypeAddCustomValues,
-                dataTypeCustomPrompt, dataTypeCustomPlaceholder,
-                dataTypeEditPrefix, dataTypeEditSuffix, dataTypeListBoxStartValues );
-        setNonCustomValue( dataTypeListBoxStartValues.get( 2 ), 1 );
+        initComboBoxTest( dataTypeNotifyModelChanges,
+                          dataTypeQuoteStringValues,
+                          dataTypeAddCustomValues,
+                          dataTypeCustomPrompt,
+                          dataTypeCustomPlaceholder,
+                          dataTypeEditPrefix,
+                          dataTypeEditSuffix,
+                          dataTypeListBoxStartValues );
+        setNonCustomValue( dataTypeListBoxStartValues.get( 2 ),
+                           1 );
         String customDataType1 = "com.acme.parts.Nut";
         setCustomValue( customDataType1 );
-        setNonCustomValue( dataTypeListBoxStartValues.get( 6 ), 1 );
-        setNonCustomValue( customDataType1, 2 );
-        setNonCustomValue( dataTypeListBoxStartValues.get( 5 ), 1 );
+        setNonCustomValue( dataTypeListBoxStartValues.get( 6 ),
+                           1 );
+        setNonCustomValue( customDataType1,
+                           2 );
+        setNonCustomValue( dataTypeListBoxStartValues.get( 5 ),
+                           1 );
         String customDataType2 = "com.acme.parts.Bolt";
         setCustomValue( customDataType2 );
-        setNonCustomValue( customDataType1, 3 );
+        setNonCustomValue( customDataType1,
+                           3 );
 //        System.out.println(comboBox.getListBoxValues().toString());
     }
 
     private void setCustomValue( String value ) {
         comboBox.view.listBoxGotFocus();
         comboBox.listBoxValueChanged( this.customPrompt );
-        assertEquals( listBox.isVisible(), false );
-        assertEquals( textBox.isVisible(), true );
+        assertEquals( listBox.isVisible(),
+                      false );
+        assertEquals( textBox.isVisible(),
+                      true );
         comboBox.view.textBoxGotFocus();
         textBox.setValue( value );
         comboBox.view.textBoxLostFocus();
         comboBox.view.listBoxGotFocus();
-        assertEquals( listBox.isVisible(), true );
-        assertEquals( textBox.isVisible(), false );
+        assertEquals( listBox.isVisible(),
+                      true );
+        assertEquals( textBox.isVisible(),
+                      false );
         String listBoxValue = this.quoteStringValues ? StringUtils.createQuotedConstant( value ) : value;
-        verify( modelPresenter ).setTextBoxModelValue( textBox, value );
-        assertEquals( comboBox.getValue(), listBoxValue );
+        verify( modelPresenter ).setTextBoxModelValue( textBox,
+                                                       value );
+        assertEquals( comboBox.getValue(),
+                      listBoxValue );
     }
 
-    private void setNonCustomValue( String value, int times ) {
+    private void setNonCustomValue( String value,
+                                    int times ) {
         comboBox.view.listBoxGotFocus();
         comboBox.listBoxValueChanged( value );
-        assertEquals( listBox.isVisible(), true );
-        assertEquals( textBox.isVisible(), false );
-        verify( modelPresenter, times( times ) ).setListBoxModelValue( listBox, value );
-        assertEquals( comboBox.getValue(), value );
+        assertEquals( listBox.isVisible(),
+                      true );
+        assertEquals( textBox.isVisible(),
+                      false );
+        verify( modelPresenter,
+                times( times ) ).setListBoxModelValue( listBox,
+                                                       value );
+        assertEquals( comboBox.getValue(),
+                      value );
     }
 
-    private void aboutToEditCustomValue( String value, int times ) {
+    private void aboutToEditCustomValue( String value,
+                                         int times ) {
         comboBox.view.listBoxGotFocus();
         comboBox.listBoxValueChanged( this.editPrefix + value + this.editSuffix );
-        assertEquals( listBox.isVisible(), false );
-        assertEquals( textBox.isVisible(), true );
-        verify( modelPresenter, times( times ) ).setTextBoxModelValue( textBox, value );
-        assertEquals( textBox.getValue(), value );
+        assertEquals( listBox.isVisible(),
+                      false );
+        assertEquals( textBox.isVisible(),
+                      true );
+        verify( modelPresenter,
+                times( times ) ).setTextBoxModelValue( textBox,
+                                                       value );
+        assertEquals( textBox.getValue(),
+                      value );
     }
 
     private void editCustomValue( String value ) {
@@ -289,11 +349,14 @@ public class ComboBoxAllTest {
         textBox.setValue( value );
         comboBox.view.textBoxLostFocus();
         comboBox.view.listBoxGotFocus();
-        assertEquals( listBox.isVisible(), true );
-        assertEquals( textBox.isVisible(), false );
+        assertEquals( listBox.isVisible(),
+                      true );
+        assertEquals( textBox.isVisible(),
+                      false );
         String listBoxValue = this.quoteStringValues ? StringUtils.createQuotedConstant( value ) : value;
-        verify( modelPresenter ).setTextBoxModelValue( textBox, listBoxValue );
-        assertEquals( comboBox.getValue(), listBoxValue );
+        verify( modelPresenter ).setTextBoxModelValue( textBox,
+                                                       listBoxValue );
+        assertEquals( comboBox.getValue(),
+                      listBoxValue );
     }
-
 }

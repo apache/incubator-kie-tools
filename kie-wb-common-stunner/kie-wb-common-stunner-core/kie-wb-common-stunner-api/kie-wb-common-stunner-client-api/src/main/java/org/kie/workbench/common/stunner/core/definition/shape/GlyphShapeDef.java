@@ -17,7 +17,6 @@ package org.kie.workbench.common.stunner.core.definition.shape;
 
 /**
  * Glyph is built from an existing shape.
- *
  * @param <W> The bean type.
  */
 public abstract class GlyphShapeDef<W> implements GlyphDef<W> {
@@ -25,7 +24,7 @@ public abstract class GlyphShapeDef<W> implements GlyphDef<W> {
     /**
      * Considering the resulting glyph as the thumbnail for a given shape,
      * this method must return the identifier for the shape's Definition.
-     *
+     * <p/>
      * For example, when glyph for a task bean type has to be displayed
      * somewhere on the screen, the shape factory calls this method
      * using as argument the identifier for the Task definition - here
@@ -43,5 +42,4 @@ public abstract class GlyphShapeDef<W> implements GlyphDef<W> {
     public String getGlyphDescription( final W element ) {
         return null;
     }
-
 }

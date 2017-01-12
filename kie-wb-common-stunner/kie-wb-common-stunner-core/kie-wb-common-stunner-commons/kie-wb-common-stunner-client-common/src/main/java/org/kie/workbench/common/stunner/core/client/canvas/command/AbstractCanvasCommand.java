@@ -27,12 +27,11 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 public abstract class AbstractCanvasCommand implements CanvasCommand<AbstractCanvasHandler> {
 
     @Override
-    public CommandResult<CanvasViolation> allow( AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> allow( final AbstractCanvasHandler context ) {
         return buildResult();
     }
 
     protected CommandResult<CanvasViolation> buildResult() {
         return CanvasCommandResultBuilder.SUCCESS;
     }
-
 }

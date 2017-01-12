@@ -34,13 +34,13 @@ public class StaticIconShapeView<T extends StaticIconShapeView>
 
     public StaticIconShapeView( final Icons icon ) {
         super( BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
-                new MultiPath()
-                        .setStrokeWidth( 0 )
-                        .setStrokeAlpha( 0 ) );
+               new MultiPath()
+                       .setStrokeWidth( 0 )
+                       .setStrokeAlpha( 0 ) );
         this.setIcon( icon );
-
     }
 
+    @SuppressWarnings( "unchecked" )
     public T setIcon( final Icons icon ) {
         this.icon = icon;
         this.buildIconView();
@@ -59,12 +59,14 @@ public class StaticIconShapeView<T extends StaticIconShapeView>
             final double h = bb.getHeight();
             this.width = w;
             this.height = h;
-            getPath().rect( 0, 0, w, h );
-            this.addChild( iconGroup, WiresLayoutContainer.Layout.CENTER );
-
+            getPath().rect( 0,
+                            0,
+                            w,
+                            h );
+            this.addChild( iconGroup,
+                           WiresLayoutContainer.Layout.CENTER );
         }
         refresh();
-
     }
 
     @Override
@@ -75,7 +77,5 @@ public class StaticIconShapeView<T extends StaticIconShapeView>
             iconGroup = null;
         }
         icon = null;
-
     }
-
 }

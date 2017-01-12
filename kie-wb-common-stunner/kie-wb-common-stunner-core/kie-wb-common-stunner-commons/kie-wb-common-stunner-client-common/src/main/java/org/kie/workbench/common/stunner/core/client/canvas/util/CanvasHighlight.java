@@ -38,18 +38,22 @@ public class CanvasHighlight {
     }
 
     public void highLight( final Node node ) {
-        applyState( node, ShapeState.HIGHLIGHT );
+        applyState( node,
+                    ShapeState.HIGHLIGHT );
     }
 
     public void invalid( final Node node ) {
-        applyState( node, ShapeState.INVALID );
+        applyState( node,
+                    ShapeState.INVALID );
     }
 
     public void none( final Node node ) {
-        applyState( node, ShapeState.NONE );
+        applyState( node,
+                    ShapeState.NONE );
     }
 
-    private void applyState( final Node node, final ShapeState state ) {
+    private void applyState( final Node node,
+                             final ShapeState state ) {
         // Only one shape is being highlight at same time, so take this into account in the next conditional sentence.
         if ( null != this.shape && !node.getUUID().equals( shape.getUUID() ) ) {
             unhighLight();
@@ -61,7 +65,6 @@ public class CanvasHighlight {
                 this.shape = shape;
                 shape.applyState( state );
                 getCanvas().draw();
-
             }
         }
     }
@@ -71,13 +74,11 @@ public class CanvasHighlight {
             this.shape.applyState( ShapeState.NONE );
             getCanvas().draw();
             this.shape = null;
-
         }
     }
 
     public void destroy() {
         this.shape = null;
-
     }
 
     private Shape getShape( final String uuid ) {
@@ -87,5 +88,4 @@ public class CanvasHighlight {
     private AbstractCanvas getCanvas() {
         return canvasHandler.getCanvas();
     }
-
 }

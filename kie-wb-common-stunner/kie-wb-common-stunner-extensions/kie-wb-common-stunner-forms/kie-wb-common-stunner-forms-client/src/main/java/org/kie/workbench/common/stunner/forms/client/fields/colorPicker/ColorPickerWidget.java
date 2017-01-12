@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.forms.client.fields.colorPicker;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -29,9 +32,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.ext.widgets.common.client.colorpicker.ColorPickerDialog;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 @Templated
@@ -62,12 +62,14 @@ public class ColorPickerWidget extends Composite implements HasValue<String> {
         dlg.getElement().getStyle().setZIndex( 9999 );
         dlg.addDialogClosedHandler( event -> {
             if ( !event.isCanceled() ) {
-                setValue( "#" + dlg.getColor(), true );
+                setValue( "#" + dlg.getColor(),
+                          true );
             }
         } );
         String color = getValue();
         if ( color.startsWith( "#" ) ) {
-            color = color.substring( 1, color.length() );
+            color = color.substring( 1,
+                                     color.length() );
         }
         dlg.setColor( color );
         dlg.showRelativeTo( owner );
@@ -80,16 +82,20 @@ public class ColorPickerWidget extends Composite implements HasValue<String> {
 
     @Override
     public void setValue( String value ) {
-        setValue( value, false );
+        setValue( value,
+                  false );
     }
 
     @Override
-    public void setValue( String value, boolean fireEvents ) {
+    public void setValue( String value,
+                          boolean fireEvents ) {
         String oldValue = color;
         color = value;
         initTextBox();
         if ( fireEvents ) {
-            ValueChangeEvent.fireIfNotEqual( this, oldValue, color );
+            ValueChangeEvent.fireIfNotEqual( this,
+                                             oldValue,
+                                             color );
         }
     }
 
@@ -99,6 +105,7 @@ public class ColorPickerWidget extends Composite implements HasValue<String> {
 
     @Override
     public HandlerRegistration addValueChangeHandler( ValueChangeHandler<String> handler ) {
-        return addHandler( handler, ValueChangeEvent.getType() );
+        return addHandler( handler,
+                           ValueChangeEvent.getType() );
     }
 }

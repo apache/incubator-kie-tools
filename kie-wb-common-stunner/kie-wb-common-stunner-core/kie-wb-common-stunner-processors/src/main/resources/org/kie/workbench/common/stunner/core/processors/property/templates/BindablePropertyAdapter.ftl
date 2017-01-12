@@ -35,7 +35,7 @@ public class ${className} extends ${parentAdapterClassName}<Object, Object> {
         <#list valuePropNames as valuePropName>
             put( ${valuePropName.className}.class, "${valuePropName.methodName}" );
         </#list>
-    
+
     }};
 
     private static final Map<Class, String> propDefaultValueFieldNames = new HashMap<Class, String>(${defaultValuePropNamesSize}) {{
@@ -55,25 +55,25 @@ public class ${className} extends ${parentAdapterClassName}<Object, Object> {
               put( ${propTypePropName.className}.class, "${propTypePropName.methodName}" );
         </#list>
     }};
-    
+
     private static final Map<Class, String> propCaptionFieldNames = new HashMap<Class, String>(${captionPropNamesSize}) {{
         <#list captionPropNames as captionPropName>
               put( ${captionPropName.className}.class, "${captionPropName.methodName}" );
         </#list>
     }};
-    
+
     private static final Map<Class, String> propDescriptionFieldNames = new HashMap<Class, String>(${descriptionPropNamesSize}) {{
         <#list descriptionPropNames as descriptionPropName>
               put( ${descriptionPropName.className}.class, "${descriptionPropName.methodName}" );
         </#list>
     }};
-    
+
     private static final Map<Class, String> propReadOnlyFieldNames = new HashMap<Class, String>(${readOnlyPropNamesSize}) {{
         <#list readOnlyPropNames as readOnlyPropName>
             put( ${readOnlyPropName.className}.class, "${readOnlyPropName.methodName}" );
         </#list>
     }};
-    
+
     private static final Map<Class, String> propOptionalFieldNames = new HashMap<Class, String>(${optionalPropNamesSize}) {{
         <#list optionalPropNames as optionalPropName>
            put( ${optionalPropName.className}.class, "${optionalPropName.methodName}" );

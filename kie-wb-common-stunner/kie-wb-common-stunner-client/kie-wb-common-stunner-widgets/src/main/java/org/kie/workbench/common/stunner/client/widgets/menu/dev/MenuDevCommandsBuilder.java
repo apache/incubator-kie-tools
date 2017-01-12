@@ -15,6 +15,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.menu.dev;
 
+import java.util.LinkedList;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -27,11 +32,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * The menu builder for different Stunner's dev menu items.
@@ -105,5 +105,4 @@ public class MenuDevCommandsBuilder {
             }
         }.build();
     }
-
 }

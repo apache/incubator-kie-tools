@@ -16,16 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.model;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.DockingRule;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.impl.AbstractDockingRuleManager;
 import org.kie.workbench.common.stunner.core.rule.impl.violations.ContainmentRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.model.ModelDockingRuleManager;
-
-import javax.enterprise.context.Dependent;
-import java.util.HashSet;
-import java.util.Set;
 
 @Dependent
 public class ModelDockingRuleManagerImpl extends AbstractDockingRuleManager<String, Set<String>> implements ModelDockingRuleManager {
@@ -39,7 +39,7 @@ public class ModelDockingRuleManagerImpl extends AbstractDockingRuleManager<Stri
 
     @Override
     public RuleViolations evaluate( final String targetId,
-                                     final Set<String> candidateRoles ) {
+                                    final Set<String> candidateRoles ) {
         if ( rules.isEmpty() ) {
             return new DefaultRuleViolations();
         }
@@ -53,8 +53,8 @@ public class ModelDockingRuleManagerImpl extends AbstractDockingRuleManager<Stri
                 }
             }
         }
-        results.addViolation( new ContainmentRuleViolation( targetId, candidateRoles.toString() ) );
+        results.addViolation( new ContainmentRuleViolation( targetId,
+                                                            candidateRoles.toString() ) );
         return results;
     }
-
 }

@@ -45,5 +45,4 @@ public class CaseManagementBackendService extends AbstractDefinitionSetService {
     public DefinitionSetResourceType getResourceType() {
         return cmResourceType;
     }
-
 }

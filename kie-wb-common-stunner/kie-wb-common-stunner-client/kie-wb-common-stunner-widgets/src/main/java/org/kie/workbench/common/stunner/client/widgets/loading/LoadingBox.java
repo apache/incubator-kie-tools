@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.loading;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.Timer;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import com.google.gwt.logging.client.LogConfiguration;
+import com.google.gwt.user.client.Timer;
 
 @ApplicationScoped
 public class LoadingBox {
@@ -35,7 +35,6 @@ public class LoadingBox {
         View show();
 
         View hide();
-
     }
 
     View view;
@@ -52,20 +51,16 @@ public class LoadingBox {
     }
 
     public void show() {
-        if ( null != this.timer
-                && this.timer.isRunning() ) {
+        if ( null != this.timer && this.timer.isRunning() ) {
             return;
-
         }
         startTimer();
         view.show();
-
     }
 
     public void hide() {
         stopTimer();
         view.hide();
-
     }
 
     private void startTimer() {
@@ -73,12 +68,12 @@ public class LoadingBox {
         this.timer = new Timer() {
             @Override
             public void run() {
-                log( Level.WARNING, "Loading box - Timeout exceeded!" );
+                log( Level.WARNING,
+                     "Loading box - Timeout exceeded!" );
                 hide();
             }
         };
         timer.schedule( TIMEOUT );
-
     }
 
     private void stopTimer() {
@@ -88,7 +83,6 @@ public class LoadingBox {
             }
             this.timer = null;
         }
-
     }
     
     /*public void onCanvasProcessingStarted(@Observes CanvasProcessingStartedEvent canvasProcessingStartedEvent) {
@@ -111,10 +105,11 @@ public class LoadingBox {
         hide();
     }*/
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
-
 }

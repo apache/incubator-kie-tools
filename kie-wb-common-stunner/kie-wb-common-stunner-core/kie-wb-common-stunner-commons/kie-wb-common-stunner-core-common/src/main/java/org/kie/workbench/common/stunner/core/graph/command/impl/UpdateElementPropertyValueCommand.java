@@ -41,27 +41,29 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     private Object oldValue;
     private transient Node<?, Edge> node;
 
-    public UpdateElementPropertyValueCommand( @MapsTo( "elementUUID" ) String elementUUID,
-                                              @MapsTo( "propertyId" ) String propertyId,
-                                              @MapsTo( "value" ) Object value ) {
+    public UpdateElementPropertyValueCommand( final @MapsTo( "elementUUID" ) String elementUUID,
+                                              final @MapsTo( "propertyId" ) String propertyId,
+                                              final @MapsTo( "value" ) Object value ) {
         this.elementUUID = PortablePreconditions.checkNotNull( "elementUUID",
-                elementUUID );
-        this.node = null;
+                                                               elementUUID );
         this.propertyId = PortablePreconditions.checkNotNull( "propertyId",
-                propertyId );
+                                                              propertyId );
         this.value = PortablePreconditions.checkNotNull( "value",
-                value );
+                                                         value );
+        this.node = null;
     }
 
     public UpdateElementPropertyValueCommand( final Node<?, Edge> node,
                                               final String propertyId,
                                               final Object value ) {
-        this( node.getUUID(), propertyId, value );
+        this( node.getUUID(),
+              propertyId,
+              value );
         this.node = node;
     }
 
     @Override
-    protected CommandResult<RuleViolation> check( GraphCommandExecutionContext context ) {
+    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
         checkNodeNotNull( context );
         return GraphCommandResultBuilder.SUCCESS;
     }
@@ -70,18 +72,21 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     @SuppressWarnings( "unchecked" )
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
         final Element<Definition<?>> element = ( Element<Definition<?>> ) checkNodeNotNull( context );
-        final Object p = GraphUtils.getProperty( context.getDefinitionManager(), element, propertyId );
-        final PropertyAdapter<Object, Object> adapter =
-                ( PropertyAdapter<Object, Object> ) context.getDefinitionManager().adapters().registry().getPropertyAdapter( p.getClass() );
+        final Object p = GraphUtils.getProperty( context.getDefinitionManager(),
+                                                 element,
+                                                 propertyId );
+        final PropertyAdapter<Object, Object> adapter = ( PropertyAdapter<Object, Object> ) context.getDefinitionManager().adapters().registry().getPropertyAdapter( p.getClass() );
         oldValue = adapter.getValue( p );
-        adapter.setValue( p, value );
+        adapter.setValue( p,
+                          value );
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final UpdateElementPropertyValueCommand undoCommand =
-                new UpdateElementPropertyValueCommand( checkNodeNotNull( context ), propertyId, oldValue );
+        final UpdateElementPropertyValueCommand undoCommand = new UpdateElementPropertyValueCommand( checkNodeNotNull( context ),
+                                                                                                     propertyId,
+                                                                                                     oldValue );
         return undoCommand.execute( context );
     }
 
@@ -89,9 +94,10 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
         return oldValue;
     }
 
-    private Node<?, Edge> checkNodeNotNull( GraphCommandExecutionContext context ) {
+    private Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context ) {
         if ( null == node ) {
-            node = super.checkNodeNotNull( context, elementUUID );
+            node = super.checkNodeNotNull( context,
+                                           elementUUID );
         }
         return node;
     }
@@ -100,5 +106,4 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     public String toString() {
         return "UpdateElementPropertyValueCommand [element=" + elementUUID + ", property=" + propertyId + ", value=" + value + "]";
     }
-
 }

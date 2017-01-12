@@ -40,7 +40,8 @@ public class ComboBoxViewImpl implements ComboBoxView {
     @Override
     public void init( final ComboBoxView.ComboBoxPresenter presenter,
                       final ComboBoxView.ModelPresenter modelPresenter,
-                      final ValueListBox<String> listBox, final TextBox textBox,
+                      final ValueListBox<String> listBox,
+                      final TextBox textBox,
                       final String placeholder ) {
         this.presenter = presenter;
         this.modelPresenter = modelPresenter;
@@ -55,11 +56,12 @@ public class ComboBoxViewImpl implements ComboBoxView {
             }
         } );
         listBox.addDomHandler( new FocusHandler() {
-            @Override
-            public void onFocus( FocusEvent focusEvent ) {
-                listBoxGotFocus();
-            }
-        }, FocusEvent.getType() );
+                                   @Override
+                                   public void onFocus( FocusEvent focusEvent ) {
+                                       listBoxGotFocus();
+                                   }
+                               },
+                               FocusEvent.getType() );
         textBox.addFocusHandler( new FocusHandler() {
             @Override
             public void onFocus( FocusEvent focusEvent ) {
@@ -73,7 +75,6 @@ public class ComboBoxViewImpl implements ComboBoxView {
                 textBoxLostFocus();
             }
         } );
-
     }
 
     @Override
@@ -83,12 +84,14 @@ public class ComboBoxViewImpl implements ComboBoxView {
 
     @Override
     public void setTextBoxModelValue( String value ) {
-        modelPresenter.setTextBoxModelValue( textBox, value );
+        modelPresenter.setTextBoxModelValue( textBox,
+                                             value );
     }
 
     @Override
     public void setListBoxModelValue( String value ) {
-        modelPresenter.setListBoxModelValue( listBox, value );
+        modelPresenter.setListBoxModelValue( listBox,
+                                             value );
     }
 
     @Override
@@ -149,5 +152,4 @@ public class ComboBoxViewImpl implements ComboBoxView {
             return listBox.getValue();
         }
     }
-
 }

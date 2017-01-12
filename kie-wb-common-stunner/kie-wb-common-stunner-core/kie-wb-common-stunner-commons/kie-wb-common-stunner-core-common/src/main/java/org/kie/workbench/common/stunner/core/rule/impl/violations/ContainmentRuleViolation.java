@@ -26,8 +26,8 @@ public class ContainmentRuleViolation extends AbstractRuleViolation {
     private String graph;
     private String candidate;
 
-    public ContainmentRuleViolation( @MapsTo( "graph" ) String graph,
-                                     @MapsTo( "candidate" ) String candidate ) {
+    public ContainmentRuleViolation( final @MapsTo( "graph" ) String graph,
+                                     final @MapsTo( "candidate" ) String candidate ) {
         this.graph = graph;
         this.candidate = candidate;
     }
@@ -36,5 +36,4 @@ public class ContainmentRuleViolation extends AbstractRuleViolation {
     public String getMessage() {
         return "The '" + graph + "' cannot contain the labels ['" + candidate + "'].";
     }
-
 }

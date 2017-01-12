@@ -28,18 +28,25 @@ public class RingShape<W> extends AbstractBasicShapeWithTitle<W, RingView, RingS
 
     public RingShape( final RingView view,
                       final RingShapeDef<W> proxy ) {
-        super( view, proxy );
+        super( view,
+               proxy );
     }
 
     @Override
-    public void applyProperties( final Node<View<W>, Edge> element, final MutationContext mutationContext ) {
-        super.applyProperties( element, mutationContext );
+    public void applyProperties( final Node<View<W>, Edge> element,
+                                 final MutationContext mutationContext ) {
+        super.applyProperties( element,
+                               mutationContext );
         // Outer Radius.
         final Double outerRadius = proxy.getOuterRadius( getDefinition( element ) );
-        _applyOuterRadius( element, outerRadius, mutationContext );
+        _applyOuterRadius( element,
+                           outerRadius,
+                           mutationContext );
         // Inner Radius.
         final Double innerRadius = proxy.getInnerRadius( getDefinition( element ) );
-        _applyInnerRadius( element, innerRadius, mutationContext );
+        _applyInnerRadius( element,
+                           innerRadius,
+                           mutationContext );
     }
 
     protected RingShape<W> _applyOuterRadius( final Node<View<W>, Edge> element,

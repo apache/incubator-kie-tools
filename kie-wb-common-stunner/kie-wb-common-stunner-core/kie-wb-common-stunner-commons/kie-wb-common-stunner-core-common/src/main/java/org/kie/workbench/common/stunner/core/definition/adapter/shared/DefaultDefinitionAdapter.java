@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.shared;
 
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.impl.DefinitionImpl;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.util.Set;
 
 // TODO
 @ApplicationScoped
@@ -32,27 +32,27 @@ public class DefaultDefinitionAdapter implements DefinitionAdapter<DefinitionImp
     }
 
     @Override
-    public String getId( DefinitionImpl pojo ) {
+    public String getId( final DefinitionImpl pojo ) {
         return pojo.getId();
     }
 
     @Override
-    public String getCategory( DefinitionImpl pojo ) {
+    public String getCategory( final DefinitionImpl pojo ) {
         return pojo.getCategory();
     }
 
     @Override
-    public String getTitle( DefinitionImpl pojo ) {
+    public String getTitle( final DefinitionImpl pojo ) {
         return pojo.getTitle();
     }
 
     @Override
-    public String getDescription( DefinitionImpl pojo ) {
+    public String getDescription( final DefinitionImpl pojo ) {
         return pojo.getDescription();
     }
 
     @Override
-    public Set<String> getLabels( DefinitionImpl pojo ) {
+    public Set<String> getLabels( final DefinitionImpl pojo ) {
         return pojo.getLabels();
     }
 
@@ -67,12 +67,13 @@ public class DefaultDefinitionAdapter implements DefinitionAdapter<DefinitionImp
     }
 
     @Override
-    public Object getMetaProperty( PropertyMetaTypes metaType, DefinitionImpl pojo ) {
+    public Object getMetaProperty( final PropertyMetaTypes metaType,
+                                   final DefinitionImpl pojo ) {
         return null;
     }
 
     @Override
-    public Class<? extends ElementFactory> getGraphFactoryType( DefinitionImpl pojo ) {
+    public Class<? extends ElementFactory> getGraphFactoryType( final DefinitionImpl pojo ) {
         // TODO
         return null;
     }

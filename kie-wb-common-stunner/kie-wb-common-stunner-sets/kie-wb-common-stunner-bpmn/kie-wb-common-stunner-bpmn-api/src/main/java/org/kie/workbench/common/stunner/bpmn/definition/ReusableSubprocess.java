@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -35,8 +37,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
-
-import javax.validation.Valid;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TASK_DATA;
@@ -59,7 +59,7 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
     protected ReusableSubprocessTaskExecutionSet executionSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2)
+    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2 )
     @Valid
     protected DataIOSet dataIOSet;
 
@@ -72,9 +72,12 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
                     new BPMNGeneralSet( "Subprocess" ),
                     new ReusableSubprocessTaskExecutionSet(),
                     new DataIOSet(),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
+                    new BackgroundSet( COLOR,
+                                       BORDER_COLOR,
+                                       BORDER_SIZE ),
                     new FontSet(),
-                    new RectangleDimensionsSet( WIDTH, HEIGHT ),
+                    new RectangleDimensionsSet( WIDTH,
+                                                HEIGHT ),
                     new SimulationSet() );
         }
     }
@@ -90,7 +93,11 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
                                @MapsTo( "fontSet" ) FontSet fontSet,
                                @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
                                @MapsTo( "simulationSet" ) SimulationSet simulationSet ) {
-        super( general, backgroundSet, fontSet, dimensionsSet, simulationSet );
+        super( general,
+               backgroundSet,
+               fontSet,
+               dimensionsSet,
+               simulationSet );
         this.executionSet = executionSet;
         this.dataIOSet = dataIOSet;
     }
@@ -111,7 +118,7 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
     }
 
     @Override
-    public boolean isSingleOutputVar(){
+    public boolean isSingleOutputVar() {
         return false;
     }
 

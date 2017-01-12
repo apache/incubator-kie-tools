@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.wires;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -34,10 +38,6 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 @Dependent
 public class WiresCanvasHandler<D extends Diagram, C extends WiresCanvas> extends AbstractCanvasHandler<D, C> {
 
@@ -54,9 +54,17 @@ public class WiresCanvasHandler<D extends Diagram, C extends WiresCanvas> extend
                                final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
                                final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
                                final CanvasCommandFactory canvasCommandFactory ) {
-        super( clientDefinitionManager, clientFactoryServices, graphRulesManager, modelRulesManager,
-                graphUtils, indexBuilder, shapeManager, canvasElementAddedEvent, canvasElementRemovedEvent,
-                canvasElementUpdatedEvent, canvasElementsClearEvent, canvasCommandFactory );
+        super( clientDefinitionManager,
+               clientFactoryServices,
+               graphRulesManager,
+               modelRulesManager,
+               graphUtils,
+               indexBuilder,
+               shapeManager,
+               canvasElementAddedEvent,
+               canvasElementRemovedEvent,
+               canvasElementUpdatedEvent,
+               canvasElementsClearEvent,
+               canvasCommandFactory );
     }
-
 }

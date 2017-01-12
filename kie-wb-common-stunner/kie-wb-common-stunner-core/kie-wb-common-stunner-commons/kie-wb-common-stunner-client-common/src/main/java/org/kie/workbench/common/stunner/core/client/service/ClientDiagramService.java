@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.service;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -24,9 +27,6 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.kie.workbench.common.stunner.core.service.DiagramService;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 /**
  * A wrapper util class for handling different diagram services from client side.
  */
@@ -34,13 +34,17 @@ import javax.inject.Inject;
 public class ClientDiagramService extends AbstractClientDiagramService<Metadata, Diagram<Graph, Metadata>, DiagramService> {
 
     protected ClientDiagramService() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
     public ClientDiagramService( final ShapeManager shapeManager,
                                  final Caller<DiagramService> diagramServiceCaller,
                                  final Caller<DiagramLookupService> diagramLookupServiceCaller ) {
-        super( shapeManager, diagramServiceCaller, diagramLookupServiceCaller );
+        super( shapeManager,
+               diagramServiceCaller,
+               diagramLookupServiceCaller );
     }
 }

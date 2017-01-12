@@ -29,8 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeL
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -38,38 +37,56 @@ import static org.mockito.Mockito.*;
 @RunWith( GwtMockitoTestRunner.class )
 public class ClientReadOnlySessionTest {
 
-    @Mock AbstractCanvas canvas;
-    @Mock AbstractCanvasHandler canvasHandler;
-    @Mock SelectionControl<AbstractCanvasHandler, Element> selectionControl;
-    @Mock ZoomControl<AbstractCanvas> zoomControl;
-    @Mock PanControl<AbstractCanvas> panControl;
+    @Mock
+    AbstractCanvas canvas;
+    @Mock
+    AbstractCanvasHandler canvasHandler;
+    @Mock
+    SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+    @Mock
+    ZoomControl<AbstractCanvas> zoomControl;
+    @Mock
+    PanControl<AbstractCanvas> panControl;
 
     private ClientReadOnlySessionImpl tested;
 
     @Before
     public void setup() throws Exception {
         when( canvasHandler.getCanvas() ).thenReturn( canvas );
-        this.tested = new ClientReadOnlySessionImpl( canvas, canvasHandler, selectionControl,
-                zoomControl, panControl );
+        this.tested = new ClientReadOnlySessionImpl( canvas,
+                                                     canvasHandler,
+                                                     selectionControl,
+                                                     zoomControl,
+                                                     panControl );
     }
 
     @Test
     public void testInit() {
-        assertEquals( canvas, tested.getCanvas() );
-        assertEquals( canvasHandler, tested.getCanvasHandler() );
-        assertEquals( selectionControl, tested.getSelectionControl() );
-        assertEquals( zoomControl, tested.getZoomControl() );
-        assertEquals( panControl, tested.getPanControl() );
+        assertEquals( canvas,
+                      tested.getCanvas() );
+        assertEquals( canvasHandler,
+                      tested.getCanvasHandler() );
+        assertEquals( selectionControl,
+                      tested.getSelectionControl() );
+        assertEquals( zoomControl,
+                      tested.getZoomControl() );
+        assertEquals( panControl,
+                      tested.getPanControl() );
     }
 
     @Test
     public void testOpenSession() {
         tested.open();
-        verify( canvas, times( 1 ) ).addRegistrationListener( any( CanvasShapeListener.class ) );
-        verify( canvasHandler, times( 1 ) ).addRegistrationListener( any( CanvasElementListener.class ) );
-        verify( selectionControl, times( 1 ) ).enable( eq( canvasHandler  ) );
-        verify( zoomControl, times( 1 ) ).enable( eq( canvas ) );
-        verify( panControl, times( 1 ) ).enable( eq( canvas ) );
+        verify( canvas,
+                times( 1 ) ).addRegistrationListener( any( CanvasShapeListener.class ) );
+        verify( canvasHandler,
+                times( 1 ) ).addRegistrationListener( any( CanvasElementListener.class ) );
+        verify( selectionControl,
+                times( 1 ) ).enable( eq( canvasHandler ) );
+        verify( zoomControl,
+                times( 1 ) ).enable( eq( canvas ) );
+        verify( panControl,
+                times( 1 ) ).enable( eq( canvas ) );
     }
 
     @Test
@@ -78,12 +95,17 @@ public class ClientReadOnlySessionTest {
         tested.doOpen(); // Force to register listeners.
         tested.dispose();
         assertFalse( tested.isOpened() );
-        verify( canvas, times( 1 ) ).removeRegistrationListener( any( CanvasShapeListener.class ) );
-        verify( canvasHandler, times( 1 ) ).removeRegistrationListener( any( CanvasElementListener.class ) );
-        verify( canvasHandler, times( 1 ) ).destroy();
-        verify( selectionControl, times( 1 ) ).disable();
-        verify( zoomControl, times( 1 ) ).disable();
-        verify( panControl, times( 1 ) ).disable();
+        verify( canvas,
+                times( 1 ) ).removeRegistrationListener( any( CanvasShapeListener.class ) );
+        verify( canvasHandler,
+                times( 1 ) ).removeRegistrationListener( any( CanvasElementListener.class ) );
+        verify( canvasHandler,
+                times( 1 ) ).destroy();
+        verify( selectionControl,
+                times( 1 ) ).disable();
+        verify( zoomControl,
+                times( 1 ) ).disable();
+        verify( panControl,
+                times( 1 ) ).disable();
     }
-
 }

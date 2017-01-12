@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.graph.Element;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class ClientReadOnlySessionImpl extends AbstractClientReadOnlySession {
@@ -35,8 +35,10 @@ public class ClientReadOnlySessionImpl extends AbstractClientReadOnlySession {
                                       final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
                                       final ZoomControl<AbstractCanvas> zoomControl,
                                       final PanControl<AbstractCanvas> panControl ) {
-        super( canvas, canvasHandler, selectionControl, zoomControl, panControl );
-
+        super( canvas,
+               canvasHandler,
+               selectionControl,
+               zoomControl,
+               panControl );
     }
-
 }

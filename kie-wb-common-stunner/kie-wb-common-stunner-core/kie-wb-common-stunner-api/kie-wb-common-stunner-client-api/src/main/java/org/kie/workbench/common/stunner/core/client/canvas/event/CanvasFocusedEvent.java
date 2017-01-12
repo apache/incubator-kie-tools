@@ -25,5 +25,4 @@ public final class CanvasFocusedEvent extends AbstractCanvasEvent {
     public CanvasFocusedEvent( final Canvas canvas ) {
         super( canvas );
     }
-
 }

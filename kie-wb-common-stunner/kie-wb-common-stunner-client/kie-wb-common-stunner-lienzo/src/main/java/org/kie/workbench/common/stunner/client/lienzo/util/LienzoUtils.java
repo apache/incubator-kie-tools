@@ -25,7 +25,5 @@ public class LienzoUtils {
         return new double[]{
                 width > 0 ? targetWidth / width : 1,
                 height > 0 ? targetHeight / height : 1 };
-
     }
-
 }

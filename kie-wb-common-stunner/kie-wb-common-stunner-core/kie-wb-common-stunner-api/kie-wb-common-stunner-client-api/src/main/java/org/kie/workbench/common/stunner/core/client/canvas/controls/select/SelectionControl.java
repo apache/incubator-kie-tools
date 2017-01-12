@@ -16,25 +16,24 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
+import java.util.Collection;
+
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
 import org.kie.workbench.common.stunner.core.graph.Element;
-
-import java.util.Collection;
 
 /**
  * Mediator for elements selection operations in a canvas.
  */
 public interface SelectionControl<C extends CanvasHandler, E extends Element> extends CanvasRegistationControl<C, E> {
 
-    SelectionControl<C, E> select( E item );
+    SelectionControl<C, E> select( final E item );
 
-    SelectionControl<C, E> deselect( E item );
+    SelectionControl<C, E> deselect( final E item );
 
     boolean isSelected( final E item );
 
     Collection<String> getSelectedItems();
 
     SelectionControl<C, E> clearSelection();
-
 }

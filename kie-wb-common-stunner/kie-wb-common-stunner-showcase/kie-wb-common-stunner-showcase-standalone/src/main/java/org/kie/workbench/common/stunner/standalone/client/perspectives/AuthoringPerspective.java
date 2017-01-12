@@ -16,9 +16,16 @@
 
 package org.kie.workbench.common.stunner.standalone.client.perspectives;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.client.widgets.loading.LoadingBox;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.BS3PaletteWidgetImpl;
-import org.kie.workbench.common.stunner.standalone.client.screens.*;
+import org.kie.workbench.common.stunner.standalone.client.screens.BS3PaletteScreen;
+import org.kie.workbench.common.stunner.standalone.client.screens.FormsPropertiesScreen;
+import org.kie.workbench.common.stunner.standalone.client.screens.NavigatorScreen;
+import org.kie.workbench.common.stunner.standalone.client.screens.NotificationsScreen;
+import org.kie.workbench.common.stunner.standalone.client.screens.TreeExplorerScreen;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.mvp.PlaceManager;
@@ -32,9 +39,6 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 @WorkbenchPerspective( identifier = AuthoringPerspective.PERSPECTIVE_ID, isTransient = false, isDefault = true )
@@ -82,7 +86,8 @@ public class AuthoringPerspective {
         propertiesPanel.setMinWidth( EAST_PANEL_WIDTH );
         propertiesPanel.setWidth( EAST_PANEL_WIDTH );
         propertiesPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( FormsPropertiesScreen.SCREEN_ID ) ) );
-        propertiesPanel.appendChild( CompassPosition.SOUTH, treeExplorerPanel );
+        propertiesPanel.appendChild( CompassPosition.SOUTH,
+                                     treeExplorerPanel );
         notificationsPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         notificationsPanel.setMinWidth( 400 );
         notificationsPanel.setWidth( 400 );
@@ -90,11 +95,11 @@ public class AuthoringPerspective {
         notificationsPanel.setHeight( 100 );
         notificationsPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( NotificationsScreen.SCREEN_ID ) ) );
         perspective.getRoot().insertChild( CompassPosition.WEST,
-                palettePanel );
+                                           palettePanel );
         perspective.getRoot().insertChild( CompassPosition.EAST,
-                propertiesPanel );
+                                           propertiesPanel );
         perspective.getRoot().insertChild( CompassPosition.SOUTH,
-                notificationsPanel );
+                                           notificationsPanel );
         return perspective;
     }
 }

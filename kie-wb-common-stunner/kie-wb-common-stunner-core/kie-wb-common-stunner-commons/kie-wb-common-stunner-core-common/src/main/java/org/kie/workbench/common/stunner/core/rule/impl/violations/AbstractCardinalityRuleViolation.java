@@ -23,14 +23,13 @@ public abstract class AbstractCardinalityRuleViolation extends AbstractRuleViola
     protected Integer restrictedOccurrences;
     protected Integer currentOccurrences;
 
-    public AbstractCardinalityRuleViolation( String target,
-                                             String candidate,
-                                             Integer restrictedOccurrences,
-                                             Integer currentOccurrences ) {
+    public AbstractCardinalityRuleViolation( final String target,
+                                             final String candidate,
+                                             final Integer restrictedOccurrences,
+                                             final Integer currentOccurrences ) {
         this.target = target;
         this.candidate = candidate;
         this.restrictedOccurrences = restrictedOccurrences;
         this.currentOccurrences = currentOccurrences;
     }
-
 }

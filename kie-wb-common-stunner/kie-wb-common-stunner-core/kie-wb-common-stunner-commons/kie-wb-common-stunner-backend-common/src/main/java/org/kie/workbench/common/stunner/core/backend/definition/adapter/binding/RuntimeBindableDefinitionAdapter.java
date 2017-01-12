@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.binding;
 
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Set;
 
 import static org.kie.workbench.common.stunner.core.backend.definition.adapter.RuntimeAdapterUtils.getFieldValue;
 import static org.kie.workbench.common.stunner.core.backend.definition.adapter.RuntimeAdapterUtils.getFieldValues;
@@ -40,10 +40,11 @@ class RuntimeBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
     }
 
     @Override
-    public String getCategory( T definition ) {
+    public String getCategory( final T definition ) {
         Class<?> type = definition.getClass();
         try {
-            return getFieldValue( definition, propertyCategoryFieldNames.get( type ) );
+            return getFieldValue( definition,
+                                  propertyCategoryFieldNames.get( type ) );
         } catch ( IllegalAccessException e ) {
             LOG.error( "Error obtaining category for Definition with id " + getId( definition ) );
         }
@@ -51,10 +52,11 @@ class RuntimeBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
     }
 
     @Override
-    public String getTitle( T definition ) {
+    public String getTitle( final T definition ) {
         Class<?> type = definition.getClass();
         try {
-            return getFieldValue( definition, propertyTitleFieldNames.get( type ) );
+            return getFieldValue( definition,
+                                  propertyTitleFieldNames.get( type ) );
         } catch ( IllegalAccessException e ) {
             LOG.error( "Error obtaining title for Definition with id " + getId( definition ) );
         }
@@ -62,10 +64,11 @@ class RuntimeBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
     }
 
     @Override
-    public String getDescription( T definition ) {
+    public String getDescription( final T definition ) {
         Class<?> type = definition.getClass();
         try {
-            return getFieldValue( definition, propertyDescriptionFieldNames.get( type ) );
+            return getFieldValue( definition,
+                                  propertyDescriptionFieldNames.get( type ) );
         } catch ( IllegalAccessException e ) {
             LOG.error( "Error obtaining description for Definition with id " + getId( definition ) );
         }
@@ -73,10 +76,11 @@ class RuntimeBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
     }
 
     @Override
-    public Set<String> getLabels( T definition ) {
+    public Set<String> getLabels( final T definition ) {
         Class<?> type = definition.getClass();
         try {
-            return getFieldValue( definition, propertyLabelsFieldNames.get( type ) );
+            return getFieldValue( definition,
+                                  propertyLabelsFieldNames.get( type ) );
         } catch ( IllegalAccessException e ) {
             LOG.error( "Error obtaining labels for Definition with id " + getId( definition ) );
         }
@@ -84,11 +88,12 @@ class RuntimeBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
     }
 
     @Override
-    public Set<?> getPropertySets( T definition ) {
+    public Set<?> getPropertySets( final T definition ) {
         Class<?> type = definition.getClass();
         Set<String> fields = propertySetsFieldNames.get( type );
         try {
-            return getFieldValues( definition, fields );
+            return getFieldValues( definition,
+                                   fields );
         } catch ( IllegalAccessException e ) {
             LOG.error( "Error obtaining property sets for Definition with id " + getId( definition ) );
         }
@@ -96,12 +101,13 @@ class RuntimeBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
     }
 
     @Override
-    protected Set<?> getBindProperties( T definition ) {
+    protected Set<?> getBindProperties( final T definition ) {
         Class<?> type = definition.getClass();
         Set<String> fields = propertiesFieldNames.get( type );
         try {
             if ( null != fields ) {
-                return getFieldValues( definition, fields );
+                return getFieldValues( definition,
+                                       fields );
             }
         } catch ( IllegalAccessException e ) {
             LOG.error( "Error obtaining properties for Definition with id " + getId( definition ) );
@@ -110,7 +116,8 @@ class RuntimeBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
     }
 
     @Override
-    public Object getMetaProperty( PropertyMetaTypes metaPropertyType, T pojo ) {
+    public Object getMetaProperty( final PropertyMetaTypes metaPropertyType,
+                                   final T pojo ) {
         // TODO
         return null;
     }

@@ -20,14 +20,13 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxBu
 
 public interface ToolboxButtonGridBuilder {
 
-    ToolboxButtonGridBuilder setPadding( int padding );
+    ToolboxButtonGridBuilder setPadding( final int padding );
 
-    ToolboxButtonGridBuilder setIconSize( int iconSize );
+    ToolboxButtonGridBuilder setIconSize( final int iconSize );
 
-    ToolboxButtonGridBuilder setRows( int rows );
+    ToolboxButtonGridBuilder setRows( final int rows );
 
-    ToolboxButtonGridBuilder setColumns( int cols );
+    ToolboxButtonGridBuilder setColumns( final int cols );
 
     ToolboxButtonGrid build();
-
 }

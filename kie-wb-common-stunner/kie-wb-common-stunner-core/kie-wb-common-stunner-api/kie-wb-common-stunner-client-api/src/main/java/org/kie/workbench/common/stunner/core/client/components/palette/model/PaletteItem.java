@@ -25,5 +25,4 @@ public interface PaletteItem {
     String getDescription();
 
     String getTooltip();
-
 }

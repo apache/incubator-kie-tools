@@ -16,18 +16,23 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
-import org.kie.workbench.common.stunner.core.command.*;
+import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandListener;
+import org.kie.workbench.common.stunner.core.command.CommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.DelegateCommandManager;
+import org.kie.workbench.common.stunner.core.command.HasCommandListener;
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Command manager used in a client session context. It delegates to each session's command manager and keeps
@@ -47,7 +52,8 @@ public abstract class AbstractSessionCommandManager
     public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context,
                                                    final Command<AbstractCanvasHandler, CanvasViolation> command ) {
         try {
-            return super.execute( context, command );
+            return super.execute( context,
+                                  command );
         } catch ( final CommandException ce ) {
             getClientSessionManager().handleCommandError( ce );
         } catch ( final RuntimeException e ) {
@@ -61,7 +67,8 @@ public abstract class AbstractSessionCommandManager
         final Command<AbstractCanvasHandler, CanvasViolation> lastEntry = getRegistry().peek();
         if ( null != lastEntry ) {
             try {
-                return getDelegate().undo( context, lastEntry );
+                return getDelegate().undo( context,
+                                           lastEntry );
             } catch ( final CommandException ce ) {
                 getClientSessionManager().handleCommandError( ce );
             } catch ( final RuntimeException e ) {
@@ -70,7 +77,6 @@ public abstract class AbstractSessionCommandManager
             return CanvasCommandResultBuilder.FAILED;
         }
         return null;
-
     }
 
     public ClientSession<AbstractCanvas, AbstractCanvasHandler> getCurrentSession() {
@@ -88,8 +94,9 @@ public abstract class AbstractSessionCommandManager
                         ( HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> ) commandManager;
                 hasCommandListener.setCommandListener( getRegistryListener() );
             } catch ( final ClassCastException e ) {
-                LOGGER.log( Level.WARNING, "Current command manager for canvas does not support" +
-                        "command listeners. Session's registry cannot be updated." );
+                LOGGER.log( Level.WARNING,
+                            "Current command manager for canvas does not support" +
+                                    "command listeners. Session's registry cannot be updated." );
             }
             return commandManager;
         }
@@ -110,7 +117,8 @@ public abstract class AbstractSessionCommandManager
         try {
             return ( ClientFullSession<AbstractCanvas, AbstractCanvasHandler> ) session;
         } catch ( final ClassCastException e ) {
-            LOGGER.log( Level.WARNING, "Session is not type of client full session." );
+            LOGGER.log( Level.WARNING,
+                        "Session is not type of client full session." );
             return null;
         }
     }
@@ -120,5 +128,4 @@ public abstract class AbstractSessionCommandManager
         return "[" + getClass().getName() + "] - Current session = ["
                 + ( null != getCurrentSession() ? getCurrentSession().toString() : "null" ) + "]";
     }
-
 }

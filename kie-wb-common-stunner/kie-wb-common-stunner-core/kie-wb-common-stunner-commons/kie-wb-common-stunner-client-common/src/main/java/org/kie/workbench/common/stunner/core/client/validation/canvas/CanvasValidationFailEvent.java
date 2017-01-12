@@ -25,7 +25,7 @@ public class CanvasValidationFailEvent extends AbstractValidationFailEvent<Canva
 
     public CanvasValidationFailEvent( final CanvasHandler entity,
                                       final Iterable<CanvasValidationViolation> violations ) {
-        super( entity, violations );
+        super( entity,
+               violations );
     }
-
 }

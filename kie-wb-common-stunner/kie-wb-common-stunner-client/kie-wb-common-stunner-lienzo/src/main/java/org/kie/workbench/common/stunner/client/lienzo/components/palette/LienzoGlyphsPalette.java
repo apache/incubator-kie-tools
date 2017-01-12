@@ -21,4 +21,5 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Gly
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 
 public interface LienzoGlyphsPalette extends LienzoGlyphItemsPalette<HasPaletteItems<? extends GlyphPaletteItem>, LienzoPaletteViewImpl> {
+
 }

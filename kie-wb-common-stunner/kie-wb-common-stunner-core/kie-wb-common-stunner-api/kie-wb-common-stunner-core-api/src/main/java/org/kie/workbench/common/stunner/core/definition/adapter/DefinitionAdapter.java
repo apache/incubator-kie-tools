@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-
-import java.util.Set;
 
 /**
  * A Definition pojo adapter..
@@ -29,49 +29,50 @@ public interface DefinitionAdapter<T> extends PriorityAdapter {
     /**
      * Returns the definition's identifier for a given pojo.
      */
-    String getId( T pojo );
+    String getId( final T pojo );
 
     /**
      * Returns the definition's category for a given pojo.
      */
-    String getCategory( T pojo );
+    String getCategory( final T pojo );
 
     /**
      * Returns the definition's title for a given pojo.
      */
-    String getTitle( T pojo );
+    String getTitle( final T pojo );
 
     /**
      * Returns the definition's description for a given pojo.
      */
-    String getDescription( T pojo );
+    String getDescription( final T pojo );
 
     /**
      * Returns the definition's labels for a given pojo.
      */
-    Set<String> getLabels( T pojo );
+    Set<String> getLabels( final T pojo );
 
     /**
      * Returns the definition's property sets for a given pojo.
      */
-    Set<?> getPropertySets( T pojo );
+    Set<?> getPropertySets( final T pojo );
 
     /**
      * Returns all the definition's properties for a given pojo.
      * Must return the properties from the different
      * definition's property sets as well.
      */
-    Set<?> getProperties( T pojo );
+    Set<?> getProperties( final T pojo );
 
     /**
      * Returns the property bean instance for the given meta-property type..
      * Stunner provides some built-in features that could require model updates,
      * so this meta-properties are used for binding these features with the property beans.
      */
-    Object getMetaProperty( PropertyMetaTypes metaType, T pojo );
+    Object getMetaProperty( final PropertyMetaTypes metaType,
+                            final T pojo );
 
     /**
      * Returns the definition's graph element factory class for a given pojo.
      */
-    Class<? extends ElementFactory> getGraphFactoryType( T pojo );
+    Class<? extends ElementFactory> getGraphFactoryType( final T pojo );
 }

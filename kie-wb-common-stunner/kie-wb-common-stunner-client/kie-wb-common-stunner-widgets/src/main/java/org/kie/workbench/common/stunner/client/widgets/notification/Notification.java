@@ -19,7 +19,10 @@ package org.kie.workbench.common.stunner.client.widgets.notification;
 public interface Notification<S, C> {
 
     enum Type {
-        ERROR, WARNING, INFO, DEBUG
+        ERROR,
+        WARNING,
+        INFO,
+        DEBUG
     }
 
     String getNotificationUUID();
@@ -29,5 +32,4 @@ public interface Notification<S, C> {
     S getSource();
 
     C getContext();
-
 }

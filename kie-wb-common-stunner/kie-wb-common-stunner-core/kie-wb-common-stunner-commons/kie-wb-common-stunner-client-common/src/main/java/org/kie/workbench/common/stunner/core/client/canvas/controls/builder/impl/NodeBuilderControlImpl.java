@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
+import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -44,10 +48,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.List;
-
 @Dependent
 public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl implements NodeBuilderControl<AbstractCanvasHandler> {
 
@@ -59,7 +59,12 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
     private final EdgeMagnetsHelper magnetsHelper;
 
     protected NodeBuilderControlImpl() {
-        this( null, null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -94,8 +99,9 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
         final double y = request.getY();
         final Node<View<?>, Edge> node = request.getNode();
         if ( null != node ) {
-            final ElementBuildRequest<AbstractCanvasHandler> request1 =
-                    new ElementBuildRequestImpl( x, y, node.getContent().getDefinition() );
+            final ElementBuildRequest<AbstractCanvasHandler> request1 = new ElementBuildRequestImpl( x,
+                                                                                                     y,
+                                                                                                     node.getContent().getDefinition() );
             return elementBuilderControl.allows( request1 );
         }
         return false;
@@ -115,36 +121,49 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
             final Object nodeDef = node.getContent().getDefinition();
             final String nodeId = clientDefinitionManager.adapters().forDefinition().getId( nodeDef );
             final ElementBuilderControlImpl ebc = getElementBuilderControl();
-            final Node<View<?>, Edge> parent = ebc.getParent( x, y );
-            final Point2D childCoordinates = ebc.getChildCoordinates( parent, x, y );
+            final Node<View<?>, Edge> parent = ebc.getParent( x,
+                                                              y );
+            final Point2D childCoordinates = ebc.getChildCoordinates( parent,
+                                                                      x,
+                                                                      y );
             final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
-            ebc.getElementCommands( node, parent, childCoordinates.getX(), childCoordinates.getY(), new AbstractElementBuilderControl.CommandsCallback() {
-                @Override
-                public void onComplete( final String uuid,
-                                        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
-                    final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
-                            new CompositeCommandImpl.CompositeCommandBuilder()
-                                    .addCommands( commands );
-                    if ( inEdge != null ) {
-                        final Object edgeDef = inEdge.getContent().getDefinition();
-                        final String edgeId = clientDefinitionManager.adapters().forDefinition().getId( edgeDef );
-                        // The commands to batch for the edge that connects both nodes.
-                        commandBuilder.addCommand( commandFactory.addConnector( inEdge.getSourceNode(), inEdge, sourceManget, ssid ) );
-                        commandBuilder.addCommand( commandFactory.setTargetNode( node, inEdge, targetMagnet ) );
-                    }
-                    final CommandResult<CanvasViolation> results =
-                            canvasCommandManager.execute( canvasHandler, commandBuilder.build() );
-                    if ( !CommandUtils.isError( results ) ) {
-                        updateConnectorShape( inEdge, node, sourceManget, targetMagnet );
-                    }
-                    buildCallback.onSuccess( uuid );
-                }
+            ebc.getElementCommands( node,
+                                    parent,
+                                    childCoordinates.getX(),
+                                    childCoordinates.getY(),
+                                    new AbstractElementBuilderControl.CommandsCallback() {
+                                        @Override
+                                        public void onComplete( final String uuid,
+                                                                final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
+                                            final CompositeCommandImpl.CompositeCommandBuilder commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder().addCommands( commands );
+                                            if ( inEdge != null ) {
+                                                final Object edgeDef = inEdge.getContent().getDefinition();
+                                                final String edgeId = clientDefinitionManager.adapters().forDefinition().getId( edgeDef );
+                                                // The commands to batch for the edge that connects both nodes.
+                                                commandBuilder.addCommand( commandFactory.addConnector( inEdge.getSourceNode(),
+                                                                                                        inEdge,
+                                                                                                        sourceManget,
+                                                                                                        ssid ) );
+                                                commandBuilder.addCommand( commandFactory.setTargetNode( node,
+                                                                                                         inEdge,
+                                                                                                         targetMagnet ) );
+                                            }
+                                            final CommandResult<CanvasViolation> results = canvasCommandManager.execute( canvasHandler,
+                                                                                                                         commandBuilder.build() );
+                                            if ( !CommandUtils.isError( results ) ) {
+                                                updateConnectorShape( inEdge,
+                                                                      node,
+                                                                      sourceManget,
+                                                                      targetMagnet );
+                                            }
+                                            buildCallback.onSuccess( uuid );
+                                        }
 
-                @Override
-                public void onError( final ClientRuntimeError error ) {
-                    buildCallback.onError( error );
-                }
-            } );
+                                        @Override
+                                        public void onError( final ClientRuntimeError error ) {
+                                            buildCallback.onError( error );
+                                        }
+                                    } );
         }
     }
 
@@ -154,7 +173,8 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
                                          final int sourceMagnet,
                                          final int targetManget ) {
         final ViewConnector connectorContent = ( ViewConnector ) inEdge.getContent();
-        canvasHandler.applyElementMutation( inEdge, MutationContext.STATIC );
+        canvasHandler.applyElementMutation( inEdge,
+                                            MutationContext.STATIC );
         final EdgeShape edgeShape = ( EdgeShape ) canvasHandler.getCanvas().getShape( inEdge.getUUID() );
         final Node source = inEdge.getSourceNode();
         if ( null != source && null != targetNode ) {
@@ -162,7 +182,10 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
             final Shape<?> tShape = canvasHandler.getCanvas().getShape( targetNode.getUUID() );
             connectorContent.setSourceMagnetIndex( sourceMagnet );
             connectorContent.setTargetMagnetIndex( targetManget );
-            edgeShape.applyConnections( inEdge, sShape.getShapeView(), tShape.getShapeView(), MutationContext.STATIC );
+            edgeShape.applyConnections( inEdge,
+                                        sShape.getShapeView(),
+                                        tShape.getShapeView(),
+                                        MutationContext.STATIC );
         }
     }
 

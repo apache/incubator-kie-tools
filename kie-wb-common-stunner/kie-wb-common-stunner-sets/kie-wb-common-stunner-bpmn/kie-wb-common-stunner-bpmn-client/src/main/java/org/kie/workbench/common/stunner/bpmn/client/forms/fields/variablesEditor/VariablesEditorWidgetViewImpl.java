@@ -55,7 +55,8 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 @Templated( "VariablesEditorWidget.html#widget" )
-public class VariablesEditorWidgetViewImpl extends Composite implements VariablesEditorWidgetView, HasValue<String> {
+public class VariablesEditorWidgetViewImpl extends Composite implements VariablesEditorWidgetView,
+                                                                        HasValue<String> {
 
     ListBoxValues dataTypeListBoxValues;
 
@@ -97,60 +98,93 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
 
     @Override
     public void setValue( String value ) {
-        setValue( value, false );
+        setValue( value,
+                  false );
     }
 
     @Override
-    public void setValue( String value, boolean fireEvents ) {
+    public void setValue( String value,
+                          boolean fireEvents ) {
         if ( dataTypes == null ) {
-            getDataTypes( value, fireEvents );
+            getDataTypes( value,
+                          fireEvents );
         } else {
-            doSetValue( value, fireEvents, false );
+            doSetValue( value,
+                        fireEvents,
+                        false );
         }
     }
 
-    protected void doSetValue( String value, boolean fireEvents, boolean initializeView ) {
+    protected void doSetValue( String value,
+                               boolean fireEvents,
+                               boolean initializeView ) {
         String oldValue = sVariables;
         sVariables = value;
         if ( initializeView ) {
             initView();
         }
         if ( fireEvents ) {
-            ValueChangeEvent.fireIfNotEqual( this, oldValue, sVariables );
+            ValueChangeEvent.fireIfNotEqual( this,
+                                             oldValue,
+                                             sVariables );
         }
     }
 
-    protected void setDataTypes( final List<String> dataTypes, final List<String> dataTypeDisplayNames ) {
+    protected void setDataTypes( final List<String> dataTypes,
+                                 final List<String> dataTypeDisplayNames ) {
         this.dataTypes = dataTypes;
         this.dataTypeDisplayNames = dataTypeDisplayNames;
-        presenter.setDataTypes( dataTypes, dataTypeDisplayNames );
+        presenter.setDataTypes( dataTypes,
+                                dataTypeDisplayNames );
     }
 
-    protected void getDataTypes( final  String value, final boolean fireEvents ) {
-        final List<String> simpleDataTypes = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "String" ) );
-        final List<String> simpleDataTypeDisplayNames = new ArrayList<String>( Arrays.asList( "Boolean", "Float", "Integer", "Object", "String" ) );
+    protected void getDataTypes( final String value,
+                                 final boolean fireEvents ) {
+        final List<String> simpleDataTypes = new ArrayList<String>( Arrays.asList( "Boolean",
+                                                                                   "Float",
+                                                                                   "Integer",
+                                                                                   "Object",
+                                                                                   "String" ) );
+        final List<String> simpleDataTypeDisplayNames = new ArrayList<String>( Arrays.asList( "Boolean",
+                                                                                              "Float",
+                                                                                              "Integer",
+                                                                                              "Object",
+                                                                                              "String" ) );
         MessageBuilder.createCall(
-                new RemoteCallback< List<String> >() {
+                new RemoteCallback<List<String>>() {
                     public void callback( List<String> serverDataTypes ) {
-                        List<List<String>> mergedDataTypes = mergeDataTypes( simpleDataTypes, simpleDataTypeDisplayNames, serverDataTypes );
-                        setDataTypes( mergedDataTypes.get( 0 ), mergedDataTypes.get( 1 ) );
-                        doSetValue( value, fireEvents, true );
-                    };
+                        List<List<String>> mergedDataTypes = mergeDataTypes( simpleDataTypes,
+                                                                             simpleDataTypeDisplayNames,
+                                                                             serverDataTypes );
+                        setDataTypes( mergedDataTypes.get( 0 ),
+                                      mergedDataTypes.get( 1 ) );
+                        doSetValue( value,
+                                    fireEvents,
+                                    true );
+                    }
+
+                    ;
                 },
                 new BusErrorCallback() {
-                    public boolean error( Message message, Throwable t) {
-                        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(), NotificationEvent.NotificationType.ERROR ) );
-                        setDataTypes( simpleDataTypes, simpleDataTypeDisplayNames );
-                        doSetValue( value, fireEvents, true);
+                    public boolean error( Message message,
+                                          Throwable t ) {
+                        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(),
+                                                                  NotificationEvent.NotificationType.ERROR ) );
+                        setDataTypes( simpleDataTypes,
+                                      simpleDataTypeDisplayNames );
+                        doSetValue( value,
+                                    fireEvents,
+                                    true );
                         return false;
                     }
                 },
-                DataTypesService.class).getDataTypeNames();
+                DataTypesService.class ).getDataTypeNames();
     }
 
-
-    private List<List<String>> mergeDataTypes( List<String> simpleDataTypes, List<String> simpleDataTypeDisplayNames, List<String> serverDataTypes ) {
-        List<List<String>> results = new ArrayList<List<String>> ( 2 );
+    private List<List<String>> mergeDataTypes( List<String> simpleDataTypes,
+                                               List<String> simpleDataTypeDisplayNames,
+                                               List<String> serverDataTypes ) {
+        List<List<String>> results = new ArrayList<List<String>>( 2 );
         List<String> allDataTypes = new ArrayList<String>();
         List<String> allDataTypeDisplayNames = new ArrayList<String>();
         allDataTypes.addAll( simpleDataTypes );
@@ -159,7 +193,8 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
         // Create sorted map with DataTypeDisplayNames as the keys
         Map<String, String> mapServerDataTypeDisplayNames = new TreeMap<String, String>();
         for ( String serverDataType : serverDataTypes ) {
-            mapServerDataTypeDisplayNames.put( StringUtils.createDataTypeDisplayName( serverDataType ), serverDataType );
+            mapServerDataTypeDisplayNames.put( StringUtils.createDataTypeDisplayName( serverDataType ),
+                                               serverDataType );
         }
 
         // Add DataTypes in order sorted by DataTypeDisplayNames
@@ -177,7 +212,8 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
     @Override
     public void doSave() {
         String newValue = presenter.serializeVariables( getVariableRows() );
-        setValue( newValue, true );
+        setValue( newValue,
+                  true );
     }
 
     protected void initView() {
@@ -187,12 +223,12 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
 
     @Override
     public HandlerRegistration addValueChangeHandler( ValueChangeHandler<String> handler ) {
-        return addHandler( handler, ValueChangeEvent.getType() );
+        return addHandler( handler,
+                           ValueChangeEvent.getType() );
     }
 
     /**
      * Tests whether a VariableRow name occurs more than once in the list of rows
-     *
      * @param name
      * @return
      */
@@ -261,5 +297,4 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
             setNoneDisplayStyle();
         }
     }
-
 }

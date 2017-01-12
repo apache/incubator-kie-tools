@@ -42,5 +42,4 @@ public interface AssigneeListItemWidgetView extends HasModel<AssigneeRow> {
     String getCustomName();
 
     void setCustomName( String customName );
-
 }

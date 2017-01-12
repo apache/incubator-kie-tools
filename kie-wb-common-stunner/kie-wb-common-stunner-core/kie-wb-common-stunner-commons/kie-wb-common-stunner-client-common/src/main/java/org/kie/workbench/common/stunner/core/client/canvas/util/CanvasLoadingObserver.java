@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.Timer;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.google.gwt.logging.client.LogConfiguration;
+import com.google.gwt.user.client.Timer;
 
 public class CanvasLoadingObserver {
 
@@ -33,14 +33,13 @@ public class CanvasLoadingObserver {
         void onLoadingStarted();
 
         void onLoadingCompleted();
-
     }
 
     private Callback callback;
     private Timer timeout;
     private int duration = TIMEOUT_DURATION;
 
-    public void setLoadingObserverCallback( Callback callback ) {
+    public void setLoadingObserverCallback( final Callback callback ) {
         this.callback = callback;
     }
 
@@ -63,16 +62,13 @@ public class CanvasLoadingObserver {
             };
             timeout.schedule( duration );
         }
-
     }
 
     public void loadingCompleted() {
         clearTimeout();
         if ( null != callback ) {
             callback.onLoadingCompleted();
-
         }
-
     }
 
     private void clearTimeout() {
@@ -83,22 +79,23 @@ public class CanvasLoadingObserver {
             }
             this.timeout = null;
         }
-
     }
 
     private static void log( final String message ) {
-        log( Level.FINE, message );
+        log( Level.FINE,
+             message );
     }
 
     private static void logWarn( final String message ) {
-        log( Level.WARNING, message );
+        log( Level.WARNING,
+             message );
     }
 
     private static void log( final Level level,
                              final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
-
 }

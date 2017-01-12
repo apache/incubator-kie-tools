@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
+import javax.enterprise.context.Dependent;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.LienzoPanel;
@@ -28,8 +30,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
-
-import javax.enterprise.context.Dependent;
 
 @Dependent
 public class TreeExplorerItemView extends Composite implements TreeExplorerItem.View {
@@ -77,15 +77,17 @@ public class TreeExplorerItemView extends Composite implements TreeExplorerItem.
 
     @Override
     public TreeExplorerItem.View setGlyph( final Glyph<Group> glyph ) {
-        initLienzoPanel( glyph.getWidth(), glyph.getHeight() );
+        initLienzoPanel( glyph.getWidth(),
+                         glyph.getHeight() );
         lienzoLayer.add( glyph.getGroup() );
         return this;
     }
 
-    private void initLienzoPanel( final double width, final double height ) {
-        lienzoPanel = new LienzoPanel( ( int ) width, ( int ) height );
+    private void initLienzoPanel( final double width,
+                                  final double height ) {
+        lienzoPanel = new LienzoPanel( ( int ) width,
+                                       ( int ) height );
         lienzoPanel.add( lienzoLayer );
         glyphPanel.add( lienzoPanel );
     }
-
 }

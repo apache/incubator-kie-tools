@@ -15,6 +15,9 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +27,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class ModelContainmentRuleManagerImplTest {
@@ -46,8 +46,10 @@ public class ModelContainmentRuleManagerImplTest {
                 add( "role4" );
             }};
 
-    @Mock  ContainmentRule rule;
-    @Mock  ContainmentRule rule2;
+    @Mock
+    ContainmentRule rule;
+    @Mock
+    ContainmentRule rule2;
 
     private ModelContainmentRuleManagerImpl tested;
 
@@ -67,7 +69,8 @@ public class ModelContainmentRuleManagerImplTest {
         final Set<String> candidateRoles = new HashSet<String>( 1 ) {{
             add( "role2" );
         }};
-        final RuleViolations violations = tested.evaluate( PARENT_ID, candidateRoles );
+        final RuleViolations violations = tested.evaluate( PARENT_ID,
+                                                           candidateRoles );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -77,7 +80,8 @@ public class ModelContainmentRuleManagerImplTest {
         final Set<String> candidateRoles = new HashSet<String>( 1 ) {{
             add( "role5" );
         }};
-        final RuleViolations violations = tested.evaluate( PARENT_ID, candidateRoles );
+        final RuleViolations violations = tested.evaluate( PARENT_ID,
+                                                           candidateRoles );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -87,7 +91,8 @@ public class ModelContainmentRuleManagerImplTest {
         final Set<String> candidateRoles = new HashSet<String>( 1 ) {{
             add( "role4" );
         }};
-        final RuleViolations violations = tested.evaluate( PARENT_ID2, candidateRoles );
+        final RuleViolations violations = tested.evaluate( PARENT_ID2,
+                                                           candidateRoles );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -97,9 +102,9 @@ public class ModelContainmentRuleManagerImplTest {
         final Set<String> candidateRoles = new HashSet<String>( 1 ) {{
             add( "role1" );
         }};
-        final RuleViolations violations = tested.evaluate( PARENT_ID2, candidateRoles );
+        final RuleViolations violations = tested.evaluate( PARENT_ID2,
+                                                           candidateRoles );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
-
 }

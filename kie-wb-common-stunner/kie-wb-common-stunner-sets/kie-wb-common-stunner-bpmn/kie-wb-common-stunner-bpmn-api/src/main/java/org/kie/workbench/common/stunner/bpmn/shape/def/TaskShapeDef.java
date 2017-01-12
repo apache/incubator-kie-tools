@@ -16,7 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
-import org.kie.workbench.common.stunner.bpmn.definition.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
+import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -28,13 +35,11 @@ import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 
-import java.util.HashMap;
-import java.util.Map;
-
 // TODO: I18n.
 public final class TaskShapeDef
         extends AbstractShapeDef<BaseTask>
-        implements RectangleShapeDef<BaseTask>, HasChildShapeDefs<BaseTask> {
+        implements RectangleShapeDef<BaseTask>,
+                   HasChildShapeDefs<BaseTask> {
 
     @Override
     public String getBackgroundColor( final BaseTask element ) {
@@ -100,10 +105,14 @@ public final class TaskShapeDef
 
         private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>( 3 ) {{
             // TODO: Change NoneTask image!
-            put( NoneTask.class, BPMNPictures.TASK_USER );
-            put( UserTask.class, BPMNPictures.TASK_USER );
-            put( ScriptTask.class, BPMNPictures.TASK_SCRIPT );
-            put( BusinessRuleTask.class, BPMNPictures.TASK_BUSINESS_RULE );
+            put( NoneTask.class,
+                 BPMNPictures.TASK_USER );
+            put( UserTask.class,
+                 BPMNPictures.TASK_USER );
+            put( ScriptTask.class,
+                 BPMNPictures.TASK_SCRIPT );
+            put( BusinessRuleTask.class,
+                 BPMNPictures.TASK_BUSINESS_RULE );
         }};
 
         @Override
@@ -125,7 +134,8 @@ public final class TaskShapeDef
     @Override
     public Map<ShapeDef<BaseTask>, HasChildren.Layout> getChildShapeDefs() {
         return new HashMap<ShapeDef<BaseTask>, HasChildren.Layout>() {{
-            put( new TaskTypeProxy(), HasChildren.Layout.TOP );
+            put( new TaskTypeProxy(),
+                 HasChildren.Layout.TOP );
         }};
     }
 
@@ -145,6 +155,7 @@ public final class TaskShapeDef
     }
 
     public final class TaskTypeProxy extends AbstractShapeDef<BaseTask> implements PictureShapeDef<BaseTask, BPMNPictures> {
+
         @Override
         public BPMNPictures getPictureSource( final BaseTask element ) {
             final TaskType taskType = element.getTaskType();
@@ -168,7 +179,5 @@ public final class TaskShapeDef
         public double getHeight( final BaseTask element ) {
             return 15d;
         }
-
     }
-
 }

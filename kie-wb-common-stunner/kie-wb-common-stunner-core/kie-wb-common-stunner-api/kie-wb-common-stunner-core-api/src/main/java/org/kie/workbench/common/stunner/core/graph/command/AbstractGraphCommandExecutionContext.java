@@ -27,7 +27,7 @@ public abstract class AbstractGraphCommandExecutionContext implements GraphComma
 
     public AbstractGraphCommandExecutionContext( final DefinitionManager definitionManager,
                                                  final FactoryManager factoryManager,
-                                                 final Index<?, ?> graphIndex) {
+                                                 final Index<?, ?> graphIndex ) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.graphIndex = graphIndex;
@@ -47,5 +47,4 @@ public abstract class AbstractGraphCommandExecutionContext implements GraphComma
     public Index<?, ?> getGraphIndex() {
         return graphIndex;
     }
-
 }

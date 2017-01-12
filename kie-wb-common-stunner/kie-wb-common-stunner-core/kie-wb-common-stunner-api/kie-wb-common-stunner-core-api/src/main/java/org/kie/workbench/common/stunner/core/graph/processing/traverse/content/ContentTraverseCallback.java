@@ -24,16 +24,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public interface ContentTraverseCallback<C, N extends Node<View, Edge>, E extends Edge<C, Node>> {
 
-    void startGraphTraversal( Graph<DefinitionSet, N> graph );
+    void startGraphTraversal( final Graph<DefinitionSet, N> graph );
 
-    void startEdgeTraversal( E edge );
+    void startEdgeTraversal( final E edge );
 
-    void endEdgeTraversal( E edge );
+    void endEdgeTraversal( final E edge );
 
-    void startNodeTraversal( N node );
+    void startNodeTraversal( final N node );
 
-    void endNodeTraversal( N node );
+    void endNodeTraversal( final N node );
 
     void endGraphTraversal();
-
 }

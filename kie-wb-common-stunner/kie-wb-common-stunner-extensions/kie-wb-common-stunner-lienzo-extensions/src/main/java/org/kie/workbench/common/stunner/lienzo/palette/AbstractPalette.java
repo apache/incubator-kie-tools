@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.lienzo.palette;
 
+import java.util.Iterator;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import org.kie.workbench.common.stunner.lienzo.Decorator;
 import org.kie.workbench.common.stunner.lienzo.Decorator.ItemCallback;
 import org.kie.workbench.common.stunner.lienzo.grid.Grid;
-
-import java.util.Iterator;
 
 public abstract class AbstractPalette<T> extends Group {
 
@@ -53,14 +53,25 @@ public abstract class AbstractPalette<T> extends Group {
 
     public interface Callback {
 
-        void onItemHover( int index, double eventX, double eventY, double itemX, double itemY );
+        void onItemHover( int index,
+                          double eventX,
+                          double eventY,
+                          double itemX,
+                          double itemY );
 
         void onItemOut( int index );
 
-        void onItemMouseDown( int index, double eventX, double eventY, double itemX, double itemY );
+        void onItemMouseDown( int index,
+                              double eventX,
+                              double eventY,
+                              double itemX,
+                              double itemY );
 
-        void onItemClick( int index, double eventX, double eventY, double itemX, double itemY );
-
+        void onItemClick( int index,
+                          double eventX,
+                          double eventY,
+                          double itemX,
+                          double itemY );
     }
 
     protected int iconSize;
@@ -124,17 +135,29 @@ public abstract class AbstractPalette<T> extends Group {
             final double px = x + point.getX();
             final double py = y + point.getY();
             final Decorator itemDecorator = item.getDecorator() != null ?
-                    createDecorator( index, px, py ) : null;
+                    createDecorator( index,
+                                     px,
+                                     py ) : null;
             final IPrimitive<?> i = null != itemDecorator ?
-                    itemDecorator.build( item.getPrimitive(), toDouble( iconSize ), toDouble( iconSize ) ) :
+                    itemDecorator.build( item.getPrimitive(),
+                                         toDouble( iconSize ),
+                                         toDouble( iconSize ) ) :
                     item.getPrimitive();
             i.setX( px ).setY( py ).moveToTop();
             this.itemsGroup.add( i );
             handlerRegistrationManager.register(
-                    i.addNodeMouseDownHandler( event -> onItemMouseDown( index, event.getX(), event.getY(), px, py ) )
+                    i.addNodeMouseDownHandler( event -> onItemMouseDown( index,
+                                                                         event.getX(),
+                                                                         event.getY(),
+                                                                         px,
+                                                                         py ) )
             );
             handlerRegistrationManager.register(
-                    i.addNodeMouseClickHandler( event -> onItemClick( index, event.getX(), event.getY(), px, py ) )
+                    i.addNodeMouseClickHandler( event -> onItemClick( index,
+                                                                      event.getX(),
+                                                                      event.getY(),
+                                                                      px,
+                                                                      py ) )
             );
         }
         afterBuild();
@@ -158,13 +181,18 @@ public abstract class AbstractPalette<T> extends Group {
     protected Grid createGrid( final int itemsSize ) {
         final int r = rows > 0 ? rows : itemsSize;
         final int c = cols > 0 ? cols : itemsSize;
-        return new Grid( padding, iconSize, r, c );
+        return new Grid( padding,
+                         iconSize,
+                         r,
+                         c );
     }
 
     protected Decorator createDecorator( final int index,
                                          final double itemX,
                                          final double itemY ) {
-        return new Decorator( createDecoratorCallback( index, itemX, itemY ) );
+        return new Decorator( createDecoratorCallback( index,
+                                                       itemX,
+                                                       itemY ) );
     }
 
     protected ItemCallback createDecoratorCallback( final int index,
@@ -173,8 +201,13 @@ public abstract class AbstractPalette<T> extends Group {
         return new ItemCallback() {
 
             @Override
-            public void onShow( final double x, final double y ) {
-                doShowItem( index, x, y, itemX, itemY );
+            public void onShow( final double x,
+                                final double y ) {
+                doShowItem( index,
+                            x,
+                            y,
+                            itemX,
+                            itemY );
             }
 
             @Override
@@ -202,7 +235,11 @@ public abstract class AbstractPalette<T> extends Group {
                                final double itemX,
                                final double itemY ) {
         if ( null != callback ) {
-            callback.onItemHover( index, x, y, itemX, itemY );
+            callback.onItemHover( index,
+                                  x,
+                                  y,
+                                  itemX,
+                                  itemY );
         }
     }
 
@@ -212,15 +249,31 @@ public abstract class AbstractPalette<T> extends Group {
         }
     }
 
-    protected void onItemMouseDown( final int index, double eventX, double eventY, double itemX, double itemY ) {
+    protected void onItemMouseDown( final int index,
+                                    double eventX,
+                                    double eventY,
+                                    double itemX,
+                                    double itemY ) {
         if ( null != callback ) {
-            callback.onItemMouseDown( index, eventX, eventY, itemX, itemY );
+            callback.onItemMouseDown( index,
+                                      eventX,
+                                      eventY,
+                                      itemX,
+                                      itemY );
         }
     }
 
-    protected void onItemClick( final int index, double eventX, double eventY, double itemX, double itemY ) {
+    protected void onItemClick( final int index,
+                                double eventX,
+                                double eventY,
+                                double itemX,
+                                double itemY ) {
         if ( null != callback ) {
-            callback.onItemClick( index, eventX, eventY, itemX, itemY );
+            callback.onItemClick( index,
+                                  eventX,
+                                  eventY,
+                                  itemX,
+                                  itemY );
         }
     }
 

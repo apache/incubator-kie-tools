@@ -15,14 +15,14 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.binding;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractRuntimeDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.Set;
 
 class RuntimeBindableDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSetAdapter<T>
         implements BindableDefinitionSetAdapter<T> {
@@ -43,10 +43,11 @@ class RuntimeBindableDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSe
     }
 
     @Override
-    public String getDescription( T definitionSet ) {
+    public String getDescription( final T definitionSet ) {
         Class<?> type = definitionSet.getClass();
         try {
-            return getFieldValue( definitionSet, propertyDescriptionFieldNames.get( type ) );
+            return getFieldValue( definitionSet,
+                                  propertyDescriptionFieldNames.get( type ) );
         } catch ( IllegalAccessException e ) {
             LOG.error( "Error obtaining description for Definition Set with id " + getId( definitionSet ) );
         }
@@ -54,7 +55,7 @@ class RuntimeBindableDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSe
     }
 
     @Override
-    public Set<String> getDefinitions( T definitionSet ) {
+    public Set<String> getDefinitions( final T definitionSet ) {
         return getAnnotatedDefinitions( definitionSet );
     }
 
@@ -66,7 +67,7 @@ class RuntimeBindableDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSe
     }
 
     @Override
-    public boolean accepts( Class<?> type ) {
+    public boolean accepts( final Class<?> type ) {
         return null != graphFactoryTypes && graphFactoryTypes.containsKey( type );
     }
 }

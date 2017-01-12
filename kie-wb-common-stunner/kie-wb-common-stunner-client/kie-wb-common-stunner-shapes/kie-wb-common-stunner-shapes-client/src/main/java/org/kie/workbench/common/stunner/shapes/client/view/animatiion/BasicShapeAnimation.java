@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.shapes.client.view.animatiion;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationProperty;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
@@ -25,9 +28,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.shapes.client.BasicShape;
 import org.kie.workbench.common.stunner.shapes.client.view.BasicShapeView;
-
-import java.util.LinkedList;
-import java.util.List;
 
 public class BasicShapeAnimation
         extends AbstractBasicAnimation<BasicShape> {
@@ -48,23 +48,28 @@ public class BasicShapeAnimation
         // Shape property animations.
         final Shape shape = view.getShape();
         final AnimationProperties _shapeAnimationProperties = translate( shapeAnimationProperties );
-        shape.animate( tweener, _shapeAnimationProperties, duration, getAnimationCallback() );
+        shape.animate( tweener,
+                       _shapeAnimationProperties,
+                       duration,
+                       getAnimationCallback() );
         shapeAnimationProperties.clear();
         // Decorator property animations.
         final Shape decorator = view.getPath();
         if ( null != decorator ) {
             final AnimationProperties _decoratorAnimationProperties = translate( decoratorAnimationProperties );
-            decorator.animate( tweener, _decoratorAnimationProperties, duration );
+            decorator.animate( tweener,
+                               _decoratorAnimationProperties,
+                               duration );
             decoratorAnimationProperties.clear();
         }
         // Text animations.
         if ( null != text ) {
             final AnimationProperties _textAnimationProperties = translate( textAnimationProperties );
-            text.animate( tweener, _textAnimationProperties, duration );
+            text.animate( tweener,
+                          _textAnimationProperties,
+                          duration );
             textAnimationProperties.clear();
-
         }
-
     }
 
     private AnimationProperties translate( final List<AnimationProperty> ps ) {
@@ -98,12 +103,14 @@ public class BasicShapeAnimation
     public void animateSize( final Double w,
                              final Double h ) {
         if ( null != w && null != h ) {
-            ( ( HasSize ) getView() ).setSize( w, h );
+            ( ( HasSize ) getView() ).setSize( w,
+                                               h );
             shapeAnimationProperties.add( AnimationProperty.Properties.WIDTH( w ) );
             decoratorAnimationProperties.add( AnimationProperty.Properties.WIDTH( w ) );
             shapeAnimationProperties.add( AnimationProperty.Properties.HEIGHT( h ) );
             decoratorAnimationProperties.add( AnimationProperty.Properties.HEIGHT( h ) );
-            getView().updateFillGradient( w, h );
+            getView().updateFillGradient( w,
+                                          h );
         }
     }
 
@@ -113,7 +120,8 @@ public class BasicShapeAnimation
             shapeAnimationProperties.add( AnimationProperty.Properties.RADIUS( value ) );
             decoratorAnimationProperties.add( AnimationProperty.Properties.RADIUS( value ) );
             final double size = value * 2;
-            getView().updateFillGradient( size, size );
+            getView().updateFillGradient( size,
+                                          size );
         }
     }
 
@@ -136,5 +144,4 @@ public class BasicShapeAnimation
     public void animateFontAlpha( final Double value ) {
         textAnimationProperties.add( AnimationProperty.Properties.ALPHA( value ) );
     }
-
 }

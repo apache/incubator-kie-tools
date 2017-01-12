@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import javax.enterprise.event.Event;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,10 +38,6 @@ import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
-
-import javax.enterprise.event.Event;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import static org.mockito.Mockito.*;
 
@@ -89,7 +89,10 @@ public class FormPropertiesWidgetTest {
         when( node.getUUID() ).thenReturn( ROOT_UUID );
         when( node.getContent() ).thenReturn( nodeContent );
         when( nodeContent.getDefinition() ).thenReturn( nodeDefObject );
-        this.tested = new FormPropertiesWidget( definitionUtils, commandFactory, formRenderer, propertiesOpenedEvent );
+        this.tested = new FormPropertiesWidget( definitionUtils,
+                                                commandFactory,
+                                                formRenderer,
+                                                propertiesOpenedEvent );
     }
 
     @Test
@@ -100,7 +103,8 @@ public class FormPropertiesWidgetTest {
                 .bind( session )
                 .show( callback );
         // verify( formRenderer, times( 1 ) ).unBind(); - fix on class first.
-        verify( formRenderer, times( 0 ) ).bind( anyObject() );
+        verify( formRenderer,
+                times( 0 ) ).bind( anyObject() );
     }
 
     /**

@@ -19,10 +19,9 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 public interface PictureShapeDef<W, S> extends ShapeDef<W> {
 
-    S getPictureSource( W element );
+    S getPictureSource( final W element );
 
-    double getWidth( W element );
+    double getWidth( final W element );
 
-    double getHeight( W element );
-
+    double getHeight( final W element );
 }

@@ -22,5 +22,4 @@ public abstract class AbstractShapeDef<W> implements ShapeDef<W> {
     public GlyphDef<W> getGlyphDef() {
         return GlyphDefinitions.GLYPH_SHAPE();
     }
-
 }

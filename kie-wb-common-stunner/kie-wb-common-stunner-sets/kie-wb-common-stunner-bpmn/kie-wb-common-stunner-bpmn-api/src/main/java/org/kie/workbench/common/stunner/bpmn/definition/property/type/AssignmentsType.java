@@ -54,5 +54,4 @@ public class AssignmentsType implements PropertyType {
                 "name='" + name + '\'' +
                 '}';
     }
-
 }

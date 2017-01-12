@@ -24,5 +24,4 @@ public interface On {
     Towards on( Direction anchor );
 
     On attachTo( Shape<?> shape );
-
 }

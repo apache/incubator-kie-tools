@@ -41,9 +41,11 @@ public interface AssignmentListItemWidgetView extends HasModel<AssignmentRow> {
 
     void setShowConstants( boolean showConstants );
 
-    void setDisallowedNames( Set<String> disallowedNames, String disallowedNameErrorMessage );
+    void setDisallowedNames( Set<String> disallowedNames,
+                             String disallowedNameErrorMessage );
 
-    void setAllowDuplicateNames( boolean allowDuplicateNames, String duplicateNameErrorMessage );
+    void setAllowDuplicateNames( boolean allowDuplicateNames,
+                                 String duplicateNameErrorMessage );
 
     boolean isDuplicateName( String name );
 

@@ -15,6 +15,10 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
@@ -34,46 +38,65 @@ import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-import org.kie.workbench.common.stunner.core.rule.graph.*;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphCardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphConnectionRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphDockingRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphEdgeCardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public abstract class AbstractGraphCommandTest {
 
     private static final String GRAPH_UUID = "graphUUID";
     protected final RuleViolations EMPTY_VIOLATIONS = new DefaultRuleViolations();
 
-    @Mock protected GraphCommandExecutionContext graphCommandExecutionContext;
-    @Mock protected DefinitionManager definitionManager;
-    @Mock protected AdapterManager adapterManager;
-    @Mock protected AdapterRegistry adapterRegistry;
-    @Mock protected DefinitionAdapter definitionAdapter;
-    @Mock protected PropertyAdapter propertyAdapter;
-    @Mock protected FactoryManager factoryManager;
-    @Mock protected GraphRulesManager graphRulesManager;
-    @Mock protected GraphContainmentRuleManager containmentRuleManager;
-    @Mock protected GraphConnectionRuleManager connectionRuleManager;
-    @Mock protected GraphCardinalityRuleManager cardinalityRuleManager;
-    @Mock protected GraphEdgeCardinalityRuleManager edgeCardinalityRuleManager;
-    @Mock protected GraphDockingRuleManager dockingRuleManager;
-    @Mock protected MutableIndex graphIndex;
-    @Mock protected Graph<DefinitionSet, Node> graph;
+    @Mock
+    protected GraphCommandExecutionContext graphCommandExecutionContext;
+    @Mock
+    protected DefinitionManager definitionManager;
+    @Mock
+    protected AdapterManager adapterManager;
+    @Mock
+    protected AdapterRegistry adapterRegistry;
+    @Mock
+    protected DefinitionAdapter definitionAdapter;
+    @Mock
+    protected PropertyAdapter propertyAdapter;
+    @Mock
+    protected FactoryManager factoryManager;
+    @Mock
+    protected GraphRulesManager graphRulesManager;
+    @Mock
+    protected GraphContainmentRuleManager containmentRuleManager;
+    @Mock
+    protected GraphConnectionRuleManager connectionRuleManager;
+    @Mock
+    protected GraphCardinalityRuleManager cardinalityRuleManager;
+    @Mock
+    protected GraphEdgeCardinalityRuleManager edgeCardinalityRuleManager;
+    @Mock
+    protected GraphDockingRuleManager dockingRuleManager;
+    @Mock
+    protected MutableIndex graphIndex;
+    @Mock
+    protected Graph<DefinitionSet, Node> graph;
     protected Collection<Node> graphNodes = new LinkedList<>();
-    @Mock protected DefinitionSet graphContent;
+    @Mock
+    protected DefinitionSet graphContent;
 
     @SuppressWarnings( "unchecked" )
     public void init( final double width,
                       final double height ) {
         MockitoAnnotations.initMocks( this );
-        Bounds bounds = mockBounds( 0, 0, width, height );
+        Bounds bounds = mockBounds( 0,
+                                    0,
+                                    width,
+                                    height );
         when( graphContent.getBounds() ).thenReturn( bounds );
         when( graph.getUUID() ).thenReturn( GRAPH_UUID );
         when( graph.getContent() ).thenReturn( graphContent );
@@ -94,12 +117,21 @@ public abstract class AbstractGraphCommandTest {
         when( graphRulesManager.cardinality() ).thenReturn( cardinalityRuleManager );
         when( graphRulesManager.edgeCardinality() ).thenReturn( edgeCardinalityRuleManager );
         when( graphRulesManager.docking() ).thenReturn( dockingRuleManager );
-        when( containmentRuleManager.evaluate( any( Element.class ), any( Element.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
-        when( connectionRuleManager.evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
-        when( cardinalityRuleManager.evaluate( any( Graph.class ), any( Node.class ), any( RuleManager.Operation.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
-        when( edgeCardinalityRuleManager.evaluate( any( Edge.class ), any( Node.class ),
-                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
-        when( dockingRuleManager.evaluate( any( Element.class ), any( Element.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
+        when( containmentRuleManager.evaluate( any( Element.class ),
+                                               any( Element.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
+        when( connectionRuleManager.evaluate( any( Edge.class ),
+                                              any( Node.class ),
+                                              any( Node.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
+        when( cardinalityRuleManager.evaluate( any( Graph.class ),
+                                               any( Node.class ),
+                                               any( RuleManager.Operation.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
+        when( edgeCardinalityRuleManager.evaluate( any( Edge.class ),
+                                                   any( Node.class ),
+                                                   any( List.class ),
+                                                   any( EdgeCardinalityRule.Type.class ),
+                                                   any( RuleManager.Operation.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
+        when( dockingRuleManager.evaluate( any( Element.class ),
+                                           any( Element.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
     }
 
     public static Node mockNode( String uuid ) {
@@ -121,15 +153,18 @@ public abstract class AbstractGraphCommandTest {
                                  final double w,
                                  final double h ) {
         View view = mock( View.class );
-        Bounds bounds = mockBounds( x, y, w, h );
+        Bounds bounds = mockBounds( x,
+                                    y,
+                                    w,
+                                    h );
         when( view.getBounds() ).thenReturn( bounds );
         return view;
     }
 
     public static Bounds mockBounds( final double x,
-                                 final double y,
-                                 final double w,
-                                 final double h ) {
+                                     final double y,
+                                     final double w,
+                                     final double h ) {
         Bounds bounds = mock( Bounds.class );
         Bounds.Bound boundUL = mock( Bounds.Bound.class );
         Bounds.Bound boundLR = mock( Bounds.Bound.class );
@@ -141,5 +176,4 @@ public abstract class AbstractGraphCommandTest {
         when( bounds.getUpperLeft() ).thenReturn( boundUL );
         return bounds;
     }
-
 }

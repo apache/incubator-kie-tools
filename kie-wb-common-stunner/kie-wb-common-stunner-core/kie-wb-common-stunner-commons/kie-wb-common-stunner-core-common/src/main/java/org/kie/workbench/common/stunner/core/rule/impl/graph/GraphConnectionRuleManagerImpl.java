@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.graph;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -25,9 +28,6 @@ import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphConnectionRuleManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelConnectionRuleManager;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class GraphConnectionRuleManagerImpl extends AbstractGraphRuleManager<ConnectionRule, ModelConnectionRuleManager>
@@ -62,8 +62,8 @@ public class GraphConnectionRuleManagerImpl extends AbstractGraphRuleManager<Con
             return new DefaultRuleViolations();
         }
         final String edgeId = getElementDefinitionId( edge );
-        return modelConnectionRuleManager.evaluate( edgeId, getLabels( outgoing ), getLabels( incoming ) );
-
+        return modelConnectionRuleManager.evaluate( edgeId,
+                                                    getLabels( outgoing ),
+                                                    getLabels( incoming ) );
     }
-
 }

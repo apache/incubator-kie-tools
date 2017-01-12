@@ -47,7 +47,9 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
                                final AbstractDirectionalMultiPointShape<?> line,
                                final MultiPathDecorator headDecorator,
                                final MultiPathDecorator tailDecorator ) {
-        super( line, headDecorator, tailDecorator );
+        super( line,
+               headDecorator,
+               tailDecorator );
         init( supportedEventTypes );
     }
 
@@ -57,14 +59,19 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
                                final AbstractDirectionalMultiPointShape<?> line,
                                final MultiPathDecorator headDecorator,
                                final MultiPathDecorator tailDecorator ) {
-        super( headMagnet, tailMagnet, line, headDecorator, tailDecorator );
+        super( headMagnet,
+               tailMagnet,
+               line,
+               headDecorator,
+               tailDecorator );
         init( supportedEventTypes );
     }
 
     protected void init( final ViewEventType[] supportedEventTypes ) {
         this.textPosition = WiresLayoutContainer.Layout.CENTER;
         this.textRotationDegrees = 0;
-        this.eventHandlerManager = new ViewEventHandlerManager( getLine(), supportedEventTypes );
+        this.eventHandlerManager = new ViewEventHandlerManager( getLine(),
+                                                                supportedEventTypes );
         enableShowControlsOnMouseEnter();
     }
 
@@ -79,35 +86,37 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T addHandler( final ViewEventType type,
                          final ViewHandler<? extends ViewEvent> eventHandler ) {
-        eventHandlerManager.addHandler( type, eventHandler );
+        eventHandlerManager.addHandler( type,
+                                        eventHandler );
         return ( T ) this;
-
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T removeHandler( final ViewHandler<? extends ViewEvent> eventHandler ) {
         eventHandlerManager.removeHandler( eventHandler );
         return ( T ) this;
-
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T disableHandlers() {
         eventHandlerManager.disable();
         return ( T ) this;
-
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T enableHandlers() {
         eventHandlerManager.enable();
         return ( T ) this;
-
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setTitle( final String title ) {
         if ( null != text ) {
             text.removeFromParent();
@@ -119,6 +128,7 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setTitlePosition( final Position position ) {
         if ( Position.BOTTOM.equals( position ) ) {
             this.textPosition = LayoutContainer.Layout.BOTTOM;
@@ -148,37 +158,42 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setTitleFontFamily( final String fontFamily ) {
         text.setFontFamily( fontFamily );
         return ( T ) this;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setTitleFontSize( final double fontSize ) {
         text.setFontSize( fontSize );
         return ( T ) this;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setTitleStrokeWidth( final double strokeWidth ) {
         text.setStrokeWidth( strokeWidth );
         return ( T ) this;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T moveTitleToTop() {
         text.moveToTop();
         return ( T ) this;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T setTitleAlpha( final double alpha ) {
         text.setAlpha( alpha );
         return ( T ) this;
-
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T refreshTitle() {
         return ( T ) this;
     }
@@ -189,9 +204,7 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
         if ( null != eventHandlerManager ) {
             eventHandlerManager.destroy();
             eventHandlerManager = null;
-
         }
-
     }
 
     @Override
@@ -203,5 +216,4 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
         this.strokeWidth = null;
         this.color = null;
     }
-
 }

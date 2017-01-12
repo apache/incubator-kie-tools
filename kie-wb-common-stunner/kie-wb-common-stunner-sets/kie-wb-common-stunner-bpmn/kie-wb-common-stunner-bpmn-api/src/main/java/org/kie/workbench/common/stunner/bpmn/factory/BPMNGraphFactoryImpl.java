@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.factory;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -41,9 +44,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 /**
  * The custom factory for BPMN graphs.
  * It initializes the BPMN graph with a new Diagram node instance, which represents the main process.
@@ -63,7 +63,11 @@ public class BPMNGraphFactoryImpl
     private final GraphIndexBuilder<?> indexBuilder;
 
     protected BPMNGraphFactoryImpl() {
-        this( null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -88,23 +92,31 @@ public class BPMNGraphFactoryImpl
     @SuppressWarnings( "unchecked" )
     public Graph<DefinitionSet, Node> build( final String uuid,
                                              final String definitionSetId ) {
-        final GraphImpl graph = new GraphImpl<>( uuid, new GraphNodeStoreImpl() );
+        final GraphImpl graph = new GraphImpl<>( uuid,
+                                                 new GraphNodeStoreImpl() );
         final DefinitionSet content = new DefinitionSetImpl( definitionSetId );
         graph.setContent( content );
         if ( null == content.getBounds() ) {
             content.setBounds( new BoundsImpl(
-                    new BoundImpl( 0d, 0d ),
-                    new BoundImpl( BPMNGraphFactory.GRAPH_DEFAULT_WIDTH, BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT )
+                    new BoundImpl( 0d,
+                                   0d ),
+                    new BoundImpl( BPMNGraphFactory.GRAPH_DEFAULT_WIDTH,
+                                   BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT )
             ) );
         }
         // Add a BPMN diagram and a start event nodes by default.
-        Node<Definition<BPMNDiagram>, Edge> diagramNode = ( Node<Definition<BPMNDiagram>, Edge> ) factoryManager.newElement( UUID.uuid(), BPMNDiagram.class );
-        Node<Definition<StartNoneEvent>, Edge> startEventNode = ( Node<Definition<StartNoneEvent>, Edge> ) factoryManager.newElement( UUID.uuid(), StartNoneEvent.class );
+        Node<Definition<BPMNDiagram>, Edge> diagramNode = ( Node<Definition<BPMNDiagram>, Edge> ) factoryManager.newElement( UUID.uuid(),
+                                                                                                                             BPMNDiagram.class );
+        Node<Definition<StartNoneEvent>, Edge> startEventNode = ( Node<Definition<StartNoneEvent>, Edge> ) factoryManager.newElement( UUID.uuid(),
+                                                                                                                                      StartNoneEvent.class );
         graphCommandManager.execute( createGraphContext( graph ),
-                new CompositeCommandImpl.CompositeCommandBuilder()
-                        .addCommand( graphCommandFactory.addNode( diagramNode ) )
-                        .addCommand( graphCommandFactory.addChildNode( diagramNode, startEventNode, 100d, 100d ) )
-                        .build()
+                                     new CompositeCommandImpl.CompositeCommandBuilder()
+                                             .addCommand( graphCommandFactory.addNode( diagramNode ) )
+                                             .addCommand( graphCommandFactory.addChildNode( diagramNode,
+                                                                                            startEventNode,
+                                                                                            100d,
+                                                                                            100d ) )
+                                             .build()
         );
 
         return graph;
@@ -115,6 +127,7 @@ public class BPMNGraphFactoryImpl
         Index<?, ?> index = indexBuilder.build( graph );
         return new EmptyRulesCommandExecutionContext(
                 definitionManager,
-                factoryManager, index );
+                factoryManager,
+                index );
     }
 }

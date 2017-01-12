@@ -23,9 +23,7 @@ public interface Rule {
 
     /**
      * A name for the rule.
-     *
      * @return
      *//**/
     String getName();
-
 }

@@ -16,13 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.lookup.rule;
 
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
-import org.kie.workbench.common.stunner.core.rule.*;
-
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.*;
+
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
+import org.kie.workbench.common.stunner.core.rule.CardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.ConnectionRule;
+import org.kie.workbench.common.stunner.core.rule.ContainmentRule;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.Rule;
 
 @ApplicationScoped
 public class RuleLookupManagerImpl
@@ -56,7 +64,9 @@ public class RuleLookupManagerImpl
     }
 
     @Override
-    protected boolean matches( final String key, final String value, final Rule rule ) {
+    protected boolean matches( final String key,
+                               final String value,
+                               final Rule rule ) {
         switch ( key ) {
             case "type":
                 return "containment".equals( value ) && ( rule instanceof ContainmentRule ) ||
@@ -69,9 +79,9 @@ public class RuleLookupManagerImpl
                     final ContainmentRule cr = ( ContainmentRule ) rule;
                     final Set<String> rolesSet = toSet( value );
                     if ( null != rolesSet ) {
-                        return isIntersect( cr.getPermittedRoles(), rolesSet );
+                        return isIntersect( cr.getPermittedRoles(),
+                                            rolesSet );
                     }
-
                 } catch ( final ClassCastException e ) {
                     return false;
                 }
@@ -81,22 +91,18 @@ public class RuleLookupManagerImpl
                 if ( rule instanceof EdgeCardinalityRule ) {
                     final EdgeCardinalityRule er = ( EdgeCardinalityRule ) rule;
                     _id = er.getId();
-
                 } else if ( rule instanceof ContainmentRule ) {
                     final ContainmentRule er = ( ContainmentRule ) rule;
                     _id = er.getId();
-
                 } else if ( rule instanceof ConnectionRule ) {
                     final ConnectionRule er = ( ConnectionRule ) rule;
                     _id = er.getId();
-
                 }
                 return _id != null && _id.equals( value );
             case "role":
                 if ( rule instanceof EdgeCardinalityRule ) {
                     final EdgeCardinalityRule er = ( EdgeCardinalityRule ) rule;
                     return ( er.getRole().equals( value ) );
-
                 }
                 return false;
             case "roleIn":
@@ -110,15 +116,13 @@ public class RuleLookupManagerImpl
                             }
                         }
                     }
-
                 }
                 return false;
             case "edgeType":
                 try {
                     final EdgeCardinalityRule er = ( EdgeCardinalityRule ) rule;
                     return er.getType().equals( "incoming".equals( value ) ?
-                            EdgeCardinalityRule.Type.INCOMING : EdgeCardinalityRule.Type.OUTGOING );
-
+                                                        EdgeCardinalityRule.Type.INCOMING : EdgeCardinalityRule.Type.OUTGOING );
                 } catch ( final ClassCastException e ) {
                     return false;
                 }
@@ -128,11 +132,12 @@ public class RuleLookupManagerImpl
                 try {
                     final ConnectionRule cr = ( ConnectionRule ) rule;
                     final Set<String> fromSet = toSet( value );
-                    Set<String> ruleSet = getRoles( cr.getPermittedConnections(), "from".equals( key ) );
+                    Set<String> ruleSet = getRoles( cr.getPermittedConnections(),
+                                                    "from".equals( key ) );
                     if ( null != fromSet ) {
-                        return isIntersect( fromSet, ruleSet );
+                        return isIntersect( fromSet,
+                                            ruleSet );
                     }
-
                 } catch ( final Exception e ) {
                     return false;
                 }
@@ -155,5 +160,4 @@ public class RuleLookupManagerImpl
         }
         return null;
     }
-
 }

@@ -27,5 +27,4 @@ public abstract class AbstractDefinitionSetRuleAdapter<T> implements DefinitionS
     public int getPriority() {
         return 0;
     }
-
 }

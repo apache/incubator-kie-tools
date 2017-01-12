@@ -37,9 +37,14 @@ public class GlyphTooltipView extends FlowPanel implements GlyphTooltipImpl.View
                                        final double x,
                                        final double y,
                                        final GlyphTooltip.Direction direction ) {
-        tooltip.show( null, text, 0, 0, x, y, getDirection( direction ) );
+        tooltip.show( null,
+                      text,
+                      0,
+                      0,
+                      x,
+                      y,
+                      getDirection( direction ) );
         return this;
-
     }
 
     @Override
@@ -50,7 +55,13 @@ public class GlyphTooltipView extends FlowPanel implements GlyphTooltipImpl.View
                                        final double width,
                                        final double height,
                                        final GlyphTooltip.Direction direction ) {
-        tooltip.show( _glyph, text, width, height, x, y, getDirection( direction ) );
+        tooltip.show( _glyph,
+                      text,
+                      width,
+                      height,
+                      x,
+                      y,
+                      getDirection( direction ) );
         return this;
     }
 
@@ -68,7 +79,5 @@ public class GlyphTooltipView extends FlowPanel implements GlyphTooltipImpl.View
 
     protected PrimitiveTooltip.Direction getDirection( final GlyphTooltip.Direction direction ) {
         return GlyphTooltip.Direction.WEST.equals( direction ) ? PrimitiveTooltip.Direction.WEST : PrimitiveTooltip.Direction.NORTH;
-
     }
-
 }

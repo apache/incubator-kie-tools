@@ -15,6 +15,11 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation;
 
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractRuntimeAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -24,25 +29,21 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.Dependent;
-import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
-
 @Dependent
 public class RuntimePropertySetAdapter<T> extends AbstractRuntimeAdapter<T> implements PropertySetAdapter<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger( RuntimePropertySetAdapter.class );
 
     @Override
-    public String getId( T propertySet ) {
+    public String getId( final T propertySet ) {
         return BindableAdapterUtils.getPropertySetId( propertySet.getClass() );
     }
 
     @Override
-    public String getName( T propertySet ) {
+    public String getName( final T propertySet ) {
         try {
-            return getAnnotatedFieldValue( propertySet, Name.class );
+            return getAnnotatedFieldValue( propertySet,
+                                           Name.class );
         } catch ( Exception e ) {
             LOG.error( "Error obtaining annotated category for PropertySet with id " + getId( propertySet ) );
         }
@@ -50,7 +51,7 @@ public class RuntimePropertySetAdapter<T> extends AbstractRuntimeAdapter<T> impl
     }
 
     @Override
-    public Set<?> getProperties( T propertySet ) {
+    public Set<?> getProperties( final T propertySet ) {
         Set<Object> result = null;
         if ( null != propertySet ) {
             Field[] fields = propertySet.getClass().getDeclaredFields();
@@ -74,8 +75,7 @@ public class RuntimePropertySetAdapter<T> extends AbstractRuntimeAdapter<T> impl
     }
 
     @Override
-    public boolean accepts( Class<?> pojo ) {
+    public boolean accepts( final Class<?> pojo ) {
         return pojo.getAnnotation( PropertySet.class ) != null;
     }
-
 }

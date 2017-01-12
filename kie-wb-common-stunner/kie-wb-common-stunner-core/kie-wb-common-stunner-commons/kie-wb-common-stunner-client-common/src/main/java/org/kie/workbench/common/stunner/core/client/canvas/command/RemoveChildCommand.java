@@ -39,12 +39,13 @@ public final class RemoveChildCommand extends AbstractCanvasGraphCommand {
     @Override
     @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand( parent, child );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand( parent,
+                                                                                                child );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new RemoveCanvasChildCommand( parent, child );
+        return new RemoveCanvasChildCommand( parent,
+                                             child );
     }
-
 }

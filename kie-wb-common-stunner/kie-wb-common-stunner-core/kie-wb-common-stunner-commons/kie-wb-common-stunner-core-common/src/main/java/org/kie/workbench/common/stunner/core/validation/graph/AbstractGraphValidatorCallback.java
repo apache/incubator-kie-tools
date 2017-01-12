@@ -40,5 +40,4 @@ public abstract class AbstractGraphValidatorCallback implements GraphValidatorCa
     public void afterValidateEdge( final Edge edge,
                                    final Iterable<GraphValidationViolation> violations ) {
     }
-
 }

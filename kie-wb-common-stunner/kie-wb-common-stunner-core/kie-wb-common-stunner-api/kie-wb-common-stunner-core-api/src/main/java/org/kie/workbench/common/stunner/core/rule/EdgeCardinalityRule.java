@@ -19,7 +19,8 @@ package org.kie.workbench.common.stunner.core.rule;
 /**
  * Rule to restrict the cardinality of connections for connector/edges.
  */
-public interface EdgeCardinalityRule extends RuleByRole, RuleById {
+public interface EdgeCardinalityRule extends RuleByRole,
+                                             RuleById {
 
     // The connection type.
     enum Type {
@@ -41,5 +42,4 @@ public interface EdgeCardinalityRule extends RuleByRole, RuleById {
      * The connection type.
      */
     Type getType();
-
 }

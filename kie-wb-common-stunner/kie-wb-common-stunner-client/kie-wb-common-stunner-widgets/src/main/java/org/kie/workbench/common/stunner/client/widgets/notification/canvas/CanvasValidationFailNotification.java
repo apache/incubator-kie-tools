@@ -25,7 +25,9 @@ public final class CanvasValidationFailNotification extends AbstractNotification
     public CanvasValidationFailNotification( final String uuid,
                                              final Iterable<? extends ValidationViolation> source,
                                              final CanvasNotificationContext context ) {
-        super( uuid, Type.ERROR, ( Iterable<ValidationViolation> ) source, context );
+        super( uuid,
+               Type.ERROR,
+               ( Iterable<ValidationViolation> ) source,
+               context );
     }
-
 }

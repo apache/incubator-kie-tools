@@ -22,11 +22,13 @@ package org.kie.workbench.common.stunner.core.command;
 public interface CommandResult<T> {
 
     enum Type {
-        ERROR( 3 ), WARNING( 2 ), INFO( 1 );
+        ERROR( 3 ),
+        WARNING( 2 ),
+        INFO( 1 );
 
         private final int severity;
 
-        Type( int severity ) {
+        Type( final int severity ) {
             this.severity = severity;
         }
 
@@ -37,18 +39,15 @@ public interface CommandResult<T> {
 
     /**
      * Type of Result
-     *
      * @return
      */
     Type getType();
 
     /**
      * Detailed message for the Result
-     *
      * @return
      */
     String getMessage();
 
     Iterable<T> getViolations();
-
 }

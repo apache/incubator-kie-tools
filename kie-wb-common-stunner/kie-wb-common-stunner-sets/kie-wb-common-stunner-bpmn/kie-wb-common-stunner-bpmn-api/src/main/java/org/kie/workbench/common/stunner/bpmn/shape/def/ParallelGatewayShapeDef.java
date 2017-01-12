@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -27,9 +30,6 @@ import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.DynamicIconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public final class ParallelGatewayShapeDef
         extends AbstractShapeDef<ParallelGateway>
@@ -105,10 +105,9 @@ public final class ParallelGatewayShapeDef
     @Override
     public Map<ShapeDef<ParallelGateway>, HasChildren.Layout> getChildShapeDefs() {
         return new LinkedHashMap<ShapeDef<ParallelGateway>, HasChildren.Layout>() {{
-            put( new IconProxy(), HasChildren.Layout.CENTER );
-
+            put( new IconProxy(),
+                 HasChildren.Layout.CENTER );
         }};
-
     }
 
     private static final PictureGlyphDef<ParallelGateway, BPMNPictures> PICTURE_GLYPH_DEF =
@@ -173,7 +172,5 @@ public final class ParallelGatewayShapeDef
         public double getBorderAlpha( final ParallelGateway element ) {
             return 1;
         }
-
     }
-
 }

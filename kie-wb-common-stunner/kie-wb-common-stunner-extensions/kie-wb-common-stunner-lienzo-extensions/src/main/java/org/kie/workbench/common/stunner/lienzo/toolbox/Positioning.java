@@ -23,7 +23,9 @@ import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.Direction;
 
 public class Positioning {
-    static Point2D anchorFor( BoundingBox boundingBox, Direction direction ) {
+
+    static Point2D anchorFor( BoundingBox boundingBox,
+                              Direction direction ) {
         Point2DArray cardinals = Geometry.getCardinals( boundingBox );
         switch ( direction ) {
             case NORTH:

@@ -25,7 +25,10 @@ public final class PaletteGridImpl implements PaletteGrid {
 
     public PaletteGridImpl( final int iconSize,
                             final int padding ) {
-        this( -1, -1, iconSize, padding );
+        this( -1,
+              -1,
+              iconSize,
+              padding );
     }
 
     public PaletteGridImpl( final int rows,
@@ -57,5 +60,4 @@ public final class PaletteGridImpl implements PaletteGrid {
     public int getPadding() {
         return padding;
     }
-
 }

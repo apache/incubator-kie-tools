@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.api.platform.impl;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.platform.AbstractClientPlatform;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -24,9 +27,6 @@ import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ClientFullSessionImpl;
 import org.kie.workbench.common.stunner.core.client.session.impl.ClientReadOnlySessionImpl;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class DesktopPlatform extends AbstractClientPlatform {
@@ -37,7 +37,8 @@ public class DesktopPlatform extends AbstractClientPlatform {
     ManagedInstance<ClientFullSessionImpl> fullSessions;
 
     protected DesktopPlatform() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     @Inject

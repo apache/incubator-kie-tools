@@ -90,58 +90,81 @@ public class ActivityDataIOEditorWidgetViewImplTest {
         doCallRealMethod().when( view ).getAssignmentWidget( anyInt() );
         doCallRealMethod().when( view ).getAssignmentsCount();
         rows = new ArrayList<AssignmentRow>();
-        rows.add( new AssignmentRow( "varName", null, null, null, "varName", null ) );
-        rows.add( new AssignmentRow( "varName2", null, null, null, "varName2", null ) );
+        rows.add( new AssignmentRow( "varName",
+                                     null,
+                                     null,
+                                     null,
+                                     "varName",
+                                     null ) );
+        rows.add( new AssignmentRow( "varName2",
+                                     null,
+                                     null,
+                                     null,
+                                     "varName2",
+                                     null ) );
     }
 
     @Test
     public void testInit() {
         view.init( presenter );
-        verify( button, times( 1 ) ).setText( StunnerFormsClientFieldsConstants.INSTANCE.Add() );
-        verify( button, times( 1 ) ).setIcon( IconType.PLUS );
+        verify( button,
+                times( 1 ) ).setText( StunnerFormsClientFieldsConstants.INSTANCE.Add() );
+        verify( button,
+                times( 1 ) ).setIcon( IconType.PLUS );
     }
 
     @Test
     public void testHandleAddVarButton() {
         view.init( presenter );
         view.handleAddVarButton( mock( ClickEvent.class ) );
-        verify( presenter, times( 1 ) ).handleAddClick();
+        verify( presenter,
+                times( 1 ) ).handleAddClick();
     }
 
     @Test
     public void testAssignmentsRowsSameSourceAndTarget() {
         view.setAssignmentRows( rows );
-        verify( assignments, times( 1 ) ).setValue( captor.capture() );
-        assertEquals( 2, captor.getValue().size() );
-        assertEquals( "varName", captor.getValue().get( 0 ).getName() );
-        assertEquals( "varName", captor.getValue().get( 0 ).getProcessVar() );
-        assertEquals( "varName2", captor.getValue().get( 1 ).getName() );
-        assertEquals( "varName2", captor.getValue().get( 1 ).getProcessVar() );
+        verify( assignments,
+                times( 1 ) ).setValue( captor.capture() );
+        assertEquals( 2,
+                      captor.getValue().size() );
+        assertEquals( "varName",
+                      captor.getValue().get( 0 ).getName() );
+        assertEquals( "varName",
+                      captor.getValue().get( 0 ).getProcessVar() );
+        assertEquals( "varName2",
+                      captor.getValue().get( 1 ).getName() );
+        assertEquals( "varName2",
+                      captor.getValue().get( 1 ).getProcessVar() );
     }
 
     @Test
     public void testOnlySingleEntryAllowed() {
         view.showOnlySingleEntryAllowed();
         verify( notification ).fire( eventCaptor.capture() );
-        assertEquals( StunnerFormsClientFieldsConstants.INSTANCE.Only_single_entry_allowed(), eventCaptor.getValue().getNotification() );
+        assertEquals( StunnerFormsClientFieldsConstants.INSTANCE.Only_single_entry_allowed(),
+                      eventCaptor.getValue().getNotification() );
     }
 
     @Test
     public void testGetAssignmentRows() {
         when( assignments.getValue() ).thenReturn( rows );
-        assertEquals( rows, view.getAssignmentRows() );
+        assertEquals( rows,
+                      view.getAssignmentRows() );
     }
 
     @Test
     public void testGetAssignmentsCountEmpty() {
         when( assignments.getValue() ).thenReturn( new ArrayList<AssignmentRow>() );
-        assertEquals( 0, view.getAssignmentsCount() );
+        assertEquals( 0,
+                      view.getAssignmentsCount() );
     }
 
     @Test
     public void testGetAssignmentsCount() {
         when( assignments.getValue() ).thenReturn( rows );
-        assertEquals( 2, view.getAssignmentsCount() );
+        assertEquals( 2,
+                      view.getAssignmentsCount() );
     }
 
     @Test

@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertySetAdapter;
-
 import java.util.Map;
 import java.util.Set;
+
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertySetAdapter;
 
 class ClientBindablePropertySetAdapter extends AbstractClientBindableAdapter<Object> implements BindablePropertySetAdapter<Object> {
 
@@ -41,12 +41,14 @@ class ClientBindablePropertySetAdapter extends AbstractClientBindableAdapter<Obj
 
     @Override
     public String getName( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyNameFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyNameFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
     public Set<?> getProperties( final Object pojo ) {
-        return getProxiedSet( pojo, getPropertiesFieldNames().get( pojo.getClass() ) );
+        return getProxiedSet( pojo,
+                              getPropertiesFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
@@ -64,5 +66,4 @@ class ClientBindablePropertySetAdapter extends AbstractClientBindableAdapter<Obj
     private Map<Class, Set<String>> getPropertiesFieldNames() {
         return propertiesFieldNames;
     }
-
 }

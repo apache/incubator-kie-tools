@@ -25,5 +25,4 @@ public interface PriorityAdapter extends Adapter {
      * As small priority value, highest priority.
      */
     int getPriority();
-
 }

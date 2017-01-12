@@ -16,14 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
-
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
+
 public interface BindablePropertySetAdapter<T> extends PropertySetAdapter<T> {
 
-    void setBindings( Map<Class, String> propertyNameFieldNames,
-                      Map<Class, Set<String>> propertiesFieldNames );
-
+    void setBindings( final Map<Class, String> propertyNameFieldNames,
+                      final Map<Class, Set<String>> propertiesFieldNames );
 }

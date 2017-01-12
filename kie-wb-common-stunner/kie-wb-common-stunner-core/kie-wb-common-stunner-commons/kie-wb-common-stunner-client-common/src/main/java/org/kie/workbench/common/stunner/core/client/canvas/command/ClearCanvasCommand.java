@@ -35,5 +35,4 @@ public final class ClearCanvasCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
         throw new UnsupportedOperationException( "Undo operation for Clear Canvas Command is still not supported." );
     }
-
 }

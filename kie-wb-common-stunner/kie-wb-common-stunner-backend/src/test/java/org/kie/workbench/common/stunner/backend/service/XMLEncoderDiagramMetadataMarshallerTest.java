@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.backend.service;
 
+import java.io.InputStream;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +25,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.InputStream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class XMLEncoderDiagramMetadataMarshallerTest {
@@ -57,15 +56,19 @@ public class XMLEncoderDiagramMetadataMarshallerTest {
         InputStream is = loadStream( TEST1 );
         Metadata metadata = tested.unmarshall( is );
         assertNotNull( metadata );
-        assertEquals( "defSet1", metadata.getDefinitionSetId() );
-        assertEquals( "ss1", metadata.getShapeSetId() );
-        assertEquals( "thumbData1", metadata.getThumbData() );
-        assertEquals( "title1", metadata.getTitle() );
-        assertEquals( "root1", metadata.getCanvasRootUUID() );
+        assertEquals( "defSet1",
+                      metadata.getDefinitionSetId() );
+        assertEquals( "ss1",
+                      metadata.getShapeSetId() );
+        assertEquals( "thumbData1",
+                      metadata.getThumbData() );
+        assertEquals( "title1",
+                      metadata.getTitle() );
+        assertEquals( "root1",
+                      metadata.getCanvasRootUUID() );
     }
 
     private InputStream loadStream( String path ) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream( path );
     }
-
 }

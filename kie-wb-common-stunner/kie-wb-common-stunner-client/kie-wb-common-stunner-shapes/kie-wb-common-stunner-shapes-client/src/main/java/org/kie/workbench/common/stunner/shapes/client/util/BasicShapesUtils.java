@@ -28,8 +28,12 @@ public class BasicShapesUtils {
                                      final double width,
                                      final double height ) {
         final BoundingBox bb = picture.getBoundingBox();
-        final double[] scale = LienzoUtils.getScaleFactor( bb.getWidth(), bb.getHeight(), width, height );
-        picture.setScale( scale[ 0 ], scale[ 1 ] );
+        final double[] scale = LienzoUtils.getScaleFactor( bb.getWidth(),
+                                                           bb.getHeight(),
+                                                           width,
+                                                           height );
+        picture.setScale( scale[ 0 ],
+                          scale[ 1 ] );
     }
 
     public static WiresLayoutContainer.Layout getWiresLayout( final HasChildren.Layout layout ) {
@@ -44,9 +48,7 @@ public class BasicShapesUtils {
                 return WiresLayoutContainer.Layout.TOP;
             case BOTTOM:
                 return WiresLayoutContainer.Layout.BOTTOM;
-
         }
         throw new UnsupportedOperationException( "Unsupported layout [" + layout.name() + "]" );
     }
-
 }

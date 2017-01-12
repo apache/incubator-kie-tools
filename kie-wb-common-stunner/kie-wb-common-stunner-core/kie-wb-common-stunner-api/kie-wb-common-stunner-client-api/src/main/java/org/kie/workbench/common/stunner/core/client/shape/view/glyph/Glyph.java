@@ -32,9 +32,7 @@ public interface Glyph<G> {
 
     /**
      * Get the glyph's height
-     *
      * @return
      */
     double getHeight();
-
 }

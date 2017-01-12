@@ -80,23 +80,37 @@ public class ActivityDataIOEditorViewImplTest {
         doCallRealMethod().when( view ).getInputAssignmentData();
         doCallRealMethod().when( view ).getOutputAssignmentData();
         rows = new ArrayList<AssignmentRow>();
-        rows.add( new AssignmentRow( "varName", null, null, null, "varName", null ) );
-        rows.add( new AssignmentRow( "varName2", null, null, null, "varName2", null ) );
+        rows.add( new AssignmentRow( "varName",
+                                     null,
+                                     null,
+                                     null,
+                                     "varName",
+                                     null ) );
+        rows.add( new AssignmentRow( "varName2",
+                                     null,
+                                     null,
+                                     null,
+                                     "varName2",
+                                     null ) );
     }
 
     @Test
     public void testInputAssignmentsRowsSameSourceAndTargetName() {
         view.setInputAssignmentRows( rows );
-        verify( inputAssignmentsWidget, times( 1 ) ).setData( listAssignmentCaptor.capture() );
-        verify( outputAssignmentsWidget, never() ).setData( any( List.class ) );
+        verify( inputAssignmentsWidget,
+                times( 1 ) ).setData( listAssignmentCaptor.capture() );
+        verify( outputAssignmentsWidget,
+                never() ).setData( any( List.class ) );
         verifyForSameSourceAndTargetName();
     }
 
     @Test
     public void testOutputAssignmentsRowsSameSourceAndTargetName() {
         view.setOutputAssignmentRows( rows );
-        verify( outputAssignmentsWidget, times( 1 ) ).setData( listAssignmentCaptor.capture() );
-        verify( inputAssignmentsWidget, never() ).setData( any( List.class ) );
+        verify( outputAssignmentsWidget,
+                times( 1 ) ).setData( listAssignmentCaptor.capture() );
+        verify( inputAssignmentsWidget,
+                never() ).setData( any( List.class ) );
         verifyForSameSourceAndTargetName();
     }
 
@@ -106,8 +120,11 @@ public class ActivityDataIOEditorViewImplTest {
         view.setPossibleInputAssignmentsDataTypes( dataTypes );
         verify( inputAssignmentsWidget ).setDataTypes( valuesCaptor.capture() );
         List<String> typesWithCustomValue = valuesCaptor.getValue().getAcceptableValuesWithCustomValues();
-        assertEquals( 3, typesWithCustomValue.size() );
-        assertTrue( typesWithCustomValue.containsAll( Arrays.asList( "", "Custom ...", "String" ) ) );
+        assertEquals( 3,
+                      typesWithCustomValue.size() );
+        assertTrue( typesWithCustomValue.containsAll( Arrays.asList( "",
+                                                                     "Custom ...",
+                                                                     "String" ) ) );
     }
 
     @Test
@@ -116,8 +133,11 @@ public class ActivityDataIOEditorViewImplTest {
         view.setPossibleOutputAssignmentsDataTypes( dataTypes );
         verify( outputAssignmentsWidget ).setDataTypes( valuesCaptor.capture() );
         List<String> typesWithCustomValue = valuesCaptor.getValue().getAcceptableValuesWithCustomValues();
-        assertEquals( 3, typesWithCustomValue.size() );
-        assertTrue( typesWithCustomValue.containsAll( Arrays.asList( "", "Custom ...", "String" ) ) );
+        assertEquals( 3,
+                      typesWithCustomValue.size() );
+        assertTrue( typesWithCustomValue.containsAll( Arrays.asList( "",
+                                                                     "Custom ...",
+                                                                     "String" ) ) );
     }
 
     @Test
@@ -126,8 +146,11 @@ public class ActivityDataIOEditorViewImplTest {
         view.setInputAssignmentsProcessVariables( variables );
         verify( inputAssignmentsWidget ).setProcessVariables( valuesCaptor.capture() );
         List<String> variablesWithCustomValue = valuesCaptor.getValue().getAcceptableValuesWithCustomValues();
-        assertEquals( 3, variablesWithCustomValue.size() );
-        assertTrue( variablesWithCustomValue.containsAll( Arrays.asList( "", "Constant ...", "variable" ) ) );
+        assertEquals( 3,
+                      variablesWithCustomValue.size() );
+        assertTrue( variablesWithCustomValue.containsAll( Arrays.asList( "",
+                                                                         "Constant ...",
+                                                                         "variable" ) ) );
     }
 
     @Test
@@ -136,22 +159,28 @@ public class ActivityDataIOEditorViewImplTest {
         view.setOutputAssignmentsProcessVariables( variables );
         verify( outputAssignmentsWidget ).setProcessVariables( valuesCaptor.capture() );
         List<String> variablesWithCustomValue = valuesCaptor.getValue().getAcceptableValuesWithCustomValues();
-        assertEquals( 3, variablesWithCustomValue.size() );
-        assertTrue( variablesWithCustomValue.containsAll( Arrays.asList( "", "Constant ...", "variable" ) ) );
+        assertEquals( 3,
+                      variablesWithCustomValue.size() );
+        assertTrue( variablesWithCustomValue.containsAll( Arrays.asList( "",
+                                                                         "Constant ...",
+                                                                         "variable" ) ) );
     }
 
     @Test
     public void testSetInputAssignmentsDisallowedNames() {
-        Set<String> names = new HashSet<>( Arrays.asList( "nameA", "nameB" ) );
+        Set<String> names = new HashSet<>( Arrays.asList( "nameA",
+                                                          "nameB" ) );
         view.setInputAssignmentsDisallowedNames( names );
-        verify( inputAssignmentsWidget ).setDisallowedNames( names, StunnerFormsClientFieldsConstants.INSTANCE.This_input_should_be_entered_as_a_property_for_the_task() );
+        verify( inputAssignmentsWidget ).setDisallowedNames( names,
+                                                             StunnerFormsClientFieldsConstants.INSTANCE.This_input_should_be_entered_as_a_property_for_the_task() );
     }
 
     @Test
     public void testSetInputAssignmentsVisibility() {
         view.setInputAssignmentsVisibility( true );
         verify( inputAssignmentsWidget ).setIsVisible( true );
-        verify( inputAssignmentsWidget, never() ).setIsVisible( false );
+        verify( inputAssignmentsWidget,
+                never() ).setIsVisible( false );
         view.setInputAssignmentsVisibility( false );
         verify( inputAssignmentsWidget ).setIsVisible( true );
         verify( inputAssignmentsWidget ).setIsVisible( false );
@@ -161,7 +190,8 @@ public class ActivityDataIOEditorViewImplTest {
     public void testSetOutputAssignmentsVisibility() {
         view.setOutputAssignmentsVisibility( true );
         verify( outputAssignmentsWidget ).setIsVisible( true );
-        verify( outputAssignmentsWidget, never() ).setIsVisible( false );
+        verify( outputAssignmentsWidget,
+                never() ).setIsVisible( false );
         view.setOutputAssignmentsVisibility( false );
         verify( outputAssignmentsWidget ).setIsVisible( true );
         verify( outputAssignmentsWidget ).setIsVisible( false );
@@ -171,7 +201,8 @@ public class ActivityDataIOEditorViewImplTest {
     public void testSetInputAssignmentsSingleVar() {
         view.setIsInputAssignmentSingleVar( true );
         verify( inputAssignmentsWidget ).setIsSingleVar( true );
-        verify( inputAssignmentsWidget, never() ).setIsSingleVar( false );
+        verify( inputAssignmentsWidget,
+                never() ).setIsSingleVar( false );
         view.setIsInputAssignmentSingleVar( false );
         verify( inputAssignmentsWidget ).setIsSingleVar( true );
         verify( inputAssignmentsWidget ).setIsSingleVar( false );
@@ -181,7 +212,8 @@ public class ActivityDataIOEditorViewImplTest {
     public void testSetOutputAssignmentsSingleVar() {
         view.setIsOutputAssignmentSingleVar( true );
         verify( outputAssignmentsWidget ).setIsSingleVar( true );
-        verify( outputAssignmentsWidget, never() ).setIsSingleVar( false );
+        verify( outputAssignmentsWidget,
+                never() ).setIsSingleVar( false );
         view.setIsOutputAssignmentSingleVar( false );
         verify( outputAssignmentsWidget ).setIsSingleVar( true );
         verify( outputAssignmentsWidget ).setIsSingleVar( false );
@@ -190,23 +222,31 @@ public class ActivityDataIOEditorViewImplTest {
     @Test
     public void testGetInputAssignemntsData() {
         when( inputAssignmentsWidget.getData() ).thenReturn( rows );
-        assertEquals( rows, view.getInputAssignmentData() );
+        assertEquals( rows,
+                      view.getInputAssignmentData() );
     }
 
     @Test
     public void testGetOutputAssignemntsData() {
         when( outputAssignmentsWidget.getData() ).thenReturn( rows );
-        assertEquals( rows, view.getOutputAssignmentData() );
+        assertEquals( rows,
+                      view.getOutputAssignmentData() );
     }
 
     private void verifyForSameSourceAndTargetName() {
-        assertEquals( 2, listAssignmentCaptor.getValue().size() );
-        assertEquals( rows.get( 0 ), listAssignmentCaptor.getValue().get( 0 ) );
-        assertEquals( "varName", listAssignmentCaptor.getValue().get( 0 ).getName() );
-        assertEquals( "varName", listAssignmentCaptor.getValue().get( 0 ).getProcessVar() );
-        assertEquals( rows.get( 1 ), listAssignmentCaptor.getValue().get( 1 ) );
-        assertEquals( "varName2", listAssignmentCaptor.getValue().get( 1 ).getName() );
-        assertEquals( "varName2", listAssignmentCaptor.getValue().get( 1 ).getProcessVar() );
+        assertEquals( 2,
+                      listAssignmentCaptor.getValue().size() );
+        assertEquals( rows.get( 0 ),
+                      listAssignmentCaptor.getValue().get( 0 ) );
+        assertEquals( "varName",
+                      listAssignmentCaptor.getValue().get( 0 ).getName() );
+        assertEquals( "varName",
+                      listAssignmentCaptor.getValue().get( 0 ).getProcessVar() );
+        assertEquals( rows.get( 1 ),
+                      listAssignmentCaptor.getValue().get( 1 ) );
+        assertEquals( "varName2",
+                      listAssignmentCaptor.getValue().get( 1 ).getName() );
+        assertEquals( "varName2",
+                      listAssignmentCaptor.getValue().get( 1 ).getProcessVar() );
     }
-
 }

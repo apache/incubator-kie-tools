@@ -35,9 +35,11 @@ public interface TreeWalkTraverseProcessor extends TreeTraverseProcessor<Graph, 
         NO_INCOMING_VIEW_EDGES
     }
 
-    TreeWalkTraverseProcessor useEdgeVisitorPolicy( EdgeVisitorPolicy policy );
+    TreeWalkTraverseProcessor useEdgeVisitorPolicy( final EdgeVisitorPolicy policy );
 
-    TreeWalkTraverseProcessor useStartingNodesPolicy( StartingNodesPolicy policy );
+    TreeWalkTraverseProcessor useStartingNodesPolicy( final StartingNodesPolicy policy );
 
-    void traverse( Graph graph, Node node, TreeTraverseCallback<Graph, Node, Edge> callback );
+    void traverse( final Graph graph,
+                   final Node node,
+                   final TreeTraverseCallback<Graph, Node, Edge> callback );
 }

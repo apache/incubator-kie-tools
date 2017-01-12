@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.dataproviders;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 public class ScriptLanguageFormProvider implements SelectorDataProvider {
     // NOTE - this provides dummy data for now until integration with
@@ -34,9 +34,13 @@ public class ScriptLanguageFormProvider implements SelectorDataProvider {
     @Override
     public SelectorData getSelectorData( FormRenderingContext context ) {
         Map<Object, String> values = new TreeMap<>();
-        values.put( "http://www.java.com/java", "java" );
-        values.put( "http://www.javascript.com/javascript", "javascript" );
-        values.put( "http://www.mvel.org/2.0", "mvel" );
-        return new SelectorData( values, null );
+        values.put( "http://www.java.com/java",
+                    "java" );
+        values.put( "http://www.javascript.com/javascript",
+                    "javascript" );
+        values.put( "http://www.mvel.org/2.0",
+                    "mvel" );
+        return new SelectorData( values,
+                                 null );
     }
 }

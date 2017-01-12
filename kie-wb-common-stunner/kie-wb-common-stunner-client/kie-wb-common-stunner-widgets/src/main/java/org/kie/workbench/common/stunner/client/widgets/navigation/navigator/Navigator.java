@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
@@ -17,13 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.widgets.navigation.navigator;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 import java.util.List;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 public interface Navigator<T> extends IsWidget {
 
-    Navigator<T> setItemPxSize( int width, int height );
+    Navigator<T> setItemPxSize( final int width,
+                                final int height );
 
     Navigator<T> show();
 
@@ -32,5 +32,4 @@ public interface Navigator<T> extends IsWidget {
     List<NavigatorItem<T>> getItems();
 
     NavigatorView<?> getView();
-
 }

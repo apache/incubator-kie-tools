@@ -33,7 +33,8 @@ public class RegistrySizeExceededException extends RuntimeException {
     public RegistrySizeExceededException( final String message,
                                           final Throwable cause,
                                           final int maxSize ) {
-        super( message, cause );
+        super( message,
+               cause );
         this.maxSize = maxSize;
     }
 
@@ -48,7 +49,10 @@ public class RegistrySizeExceededException extends RuntimeException {
                                           final boolean enableSuppression,
                                           final boolean writableStackTrace,
                                           final int maxSize ) {
-        super( message, cause, enableSuppression, writableStackTrace );
+        super( message,
+               cause,
+               enableSuppression,
+               writableStackTrace );
         this.maxSize = maxSize;
     }
 

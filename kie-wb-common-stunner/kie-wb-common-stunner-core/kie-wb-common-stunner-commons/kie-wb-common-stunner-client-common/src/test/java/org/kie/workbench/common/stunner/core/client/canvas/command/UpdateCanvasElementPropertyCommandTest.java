@@ -25,16 +25,16 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class UpdateCanvasElementPropertyCommandTest extends AbstractCanvasCommandTest {
 
-    @Mock private Node candidate;
+    @Mock
+    private Node candidate;
 
     private UpdateCanvasElementPropertyCommand tested;
 
@@ -48,8 +48,10 @@ public class UpdateCanvasElementPropertyCommandTest extends AbstractCanvasComman
     @SuppressWarnings( "unchecked" )
     public void testExecute() {
         final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR, result.getType() );
-        verify( canvasHandler, times( 1 ) ).updateElementProperties( eq( candidate ), any( MutationContext.class ) );
+        assertNotEquals( CommandResult.Type.ERROR,
+                         result.getType() );
+        verify( canvasHandler,
+                times( 1 ) ).updateElementProperties( eq( candidate ),
+                                                      any( MutationContext.class ) );
     }
-
 }

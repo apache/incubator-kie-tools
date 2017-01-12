@@ -18,12 +18,14 @@ package org.kie.workbench.common.stunner.core.client.components.drag;
 
 public interface DragProxy<C, I, K> {
 
-    DragProxy<C, I, K> proxyFor( C context );
+    DragProxy<C, I, K> proxyFor( final C context );
 
-    DragProxy<C, I, K> show( I item, int x, int y, K callback );
+    DragProxy<C, I, K> show( final I item,
+                             final int x,
+                             final int y,
+                             final K callback );
 
     void clear();
 
     void destroy();
-
 }

@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.stunner.core.rule.impl.rules;
 
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.rule.ContainmentRule;
 import org.uberfire.commons.validation.PortablePreconditions;
-
-import java.util.Set;
 
 @Portable
 public class ContainmentRuleImpl implements ContainmentRule {
@@ -29,15 +29,15 @@ public class ContainmentRuleImpl implements ContainmentRule {
     private String id;
     private Set<String> permittedRoles;
 
-    public ContainmentRuleImpl( @MapsTo( "name" ) final String name,
-                                @MapsTo( "id" ) final String id,
-                                @MapsTo( "permittedRoles" ) final Set<String> permittedRoles ) {
+    public ContainmentRuleImpl( final @MapsTo( "name" ) String name,
+                                final @MapsTo( "id" ) String id,
+                                final @MapsTo( "permittedRoles" ) Set<String> permittedRoles ) {
         this.name = PortablePreconditions.checkNotNull( "name",
-                name );
+                                                        name );
         this.id = PortablePreconditions.checkNotNull( "id",
-                id );
+                                                      id );
         this.permittedRoles = PortablePreconditions.checkNotNull( "permittedRoles",
-                permittedRoles );
+                                                                  permittedRoles );
     }
 
     @Override
@@ -54,5 +54,4 @@ public class ContainmentRuleImpl implements ContainmentRule {
     public Set<String> getPermittedRoles() {
         return permittedRoles;
     }
-
 }

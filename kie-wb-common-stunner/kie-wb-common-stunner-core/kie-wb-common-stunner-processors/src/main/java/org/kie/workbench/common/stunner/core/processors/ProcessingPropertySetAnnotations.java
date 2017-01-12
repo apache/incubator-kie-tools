@@ -32,5 +32,4 @@ public class ProcessingPropertySetAnnotations {
     public Map<String, Set<String>> getPropertiesFieldNames() {
         return propertiesFieldNames;
     }
-
 }

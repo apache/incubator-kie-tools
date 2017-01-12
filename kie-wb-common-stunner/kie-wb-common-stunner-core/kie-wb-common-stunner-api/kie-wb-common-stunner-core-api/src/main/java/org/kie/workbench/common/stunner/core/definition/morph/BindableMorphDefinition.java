@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.definition.morph;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
 public abstract class BindableMorphDefinition implements MorphDefinition {
 
@@ -32,12 +36,9 @@ public abstract class BindableMorphDefinition implements MorphDefinition {
         for ( Class<?> c : s ) {
             if ( getDefinitionId( c ).equals( definitionId ) ) {
                 return true;
-
             }
-
         }
         return false;
-
     }
 
     @Override
@@ -58,7 +59,6 @@ public abstract class BindableMorphDefinition implements MorphDefinition {
     @Override
     public String getDefault() {
         return getDefinitionId( getDefaultType() );
-
     }
 
     @Override
@@ -66,7 +66,6 @@ public abstract class BindableMorphDefinition implements MorphDefinition {
         final Class<?> sourceType = getSourceType( sourceId );
         if ( null != sourceType ) {
             return getTargetsForType( sourceType );
-
         }
         return null;
     }
@@ -76,12 +75,9 @@ public abstract class BindableMorphDefinition implements MorphDefinition {
         for ( Class<?> c : s ) {
             if ( getDefinitionId( c ).equals( definitionId ) ) {
                 return c;
-
             }
-
         }
         return null;
-
     }
 
     protected Collection<String> getTargetsForType( final Class<?> sourceType ) {
@@ -97,25 +93,21 @@ public abstract class BindableMorphDefinition implements MorphDefinition {
         return null;
     }
 
-    protected Class<?> getTargetClass( final Class<?> sourceType, final String target ) {
+    protected Class<?> getTargetClass( final Class<?> sourceType,
+                                       final String target ) {
         final Collection<Class<?>> targetClasses = getDomainMorphs().get( sourceType );
         if ( null != targetClasses && !targetClasses.isEmpty() ) {
             for ( final Class<?> targetClass : targetClasses ) {
                 final String id = getDefinitionId( targetClass );
                 if ( id.equals( target ) ) {
                     return targetClass;
-
                 }
-
             }
-
         }
         return null;
-
     }
 
     protected String getDefinitionId( final Class<?> definitionClass ) {
         return BindableAdapterUtils.getDefinitionId( definitionClass );
     }
-
 }

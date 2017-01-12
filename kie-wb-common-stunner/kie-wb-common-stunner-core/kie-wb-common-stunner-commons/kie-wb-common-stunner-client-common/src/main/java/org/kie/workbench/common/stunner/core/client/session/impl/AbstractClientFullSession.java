@@ -71,7 +71,11 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
                                       final DragControl<AbstractCanvasHandler, Element> dragControl,
                                       final ToolboxControl<AbstractCanvasHandler, Element> toolboxControl,
                                       final ElementBuilderControl<AbstractCanvasHandler> builderControl ) {
-        super( canvas, canvasHandler, selectionControl, zoomControl, panControl );
+        super( canvas,
+               canvasHandler,
+               selectionControl,
+               zoomControl,
+               panControl );
         this.resizeControl = resizeControl;
         this.canvasValidationControl = canvasValidationControl;
         this.canvasPaletteControl = canvasPaletteControl;
@@ -149,16 +153,26 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
     @Override
     protected void enableControls() {
         super.enableControls();
-        enableControl( getResizeControl(), getCanvasHandler() );
-        enableControl( getConnectionAcceptorControl(), getCanvasHandler() );
-        enableControl( getContainmentAcceptorControl(), getCanvasHandler() );
-        enableControl( getDockingAcceptorControl(), getCanvasHandler() );
-        enableControl( getDragControl(), getCanvasHandler() );
-        enableControl( getToolboxControl(), getCanvasHandler() );
-        enableControl( getBuilderControl(), getCanvasHandler() );
-        enableControl( getValidationControl(), getCanvasHandler() );
-        enableControl( getPaletteControl(), getCanvasHandler() );
-        enableControl( getCanvasNameEditionControl(), getCanvasHandler() );
+        enableControl( getResizeControl(),
+                       getCanvasHandler() );
+        enableControl( getConnectionAcceptorControl(),
+                       getCanvasHandler() );
+        enableControl( getContainmentAcceptorControl(),
+                       getCanvasHandler() );
+        enableControl( getDockingAcceptorControl(),
+                       getCanvasHandler() );
+        enableControl( getDragControl(),
+                       getCanvasHandler() );
+        enableControl( getToolboxControl(),
+                       getCanvasHandler() );
+        enableControl( getBuilderControl(),
+                       getCanvasHandler() );
+        enableControl( getValidationControl(),
+                       getCanvasHandler() );
+        enableControl( getPaletteControl(),
+                       getCanvasHandler() );
+        enableControl( getCanvasNameEditionControl(),
+                       getCanvasHandler() );
     }
 
     @Override
@@ -203,27 +217,56 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
     protected void onElementRegistration( final Element element,
                                           final boolean add,
                                           final boolean update ) {
-        super.onElementRegistration( element, add, update );
+        super.onElementRegistration( element,
+                                     add,
+                                     update );
         if ( update ) {
-            fireRegistrationUpdateListeners( getResizeControl(), element );
-            fireRegistrationUpdateListeners( getConnectionAcceptorControl(), element );
-            fireRegistrationUpdateListeners( getContainmentAcceptorControl(), element );
-            fireRegistrationUpdateListeners( getDockingAcceptorControl(), element );
-            fireRegistrationUpdateListeners( getDragControl(), element );
-            fireRegistrationUpdateListeners( getToolboxControl(), element );
-            fireRegistrationUpdateListeners( getBuilderControl(), element );
-            fireRegistrationUpdateListeners( getPaletteControl(), element );
-            fireRegistrationUpdateListeners( getCanvasNameEditionControl(), element );
+            fireRegistrationUpdateListeners( getResizeControl(),
+                                             element );
+            fireRegistrationUpdateListeners( getConnectionAcceptorControl(),
+                                             element );
+            fireRegistrationUpdateListeners( getContainmentAcceptorControl(),
+                                             element );
+            fireRegistrationUpdateListeners( getDockingAcceptorControl(),
+                                             element );
+            fireRegistrationUpdateListeners( getDragControl(),
+                                             element );
+            fireRegistrationUpdateListeners( getToolboxControl(),
+                                             element );
+            fireRegistrationUpdateListeners( getBuilderControl(),
+                                             element );
+            fireRegistrationUpdateListeners( getPaletteControl(),
+                                             element );
+            fireRegistrationUpdateListeners( getCanvasNameEditionControl(),
+                                             element );
         } else {
-            fireRegistrationListeners( getResizeControl(), element, add );
-            fireRegistrationListeners( getConnectionAcceptorControl(), element, add );
-            fireRegistrationListeners( getContainmentAcceptorControl(), element, add );
-            fireRegistrationListeners( getDockingAcceptorControl(), element, add );
-            fireRegistrationListeners( getDragControl(), element, add );
-            fireRegistrationListeners( getToolboxControl(), element, add );
-            fireRegistrationListeners( getBuilderControl(), element, add );
-            fireRegistrationListeners( getPaletteControl(), element, add );
-            fireRegistrationListeners( getCanvasNameEditionControl(), element, add );
+            fireRegistrationListeners( getResizeControl(),
+                                       element,
+                                       add );
+            fireRegistrationListeners( getConnectionAcceptorControl(),
+                                       element,
+                                       add );
+            fireRegistrationListeners( getContainmentAcceptorControl(),
+                                       element,
+                                       add );
+            fireRegistrationListeners( getDockingAcceptorControl(),
+                                       element,
+                                       add );
+            fireRegistrationListeners( getDragControl(),
+                                       element,
+                                       add );
+            fireRegistrationListeners( getToolboxControl(),
+                                       element,
+                                       add );
+            fireRegistrationListeners( getBuilderControl(),
+                                       element,
+                                       add );
+            fireRegistrationListeners( getPaletteControl(),
+                                       element,
+                                       add );
+            fireRegistrationListeners( getCanvasNameEditionControl(),
+                                       element,
+                                       add );
         }
     }
 

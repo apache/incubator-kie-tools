@@ -16,6 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommand;
@@ -34,18 +42,10 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * A toolbox control provider implementation that provides buttons to create new elements
  * and update the graph structure.
- * <p>
+ * <p/>
  * It provides buttons for:
  * - Creating a new connection from the source element.
  * It looks for the default connector type and creates a button for it.
@@ -64,7 +64,10 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
     private final ToolboxCommandFactory defaultToolboxCommandFactory;
 
     protected FlowActionsToolboxControlProvider() {
-        this( null, null, null, null );
+        this( null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -116,12 +119,14 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
             final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = new LinkedList<>();
             // Look for the default connector type and create a button for it.
             // TODO: Handle all response pages.
-            final Set<String> allowedConnectorIds =
-                    commonLookups.getAllowedConnectors( context.getModelRulesManager(), defSetId, node, 0, 10 );
+            final Set<String> allowedConnectorIds = commonLookups.getAllowedConnectors( context.getModelRulesManager(),
+                                                                                        defSetId,
+                                                                                        node,
+                                                                                        0,
+                                                                                        10 );
             if ( null != allowedConnectorIds && !allowedConnectorIds.isEmpty() ) {
                 for ( final String allowedConnectorId : allowedConnectorIds ) {
-                    final NewConnectorCommand<?> newConnectorCommand =
-                            defaultToolboxCommandFactory.newConnectorCommand();
+                    final NewConnectorCommand<?> newConnectorCommand = defaultToolboxCommandFactory.newConnectorCommand();
                     newConnectorCommand.setEdgeIdentifier( allowedConnectorId );
                     commands.add( newConnectorCommand );
                 }
@@ -132,14 +137,13 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
             final String defaultConnectorId = definitionUtils.getDefaultConnectorId( defSetId );
             if ( null != defaultConnectorId ) {
                 // TODO: Handle all response pages.
-                final Set<String> allowedMorphDefaultDefinitionIds =
-                        commonLookups.getAllowedMorphDefaultDefinitions(
-                                context.getModelRulesManager(),
-                                defSetId,
-                                diagram.getGraph(),
-                                ( Node<? extends Definition<Object>, ? extends Edge> ) item,
-                                defaultConnectorId, 0, 10
-                        );
+                final Set<String> allowedMorphDefaultDefinitionIds = commonLookups.getAllowedMorphDefaultDefinitions( context.getModelRulesManager(),
+                                                                                                                      defSetId,
+                                                                                                                      diagram.getGraph(),
+                                                                                                                      ( Node<? extends Definition<Object>, ? extends Edge> ) item,
+                                                                                                                      defaultConnectorId,
+                                                                                                                      0,
+                                                                                                                      10 );
                 if ( null != allowedMorphDefaultDefinitionIds && !allowedMorphDefaultDefinitionIds.isEmpty() ) {
                     for ( final String allowedDefId : allowedMorphDefaultDefinitionIds ) {
                         final NewNodeCommand newNodeCommand = defaultToolboxCommandFactory.newNodeCommand();
@@ -150,15 +154,16 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
             }
             return commands;
         } catch ( final Exception e ) {
-            LOGGER.log( Level.FINEST, "Discarded item [" + item.getUUID() + "] for flow action toolbox controls " +
-                    "as it's not a node." );
+            LOGGER.log( Level.FINEST,
+                        "Discarded item [" + item.getUUID() + "] for flow action toolbox controls as it's not a node." );
         }
         return null;
     }
 
     private void log( final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( Level.SEVERE, "** FLOW-ACTIONS-TOOLBOX ** " + message );
+            LOGGER.log( Level.SEVERE,
+                        "** FLOW-ACTIONS-TOOLBOX ** " + message );
         }
     }
 }

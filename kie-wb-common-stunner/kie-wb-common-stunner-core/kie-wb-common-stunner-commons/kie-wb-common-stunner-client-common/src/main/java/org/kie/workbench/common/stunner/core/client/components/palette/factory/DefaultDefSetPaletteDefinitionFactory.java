@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 
 /**
  * The default PaletteDefinition factory for a DefinitionSetPalette model.
@@ -33,12 +33,12 @@ public class DefaultDefSetPaletteDefinitionFactory extends AbstractPaletteDefini
     @Inject
     public DefaultDefSetPaletteDefinitionFactory( final ShapeManager shapeManager,
                                                   final DefinitionSetPaletteBuilder paletteBuilder ) {
-        super( shapeManager, paletteBuilder );
+        super( shapeManager,
+               paletteBuilder );
     }
 
     @Override
     public boolean accepts( final String defSetId ) {
         return false;
     }
-
 }

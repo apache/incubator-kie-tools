@@ -14,6 +14,9 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -25,13 +28,10 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
  * A Command to register and node into the graph storage.
  * Cardinality rule evaluations for the graph required.
- *
+ * <p/>
  * This command should be used as aggregate for composite commands,
  * but it's recommended to provide on the factory only public commands
  * that do really update the graph structure:
@@ -44,9 +44,9 @@ public class RegisterNodeCommand extends AbstractGraphCommand {
 
     private final Node candidate;
 
-    public RegisterNodeCommand( @MapsTo( "candidate" ) Node candidate ) {
+    public RegisterNodeCommand( final @MapsTo( "candidate" ) Node candidate ) {
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                candidate );
+                                                             candidate );
     }
 
     @Override
@@ -67,16 +67,17 @@ public class RegisterNodeCommand extends AbstractGraphCommand {
         final Collection<RuleViolation> cardinalityRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager()
                         .cardinality()
-                        .evaluate( graph, getCandidate(), RuleManager.Operation.ADD ).violations();
+                        .evaluate( graph,
+                                   getCandidate(),
+                                   RuleManager.Operation.ADD ).violations();
         return new GraphCommandResultBuilder( new ArrayList<RuleViolation>( 1 ) {{
             addAll( cardinalityRuleViolations );
         }} ).build();
-
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
         final DeregisterNodeCommand undoCommand = new DeregisterNodeCommand( candidate );
         return undoCommand.execute( context );
     }

@@ -40,7 +40,12 @@ public class AssignmentRow {
         this.id = lastId++;
     }
 
-    public AssignmentRow( String name, Variable.VariableType variableType, String dataType, String customDataType, String processVar, String constant ) {
+    public AssignmentRow( String name,
+                          Variable.VariableType variableType,
+                          String dataType,
+                          String customDataType,
+                          String processVar,
+                          String constant ) {
         this.id = lastId++;
         this.name = name;
         this.variableType = variableType;
@@ -122,19 +127,22 @@ public class AssignmentRow {
 
     @Override
     public boolean equals( Object obj ) {
-        if ( this == obj )
+        if ( this == obj ) {
             return true;
-        if ( obj == null )
+        }
+        if ( obj == null ) {
             return false;
-        if ( getClass() != obj.getClass() )
+        }
+        if ( getClass() != obj.getClass() ) {
             return false;
+        }
         AssignmentRow other = ( AssignmentRow ) obj;
         return ( id == other.id );
     }
 
     @Override
     public int hashCode() {
-        return ~~ (int) (id ^ (id >>> 32));
+        return ~~( int ) ( id ^ ( id >>> 32 ) );
     }
 
     @Override

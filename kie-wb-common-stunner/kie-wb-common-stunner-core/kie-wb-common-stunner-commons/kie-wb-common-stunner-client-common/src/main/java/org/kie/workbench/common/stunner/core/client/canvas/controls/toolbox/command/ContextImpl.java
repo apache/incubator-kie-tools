@@ -85,5 +85,4 @@ public class ContextImpl implements Context {
     public int getClientY() {
         return clientY;
     }
-
 }

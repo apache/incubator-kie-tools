@@ -27,22 +27,26 @@ public class RectangleShape<W> extends AbstractBasicShapeWithTitle<W, RectangleV
 
     public RectangleShape( final RectangleView view,
                            final RectangleShapeDef<W> proxy ) {
-        super( view, proxy );
+        super( view,
+               proxy );
     }
 
     @Override
-    public void applyProperties( final Node<View<W>, Edge> element, final MutationContext mutationContext ) {
-        super.applyProperties( element, mutationContext );
+    public void applyProperties( final Node<View<W>, Edge> element,
+                                 final MutationContext mutationContext ) {
+        super.applyProperties( element,
+                               mutationContext );
         // Width/Height.
         final Double w = proxy.getWidth( getDefinition( element ) );
         final Double h = proxy.getHeight( getDefinition( element ) );
-        _applyWidthAndHeight( element, w, h, mutationContext );
-
+        _applyWidthAndHeight( element,
+                              w,
+                              h,
+                              mutationContext );
     }
 
     @Override
     public String toString() {
         return "RectangleShape{}";
     }
-
 }

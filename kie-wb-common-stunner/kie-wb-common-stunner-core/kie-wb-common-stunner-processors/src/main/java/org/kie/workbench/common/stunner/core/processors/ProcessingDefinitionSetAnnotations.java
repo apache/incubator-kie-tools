@@ -49,7 +49,7 @@ public class ProcessingDefinitionSetAnnotations {
         return hasShapeSet;
     }
 
-    public void setHasShapeSet( boolean hasShapeSet ) {
+    public void setHasShapeSet( final boolean hasShapeSet ) {
         this.hasShapeSet = hasShapeSet;
     }
 }

@@ -24,7 +24,13 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 public interface ResizeControl<C extends CanvasHandler, E extends Element> extends CanvasRegistationControl<C, E> {
 
-    CommandResult<CanvasViolation> resize( E element, double width, double height );
+    CommandResult<CanvasViolation> resize( final E element,
+                                           final double width,
+                                           final double height );
 
-    CommandResult<CanvasViolation> resize( E element, double x, double y, double width, double height );
+    CommandResult<CanvasViolation> resize( final E element,
+                                           final double x,
+                                           final double y,
+                                           final double width,
+                                           final double height );
 }

@@ -37,7 +37,7 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
      * Each child command operation can be done by:
      * - Each child command check rules
      * - The composite command implementation will check the necessary rules in a single run, no need
-     *   to evaluate rules on each child command.
+     * to evaluate rules on each child command.
      */
     protected abstract boolean delegateRulesContextToChildren();
 
@@ -54,7 +54,8 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
     }
 
     @Override
-    protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context, Command<GraphCommandExecutionContext, RuleViolation> command ) {
+    protected CommandResult<RuleViolation> doAllow( final GraphCommandExecutionContext context,
+                                                    final Command<GraphCommandExecutionContext, RuleViolation> command ) {
         // Check if rules are present.
         if ( null == context.getRulesManager() ) {
             return GraphCommandResultBuilder.SUCCESS;
@@ -71,25 +72,33 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
         return GraphUtils.getGraph( context );
     }
 
-    protected Node<?, Edge> getNode( final GraphCommandExecutionContext context, final String uuid ) {
-        return GraphUtils.getNode( context, uuid );
+    protected Node<?, Edge> getNode( final GraphCommandExecutionContext context,
+                                     final String uuid ) {
+        return GraphUtils.getNode( context,
+                                   uuid );
     }
 
-    protected Edge<? extends View, Node> getViewEdge( final GraphCommandExecutionContext context, final String uuid ) {
-        return GraphUtils.getViewEdge( context, uuid );
+    protected Edge<? extends View, Node> getViewEdge( final GraphCommandExecutionContext context,
+                                                      final String uuid ) {
+        return GraphUtils.getViewEdge( context,
+                                       uuid );
     }
 
-    protected Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context, final String uuid ) {
-        final Node<?, Edge> e = getNode( context, uuid );
+    protected Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context,
+                                              final String uuid ) {
+        final Node<?, Edge> e = getNode( context,
+                                         uuid );
         if ( null == e ) {
-            throw new BadCommandArgumentsException( this, uuid, "Node not found for [" + uuid + "]." );
+            throw new BadCommandArgumentsException( this,
+                                                    uuid,
+                                                    "Node not found for [" + uuid + "]." );
         }
         return e;
     }
 
     private EmptyRulesCommandExecutionContext buildEmptyExecutionContext( final GraphCommandExecutionContext context ) {
         return new EmptyRulesCommandExecutionContext( context.getDefinitionManager(),
-                context.getFactoryManager(), context.getGraphIndex() );
+                                                      context.getFactoryManager(),
+                                                      context.getGraphIndex() );
     }
-
 }

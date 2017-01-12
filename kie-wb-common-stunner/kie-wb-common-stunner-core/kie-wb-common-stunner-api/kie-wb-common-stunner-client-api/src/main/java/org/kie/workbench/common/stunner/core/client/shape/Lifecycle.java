@@ -21,5 +21,4 @@ public interface Lifecycle {
     void beforeDraw();
 
     void afterDraw();
-
 }

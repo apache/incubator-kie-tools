@@ -23,12 +23,12 @@ public class ConnectorShape<W> extends AbstractBasicConnector<W, ConnectorView, 
 
     public ConnectorShape( final ConnectorView view,
                            final ConnectorShapeDef<W> proxy ) {
-        super( view, proxy );
+        super( view,
+               proxy );
     }
 
     @Override
     public String toString() {
         return "ConnectorShape{}";
     }
-
 }

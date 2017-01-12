@@ -27,5 +27,4 @@ public interface ToolboxFactory {
     ToolboxButtonGridBuilder toolboxGridBuilder();
 
     ToolboxButtonBuilder<?> toolboxButtonBuilder();
-
 }

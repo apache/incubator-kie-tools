@@ -87,18 +87,18 @@ public abstract class AbstractClientSession implements ClientSession<AbstractCan
         return canvasHandler;
     }
 
-    protected void enableControl( final CanvasControl<AbstractCanvasHandler> control, final AbstractCanvasHandler handler ) {
+    protected void enableControl( final CanvasControl<AbstractCanvasHandler> control,
+                                  final AbstractCanvasHandler handler ) {
         if ( null != control ) {
             control.enable( handler );
         }
-
     }
 
-    protected void enableControl( final CanvasControl<AbstractCanvas> control, final AbstractCanvas handler ) {
+    protected void enableControl( final CanvasControl<AbstractCanvas> control,
+                                  final AbstractCanvas handler ) {
         if ( null != control ) {
             control.enable( handler );
         }
-
     }
 
     protected void fireRegistrationListeners( final CanvasControl<AbstractCanvasHandler> control,
@@ -109,14 +109,10 @@ public abstract class AbstractClientSession implements ClientSession<AbstractCan
                     ( CanvasRegistationControl<AbstractCanvasHandler, Element> ) control;
             if ( add ) {
                 registationControl.register( element );
-
             } else {
                 registationControl.deregister( element );
-
             }
-
         }
-
     }
 
     protected void fireRegistrationListeners( final CanvasControl<AbstractCanvas> control,
@@ -127,35 +123,25 @@ public abstract class AbstractClientSession implements ClientSession<AbstractCan
                     ( CanvasRegistationControl<AbstractCanvas, Shape> ) control;
             if ( add ) {
                 registationControl.register( shape );
-
             } else {
                 registationControl.deregister( shape );
-
             }
-
         }
-
     }
 
     protected void fireRegistrationUpdateListeners( final CanvasControl<AbstractCanvasHandler> control,
                                                     final Element element ) {
         if ( null != control && null != element && control instanceof AbstractCanvasHandlerRegistrationControl ) {
-            final AbstractCanvasHandlerRegistrationControl registationControl =
-                    ( AbstractCanvasHandlerRegistrationControl ) control;
+            final AbstractCanvasHandlerRegistrationControl registationControl = ( AbstractCanvasHandlerRegistrationControl ) control;
             registationControl.update( element );
-
         }
-
     }
 
     protected void fireRegistrationClearListeners( final CanvasControl<AbstractCanvasHandler> control ) {
         if ( null != control && control instanceof AbstractCanvasHandlerRegistrationControl ) {
-            final AbstractCanvasHandlerRegistrationControl registationControl =
-                    ( AbstractCanvasHandlerRegistrationControl ) control;
+            final AbstractCanvasHandlerRegistrationControl registationControl = ( AbstractCanvasHandlerRegistrationControl ) control;
             registationControl.deregisterAll();
-
         }
-
     }
 
     @Override

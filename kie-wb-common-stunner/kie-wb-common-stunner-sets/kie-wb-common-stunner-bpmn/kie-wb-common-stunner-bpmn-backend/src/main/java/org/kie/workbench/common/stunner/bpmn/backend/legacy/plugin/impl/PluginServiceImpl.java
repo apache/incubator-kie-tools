@@ -15,6 +15,21 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.impl;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.IDiagramPlugin;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.IDiagramPluginFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.IDiagramPluginService;
@@ -28,19 +43,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
-
 /**
  * A service to manage plugins in the platform.
- *
  * @author Antoine Toulme
  */
 public class PluginServiceImpl implements IDiagramPluginService {
@@ -69,9 +73,8 @@ public class PluginServiceImpl implements IDiagramPluginService {
 
     /**
      * Initialize the local plugins registry
-     *
      * @param context the servlet context necessary to grab
-     *                the files inside the servlet.
+     * the files inside the servlet.
      * @return the set of local plugins organized by name
      */
     public static Map<String, IDiagramPlugin>
@@ -91,14 +94,15 @@ public class PluginServiceImpl implements IDiagramPluginService {
         try {
             try {
                 fileStream = new FileInputStream( new StringBuilder( context.getRealPath( "/" ) )
-                        .append( ConfigurationProvider.getInstance().getDesignerContext() ).
+                                                          .append( ConfigurationProvider.getInstance().getDesignerContext() ).
                                 append( "js" ).append( "/" ).append( "Plugins" ).append( "/" ).
                                 append( "plugins.xml" ).toString() );
             } catch ( FileNotFoundException e ) {
                 throw new RuntimeException( e );
             }
             XMLInputFactory factory = XMLInputFactory.newInstance();
-            XMLStreamReader reader = factory.createXMLStreamReader( fileStream, "UTF-8" );
+            XMLStreamReader reader = factory.createXMLStreamReader( fileStream,
+                                                                    "UTF-8" );
             while ( reader.hasNext() ) {
                 if ( reader.next() == XMLStreamReader.START_ELEMENT ) {
                     if ( "plugin".equals( reader.getLocalName() ) ) {
@@ -126,8 +130,10 @@ public class PluginServiceImpl implements IDiagramPluginService {
                                             value = reader.getAttributeValue( i );
                                         }
                                     }
-                                    if ( key != null & value != null )
-                                        props.put( key, value );
+                                    if ( key != null & value != null ) {
+                                        props.put( key,
+                                                   value );
+                                    }
                                 }
                             } else if ( ev == XMLStreamReader.END_ELEMENT ) {
                                 if ( "plugin".equals( reader.getLocalName() ) ) {
@@ -135,12 +141,18 @@ public class PluginServiceImpl implements IDiagramPluginService {
                                 }
                             }
                         }
-                        local.put( name, new LocalPluginImpl( name, source, context, core, props ) );
+                        local.put( name,
+                                   new LocalPluginImpl( name,
+                                                        source,
+                                                        context,
+                                                        core,
+                                                        props ) );
                     }
                 }
             }
         } catch ( XMLStreamException e ) {
-            _logger.error( e.getMessage(), e );
+            _logger.error( e.getMessage(),
+                           e );
             throw new RuntimeException( e ); // stop initialization
         } finally {
             if ( fileStream != null ) {
@@ -160,7 +172,6 @@ public class PluginServiceImpl implements IDiagramPluginService {
     /**
      * Private constructor to make sure we respect the singleton
      * pattern.
-     *
      * @param context the servlet context
      */
     private PluginServiceImpl( ServletContext context ) {
@@ -170,7 +181,8 @@ public class PluginServiceImpl implements IDiagramPluginService {
             final BundleContext bundleContext = ( ( BundleReference ) getClass().getClassLoader() ).getBundle().getBundleContext();
             ServiceReference[] sRefs = null;
             try {
-                sRefs = bundleContext.getServiceReferences( IDiagramPluginFactory.class.getName(), null );
+                sRefs = bundleContext.getServiceReferences( IDiagramPluginFactory.class.getName(),
+                                                            null );
             } catch ( InvalidSyntaxException e ) {
             }
             if ( sRefs != null ) {
@@ -181,10 +193,12 @@ public class PluginServiceImpl implements IDiagramPluginService {
             }
             ServiceTrackerCustomizer cust = new ServiceTrackerCustomizer() {
 
-                public void removedService( ServiceReference reference, Object service ) {
+                public void removedService( ServiceReference reference,
+                                            Object service ) {
                 }
 
-                public void modifiedService( ServiceReference reference, Object service ) {
+                public void modifiedService( ServiceReference reference,
+                                             Object service ) {
                 }
 
                 public Object addingService( ServiceReference reference ) {
@@ -194,11 +208,13 @@ public class PluginServiceImpl implements IDiagramPluginService {
                 }
             };
             ServiceTracker tracker = new ServiceTracker( bundleContext,
-                    IDiagramPluginFactory.class.getName(), cust );
+                                                         IDiagramPluginFactory.class.getName(),
+                                                         cust );
             tracker.open();
             //make the service available to consumers as well.
-            bundleContext.registerService( IDiagramPluginService.class.getName(), this,
-                    new Hashtable() );
+            bundleContext.registerService( IDiagramPluginService.class.getName(),
+                                           this,
+                                           new Hashtable() );
         }
     }
 
@@ -206,7 +222,8 @@ public class PluginServiceImpl implements IDiagramPluginService {
         Map<String, IDiagramPlugin> plugins = new HashMap<String, IDiagramPlugin>( _registry );
         for ( IDiagramPluginFactory factory : _factories ) {
             for ( IDiagramPlugin p : factory.getPlugins( request ) ) {
-                plugins.put( p.getName(), p );
+                plugins.put( p.getName(),
+                             p );
             }
         }
         return plugins;
@@ -216,7 +233,8 @@ public class PluginServiceImpl implements IDiagramPluginService {
         return assemblePlugins( request ).values();
     }
 
-    public IDiagramPlugin findPlugin( HttpServletRequest request, String name ) {
+    public IDiagramPlugin findPlugin( HttpServletRequest request,
+                                      String name ) {
         return assemblePlugins( request ).get( name );
     }
 }

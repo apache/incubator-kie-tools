@@ -16,17 +16,17 @@
 
 package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Dependent
 public class LogNodeEdgesDevCommand extends AbstractSelectionDevCommand {
@@ -53,9 +53,13 @@ public class LogNodeEdgesDevCommand extends AbstractSelectionDevCommand {
         try {
             final Node<View<?>, Edge> node = ( Node<View<?>, Edge> ) item;
             final List<Edge> inEdges = node.getInEdges();
-            log( uuid, inEdges, true );
+            log( uuid,
+                 inEdges,
+                 true );
             final List<Edge> outEdges = node.getOutEdges();
-            log( uuid, outEdges, false );
+            log( uuid,
+                 outEdges,
+                 false );
         } catch ( final ClassCastException e ) {
             log( "Item [" + uuid + "is not a Node" );
         }
@@ -83,14 +87,14 @@ public class LogNodeEdgesDevCommand extends AbstractSelectionDevCommand {
             final Node target = edge.getTargetNode();
             final String tId = null != target ? target.getUUID() : "null";
             log( "-- Edge [uuid=" + uuid + ", content=" + content.getClass().getName()
-                    + ", source=" + sId + ", target=" + tId + "]" );
+                         + ", source=" + sId + ", target=" + tId + "]" );
         } else {
             log( "Edge is null..." );
         }
     }
 
     private void log( final String s ) {
-        LOGGER.log( Level.FINE, s );
+        LOGGER.log( Level.FINE,
+                    s );
     }
-
 }

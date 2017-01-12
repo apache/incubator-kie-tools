@@ -25,13 +25,12 @@ public interface IndexBuilder<G extends Graph<?, N>, N extends Node, E extends E
     /**
      * Build the index for the given graph.
      */
-    I build( G graph );
+    I build( final G graph );
 
     /**
      * Updates a given index. Can be an expensive call.
-     *
      * @param index
      */
-    void update( I index, G graph );
-
+    void update( final I index,
+                 final G graph );
 }

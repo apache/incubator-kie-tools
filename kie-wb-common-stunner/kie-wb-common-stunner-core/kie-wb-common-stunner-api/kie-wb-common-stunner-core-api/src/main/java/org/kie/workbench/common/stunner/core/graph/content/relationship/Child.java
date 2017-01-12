@@ -31,5 +31,4 @@ public class Child implements Relationship {
     public String getName() {
         return RELATIONSHIP;
     }
-
 }

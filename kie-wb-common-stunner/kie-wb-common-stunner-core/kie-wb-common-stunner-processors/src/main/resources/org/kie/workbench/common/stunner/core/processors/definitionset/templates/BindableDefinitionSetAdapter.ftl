@@ -37,7 +37,7 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
         <#list valuePropNames as valuePropName>
             put( ${valuePropName.className}.class, "${valuePropName.methodName}" );
         </#list>
-    
+
     }};
 
     private static final Set<String> definitionIds = new HashSet<String>(${definitionIdsSize}) {{
@@ -59,10 +59,10 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
     public ${className}(${adapterFactoryClassName} adapterFactory) {
         super(adapterFactory);
     }
-    
+
     @Override
     protected void setBindings(final BindableDefinitionSetAdapter<Object> adapter) {
         adapter.setBindings( descriptionFieldNames, graphFactoryTypes, definitionIds );
     }
-        
+
 }

@@ -54,5 +54,4 @@ public class AssigneeType implements PropertyType {
                 "name='" + name + '\'' +
                 '}';
     }
-
 }

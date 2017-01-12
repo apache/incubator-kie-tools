@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory;
 
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-
-import java.util.Map;
 
 public abstract class BindableBS3PaletteViewFactory<V extends IsWidget> implements BS3PaletteViewFactory {
 
@@ -29,7 +29,9 @@ public abstract class BindableBS3PaletteViewFactory<V extends IsWidget> implemen
 
     protected abstract Map<String, V> getCategoryViews();
 
-    protected abstract V resize( V widget, int width, int height );
+    protected abstract V resize( V widget,
+                                 int width,
+                                 int height );
 
     @Override
     public boolean accepts( final String id ) {
@@ -45,11 +47,11 @@ public abstract class BindableBS3PaletteViewFactory<V extends IsWidget> implemen
         final Map.Entry<String, V> entry = getDCategoryViewEntry( categoryId );
         if ( null != entry ) {
             final V w = entry.getValue();
-            return resize( w, width, height );
-
+            return resize( w,
+                           width,
+                           height );
         }
         return null;
-
     }
 
     @Override
@@ -60,8 +62,9 @@ public abstract class BindableBS3PaletteViewFactory<V extends IsWidget> implemen
         final Map.Entry<Class<?>, V> entry = getDefinitionViewEntry( defId );
         if ( null != entry ) {
             final V w = entry.getValue();
-            return resize( w, width, height );
-
+            return resize( w,
+                           width,
+                           height );
         }
         return null;
     }
@@ -73,11 +76,8 @@ public abstract class BindableBS3PaletteViewFactory<V extends IsWidget> implemen
                 final String _id = getDefinitionId( entry.getKey() );
                 if ( _id.equals( id ) ) {
                     return entry;
-
                 }
-
             }
-
         }
         return null;
     }
@@ -88,11 +88,8 @@ public abstract class BindableBS3PaletteViewFactory<V extends IsWidget> implemen
             for ( final Map.Entry<String, V> entry : map.entrySet() ) {
                 if ( entry.getKey().equals( id ) ) {
                     return entry;
-
                 }
-
             }
-
         }
         return null;
     }
@@ -104,5 +101,4 @@ public abstract class BindableBS3PaletteViewFactory<V extends IsWidget> implemen
     private String getDefinitionId( final Class<?> type ) {
         return BindableAdapterUtils.getDefinitionId( type );
     }
-
 }

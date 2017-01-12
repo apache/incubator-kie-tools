@@ -30,8 +30,8 @@ public final class SetConnectionSourceNodeCommand extends AbstractCanvasGraphCom
     private final int magnetIndex;
 
     public SetConnectionSourceNodeCommand( final Node<? extends View<?>, Edge> node,
-                                       final Edge<? extends View<?>, Node> edge,
-                                       final int magnetIndex ) {
+                                           final Edge<? extends View<?>, Node> edge,
+                                           final int magnetIndex ) {
         this.node = node;
         this.edge = edge;
         this.magnetIndex = magnetIndex;
@@ -39,12 +39,13 @@ public final class SetConnectionSourceNodeCommand extends AbstractCanvasGraphCom
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSourceNodeCommand( node, edge, magnetIndex );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSourceNodeCommand( node,
+                                                                                                            edge,
+                                                                                                            magnetIndex );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
         return new SetCanvasConnectionCommand( edge );
     }
-
 }

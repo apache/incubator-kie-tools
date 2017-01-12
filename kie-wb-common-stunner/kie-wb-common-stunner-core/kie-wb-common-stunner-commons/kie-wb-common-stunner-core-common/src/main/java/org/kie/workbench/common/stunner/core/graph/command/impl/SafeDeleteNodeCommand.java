@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -35,10 +39,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Deletes a node taking into account its ingoing / outgoing edges and safe remove all node's children as well, if any.
  */
@@ -49,9 +49,9 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     private transient Node<?, Edge> node;
     private transient SafeDeleteNodeProcessor.Callback safeDeleteCallback;
 
-    public SafeDeleteNodeCommand( @MapsTo( "candidateUUID" ) String candidateUUID ) {
+    public SafeDeleteNodeCommand( final @MapsTo( "candidateUUID" ) String candidateUUID ) {
         this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
-                candidateUUID );
+                                                                 candidateUUID );
         this.safeDeleteCallback = null;
     }
 
@@ -77,7 +77,8 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
             @Override
             public void deleteChildNode( final Node<Definition<?>, Edge> node ) {
-                commands.add( new SafeDeleteNodeCommand( node, safeDeleteCallback ).initialize( context ) );
+                commands.add( new SafeDeleteNodeCommand( node,
+                                                         safeDeleteCallback ).initialize( context ) );
                 if ( null != safeDeleteCallback ) {
                     safeDeleteCallback.deleteChildNode( node );
                 }
@@ -85,7 +86,8 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
             @Override
             public void deleteInViewEdge( final Edge<View<?>, Node> edge ) {
-                commands.add( new SetConnectionTargetNodeCommand( null, edge ) );
+                commands.add( new SetConnectionTargetNodeCommand( null,
+                                                                  edge ) );
                 if ( null != safeDeleteCallback ) {
                     safeDeleteCallback.deleteInViewEdge( edge );
                 }
@@ -94,7 +96,8 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
             @Override
             public void deleteInChildEdge( final Edge<Child, Node> edge ) {
                 final Node parent = edge.getSourceNode();
-                commands.add( new RemoveChildCommand( parent, candidate ) );
+                commands.add( new RemoveChildCommand( parent,
+                                                      candidate ) );
                 if ( null != safeDeleteCallback ) {
                     safeDeleteCallback.deleteInChildEdge( edge );
                 }
@@ -103,7 +106,8 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
             @Override
             public void deleteInDockEdge( final Edge<Dock, Node> edge ) {
                 final Node parent = edge.getSourceNode();
-                commands.add( new UnDockNodeCommand( parent, candidate ) );
+                commands.add( new UnDockNodeCommand( parent,
+                                                     candidate ) );
                 if ( null != safeDeleteCallback ) {
                     safeDeleteCallback.deleteInDockEdge( edge );
                 }
@@ -111,7 +115,8 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
             @Override
             public void deleteOutViewEdge( final Edge<? extends View<?>, Node> edge ) {
-                commands.add( new SetConnectionSourceNodeCommand( null, edge ) );
+                commands.add( new SetConnectionSourceNodeCommand( null,
+                                                                  edge ) );
                 if ( null != safeDeleteCallback ) {
                     safeDeleteCallback.deleteOutViewEdge( edge );
                 }
@@ -141,14 +146,17 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     @SuppressWarnings( "unchecked" )
     protected CommandResult<RuleViolation> doAllow( final GraphCommandExecutionContext context,
                                                     final Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        final CommandResult<RuleViolation> result = super.doAllow( context, command );
+        final CommandResult<RuleViolation> result = super.doAllow( context,
+                                                                   command );
         if ( !CommandUtils.isError( result ) && hasRules( context ) ) {
             final Graph<?, Node> target = getGraph( context );
             final Node<View<?>, Edge> candidate = ( Node<View<?>, Edge> ) getCandidate( context );
             final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
             final Collection<RuleViolation> cardinalityRuleViolations =
                     ( Collection<RuleViolation> ) context.getRulesManager()
-                            .cardinality().evaluate( target, candidate, RuleManager.Operation.DELETE ).violations();
+                            .cardinality().evaluate( target,
+                                                     candidate,
+                                                     RuleManager.Operation.DELETE ).violations();
             builder.addViolations( cardinalityRuleViolations );
             for ( final RuleViolation violation : cardinalityRuleViolations ) {
                 if ( builder.isError( violation ) ) {
@@ -161,14 +169,16 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
-        return super.undo( context, true );
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
+        return super.undo( context,
+                           true );
     }
 
     @SuppressWarnings( "unchecked" )
     private Node<? extends Definition<?>, Edge> getCandidate( final GraphCommandExecutionContext context ) {
         if ( null == node ) {
-            node = checkNodeNotNull( context, candidateUUID );
+            node = checkNodeNotNull( context,
+                                     candidateUUID );
         }
         return ( Node<View<?>, Edge> ) node;
     }

@@ -45,7 +45,6 @@ public interface AssigneeEditorWidgetView {
         void removeAssignee( AssigneeRow assigneeRow );
 
         ListBoxValues.ValueTester namesTester();
-
     }
 
     void init( Presenter presenter );
@@ -67,5 +66,4 @@ public interface AssigneeEditorWidgetView {
     AssigneeListItemWidgetView getAssigneeWidget( int index );
 
     boolean isDuplicateName( String name );
-
 }

@@ -69,7 +69,9 @@ public class ClientDiagramServicesTest {
         when( diagramService.saveOrUpdate( any( Diagram.class ) ) ).thenReturn( metadata );
         this.diagramServiceCaller = new CallerMock<DiagramService>( diagramService );
         this.diagramLookupServiceCaller = new CallerMock<DiagramLookupService>( diagramLookupService );
-        this.tested = new ClientDiagramService( shapeManager, diagramServiceCaller, diagramLookupServiceCaller );
+        this.tested = new ClientDiagramService( shapeManager,
+                                                diagramServiceCaller,
+                                                diagramLookupServiceCaller );
     }
 
     @Test
@@ -78,40 +80,60 @@ public class ClientDiagramServicesTest {
         String name = "d1";
         String defSetId = "id1";
         ServiceCallback<Path> callback = mock( ServiceCallback.class );
-        tested.create( path, name, defSetId, callback );
-        verify( diagramService, times( 1 ) ).create( eq( path ), eq( name ), eq( defSetId ) );
-        verify( callback, times( 1 ) ).onSuccess( any( Path.class ) );
-        verify( callback, times( 0 ) ).onError( any( ClientRuntimeError.class ) );
+        tested.create( path,
+                       name,
+                       defSetId,
+                       callback );
+        verify( diagramService,
+                times( 1 ) ).create( eq( path ),
+                                     eq( name ),
+                                     eq( defSetId ) );
+        verify( callback,
+                times( 1 ) ).onSuccess( any( Path.class ) );
+        verify( callback,
+                times( 0 ) ).onError( any( ClientRuntimeError.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testAdd() {
         ServiceCallback<Diagram<Graph, Metadata>> callback = mock( ServiceCallback.class );
-        tested.add( diagram, callback );
-        verify( diagramService, times( 1 ) ).saveOrUpdate( eq( diagram ) );
-        verify( callback, times( 1 ) ).onSuccess( any( Diagram.class ) );
-        verify( callback, times( 0 ) ).onError( any( ClientRuntimeError.class ) );
+        tested.add( diagram,
+                    callback );
+        verify( diagramService,
+                times( 1 ) ).saveOrUpdate( eq( diagram ) );
+        verify( callback,
+                times( 1 ) ).onSuccess( any( Diagram.class ) );
+        verify( callback,
+                times( 0 ) ).onError( any( ClientRuntimeError.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testSaveOrUpdate() {
         ServiceCallback<Diagram<Graph, Metadata>> callback = mock( ServiceCallback.class );
-        tested.saveOrUpdate( diagram, callback );
-        verify( diagramService, times( 1 ) ).saveOrUpdate( eq( diagram ) );
-        verify( callback, times( 1 ) ).onSuccess( any( Diagram.class ) );
-        verify( callback, times( 0 ) ).onError( any( ClientRuntimeError.class ) );
+        tested.saveOrUpdate( diagram,
+                             callback );
+        verify( diagramService,
+                times( 1 ) ).saveOrUpdate( eq( diagram ) );
+        verify( callback,
+                times( 1 ) ).onSuccess( any( Diagram.class ) );
+        verify( callback,
+                times( 0 ) ).onError( any( ClientRuntimeError.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testGetByPath() {
         ServiceCallback<Diagram<Graph, Metadata>> callback = mock( ServiceCallback.class );
-        tested.getByPath( path, callback );
-        verify( diagramService, times( 1 ) ).getDiagramByPath( eq( path ) );
-        verify( callback, times( 1 ) ).onSuccess( any( Diagram.class ) );
-        verify( callback, times( 0 ) ).onError( any( ClientRuntimeError.class ) );
+        tested.getByPath( path,
+                          callback );
+        verify( diagramService,
+                times( 1 ) ).getDiagramByPath( eq( path ) );
+        verify( callback,
+                times( 1 ) ).onSuccess( any( Diagram.class ) );
+        verify( callback,
+                times( 0 ) ).onError( any( ClientRuntimeError.class ) );
     }
 
     @Test
@@ -119,10 +141,14 @@ public class ClientDiagramServicesTest {
     public void testLookup() {
         DiagramLookupRequest request = mock( DiagramLookupRequest.class );
         ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>> callback = mock( ServiceCallback.class );
-        tested.lookup( request, callback );
-        verify( diagramLookupService, times( 1 ) ).lookup( eq( request ) );
-        verify( callback, times( 1 ) ).onSuccess( any( LookupManager.LookupResponse.class ) );
-        verify( callback, times( 0 ) ).onError( any( ClientRuntimeError.class ) );
+        tested.lookup( request,
+                       callback );
+        verify( diagramLookupService,
+                times( 1 ) ).lookup( eq( request ) );
+        verify( callback,
+                times( 1 ) ).onSuccess( any( LookupManager.LookupResponse.class ) );
+        verify( callback,
+                times( 0 ) ).onError( any( ClientRuntimeError.class ) );
     }
 
     @Test
@@ -135,9 +161,13 @@ public class ClientDiagramServicesTest {
         when( metadata.getShapeSetId() ).thenReturn( null );
         ServiceCallback<Diagram<Graph, Metadata>> callback = mock( ServiceCallback.class );
         when( diagramService.getDiagramByPath( eq( path ) ) ).thenReturn( diagram );
-        tested.add( diagram, callback );
-        tested.saveOrUpdate( diagram, callback );
-        tested.getByPath( path, callback );
-        verify( metadata, times( 3 ) ).setShapeSetId( eq( ssid ) );
+        tested.add( diagram,
+                    callback );
+        tested.saveOrUpdate( diagram,
+                             callback );
+        tested.getByPath( path,
+                          callback );
+        verify( metadata,
+                times( 3 ) ).setShapeSetId( eq( ssid ) );
     }
 }

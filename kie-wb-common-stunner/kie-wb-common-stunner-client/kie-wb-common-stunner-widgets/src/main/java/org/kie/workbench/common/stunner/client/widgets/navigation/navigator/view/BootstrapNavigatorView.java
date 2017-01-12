@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.navigation.navigator.view;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -30,8 +32,6 @@ import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.NavigatorItem;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.NavigatorItemView;
 import org.kie.workbench.common.stunner.client.widgets.navigation.navigator.NavigatorView;
-
-import javax.enterprise.context.Dependent;
 
 @Dependent
 public class BootstrapNavigatorView

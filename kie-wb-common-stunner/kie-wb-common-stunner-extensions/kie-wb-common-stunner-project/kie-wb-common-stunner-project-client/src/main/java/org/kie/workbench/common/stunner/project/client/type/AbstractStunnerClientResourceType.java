@@ -65,5 +65,4 @@ public abstract class AbstractStunnerClientResourceType<R extends DefinitionSetR
     private R getDefinitionSetResourceType() {
         return definitionSetResourceType;
     }
-
 }

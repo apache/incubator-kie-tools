@@ -15,13 +15,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.resource;
 
-import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.core.definition.DefinitionSetResourceType;
-
-
-import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
-
 import javax.enterprise.context.ApplicationScoped;
+
+import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
 
 @ApplicationScoped
 public class BPMNDefinitionSetResourceType extends AbstractDefinitionSetResourceType {

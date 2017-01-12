@@ -16,51 +16,81 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.components.palette.factory;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.*;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.Categories;
+import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
+import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 
 // TODO: i18n.
 @Dependent
 public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
 
     private static final Map<String, String> CAT_TITLES = new HashMap<String, String>( 6 ) {{
-        put( Categories.ACTIVITIES, "Activities" );
-        put( Categories.SUBPROCESSES, "Subprocesses" );
-        put( Categories.CONNECTING_OBJECTS, "Connecting objects" );
-        put( Categories.EVENTS, "Events" );
-        put( Categories.GATEWAYS, "Gateways" );
-        put( Categories.LANES, "Lanes" );
+        put( Categories.ACTIVITIES,
+             "Activities" );
+        put( Categories.SUBPROCESSES,
+             "Subprocesses" );
+        put( Categories.CONNECTING_OBJECTS,
+             "Connecting objects" );
+        put( Categories.EVENTS,
+             "Events" );
+        put( Categories.GATEWAYS,
+             "Gateways" );
+        put( Categories.LANES,
+             "Lanes" );
     }};
 
     private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>( 1 ) {{
-        put( Categories.ACTIVITIES, NoneTask.class );
-        put( Categories.SUBPROCESSES, ReusableSubprocess.class );
-        put( Categories.CONNECTING_OBJECTS, SequenceFlow.class );
-        put( Categories.EVENTS, StartNoneEvent.class );
-        put( Categories.GATEWAYS, ParallelGateway.class );
-        put( Categories.LANES, Lane.class );
+        put( Categories.ACTIVITIES,
+             NoneTask.class );
+        put( Categories.SUBPROCESSES,
+             ReusableSubprocess.class );
+        put( Categories.CONNECTING_OBJECTS,
+             SequenceFlow.class );
+        put( Categories.EVENTS,
+             StartNoneEvent.class );
+        put( Categories.GATEWAYS,
+             ParallelGateway.class );
+        put( Categories.LANES,
+             Lane.class );
     }};
 
     private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>( 5 ) {{
-        put( BaseTask.class.getName(), "Tasks" );
-        put( BaseStartEvent.class.getName(), "Start Events" );
-        put( BaseEndEvent.class.getName(), "End Events" );
-        put( BaseSubprocess.class.getName(), "Subprocesses" );
-        put( BaseGateway.class.getName(), "Gateways" );
+        put( BaseTask.class.getName(),
+             "Tasks" );
+        put( BaseStartEvent.class.getName(),
+             "Start Events" );
+        put( BaseEndEvent.class.getName(),
+             "End Events" );
+        put( BaseSubprocess.class.getName(),
+             "Subprocesses" );
+        put( BaseGateway.class.getName(),
+             "Gateways" );
     }};
 
     @Inject
     public BPMNPaletteDefinitionFactory( final ShapeManager shapeManager,
                                          final DefinitionSetPaletteBuilder paletteBuilder ) {
-        super( shapeManager, paletteBuilder );
+        super( shapeManager,
+               paletteBuilder );
     }
 
     @Override
@@ -105,5 +135,4 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
     protected Class<?> getDefinitionSetType() {
         return BPMNDefinitionSet.class;
     }
-
 }

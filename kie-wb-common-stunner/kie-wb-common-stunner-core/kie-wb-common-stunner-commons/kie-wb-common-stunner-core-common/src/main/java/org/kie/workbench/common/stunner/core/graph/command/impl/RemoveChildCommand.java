@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -28,8 +30,6 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Parent;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import java.util.List;
-
 /**
  * Removes the parent-child relationship  ( Child ) between two nodes.
  */
@@ -41,17 +41,18 @@ public class RemoveChildCommand extends AbstractGraphCommand {
     private transient Node<?, Edge> parent;
     private transient Node<?, Edge> candidate;
 
-    public RemoveChildCommand( @MapsTo( "parentUUID" ) String parentUUID,
-                               @MapsTo( "candidateUUID" ) String candidateUUID ) {
+    public RemoveChildCommand( final @MapsTo( "parentUUID" ) String parentUUID,
+                               final @MapsTo( "candidateUUID" ) String candidateUUID ) {
         this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
-                parentUUID );
+                                                              parentUUID );
         this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
-                candidateUUID );
+                                                                 candidateUUID );
     }
 
-    public RemoveChildCommand( Node<?, Edge> parent,
-                               Node<?, Edge> candidate ) {
-        this( parent.getUUID(), candidate.getUUID() );
+    public RemoveChildCommand( final Node<?, Edge> parent,
+                               final Node<?, Edge> candidate ) {
+        this( parent.getUUID(),
+              candidate.getUUID() );
         this.parent = parent;
         this.candidate = candidate;
     }
@@ -62,7 +63,8 @@ public class RemoveChildCommand extends AbstractGraphCommand {
         if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
             final Node<?, Edge> parent = getParent( context );
             final Node<?, Edge> candidate = getCandidate( context );
-            final Edge<Parent, Node> edge = getEdgeForTarget( parent, candidate );
+            final Edge<Parent, Node> edge = getEdgeForTarget( parent,
+                                                              candidate );
             if ( null != edge ) {
                 edge.setSourceNode( null );
                 edge.setTargetNode( null );
@@ -99,15 +101,16 @@ public class RemoveChildCommand extends AbstractGraphCommand {
 
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final SetChildNodeCommand undoCommand =
-                new SetChildNodeCommand( getParent( context ), getCandidate( context ) );
+        final SetChildNodeCommand undoCommand = new SetChildNodeCommand( getParent( context ),
+                                                                         getCandidate( context ) );
         return undoCommand.execute( context );
     }
 
     @SuppressWarnings( "unchecked" )
     private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
         if ( null == parent ) {
-            parent = checkNodeNotNull( context, parentUUID );
+            parent = checkNodeNotNull( context,
+                                       parentUUID );
         }
         return parent;
     }
@@ -115,7 +118,8 @@ public class RemoveChildCommand extends AbstractGraphCommand {
     @SuppressWarnings( "unchecked" )
     private Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
         if ( null == candidate ) {
-            candidate = checkNodeNotNull( context, candidateUUID );
+            candidate = checkNodeNotNull( context,
+                                          candidateUUID );
         }
         return candidate;
     }

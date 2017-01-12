@@ -23,10 +23,10 @@ import org.uberfire.mvp.Command;
 
 public interface NameEditBox<C extends CanvasHandler, E extends Element> extends IsWidget {
 
-    void initialize( C canvasHandler, Command closeCallback );
+    void initialize( final C canvasHandler,
+                     final Command closeCallback );
 
-    void show( E element );
+    void show( final E element );
 
     void hide();
-
 }

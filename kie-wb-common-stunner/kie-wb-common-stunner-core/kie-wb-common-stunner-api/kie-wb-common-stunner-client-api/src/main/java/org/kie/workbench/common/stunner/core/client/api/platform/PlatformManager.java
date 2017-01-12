@@ -21,5 +21,4 @@ public interface PlatformManager {
     Iterable<ClientPlatform> getSupportedPlatforms();
 
     ClientPlatform getCurrentPlatform();
-
 }

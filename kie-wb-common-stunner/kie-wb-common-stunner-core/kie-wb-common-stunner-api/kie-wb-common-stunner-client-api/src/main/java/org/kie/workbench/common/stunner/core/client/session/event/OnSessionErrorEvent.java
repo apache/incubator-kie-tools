@@ -33,5 +33,4 @@ public class OnSessionErrorEvent extends AbstractSessionEvent {
     public ClientRuntimeError getError() {
         return error;
     }
-
 }

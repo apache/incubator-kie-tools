@@ -33,25 +33,31 @@ public class ConnectorView extends BasicConnectorView<ConnectorView> {
 
     private ConnectorView( final Object[] line ) {
         super( BasicShapesSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
-                ( OrthogonalPolyLine ) line[ 0 ],
-                ( MultiPathDecorator ) line[ 1 ],
-                ( MultiPathDecorator ) line[ 2 ] );
+               ( OrthogonalPolyLine ) line[ 0 ],
+               ( MultiPathDecorator ) line[ 1 ],
+               ( MultiPathDecorator ) line[ 2 ] );
     }
 
     private static Object[] createLine( final double... points ) {
         // The head decorator must be not visible, as connectors are unidirectional.
         // TODO: Remove this when decorators can be nullified for WiresConnectors and just nullify this instance.
         final MultiPath head = new MultiPath()
-                .M( 1, 2 )
-                .L( 0, 2 )
-                .L( 1 / 2, 0 )
+                .M( 1,
+                    2 )
+                .L( 0,
+                    2 )
+                .L( 1 / 2,
+                    0 )
                 .Z()
                 .setFillAlpha( 0 )
                 .setStrokeAlpha( 0 );
         final MultiPath tail = new MultiPath()
-                .M( DECORATOR_WIDTH, DECORATOR_HEIGHT )
-                .L( 0, DECORATOR_HEIGHT )
-                .L( DECORATOR_WIDTH / 2, 0 )
+                .M( DECORATOR_WIDTH,
+                    DECORATOR_HEIGHT )
+                .L( 0,
+                    DECORATOR_HEIGHT )
+                .L( DECORATOR_WIDTH / 2,
+                    0 )
                 .Z()
                 .setFillColor( ColorName.BLACK )
                 .setFillAlpha( 1 );
@@ -65,5 +71,4 @@ public class ConnectorView extends BasicConnectorView<ConnectorView> {
         final MultiPathDecorator tailDecorator = new MultiPathDecorator( tail );
         return new Object[]{ line, headDecorator, tailDecorator };
     }
-
 }

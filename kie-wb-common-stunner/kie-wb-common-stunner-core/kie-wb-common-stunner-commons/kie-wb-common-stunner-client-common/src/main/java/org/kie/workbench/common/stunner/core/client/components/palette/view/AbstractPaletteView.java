@@ -62,7 +62,8 @@ public abstract class AbstractPaletteView<T, L, I extends PaletteElementView> im
     @SuppressWarnings( "unchecked" )
     public T set( final int pos,
                   final I item ) {
-        items.set( pos, item );
+        items.set( pos,
+                   item );
         return ( T ) this;
     }
 
@@ -74,10 +75,10 @@ public abstract class AbstractPaletteView<T, L, I extends PaletteElementView> im
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T clear() {
         doClear();
         items.clear();
         return ( T ) this;
     }
-
 }

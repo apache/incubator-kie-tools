@@ -20,6 +20,5 @@ public interface ValidatorCallback<V extends ValidationViolation> {
 
     void onSuccess();
 
-    void onFail( Iterable<V> violations );
-
+    void onFail( final Iterable<V> violations );
 }

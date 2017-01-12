@@ -16,17 +16,22 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandAllowedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.command.*;
+import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandListener;
+import org.kie.workbench.common.stunner.core.command.CommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.DelegateCommandManager;
+import org.kie.workbench.common.stunner.core.command.HasCommandListener;
 import org.kie.workbench.common.stunner.core.command.impl.CommandManagerImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 /**
  * The default canvas command manager implementation.
@@ -47,7 +52,9 @@ public class CanvasCommandManagerImpl
     private CommandListener<AbstractCanvasHandler, CanvasViolation> listener;
 
     protected CanvasCommandManagerImpl() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
@@ -71,12 +78,18 @@ public class CanvasCommandManagerImpl
     protected void postAllow( final AbstractCanvasHandler context,
                               final Command<AbstractCanvasHandler, CanvasViolation> command,
                               final CommandResult<CanvasViolation> result ) {
-        super.postAllow( context, command, result );
+        super.postAllow( context,
+                         command,
+                         result );
         if ( null != this.listener ) {
-            listener.onAllow( context, command, result );
+            listener.onAllow( context,
+                              command,
+                              result );
         }
         if ( null != result && null != isCanvasCommandAllowedEvent ) {
-            isCanvasCommandAllowedEvent.fire( new CanvasCommandAllowedEvent( context, command, result ) );
+            isCanvasCommandAllowedEvent.fire( new CanvasCommandAllowedEvent( context,
+                                                                             command,
+                                                                             result ) );
         }
     }
 
@@ -85,15 +98,21 @@ public class CanvasCommandManagerImpl
     protected void postExecute( final AbstractCanvasHandler context,
                                 final Command<AbstractCanvasHandler, CanvasViolation> command,
                                 final CommandResult<CanvasViolation> result ) {
-        super.postExecute( context, command, result );
+        super.postExecute( context,
+                           command,
+                           result );
         if ( null != result && !CommandUtils.isError( result ) ) {
             draw( context );
         }
         if ( null != this.listener ) {
-            listener.onExecute( context, command, result );
+            listener.onExecute( context,
+                                command,
+                                result );
         }
         if ( null != result && null != canvasCommandExecutedEvent ) {
-            canvasCommandExecutedEvent.fire( new CanvasCommandExecutedEvent( context, command, result ) );
+            canvasCommandExecutedEvent.fire( new CanvasCommandExecutedEvent( context,
+                                                                             command,
+                                                                             result ) );
         }
     }
 
@@ -102,15 +121,21 @@ public class CanvasCommandManagerImpl
     protected void postUndo( final AbstractCanvasHandler context,
                              final Command<AbstractCanvasHandler, CanvasViolation> command,
                              final CommandResult<CanvasViolation> result ) {
-        super.postUndo( context, command, result );
+        super.postUndo( context,
+                        command,
+                        result );
         if ( null != result && !CommandUtils.isError( result ) ) {
             draw( context );
         }
         if ( null != this.listener ) {
-            listener.onUndo( context, command, result );
+            listener.onUndo( context,
+                             command,
+                             result );
         }
         if ( null != canvasUndoCommandExecutedEvent ) {
-            canvasUndoCommandExecutedEvent.fire( new CanvasUndoCommandExecutedEvent( context, command, result ) );
+            canvasUndoCommandExecutedEvent.fire( new CanvasUndoCommandExecutedEvent( context,
+                                                                                     command,
+                                                                                     result ) );
         }
     }
 

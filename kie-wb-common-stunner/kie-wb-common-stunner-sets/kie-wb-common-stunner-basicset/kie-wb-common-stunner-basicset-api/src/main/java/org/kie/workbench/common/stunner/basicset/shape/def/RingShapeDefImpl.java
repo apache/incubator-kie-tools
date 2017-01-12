@@ -101,5 +101,4 @@ public final class RingShapeDefImpl
     public GlyphDef<Ring> getGlyphDef() {
         return GlyphDefinitions.GLYPH_SHAPE();
     }
-
 }

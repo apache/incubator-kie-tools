@@ -25,7 +25,6 @@ public interface ConnectionRule extends RuleById {
 
     /**
      * The Connections that are permitted by the Rule. The source and target of the connection must have the Role defined in the PermittedConnection
-     *
      * @return
      */
     Set<PermittedConnection> getPermittedConnections();
@@ -37,17 +36,14 @@ public interface ConnectionRule extends RuleById {
 
         /**
          * Role of the start Element that can accept this Connection
-         *
          * @return
          */
         String getStartRole();
 
         /**
          * Role of then end Element that can accept this Connection
-         *
          * @return
          */
         String getEndRole();
     }
-
 }

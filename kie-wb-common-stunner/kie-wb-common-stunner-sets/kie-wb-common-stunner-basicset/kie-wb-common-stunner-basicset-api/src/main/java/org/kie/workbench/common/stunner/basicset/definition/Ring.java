@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.basicset.definition;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -27,7 +31,11 @@ import org.kie.workbench.common.stunner.basicset.definition.property.OuterRadius
 import org.kie.workbench.common.stunner.basicset.definition.property.background.BackgroundAndBorderSet;
 import org.kie.workbench.common.stunner.basicset.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.basicset.shape.def.RingShapeDefImpl;
-import org.kie.workbench.common.stunner.core.definition.annotation.*;
+import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.annotation.Description;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Shape;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
@@ -35,11 +43,11 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BACKGROUND_AND_BORDERS;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_FONT;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_INNER_RADIUS;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_NAME;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_OUTER_RADIUS;
 
 @Portable
 @Bindable
@@ -99,10 +107,12 @@ public class Ring {
         @Override
         public Ring build() {
             return new Ring( new Name( "Ring" ),
-                    new BackgroundAndBorderSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet(),
-                    new OuterRadius( OUTER_RADIUS ),
-                    new InnerRadius( INNER_RADIUS ) );
+                             new BackgroundAndBorderSet( COLOR,
+                                                         BORDER_COLOR,
+                                                         BORDER_SIZE ),
+                             new FontSet(),
+                             new OuterRadius( OUTER_RADIUS ),
+                             new InnerRadius( INNER_RADIUS ) );
         }
     }
 

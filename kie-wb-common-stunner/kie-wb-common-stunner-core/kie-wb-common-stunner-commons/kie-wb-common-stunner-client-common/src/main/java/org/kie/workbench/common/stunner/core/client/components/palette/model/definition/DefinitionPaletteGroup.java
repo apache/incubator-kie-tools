@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.components.palette.model.de
 
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 
-public interface DefinitionPaletteGroup extends DefinitionPaletteItem, HasPaletteItems<DefinitionPaletteItem> {
+public interface DefinitionPaletteGroup extends DefinitionPaletteItem,
+                                                HasPaletteItems<DefinitionPaletteItem> {
 
 }

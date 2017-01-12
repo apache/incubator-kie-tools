@@ -58,6 +58,5 @@ public abstract class AbstractDefinitionManager implements DefinitionManager {
         final DynamicRegistry<Adapter> adapterDynamicRegistry = ( DynamicRegistry<Adapter> ) adapterManager.registry();
         adapterDynamicRegistry.register( adapter );
     }
-
 }
 

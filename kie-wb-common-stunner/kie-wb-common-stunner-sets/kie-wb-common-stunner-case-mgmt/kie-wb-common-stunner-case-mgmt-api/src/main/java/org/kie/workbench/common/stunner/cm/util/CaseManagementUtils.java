@@ -34,5 +34,4 @@ public class CaseManagementUtils {
         return GraphUtils.getFirstNode( graph,
                                         CaseManagementDiagram.class );
     }
-
 }

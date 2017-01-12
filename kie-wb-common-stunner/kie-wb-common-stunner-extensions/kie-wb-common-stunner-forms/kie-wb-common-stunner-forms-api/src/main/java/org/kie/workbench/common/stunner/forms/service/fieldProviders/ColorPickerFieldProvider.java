@@ -21,6 +21,7 @@ import org.kie.workbench.common.forms.service.impl.fieldProviders.BasicTypeField
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
 
 public class ColorPickerFieldProvider extends BasicTypeFieldProvider<ColorPickerFieldDefinition> {
+
     @Override
     public int getPriority() {
         return 100;

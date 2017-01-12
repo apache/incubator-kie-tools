@@ -37,20 +37,23 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
     private final Integer magnetIndex;
     private transient Node<?, Edge> node;
 
-    public AddConnectorCommand( @MapsTo( "nodeUUID" ) String nodeUUID,
-                                @MapsTo( "edge" ) Edge edge,
-                                @MapsTo( "magnetIndex" ) Integer magnetIndex ) {
+    public AddConnectorCommand( final @MapsTo( "nodeUUID" ) String nodeUUID,
+                                final @MapsTo( "edge" ) Edge edge,
+                                final @MapsTo( "magnetIndex" ) Integer magnetIndex ) {
         this.nodeUUID = PortablePreconditions.checkNotNull( "nodeUUID",
-                nodeUUID );
+                                                            nodeUUID );
         this.edge = PortablePreconditions.checkNotNull( "edge",
-                edge );
-        this.magnetIndex = PortablePreconditions.checkNotNull( "magnetIndex", magnetIndex );
+                                                        edge );
+        this.magnetIndex = PortablePreconditions.checkNotNull( "magnetIndex",
+                                                               magnetIndex );
     }
 
     public AddConnectorCommand( final Node<?, Edge> sourceNode,
                                 final Edge edge,
                                 final Integer magnetIndex ) {
-        this( sourceNode.getUUID(), edge, magnetIndex );
+        this( sourceNode.getUUID(),
+              edge,
+              magnetIndex );
         this.node = sourceNode;
     }
 
@@ -59,7 +62,9 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
     protected AddConnectorCommand initialize( final GraphCommandExecutionContext context ) {
         super.initialize( context );
         final Node<? extends View<?>, Edge> source = ( Node<? extends View<?>, Edge> ) getNode( context );
-        commands.add( new SetConnectionSourceNodeCommand( source, edge, magnetIndex ) );
+        commands.add( new SetConnectionSourceNodeCommand( source,
+                                                          edge,
+                                                          magnetIndex ) );
         return this;
     }
 
@@ -90,7 +95,7 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
         final DeleteConnectorCommand undoCommand = new DeleteConnectorCommand( edge );
         return undoCommand.execute( context );
     }
@@ -98,7 +103,8 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
     @SuppressWarnings( "unchecked" )
     private Node<?, Edge> getNode( final GraphCommandExecutionContext context ) {
         if ( null == node ) {
-            node = getNode( context, nodeUUID );
+            node = getNode( context,
+                            nodeUUID );
         }
         return node;
     }

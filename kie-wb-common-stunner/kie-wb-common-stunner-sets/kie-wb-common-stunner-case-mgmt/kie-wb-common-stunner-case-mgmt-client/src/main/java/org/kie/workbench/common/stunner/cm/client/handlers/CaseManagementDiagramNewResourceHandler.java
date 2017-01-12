@@ -65,7 +65,6 @@ public class CaseManagementDiagramNewResourceHandler extends AbstractProjectDiag
     }
 
     private CaseManagementDiagramResourceType getCaseManagementDiagramResourceType() {
-        return (CaseManagementDiagramResourceType) super.getResourceType();
+        return ( CaseManagementDiagramResourceType ) super.getResourceType();
     }
-
 }

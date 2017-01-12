@@ -16,6 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
@@ -30,19 +38,12 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * For Lienzo's based Canvas.
  */
 public abstract class AbstractCanvas<V extends AbstractCanvas.View>
-        implements Canvas<Shape>, HasCanvasListeners<CanvasShapeListener> {
+        implements Canvas<Shape>,
+                   HasCanvasListeners<CanvasShapeListener> {
 
     private static Logger LOGGER = Logger.getLogger( AbstractCanvas.class.getName() );
 
@@ -58,23 +59,28 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     public interface View<P> extends IsWidget {
 
-        View show( P panel, Layer layer );
+        View show( final P panel,
+                   final Layer layer );
 
-        View add( IsWidget widget );
+        View add( final IsWidget widget );
 
-        View remove( IsWidget widget );
+        View remove( final IsWidget widget );
 
-        View addShape( ShapeView<?> shapeView );
+        View addShape( final ShapeView<?> shapeView );
 
-        View removeShape( ShapeView<?> shapeView );
+        View removeShape( final ShapeView<?> shapeView );
 
-        View addChildShape( ShapeView<?> parent, ShapeView<?> child );
+        View addChildShape( final ShapeView<?> parent,
+                            final ShapeView<?> child );
 
-        View removeChildShape( ShapeView<?> parent, ShapeView<?> child );
+        View removeChildShape( final ShapeView<?> parent,
+                               final ShapeView<?> child );
 
-        View dock( ShapeView<?> parent, ShapeView<?> child );
+        View dock( final ShapeView<?> parent,
+                   final ShapeView<?> child );
 
-        View undock( ShapeView<?> parent, ShapeView<?> child );
+        View undock( final ShapeView<?> parent,
+                     final ShapeView<?> child );
 
         double getAbsoluteX();
 
@@ -84,9 +90,9 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
         int getHeight();
 
-        View setGrid( CanvasGrid grid );
+        View setGrid( final CanvasGrid grid );
 
-        View setCursor( Cursors cursor );
+        View setCursor( final Cursors cursor );
 
         Layer getLayer();
 
@@ -131,7 +137,8 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     public <P> void show( final P panel,
                           final Layer layer ) {
         // Show the canvas layer on using the given panel instance.
-        view.show( panel, layer );
+        view.show( panel,
+                   layer );
         // TODO: Review this.
         //       If adding this handler, the SelectionControl for this layer never fires,
         //       so it seems it's not registering fine more than one click event handler.
@@ -147,9 +154,9 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         layer.addHandler( ViewEventType.MOUSE_CLICK, clickHandler );*/
     }
 
-    public abstract void addControl( IsWidget controlView );
+    public abstract void addControl( final IsWidget controlView );
 
-    public abstract void deleteControl( IsWidget controlView );
+    public abstract void deleteControl( final IsWidget controlView );
 
     @Override
     public List<Shape> getShapes() {
@@ -168,30 +175,42 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     }
 
     @SuppressWarnings( "unchecked" )
-    public Canvas addChildShape( final Shape parent, final Shape child ) {
-        getView().addChildShape( parent.getShapeView(), child.getShapeView() );
-        log( Level.FINE, "Adding child [" + child.getUUID() + "] into parent [" + parent.getUUID() + "]" );
+    public Canvas addChildShape( final Shape parent,
+                                 final Shape child ) {
+        getView().addChildShape( parent.getShapeView(),
+                                 child.getShapeView() );
+        log( Level.FINE,
+             "Adding child [" + child.getUUID() + "] into parent [" + parent.getUUID() + "]" );
         return this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public Canvas deleteChildShape( final Shape parent, final Shape child ) {
-        getView().removeChildShape( parent.getShapeView(), child.getShapeView() );
-        log( Level.FINE, "Deleting child [" + child.getUUID() + "] from parent [" + parent.getUUID() + "]" );
+    public Canvas deleteChildShape( final Shape parent,
+                                    final Shape child ) {
+        getView().removeChildShape( parent.getShapeView(),
+                                    child.getShapeView() );
+        log( Level.FINE,
+             "Deleting child [" + child.getUUID() + "] from parent [" + parent.getUUID() + "]" );
         return this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public Canvas dock( final Shape parent, final Shape child ) {
-        getView().dock( parent.getShapeView(), child.getShapeView() );
-        log( Level.FINE, "Docking child [" + child.getUUID() + "] into parent [" + parent.getUUID() + "]" );
+    public Canvas dock( final Shape parent,
+                        final Shape child ) {
+        getView().dock( parent.getShapeView(),
+                        child.getShapeView() );
+        log( Level.FINE,
+             "Docking child [" + child.getUUID() + "] into parent [" + parent.getUUID() + "]" );
         return this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public Canvas undock( final Shape parent, final Shape child ) {
-        getView().undock( parent.getShapeView(), child.getShapeView() );
-        log( Level.FINE, "Undocking child [" + child.getUUID() + "] from parent [" + parent.getUUID() + "]" );
+    public Canvas undock( final Shape parent,
+                          final Shape child ) {
+        getView().undock( parent.getShapeView(),
+                          child.getShapeView() );
+        log( Level.FINE,
+             "Undocking child [" + child.getUUID() + "] from parent [" + parent.getUUID() + "]" );
         return this;
     }
 
@@ -201,7 +220,8 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
             addTransientShape( shape );
             shapes.add( shape );
             fireCanvasShapeAdded( shape );
-            canvasShapeAddedEvent.fire( new CanvasShapeAddedEvent( this, shape ) );
+            canvasShapeAddedEvent.fire( new CanvasShapeAddedEvent( this,
+                                                                   shape ) );
         }
         return this;
     }
@@ -245,7 +265,8 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         deleteTransientShape( shape );
         fireCanvasShapeRemoved( shape );
         shapes.remove( shape );
-        canvasShapeRemovedEvent.fire( new CanvasShapeRemovedEvent( this, shape ) );
+        canvasShapeRemovedEvent.fire( new CanvasShapeRemovedEvent( this,
+                                                                   shape ) );
         return this;
     }
 
@@ -388,9 +409,11 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         this.loadingObserver.loadingCompleted();
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

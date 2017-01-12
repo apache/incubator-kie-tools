@@ -51,5 +51,4 @@ public class CaseManagementDefinitionSetResourceType extends AbstractDefinitionS
     public Class<?> getDefinitionSetType() {
         return CaseManagementDefinitionSet.class;
     }
-
 }

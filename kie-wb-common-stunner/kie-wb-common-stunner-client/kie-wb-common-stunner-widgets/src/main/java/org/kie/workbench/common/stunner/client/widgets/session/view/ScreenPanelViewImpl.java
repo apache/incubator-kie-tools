@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.session.view;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
-import javax.enterprise.context.Dependent;
 
 @Dependent
 public class ScreenPanelViewImpl implements ScreenPanelView {
@@ -38,5 +38,4 @@ public class ScreenPanelViewImpl implements ScreenPanelView {
     public Widget asWidget() {
         return panel;
     }
-
 }

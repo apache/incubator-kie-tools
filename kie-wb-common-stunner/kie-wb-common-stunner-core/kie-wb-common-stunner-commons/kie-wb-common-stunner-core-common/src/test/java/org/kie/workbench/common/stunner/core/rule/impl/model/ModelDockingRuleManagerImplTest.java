@@ -15,6 +15,9 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +27,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class ModelDockingRuleManagerImplTest {
@@ -48,8 +48,10 @@ public class ModelDockingRuleManagerImplTest {
         add( ROLE4 );
     }};
 
-    @Mock DockingRule rule;
-    @Mock DockingRule rule2;
+    @Mock
+    DockingRule rule;
+    @Mock
+    DockingRule rule2;
 
     private ModelDockingRuleManagerImpl tested;
 
@@ -70,7 +72,8 @@ public class ModelDockingRuleManagerImplTest {
             add( ROLE1 );
             add( "role3" );
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID, roles );
+        final RuleViolations violations = tested.evaluate( DEF_ID,
+                                                           roles );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -81,7 +84,8 @@ public class ModelDockingRuleManagerImplTest {
             add( ROLE2 );
             add( "role3" );
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID, roles );
+        final RuleViolations violations = tested.evaluate( DEF_ID,
+                                                           roles );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -92,7 +96,8 @@ public class ModelDockingRuleManagerImplTest {
             add( "role3" );
             add( "role4" );
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID, roles );
+        final RuleViolations violations = tested.evaluate( DEF_ID,
+                                                           roles );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -103,7 +108,8 @@ public class ModelDockingRuleManagerImplTest {
             add( ROLE3 );
             add( "role6" );
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID2, roles );
+        final RuleViolations violations = tested.evaluate( DEF_ID2,
+                                                           roles );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -114,7 +120,8 @@ public class ModelDockingRuleManagerImplTest {
             add( ROLE4 );
             add( "role1" );
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID2, roles );
+        final RuleViolations violations = tested.evaluate( DEF_ID2,
+                                                           roles );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -125,10 +132,9 @@ public class ModelDockingRuleManagerImplTest {
             add( ROLE1 );
             add( "role6" );
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID2, roles );
+        final RuleViolations violations = tested.evaluate( DEF_ID2,
+                                                           roles );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
-
-
 }

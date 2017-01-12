@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Collection;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -24,8 +26,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-import java.util.Collection;
-
 /**
  * A Command to add a node as a child for the main graph instance.
  * It check parent cardinality rules and containment rules as we..
@@ -33,7 +33,7 @@ import java.util.Collection;
 @Portable
 public final class AddNodeCommand extends RegisterNodeCommand {
 
-    public AddNodeCommand( @MapsTo( "candidate" ) Node candidate ) {
+    public AddNodeCommand( final @MapsTo( "candidate" ) Node candidate ) {
         super( candidate );
     }
 
@@ -46,14 +46,15 @@ public final class AddNodeCommand extends RegisterNodeCommand {
         final Collection<RuleViolation> containmentRuleViolations =
                 ( Collection<RuleViolation> ) context.getRulesManager()
                         .containment()
-                        .evaluate( graph, getCandidate() ).violations();
+                        .evaluate( graph,
+                                   getCandidate() ).violations();
         builder.addViolations( containmentRuleViolations );
         return builder.build();
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
         final SafeDeleteNodeCommand undoCommand = new SafeDeleteNodeCommand( getCandidate() );
         return undoCommand.execute( context );
     }

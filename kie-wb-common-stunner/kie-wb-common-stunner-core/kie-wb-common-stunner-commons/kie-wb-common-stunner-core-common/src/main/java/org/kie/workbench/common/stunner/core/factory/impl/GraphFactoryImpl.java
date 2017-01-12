@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
@@ -27,9 +30,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class GraphFactoryImpl extends AbstractElementFactory<String, DefinitionSet, Graph<DefinitionSet, Node>>
@@ -55,15 +55,15 @@ public class GraphFactoryImpl extends AbstractElementFactory<String, DefinitionS
     @SuppressWarnings( "unchecked   " )
     public Graph<DefinitionSet, Node> build( final String uuid,
                                              final String definitionSetId ) {
-        final GraphImpl graph = new GraphImpl<>( uuid, new GraphNodeStoreImpl() );
+        final GraphImpl graph = new GraphImpl<>( uuid,
+                                                 new GraphNodeStoreImpl() );
         final DefinitionSet content = new DefinitionSetImpl( definitionSetId );
         graph.setContent( content );
-        content.setBounds( new BoundsImpl(
-                new BoundImpl( 0d, 0d ),
-                new BoundImpl( DEFAULT_WIDTH, DEFAULT_HEIGHT )
+        content.setBounds( new BoundsImpl( new BoundImpl( 0d,
+                                                          0d ),
+                                           new BoundImpl( DEFAULT_WIDTH,
+                                                          DEFAULT_HEIGHT )
         ) );
         return graph;
     }
-
-
 }

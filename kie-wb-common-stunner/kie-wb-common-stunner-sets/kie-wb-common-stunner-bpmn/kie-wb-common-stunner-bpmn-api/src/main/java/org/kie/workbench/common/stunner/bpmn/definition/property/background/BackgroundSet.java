@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.background;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -26,9 +28,9 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
 
-import javax.validation.Valid;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_BACKGROUND_COLOR;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_BORDER_COLOR;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_BORDER_SIZE;
 
 @Portable
 @Bindable
@@ -58,8 +60,8 @@ public class BackgroundSet implements BPMNPropertySet {
 
     public BackgroundSet() {
         this( new BgColor(),
-                new BorderColor(),
-                new BorderSize() );
+              new BorderColor(),
+              new BorderSize() );
     }
 
     public BackgroundSet( @MapsTo( "bgColor" ) BgColor bgColor,

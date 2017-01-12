@@ -25,5 +25,4 @@ public interface CaseManagementImageResources extends ClientBundleWithLookup {
 
     @Source( "images/cmicon.png" )
     ImageResource cmicon();
-
 }

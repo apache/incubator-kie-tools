@@ -15,6 +15,12 @@
  */
 package org.kie.workbench.common.stunner.standalone.client;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.inject.Inject;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -40,12 +46,6 @@ import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
 
@@ -104,7 +104,8 @@ public class ShowcaseEntryPoint {
         GWT.setUncaughtExceptionHandler( throwable -> {
             final String message = "Uncaught error on client side: " + throwable.getMessage();
             errorPopupPresenter.showMessage( message );
-            log( Level.SEVERE, throwable.getMessage() );
+            log( Level.SEVERE,
+                 throwable.getMessage() );
         } );
     }
 
@@ -167,7 +168,8 @@ public class ShowcaseEntryPoint {
             authService.call( new RemoteCallback<Void>() {
                 @Override
                 public void callback( Void response ) {
-                    final String location = GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "/logout.jsp" );
+                    final String location = GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/",
+                                                                                 "/logout.jsp" );
                     redirect( location );
                 }
             } ).logout();
@@ -178,9 +180,11 @@ public class ShowcaseEntryPoint {
         $wnd.location = url;
     }-*/;
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

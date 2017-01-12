@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.definition.adapter.exception.NotPojoTypeException;
-import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.logging.Logger;
+
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.exception.NotPojoTypeException;
+import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 
 public class BindableAdapterUtils {
 
@@ -31,7 +31,8 @@ public class BindableAdapterUtils {
     public static final String SHAPE_SET_SUFFIX = "ShapeSet";
 
     public static String getDefinitionId( final Class<?> type ) {
-        return getDefinitionId( type, null );
+        return getDefinitionId( type,
+                                null );
     }
 
     public static String getDefinitionId( final Class<?> type,
@@ -39,13 +40,13 @@ public class BindableAdapterUtils {
         if ( null != registry &&
                 !registry.getDefinitionAdapter( type ).isPojoModel() ) {
             throw new NotPojoTypeException( type );
-
         }
         return getGenericClassName( type );
     }
 
     public static String getDefinitionSetId( final Class<?> type ) {
-        return getDefinitionSetId( type, null );
+        return getDefinitionSetId( type,
+                                   null );
     }
 
     public static String getDefinitionSetId( final Class<?> type,
@@ -53,13 +54,13 @@ public class BindableAdapterUtils {
         if ( null != registry &&
                 !registry.getDefinitionSetAdapter( type ).isPojoModel() ) {
             throw new NotPojoTypeException( type );
-
         }
         return getGenericClassName( type );
     }
 
     public static String getPropertySetId( final Class<?> type ) {
-        return getPropertySetId( type, null );
+        return getPropertySetId( type,
+                                 null );
     }
 
     public static String getPropertySetId( final Class<?> type,
@@ -67,7 +68,6 @@ public class BindableAdapterUtils {
         if ( null != definitionManager &&
                 !definitionManager.adapters().registry().getPropertySetAdapter( type ).isPojoModel() ) {
             throw new NotPojoTypeException( type );
-
         }
         return getGenericClassName( type );
     }
@@ -77,13 +77,13 @@ public class BindableAdapterUtils {
         if ( null != definitionManager &&
                 !definitionManager.adapters().registry().getPropertyAdapter( type ).isPojoModel() ) {
             throw new NotPojoTypeException( type );
-
         }
         return getGenericClassName( type );
     }
 
     public static String getPropertyId( final Class<?> type ) {
-        return getPropertyId( type, null );
+        return getPropertyId( type,
+                              null );
     }
 
     public static String getShapeSetId( final Class<?> shapeSetClass ) {
@@ -103,13 +103,9 @@ public class BindableAdapterUtils {
             final LinkedList<Class<?>> result = new LinkedList<>();
             for ( final Object sourceObject : source ) {
                 result.add( sourceObject.getClass() );
-
             }
             return result;
-
         }
         return null;
-
     }
-
 }

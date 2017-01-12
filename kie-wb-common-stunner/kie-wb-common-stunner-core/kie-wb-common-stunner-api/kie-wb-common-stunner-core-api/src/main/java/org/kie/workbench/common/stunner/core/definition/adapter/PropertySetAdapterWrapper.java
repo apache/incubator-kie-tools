@@ -54,5 +54,4 @@ public abstract class PropertySetAdapterWrapper<T, A extends PropertySetAdapter<
     public boolean accepts( final Class<?> type ) {
         return adapter.accepts( type );
     }
-
 }

@@ -22,16 +22,18 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class CardinalityMinRuleViolation extends AbstractCardinalityRuleViolation {
 
-    public CardinalityMinRuleViolation( @MapsTo( "target" ) String target,
-                                        @MapsTo( "candidate" ) String candidate,
-                                        @MapsTo( "restrictedOccurrences" ) Integer restrictedOccurrences,
-                                        @MapsTo( "currentOccurrences" ) Integer currentOccurrences ) {
-        super( target, candidate, restrictedOccurrences, currentOccurrences );
+    public CardinalityMinRuleViolation( final @MapsTo( "target" ) String target,
+                                        final @MapsTo( "candidate" ) String candidate,
+                                        final @MapsTo( "restrictedOccurrences" ) Integer restrictedOccurrences,
+                                        final @MapsTo( "currentOccurrences" ) Integer currentOccurrences ) {
+        super( target,
+               candidate,
+               restrictedOccurrences,
+               currentOccurrences );
     }
 
     @Override
     public String getMessage() {
         return " Label ['" + target + "'] require a minimum '" + restrictedOccurrences + "' of '" + candidate + "' roles. Found '" + currentOccurrences + "'.";
     }
-
 }

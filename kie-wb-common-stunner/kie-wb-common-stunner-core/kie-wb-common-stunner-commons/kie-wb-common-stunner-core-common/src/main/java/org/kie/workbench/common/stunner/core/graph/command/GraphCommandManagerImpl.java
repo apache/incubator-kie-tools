@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.graph.command;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -25,12 +31,6 @@ import org.kie.workbench.common.stunner.core.command.event.local.IsCommandAllowe
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.kie.workbench.common.stunner.core.command.impl.CommandManagerImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Dependent
 public class GraphCommandManagerImpl
@@ -44,7 +44,9 @@ public class GraphCommandManagerImpl
     private final Event<CommandUndoExecutedEvent> commandUndoExecutedEvent;
 
     protected GraphCommandManagerImpl() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
@@ -61,13 +63,16 @@ public class GraphCommandManagerImpl
     public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context,
                                                final Command<GraphCommandExecutionContext, RuleViolation> command ) {
         try {
-            final CommandResult<RuleViolation> result = commandManager.allow( context, command );
+            final CommandResult<RuleViolation> result = commandManager.allow( context,
+                                                                              command );
             if ( null != isCommandAllowedEvent ) {
-                isCommandAllowedEvent.fire( new IsCommandAllowedEvent( command, result ) );
+                isCommandAllowedEvent.fire( new IsCommandAllowedEvent( command,
+                                                                       result ) );
             }
             return result;
         } catch ( CommandException e ) {
-            LOGGER.log( Level.SEVERE, "Error while executing graph command. Message [" + e.getMessage() + "]." );
+            LOGGER.log( Level.SEVERE,
+                        "Error while executing graph command. Message [" + e.getMessage() + "]." );
         }
         return GraphCommandResultBuilder.FAILED;
     }
@@ -76,13 +81,16 @@ public class GraphCommandManagerImpl
     public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context,
                                                  final Command<GraphCommandExecutionContext, RuleViolation> command ) {
         try {
-            final CommandResult<RuleViolation> result = commandManager.execute( context, command );
+            final CommandResult<RuleViolation> result = commandManager.execute( context,
+                                                                                command );
             if ( null != commandExecutedEvent ) {
-                commandExecutedEvent.fire( new CommandExecutedEvent( command, result ) );
+                commandExecutedEvent.fire( new CommandExecutedEvent( command,
+                                                                     result ) );
             }
             return result;
         } catch ( CommandException e ) {
-            LOGGER.log( Level.SEVERE, "Error while checking allow for graph command. Message [" + e.getMessage() + "]." );
+            LOGGER.log( Level.SEVERE,
+                        "Error while checking allow for graph command. Message [" + e.getMessage() + "]." );
         }
         return GraphCommandResultBuilder.FAILED;
     }
@@ -90,9 +98,11 @@ public class GraphCommandManagerImpl
     @Override
     public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context,
                                               final Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        final CommandResult<RuleViolation> result = commandManager.undo( context, command );
+        final CommandResult<RuleViolation> result = commandManager.undo( context,
+                                                                         command );
         if ( null != commandUndoExecutedEvent ) {
-            final CommandUndoExecutedEvent event = new CommandUndoExecutedEvent( command, result );
+            final CommandUndoExecutedEvent event = new CommandUndoExecutedEvent( command,
+                                                                                 result );
             commandUndoExecutedEvent.fire( event );
         }
         return result;

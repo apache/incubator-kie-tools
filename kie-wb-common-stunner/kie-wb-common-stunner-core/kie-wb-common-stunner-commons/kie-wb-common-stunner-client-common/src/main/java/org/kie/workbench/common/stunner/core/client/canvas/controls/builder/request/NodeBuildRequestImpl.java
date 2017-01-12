@@ -30,7 +30,8 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
     public NodeBuildRequestImpl( final double x,
                                  final double y,
                                  final Node<View<?>, Edge> node ) {
-        super( x, y );
+        super( x,
+               y );
         this.node = node;
         this.sourceMagnet = 0;
         this.targetMagnet = 0;
@@ -40,7 +41,8 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
                                  final double y,
                                  final Node<View<?>, Edge> node,
                                  final Edge<View<?>, Node> inEdge ) {
-        super( x, y );
+        super( x,
+               y );
         this.node = node;
         this.inEdge = inEdge;
         this.sourceMagnet = 0;
@@ -53,7 +55,8 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
                                  final Edge<View<?>, Node> inEdge,
                                  final int sourceMagnet,
                                  final int targetMagnet ) {
-        super( x, y );
+        super( x,
+               y );
         this.node = node;
         this.inEdge = inEdge;
         this.targetMagnet = targetMagnet;
@@ -79,5 +82,4 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
     public int getTargetMagnet() {
         return targetMagnet;
     }
-
 }

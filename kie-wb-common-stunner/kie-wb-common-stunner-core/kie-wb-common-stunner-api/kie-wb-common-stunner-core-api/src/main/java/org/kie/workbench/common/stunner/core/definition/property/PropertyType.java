@@ -22,5 +22,4 @@ package org.kie.workbench.common.stunner.core.definition.property;
 public interface PropertyType {
 
     String getName();
-
 }

@@ -57,16 +57,20 @@ public class NotificationsView extends Composite implements Notifications.View {
     private void initGrid() {
         // Init the logs grid.
         logsGrid = new CellTable<Notification>( presenter.KEY_PROVIDER );
-        logsGrid.setWidth( "100%", true );
+        logsGrid.setWidth( "100%",
+                           true );
         // Do not refresh the headers and footers every time the data is updated.
         logsGrid.setAutoHeaderRefreshDisabled( true );
         logsGrid.setAutoFooterRefreshDisabled( true );
         // Create a Pager to control the table.
         SimplePager.Resources pagerResources = GWT.create( SimplePager.Resources.class );
-        logsGridPager = new SimplePager( SimplePager.TextLocation.CENTER, pagerResources, false, 0, true );
+        logsGridPager = new SimplePager( SimplePager.TextLocation.CENTER,
+                                         pagerResources,
+                                         false,
+                                         0,
+                                         true );
         logsGridPager.setDisplay( logsGrid );
         presenter.addDataDisplay( logsGrid );
-
     }
 
     @Override
@@ -76,9 +80,14 @@ public class NotificationsView extends Composite implements Notifications.View {
     }
 
     @Override
-    public Notifications.View addColumn( final Column<Notification, String> column, String name ) {
-        logsGrid.addColumn( column, name );
-        logsGrid.setColumnWidth( column, 5, Style.Unit.PCT );
+    @SuppressWarnings( "unchecked" )
+    public Notifications.View addColumn( final Column<Notification, String> column,
+                                         final String name ) {
+        logsGrid.addColumn( column,
+                            name );
+        logsGrid.setColumnWidth( column,
+                                 5,
+                                 Style.Unit.PCT );
         return this;
     }
 
@@ -103,5 +112,4 @@ public class NotificationsView extends Composite implements Notifications.View {
     public Notifications.View clear() {
         return this;
     }
-
 }

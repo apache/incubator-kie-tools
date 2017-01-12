@@ -35,5 +35,4 @@ public abstract class AbstractShapeAnimation<S extends Shape>
     public S getSource() {
         return shape;
     }
-
 }

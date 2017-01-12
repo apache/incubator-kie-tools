@@ -21,5 +21,4 @@ public abstract class TextOutHandler extends AbstractViewHandler<TextOutEvent> {
     public ViewEventType getType() {
         return ViewEventType.TEXT_OUT;
     }
-
 }

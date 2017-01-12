@@ -34,9 +34,9 @@ public final class BoundsExceededException extends CommandException {
                                     final double maxX,
                                     final double maxY ) {
         super( "Bounds exceeded [candidate=" + candidate.toString()
-                + ", maxX=" + maxX
-                + ", maxY=" + maxY + "]",
-                command );
+                       + ", maxX=" + maxX
+                       + ", maxY=" + maxY + "]",
+               command );
         this.candidate = candidate;
         this.maxX = maxX;
         this.maxY = maxY;

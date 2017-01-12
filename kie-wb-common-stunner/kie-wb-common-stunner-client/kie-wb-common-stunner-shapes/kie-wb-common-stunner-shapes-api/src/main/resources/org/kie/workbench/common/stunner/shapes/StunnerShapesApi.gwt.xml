@@ -19,10 +19,10 @@
 
 <module>
 
-     <inherits name='com.google.gwt.user.User' />
-     <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
 
-     <source path="factory"/>
-     <source path="def"/>
+  <source path="factory"/>
+  <source path="def"/>
 
 </module>

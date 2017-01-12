@@ -28,7 +28,7 @@ public interface KeyboardEvent {
 
         private final int unicharCode;
 
-        Key( int unicharCode ) {
+        Key( final int unicharCode ) {
             this.unicharCode = unicharCode;
         }
 

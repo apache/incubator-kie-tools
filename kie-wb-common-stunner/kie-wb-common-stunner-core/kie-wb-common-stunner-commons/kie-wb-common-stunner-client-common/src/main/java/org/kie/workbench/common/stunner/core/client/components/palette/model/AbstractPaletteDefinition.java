@@ -30,5 +30,4 @@ public abstract class AbstractPaletteDefinition<I extends PaletteItem> implement
     public List<I> getItems() {
         return items;
     }
-
 }

@@ -46,5 +46,4 @@ public abstract class BindableDefinitionAdapterProxy<T> extends DefinitionAdapte
     public boolean isPojoModel() {
         return true;
     }
-
 }

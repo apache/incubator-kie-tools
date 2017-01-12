@@ -20,7 +20,8 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteItemView;
 
-public interface LienzoGlyphPaletteItemView extends PaletteItemView<GlyphPaletteItem, IPrimitive<?>>, LienzoPaletteElementView {
+public interface LienzoGlyphPaletteItemView extends PaletteItemView<GlyphPaletteItem, IPrimitive<?>>,
+                                                    LienzoPaletteElementView {
 
     enum Decorator {
         DEFAULT;
@@ -31,5 +32,4 @@ public interface LienzoGlyphPaletteItemView extends PaletteItemView<GlyphPalette
     void expand();
 
     void collapse();
-
 }

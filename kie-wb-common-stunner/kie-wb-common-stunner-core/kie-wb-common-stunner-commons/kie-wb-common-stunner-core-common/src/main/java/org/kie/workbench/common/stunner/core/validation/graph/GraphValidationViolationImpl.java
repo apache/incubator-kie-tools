@@ -41,5 +41,4 @@ public final class GraphValidationViolationImpl
     public String getMessage() {
         return ruleViolation.getMessage();
     }
-
 }

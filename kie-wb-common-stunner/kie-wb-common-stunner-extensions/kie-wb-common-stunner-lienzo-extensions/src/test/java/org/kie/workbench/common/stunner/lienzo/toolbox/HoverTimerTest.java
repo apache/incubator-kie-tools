@@ -26,11 +26,12 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.lienzo.toolbox.HoverTimer.Actions;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class HoverTimerTest {
+
     @Mock
     private Actions actions;
     @Mock
@@ -61,15 +62,18 @@ public class HoverTimerTest {
         when( actions.isReadyToHide() ).thenReturn( false );
         hoverTimer.onNodeMouseExit( exitEvent );
         verify( actions ).isReadyToHide();
-        verify( timer, times( 0 ) ).schedule( anyInt() );
+        verify( timer,
+                times( 0 ) ).schedule( anyInt() );
     }
 
     @Test
     public void testTwiceMouseExit() {
         hoverTimer.onNodeMouseExit( exitEvent );
         hoverTimer.onNodeMouseExit( exitEvent );
-        verify( actions, times( 2 ) ).isReadyToHide();
-        verify( timer, times( 1 ) ).schedule( HoverTimer.TIMEOUT );
+        verify( actions,
+                times( 2 ) ).isReadyToHide();
+        verify( timer,
+                times( 1 ) ).schedule( HoverTimer.TIMEOUT );
     }
 
     @Test
@@ -84,7 +88,8 @@ public class HoverTimerTest {
     @Test
     public void testMouseEnterWithoutExit() {
         hoverTimer.onNodeMouseEnter( enterEvent );
-        verify( timer, times( 0 ) ).cancel();
+        verify( timer,
+                times( 0 ) ).cancel();
         verify( actions ).onMouseEnter();
         assertNull( hoverTimer.getTimer() );
     }

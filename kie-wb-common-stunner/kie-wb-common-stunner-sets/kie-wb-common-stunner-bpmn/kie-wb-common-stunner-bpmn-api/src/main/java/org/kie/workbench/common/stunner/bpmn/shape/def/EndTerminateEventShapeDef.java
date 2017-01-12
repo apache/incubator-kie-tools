@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -27,13 +30,10 @@ import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
 import org.kie.workbench.common.stunner.shapes.def.WrappedBasicNamedShapeDef;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public final class EndTerminateEventShapeDef
         extends AbstractShapeDef<EndTerminateEvent>
         implements CircleShapeDef<EndTerminateEvent>,
-        HasChildShapeDefs<EndTerminateEvent> {
+                   HasChildShapeDefs<EndTerminateEvent> {
 
     @Override
     public double getRadius( final EndTerminateEvent element ) {
@@ -109,7 +109,8 @@ public final class EndTerminateEventShapeDef
     @Override
     public Map<ShapeDef<EndTerminateEvent>, HasChildren.Layout> getChildShapeDefs() {
         return new HashMap<ShapeDef<EndTerminateEvent>, HasChildren.Layout>() {{
-            put( new InnerCircleShapeDef( EndTerminateEventShapeDef.this ), HasChildren.Layout.CENTER );
+            put( new InnerCircleShapeDef( EndTerminateEventShapeDef.this ),
+                 HasChildren.Layout.CENTER );
         }};
     }
 
@@ -148,5 +149,4 @@ public final class EndTerminateEventShapeDef
             return 0;
         }
     }
-
 }

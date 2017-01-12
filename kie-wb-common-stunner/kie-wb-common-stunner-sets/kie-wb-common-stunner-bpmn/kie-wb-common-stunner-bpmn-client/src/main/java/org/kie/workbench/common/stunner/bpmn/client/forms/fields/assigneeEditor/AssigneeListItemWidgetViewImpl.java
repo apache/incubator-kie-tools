@@ -44,13 +44,14 @@ import org.uberfire.workbench.events.NotificationEvent;
 /**
  * A templated widget that will be used to display a row in a table of
  * {@link AssigneeRow}s.
- * <p>
+ * <p/>
  * The Name field of AssigneeRow is Bound, but other fields are not bound because
  * they use a combination of ListBox and TextBox to implement a drop-down combo
  * to hold the values.
  */
 @Templated( "AssigneeEditorWidget.html#assigneeRow" )
-public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetView, ComboBoxView.ModelPresenter {
+public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetView,
+                                                       ComboBoxView.ModelPresenter {
 
     /**
      * Errai's data binding module will automatically bind the provided instance
@@ -78,7 +79,8 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
             return s;
         }
 
-        public void render( String object, Appendable appendable ) throws IOException {
+        public void render( String object,
+                            Appendable appendable ) throws IOException {
             String s = render( object );
             appendable.append( s );
         }
@@ -108,12 +110,14 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
     }
 
     @Override
-    public void setTextBoxModelValue( final TextBox textBox, String value ) {
+    public void setTextBoxModelValue( final TextBox textBox,
+                                      String value ) {
         setCustomName( value );
     }
 
     @Override
-    public void setListBoxModelValue( final ValueListBox<String> listBox, String value ) {
+    public void setListBoxModelValue( final ValueListBox<String> listBox,
+                                      String value ) {
         setName( value );
     }
 
@@ -129,9 +133,14 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
     @PostConstruct
     public void init() {
         // Configure name and customName controls
-        nameComboBox.init( this, true, name, customName, false, false,
-                CUSTOM_PROMPT,
-                ENTER_TYPE_PROMPT );
+        nameComboBox.init( this,
+                           true,
+                           name,
+                           customName,
+                           false,
+                           false,
+                           CUSTOM_PROMPT,
+                           ENTER_TYPE_PROMPT );
         customName.addKeyDownHandler( new KeyDownHandler() {
             @Override
             public void onKeyDown( KeyDownEvent event ) {
@@ -182,7 +191,8 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
         nameComboBox.setShowCustomValues( true );
         String cn = getCustomName();
         if ( cn != null && !cn.isEmpty() ) {
-            nameComboBox.addCustomValueToListBoxValues( cn, "" );
+            nameComboBox.addCustomValueToListBoxValues( cn,
+                                                        "" );
         }
     }
 
@@ -209,7 +219,6 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
         } else if ( getName() != null ) {
             name.setValue( getName() );
         }
-
     }
 
     @Override
@@ -224,5 +233,4 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
             parentWidget.notifyModelChanged();
         }
     }
-
 }

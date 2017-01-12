@@ -16,16 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.morph.PropertyMorphDefinition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
 
@@ -40,7 +40,9 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
         this.factoryManager = factoryManager;
     }
 
-    protected abstract <T> T doMerge( S source, MorphDefinition definition, T result );
+    protected abstract <T> T doMerge( final S source,
+                                      final MorphDefinition definition,
+                                      final T result );
 
     @Override
     @SuppressWarnings( "unchecked" )
@@ -49,7 +51,8 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
             final String[] ids = getDefinitionIds( definition );
             final String definitionId = ids[ 0 ];
             final String baseId = ids[ 1 ];
-            return getMorphDefinitions( definitionId, baseId );
+            return getMorphDefinitions( definitionId,
+                                        baseId );
         }
         return null;
     }
@@ -75,7 +78,8 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
             final String[] ids = getDefinitionIds( definition );
             final String definitionId = ids[ 0 ];
             final String baseId = ids[ 1 ];
-            return getMorphProperties( definitionId, baseId );
+            return getMorphProperties( definitionId,
+                                       baseId );
         }
         return null;
     }
@@ -90,11 +94,13 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
                 if ( acceptsDefinition && ( morphDefinition instanceof PropertyMorphDefinition ) ) {
                     final PropertyMorphDefinition propertyMorphDefinition = ( PropertyMorphDefinition ) morphDefinition;
                     final Iterable<MorphProperty> morphProperties = propertyMorphDefinition.getMorphProperties( definitionId );
-                    addAll( result, morphProperties );
+                    addAll( result,
+                            morphProperties );
                     final Iterable<MorphProperty> baseMorphProperties = null != baseId ?
                             propertyMorphDefinition.getMorphProperties( definitionId ) : null;
                     if ( null != baseMorphProperties ) {
-                        addAll( result, baseMorphProperties );
+                        addAll( result,
+                                baseMorphProperties );
                     }
                 }
             }
@@ -104,11 +110,14 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
     }
 
     @Override
-    public <T> Iterable<String> getTargets( final T definition, final MorphDefinition morphDefinition ) {
+    public <T> Iterable<String> getTargets( final T definition,
+                                            final MorphDefinition morphDefinition ) {
         final String[] ids = definitionUtils.getDefinitionIds( definition );
         final String definitionId = ids[ 0 ];
         final String baseId = ids[ 1 ];
-        return getTargets( definition.getClass(), definitionId, baseId );
+        return getTargets( definition.getClass(),
+                           definitionId,
+                           baseId );
     }
 
     protected Iterable<String> getTargets( final Class<?> type,
@@ -121,10 +130,12 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
                         ( null != baseId && morphDefinition.accepts( baseId ) );
                 if ( acceptsDefinition ) {
                     final Iterable<String> t1 = morphDefinition.getTargets( definitionId );
-                    addAll( result, t1 );
+                    addAll( result,
+                            t1 );
                     if ( null != baseId ) {
                         final Iterable<String> t2 = morphDefinition.getTargets( baseId );
-                        addAll( result, t2 );
+                        addAll( result,
+                                t2 );
                     }
                 }
             }
@@ -150,7 +161,9 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
         if ( null == target ) {
             throw new RuntimeException( "Morph failed. Cannot build a Definition instance for [" + targetId + "]" );
         }
-        return doMerge( source, morphDefinition, target );
+        return doMerge( source,
+                        morphDefinition,
+                        target );
     }
 
     protected <T> String[] getDefinitionIds( final T definition ) {
@@ -161,7 +174,8 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
         return definitionUtils.getDefinitionManager();
     }
 
-    protected <T> void addAll( Collection<T> source, Iterable<T> values ) {
+    protected <T> void addAll( final Collection<T> source,
+                               final Iterable<T> values ) {
         if ( null != values && values.iterator().hasNext() ) {
             for ( final T value : values ) {
                 source.add( value );
@@ -169,7 +183,8 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
         }
     }
 
-    protected boolean contains( final Iterable<String> iterable, String value ) {
+    protected boolean contains( final Iterable<String> iterable,
+                                final String value ) {
         if ( null != iterable && iterable.iterator().hasNext() ) {
             for ( final String v : iterable ) {
                 if ( value.equals( v ) ) {

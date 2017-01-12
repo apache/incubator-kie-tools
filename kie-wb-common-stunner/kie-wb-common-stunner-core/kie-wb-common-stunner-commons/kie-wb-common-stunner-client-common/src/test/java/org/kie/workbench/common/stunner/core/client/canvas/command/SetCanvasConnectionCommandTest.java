@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -41,14 +41,22 @@ public class SetCanvasConnectionCommandTest extends AbstractCanvasCommandTest {
     private static final String SOURCE_ID = "s1";
     private static final String TARGET_ID = "t1";
 
-    @Mock private Edge edge;
-    @Mock private Node source;
-    @Mock private Node target;
-    @Mock private EdgeShape edgeShape;
-    @Mock private Shape sourceShape;
-    @Mock private ShapeView sourceShapeView;
-    @Mock private Shape targetShape;
-    @Mock private ShapeView targetShapeView;
+    @Mock
+    private Edge edge;
+    @Mock
+    private Node source;
+    @Mock
+    private Node target;
+    @Mock
+    private EdgeShape edgeShape;
+    @Mock
+    private Shape sourceShape;
+    @Mock
+    private ShapeView sourceShapeView;
+    @Mock
+    private Shape targetShape;
+    @Mock
+    private ShapeView targetShapeView;
 
     private SetCanvasConnectionCommand tested;
 
@@ -64,7 +72,7 @@ public class SetCanvasConnectionCommandTest extends AbstractCanvasCommandTest {
         when( sourceShape.getShapeView() ).thenReturn( sourceShapeView );
         when( targetShape.getShapeView() ).thenReturn( targetShapeView );
         when( canvas.getShape( eq( EDGE_ID ) ) ).thenReturn( edgeShape );
-        when( canvas.getShape( eq( SOURCE_ID) ) ).thenReturn( sourceShape );
+        when( canvas.getShape( eq( SOURCE_ID ) ) ).thenReturn( sourceShape );
         when( canvas.getShape( eq( TARGET_ID ) ) ).thenReturn( targetShape );
         when( sourceShape.getShapeView() ).thenReturn( sourceShapeView );
         this.tested = new SetCanvasConnectionCommand( edge );
@@ -74,10 +82,16 @@ public class SetCanvasConnectionCommandTest extends AbstractCanvasCommandTest {
     @SuppressWarnings( "unchecked" )
     public void testExecute() {
         final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR, result.getType() );
-        verify( edgeShape, times( 1 ) ).applyConnections( eq( edge ), eq( sourceShapeView ), eq( targetShapeView ), any( MutationContext.class ) );
-        verify( canvasHandler, times( 1 ) ).fireCanvasElementUpdated( eq( source ) );
-        verify( canvasHandler, times( 1 ) ).fireCanvasElementUpdated( eq( target ) );
+        assertNotEquals( CommandResult.Type.ERROR,
+                         result.getType() );
+        verify( edgeShape,
+                times( 1 ) ).applyConnections( eq( edge ),
+                                               eq( sourceShapeView ),
+                                               eq( targetShapeView ),
+                                               any( MutationContext.class ) );
+        verify( canvasHandler,
+                times( 1 ) ).fireCanvasElementUpdated( eq( source ) );
+        verify( canvasHandler,
+                times( 1 ) ).fireCanvasElementUpdated( eq( target ) );
     }
-
 }

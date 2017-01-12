@@ -16,27 +16,31 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwt.user.client.Timer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
-import javax.enterprise.event.Event;
-
 public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<AbstractCanvasHandler, I> {
 
-    public void click( final Context<AbstractCanvasHandler> context, final Element element ) {
+    public void click( final Context<AbstractCanvasHandler> context,
+                       final Element element ) {
     }
 
-    public void mouseDown( final Context<AbstractCanvasHandler> context, final Element element ) {
+    public void mouseDown( final Context<AbstractCanvasHandler> context,
+                           final Element element ) {
     }
 
-    public void mouseEnter( final Context<AbstractCanvasHandler> context, final Element element ) {
+    public void mouseEnter( final Context<AbstractCanvasHandler> context,
+                            final Element element ) {
         context.getCanvasHandler().getCanvas().getView().setCursor( AbstractCanvas.Cursors.POINTER );
     }
 
-    public void mouseExit( final Context<AbstractCanvasHandler> context, final Element element ) {
+    public void mouseExit( final Context<AbstractCanvasHandler> context,
+                           final Element element ) {
         context.getCanvasHandler().getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
     }
 
@@ -46,20 +50,22 @@ public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<Abstra
         final Context.EventType eventType = context.getEventType();
         switch ( eventType ) {
             case CLICK:
-                click( context, element );
+                click( context,
+                       element );
                 break;
             case MOUSE_DOWN:
-                mouseDown( context, element );
+                mouseDown( context,
+                           element );
                 break;
             case MOUSE_ENTER:
-                mouseEnter( context, element );
+                mouseEnter( context,
+                            element );
                 break;
             case MOUSE_EXIT:
-                mouseExit( context, element );
+                mouseExit( context,
+                           element );
                 break;
-
         }
-
     }
 
     // Enable layer events handlers again.
@@ -70,7 +76,8 @@ public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<Abstra
                                              final AbstractCanvasHandler canvasHandler,
                                              final String uuid ) {
         canvasHandler.getCanvas().getLayer().disableHandlers();
-        elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler, uuid ) );
+        elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
+                                                                   uuid ) );
         final Timer t = new Timer() {
             @Override
             public void run() {
@@ -87,5 +94,4 @@ public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<Abstra
     protected void fireLoadingCompleted( final Context<AbstractCanvasHandler> context ) {
         context.getCanvasHandler().getCanvas().loadingCompleted();
     }
-
 }

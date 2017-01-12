@@ -46,5 +46,4 @@ public final class CanvasValidationViolationImpl
     public String toString() {
         return getMessage();
     }
-
 }

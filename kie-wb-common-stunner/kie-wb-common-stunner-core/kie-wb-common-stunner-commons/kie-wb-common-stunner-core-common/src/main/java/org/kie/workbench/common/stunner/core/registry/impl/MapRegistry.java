@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
-import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+
+import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 
 class MapRegistry<T> implements DynamicRegistry<T> {
 
@@ -36,7 +36,8 @@ class MapRegistry<T> implements DynamicRegistry<T> {
 
     @Override
     public void register( final T item ) {
-        items.put( getItemId( item ), item );
+        items.put( getItemId( item ),
+                   item );
     }
 
     public boolean remove( final T item ) {
@@ -68,5 +69,4 @@ class MapRegistry<T> implements DynamicRegistry<T> {
     private String getItemId( final T item ) {
         return keyProvider.getKey( item );
     }
-
 }

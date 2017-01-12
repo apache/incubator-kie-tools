@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.general;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -24,8 +26,6 @@ import org.kie.workbench.common.forms.metaModel.TextArea;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-
-import javax.validation.Valid;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DOCUMENTATION;
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_NAME;
@@ -39,34 +39,35 @@ public class BPMNGeneralSet implements BPMNPropertySet {
     public static final transient String propertySetName = "General";
 
     @Property
-    @FieldDef(label = FIELDDEF_NAME, property = "value", position = 0)
+    @FieldDef( label = FIELDDEF_NAME, property = "value", position = 0 )
     @Valid
     private Name name;
 
     @Property
-    @FieldDef(label = FIELDDEF_DOCUMENTATION, property = "value", position = 1)
-    @TextArea(rows = 3)
+    @FieldDef( label = FIELDDEF_DOCUMENTATION, property = "value", position = 1 )
+    @TextArea( rows = 3 )
     @Valid
     private Documentation documentation;
 
     public BPMNGeneralSet() {
-        this(new Name( "" ), new Documentation());
+        this( new Name( "" ),
+              new Documentation() );
     }
 
-    public BPMNGeneralSet(@MapsTo("name") Name name,
-            @MapsTo("documentation") Documentation documentation) {
+    public BPMNGeneralSet( @MapsTo( "name" ) Name name,
+                           @MapsTo( "documentation" ) Documentation documentation ) {
         this.name = name;
         this.documentation = documentation;
     }
 
-    public BPMNGeneralSet(String name,
-            String documentation) {
-        this.name = new Name(name);
-        this.documentation = new Documentation(documentation);
+    public BPMNGeneralSet( String name,
+                           String documentation ) {
+        this.name = new Name( name );
+        this.documentation = new Documentation( documentation );
     }
 
-    public BPMNGeneralSet(String name) {
-        this.name = new Name(name);
+    public BPMNGeneralSet( String name ) {
+        this.name = new Name( name );
         this.documentation = new Documentation();
     }
 
@@ -82,11 +83,11 @@ public class BPMNGeneralSet implements BPMNPropertySet {
         return documentation;
     }
 
-    public void setName(Name name) {
+    public void setName( Name name ) {
         this.name = name;
     }
 
-    public void setDocumentation(Documentation documentation) {
+    public void setDocumentation( Documentation documentation ) {
         this.documentation = documentation;
     }
 }

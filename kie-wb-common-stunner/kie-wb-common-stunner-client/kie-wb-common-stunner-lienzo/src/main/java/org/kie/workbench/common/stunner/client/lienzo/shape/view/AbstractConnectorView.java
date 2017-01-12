@@ -45,14 +45,25 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     private WiresConnectorControl connectorControl;
     private final HandlerRegistrationImpl handlerRegistration = new HandlerRegistrationImpl();
 
-    public AbstractConnectorView( AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator ) {
-        super( line, headDecorator, tailDecorator );
+    public AbstractConnectorView( final AbstractDirectionalMultiPointShape<?> line,
+                                  final MultiPathDecorator headDecorator,
+                                  final MultiPathDecorator tailDecorator ) {
+        super( line,
+               headDecorator,
+               tailDecorator );
         init();
     }
 
-    public AbstractConnectorView( WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line,
-                                  MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator ) {
-        super( headMagnet, tailMagnet, line, headDecorator, tailDecorator );
+    public AbstractConnectorView( final WiresMagnet headMagnet,
+                                  final WiresMagnet tailMagnet,
+                                  final AbstractDirectionalMultiPointShape<?> line,
+                                  final MultiPathDecorator headDecorator,
+                                  final MultiPathDecorator tailDecorator ) {
+        super( headMagnet,
+               tailMagnet,
+               line,
+               headDecorator,
+               tailDecorator );
         init();
     }
 
@@ -231,7 +242,10 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
                             final double y1,
                             final double x2,
                             final double y2 ) {
-        getGroup().setDragBounds( new DragBounds( x1, y1, x2, y2 ) );
+        getGroup().setDragBounds( new DragBounds( x1,
+                                                  y1,
+                                                  x2,
+                                                  y2 ) );
         return ( T ) this;
     }
 
@@ -275,7 +289,6 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
         }
         return ( T ) this;
     }
-
 
     @Override
     @SuppressWarnings( "unchecked" )
@@ -323,5 +336,4 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
             );
         }
     }
-
 }

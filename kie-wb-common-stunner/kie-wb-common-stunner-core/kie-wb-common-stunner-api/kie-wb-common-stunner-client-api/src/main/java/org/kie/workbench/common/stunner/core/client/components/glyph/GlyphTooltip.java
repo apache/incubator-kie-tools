@@ -21,15 +21,22 @@ import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 public interface GlyphTooltip<G> {
 
     enum Direction {
-        WEST, NORTH;
+        WEST,
+        NORTH;
     }
 
-    void show( String text, double x, double y, Direction direction );
+    void show( final String text,
+               final double x,
+               final double y,
+               final Direction direction );
 
-    void show( Glyph<G> glyph, String text, double x, double y, Direction direction );
+    void show( final Glyph<G> glyph,
+               final String text,
+               final double x,
+               final double y,
+               final Direction direction );
 
     void hide();
 
     void remove();
-
 }

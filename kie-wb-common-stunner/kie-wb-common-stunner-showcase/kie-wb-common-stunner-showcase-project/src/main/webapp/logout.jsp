@@ -13,37 +13,37 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    request.logout();
-    javax.servlet.http.HttpSession httpSession = request.getSession(false);
-    if (httpSession != null) {
-        httpSession.invalidate();
-    }
+  request.logout();
+  javax.servlet.http.HttpSession httpSession = request.getSession( false );
+  if ( httpSession != null ) {
+    httpSession.invalidate();
+  }
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="login-pf">
 <head>
-    <title>Stunner</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="org.kie.workbench.common.stunner.project.StunnerProjectShowcase/css/patternfly.min.css">
-    <link rel="stylesheet" href="org.kie.workbench.common.stunner.project.StunnerProjectShowcase/css/patternfly-additions.min.css">
+  <title>Stunner</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="org.kie.workbench.common.stunner.project.StunnerProjectShowcase/css/patternfly.min.css">
+  <link rel="stylesheet" href="org.kie.workbench.common.stunner.project.StunnerProjectShowcase/css/patternfly-additions.min.css">
 </head>
 
 <body>
 <div class="container">
-    <div class="row">
-        <div class="col-sm-6 col-md-5 col-lg-4 login">
-            <p><strong>Logout successful</strong></p>
-            <form class="form-horizontal" role="form" action="<%= request.getContextPath() %>/stunner.html" method="post">
-                <div class="form-group">
-                    <div class="col-xs-4 col-sm-4 col-md-4 submit" style="text-align: left;">
-                        <button type="submit" class="btn btn-primary btn-lg" tabindex="4">Login again</button>
-                    </div>
-                </div>
-            </form>
+  <div class="row">
+    <div class="col-sm-6 col-md-5 col-lg-4 login">
+      <p><strong>Logout successful</strong></p>
+      <form class="form-horizontal" role="form" action="<%= request.getContextPath() %>/stunner.html" method="post">
+        <div class="form-group">
+          <div class="col-xs-4 col-sm-4 col-md-4 submit" style="text-align: left;">
+            <button type="submit" class="btn btn-primary btn-lg" tabindex="4">Login again</button>
+          </div>
         </div>
+      </form>
     </div>
+  </div>
 </div>
 
 </body>

@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -37,8 +37,10 @@ public class CanvasUndockNodeCommandTest extends AbstractCanvasCommandTest {
     private static final String P_ID = "p1";
     private static final String C_ID = "c1";
 
-    @Mock private Node parent;
-    @Mock private Node candidate;
+    @Mock
+    private Node parent;
+    @Mock
+    private Node candidate;
 
     private CanvasUndockNodeCommand tested;
 
@@ -47,19 +49,30 @@ public class CanvasUndockNodeCommandTest extends AbstractCanvasCommandTest {
         super.setup();
         when( parent.getUUID() ).thenReturn( P_ID );
         when( candidate.getUUID() ).thenReturn( C_ID );
-        this.tested = new CanvasUndockNodeCommand( parent, candidate );
+        this.tested = new CanvasUndockNodeCommand( parent,
+                                                   candidate );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecute() {
         final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR, result.getType() );
-        verify( canvasHandler, times( 0 ) ).register( anyString(),  eq( candidate ) );
-        verify( canvasHandler, times( 0 ) ).addChild( any( Node.class ), any( Node.class ) );
-        verify( canvasHandler, times( 1 ) ).undock( eq( P_ID ), eq( C_ID ) );
-        verify( canvasHandler, times( 1 ) ).applyElementMutation( eq( candidate ), any( MutationContext.class ) );
-        verify( canvasHandler, times( 1 ) ).applyElementMutation( eq( parent ), any( MutationContext.class ) );
+        assertNotEquals( CommandResult.Type.ERROR,
+                         result.getType() );
+        verify( canvasHandler,
+                times( 0 ) ).register( anyString(),
+                                       eq( candidate ) );
+        verify( canvasHandler,
+                times( 0 ) ).addChild( any( Node.class ),
+                                       any( Node.class ) );
+        verify( canvasHandler,
+                times( 1 ) ).undock( eq( P_ID ),
+                                     eq( C_ID ) );
+        verify( canvasHandler,
+                times( 1 ) ).applyElementMutation( eq( candidate ),
+                                                   any( MutationContext.class ) );
+        verify( canvasHandler,
+                times( 1 ) ).applyElementMutation( eq( parent ),
+                                                   any( MutationContext.class ) );
     }
-
 }

@@ -29,9 +29,9 @@ public interface Bounds {
      * A bound definition.
      */
     interface Bound {
+
         Double getX();
 
         Double getY();
     }
-
 }

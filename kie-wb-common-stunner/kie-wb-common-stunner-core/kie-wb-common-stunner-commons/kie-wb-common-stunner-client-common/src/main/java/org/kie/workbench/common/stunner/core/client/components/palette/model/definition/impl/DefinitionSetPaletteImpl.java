@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.model.definition.impl;
 
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.components.palette.model.AbstractPaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
-
-import java.util.List;
 
 public final class DefinitionSetPaletteImpl
         extends AbstractPaletteDefinition<DefinitionPaletteCategory>
@@ -28,7 +28,8 @@ public final class DefinitionSetPaletteImpl
 
     private final String defSetId;
 
-    protected DefinitionSetPaletteImpl( final List<DefinitionPaletteCategory> categories, String defSetId ) {
+    protected DefinitionSetPaletteImpl( final List<DefinitionPaletteCategory> categories,
+                                        final String defSetId ) {
         super( categories );
         this.defSetId = defSetId;
     }

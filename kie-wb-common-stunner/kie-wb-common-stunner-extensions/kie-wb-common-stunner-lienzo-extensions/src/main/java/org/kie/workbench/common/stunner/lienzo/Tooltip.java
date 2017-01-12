@@ -29,6 +29,7 @@ import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 
 public class Tooltip extends Group {
+
     public static final double TRIANGLE_SIZE = 10;
 
     private static final double TOOLTIP_PADDING_WIDTH = 25;
@@ -57,18 +58,38 @@ public class Tooltip extends Group {
 
     private Text title;
 
-    private static final Shadow SHADOW = new Shadow( ColorName.BLACK.getColor().setA( 0.80 ), 10, 3, 3 );
+    private static final Shadow SHADOW = new Shadow( ColorName.BLACK.getColor().setA( 0.80 ),
+                                                     10,
+                                                     3,
+                                                     3 );
 
     public Tooltip() {
         build();
     }
 
     protected Tooltip build() {
-        rectangle = new Rectangle( 1, 1 ).setFillColor( TOOLTIP_COLOR ).setCornerRadius( 5 ).setStrokeWidth( 1 ).setShadow( SHADOW );
-        triangle = new Triangle( new Point2D( 1, 1 ), new Point2D( 1, 1 ), new Point2D( 1, 1 ) ).setFillColor( TOOLTIP_COLOR ).setStrokeWidth( 1 ).setShadow( SHADOW );
-        tmasking = new Triangle( new Point2D( 1, 1 ), new Point2D( 1, 1 ), new Point2D( 1, 1 ) ).setFillColor( TOOLTIP_COLOR );
-        text = new Text( "", FONT_FAMILY, CATEGORIES_FONT_STYLE, FONT_SIZE ).setFillColor( LABEL_COLOR ).setTextAlign( TextAlign.LEFT ).setTextBaseLine( TextBaseLine.MIDDLE );
-        title = new Text( "", FONT_FAMILY, VALUES_FONT_STYLE, FONT_SIZE ).setFillColor( LABEL_COLOR ).setTextAlign( TextAlign.LEFT ).setTextBaseLine( TextBaseLine.MIDDLE );
+        rectangle = new Rectangle( 1,
+                                   1 ).setFillColor( TOOLTIP_COLOR ).setCornerRadius( 5 ).setStrokeWidth( 1 ).setShadow( SHADOW );
+        triangle = new Triangle( new Point2D( 1,
+                                              1 ),
+                                 new Point2D( 1,
+                                              1 ),
+                                 new Point2D( 1,
+                                              1 ) ).setFillColor( TOOLTIP_COLOR ).setStrokeWidth( 1 ).setShadow( SHADOW );
+        tmasking = new Triangle( new Point2D( 1,
+                                              1 ),
+                                 new Point2D( 1,
+                                              1 ),
+                                 new Point2D( 1,
+                                              1 ) ).setFillColor( TOOLTIP_COLOR );
+        text = new Text( "",
+                         FONT_FAMILY,
+                         CATEGORIES_FONT_STYLE,
+                         FONT_SIZE ).setFillColor( LABEL_COLOR ).setTextAlign( TextAlign.LEFT ).setTextBaseLine( TextBaseLine.MIDDLE );
+        title = new Text( "",
+                          FONT_FAMILY,
+                          VALUES_FONT_STYLE,
+                          FONT_SIZE ).setFillColor( LABEL_COLOR ).setTextAlign( TextAlign.LEFT ).setTextBaseLine( TextBaseLine.MIDDLE );
         add( rectangle );
         add( triangle );
         add( tmasking );
@@ -81,7 +102,8 @@ public class Tooltip extends Group {
         return this;
     }
 
-    public Tooltip show( final String title, final String text ) {
+    public Tooltip show( final String title,
+                         final String text ) {
         this.text.setText( text );
         BoundingBox bb = this.text.getBoundingBox();
         final double ctw = bb.getWidth();
@@ -95,8 +117,18 @@ public class Tooltip extends Group {
         rectangle.setWidth( rw ).setHeight( rh ).setCornerRadius( 5 );
         final double rx = rectangle.getX();
         final double ry = rectangle.getY();
-        triangle.setPoints( new Point2D( rx + rw / 2 - TRIANGLE_SIZE, ry + rh ), new Point2D( rx + rw / 2, rh + TRIANGLE_SIZE ), new Point2D( rx + rw / 2 + TRIANGLE_SIZE, ry + rh ) );
-        tmasking.setPoints( new Point2D( rx + rw / 2 - TRIANGLE_SIZE - 3, ry + rh - 3 ), new Point2D( rx + rw / 2, rh + TRIANGLE_SIZE - 3 ), new Point2D( rx + rw / 2 + TRIANGLE_SIZE + 3, ry + rh - 3 ) );
+        triangle.setPoints( new Point2D( rx + rw / 2 - TRIANGLE_SIZE,
+                                         ry + rh ),
+                            new Point2D( rx + rw / 2,
+                                         rh + TRIANGLE_SIZE ),
+                            new Point2D( rx + rw / 2 + TRIANGLE_SIZE,
+                                         ry + rh ) );
+        tmasking.setPoints( new Point2D( rx + rw / 2 - TRIANGLE_SIZE - 3,
+                                         ry + rh - 3 ),
+                            new Point2D( rx + rw / 2,
+                                         rh + TRIANGLE_SIZE - 3 ),
+                            new Point2D( rx + rw / 2 + TRIANGLE_SIZE + 3,
+                                         ry + rh - 3 ) );
         final double vtx = rw / 2 - vtw / 2;
         final double ctx = rw / 2 - ctw / 2;
         final double vty = rh / 2 - vth / 2;
@@ -113,7 +145,9 @@ public class Tooltip extends Group {
 
     public Tooltip hide() {
         setVisible( false );
-        if ( getLayer() != null ) getLayer().batch();
+        if ( getLayer() != null ) {
+            getLayer().batch();
+        }
         return this;
     }
 }

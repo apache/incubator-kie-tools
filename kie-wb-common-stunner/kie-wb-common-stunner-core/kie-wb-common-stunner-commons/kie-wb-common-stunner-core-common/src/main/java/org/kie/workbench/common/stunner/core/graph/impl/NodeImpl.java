@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.graph.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Portable
 public class NodeImpl<C> extends ElementImpl<C> implements Node<C, Edge> {
@@ -30,7 +30,7 @@ public class NodeImpl<C> extends ElementImpl<C> implements Node<C, Edge> {
     private List<Edge> inEdges = new ArrayList<Edge>();
     private List<Edge> outEdges = new ArrayList<Edge>();
 
-    public NodeImpl( @MapsTo( "uuid" ) String uuid ) {
+    public NodeImpl( final @MapsTo( "uuid" ) String uuid ) {
         super( uuid );
     }
 
@@ -43,5 +43,4 @@ public class NodeImpl<C> extends ElementImpl<C> implements Node<C, Edge> {
     public List<Edge> getOutEdges() {
         return outEdges;
     }
-
 }

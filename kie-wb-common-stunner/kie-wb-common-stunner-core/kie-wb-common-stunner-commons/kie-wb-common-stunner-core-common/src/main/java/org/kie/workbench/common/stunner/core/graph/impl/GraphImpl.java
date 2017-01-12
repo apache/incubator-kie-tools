@@ -28,11 +28,11 @@ public class GraphImpl<C> extends ElementImpl<C> implements Graph<C, Node> {
 
     private final GraphNodeStore<Node> nodeStore;
 
-    public GraphImpl( @MapsTo( "uuid" ) String uuid,
-                      @MapsTo( "nodeStore" ) GraphNodeStore<Node> nodeStore ) {
+    public GraphImpl( final @MapsTo( "uuid" ) String uuid,
+                      final @MapsTo( "nodeStore" ) GraphNodeStore<Node> nodeStore ) {
         super( uuid );
         this.nodeStore = PortablePreconditions.checkNotNull( "nodeStore",
-                nodeStore );
+                                                             nodeStore );
     }
 
     @Override
@@ -59,5 +59,4 @@ public class GraphImpl<C> extends ElementImpl<C> implements Graph<C, Node> {
     public void clear() {
         nodeStore.clear();
     }
-
 }

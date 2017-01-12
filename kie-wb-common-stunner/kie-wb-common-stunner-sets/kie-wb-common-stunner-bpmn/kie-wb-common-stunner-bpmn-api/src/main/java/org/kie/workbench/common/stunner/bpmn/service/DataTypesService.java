@@ -22,5 +22,6 @@ import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface DataTypesService {
+
     List<String> getDataTypeNames();
 }

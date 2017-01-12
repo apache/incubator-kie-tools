@@ -52,15 +52,14 @@ public abstract class AbstractPaletteDefinitionBuilder<T, P, E>
         return this.definitionExclusions.contains( definitionId );
     }
 
-    protected <I extends PaletteItemBuilder> I getItemBuilder( final List<I> items, final String id ) {
+    @SuppressWarnings( "unchecked" )
+    protected <I extends PaletteItemBuilder> I getItemBuilder( final List<I> items,
+                                                               final String id ) {
         for ( final PaletteItemBuilder item : items ) {
             if ( item.getId().equals( id ) ) {
                 return ( I ) item;
-
             }
-
         }
         return null;
     }
-
 }

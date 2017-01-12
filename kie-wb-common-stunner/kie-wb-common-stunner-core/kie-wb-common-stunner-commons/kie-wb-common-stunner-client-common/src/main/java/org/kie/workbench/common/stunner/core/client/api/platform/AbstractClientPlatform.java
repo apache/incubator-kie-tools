@@ -18,4 +18,5 @@ package org.kie.workbench.common.stunner.core.client.api.platform;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionProducer;
 
 public abstract class AbstractClientPlatform extends AbstractClientSessionProducer implements ClientPlatform {
+
 }

@@ -25,5 +25,4 @@ public interface BPMNProjectImageResources extends ClientBundleWithLookup {
 
     @Source( "images/bpmn2icon.png" )
     ImageResource bpmn2Icon();
-
 }

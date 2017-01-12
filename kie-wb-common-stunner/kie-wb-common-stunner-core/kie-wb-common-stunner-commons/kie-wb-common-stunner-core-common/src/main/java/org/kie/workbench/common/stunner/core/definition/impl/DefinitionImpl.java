@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.definition.impl;
 
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
-
-import java.util.Set;
 
 @Portable
 public class DefinitionImpl {
@@ -34,30 +34,30 @@ public class DefinitionImpl {
     private final Set<Object> propertySets;
     private final Set<Object> properties;
 
-    public DefinitionImpl( @MapsTo( "id" ) String id,
-                           @MapsTo( "category" ) String category,
-                           @MapsTo( "title" ) String title,
-                           @MapsTo( "description" ) String description,
-                           @MapsTo( "labels" ) Set<String> labels,
-                           @MapsTo( "propertySets" ) Set<Object> propertySets,
-                           @MapsTo( "nameProperty" ) PropertyImpl nameProperty,
-                           @MapsTo( "properties" ) Set<Object> properties ) {
+    public DefinitionImpl( final @MapsTo( "id" ) String id,
+                           final @MapsTo( "category" ) String category,
+                           final @MapsTo( "title" ) String title,
+                           final @MapsTo( "description" ) String description,
+                           final @MapsTo( "labels" ) Set<String> labels,
+                           final @MapsTo( "propertySets" ) Set<Object> propertySets,
+                           final @MapsTo( "nameProperty" ) PropertyImpl nameProperty,
+                           final @MapsTo( "properties" ) Set<Object> properties ) {
         this.category = PortablePreconditions.checkNotNull( "category",
-                category );
+                                                            category );
         this.nameProperty = PortablePreconditions.checkNotNull( "nameProperty",
-                nameProperty );
+                                                                nameProperty );
         this.title = PortablePreconditions.checkNotNull( "title",
-                title );
+                                                         title );
         this.description = PortablePreconditions.checkNotNull( "description",
-                description );
+                                                               description );
         this.labels = PortablePreconditions.checkNotNull( "labels",
-                labels );
+                                                          labels );
         this.id = PortablePreconditions.checkNotNull( "id",
-                id );
+                                                      id );
         this.propertySets = PortablePreconditions.checkNotNull( "propertySets",
-                propertySets );
+                                                                propertySets );
         this.properties = PortablePreconditions.checkNotNull( "properties",
-                properties );
+                                                              properties );
     }
 
     public PropertyImpl getNameProperty() {
@@ -91,5 +91,4 @@ public class DefinitionImpl {
     public Set<Object> getProperties() {
         return properties;
     }
-
 }

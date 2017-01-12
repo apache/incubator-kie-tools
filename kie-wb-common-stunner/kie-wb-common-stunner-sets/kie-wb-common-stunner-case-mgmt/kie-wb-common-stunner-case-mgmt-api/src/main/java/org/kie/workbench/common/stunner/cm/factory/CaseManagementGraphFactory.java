@@ -25,5 +25,4 @@ public interface CaseManagementGraphFactory extends GraphFactory {
 
     double GRAPH_DEFAULT_WIDTH = 1400d;
     double GRAPH_DEFAULT_HEIGHT = 700d;
-
 }

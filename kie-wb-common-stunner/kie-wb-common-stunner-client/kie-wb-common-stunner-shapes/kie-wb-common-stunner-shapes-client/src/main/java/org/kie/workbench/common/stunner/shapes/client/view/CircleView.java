@@ -28,22 +28,24 @@ public class CircleView extends BasicShapeView<CircleView>
 
     public CircleView( final double radius ) {
         super( BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
-                create( new MultiPath(), radius ) );
+               create( new MultiPath(),
+                       radius ) );
     }
 
     @Override
     public CircleView setRadius( final double radius ) {
-        create( getPath().clear(), radius );
-        updateFillGradient( radius * 2, radius * 2 );
+        create( getPath().clear(),
+                radius );
+        updateFillGradient( radius * 2,
+                            radius * 2 );
         refresh();
         super.setResizable( false );
         return this;
-
     }
 
     private static MultiPath create( final MultiPath path,
                                      final double radius ) {
-        return path.M( radius, 0 ).circle( radius ).Z();
+        return path.M( radius,
+                       0 ).circle( radius ).Z();
     }
-
 }

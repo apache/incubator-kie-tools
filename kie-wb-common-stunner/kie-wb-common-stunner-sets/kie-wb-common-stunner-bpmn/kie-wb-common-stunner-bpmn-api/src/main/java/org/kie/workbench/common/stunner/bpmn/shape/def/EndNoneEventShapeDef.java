@@ -110,5 +110,4 @@ public final class EndNoneEventShapeDef
     public GlyphDef<EndNoneEvent> getGlyphDef() {
         return PICTURE_GLYPH_DEF;
     }
-
 }

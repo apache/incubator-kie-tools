@@ -20,4 +20,5 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.NodeBoundsIndexer;
 
 public interface CanvasBoundsIndexer<H extends CanvasHandler> extends NodeBoundsIndexer<H> {
+
 }

@@ -23,6 +23,5 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public interface HasGraphCommand<H extends CanvasHandler> {
 
-    Command<GraphCommandExecutionContext, RuleViolation> getGraphCommand( H context );
-
+    Command<GraphCommandExecutionContext, RuleViolation> getGraphCommand( final H context );
 }

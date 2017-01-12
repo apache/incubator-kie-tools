@@ -28,5 +28,4 @@ public abstract class AbstractKeyboardEvent implements KeyboardEvent {
     public Key getKey() {
         return key;
     }
-
 }

@@ -30,5 +30,4 @@ public interface SessionScreenView {
     void setPaddingTop( int px );
 
     IsWidget getView();
-
 }

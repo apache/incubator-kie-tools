@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.model;
 
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
@@ -23,11 +28,6 @@ import org.kie.workbench.common.stunner.core.rule.impl.AbstractEdgeCardinalityRu
 import org.kie.workbench.common.stunner.core.rule.impl.violations.CardinalityMaxRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.impl.violations.CardinalityMinRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.model.ModelEdgeCardinalityRuleManager;
-
-import javax.enterprise.context.Dependent;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Dependent
 public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinalityRuleManager
@@ -44,16 +44,17 @@ public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinality
 
     @Override
     public RuleViolations evaluate( final String edgeId,
-                                         final Set<String> labels,
-                                         final int count,
-                                         final EdgeCardinalityRule.Type ruleType,
-                                         final Operation operation ) {
-        LOGGER.log( Level.FINE, "Evaluating edge cardinality rules with arguments "
-                + "[edgeId=" + edgeId
-                + ", labels=" + labels
-                + ", count=" + count
-                + ", ruleType=" + ruleType
-                + ", operation=" + operation + "]" );
+                                    final Set<String> labels,
+                                    final int count,
+                                    final EdgeCardinalityRule.Type ruleType,
+                                    final Operation operation ) {
+        LOGGER.log( Level.FINE,
+                    "Evaluating edge cardinality rules with arguments "
+                            + "[edgeId=" + edgeId
+                            + ", labels=" + labels
+                            + ", count=" + count
+                            + ", ruleType=" + ruleType
+                            + ", operation=" + operation + "]" );
         if ( rules.isEmpty() ) {
             return new DefaultRuleViolations();
         }
@@ -65,16 +66,21 @@ public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinality
             if ( ruleType.equals( type ) && labels != null && labels.contains( rule.getRole() ) ) {
                 final int _count = operation.equals( Operation.NONE ) ? count :
                         ( operation.equals( Operation.ADD ) ? count + 1 :
-                                ( count > 0 ? count - 1  : 0  )
+                                ( count > 0 ? count - 1 : 0 )
                         );
-                if ( _count  < minOccurrences ) {
-                    results.addViolation( new CardinalityMinRuleViolation( labels.toString(), rule.getName(), ( int ) minOccurrences, count ) );
-                } else if ( maxOccurrences > -1 && _count  > maxOccurrences ) {
-                    results.addViolation( new CardinalityMaxRuleViolation( labels.toString(), rule.getName(), ( int ) maxOccurrences, count ) );
+                if ( _count < minOccurrences ) {
+                    results.addViolation( new CardinalityMinRuleViolation( labels.toString(),
+                                                                           rule.getName(),
+                                                                           minOccurrences,
+                                                                           count ) );
+                } else if ( maxOccurrences > -1 && _count > maxOccurrences ) {
+                    results.addViolation( new CardinalityMaxRuleViolation( labels.toString(),
+                                                                           rule.getName(),
+                                                                           maxOccurrences,
+                                                                           count ) );
                 }
             }
         }
         return results;
     }
-
 }

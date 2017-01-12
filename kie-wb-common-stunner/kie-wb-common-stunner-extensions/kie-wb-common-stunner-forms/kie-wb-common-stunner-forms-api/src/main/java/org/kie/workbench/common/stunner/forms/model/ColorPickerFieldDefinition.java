@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.forms.model;
 
+import javax.validation.constraints.Pattern;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
-
-import javax.validation.constraints.Pattern;
 
 @Portable
 @Bindable

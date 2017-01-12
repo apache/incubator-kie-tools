@@ -35,5 +35,4 @@ public @interface CanConnect {
     String startRole();
 
     String endRole();
-
 }

@@ -26,27 +26,26 @@ public abstract class AbstractPaletteGridBuilder<B> {
     protected abstract PaletteGrid build();
 
     @SuppressWarnings( "unchecked" )
-    public B setRows( int rows ) {
+    public B setRows( final int rows ) {
         this.rows = rows;
         return ( B ) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public B setColumns( int columns ) {
+    public B setColumns( final int columns ) {
         this.columns = columns;
         return ( B ) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public B setIconSize( int iconSize ) {
+    public B setIconSize( final int iconSize ) {
         this.iconSize = iconSize;
         return ( B ) this;
     }
 
     @SuppressWarnings( "unchecked" )
-    public B setPadding( int padding ) {
+    public B setPadding( final int padding ) {
         this.padding = padding;
         return ( B ) this;
     }
-
 }

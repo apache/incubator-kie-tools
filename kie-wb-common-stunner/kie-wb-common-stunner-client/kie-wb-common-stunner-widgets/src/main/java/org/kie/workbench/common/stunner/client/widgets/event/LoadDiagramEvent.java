@@ -44,5 +44,4 @@ public final class LoadDiagramEvent implements UberFireEvent {
     public String toString() {
         return "LoadDiagramEvent [name=" + name + ", uri=" + uri + "]";
     }
-
 }

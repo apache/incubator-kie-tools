@@ -53,7 +53,6 @@ public class BPMNDiagramTest {
     public void init() {
         ValidatorFactory vf = Validation.buildDefaultValidatorFactory();
         this.validator = vf.getValidator();
-
     }
 
     public BPMNDiagram createValidBpmnDiagram() {
@@ -79,7 +78,8 @@ public class BPMNDiagramTest {
         BPMNDiagram bpmnDiagram = createValidBpmnDiagram();
         bpmnDiagram.getDiagramSet().setName( new Name( NAME_INVALID ) );
         Set<ConstraintViolation<BPMNDiagram>> violations = this.validator.validate( bpmnDiagram );
-        assertEquals( 1, violations.size() );
+        assertEquals( 1,
+                      violations.size() );
     }
 
     @Test
@@ -87,7 +87,8 @@ public class BPMNDiagramTest {
         BPMNDiagram bpmnDiagram = createValidBpmnDiagram();
         bpmnDiagram.getDiagramSet().setId( new Id( ID_INVALID ) );
         Set<ConstraintViolation<BPMNDiagram>> violations = this.validator.validate( bpmnDiagram );
-        assertEquals( 1, violations.size() );
+        assertEquals( 1,
+                      violations.size() );
     }
 
     @Test
@@ -95,7 +96,8 @@ public class BPMNDiagramTest {
         BPMNDiagram bpmnDiagram = createValidBpmnDiagram();
         bpmnDiagram.getDiagramSet().setPackageProperty( new Package( PACKAGE_INVALID ) );
         Set<ConstraintViolation<BPMNDiagram>> violations = this.validator.validate( bpmnDiagram );
-        assertEquals( 1, violations.size() );
+        assertEquals( 1,
+                      violations.size() );
     }
 
     @Test
@@ -103,6 +105,7 @@ public class BPMNDiagramTest {
         BPMNDiagram bpmnDiagram = createValidBpmnDiagram();
         bpmnDiagram.getDiagramSet().setVersion( new Version( VERSION_INVALID ) );
         Set<ConstraintViolation<BPMNDiagram>> violations = this.validator.validate( bpmnDiagram );
-        assertEquals( 1, violations.size() );
+        assertEquals( 1,
+                      violations.size() );
     }
 }

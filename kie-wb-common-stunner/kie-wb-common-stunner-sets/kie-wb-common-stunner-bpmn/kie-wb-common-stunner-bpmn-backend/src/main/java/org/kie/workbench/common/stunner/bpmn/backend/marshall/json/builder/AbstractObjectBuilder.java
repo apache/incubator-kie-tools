@@ -61,8 +61,10 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
     }
 
     @Override
-    public GraphObjectBuilder<W, T> property( String key, String value ) {
-        properties.put( key, value );
+    public GraphObjectBuilder<W, T> property( String key,
+                                              String value ) {
+        properties.put( key,
+                        value );
         return this;
     }
 
@@ -78,19 +80,22 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
     }
 
     @Override
-    public GraphObjectBuilder<W, T> boundUL( Double x, Double y ) {
+    public GraphObjectBuilder<W, T> boundUL( Double x,
+                                             Double y ) {
         this.boundUL = new Double[]{ x, y };
         return this;
     }
 
     @Override
-    public GraphObjectBuilder<W, T> boundLR( Double x, Double y ) {
+    public GraphObjectBuilder<W, T> boundLR( Double x,
+                                             Double y ) {
         this.boundLR = new Double[]{ x, y };
         return this;
     }
 
     @Override
-    public GraphObjectBuilder<W, T> docker( Double x, Double y ) {
+    public GraphObjectBuilder<W, T> docker( Double x,
+                                            Double y ) {
         this.dockers.add( new Double[]{ x, y } );
         return this;
     }
@@ -109,7 +114,8 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
         return CommandResult.Type.ERROR.equals( results.getType() );
     }
 
-    protected GraphObjectBuilder<?, ?> getBuilder( BuilderContext context, String nodeId ) {
+    protected GraphObjectBuilder<?, ?> getBuilder( BuilderContext context,
+                                                   String nodeId ) {
         Collection<GraphObjectBuilder<?, ?>> builders = context.getBuilders();
         if ( builders != null && !builders.isEmpty() ) {
             for ( GraphObjectBuilder<?, ?> builder : builders ) {
@@ -123,41 +129,43 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
     }
 
     @SuppressWarnings( "unchecked" )
-    protected void setProperties( BuilderContext context, BPMNDefinition definition ) {
+    protected void setProperties( BuilderContext context,
+                                  BPMNDefinition definition ) {
         assert definition != null;
         Bpmn2OryxPropertyManager propertyManager = context.getOryxManager().getPropertyManager();
         OryxIdMappings idMappings = context.getOryxManager().getMappingsManager();
         Set<?> defProperties = context.getDefinitionManager().adapters().forDefinition().getProperties( definition );
         for ( Map.Entry<String, String> entry : properties.entrySet() ) {
             final String oryxId = entry.getKey();
-            if ( !idMappings.isSkipProperty( definition.getClass(), oryxId ) ) {
+            if ( !idMappings.isSkipProperty( definition.getClass(),
+                                             oryxId ) ) {
                 final String pValue = entry.getValue();
-                final String pId = idMappings.getPropertyId( definition, oryxId );
+                final String pId = idMappings.getPropertyId( definition,
+                                                             oryxId );
                 boolean found = false;
                 if ( null != pId ) {
-                    final Object property = context.getGraphUtils().getProperty( defProperties, pId );
+                    final Object property = context.getGraphUtils().getProperty( defProperties,
+                                                                                 pId );
                     if ( null != property ) {
                         try {
                             PropertyType propertyType = context.getDefinitionManager().adapters().forProperty().getType( property );
-                            Object value = propertyManager.parse( property, propertyType, pValue );
-                            context.getDefinitionManager().adapters().forProperty().setValue( property, value );
+                            Object value = propertyManager.parse( property,
+                                                                  propertyType,
+                                                                  pValue );
+                            context.getDefinitionManager().adapters().forProperty().setValue( property,
+                                                                                              value );
                             found = true;
-
                         } catch ( Exception e ) {
-                            LOG.error( "Cannot parse value [" + pValue + "] for property [" + pId + "]", e );
-
+                            LOG.error( "Cannot parse value [" + pValue + "] for property [" + pId + "]",
+                                       e );
                         }
-
                     }
-
                 }
                 if ( !found && null != pId ) {
                     //LOG.warn( "Property [" + pId + "] not found for definition [" + definition.getClass().getName() + "]" );
 
                 }
-
             }
-
         }
     }
 

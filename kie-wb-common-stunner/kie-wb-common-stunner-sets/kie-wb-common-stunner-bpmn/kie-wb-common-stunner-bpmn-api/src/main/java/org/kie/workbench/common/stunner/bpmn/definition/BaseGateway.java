@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
@@ -29,11 +33,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
-import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
 @MorphBase( defaultType = ParallelGateway.class )
 public abstract class BaseGateway implements BPMNDefinition {
@@ -78,7 +78,6 @@ public abstract class BaseGateway implements BPMNDefinition {
         public static final transient String BORDER_COLOR = "#000000";
         public static final Double BORDER_SIZE = 1d;
         public static final Double RADIUS = 20d;
-
     }
 
     public BaseGateway() {

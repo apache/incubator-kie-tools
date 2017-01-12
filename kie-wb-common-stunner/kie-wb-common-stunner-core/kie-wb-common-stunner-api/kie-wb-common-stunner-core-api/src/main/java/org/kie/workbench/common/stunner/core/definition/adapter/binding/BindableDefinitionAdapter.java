@@ -16,14 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 
-import java.util.Map;
-import java.util.Set;
-
-public interface BindableDefinitionAdapter<T> extends DefinitionAdapter<T>, HasInheritance {
+public interface BindableDefinitionAdapter<T> extends DefinitionAdapter<T>,
+                                                      HasInheritance {
 
     void setBindings( Map<PropertyMetaTypes, Class> metaPropertyTypeClasses,
                       Map<Class, Class> baseTypes,
@@ -35,5 +36,5 @@ public interface BindableDefinitionAdapter<T> extends DefinitionAdapter<T>, HasI
                       Map<Class, String> propertyCategoryFieldNames,
                       Map<Class, String> propertyDescriptionFieldNames );
 
-    Class<? extends ElementFactory> getGraphFactory( Class<?> type );
+    Class<? extends ElementFactory> getGraphFactory( final Class<?> type );
 }

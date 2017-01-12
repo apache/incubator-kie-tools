@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,12 +27,14 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.rule.*;
+import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.impl.violations.ContainmentRuleViolation;
 import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -52,11 +56,15 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init( 500, 500 );
+        super.init( 500,
+                    500 );
         this.parent = mockNode( PARENT_UUID );
         this.candidate = mockNode( CANDIDATE_UUID );
         when( graphIndex.getNode( eq( PARENT_UUID ) ) ).thenReturn( parent );
-        this.tested = new AddChildNodeCommand( PARENT_UUID, candidate, x, y );
+        this.tested = new AddChildNodeCommand( PARENT_UUID,
+                                               candidate,
+                                               x,
+                                               y );
     }
 
     @Test
@@ -65,7 +73,8 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
         this.tested = spy( tested );
         tested.initialize( graphCommandExecutionContext );
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-        verify( tested, times( 3 ) ).addCommand( commandArgumentCaptor.capture() );
+        verify( tested,
+                times( 3 ) ).addCommand( commandArgumentCaptor.capture() );
         List<Command> commands = commandArgumentCaptor.getAllValues();
         assertNotNull( commands );
         assertTrue( commands.size() == 3 );
@@ -77,10 +86,14 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
     @Test
     @SuppressWarnings( "unchecked" )
     public void testInitializeWithNoPositionCommands() {
-        this.tested = spy( new AddChildNodeCommand( PARENT_UUID, candidate, null, null ) );
+        this.tested = spy( new AddChildNodeCommand( PARENT_UUID,
+                                                    candidate,
+                                                    null,
+                                                    null ) );
         tested.initialize( graphCommandExecutionContext );
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-        verify( tested, times( 2 ) ).addCommand( commandArgumentCaptor.capture() );
+        verify( tested,
+                times( 2 ) ).addCommand( commandArgumentCaptor.capture() );
         List<Command> commands = commandArgumentCaptor.getAllValues();
         assertNotNull( commands );
         assertTrue( commands.size() == 2 );
@@ -92,16 +105,32 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
     @SuppressWarnings( "unchecked" )
     public void testAllow() {
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
         List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull( commands );
-        assertEquals( 3, commands.size() );
-        verify( containmentRuleManager, times( 1 ) ).evaluate( eq( parent ), eq( candidate ) );
-        verify( cardinalityRuleManager, times( 1 ) ).evaluate( eq( graph ), eq( candidate ), eq( RuleManager.Operation.ADD ) );
-        verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
-                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        assertEquals( 3,
+                      commands.size() );
+        verify( containmentRuleManager,
+                times( 1 ) ).evaluate( eq( parent ),
+                                       eq( candidate ) );
+        verify( cardinalityRuleManager,
+                times( 1 ) ).evaluate( eq( graph ),
+                                       eq( candidate ),
+                                       eq( RuleManager.Operation.ADD ) );
+        verify( connectionRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( Node.class ) );
+        verify( edgeCardinalityRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( List.class ),
+                                       any( EdgeCardinalityRule.Type.class ),
+                                       any( RuleManager.Operation.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
     }
 
     @Test
@@ -109,22 +138,40 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
     public void testAllowNoRules() {
         when( graphCommandExecutionContext.getRulesManager() ).thenReturn( null );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO, result.getType() );
-        verify( containmentRuleManager, times( 0 ) ).evaluate( eq( parent ), eq( candidate ) );
-        verify( cardinalityRuleManager, times( 0 ) ).evaluate( eq( graph ), eq( candidate ), eq( RuleManager.Operation.ADD ) );
-        verify( connectionRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ), any( Node.class ) );
-        verify( edgeCardinalityRuleManager, times( 0 ) ).evaluate( any( Edge.class ), any( Node.class ),
-                any( List.class ), any( EdgeCardinalityRule.Type.class ), any( RuleManager.Operation.class ) );
-        verify( dockingRuleManager, times( 0 ) ).evaluate( any( Element.class ), any( Element.class ) );
+        assertEquals( CommandResult.Type.INFO,
+                      result.getType() );
+        verify( containmentRuleManager,
+                times( 0 ) ).evaluate( eq( parent ),
+                                       eq( candidate ) );
+        verify( cardinalityRuleManager,
+                times( 0 ) ).evaluate( eq( graph ),
+                                       eq( candidate ),
+                                       eq( RuleManager.Operation.ADD ) );
+        verify( connectionRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( Node.class ) );
+        verify( edgeCardinalityRuleManager,
+                times( 0 ) ).evaluate( any( Edge.class ),
+                                       any( Node.class ),
+                                       any( List.class ),
+                                       any( EdgeCardinalityRule.Type.class ),
+                                       any( RuleManager.Operation.class ) );
+        verify( dockingRuleManager,
+                times( 0 ) ).evaluate( any( Element.class ),
+                                       any( Element.class ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testNotAllowed() {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
-                .addViolation( new ContainmentRuleViolation( graph.getUUID(), PARENT_UUID ) );
-        when( containmentRuleManager.evaluate( any( Element.class ), any( Element.class ) ) ).thenReturn( FAILED_VIOLATIONS );
+                .addViolation( new ContainmentRuleViolation( graph.getUUID(),
+                                                             PARENT_UUID ) );
+        when( containmentRuleManager.evaluate( any( Element.class ),
+                                               any( Element.class ) ) ).thenReturn( FAILED_VIOLATIONS );
         CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR, result.getType() );
+        assertEquals( CommandResult.Type.ERROR,
+                      result.getType() );
     }
 }

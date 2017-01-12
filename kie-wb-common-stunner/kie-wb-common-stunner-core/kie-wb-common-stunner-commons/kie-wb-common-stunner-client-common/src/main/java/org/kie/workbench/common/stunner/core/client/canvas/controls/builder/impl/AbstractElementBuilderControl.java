@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
@@ -44,12 +50,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
 
 public abstract class AbstractElementBuilderControl extends AbstractCanvasHandlerControl
         implements ElementBuilderControl<AbstractCanvasHandler> {
@@ -92,24 +92,28 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         final double x = request.getX();
         final double y = request.getY();
         final Object definition = request.getDefinition();
-        final Node<View<?>, Edge> parent = getParent( x, y );
+        final Node<View<?>, Edge> parent = getParent( x,
+                                                      y );
         final Set<String> labels = clientDefinitionManager.adapters().forDefinition().getLabels( definition );
         // Check containment rules.
         if ( null != parent ) {
             final Object parentDef = parent.getContent().getDefinition();
             final String parentId = clientDefinitionManager.adapters().forDefinition().getId( parentDef );
-            final RuleViolations containmentViolations = modelContainmentRuleManager.evaluate( parentId, labels );
+            final RuleViolations containmentViolations = modelContainmentRuleManager.evaluate( parentId,
+                                                                                               labels );
             if ( !isValid( containmentViolations ) ) {
                 return false;
             }
         }
         // Check cardinality rules.
-        final Map<String, Integer> graphLabelCount = GraphUtils.getLabelsCount( canvasHandler.getDiagram().getGraph(), labels );
+        final Map<String, Integer> graphLabelCount = GraphUtils.getLabelsCount( canvasHandler.getDiagram().getGraph(),
+                                                                                labels );
         final DefaultRuleViolations cardinalityViolations = new DefaultRuleViolations();
         labels.stream().forEach( role -> {
             final Integer i = graphLabelCount.get( role );
-            final RuleViolations violations =
-                    modelCardinalityRuleManager.evaluate( role, null != i ? i : 0, RuleManager.Operation.ADD );
+            final RuleViolations violations = modelCardinalityRuleManager.evaluate( role,
+                                                                                    null != i ? i : 0,
+                                                                                    RuleManager.Operation.ADD );
             cardinalityViolations.addViolations( violations );
         } );
         return isValid( cardinalityViolations );
@@ -127,7 +131,9 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         double y = 0;
         if ( request.getX() == -1 || request.getY() == -1 ) {
             // TODO: Use the right size of the target element to be created.
-            final double[] p = canvasLayoutUtils.getNext( canvasHandler, 150, 75 );
+            final double[] p = canvasLayoutUtils.getNext( canvasHandler,
+                                                          150,
+                                                          75 );
             x = p[ 0 ] + 50;
             y = p[ 1 ] > 0 ? p[ 1 ] : 200;
         } else {
@@ -137,28 +143,36 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         final Object definition = request.getDefinition();
         // Notify processing starts.
         fireProcessingStarted();
-        final Node<View<?>, Edge> parent = getParent( x, y );
-        final Point2D childCoordinates = getChildCoordinates( parent, x, y );
-        getCommands( definition, parent, childCoordinates.getX(), childCoordinates.getY(), new CommandsCallback() {
+        final Node<View<?>, Edge> parent = getParent( x,
+                                                      y );
+        final Point2D childCoordinates = getChildCoordinates( parent,
+                                                              x,
+                                                              y );
+        getCommands( definition,
+                     parent,
+                     childCoordinates.getX(),
+                     childCoordinates.getY(),
+                     new CommandsCallback() {
 
-            @Override
-            public void onComplete( final String uuid,
-                                    final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
-                canvasCommandManager.execute( canvasHandler, new CompositeCommandImpl.CompositeCommandBuilder()
-                        .addCommands( commands )
-                        .build() );
-                buildCallback.onSuccess( uuid );
-                // Notify processing ends.
-                fireProcessingCompleted();
-            }
+                         @Override
+                         public void onComplete( final String uuid,
+                                                 final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
+                             canvasCommandManager.execute( canvasHandler,
+                                                           new CompositeCommandImpl.CompositeCommandBuilder()
+                                                                   .addCommands( commands )
+                                                                   .build() );
+                             buildCallback.onSuccess( uuid );
+                             // Notify processing ends.
+                             fireProcessingCompleted();
+                         }
 
-            @Override
-            public void onError( final ClientRuntimeError error ) {
-                buildCallback.onError( error );
-                // Notify processing ends.
-                fireProcessingCompleted();
-            }
-        } );
+                         @Override
+                         public void onError( final ClientRuntimeError error ) {
+                             buildCallback.onError( error );
+                             // Notify processing ends.
+                             fireProcessingCompleted();
+                         }
+                     } );
     }
 
     @Override
@@ -170,9 +184,10 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
 
     public interface CommandsCallback {
 
-        void onComplete( String uuid, List<Command<AbstractCanvasHandler, CanvasViolation>> commands );
+        void onComplete( final String uuid,
+                         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands );
 
-        void onError( ClientRuntimeError error );
+        void onError( final ClientRuntimeError error );
     }
 
     public void getCommands( final Object definition,
@@ -182,28 +197,35 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                              final CommandsCallback commandsCallback ) {
         final String defId = clientDefinitionManager.adapters().forDefinition().getId( definition );
         final String uuid = UUID.uuid();
-        clientFactoryServices.newElement( uuid, defId, new ServiceCallback<Element>() {
-            @Override
-            public void onSuccess( final Element element ) {
-                getElementCommands( element, parent, x, y, new CommandsCallback() {
-                    @Override
-                    public void onComplete( final String uuid,
-                                            final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
-                        commandsCallback.onComplete( uuid, commands );
-                    }
+        clientFactoryServices.newElement( uuid,
+                                          defId,
+                                          new ServiceCallback<Element>() {
+                                              @Override
+                                              public void onSuccess( final Element element ) {
+                                                  getElementCommands( element,
+                                                                      parent,
+                                                                      x,
+                                                                      y,
+                                                                      new CommandsCallback() {
+                                                                          @Override
+                                                                          public void onComplete( final String uuid,
+                                                                                                  final List<Command<AbstractCanvasHandler, CanvasViolation>> commands ) {
+                                                                              commandsCallback.onComplete( uuid,
+                                                                                                           commands );
+                                                                          }
 
-                    @Override
-                    public void onError( final ClientRuntimeError error ) {
-                        commandsCallback.onError( error );
-                    }
-                } );
-            }
+                                                                          @Override
+                                                                          public void onError( final ClientRuntimeError error ) {
+                                                                              commandsCallback.onError( error );
+                                                                          }
+                                                                      } );
+                                              }
 
-            @Override
-            public void onError( final ClientRuntimeError error ) {
-                commandsCallback.onError( error );
-            }
-        } );
+                                              @Override
+                                              public void onError( final ClientRuntimeError error ) {
+                                                  commandsCallback.onError( error );
+                                              }
+                                          } );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -215,22 +237,30 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         Command<AbstractCanvasHandler, CanvasViolation> command = null;
         if ( element instanceof Node ) {
             if ( null != parent ) {
-                command = canvasCommandFactory.addChildNode( parent, ( Node ) element, getShapeSetId() );
+                command = canvasCommandFactory.addChildNode( parent,
+                                                             ( Node ) element,
+                                                             getShapeSetId() );
             } else {
-                command = canvasCommandFactory.addNode( ( Node ) element, getShapeSetId() );
+                command = canvasCommandFactory.addNode( ( Node ) element,
+                                                        getShapeSetId() );
             }
         } else if ( element instanceof Edge && null != parent ) {
-            command = canvasCommandFactory.addConnector( parent, ( Edge ) element, 3, getShapeSetId() );
+            command = canvasCommandFactory.addConnector( parent,
+                                                         ( Edge ) element,
+                                                         3,
+                                                         getShapeSetId() );
         } else {
             throw new RuntimeException( "Unrecognized element type for " + element );
         }
         // Execute both add element and move commands in batch, so undo will be done in batch as well.
-        Command<AbstractCanvasHandler, CanvasViolation> moveCanvasElementCommand =
-                canvasCommandFactory.updatePosition( ( Node<View<?>, Edge> ) element, x, y );
+        Command<AbstractCanvasHandler, CanvasViolation> moveCanvasElementCommand = canvasCommandFactory.updatePosition( ( Node<View<?>, Edge> ) element,
+                                                                                                                        x,
+                                                                                                                        y );
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commandList = new LinkedList<Command<AbstractCanvasHandler, CanvasViolation>>();
         commandList.add( command );
         commandList.add( moveCanvasElementCommand );
-        commandsCallback.onComplete( element.getUUID(), commandList );
+        commandsCallback.onComplete( element.getUUID(),
+                                     commandList );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -239,7 +269,8 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         if ( _x > -1 && _y > -1 ) {
             final String rootUUID = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
             graphBoundsIndexer.setRootUUID( rootUUID ).build( canvasHandler.getDiagram().getGraph() );
-            final Node<View<?>, Edge> r = graphBoundsIndexer.getAt( _x, _y );
+            final Node<View<?>, Edge> r = graphBoundsIndexer.getAt( _x,
+                                                                    _y );
             return r;
         }
         return null;
@@ -252,9 +283,11 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             final Point2D parentCoords = GraphUtils.getPosition( parent.getContent() );
             final double x = _x - parentCoords.getX();
             final double y = _y - parentCoords.getY();
-            return new Point2D( x, y );
+            return new Point2D( x,
+                                y );
         }
-        return new Point2D( _x, _y );
+        return new Point2D( _x,
+                            _y );
     }
 
     protected void fireProcessingStarted() {

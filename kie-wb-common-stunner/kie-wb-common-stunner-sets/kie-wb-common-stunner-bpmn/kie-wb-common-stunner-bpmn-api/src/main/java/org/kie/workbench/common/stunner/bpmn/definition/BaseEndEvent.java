@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -31,17 +35,15 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
-import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TASK_DATA;
 
 @MorphBase( defaultType = EndNoneEvent.class
         /* TODO: Disabled morphing from end to start events for M1
         targets = { BaseStartEvent.class } */
 )
-public abstract class BaseEndEvent implements BPMNDefinition, DataIOModel {
+public abstract class BaseEndEvent implements BPMNDefinition,
+                                              DataIOModel {
 
     @Category
     public static final transient String category = Categories.EVENTS;
@@ -125,7 +127,7 @@ public abstract class BaseEndEvent implements BPMNDefinition, DataIOModel {
     }
 
     @Override
-    public boolean isSingleOutputVar(){
+    public boolean isSingleOutputVar() {
         return false;
     }
 

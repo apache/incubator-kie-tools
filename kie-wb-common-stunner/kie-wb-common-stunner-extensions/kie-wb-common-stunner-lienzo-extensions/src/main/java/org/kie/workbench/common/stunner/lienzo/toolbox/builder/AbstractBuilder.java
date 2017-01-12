@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.lienzo.toolbox.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
@@ -25,10 +28,10 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.ToolboxButton;
 import org.kie.workbench.common.stunner.lienzo.toolbox.event.ToolboxButtonEventHandler;
 import org.kie.workbench.common.stunner.lienzo.toolbox.grid.GridToolbox;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister, ButtonGrid {
+public abstract class AbstractBuilder implements On,
+                                                 Towards,
+                                                 ButtonsOrRegister,
+                                                 ButtonGrid {
 
     protected final Layer layer;
     protected final WiresShape shape;
@@ -41,7 +44,8 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
     protected int padding;
     protected int iconSize;
 
-    public AbstractBuilder( Layer layer, WiresShape shape ) {
+    public AbstractBuilder( Layer layer,
+                            WiresShape shape ) {
         this.layer = layer;
         this.shape = shape;
     }
@@ -71,7 +75,10 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
     }
 
     @Override
-    public ButtonsOrRegister grid( int padding, int iconSize, int rows, int cols ) {
+    public ButtonsOrRegister grid( int padding,
+                                   int iconSize,
+                                   int rows,
+                                   int cols ) {
         this.rows = rows;
         this.cols = cols;
         this.padding = padding;
@@ -81,13 +88,15 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
 
     @Override
     public Button add( IPrimitive<?> iconShape ) {
-        return new ButtonBuilder( this, iconShape );
+        return new ButtonBuilder( this,
+                                  iconShape );
     }
 
     @Override
     public abstract GridToolbox register();
 
     public static class ButtonBuilder implements Button {
+
         private final AbstractBuilder builder;
         private final IPrimitive<?> shape;
         private int padding;
@@ -139,10 +148,15 @@ public abstract class AbstractBuilder implements On, Towards, ButtonsOrRegister,
 
         @Override
         public ButtonsOrRegister end() {
-            builder.add( new ToolboxButton( builder.layer, shape, padding, iconSize,
-                    clickHandler, moveDownHandler, mouseEnterHandler, mouseExitHandler ) );
+            builder.add( new ToolboxButton( builder.layer,
+                                            shape,
+                                            padding,
+                                            iconSize,
+                                            clickHandler,
+                                            moveDownHandler,
+                                            mouseEnterHandler,
+                                            mouseExitHandler ) );
             return builder;
         }
     }
-
 }

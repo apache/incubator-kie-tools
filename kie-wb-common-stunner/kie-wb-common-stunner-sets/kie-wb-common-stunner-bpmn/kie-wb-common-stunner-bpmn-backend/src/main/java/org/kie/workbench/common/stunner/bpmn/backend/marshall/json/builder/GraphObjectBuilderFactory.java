@@ -21,5 +21,4 @@ public interface GraphObjectBuilderFactory {
     GraphObjectBuilder<?, ?> bootstrapBuilder();
 
     GraphObjectBuilder<?, ?> builderFor( String oryxId );
-
 }

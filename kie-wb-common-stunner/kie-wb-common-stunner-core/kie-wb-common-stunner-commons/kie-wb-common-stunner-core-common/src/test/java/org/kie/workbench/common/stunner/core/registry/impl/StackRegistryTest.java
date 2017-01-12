@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
+import java.util.Stack;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Stack;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -39,70 +39,82 @@ public class StackRegistryTest {
 
     @Before
     public void setup() throws Exception {
-        tested = new StackRegistry<>( keyProvider, stack );
+        tested = new StackRegistry<>( keyProvider,
+                                      stack );
     }
 
     @Test
     public void testRegister() {
         final String s = "an string";
         tested.register( s );
-        verify( stack, times( 1 ) ).add( s );
+        verify( stack,
+                times( 1 ) ).add( s );
     }
 
     @Test
     public void testGetStack() {
-        assertEquals( stack, tested.getStack() );
+        assertEquals( stack,
+                      tested.getStack() );
     }
 
     @Test
     public void testPeek() {
         tested.peek();
-        verify( stack, times( 1 ) ).peek();
+        verify( stack,
+                times( 1 ) ).peek();
     }
 
     @Test
     public void testPop() {
         tested.pop();
-        verify( stack, times( 1 ) ).pop();
+        verify( stack,
+                times( 1 ) ).pop();
     }
 
     @Test
     public void testRemove() {
         final String s = "an string";
         tested.remove( s );
-        verify( stack, times( 1 ) ).remove( s );
+        verify( stack,
+                times( 1 ) ).remove( s );
     }
 
     @Test
     public void testContains() {
         final String s = "an string";
         tested.contains( s );
-        verify( stack, times( 1 ) ).contains( s );
+        verify( stack,
+                times( 1 ) ).contains( s );
     }
 
     @Test
     public void testIndexOf() {
         final String s = "an string";
         tested.indexOf( s );
-        verify( stack, times( 1 ) ).indexOf( s );
+        verify( stack,
+                times( 1 ) ).indexOf( s );
     }
 
     @Test
     public void testGetItemByKey() {
         final String s1 = "an string 1";
         final String s2 = "an string 2";
-        tested = new StackRegistry<>( keyProvider, new Stack<Object>() {{
-            push( s1 );
-            push( s2 );
-        }} );
+        tested = new StackRegistry<>( keyProvider,
+                                      new Stack<Object>() {{
+                                          push( s1 );
+                                          push( s2 );
+                                      }} );
         Object o1 = tested.getItemByKey( s1 );
         Object o2 = tested.getItemByKey( s2 );
-        assertEquals( s1, o1 );
-        assertEquals( s2, o2 );
-        assertEquals( null, tested.getItemByKey( null ) );
-        assertEquals( null, tested.getItemByKey( "unregistered string" ) );
+        assertEquals( s1,
+                      o1 );
+        assertEquals( s2,
+                      o2 );
+        assertEquals( null,
+                      tested.getItemByKey( null ) );
+        assertEquals( null,
+                      tested.getItemByKey( "unregistered string" ) );
     }
-
 
     @Test
     public void testEmpty() {
@@ -117,5 +129,4 @@ public class StackRegistryTest {
         boolean empty = tested.isEmpty();
         assertFalse( empty );
     }
-
 }

@@ -37,13 +37,13 @@ public class DynamicIconShapeView<T extends DynamicIconShapeView>
                                  final double width,
                                  final double height ) {
         super( BasicShapesSupportedEvents.ALL_DESKTOP_EVENT_TYPES,
-                buildIcon( new MultiPath(),
-                        icon,
-                        width,
-                        height,
-                        BLACK,
-                        BLACK,
-                        STROKE_WIDTH ) );
+               buildIcon( new MultiPath(),
+                          icon,
+                          width,
+                          height,
+                          BLACK,
+                          BLACK,
+                          STROKE_WIDTH ) );
         this.icon = icon;
         this.width = width;
         this.height = height;
@@ -76,13 +76,12 @@ public class DynamicIconShapeView<T extends DynamicIconShapeView>
 
     private void updateIcon() {
         buildIcon( getPath(),
-                icon,
-                width,
-                height,
-                getFillColor(),
-                getStrokeColor(),
-                getStrokeWidth() );
-
+                   icon,
+                   width,
+                   height,
+                   getFillColor(),
+                   getStrokeColor(),
+                   getStrokeWidth() );
     }
 
     private static MultiPath buildIcon( final MultiPath path,
@@ -92,10 +91,12 @@ public class DynamicIconShapeView<T extends DynamicIconShapeView>
                                         final String fillColor,
                                         final String strokeColor,
                                         final double strokeWidth ) {
-        return DynamicIconsBuilder.build( path, icon, w, h )
+        return DynamicIconsBuilder.build( path,
+                                          icon,
+                                          w,
+                                          h )
                 .setFillColor( fillColor )
                 .setStrokeColor( strokeColor )
                 .setStrokeWidth( strokeWidth );
     }
-
 }

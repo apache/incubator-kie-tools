@@ -22,7 +22,7 @@ import org.uberfire.client.mvp.UberView;
 
 public interface ToolbarView extends UberView<AbstractToolbar> {
 
-    ToolbarView addItem( IsWidget toolbarItemView );
+    ToolbarView addItem( final IsWidget toolbarItemView );
 
     ToolbarView show();
 
@@ -31,5 +31,4 @@ public interface ToolbarView extends UberView<AbstractToolbar> {
     ToolbarView clear();
 
     void destroy();
-
 }

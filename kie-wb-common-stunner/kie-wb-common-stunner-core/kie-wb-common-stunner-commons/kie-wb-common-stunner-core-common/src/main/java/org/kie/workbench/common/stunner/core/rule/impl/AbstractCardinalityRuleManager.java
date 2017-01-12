@@ -26,5 +26,4 @@ public abstract class AbstractCardinalityRuleManager extends AbstractRuleManager
     public boolean supports( final Rule rule ) {
         return rule instanceof CardinalityRule;
     }
-
 }

@@ -23,5 +23,4 @@ package org.kie.workbench.common.stunner.core.definition;
 public interface DefinitionSetProxy<T> {
 
     T getDefinitionSet();
-
 }

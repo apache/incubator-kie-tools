@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.api;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.AbstractFactoryManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -27,10 +31,6 @@ import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 @ApplicationScoped
 public class ClientFactoryManager extends AbstractFactoryManager implements FactoryManager {
 
@@ -41,7 +41,13 @@ public class ClientFactoryManager extends AbstractFactoryManager implements Fact
     private final ManagedInstance<EdgeFactory> edgeFactoryInstances;
 
     protected ClientFactoryManager() {
-        this( null, null, null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -52,14 +58,14 @@ public class ClientFactoryManager extends AbstractFactoryManager implements Fact
                                  final ManagedInstance<GraphFactory> graphFactoryInstances,
                                  final ManagedInstance<NodeFactory> nodeFactoryInstances,
                                  final ManagedInstance<EdgeFactory> edgeFactoryInstances ) {
-        super( registryFactory, definitionManager );
+        super( registryFactory,
+               definitionManager );
         this.definitionFactoryInstances = definitionFactoryInstances;
         this.diagramFactoryInstances = diagramFactoryInstances;
         this.graphFactoryInstances = graphFactoryInstances;
         this.nodeFactoryInstances = nodeFactoryInstances;
         this.edgeFactoryInstances = edgeFactoryInstances;
     }
-
 
     @PostConstruct
     @SuppressWarnings( "unchecked" )
@@ -75,5 +81,4 @@ public class ClientFactoryManager extends AbstractFactoryManager implements Fact
         // Edge factories.
         edgeFactoryInstances.forEach( factory -> registry().register( factory ) );
     }
-
 }

@@ -16,16 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.model;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.rule.ContainmentRule;
 import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.impl.AbstractContainmentRuleManager;
 import org.kie.workbench.common.stunner.core.rule.impl.violations.ContainmentRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
-
-import javax.enterprise.context.Dependent;
-import java.util.HashSet;
-import java.util.Set;
 
 @Dependent
 public class ModelContainmentRuleManagerImpl extends AbstractContainmentRuleManager implements ModelContainmentRuleManager {
@@ -53,9 +53,8 @@ public class ModelContainmentRuleManagerImpl extends AbstractContainmentRuleMana
                 }
             }
         }
-        results.addViolation( new ContainmentRuleViolation( targetId, candidateRoles.toString() ) );
+        results.addViolation( new ContainmentRuleViolation( targetId,
+                                                            candidateRoles.toString() ) );
         return results;
-
     }
-
 }

@@ -15,6 +15,12 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
@@ -38,13 +44,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphPr
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
 @Shape( factory = BasicShapesFactory.class, def = TaskShapeDef.class )
 @MorphBase( defaultType = NoneTask.class, targets = { ReusableSubprocess.class } )
@@ -87,10 +87,14 @@ public abstract class BaseTask implements BPMNDefinition {
 
         private static final Map<TaskTypes, Class<?>> MORPH_TARGETS =
                 new HashMap<TaskTypes, Class<?>>( 4 ) {{
-                    put( TaskTypes.NONE, NoneTask.class );
-                    put( TaskTypes.USER, UserTask.class );
-                    put( TaskTypes.SCRIPT, ScriptTask.class );
-                    put( TaskTypes.BUSINESS_RULE, BusinessRuleTask.class );
+                    put( TaskTypes.NONE,
+                         NoneTask.class );
+                    put( TaskTypes.USER,
+                         UserTask.class );
+                    put( TaskTypes.SCRIPT,
+                         ScriptTask.class );
+                    put( TaskTypes.BUSINESS_RULE,
+                         BusinessRuleTask.class );
                 }};
 
         @Override
@@ -102,7 +106,6 @@ public abstract class BaseTask implements BPMNDefinition {
         public Map<TaskTypes, Class<?>> getMorphTargets() {
             return MORPH_TARGETS;
         }
-
     }
 
     @Labels
@@ -127,7 +130,6 @@ public abstract class BaseTask implements BPMNDefinition {
         public static final Double HEIGHT = 48d;
         public static final Double BORDER_SIZE = 1d;
         public static final String BORDER_COLOR = "#000000";
-
     }
 
     protected BaseTask( final TaskTypes type ) {

@@ -77,8 +77,10 @@ public class AssigneeListItemWidgetTest {
         widget.nameComboBox = nameComboBox;
         widget.deleteButton = deleteButton;
         widget.assigneeRow = assignee;
-        Mockito.doCallRealMethod().when( widget ).setTextBoxModelValue( any( TextBox.class ), anyString() );
-        Mockito.doCallRealMethod().when( widget ).setListBoxModelValue( any( ValueListBox.class ), anyString() );
+        Mockito.doCallRealMethod().when( widget ).setTextBoxModelValue( any( TextBox.class ),
+                                                                        anyString() );
+        Mockito.doCallRealMethod().when( widget ).setListBoxModelValue( any( ValueListBox.class ),
+                                                                        anyString() );
         Mockito.doCallRealMethod().when( widget ).getModelValue( any( ValueListBox.class ) );
         Mockito.doCallRealMethod().when( widget ).setNames( any( ListBoxValues.class ) );
         Mockito.doCallRealMethod().when( widget ).setName( any( String.class ) );
@@ -88,28 +90,40 @@ public class AssigneeListItemWidgetTest {
         Mockito.doCallRealMethod().when( widget ).init();
         Mockito.doCallRealMethod().when( widget ).setModel( any( AssigneeRow.class ) );
         when( widget.getModel() ).thenReturn( assigneeRow );
-
     }
 
     @Test
     public void testInitWidget() {
         widget.init();
-        verify( widget, times( 1 ) ).init();
-        verify( nameComboBox, times( 1 ) ).init( widget, true, name, customName, false, false,
-                AssigneeListItemWidgetView.CUSTOM_PROMPT, AssigneeListItemWidgetView.ENTER_TYPE_PROMPT );
-        verify( customName, times( 1 ) ).addKeyDownHandler( any( KeyDownHandler.class ) );
+        verify( widget,
+                times( 1 ) ).init();
+        verify( nameComboBox,
+                times( 1 ) ).init( widget,
+                                   true,
+                                   name,
+                                   customName,
+                                   false,
+                                   false,
+                                   AssigneeListItemWidgetView.CUSTOM_PROMPT,
+                                   AssigneeListItemWidgetView.ENTER_TYPE_PROMPT );
+        verify( customName,
+                times( 1 ) ).addKeyDownHandler( any( KeyDownHandler.class ) );
     }
 
     @Test
     public void testSetTextBoxModelValue() {
-        widget.setTextBoxModelValue( customName, "Georgina" );
-        verify( widget, times( 1 ) ).setCustomName( "Georgina" );
+        widget.setTextBoxModelValue( customName,
+                                     "Georgina" );
+        verify( widget,
+                times( 1 ) ).setCustomName( "Georgina" );
     }
 
     @Test
     public void testSetListBoxModelValue() {
-        widget.setListBoxModelValue( name, "user3" );
-        verify( widget, times( 1 ) ).setName( "user3" );
+        widget.setListBoxModelValue( name,
+                                     "user3" );
+        verify( widget,
+                times( 1 ) ).setName( "user3" );
     }
 
     @Test
@@ -123,31 +137,39 @@ public class AssigneeListItemWidgetTest {
     @Test
     public void testSetGetCustomName() {
         String customName = "Victoria";
-        widget.setTextBoxModelValue( widget.customName, customName );
+        widget.setTextBoxModelValue( widget.customName,
+                                     customName );
         String returnedCustomName = widget.getCustomName();
-        assertEquals( customName, returnedCustomName );
+        assertEquals( customName,
+                      returnedCustomName );
         String returnedCustomName2 = widget.getModelValue( widget.name );
-        assertEquals( customName, returnedCustomName2 );
+        assertEquals( customName,
+                      returnedCustomName2 );
     }
 
     @Test
     public void testSetGetName() {
         String sName = "user2";
-        widget.setListBoxModelValue( widget.name, sName );
+        widget.setListBoxModelValue( widget.name,
+                                     sName );
         String returnedName1 = widget.getName();
-        assertEquals( sName, returnedName1 );
+        assertEquals( sName,
+                      returnedName1 );
         String returnedName2 = widget.getModelValue( widget.name );
-        assertEquals( sName, returnedName2 );
+        assertEquals( sName,
+                      returnedName2 );
     }
 
     @Test
     public void testSetNames() {
-        ListBoxValues nameListBoxValues = new ListBoxValues( null, null, null );
+        ListBoxValues nameListBoxValues = new ListBoxValues( null,
+                                                             null,
+                                                             null );
         String sCustomName = "Julia";
         widget.setCustomName( sCustomName );
         widget.setNames( nameListBoxValues );
         verify( nameComboBox ).setListBoxValues( nameListBoxValues );
-        verify( nameComboBox ).addCustomValueToListBoxValues( sCustomName, "" );
+        verify( nameComboBox ).addCustomValueToListBoxValues( sCustomName,
+                                                              "" );
     }
-
 }

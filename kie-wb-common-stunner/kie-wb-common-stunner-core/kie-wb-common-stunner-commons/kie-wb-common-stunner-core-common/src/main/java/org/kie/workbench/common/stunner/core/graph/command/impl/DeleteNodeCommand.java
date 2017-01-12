@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.logging.Logger;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -22,8 +24,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-
-import java.util.logging.Logger;
 
 /**
  * A Command to delete graph a child node.
@@ -34,8 +34,8 @@ public final class DeleteNodeCommand extends DeregisterNodeCommand {
 
     private static Logger LOGGER = Logger.getLogger( DeleteNodeCommand.class.getName() );
 
-    public DeleteNodeCommand( @MapsTo( "uuid" ) String uuid ) {
-       super( uuid );
+    public DeleteNodeCommand( final @MapsTo( "uuid" ) String uuid ) {
+        super( uuid );
     }
 
     public DeleteNodeCommand( final Node<?, Edge> node ) {
@@ -43,7 +43,7 @@ public final class DeleteNodeCommand extends DeregisterNodeCommand {
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
+    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
         final AddNodeCommand undoCommand = new AddNodeCommand( getRemoved() );
         return undoCommand.execute( context );
     }
@@ -52,5 +52,4 @@ public final class DeleteNodeCommand extends DeregisterNodeCommand {
     public String toString() {
         return "DeleteNodeCommand [candidate=" + uuid + "]";
     }
-
 }

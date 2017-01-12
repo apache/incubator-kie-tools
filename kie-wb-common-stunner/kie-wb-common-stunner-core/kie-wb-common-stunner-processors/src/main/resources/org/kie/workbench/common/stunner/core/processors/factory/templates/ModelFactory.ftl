@@ -47,13 +47,13 @@ public class ${className} extends ${parentClassName}<Object> {
         <#list builders as builder>
 
             if ( ${builder.className}.class.equals( clazz ) ) {
-        
+
                 return new ${builder.methodName}().build();
-        
+
             }
-        
+
         </#list>
-        
+
         throw new RuntimeException( "This factory [" + this.getClass().getName() + "] " +
             "should provide a definition for [" + clazz + "]" );
     }

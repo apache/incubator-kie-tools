@@ -23,15 +23,15 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
  * A singleton instance for each application's client that handles the different Stunner's sessions.
  * Four operations describe the lifecycle for the Stunner's client sessions:
  * <ul>
- *     <li>When a session is opened, its canvas controls, listeners and other behaviours should be constructed,
- *     registered and enabled, although each implementation can provide its own behaviours</li>
- *     <li>When a session is disposed, its canvas controls, listeners and other behaviours should be removed and
- *     destroyed. The session will no longer be paused/resumed.</li>
- *     <li>A session is paused when the client does not interact with any of the components that the
- *     session aggregates. Implementations can do some memory cleans, if necessary.</li>
- *     <li>A session is resumed when the client does interact again with any of the components that the paused
- *     session aggregates. Implementations can activate again whatever previously disabled when pausing
- *     here, if necessary.</li>
+ * <li>When a session is opened, its canvas controls, listeners and other behaviours should be constructed,
+ * registered and enabled, although each implementation can provide its own behaviours</li>
+ * <li>When a session is disposed, its canvas controls, listeners and other behaviours should be removed and
+ * destroyed. The session will no longer be paused/resumed.</li>
+ * <li>A session is paused when the client does not interact with any of the components that the
+ * session aggregates. Implementations can do some memory cleans, if necessary.</li>
+ * <li>A session is resumed when the client does interact again with any of the components that the paused
+ * session aggregates. Implementations can activate again whatever previously disabled when pausing
+ * here, if necessary.</li>
  * </ul>
  * @param <C> The canvas type.
  * @param <H> The canvas handler type.
@@ -48,7 +48,7 @@ public interface ClientSessionManager<C extends Canvas, H extends CanvasHandler,
     /**
      * Opens the session <code>session</code>.
      */
-    void open( S session );
+    void open( final S session );
 
     /**
      * Pause the current session.
@@ -58,11 +58,10 @@ public interface ClientSessionManager<C extends Canvas, H extends CanvasHandler,
     /**
      * Resume the session <code>session</code> and pause the current one, if any.
      */
-    void resume( S session );
+    void resume( final S session );
 
     /**
      * Dispose the current session.
      */
     void dispose();
-
 }

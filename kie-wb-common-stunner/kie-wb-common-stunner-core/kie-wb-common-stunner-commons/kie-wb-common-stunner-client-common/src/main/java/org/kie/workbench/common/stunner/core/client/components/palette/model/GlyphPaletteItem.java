@@ -19,5 +19,4 @@ package org.kie.workbench.common.stunner.core.client.components.palette.model;
 public interface GlyphPaletteItem extends PaletteItem {
 
     String getDefinitionId();
-
 }

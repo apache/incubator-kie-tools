@@ -22,8 +22,7 @@ public interface MorphProperty<V> {
 
     String getProperty();
 
-    String getMorphTarget( V value );
+    String getMorphTarget( final V value );
 
     Collection<String> getMorphTargets();
-
 }

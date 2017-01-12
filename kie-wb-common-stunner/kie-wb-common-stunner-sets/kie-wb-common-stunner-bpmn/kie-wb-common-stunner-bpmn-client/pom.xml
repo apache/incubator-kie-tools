@@ -66,7 +66,7 @@
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-shapes-api</artifactId>

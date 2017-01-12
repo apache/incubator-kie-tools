@@ -22,5 +22,4 @@ public abstract class AbstractGlyphDef<W> implements GlyphDef<W> {
     public String getGlyphDescription( final W element ) {
         return null;
     }
-
 }

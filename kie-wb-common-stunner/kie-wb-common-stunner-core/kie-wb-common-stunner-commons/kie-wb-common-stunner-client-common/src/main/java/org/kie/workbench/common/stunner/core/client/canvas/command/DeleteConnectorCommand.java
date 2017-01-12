@@ -36,12 +36,11 @@ public final class DeleteConnectorCommand extends AbstractCanvasGraphCommand {
     @Override
     @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand( candidate  );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand( candidate );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
         return new DeleteCanvasConnectorCommand( candidate );
     }
-
 }

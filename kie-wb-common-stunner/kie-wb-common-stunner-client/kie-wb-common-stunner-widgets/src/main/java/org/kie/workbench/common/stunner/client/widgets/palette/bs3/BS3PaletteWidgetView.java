@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.bs3;
 
+import javax.enterprise.context.Dependent;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -30,10 +32,9 @@ import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphD
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.uberfire.client.mvp.UberView;
 
-import javax.enterprise.context.Dependent;
-
 @Dependent
-public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView<IsWidget>, UberView<BS3PaletteWidgetImpl> {
+public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView<IsWidget>,
+                                                               UberView<BS3PaletteWidgetImpl> {
 
     interface ViewBinder extends UiBinder<Widget, BS3PaletteWidgetView> {
 
@@ -69,40 +70,43 @@ public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public void showDragProxy( final String itemId,
                                final double x,
                                final double y ) {
         final Glyph<Group> glyph = ( Glyph<Group> ) presenter.getShapeGlyph( itemId );
-        shapeGlyphDragHandler.show( glyph, x, y, new ShapeGlyphDragHandler.Callback() {
+        shapeGlyphDragHandler.show( glyph,
+                                    x,
+                                    y,
+                                    new ShapeGlyphDragHandler.Callback() {
 
-            @Override
-            public void onMove( final double x,
-                                final double y ) {
-                presenter.onDragProxyMove( itemId, x, y );
+                                        @Override
+                                        public void onMove( final double x,
+                                                            final double y ) {
+                                            presenter.onDragProxyMove( itemId,
+                                                                       x,
+                                                                       y );
+                                        }
 
-            }
-
-            @Override
-            public void onComplete( final double x,
-                                    final double y ) {
-                presenter.onDragProxyComplete( itemId, x, y );
-
-            }
-
-        } );
-
+                                        @Override
+                                        public void onComplete( final double x,
+                                                                final double y ) {
+                                            presenter.onDragProxyComplete( itemId,
+                                                                           x,
+                                                                           y );
+                                        }
+                                    } );
     }
 
     @Override
     public void setBackgroundColor( final String color ) {
         palettePanel.getElement().getStyle().setBackgroundColor( color );
-
     }
 
     @Override
     public void setMarginTop( final int mTop ) {
-        palettePanel.getElement().getStyle().setMarginTop( mTop, Style.Unit.PX );
-
+        palettePanel.getElement().getStyle().setMarginTop( mTop,
+                                                           Style.Unit.PX );
     }
 
     @Override
@@ -115,8 +119,10 @@ public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView
                       final int width,
                       final int height ) {
         palettePanel.add( paletteView );
-        palettePanel.getElement().getStyle().setWidth( width, Style.Unit.PX );
-        palettePanel.getElement().getStyle().setHeight( height, Style.Unit.PX );
+        palettePanel.getElement().getStyle().setWidth( width,
+                                                       Style.Unit.PX );
+        palettePanel.getElement().getStyle().setHeight( height,
+                                                        Style.Unit.PX );
     }
 
     @Override
@@ -128,5 +134,4 @@ public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView
     public void destroy() {
         mainPanel.clear();
     }
-
 }

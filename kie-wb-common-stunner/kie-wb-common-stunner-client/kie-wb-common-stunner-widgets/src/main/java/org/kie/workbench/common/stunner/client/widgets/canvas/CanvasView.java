@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.canvas;
 
+import javax.annotation.PostConstruct;
+
 import com.ait.lienzo.client.core.shape.GridLayer;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Line;
@@ -26,8 +28,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-
-import javax.annotation.PostConstruct;
 
 public class CanvasView extends Composite implements AbstractCanvas.View<com.ait.lienzo.client.widget.LienzoPanel> {
 
@@ -84,7 +84,8 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     }
 
     @Override
-    public AbstractCanvas.View addChildShape( final ShapeView<?> parent, final ShapeView<?> child ) {
+    public AbstractCanvas.View addChildShape( final ShapeView<?> parent,
+                                              final ShapeView<?> child ) {
         final WiresShape parentShape = ( WiresShape ) parent;
         final WiresShape childShape = ( WiresShape ) child;
         parentShape.add( childShape );
@@ -92,7 +93,8 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     }
 
     @Override
-    public AbstractCanvas.View removeChildShape( final ShapeView<?> parent, final ShapeView<?> child ) {
+    public AbstractCanvas.View removeChildShape( final ShapeView<?> parent,
+                                                 final ShapeView<?> child ) {
         final WiresShape parentShape = ( WiresShape ) parent;
         final WiresShape childShape = ( WiresShape ) child;
         parentShape.remove( childShape );
@@ -100,7 +102,8 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     }
 
     @Override
-    public AbstractCanvas.View dock( final ShapeView<?> parent, final ShapeView<?> child ) {
+    public AbstractCanvas.View dock( final ShapeView<?> parent,
+                                     final ShapeView<?> child ) {
         final WiresShape parentShape = ( WiresShape ) parent;
         final WiresShape childShape = ( WiresShape ) child;
         child.removeFromParent();
@@ -110,7 +113,8 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     }
 
     @Override
-    public AbstractCanvas.View undock( final ShapeView<?> parent, final ShapeView<?> child ) {
+    public AbstractCanvas.View undock( final ShapeView<?> parent,
+                                       final ShapeView<?> child ) {
         final WiresShape parentShape = ( WiresShape ) parent;
         final WiresShape childShape = ( WiresShape ) child;
         parentShape.remove( childShape );
@@ -142,23 +146,27 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     public AbstractCanvas.View setGrid( final CanvasGrid grid ) {
         if ( null != grid ) {
             // Grid.
-            Line line1 = new Line( 0, 0, 0, 0 )
+            Line line1 = new Line( 0,
+                                   0,
+                                   0,
+                                   0 )
                     .setStrokeColor( grid.getPrimaryColor() )
                     .setAlpha( grid.getPrimaryAlpha() );
-            Line line2 = new Line( 0, 0, 0, 0 )
+            Line line2 = new Line( 0,
+                                   0,
+                                   0,
+                                   0 )
                     .setStrokeColor( grid.getSecondaryColor() )
                     .setAlpha( grid.getSecondaryAlpha() );
             line2.setDashArray( 2,
-                    2 );
+                                2 );
             GridLayer gridLayer = new GridLayer( grid.getPrimarySize(),
-                    line1,
-                    grid.getSecondarySize(),
-                    line2 );
+                                                 line1,
+                                                 grid.getSecondarySize(),
+                                                 line2 );
             panel.setBackgroundLayer( gridLayer );
-
         } else {
             panel.setBackgroundLayer( null );
-
         }
         return this;
     }
@@ -184,12 +192,11 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
                 style.setCursor( Style.Cursor.AUTO );
                 break;
             case WAIT:
-                style.setCursor( Style.Cursor.WAIT);
+                style.setCursor( Style.Cursor.WAIT );
                 break;
             case CROSSHAIR:
                 style.setCursor( Style.Cursor.CROSSHAIR );
                 break;
-
         }
         return this;
     }
@@ -217,7 +224,5 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
         this.panel = null;
         this.layer = null;
         this.canvasLayer = null;
-
     }
-
 }

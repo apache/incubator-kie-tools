@@ -32,5 +32,4 @@ public class Bpmn2OryxIdMappings extends BaseOryxIdMappings {
     public Bpmn2OryxIdMappings( final DefinitionManager definitionManager ) {
         super( definitionManager );
     }
-
 }

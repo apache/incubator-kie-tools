@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.graph;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -23,9 +26,6 @@ import org.kie.workbench.common.stunner.core.rule.DockingRule;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphDockingRuleManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelDockingRuleManager;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class GraphDockingRuleManagerImpl extends AbstractGraphRuleManager<DockingRule, ModelDockingRuleManager>
@@ -56,8 +56,7 @@ public class GraphDockingRuleManagerImpl extends AbstractGraphRuleManager<Dockin
     public RuleViolations evaluate( final Element<?> parent,
                                     final Element<? extends Definition<?>> candidate ) {
         final String targetId = getElementDefinitionId( parent );
-        return modelDockingRuleManager.evaluate( targetId, getLabels( candidate ) );
-
+        return modelDockingRuleManager.evaluate( targetId,
+                                                 getLabels( candidate ) );
     }
-
 }

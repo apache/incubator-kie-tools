@@ -21,8 +21,7 @@ import org.kie.workbench.common.stunner.shapes.def.BasicShapeDef;
 public interface IconShapeDef<W>
         extends BasicShapeDef<W> {
 
-    double getWidth( W element );
+    double getWidth( final W element );
 
-    double getHeight( W element );
-
+    double getHeight( final W element );
 }

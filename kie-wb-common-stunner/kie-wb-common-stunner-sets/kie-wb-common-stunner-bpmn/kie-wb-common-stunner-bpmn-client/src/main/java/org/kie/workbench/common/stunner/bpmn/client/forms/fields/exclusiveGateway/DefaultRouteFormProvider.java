@@ -25,8 +25,8 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.ContextUtils;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.ContextUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
@@ -58,10 +58,12 @@ public class DefaultRouteFormProvider implements SelectorDataProvider {
                 String name = sequenceFlow.getGeneral().getName().getValue();
                 String id = edge.getUUID();
                 String routeIdentifier = ( name != null && name.length() > 0 ) ? ( name + " : " + id ) : id;
-                values.put( routeIdentifier, routeIdentifier );
+                values.put( routeIdentifier,
+                            routeIdentifier );
             }
         }
-        return new SelectorData( values, null );
+        return new SelectorData( values,
+                                 null );
     }
 
     protected List<Edge> getGatewayOutEdges( FormRenderingContext context ) {

@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -27,11 +32,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-
-import javax.enterprise.context.Dependent;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -47,7 +47,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
  * In both cases the resulting coordinates are given from the coordinates of the visible element in the graph, which
  * is position is on bottom right rather than the others, plus a given <code>PADDING</code> anb some
  * error margin given by the <code>MARGIN</code> floating point.
- * <p>
+ * <p/>
  * TODO: This has to be refactored by the use of a good impl that achieve good dynamic layouts. Probably each
  * Definition Set / Diagram will require a different layout manager as well.
  */
@@ -60,6 +60,7 @@ public class CanvasLayoutUtils {
     private static final float MARGIN = 0.2f;
 
     public class LayoutBoundExceededException extends RuntimeException {
+
         private final double x;
         private final double y;
         private final double maxX;
@@ -74,12 +75,12 @@ public class CanvasLayoutUtils {
             this.maxX = maxX;
             this.maxY = maxY;
         }
-
     }
 
     public static boolean isCanvasRoot( final Diagram diagram,
                                         final Element parent ) {
-        return null != parent && isCanvasRoot( diagram, parent.getUUID() );
+        return null != parent && isCanvasRoot( diagram,
+                                               parent.getUUID() );
     }
 
     public static boolean isCanvasRoot( final Diagram diagram,
@@ -92,20 +93,33 @@ public class CanvasLayoutUtils {
     public double[] getNext( final CanvasHandler canvasHandler,
                              final double width,
                              final double height ) {
-        checkNotNull( "canvasHandler", canvasHandler );
+        checkNotNull( "canvasHandler",
+                      canvasHandler );
         final Bounds bounds = getGraphBounds( canvasHandler );
         final Bounds.Bound ul = bounds.getUpperLeft();
         final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
         if ( null != ruuid ) {
             Node root = canvasHandler.getDiagram().getGraph().getNode( ruuid );
-            return getNext( canvasHandler, root, width, height, ul.getX(), ul.getY() );
+            return getNext( canvasHandler,
+                            root,
+                            width,
+                            height,
+                            ul.getX(),
+                            ul.getY() );
         }
         final Iterable<Node> nodes = canvasHandler.getDiagram().getGraph().nodes();
         if ( null != nodes ) {
             final Bounds.Bound lr = bounds.getLowerRight();
             final List<Node<View<?>, Edge>> nodeList = new LinkedList<>();
             nodes.forEach( nodeList::add );
-            return getNext( canvasHandler, nodeList, width, height, ul.getX(), ul.getY(), lr.getX() - PADDING, lr.getY() - PADDING );
+            return getNext( canvasHandler,
+                            nodeList,
+                            width,
+                            height,
+                            ul.getX(),
+                            ul.getY(),
+                            lr.getX() - PADDING,
+                            lr.getY() - PADDING );
         }
         return new double[]{ ul.getX(), ul.getY() };
     }
@@ -116,11 +130,17 @@ public class CanvasLayoutUtils {
                              final double h,
                              final double minX,
                              final double minY ) {
-        checkNotNull( "canvasHandler", canvasHandler );
+        checkNotNull( "canvasHandler",
+                      canvasHandler );
         final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
         if ( null != ruuid ) {
             Node root = canvasHandler.getDiagram().getGraph().getNode( ruuid );
-            return getNext( canvasHandler, root, w, h, minX, minY );
+            return getNext( canvasHandler,
+                            root,
+                            w,
+                            h,
+                            minX,
+                            minY );
         }
         final Bounds bounds = getGraphBounds( canvasHandler );
         final Bounds.Bound lr = bounds.getLowerRight();
@@ -128,7 +148,14 @@ public class CanvasLayoutUtils {
         if ( null != nodes ) {
             final List<Node<View<?>, Edge>> nodeList = new LinkedList<>();
             nodes.forEach( nodeList::add );
-            return getNext( canvasHandler, nodeList, w, h, minX, minY, lr.getX() - PADDING, lr.getY() - PADDING );
+            return getNext( canvasHandler,
+                            nodeList,
+                            w,
+                            h,
+                            minX,
+                            minY,
+                            lr.getX() - PADDING,
+                            lr.getY() - PADDING );
         }
         return new double[]{ minX, minY };
     }
@@ -139,7 +166,12 @@ public class CanvasLayoutUtils {
         final double[] rootBounds = getBoundCoordinates( root.getContent() );
         final double[] size = GraphUtils.getSize( root.getContent() );
 
-        return getNext( canvasHandler, root, size[ 0 ], size[ 1 ], rootBounds[ 0 ], rootBounds[ 1 ] );
+        return getNext( canvasHandler,
+                        root,
+                        size[ 0 ],
+                        size[ 1 ],
+                        rootBounds[ 0 ],
+                        rootBounds[ 1 ] );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -149,8 +181,10 @@ public class CanvasLayoutUtils {
                              final double h,
                              final double minX,
                              final double minY ) {
-        checkNotNull( "canvasHandler", canvasHandler );
-        checkNotNull( "root", root );
+        checkNotNull( "canvasHandler",
+                      canvasHandler );
+        checkNotNull( "root",
+                      root );
         final List<Edge> outEdges = root.getOutEdges();
         if ( null != outEdges ) {
             final List<Node<View<?>, Edge>> nodes = new LinkedList<>();
@@ -162,14 +196,27 @@ public class CanvasLayoutUtils {
             } );
             if ( !nodes.isEmpty() ) {
                 final double[] rootBounds = getBoundCoordinates( root.getContent() );
-                final double[] n = getNext( canvasHandler, nodes, w, h, minX, minY,
-                        rootBounds[ 0 ] - PADDING, rootBounds[ 1 ] - PADDING );
+                final double[] n = getNext( canvasHandler,
+                                            nodes,
+                                            w,
+                                            h,
+                                            minX,
+                                            minY,
+                                            rootBounds[ 0 ] - PADDING,
+                                            rootBounds[ 1 ] - PADDING );
                 return new double[]{ n[ 0 ] + PADDING, n[ 1 ] };
             }
         }
         final Bounds bounds = getGraphBounds( canvasHandler );
         final Bounds.Bound lr = bounds.getLowerRight();
-        return check( minX, minY, w, h, minX, minY, lr.getX() - PADDING, lr.getY() - PADDING );
+        return check( minX,
+                      minY,
+                      w,
+                      h,
+                      minX,
+                      minY,
+                      lr.getX() - PADDING,
+                      lr.getY() - PADDING );
     }
 
     private double[] getNext( final CanvasHandler canvasHandler,
@@ -180,20 +227,32 @@ public class CanvasLayoutUtils {
                               final double minY,
                               final double maxX,
                               final double maxY ) {
-        checkNotNull( "canvasHandler", canvasHandler );
-        checkNotNull( "nodes", nodes );
+        checkNotNull( "canvasHandler",
+                      canvasHandler );
+        checkNotNull( "nodes",
+                      nodes );
         final double[] result = new double[]{ minX, minY };
         nodes.stream().forEach( node -> {
             final double[] coordinates = getAbsolute( node );
             result[ 0 ] = coordinates[ 0 ] >= result[ 0 ] ? coordinates[ 0 ] : result[ 0 ];
             result[ 1 ] = coordinates[ 1 ] >= result[ 1 ] ? coordinates[ 1 ] : result[ 1 ];
-            final double[] r = check( coordinates[ 0 ], coordinates[ 1 ], width, height, minX, minY, maxX, maxY );
+            final double[] r = check( coordinates[ 0 ],
+                                      coordinates[ 1 ],
+                                      width,
+                                      height,
+                                      minX,
+                                      minY,
+                                      maxX,
+                                      maxY );
             if ( ( coordinates[ 0 ] + width ) >= maxX ) {
                 result[ 0 ] = r[ 0 ];
                 result[ 1 ] = r[ 1 ];
             }
             if ( ( result[ 1 ] + height ) > maxX ) {
-                throw new LayoutBoundExceededException( result[ 0 ], result[ 1 ], maxX, maxY );
+                throw new LayoutBoundExceededException( result[ 0 ],
+                                                        result[ 1 ],
+                                                        maxX,
+                                                        maxY );
             }
         } );
         return result;
@@ -213,7 +272,10 @@ public class CanvasLayoutUtils {
             result[ 1 ] += y + PADDING;
         }
         if ( ( y + h ) > uy ) {
-            throw new LayoutBoundExceededException( result[ 0 ], result[ 1 ], ux, uy );
+            throw new LayoutBoundExceededException( result[ 0 ],
+                                                    result[ 1 ],
+                                                    ux,
+                                                    uy );
         }
         return new double[]{ result[ 0 ] + PADDING, result[ 1 ] };
     }
@@ -221,7 +283,9 @@ public class CanvasLayoutUtils {
     @SuppressWarnings( "unchecked" )
     private double[] getAbsolute( final Node<View<?>, Edge> root ) {
         final double[] pos = getBoundCoordinates( root.getContent() );
-        return getAbsolute( root, pos[ 0 ], pos[ 1 ] );
+        return getAbsolute( root,
+                            pos[ 0 ],
+                            pos[ 1 ] );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -233,7 +297,9 @@ public class CanvasLayoutUtils {
                 && parent instanceof Node
                 && parent.getContent() instanceof View ) {
             final double[] pos = getBoundCoordinates( ( View ) parent.getContent() );
-            return getAbsolute( ( Node<View<?>, Edge> ) parent, x + pos[ 0 ], y + pos[ 1 ] );
+            return getAbsolute( ( Node<View<?>, Edge> ) parent,
+                                x + pos[ 0 ],
+                                y + pos[ 1 ] );
         }
         return new double[]{ x, y };
     }
@@ -252,5 +318,4 @@ public class CanvasLayoutUtils {
         final Graph<DefinitionSet, ?> graph = canvasHandler.getDiagram().getGraph();
         return graph.getContent().getBounds();
     }
-
 }

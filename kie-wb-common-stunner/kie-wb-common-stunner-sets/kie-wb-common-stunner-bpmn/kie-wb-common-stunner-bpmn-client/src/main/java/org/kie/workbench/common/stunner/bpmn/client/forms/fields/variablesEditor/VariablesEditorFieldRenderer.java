@@ -105,32 +105,40 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     }
 
     @Override
-    public void setDataTypes( List<String> dataTypes, List<String> dataTypeDisplayNames ) {
+    public void setDataTypes( List<String> dataTypes,
+                              List<String> dataTypeDisplayNames ) {
         this.dataTypes = dataTypes;
         this.dataTypeDisplayNames = dataTypeDisplayNames;
-        this.mapDataTypeNamesToDisplayNames = createMapDataTypeNamesToDisplayNames( dataTypes, dataTypeDisplayNames );
-        this.mapDataTypeDisplayNamesToNames = createMapDataTypeDisplayNamesToNames( dataTypes, dataTypeDisplayNames );
-        dataTypeListBoxValues = new ListBoxValues( VariableListItemWidgetView.CUSTOM_PROMPT, "Edit" + " ", dataTypesTester() );
+        this.mapDataTypeNamesToDisplayNames = createMapDataTypeNamesToDisplayNames( dataTypes,
+                                                                                    dataTypeDisplayNames );
+        this.mapDataTypeDisplayNamesToNames = createMapDataTypeDisplayNamesToNames( dataTypes,
+                                                                                    dataTypeDisplayNames );
+        dataTypeListBoxValues = new ListBoxValues( VariableListItemWidgetView.CUSTOM_PROMPT,
+                                                   "Edit" + " ",
+                                                   dataTypesTester() );
         dataTypeListBoxValues.addValues( dataTypeDisplayNames );
         view.setVariablesDataTypes( dataTypeListBoxValues );
     }
 
-    private Map<String,String> createMapDataTypeNamesToDisplayNames( List<String> dataTypes, List<String> dataTypeDisplayNames ) {
-        Map<String,String> mapDataTypeNamesToDisplayNames = new HashMap<String, String>();
-        for ( int i = 0; i <  dataTypeDisplayNames.size(); i++ ) {
-            mapDataTypeNamesToDisplayNames.put( dataTypes.get( i ), dataTypeDisplayNames.get( i ) );
+    private Map<String, String> createMapDataTypeNamesToDisplayNames( List<String> dataTypes,
+                                                                      List<String> dataTypeDisplayNames ) {
+        Map<String, String> mapDataTypeNamesToDisplayNames = new HashMap<String, String>();
+        for ( int i = 0; i < dataTypeDisplayNames.size(); i++ ) {
+            mapDataTypeNamesToDisplayNames.put( dataTypes.get( i ),
+                                                dataTypeDisplayNames.get( i ) );
         }
         return mapDataTypeNamesToDisplayNames;
     }
 
-    private Map<String,String> createMapDataTypeDisplayNamesToNames( List<String> dataTypes, List<String> dataTypeDisplayNames ) {
-        Map<String,String> mapDataTypeDisplayNamesToNames = new HashMap<String, String>();
-        for ( int i = 0; i <  dataTypes.size(); i++ ) {
-            mapDataTypeDisplayNamesToNames.put( dataTypeDisplayNames.get( i ), dataTypes.get( i ) );
+    private Map<String, String> createMapDataTypeDisplayNamesToNames( List<String> dataTypes,
+                                                                      List<String> dataTypeDisplayNames ) {
+        Map<String, String> mapDataTypeDisplayNamesToNames = new HashMap<String, String>();
+        for ( int i = 0; i < dataTypes.size(); i++ ) {
+            mapDataTypeDisplayNamesToNames.put( dataTypeDisplayNames.get( i ),
+                                                dataTypes.get( i ) );
         }
         return mapDataTypeDisplayNamesToNames;
     }
-
 
     @Override
     public void notifyModelChanged() {
@@ -144,9 +152,12 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
             String[] vs = s.split( "," );
             for ( String v : vs ) {
                 if ( !v.isEmpty() ) {
-                    Variable var = Variable.deserialize( v, Variable.VariableType.PROCESS, dataTypes );
+                    Variable var = Variable.deserialize( v,
+                                                         Variable.VariableType.PROCESS,
+                                                         dataTypes );
                     if ( var != null && var.getName() != null && !var.getName().isEmpty() ) {
-                        variableRows.add( new VariableRow( var, mapDataTypeNamesToDisplayNames ) );
+                        variableRows.add( new VariableRow( var,
+                                                           mapDataTypeNamesToDisplayNames ) );
                     }
                 }
             }
@@ -159,7 +170,8 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         List<Variable> variables = new ArrayList<Variable>();
         for ( VariableRow row : variableRows ) {
             if ( row.getName() != null && row.getName().length() > 0 ) {
-                variables.add( new Variable( row, mapDataTypeDisplayNamesToNames ) );
+                variables.add( new Variable( row,
+                                             mapDataTypeDisplayNamesToNames ) );
             }
         }
         return StringUtils.getStringForList( variables );
@@ -167,7 +179,6 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     /**
      * Tests whether a Row name occurs more than once in the list of rows
-     *
      * @param name
      * @return
      */
@@ -199,7 +210,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     public ListBoxValues.ValueTester dataTypesTester() {
         return new ListBoxValues.ValueTester() {
             public String getNonCustomValueForUserString( String dataTypeDisplayName ) {
-                if ( mapDataTypeNamesToDisplayNames != null && mapDataTypeNamesToDisplayNames.containsKey( dataTypeDisplayName )) {
+                if ( mapDataTypeNamesToDisplayNames != null && mapDataTypeNamesToDisplayNames.containsKey( dataTypeDisplayName ) ) {
                     return mapDataTypeNamesToDisplayNames.get( dataTypeDisplayName );
                 } else {
                     return null;
@@ -207,5 +218,4 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
             }
         };
     }
-
 }

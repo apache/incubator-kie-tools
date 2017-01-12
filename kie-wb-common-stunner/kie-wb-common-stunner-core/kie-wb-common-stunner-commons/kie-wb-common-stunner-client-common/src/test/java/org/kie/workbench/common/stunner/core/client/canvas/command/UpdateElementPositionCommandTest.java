@@ -22,14 +22,14 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class UpdateElementPositionCommandTest extends AbstractCanvasCommandTest {
 
-    @Mock private Node candidate;
+    @Mock
+    private Node candidate;
 
     private UpdateElementPositionCommand tested;
 
@@ -38,7 +38,9 @@ public class UpdateElementPositionCommandTest extends AbstractCanvasCommandTest 
     public void setup() throws Exception {
         super.setup();
         when( candidate.getUUID() ).thenReturn( "uuid1" );
-        this.tested = new UpdateElementPositionCommand( candidate, 100d, 200d );
+        this.tested = new UpdateElementPositionCommand( candidate,
+                                                        100d,
+                                                        200d );
     }
 
     @Test
@@ -46,18 +48,22 @@ public class UpdateElementPositionCommandTest extends AbstractCanvasCommandTest 
         final org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand graphCommand =
                 ( org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand ) tested.newGraphCommand( canvasHandler );
         assertNotNull( graphCommand );
-        assertEquals( candidate, graphCommand.getNode() );
-        assertEquals( 100d, graphCommand.getX(), 0 );
-        assertEquals( 200d, graphCommand.getY(), 0 );
+        assertEquals( candidate,
+                      graphCommand.getNode() );
+        assertEquals( 100d,
+                      graphCommand.getX(),
+                      0 );
+        assertEquals( 200d,
+                      graphCommand.getY(),
+                      0 );
     }
-
 
     @Test
     public void testGetCanvasCommand() {
         final UpdateCanvasElementPositionCommand canvasCommand =
                 ( UpdateCanvasElementPositionCommand ) tested.newCanvasCommand( canvasHandler );
         assertNotNull( canvasCommand );
-        assertEquals( candidate, canvasCommand.getElement() );
+        assertEquals( candidate,
+                      canvasCommand.getElement() );
     }
-
 }

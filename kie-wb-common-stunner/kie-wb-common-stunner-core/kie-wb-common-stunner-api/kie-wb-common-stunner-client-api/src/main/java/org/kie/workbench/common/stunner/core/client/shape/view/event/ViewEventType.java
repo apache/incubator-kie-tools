@@ -18,8 +18,15 @@ package org.kie.workbench.common.stunner.core.client.shape.view.event;
 
 public enum ViewEventType {
     // Desktop.
-    MOUSE_CLICK, MOUSE_DBL_CLICK, MOUSE_MOVE, TEXT_OVER, TEXT_OUT, DRAG, RESIZE,
+    MOUSE_CLICK,
+    MOUSE_DBL_CLICK,
+    MOUSE_MOVE,
+    TEXT_OVER,
+    TEXT_OUT,
+    DRAG,
+    RESIZE,
 
     // Mobile.
-    TOUCH, GESTURE;
+    TOUCH,
+    GESTURE;
 }

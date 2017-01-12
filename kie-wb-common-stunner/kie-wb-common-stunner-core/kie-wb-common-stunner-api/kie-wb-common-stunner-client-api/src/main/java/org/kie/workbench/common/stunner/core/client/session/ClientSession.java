@@ -37,5 +37,4 @@ public interface ClientSession<C extends Canvas, H extends CanvasHandler> {
      * The canvas handler instance for this session.
      */
     H getCanvasHandler();
-
 }

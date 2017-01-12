@@ -26,10 +26,12 @@ import org.uberfire.backend.vfs.Path;
 @Portable
 public final class DiagramLookupRequestImpl extends AbstractLookupRequest implements DiagramLookupRequest {
 
-    public DiagramLookupRequestImpl( @MapsTo( "criteria" ) String criteria,
-                                     @MapsTo( "page" ) int page,
-                                     @MapsTo( "pageSize" ) int pageSize ) {
-        super( criteria, page, pageSize );
+    public DiagramLookupRequestImpl( final @MapsTo( "criteria" ) String criteria,
+                                     final @MapsTo( "page" ) int page,
+                                     final @MapsTo( "pageSize" ) int pageSize ) {
+        super( criteria,
+               page,
+               pageSize );
     }
 
     @NonPortable
@@ -48,8 +50,9 @@ public final class DiagramLookupRequestImpl extends AbstractLookupRequest implem
         }
 
         public DiagramLookupRequest build() {
-            return new DiagramLookupRequestImpl( criteria.toString(), page, pageSize );
+            return new DiagramLookupRequestImpl( criteria.toString(),
+                                                 page,
+                                                 pageSize );
         }
-
     }
 }

@@ -23,7 +23,8 @@ public final class LienzoShapeGlyph extends AbstractLienzoShapeGlyph {
     public LienzoShapeGlyph( final Group group,
                              final double width,
                              final double height ) {
-        super( group, width, height );
+        super( group,
+               width,
+               height );
     }
-
 }

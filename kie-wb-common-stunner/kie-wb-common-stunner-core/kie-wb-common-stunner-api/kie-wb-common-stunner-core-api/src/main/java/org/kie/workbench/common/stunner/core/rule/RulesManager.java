@@ -32,5 +32,4 @@ public interface RulesManager<C extends ContainmentRuleManager,
     E edgeCardinality();
 
     D docking();
-
 }

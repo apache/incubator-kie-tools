@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public abstract class AbstractCanvasCommandTest {
 

@@ -20,4 +20,5 @@ import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 
 @Remote
 public interface ProjectDiagramLookupService extends DiagramLookupService {
+
 }

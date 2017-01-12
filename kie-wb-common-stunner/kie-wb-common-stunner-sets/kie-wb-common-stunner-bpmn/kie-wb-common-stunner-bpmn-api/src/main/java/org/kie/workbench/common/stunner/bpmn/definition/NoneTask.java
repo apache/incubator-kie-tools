@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -37,8 +39,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ti
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
-
-import javax.validation.Valid;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
 
@@ -62,15 +62,18 @@ public class NoneTask extends BaseTask {
 
         @Override
         public NoneTask build() {
-            return new NoneTask(  new TaskGeneralSet(new Name( "Task" ), new Documentation( "" )),
-                    new EmptyTaskExecutionSet(),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet(),
-                    new RectangleDimensionsSet( WIDTH, HEIGHT ),
-                    new SimulationSet(),
-                    new TaskType( TaskTypes.NONE ) );
+            return new NoneTask( new TaskGeneralSet( new Name( "Task" ),
+                                                     new Documentation( "" ) ),
+                                 new EmptyTaskExecutionSet(),
+                                 new BackgroundSet( COLOR,
+                                                    BORDER_COLOR,
+                                                    BORDER_SIZE ),
+                                 new FontSet(),
+                                 new RectangleDimensionsSet( WIDTH,
+                                                             HEIGHT ),
+                                 new SimulationSet(),
+                                 new TaskType( TaskTypes.NONE ) );
         }
-
     }
 
     public NoneTask() {
@@ -84,7 +87,12 @@ public class NoneTask extends BaseTask {
                      @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
                      @MapsTo( "simulationSet" ) SimulationSet simulationSet,
                      @MapsTo( "taskType" ) TaskType taskType ) {
-        super( general, backgroundSet, fontSet, dimensionsSet, simulationSet, taskType );
+        super( general,
+               backgroundSet,
+               fontSet,
+               dimensionsSet,
+               simulationSet,
+               taskType );
         this.executionSet = executionSet;
     }
 

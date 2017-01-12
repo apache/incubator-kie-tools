@@ -15,12 +15,12 @@
 
 package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.AbstractMenuDevCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.util.StunnerLogger;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class LogGraphDevCommand extends AbstractMenuDevCommand {
@@ -43,5 +43,4 @@ public class LogGraphDevCommand extends AbstractMenuDevCommand {
     public void execute() {
         StunnerLogger.log( getGraph() );
     }
-
 }

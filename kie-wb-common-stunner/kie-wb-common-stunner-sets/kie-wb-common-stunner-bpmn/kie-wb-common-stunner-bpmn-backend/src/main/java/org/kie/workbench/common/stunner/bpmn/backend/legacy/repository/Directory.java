@@ -22,7 +22,9 @@ public class Directory {
     private String name;
     private String location;
 
-    public Directory( String uniqueId, String name, String location ) {
+    public Directory( String uniqueId,
+                      String name,
+                      String location ) {
         this.uniqueId = uniqueId;
         this.name = name;
         this.location = location;

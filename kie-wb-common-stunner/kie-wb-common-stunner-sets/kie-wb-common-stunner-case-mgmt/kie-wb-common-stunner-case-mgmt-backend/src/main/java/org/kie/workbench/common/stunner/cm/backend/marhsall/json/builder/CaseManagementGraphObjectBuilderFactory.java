@@ -36,5 +36,4 @@ public class CaseManagementGraphObjectBuilderFactory extends BPMNGraphObjectBuil
         super( definitionManager,
                oryxManager );
     }
-
 }

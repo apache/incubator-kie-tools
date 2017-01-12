@@ -22,27 +22,33 @@ import java.util.Set;
 
 public abstract class AbstractBindableAdapterGenerator extends AbstractAdapterGenerator {
 
-    protected void addFields( String fieldName, Map<String, Object> ctxt, Map<String, String> fieldsMap ) {
+    protected void addFields( final String fieldName,
+                              final Map<String, Object> ctxt,
+                              final Map<String, String> fieldsMap ) {
         List<ProcessingElement> fieldNamesList = toElements( fieldsMap );
         ctxt.put( fieldName + "Size",
-                fieldNamesList.size() );
+                  fieldNamesList.size() );
         ctxt.put( fieldName,
-                fieldNamesList );
+                  fieldNamesList );
     }
 
-    protected void addSetFields( String fieldName, Map<String, Object> ctxt, Map<String, Set<String>> fieldsMap ) {
+    protected void addSetFields( final String fieldName,
+                                 final Map<String, Object> ctxt,
+                                 final Map<String, Set<String>> fieldsMap ) {
         List<ProcessingElementSet> fieldNamesList = toElementSet( fieldsMap );
         ctxt.put( fieldName + "Size",
-                fieldNamesList.size() );
+                  fieldNamesList.size() );
         ctxt.put( fieldName,
-                fieldNamesList );
+                  fieldNamesList );
     }
 
-    protected void addMapFields( String fieldName, Map<String, Object> ctxt, Map<String, Map<String, String>> fieldsMap ) {
+    protected void addMapFields( final String fieldName,
+                                 final Map<String, Object> ctxt,
+                                 final Map<String, Map<String, String>> fieldsMap ) {
         List<ProcessingElementMap> fieldNamesList = toElementMap( fieldsMap );
         ctxt.put( fieldName + "Size",
-                fieldNamesList.size() );
+                  fieldNamesList.size() );
         ctxt.put( fieldName,
-                fieldNamesList );
+                  fieldNamesList );
     }
 }

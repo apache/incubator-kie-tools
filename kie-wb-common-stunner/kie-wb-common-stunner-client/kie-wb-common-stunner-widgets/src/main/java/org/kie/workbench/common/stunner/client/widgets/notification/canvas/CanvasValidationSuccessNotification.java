@@ -22,7 +22,9 @@ public final class CanvasValidationSuccessNotification extends AbstractNotificat
 
     public CanvasValidationSuccessNotification( final String uuid,
                                                 final CanvasNotificationContext context ) {
-        super( uuid, Type.INFO, "Validation successful", context );
+        super( uuid,
+               Type.INFO,
+               "Validation successful",
+               context );
     }
-
 }

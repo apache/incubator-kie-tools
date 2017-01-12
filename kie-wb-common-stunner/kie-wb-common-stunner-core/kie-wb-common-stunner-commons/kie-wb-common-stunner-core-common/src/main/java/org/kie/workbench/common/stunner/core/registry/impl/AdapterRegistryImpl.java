@@ -16,16 +16,27 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.kie.workbench.common.stunner.core.api.AbstractDefinitionManager;
-import org.kie.workbench.common.stunner.core.definition.adapter.*;
+import org.kie.workbench.common.stunner.core.definition.adapter.Adapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PriorityAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.exception.AdapterNotFoundException;
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 
-import java.util.*;
-import java.util.logging.Logger;
-
-public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Adapter> {
+public class AdapterRegistryImpl implements AdapterRegistry,
+                                            DynamicRegistry<Adapter> {
 
     private static Logger LOGGER = Logger.getLogger( AbstractDefinitionManager.class.getName() );
 
@@ -44,7 +55,8 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
                 return adapter;
             }
         }
-        return nullHandling( DefinitionSetAdapter.class, type );
+        return nullHandling( DefinitionSetAdapter.class,
+                             type );
     }
 
     @Override
@@ -55,7 +67,8 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
                 return adapter;
             }
         }
-        return nullHandling( DefinitionSetRuleAdapter.class, type );
+        return nullHandling( DefinitionSetRuleAdapter.class,
+                             type );
     }
 
     @Override
@@ -66,7 +79,8 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
                 return adapter;
             }
         }
-        return nullHandling( DefinitionAdapter.class, type );
+        return nullHandling( DefinitionAdapter.class,
+                             type );
     }
 
     @Override
@@ -77,7 +91,8 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
                 return adapter;
             }
         }
-        return nullHandling( PropertySetAdapter.class, type );
+        return nullHandling( PropertySetAdapter.class,
+                             type );
     }
 
     @Override
@@ -88,7 +103,8 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
                 return adapter;
             }
         }
-        return nullHandling( PriorityAdapter.class, type );
+        return nullHandling( PriorityAdapter.class,
+                             type );
     }
 
     @Override
@@ -97,9 +113,7 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
         for ( MorphAdapter adapter : morphAdapters ) {
             if ( adapter.accepts( type ) ) {
                 return adapter;
-
             }
-
         }
         return null;
     }
@@ -112,39 +126,31 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
             definitionSetAdapters.add( ( DefinitionSetAdapter ) item );
             sortAdapters( definitionSetAdapters );
             registered = true;
-
         } else if ( item instanceof DefinitionSetRuleAdapter ) {
             definitionSetRuleAdapters.add( ( DefinitionSetRuleAdapter ) item );
             sortAdapters( definitionSetRuleAdapters );
             registered = true;
-
         } else if ( item instanceof DefinitionAdapter ) {
             definitionAdapters.add( ( DefinitionAdapter ) item );
             sortAdapters( definitionAdapters );
             registered = true;
-
         } else if ( item instanceof PropertySetAdapter ) {
             propertySetAdapters.add( ( PropertySetAdapter ) item );
             sortAdapters( propertySetAdapters );
             registered = true;
-
         } else if ( item instanceof PropertyAdapter ) {
             propertyAdapters.add( ( PropertyAdapter ) item );
             sortAdapters( propertyAdapters );
             registered = true;
-
         } else if ( item instanceof MorphAdapter ) {
             morphAdapters.add( ( MorphAdapter ) item );
             registered = true;
-
         }
         if ( !registered ) {
             final String em = "Cannot register Adapter for type [" + item.getClass().getName() + "]. Type not supported.";
             LOGGER.severe( em );
             throw new IllegalArgumentException( em );
-
         }
-
     }
 
     @Override
@@ -152,22 +158,16 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
     public boolean contains( final Adapter item ) {
         if ( item instanceof DefinitionSetAdapter ) {
             return definitionSetAdapters.contains( item );
-
         } else if ( item instanceof DefinitionSetRuleAdapter ) {
             return definitionSetRuleAdapters.contains( item );
-
         } else if ( item instanceof DefinitionAdapter ) {
             return definitionAdapters.contains( item );
-
         } else if ( item instanceof PropertySetAdapter ) {
             return propertySetAdapters.contains( item );
-
         } else if ( item instanceof PropertyAdapter ) {
             return propertyAdapters.contains( item );
-
         } else if ( item instanceof MorphAdapter ) {
             return morphAdapters.contains( item );
-
         }
         return false;
     }
@@ -187,35 +187,30 @@ public class AdapterRegistryImpl implements AdapterRegistry, DynamicRegistry<Ada
     public boolean remove( final Adapter item ) {
         if ( item instanceof DefinitionSetAdapter ) {
             return definitionSetAdapters.remove( item );
-
         } else if ( item instanceof DefinitionSetRuleAdapter ) {
             return definitionSetRuleAdapters.remove( item );
-
         } else if ( item instanceof DefinitionAdapter ) {
             return definitionAdapters.remove( item );
-
         } else if ( item instanceof PropertySetAdapter ) {
             return propertySetAdapters.remove( item );
-
         } else if ( item instanceof PropertyAdapter ) {
             return propertyAdapters.remove( item );
-
         } else if ( item instanceof MorphAdapter ) {
             return morphAdapters.remove( item );
-
         }
         return false;
-
     }
 
-    private static <T extends PriorityAdapter> void sortAdapters( List<T> adapters ) {
-        Collections.sort( adapters, ( o1, o2 ) -> o1.getPriority() - o2.getPriority() );
+    private static <T extends PriorityAdapter> void sortAdapters( final List<T> adapters ) {
+        Collections.sort( adapters,
+                          ( o1, o2 ) -> o1.getPriority() - o2.getPriority() );
     }
 
-    private <T> T nullHandling( Class<? extends Adapter> adapterType, Class<?> type ) {
-        final AdapterNotFoundException exception = new AdapterNotFoundException( adapterType, type );
+    private <T> T nullHandling( final Class<? extends Adapter> adapterType,
+                                Class<?> type ) {
+        final AdapterNotFoundException exception = new AdapterNotFoundException( adapterType,
+                                                                                 type );
         LOGGER.severe( exception.getMessage() );
         throw exception;
     }
-
 }

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.Dependent;
@@ -32,7 +31,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import org.gwtbootstrap3.client.ui.Button;
@@ -57,7 +55,8 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 @Templated( "AssigneeEditorWidget.html#widget" )
-public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeEditorWidgetView, HasValue<String> {
+public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeEditorWidgetView,
+                                                                       HasValue<String> {
 
     ListBoxValues nameListBoxValues;
 
@@ -100,11 +99,13 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
 
     @Override
     public void setValue( String value ) {
-        setValue( value, false );
+        setValue( value,
+                  false );
     }
 
     @Override
-    public void setValue( String value, boolean fireEvents ) {
+    public void setValue( String value,
+                          boolean fireEvents ) {
         String oldValue = sAssignees;
         sAssignees = value;
         if ( names == null ) {
@@ -112,14 +113,17 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
         }
         initView();
         if ( fireEvents ) {
-            ValueChangeEvent.fireIfNotEqual( this, oldValue, sAssignees );
+            ValueChangeEvent.fireIfNotEqual( this,
+                                             oldValue,
+                                             sAssignees );
         }
     }
 
     @Override
     public void doSave() {
         String newValue = presenter.serializeAssignees( getAssigneeRows() );
-        setValue( newValue, true );
+        setValue( newValue,
+                  true );
     }
 
     protected void initView() {
@@ -129,12 +133,12 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
 
     @Override
     public HandlerRegistration addValueChangeHandler( ValueChangeHandler<String> handler ) {
-        return addHandler( handler, ValueChangeEvent.getType() );
+        return addHandler( handler,
+                           ValueChangeEvent.getType() );
     }
 
     /**
      * Tests whether a AssigneeRow name occurs more than once in the list of rows
-     *
      * @param name
      * @return
      */
@@ -218,7 +222,8 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
         ErrorCallback<Message> searchErrorCallback =
                 new ErrorCallback<Message>() {
                     @Override
-                    public boolean error( final Message message, final Throwable throwable ) {
+                    public boolean error( final Message message,
+                                          final Throwable throwable ) {
                         names = new ArrayList<String>();
                         presenter.setNames( names );
                         return false;
@@ -226,12 +231,18 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
                 };
 
         // Call backend service.
-        if (presenter.getType() == AssigneeType.USER) {
-            userSystemManager.users( searchResponseRemoteCallback, searchErrorCallback ).
-                    search( new SearchRequestImpl( "", 1, MAX_SEARCH_RESULTS ) );
+        if ( presenter.getType() == AssigneeType.USER ) {
+            userSystemManager.users( searchResponseRemoteCallback,
+                                     searchErrorCallback ).
+                    search( new SearchRequestImpl( "",
+                                                   1,
+                                                   MAX_SEARCH_RESULTS ) );
         } else {
-            userSystemManager.groups( searchResponseRemoteCallback, searchErrorCallback ).
-                    search( new SearchRequestImpl( "", 1, MAX_SEARCH_RESULTS ));
+            userSystemManager.groups( searchResponseRemoteCallback,
+                                      searchErrorCallback ).
+                    search( new SearchRequestImpl( "",
+                                                   1,
+                                                   MAX_SEARCH_RESULTS ) );
         }
     }
 
@@ -242,5 +253,4 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
             names.add( ( ( Group ) item ).getName() );
         }
     }
-
 }

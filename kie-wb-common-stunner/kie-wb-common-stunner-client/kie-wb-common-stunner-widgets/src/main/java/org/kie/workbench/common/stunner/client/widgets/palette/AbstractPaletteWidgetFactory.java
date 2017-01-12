@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
+import javax.enterprise.event.Event;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
@@ -25,8 +27,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildC
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.AbstractPaletteFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.DefaultDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
-
-import javax.enterprise.event.Event;
 
 public abstract class AbstractPaletteWidgetFactory<I extends PaletteDefinition, P extends PaletteWidget<I, ?>>
         extends AbstractPaletteFactory<I, P>
@@ -40,7 +40,10 @@ public abstract class AbstractPaletteWidgetFactory<I extends PaletteDefinition, 
                                          final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
                                          final P palette,
                                          final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent ) {
-        super( shapeManager, beanManager, defaultPaletteDefinitionFactoryInstance, palette );
+        super( shapeManager,
+               beanManager,
+               defaultPaletteDefinitionFactoryInstance,
+               palette );
         this.buildCanvasShapeEvent = buildCanvasShapeEvent;
     }
 
@@ -53,11 +56,18 @@ public abstract class AbstractPaletteWidgetFactory<I extends PaletteDefinition, 
     @Override
     protected void beforeBindPalette( final I paletteDefinition,
                                       final String shapeSetId ) {
-        super.beforeBindPalette( paletteDefinition, shapeSetId );
+        super.beforeBindPalette( paletteDefinition,
+                                 shapeSetId );
         if ( null != canvasHandler ) {
-            palette.onItemDrop( ( definition, factory, x, y ) ->
-                    buildCanvasShapeEvent.fire( new BuildCanvasShapeEvent( ( AbstractCanvasHandler ) canvasHandler,
-                            definition, factory, x, y ) ) );
+            palette.onItemDrop( ( definition,
+                                  factory,
+                                  x,
+                                  y ) ->
+                                        buildCanvasShapeEvent.fire( new BuildCanvasShapeEvent( ( AbstractCanvasHandler ) canvasHandler,
+                                                                                               definition,
+                                                                                               factory,
+                                                                                               x,
+                                                                                               y ) ) );
         }
     }
 }

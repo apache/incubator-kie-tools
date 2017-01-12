@@ -25,7 +25,8 @@ public class PictureShape<W> extends AbstractBasicShape<W, PictureShapeView, Pic
 
     public PictureShape( final PictureShapeView view,
                          final PictureShapeDef<W, ?> proxy ) {
-        super( view, proxy );
+        super( view,
+               proxy );
     }
 
     @Override
@@ -62,5 +63,4 @@ public class PictureShape<W> extends AbstractBasicShape<W, PictureShapeView, Pic
     public String toString() {
         return "PictureShape{}";
     }
-
 }

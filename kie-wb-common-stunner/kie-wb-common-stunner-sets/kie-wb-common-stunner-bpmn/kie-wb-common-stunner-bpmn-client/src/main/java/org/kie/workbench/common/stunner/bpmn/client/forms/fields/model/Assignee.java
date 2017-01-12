@@ -60,11 +60,11 @@ public class Assignee {
 
     /**
      * Deserializes an assignee
-     *
      * @param s
      * @return
      */
-    public static Assignee deserialize( String s, List<String> names ) {
+    public static Assignee deserialize( String s,
+                                        List<String> names ) {
         Assignee a = new Assignee();
         if ( names != null && names.contains( s ) ) {
             a.setName( s );

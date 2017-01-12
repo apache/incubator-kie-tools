@@ -69,40 +69,55 @@ public class SessionCommandManagerTest {
     @SuppressWarnings( "unchecked" )
     public void testExecuteSuccess() {
         when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        tested.execute( canvasHandler, command );
-        verify( commandRegistry, times( 1 ) ).register( command );
-        verify( commandRegistry, times( 0 ) ).peek();
-        verify( commandRegistry, times( 0 ) ).pop();
+        tested.execute( canvasHandler,
+                        command );
+        verify( commandRegistry,
+                times( 1 ) ).register( command );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 0 ) ).pop();
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecuteFailed() {
         when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.FAILED );
-        tested.execute( canvasHandler, command );
-        verify( commandRegistry, times( 0 ) ).register( command );
-        verify( commandRegistry, times( 0 ) ).peek();
-        verify( commandRegistry, times( 0 ) ).pop();
+        tested.execute( canvasHandler,
+                        command );
+        verify( commandRegistry,
+                times( 0 ) ).register( command );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 0 ) ).pop();
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testUndoSuccess() {
         when( command.undo( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        tested.undo( canvasHandler, command );
-        verify( commandRegistry, times( 1 ) ).pop();
-        verify( commandRegistry, times( 0 ) ).register( command );
-        verify( commandRegistry, times( 0 ) ).peek();
+        tested.undo( canvasHandler,
+                     command );
+        verify( commandRegistry,
+                times( 1 ) ).pop();
+        verify( commandRegistry,
+                times( 0 ) ).register( command );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testUndoFailed() {
         when( command.undo( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.FAILED );
-        tested.undo( canvasHandler, command );
-        verify( commandRegistry, times( 0 ) ).pop();
-        verify( commandRegistry, times( 0 ) ).register( command );
-        verify( commandRegistry, times( 0 ) ).peek();
+        tested.undo( canvasHandler,
+                     command );
+        verify( commandRegistry,
+                times( 0 ) ).pop();
+        verify( commandRegistry,
+                times( 0 ) ).register( command );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
     }
-
 }

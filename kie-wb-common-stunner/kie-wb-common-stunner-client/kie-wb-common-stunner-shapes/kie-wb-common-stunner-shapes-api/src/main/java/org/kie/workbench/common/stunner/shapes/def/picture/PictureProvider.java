@@ -20,6 +20,5 @@ import org.kie.workbench.common.stunner.core.client.ThumbProvider;
 
 public interface PictureProvider<S> extends ThumbProvider<S> {
 
-    SafeUri getThumbnailUri( S source );
-
+    SafeUri getThumbnailUri( final S source );
 }

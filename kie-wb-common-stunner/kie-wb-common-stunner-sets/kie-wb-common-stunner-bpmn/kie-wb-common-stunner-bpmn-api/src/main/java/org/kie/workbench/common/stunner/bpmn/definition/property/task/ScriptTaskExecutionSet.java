@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -26,8 +28,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-
-import javax.validation.Valid;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_SCRIPT;
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_SCRIPT_LANGUAGE;
@@ -56,7 +56,8 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
     protected ScriptLanguage scriptLanguage;
 
     public ScriptTaskExecutionSet() {
-        this( new Script( "" ), new ScriptLanguage( "" ) );
+        this( new Script( "" ),
+              new ScriptLanguage( "" ) );
     }
 
     public ScriptTaskExecutionSet( @MapsTo( "script" ) Script script,

@@ -73,13 +73,16 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         row.add( column );
         setTitle( StunnerFormsClientFieldsConstants.INSTANCE.Data_IO() );
         inputAssignmentsWidget.setVariableType( Variable.VariableType.INPUT );
-        inputAssignmentsWidget.setAllowDuplicateNames( false, StunnerFormsClientFieldsConstants.INSTANCE.A_Data_Input_with_this_name_already_exists() );
+        inputAssignmentsWidget.setAllowDuplicateNames( false,
+                                                       StunnerFormsClientFieldsConstants.INSTANCE.A_Data_Input_with_this_name_already_exists() );
         column.add( inputAssignmentsWidget.getWidget() );
         outputAssignmentsWidget.setVariableType( Variable.VariableType.OUTPUT );
-        outputAssignmentsWidget.setAllowDuplicateNames( true, "" );
+        outputAssignmentsWidget.setAllowDuplicateNames( true,
+                                                        "" );
         column.add( outputAssignmentsWidget.getWidget() );
         final Row btnRow = new Row();
-        btnRow.getElement().getStyle().setMarginTop( 10, Style.Unit.PX );
+        btnRow.getElement().getStyle().setMarginTop( 10,
+                                                     Style.Unit.PX );
         final Column btnColumn = new Column( ColumnSize.MD_12 );
         btnRow.add( btnColumn );
         btnSave = new Button( StunnerFormsClientFieldsConstants.INSTANCE.Save() );
@@ -174,34 +177,44 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     @Override
     public void setPossibleInputAssignmentsDataTypes( List<String> dataTypeDisplayNames ) {
-        ListBoxValues dataTypeListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CUSTOM_PROMPT, StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ", presenter.dataTypesTester() );
+        ListBoxValues dataTypeListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CUSTOM_PROMPT,
+                                                                 StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                 presenter.dataTypesTester() );
         dataTypeListBoxValues.addValues( dataTypeDisplayNames );
         inputAssignmentsWidget.setDataTypes( dataTypeListBoxValues );
     }
 
     @Override
     public void setPossibleOutputAssignmentsDataTypes( List<String> dataTypeDisplayNames ) {
-        ListBoxValues dataTypeListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CUSTOM_PROMPT, StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ", presenter.dataTypesTester() );
+        ListBoxValues dataTypeListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CUSTOM_PROMPT,
+                                                                 StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                 presenter.dataTypesTester() );
         dataTypeListBoxValues.addValues( dataTypeDisplayNames );
         outputAssignmentsWidget.setDataTypes( dataTypeListBoxValues );
     }
 
     @Override
     public void setInputAssignmentsProcessVariables( List<String> processVariables ) {
-        ListBoxValues processVarListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CONSTANT_PROMPT, StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ", presenter.processVarTester(), CONSTANT_MAX_DISPLAY_LENGTH );
+        ListBoxValues processVarListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CONSTANT_PROMPT,
+                                                                   StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                   presenter.processVarTester(),
+                                                                   CONSTANT_MAX_DISPLAY_LENGTH );
         processVarListBoxValues.addValues( processVariables );
         inputAssignmentsWidget.setProcessVariables( processVarListBoxValues );
     }
 
     @Override
     public void setOutputAssignmentsProcessVariables( List<String> processVariables ) {
-        ListBoxValues processVarListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CONSTANT_PROMPT, StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ", presenter.processVarTester() );
+        ListBoxValues processVarListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CONSTANT_PROMPT,
+                                                                   StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                   presenter.processVarTester() );
         processVarListBoxValues.addValues( processVariables );
         outputAssignmentsWidget.setProcessVariables( processVarListBoxValues );
     }
 
     @Override
     public void setInputAssignmentsDisallowedNames( Set<String> names ) {
-        inputAssignmentsWidget.setDisallowedNames( names, StunnerFormsClientFieldsConstants.INSTANCE.This_input_should_be_entered_as_a_property_for_the_task() );
+        inputAssignmentsWidget.setDisallowedNames( names,
+                                                   StunnerFormsClientFieldsConstants.INSTANCE.This_input_should_be_entered_as_a_property_for_the_task() );
     }
 }

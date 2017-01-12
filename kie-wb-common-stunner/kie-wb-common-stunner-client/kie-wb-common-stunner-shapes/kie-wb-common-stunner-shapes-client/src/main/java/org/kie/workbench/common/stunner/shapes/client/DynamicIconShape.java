@@ -21,31 +21,36 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.client.view.icon.dynamics.DynamicIconShapeView;
-import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.*;
+import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.DynamicIconShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.IconShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
+import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.MinusIconShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.PlusIconShapeDef;
+import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.XORIconShapeDef;
 
 public class DynamicIconShape<W> extends AbstractBasicDynamicShape<W, DynamicIconShapeView, IconShapeDef<W>> {
 
     public DynamicIconShape( final DynamicIconShapeView view,
                              final IconShapeDef<W> proxy ) {
-        super( view, proxy );
+        super( view,
+               proxy );
     }
 
     public static <T> Icons getIcon( final IconShapeDef<T> proxy ) {
-        return getIcon( null, proxy );
+        return getIcon( null,
+                        proxy );
     }
 
-    public static <T> Icons getIcon( final T definition, final IconShapeDef<T> proxy ) {
+    public static <T> Icons getIcon( final T definition,
+                                     final IconShapeDef<T> proxy ) {
         Icons icon = null;
         if ( null != definition && proxy instanceof DynamicIconShapeDef ) {
             final DynamicIconShapeDef<T> dynamicIconProxy = ( DynamicIconShapeDef<T> ) proxy;
             icon = dynamicIconProxy.getIcon( definition );
-
         } else if ( proxy instanceof MinusIconShapeDef ) {
             icon = Icons.MINUS;
-
         } else if ( proxy instanceof PlusIconShapeDef ) {
             icon = Icons.PLUS;
-
         } else if ( proxy instanceof XORIconShapeDef ) {
             icon = Icons.XOR;
         }
@@ -53,21 +58,25 @@ public class DynamicIconShape<W> extends AbstractBasicDynamicShape<W, DynamicIco
     }
 
     @Override
-    public void applyProperties( final Node<View<W>, Edge> element, final MutationContext mutationContext ) {
-        super.applyProperties( element, mutationContext );
+    public void applyProperties( final Node<View<W>, Edge> element,
+                                 final MutationContext mutationContext ) {
+        super.applyProperties( element,
+                               mutationContext );
         // Width/Height.
         final Double w = proxy.getWidth( getDefinition( element ) );
         final Double h = proxy.getHeight( getDefinition( element ) );
-        _applyWidthAndHeight( element, w, h, mutationContext );
+        _applyWidthAndHeight( element,
+                              w,
+                              h,
+                              mutationContext );
         // Icon.
-        Icons icon = getIcon( getDefinition( element ), proxy );
+        Icons icon = getIcon( getDefinition( element ),
+                              proxy );
         getShapeView().setIcon( icon );
-
     }
 
     @Override
     public String toString() {
         return "DynamicIconShape{}";
     }
-
 }

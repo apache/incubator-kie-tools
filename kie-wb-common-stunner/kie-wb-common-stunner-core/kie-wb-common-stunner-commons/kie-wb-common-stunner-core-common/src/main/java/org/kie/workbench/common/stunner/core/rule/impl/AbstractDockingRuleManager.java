@@ -26,5 +26,4 @@ public abstract class AbstractDockingRuleManager<A, B> extends AbstractRuleManag
     public boolean supports( final Rule rule ) {
         return rule instanceof DockingRule;
     }
-
 }

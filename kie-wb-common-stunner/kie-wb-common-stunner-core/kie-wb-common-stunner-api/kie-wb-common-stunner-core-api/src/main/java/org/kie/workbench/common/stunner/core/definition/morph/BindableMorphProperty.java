@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.definition.morph;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
 public abstract class BindableMorphProperty<P, V> implements MorphProperty<V> {
 
@@ -61,5 +61,4 @@ public abstract class BindableMorphProperty<P, V> implements MorphProperty<V> {
     protected String getDefinitionId( final Class<?> type ) {
         return BindableAdapterUtils.getDefinitionId( type );
     }
-
 }

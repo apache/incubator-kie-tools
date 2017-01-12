@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ToolbarCommandFactory;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.item.AbstractToolbarItem;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class ToolbarFactory {
@@ -36,7 +36,9 @@ public class ToolbarFactory {
     private ToolbarImpl toolbar;
 
     protected ToolbarFactory() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
@@ -112,7 +114,8 @@ public class ToolbarFactory {
     @SuppressWarnings( "unchecked" )
     private Toolbar getCurrent() {
         if ( null == toolbar ) {
-            toolbar = new ToolbarImpl( toolbarItems, view.get() );
+            toolbar = new ToolbarImpl( toolbarItems,
+                                       view.get() );
         }
         return toolbar;
     }

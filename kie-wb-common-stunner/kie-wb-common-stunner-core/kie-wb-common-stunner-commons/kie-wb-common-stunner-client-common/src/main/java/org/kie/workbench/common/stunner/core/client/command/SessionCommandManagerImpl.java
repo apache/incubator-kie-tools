@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -23,9 +26,6 @@ import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CommandRegistryListener;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 /**
  * The default session command manager implementation.

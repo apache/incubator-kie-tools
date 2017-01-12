@@ -27,6 +27,5 @@ public interface TypeDefinitionSetRegistry<T> extends DefinitionSetRegistry<T> {
      * @param type The Definition Set's type criteria.
      * @return The Definition Set of type <code>T</code> that this registry contains, <code>null</code> otherwise.
      */
-    T getDefinitionSetByType( Class<?> type );
-
+    T getDefinitionSetByType( final Class<?> type );
 }

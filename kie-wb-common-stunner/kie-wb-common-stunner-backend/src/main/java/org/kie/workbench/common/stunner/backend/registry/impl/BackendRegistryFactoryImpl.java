@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.backend.registry.impl;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.backend.registry.impl.AbstractBackendRegistryFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class BackendRegistryFactoryImpl extends AbstractBackendRegistryFactory implements BackendRegistryFactory {
@@ -34,5 +34,4 @@ public class BackendRegistryFactoryImpl extends AbstractBackendRegistryFactory i
     public BackendRegistryFactoryImpl( final AdapterManager adapterManager ) {
         super( adapterManager );
     }
-
 }

@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
@@ -31,13 +38,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -55,7 +55,9 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
     private final CanvasCommandFactory canvasCommandFactory;
 
     protected DeleteSelectionSessionCommand() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
@@ -69,8 +71,9 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
     }
 
     @Override
-    public <T> void execute( Callback<T> callback ) {
-        checkNotNull( "callback", callback );
+    public <T> void execute( final Callback<T> callback ) {
+        checkNotNull( "callback",
+                      callback );
         if ( null != getSession().getSelectionControl() ) {
             final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
             final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
@@ -81,24 +84,30 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
                     if ( element == null ) {
                         element = canvasHandler.getGraphIndex().getEdge( selectedItemUUID );
                         if ( element != null ) {
-                            log( Level.FINE, "Deleting edge with id " + element.getUUID() );
-                            sessionCommandManager.execute( canvasHandler, canvasCommandFactory.deleteConnector( ( Edge ) element ) );
+                            log( Level.FINE,
+                                 "Deleting edge with id " + element.getUUID() );
+                            sessionCommandManager.execute( canvasHandler,
+                                                           canvasCommandFactory.deleteConnector( ( Edge ) element ) );
                         }
                     } else {
-                        log( Level.FINE, "Deleting node with id " + element.getUUID() );
-                        sessionCommandManager.execute( canvasHandler, canvasCommandFactory.deleteNode( ( Node ) element ) );
+                        log( Level.FINE,
+                             "Deleting node with id " + element.getUUID() );
+                        sessionCommandManager.execute( canvasHandler,
+                                                       canvasCommandFactory.deleteNode( ( Node ) element ) );
                     }
                 } );
             } else {
-                log( Level.FINE, "Cannot delete element, no element selected on canvas." );
+                log( Level.FINE,
+                     "Cannot delete element, no element selected on canvas." );
             }
             // Run the callback.
             callback.onSuccess( null );
         }
     }
 
-    void onKeyDownEvent( @Observes KeyDownEvent keyDownEvent ) {
-        checkNotNull( "keyDownEvent", keyDownEvent );
+    void onKeyDownEvent( final @Observes KeyDownEvent keyDownEvent ) {
+        checkNotNull( "keyDownEvent",
+                      keyDownEvent );
         final KeyboardEvent.Key key = keyDownEvent.getKey();
         final boolean isDeleteKey = null != key && KeyboardEvent.Key.DELETE.equals( key );
         final boolean isSameSession = null != getSession()
@@ -112,16 +121,19 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
 
                 @Override
                 public void onError( final ClientRuntimeError error ) {
-                    LOGGER.log( Level.SEVERE, "Error while trying to delete selected items. " +
-                            "Message=[" + error.toString() + "]", error.getThrowable() );
+                    LOGGER.log( Level.SEVERE,
+                                "Error while trying to delete selected items. Message=[" + error.toString() + "]",
+                                error.getThrowable() );
                 }
             } );
         }
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

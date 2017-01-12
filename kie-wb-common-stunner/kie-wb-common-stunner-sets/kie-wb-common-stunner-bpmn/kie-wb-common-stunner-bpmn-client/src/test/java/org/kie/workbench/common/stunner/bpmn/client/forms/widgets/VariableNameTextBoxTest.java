@@ -85,9 +85,14 @@ public class VariableNameTextBoxTest {
     public void init() {
         GwtMockito.initMocks( this );
         textBox = GWT.create( VariableNameTextBox.class );
-        doCallRealMethod().when( textBox ).setRegExp( anyString(), anyString(), anyString() );
-        doCallRealMethod().when( textBox ).setInvalidValues( anySet(), anyBoolean(), anyString() );
-        doCallRealMethod().when( textBox ).isValidValue( anyString(), anyBoolean() );
+        doCallRealMethod().when( textBox ).setRegExp( anyString(),
+                                                      anyString(),
+                                                      anyString() );
+        doCallRealMethod().when( textBox ).setInvalidValues( anySet(),
+                                                             anyBoolean(),
+                                                             anyString() );
+        doCallRealMethod().when( textBox ).isValidValue( anyString(),
+                                                         anyBoolean() );
         doCallRealMethod().when( textBox ).setText( anyString() );
         doCallRealMethod().when( textBox ).testForInvalidValue( anyString() );
         doCallRealMethod().when( textBox ).makeValidValue( anyString() );
@@ -96,12 +101,16 @@ public class VariableNameTextBoxTest {
         doCallRealMethod().when( textBox ).setup();
         doCallRealMethod().when( textBox ).addBlurHandler( any( BlurHandler.class ) );
         doCallRealMethod().when( textBox ).addKeyPressHandler( any( KeyPressHandler.class ) );
-        textBox.setRegExp( ALPHA_NUM_REGEXP, ERROR_REMOVED, ERROR_TYPED );
+        textBox.setRegExp( ALPHA_NUM_REGEXP,
+                           ERROR_REMOVED,
+                           ERROR_TYPED );
         INVALID_VALUES.clear();
         INVALID_VALUES.add( "abc" );
         INVALID_VALUES.add( "CdE" );
         INVALID_VALUES.add( "a#$%1" );
-        textBox.setInvalidValues( INVALID_VALUES, caseSensitive, ERROR_MESSAGE );
+        textBox.setInvalidValues( INVALID_VALUES,
+                                  caseSensitive,
+                                  ERROR_MESSAGE );
     }
 
     @Test
@@ -115,64 +124,99 @@ public class VariableNameTextBoxTest {
         when( textBox.getValue() ).thenReturn( "ab12" );
         when( textBox.getText() ).thenReturn( "ab12@" );
         textBox.setup();
-        verify( textBox, times( 1 ) ).addBlurHandler( blurCaptor.capture() );
-        verify( textBox, times( 1 ) ).addKeyPressHandler( keyPressCaptor.capture() );
+        verify( textBox,
+                times( 1 ) ).addBlurHandler( blurCaptor.capture() );
+        verify( textBox,
+                times( 1 ) ).addKeyPressHandler( keyPressCaptor.capture() );
         BlurHandler blurHandler = blurCaptor.getValue();
         blurHandler.onBlur( blurEvent );
-        verify( textBox, times( 1 ) ).isValidValue( "ab12@", true );
-        verify( textBox, times( 1 ) ).makeValidValue( "ab12@" );
-        verify( textBox, times( 1 ) ).setValue( "ab12" );
+        verify( textBox,
+                times( 1 ) ).isValidValue( "ab12@",
+                                           true );
+        verify( textBox,
+                times( 1 ) ).makeValidValue( "ab12@" );
+        verify( textBox,
+                times( 1 ) ).setValue( "ab12" );
         KeyPressHandler keyPressHandler = keyPressCaptor.getValue();
         keyPressHandler.onKeyPress( keyPressEvent );
-        verify( keyPressEvent, times( 1 ) ).preventDefault();
-        verify( textBox, times( 1 ) ).isValidValue( "ab12@", false );
-        verify( textBox, times( 1 ) ).fireValidationError( ERROR_REMOVED + ": @" );
-        verify( textBox, times( 1 ) ).fireValidationError( ERROR_TYPED + ": @" );
+        verify( keyPressEvent,
+                times( 1 ) ).preventDefault();
+        verify( textBox,
+                times( 1 ) ).isValidValue( "ab12@",
+                                           false );
+        verify( textBox,
+                times( 1 ) ).fireValidationError( ERROR_REMOVED + ": @" );
+        verify( textBox,
+                times( 1 ) ).fireValidationError( ERROR_TYPED + ": @" );
     }
 
     @Test
     public void testMakeValid() {
         String makeValidResult;
         makeValidResult = textBox.makeValidValue( null );
-        assertEquals( "", makeValidResult );
+        assertEquals( "",
+                      makeValidResult );
         makeValidResult = textBox.makeValidValue( "" );
-        assertEquals( "", makeValidResult );
+        assertEquals( "",
+                      makeValidResult );
         makeValidResult = textBox.makeValidValue( "aBc" );
         if ( caseSensitive ) {
-            assertEquals( "aBc", makeValidResult );
+            assertEquals( "aBc",
+                          makeValidResult );
         } else {
-            assertEquals( "", makeValidResult );
+            assertEquals( "",
+                          makeValidResult );
         }
         makeValidResult = textBox.makeValidValue( "CdE" );
-        assertEquals( "", makeValidResult );
+        assertEquals( "",
+                      makeValidResult );
         makeValidResult = textBox.makeValidValue( "c" );
-        assertEquals( "c", makeValidResult );
+        assertEquals( "c",
+                      makeValidResult );
         makeValidResult = textBox.makeValidValue( "a#b$2%1" );
-        assertEquals( "ab21", makeValidResult );
+        assertEquals( "ab21",
+                      makeValidResult );
     }
 
     @Test
     public void testIsValidValue() {
         String isValidResult;
-        isValidResult = textBox.isValidValue( "a", true );
-        assertEquals( null, isValidResult );
-        isValidResult = textBox.isValidValue( "a", false );
-        assertEquals( null, isValidResult );
-        isValidResult = textBox.isValidValue( "aBc", true );
+        isValidResult = textBox.isValidValue( "a",
+                                              true );
+        assertEquals( null,
+                      isValidResult );
+        isValidResult = textBox.isValidValue( "a",
+                                              false );
+        assertEquals( null,
+                      isValidResult );
+        isValidResult = textBox.isValidValue( "aBc",
+                                              true );
         if ( caseSensitive ) {
-            assertEquals( null, isValidResult );
+            assertEquals( null,
+                          isValidResult );
         } else {
-            assertEquals( ERROR_MESSAGE, isValidResult );
+            assertEquals( ERROR_MESSAGE,
+                          isValidResult );
         }
-        isValidResult = textBox.isValidValue( "aBc", false );
-        assertEquals( null, isValidResult );
-        isValidResult = textBox.isValidValue( "CdE", true );
-        assertEquals( ERROR_MESSAGE, isValidResult );
-        isValidResult = textBox.isValidValue( "CdE", false );
-        assertEquals( null, isValidResult );
-        isValidResult = textBox.isValidValue( "a#$%1", true );
-        assertEquals( ERROR_MESSAGE, isValidResult );
-        isValidResult = textBox.isValidValue( "a#$%1", false );
-        assertEquals( ERROR_TYPED + ": #$%", isValidResult );
+        isValidResult = textBox.isValidValue( "aBc",
+                                              false );
+        assertEquals( null,
+                      isValidResult );
+        isValidResult = textBox.isValidValue( "CdE",
+                                              true );
+        assertEquals( ERROR_MESSAGE,
+                      isValidResult );
+        isValidResult = textBox.isValidValue( "CdE",
+                                              false );
+        assertEquals( null,
+                      isValidResult );
+        isValidResult = textBox.isValidValue( "a#$%1",
+                                              true );
+        assertEquals( ERROR_MESSAGE,
+                      isValidResult );
+        isValidResult = textBox.isValidValue( "a#$%1",
+                                              false );
+        assertEquals( ERROR_TYPED + ": #$%",
+                      isValidResult );
     }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import javax.enterprise.event.Event;
+
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenErrorView;
@@ -28,8 +30,6 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
-
-import javax.enterprise.event.Event;
 
 class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResourceType> {
 
@@ -47,9 +47,20 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
                                      ClientSessionUtils sessionUtils,
                                      SessionCommandFactory sessionCommandFactory,
                                      ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder ) {
-        super( view, placeManager, errorPopupPresenter, changeTitleNotificationEvent, savePopUpPresenter,
-                resourceType, projectDiagramServices, clientSessionManager, clientSessionPresenter, editorErrorView,
-                paletteFactory, sessionUtils, sessionCommandFactory, menuItemsBuilder );
+        super( view,
+               placeManager,
+               errorPopupPresenter,
+               changeTitleNotificationEvent,
+               savePopUpPresenter,
+               resourceType,
+               projectDiagramServices,
+               clientSessionManager,
+               clientSessionPresenter,
+               editorErrorView,
+               paletteFactory,
+               sessionUtils,
+               sessionCommandFactory,
+               menuItemsBuilder );
     }
 
     @Override

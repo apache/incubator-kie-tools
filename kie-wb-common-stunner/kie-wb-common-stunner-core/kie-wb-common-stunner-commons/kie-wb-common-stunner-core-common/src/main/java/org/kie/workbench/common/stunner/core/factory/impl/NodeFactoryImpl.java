@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -27,10 +31,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Set;
 
 @ApplicationScoped
 public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<Object>, Node<Definition<Object>, Edge>>
@@ -58,8 +58,11 @@ public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<O
                                                  final Object definition ) {
         final NodeImpl node = new NodeImpl<>( uuid );
         if ( null != definition ) {
-            final Bounds bounds = definitionUtils.buildBounds( definition, 0d, 0d );
-            View<Object> content = new ViewImpl<>( definition, bounds );
+            final Bounds bounds = definitionUtils.buildBounds( definition,
+                                                               0d,
+                                                               0d );
+            View<Object> content = new ViewImpl<>( definition,
+                                                   bounds );
             node.setContent( content );
             node.getLabels().addAll( getLabels( definition ) );
         }

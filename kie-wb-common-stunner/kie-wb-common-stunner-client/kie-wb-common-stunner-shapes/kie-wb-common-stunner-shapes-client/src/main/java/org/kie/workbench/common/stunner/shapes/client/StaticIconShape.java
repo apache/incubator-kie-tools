@@ -28,29 +28,33 @@ public class StaticIconShape<W> extends AbstractBasicShape<W, StaticIconShapeVie
 
     public StaticIconShape( final StaticIconShapeView view,
                             final IconShapeDef<W> proxy ) {
-        super( view, proxy );
+        super( view,
+               proxy );
     }
 
     public static <T> Icons getIcon( final IconShapeDef<T> proxy ) {
-        return getIcon( null, proxy );
+        return getIcon( null,
+                        proxy );
     }
 
-    public static <T> Icons getIcon( final T definition, final IconShapeDef<T> proxy ) {
+    public static <T> Icons getIcon( final T definition,
+                                     final IconShapeDef<T> proxy ) {
         Icons icon = null;
         if ( null != definition ) {
             return proxy.getIcon( definition );
-
         }
         return icon;
     }
 
     @Override
-    public void applyProperties( final Node<View<W>, Edge> element, final MutationContext mutationContext ) {
-        super.applyProperties( element, mutationContext );
+    public void applyProperties( final Node<View<W>, Edge> element,
+                                 final MutationContext mutationContext ) {
+        super.applyProperties( element,
+                               mutationContext );
         // Icon.
-        Icons icon = getIcon( getDefinition( element ), proxy );
+        Icons icon = getIcon( getDefinition( element ),
+                              proxy );
         getShapeView().setIcon( icon );
-
     }
 
     @Override
@@ -87,5 +91,4 @@ public class StaticIconShape<W> extends AbstractBasicShape<W, StaticIconShapeVie
     public String toString() {
         return "StaticIconShape{}";
     }
-
 }

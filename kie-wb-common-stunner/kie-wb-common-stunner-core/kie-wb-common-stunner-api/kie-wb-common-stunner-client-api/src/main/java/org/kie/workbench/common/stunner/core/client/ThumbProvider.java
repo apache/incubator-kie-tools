@@ -19,6 +19,5 @@ public interface ThumbProvider<S> {
 
     Class<S> getSourceType();
 
-    boolean thumbFor( S source );
-
+    boolean thumbFor( final S source );
 }

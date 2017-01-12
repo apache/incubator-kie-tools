@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.AbstractMenuDevCommand;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class AbstractSelectionDevCommand extends AbstractMenuDevCommand {
 
@@ -54,11 +54,12 @@ public abstract class AbstractSelectionDevCommand extends AbstractMenuDevCommand
                 }
             }
             if ( !found ) {
-                LOGGER.log( Level.WARNING, "No item selected." );
+                LOGGER.log( Level.WARNING,
+                            "No item selected." );
             }
         } catch ( final ClassCastException e ) {
-            LOGGER.log( Level.WARNING, "Session is not an instance of ClientFullSession" );
+            LOGGER.log( Level.WARNING,
+                        "Session is not an instance of ClientFullSession" );
         }
     }
-
 }

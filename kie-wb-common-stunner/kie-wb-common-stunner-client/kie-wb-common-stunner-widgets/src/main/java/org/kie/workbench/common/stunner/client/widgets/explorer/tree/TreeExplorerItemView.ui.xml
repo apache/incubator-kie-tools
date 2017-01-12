@@ -23,10 +23,12 @@
     .left {
       margin-right: 5px;
     }
+
     .name {
       font-weight: bold;
       font-size: larger;
     }
+
     .uuid {
       font-size: smaller;
     }
@@ -35,11 +37,11 @@
   <g:HorizontalPanel>
 
     <g:SimplePanel ui:field="glyphPanel" addStyleNames="{style.left}"/>
-    
+
     <b:Heading size="H6" ui:field="name" addStyleNames="{style.left} {style.name}"/>
-    
+
     <g:HTML ui:field="uuid" addStyleNames="{style.uuid}"/>
-    
+
   </g:HorizontalPanel>
 
 </ui:UiBinder>

@@ -36,7 +36,6 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 /**
  * A session that provides controls which can potentially update or modify the session's diagram structure/metadata.
- *
  * @param <C> The canvas.
  * @param <H> The canvas handler.
  */

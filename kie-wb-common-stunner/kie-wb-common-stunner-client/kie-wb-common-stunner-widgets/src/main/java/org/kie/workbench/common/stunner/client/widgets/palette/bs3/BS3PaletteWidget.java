@@ -24,8 +24,7 @@ import org.kie.workbench.common.stunner.core.client.components.views.FloatingVie
 
 public interface BS3PaletteWidget extends PaletteWidget<DefinitionSetPalette, BS3PaletteWidgetView> {
 
-    BS3PaletteWidget setViewFactory( BS3PaletteViewFactory viewFactory );
+    BS3PaletteWidget setViewFactory( final BS3PaletteViewFactory viewFactory );
 
     FloatingView<IsWidget> getFloatingView();
-
 }

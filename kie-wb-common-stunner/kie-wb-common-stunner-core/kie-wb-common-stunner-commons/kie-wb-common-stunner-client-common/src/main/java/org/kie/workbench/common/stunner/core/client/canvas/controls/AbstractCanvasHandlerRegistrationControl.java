@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
@@ -23,10 +27,6 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.kie.workbench.common.stunner.core.graph.Element;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractCanvasHandlerControl
         implements CanvasRegistationControl<AbstractCanvasHandler, Element> {
@@ -37,8 +37,10 @@ public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractC
         // Do nothing by default.
     }
 
-    protected void registerHandler( String uuid, ViewHandler<?> handler ) {
-        handlers.put( uuid, handler );
+    protected void registerHandler( final String uuid,
+                                    final ViewHandler<?> handler ) {
+        handlers.put( uuid,
+                      handler );
     }
 
     @Override
@@ -61,7 +63,8 @@ public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractC
     protected void deregister( final String uuid ) {
         final Shape shape = canvasHandler.getCanvas().getShape( uuid );
         final ViewHandler<?> handler = handlers.get( uuid );
-        doDeregisterHandler( shape, handler );
+        doDeregisterHandler( shape,
+                             handler );
     }
 
     private void doDeregisterHandler( final Shape shape,

@@ -24,7 +24,8 @@ public abstract class AbstractLookupManager<I, T, R extends LookupManager.Lookup
 
     protected abstract List<I> getItems( R request );
 
-    protected abstract boolean matches( String criteria, I item );
+    protected abstract boolean matches( String criteria,
+                                        I item );
 
     protected abstract T buildResult( I item );
 
@@ -40,7 +41,8 @@ public abstract class AbstractLookupManager<I, T, R extends LookupManager.Lookup
                 // Criteria filtering.
                 List<I> result = new LinkedList<>();
                 for ( I item : items ) {
-                    if ( matches( criteria, item ) ) {
+                    if ( matches( criteria,
+                                  item ) ) {
                         result.add( item );
                     }
                 }
@@ -50,26 +52,31 @@ public abstract class AbstractLookupManager<I, T, R extends LookupManager.Lookup
                 }
                 final int to = result.size() < ( from + pageSize ) ? result.size() : ( from + pageSize );
                 // Apply pagination.
-                result = result.subList( from, to );
+                result = result.subList( from,
+                                         to );
                 // Build results.
                 List<T> representations = new LinkedList<>();
                 for ( I item : result ) {
                     T rep = buildResult( item );
                     representations.add( rep );
                 }
-                return new LookupResponseImpl<T>( representations, representations.size(),
-                        items.size() > to, request.getCriteria(), request.getPage(), request.getPageSize() );
-
+                return new LookupResponseImpl<T>( representations,
+                                                  representations.size(),
+                                                  items.size() > to,
+                                                  request.getCriteria(),
+                                                  request.getPage(),
+                                                  request.getPageSize() );
             }
-
         }
         return buildEmptyResponse( request );
     }
 
     protected LookupResponse<T> buildEmptyResponse( final R request ) {
         return new LookupResponseImpl<T>( new ArrayList<T>(),
-                0, false, request.getCriteria(), request.getPage(), request.getPageSize() );
-
+                                          0,
+                                          false,
+                                          request.getCriteria(),
+                                          request.getPage(),
+                                          request.getPageSize() );
     }
-
 }

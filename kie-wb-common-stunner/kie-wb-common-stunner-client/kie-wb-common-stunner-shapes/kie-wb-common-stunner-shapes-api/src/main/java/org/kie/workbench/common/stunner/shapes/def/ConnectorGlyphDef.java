@@ -28,5 +28,4 @@ public abstract class ConnectorGlyphDef<W> implements GlyphDef<W> {
     public Class<?> getType() {
         return ConnectorGlyphDef.class;
     }
-
 }

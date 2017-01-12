@@ -37,7 +37,7 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
         <#list nameFieldNames as nameFieldName>
             put( ${nameFieldName.className}.class, "${nameFieldName.methodName}" );
         </#list>
-    
+
     }};
 
     private static final Map<Class, Set<String>> propertiesFieldNames = new HashMap<Class, Set<String>>(${propertiesFieldNamesSize}) {{

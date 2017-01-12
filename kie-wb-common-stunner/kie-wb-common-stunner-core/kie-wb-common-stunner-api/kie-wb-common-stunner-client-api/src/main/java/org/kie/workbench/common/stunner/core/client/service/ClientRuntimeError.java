@@ -23,15 +23,18 @@ public class ClientRuntimeError {
     private String message;
     private Throwable throwable;
 
-    public ClientRuntimeError( String message ) {
-        this( message, null );
+    public ClientRuntimeError( final String message ) {
+        this( message,
+              null );
     }
 
-    public ClientRuntimeError( Throwable e ) {
-        this( null, e );
+    public ClientRuntimeError( final Throwable e ) {
+        this( null,
+              e );
     }
 
-    public ClientRuntimeError( String message, Throwable e ) {
+    public ClientRuntimeError( final String message,
+                               final Throwable e ) {
         this.message = message;
         this.throwable = e;
     }

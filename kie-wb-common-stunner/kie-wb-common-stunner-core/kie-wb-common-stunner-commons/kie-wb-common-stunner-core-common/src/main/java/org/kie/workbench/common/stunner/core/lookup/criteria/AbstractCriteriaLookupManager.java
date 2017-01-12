@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.lookup.criteria;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
-
-import java.util.*;
-import java.util.logging.Logger;
 
 public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManager.LookupRequest>
         extends AbstractLookupManager<I, T, R> {
@@ -33,14 +37,19 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
     protected static final String COLLECTION_END_CHAR = "]";
     protected static final String COLLECTION_DELIMITER = ",";
 
-    protected abstract boolean matches( String key, String value, I item );
+    protected abstract boolean matches( final String key,
+                                        final String value,
+                                        final I item );
 
     @Override
-    protected boolean matches( final String criteria, final I item ) {
+    protected boolean matches( final String criteria,
+                               final I item ) {
         final Map<String, String> criterias = parseCriteria( criteria );
         if ( null != criterias ) {
             for ( final Map.Entry<String, String> entry : criterias.entrySet() ) {
-                if ( !matches( entry.getKey(), entry.getValue(), item ) ) {
+                if ( !matches( entry.getKey(),
+                               entry.getValue(),
+                               item ) ) {
                     return false;
                 }
             }
@@ -56,7 +65,8 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
             for ( String c : criterias ) {
                 final String[] pair = parseCriteriaPair( c );
                 if ( null != pair ) {
-                    result.put( pair[ 0 ], pair[ 1 ] );
+                    result.put( pair[ 0 ],
+                                pair[ 1 ] );
                 }
             }
             return result;
@@ -81,9 +91,9 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
     protected Set<String> toSet( final String s ) {
         if ( s != null && !s.startsWith( COLLECTION_START_CHAR ) ) {
             return new HashSet<>( 0 );
-
         } else if ( s != null && s.startsWith( COLLECTION_START_CHAR ) && s.endsWith( COLLECTION_END_CHAR ) ) {
-            final String toParse = s.substring( 1, s.length() - 2 );
+            final String toParse = s.substring( 1,
+                                                s.length() - 2 );
             final String[] parsed = toParse.split( COLLECTION_DELIMITER );
             final HashSet<String> result = new HashSet<>( parsed.length );
             for ( String p : parsed ) {
@@ -94,13 +104,12 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
         return null;
     }
 
-    protected static <T> boolean isIntersect( final Collection<T> c1, final Collection<T> c2 ) {
+    protected static <T> boolean isIntersect( final Collection<T> c1,
+                                              final Collection<T> c2 ) {
         if ( c1 == null && c2 == null ) {
             return true;
-
         } else if ( c1 == null ) {
             return false;
-
         } else {
             for ( T t : c1 ) {
                 if ( c2.contains( t ) ) {
@@ -109,7 +118,5 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
             }
             return false;
         }
-
     }
-
 }

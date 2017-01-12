@@ -32,6 +32,6 @@ public interface GraphContainmentRuleManager extends ContainmentRuleManager {
      * @param parent The parent node.
      * @param candidate The roles for the candidate child node.
      */
-    RuleViolations evaluate( Element<?> parent, Element<? extends Definition<?>> candidate );
-
+    RuleViolations evaluate( final Element<?> parent,
+                             final Element<? extends Definition<?>> candidate );
 }

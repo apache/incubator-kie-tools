@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class ClearSelectionToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientReadOnlySession, ClearSelectionSessionCommand> {
@@ -52,5 +52,4 @@ public class ClearSelectionToolbarCommand extends AbstractToolbarSessionCommand<
     protected boolean requiresConfirm() {
         return false;
     }
-
 }

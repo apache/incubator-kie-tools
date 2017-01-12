@@ -16,24 +16,27 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
-import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 
 class ListRegistry<T> implements DynamicRegistry<T> {
 
     private final KeyProvider<T> keyProvider;
     private final List<T> items;
 
-    public ListRegistry( final KeyProvider<T> keyProvider, final List<T> items ) {
+    public ListRegistry( final KeyProvider<T> keyProvider,
+                         final List<T> items ) {
         this.keyProvider = keyProvider;
         this.items = items;
     }
 
-    public void add( final int pos, final T item ) {
-        items.add( pos, item );
+    public void add( final int pos,
+                     final T item ) {
+        items.add( pos,
+                   item );
     }
 
     @Override
@@ -82,5 +85,4 @@ class ListRegistry<T> implements DynamicRegistry<T> {
     private String getItemKey( final T item ) {
         return keyProvider.getKey( item );
     }
-
 }

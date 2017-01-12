@@ -23,8 +23,7 @@ import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -49,17 +48,17 @@ public class AbstractDynamicRegistryWrapperTest {
     @SuppressWarnings( "unchecked" )
     public void testRegister() {
         tested.register( s1 );
-        verify( registry, times( 1 ) ).register( eq( s1 ) );
+        verify( registry,
+                times( 1 ) ).register( eq( s1 ) );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testRemove() {
         tested.remove( s1 );
-        verify( registry, times( 1 ) ).remove( eq( s1 ) );
+        verify( registry,
+                times( 1 ) ).remove( eq( s1 ) );
     }
-
-
 
     @Test
     @SuppressWarnings( "unchecked" )
@@ -71,5 +70,4 @@ public class AbstractDynamicRegistryWrapperTest {
         assertTrue( tested.contains( s2 ) );
         assertFalse( tested.contains( "" ) );
     }
-
 }

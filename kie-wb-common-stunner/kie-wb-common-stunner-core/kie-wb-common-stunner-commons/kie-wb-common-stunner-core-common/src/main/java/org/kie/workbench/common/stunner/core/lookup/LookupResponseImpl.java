@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.lookup;
 
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-
-import java.util.List;
 
 @Portable
 public final class LookupResponseImpl<T> implements LookupManager.LookupResponse<T> {
@@ -31,12 +31,12 @@ public final class LookupResponseImpl<T> implements LookupManager.LookupResponse
     private final int page;
     private final int pageSize;
 
-    public LookupResponseImpl( @MapsTo( "results" ) List<T> results,
-                               @MapsTo( "total" ) int total,
-                               @MapsTo( "hasNextPage" ) boolean hasNextPage,
-                               @MapsTo( "lookupCriteria" ) String lookupCriteria,
-                               @MapsTo( "page" ) int page,
-                               @MapsTo( "pageSize" ) int pageSize ) {
+    public LookupResponseImpl( final @MapsTo( "results" ) List<T> results,
+                               final @MapsTo( "total" ) int total,
+                               final @MapsTo( "hasNextPage" ) boolean hasNextPage,
+                               final @MapsTo( "lookupCriteria" ) String lookupCriteria,
+                               final @MapsTo( "page" ) int page,
+                               final @MapsTo( "pageSize" ) int pageSize ) {
         this.results = results;
         this.total = total;
         this.hasNextPage = hasNextPage;

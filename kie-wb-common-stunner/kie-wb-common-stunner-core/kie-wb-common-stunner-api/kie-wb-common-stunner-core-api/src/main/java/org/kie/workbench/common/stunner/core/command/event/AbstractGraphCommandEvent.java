@@ -25,7 +25,7 @@ public abstract class AbstractGraphCommandEvent extends AbstractCommandEvent<Gra
 
     public AbstractGraphCommandEvent( final Command<GraphCommandExecutionContext, RuleViolation> command,
                                       final CommandResult<RuleViolation> result ) {
-        super( command, result );
+        super( command,
+               result );
     }
-
 }

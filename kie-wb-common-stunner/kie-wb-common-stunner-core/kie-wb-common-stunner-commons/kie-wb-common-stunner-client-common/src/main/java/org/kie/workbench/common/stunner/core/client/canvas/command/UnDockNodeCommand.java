@@ -38,12 +38,13 @@ public final class UnDockNodeCommand extends AbstractCanvasGraphCommand {
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.UnDockNodeCommand( parent, child );
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.UnDockNodeCommand( parent,
+                                                                                               child );
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new CanvasUndockNodeCommand( parent, child );
+        return new CanvasUndockNodeCommand( parent,
+                                            child );
     }
-
 }

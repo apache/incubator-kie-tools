@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.registry.exception.RegistrySizeExceededException;
-
-import java.util.*;
 
 /**
  * The default generic implementation for the CommandRegistry type.
@@ -90,5 +93,4 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
     private void stackSizeExceeded() {
         throw new RegistrySizeExceededException( maxStackSize );
     }
-
 }

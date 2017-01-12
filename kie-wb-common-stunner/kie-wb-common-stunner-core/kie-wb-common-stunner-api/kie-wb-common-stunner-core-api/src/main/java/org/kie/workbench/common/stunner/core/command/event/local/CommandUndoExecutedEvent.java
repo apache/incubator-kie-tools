@@ -28,7 +28,7 @@ public final class CommandUndoExecutedEvent extends AbstractGraphCommandEvent {
 
     public CommandUndoExecutedEvent( final Command<GraphCommandExecutionContext, RuleViolation> command,
                                      final CommandResult<RuleViolation> result ) {
-        super( command, result );
+        super( command,
+               result );
     }
-
 }

@@ -28,7 +28,7 @@ public final class IsCommandAllowedEvent extends AbstractGraphCommandEvent {
 
     public IsCommandAllowedEvent( final Command<GraphCommandExecutionContext, RuleViolation> command,
                                   final CommandResult<RuleViolation> result ) {
-        super( command, result );
+        super( command,
+               result );
     }
-
 }

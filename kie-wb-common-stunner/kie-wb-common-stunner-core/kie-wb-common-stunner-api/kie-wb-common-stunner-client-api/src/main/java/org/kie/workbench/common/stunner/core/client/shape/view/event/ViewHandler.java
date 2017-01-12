@@ -20,6 +20,5 @@ public interface ViewHandler<E extends ViewEvent> {
 
     ViewEventType getType();
 
-    void handle( E event );
-
+    void handle( final E event );
 }

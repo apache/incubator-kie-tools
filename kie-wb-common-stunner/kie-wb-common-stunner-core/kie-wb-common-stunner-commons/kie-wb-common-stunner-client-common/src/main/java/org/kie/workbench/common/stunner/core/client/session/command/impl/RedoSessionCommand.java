@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
@@ -28,10 +32,6 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.RedoCommandHandler;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
@@ -41,7 +41,8 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<AbstractCli
     private final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
 
     protected RedoSessionCommand() {
-        this( null, null );
+        this( null,
+              null );
     }
 
     @Inject
@@ -55,8 +56,10 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<AbstractCli
     @Override
     @SuppressWarnings( "unchecked" )
     public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback", callback );
-        final CommandResult<?> result = redoCommandHandler.execute( getSession().getCanvasHandler(), sessionCommandManager );
+        checkNotNull( "callback",
+                      callback );
+        final CommandResult<?> result = redoCommandHandler.execute( getSession().getCanvasHandler(),
+                                                                    sessionCommandManager );
         checkState();
         callback.onSuccess( ( T ) result );
     }
@@ -68,18 +71,19 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<AbstractCli
     }
 
     @SuppressWarnings( "unchecked" )
-    void onCommandExecuted( @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {
-        checkNotNull( "commandExecutedEvent", commandExecutedEvent );
+    void onCommandExecuted( final @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {
+        checkNotNull( "commandExecutedEvent",
+                      commandExecutedEvent );
         if ( null != commandExecutedEvent.getCommand() ) {
-            redoCommandHandler
-                    .onCommandExecuted( commandExecutedEvent.getCommand() );
+            redoCommandHandler.onCommandExecuted( commandExecutedEvent.getCommand() );
         }
         checkState();
     }
 
     @SuppressWarnings( "unchecked" )
-    void onCommandUndoExecuted( @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
-        checkNotNull( "commandUndoExecutedEvent", commandUndoExecutedEvent );
+    void onCommandUndoExecuted( final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
+        checkNotNull( "commandUndoExecutedEvent",
+                      commandUndoExecutedEvent );
         if ( null != commandUndoExecutedEvent.getCommand() ) {
             redoCommandHandler.onUndoCommandExecuted( commandUndoExecutedEvent.getCommand() );
         }

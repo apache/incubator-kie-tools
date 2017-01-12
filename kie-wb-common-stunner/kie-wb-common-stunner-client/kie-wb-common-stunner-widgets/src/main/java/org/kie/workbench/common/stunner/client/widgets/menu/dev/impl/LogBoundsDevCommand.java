@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Dependent
 public class LogBoundsDevCommand extends AbstractSelectionDevCommand {
@@ -50,9 +50,9 @@ public class LogBoundsDevCommand extends AbstractSelectionDevCommand {
         final Bounds bounds = item.getContent().getBounds();
         final Bounds.Bound ul = bounds.getUpperLeft();
         final Bounds.Bound lr = bounds.getLowerRight();
-        LOGGER.log( Level.FINE, "Bounds for [" + item.getUUID() + "] ARE " +
-                "{ UL=[" + ul.getX() + ", " + ul.getY() + "] " +
-                "LR=[ " + lr.getX() + ", " + lr.getY() + "] }" );
+        LOGGER.log( Level.FINE,
+                    "Bounds for [" + item.getUUID() + "] ARE " +
+                            "{ UL=[" + ul.getX() + ", " + ul.getY() + "] " +
+                            "LR=[ " + lr.getX() + ", " + lr.getY() + "] }" );
     }
-
 }

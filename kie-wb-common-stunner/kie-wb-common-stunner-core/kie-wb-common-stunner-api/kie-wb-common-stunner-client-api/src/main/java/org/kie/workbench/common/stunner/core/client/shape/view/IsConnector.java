@@ -24,5 +24,4 @@ public interface IsConnector<T> {
                final int _tailMagnetsIndex,
                final boolean tailArrow,
                final boolean headArrow );
-
 }

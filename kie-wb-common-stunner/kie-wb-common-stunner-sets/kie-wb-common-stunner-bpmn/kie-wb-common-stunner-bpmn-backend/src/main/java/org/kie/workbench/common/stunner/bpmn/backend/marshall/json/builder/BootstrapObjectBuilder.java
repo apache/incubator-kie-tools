@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-
-import java.util.Map;
 
 public class BootstrapObjectBuilder<W, T extends Element<View<W>>> extends AbstractObjectBuilder<W, T> {
 
@@ -38,7 +38,8 @@ public class BootstrapObjectBuilder<W, T extends Element<View<W>>> extends Abstr
         builder.nodeId( this.nodeId );
         if ( !properties.isEmpty() ) {
             for ( Map.Entry<String, String> entry : this.properties.entrySet() ) {
-                builder.property( entry.getKey(), entry.getValue() );
+                builder.property( entry.getKey(),
+                                  entry.getValue() );
             }
         }
         if ( !outgoingResourceIds.isEmpty() ) {
@@ -47,10 +48,12 @@ public class BootstrapObjectBuilder<W, T extends Element<View<W>>> extends Abstr
             }
         }
         if ( null != boundLR ) {
-            builder.boundLR( boundLR[ 0 ], boundLR[ 1 ] );
+            builder.boundLR( boundLR[ 0 ],
+                             boundLR[ 1 ] );
         }
         if ( null != boundUL ) {
-            builder.boundUL( boundUL[ 0 ], boundUL[ 1 ] );
+            builder.boundUL( boundUL[ 0 ],
+                             boundUL[ 1 ] );
         }
         return builder;
     }
@@ -64,5 +67,4 @@ public class BootstrapObjectBuilder<W, T extends Element<View<W>>> extends Abstr
     public T build( BuilderContext context ) {
         return null;
     }
-
 }

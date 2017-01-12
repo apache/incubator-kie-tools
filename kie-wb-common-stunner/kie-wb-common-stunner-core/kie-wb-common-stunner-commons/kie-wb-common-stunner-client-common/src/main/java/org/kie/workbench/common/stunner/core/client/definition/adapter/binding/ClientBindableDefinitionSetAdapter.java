@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-
-import java.util.Map;
-import java.util.Set;
 
 class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<Object> implements BindableDefinitionSetAdapter<Object> {
 
@@ -43,7 +43,8 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
         String _id = BindableAdapterUtils.getDefinitionSetId( pojo.getClass() );
         // Avoid weld def class names issues.
         if ( _id.contains( "$" ) ) {
-            _id = _id.substring( 0, _id.indexOf( "$" ) );
+            _id = _id.substring( 0,
+                                 _id.indexOf( "$" ) );
         }
         return _id;
     }
@@ -51,12 +52,14 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
     @Override
     public String getDomain( final Object pojo ) {
         String n = pojo.getClass().getName();
-        return n.substring( n.lastIndexOf( "." ) + 1, n.length() );
+        return n.substring( n.lastIndexOf( "." ) + 1,
+                            n.length() );
     }
 
     @Override
     public String getDescription( final Object pojo ) {
-        return getProxiedValue( pojo, getPropertyDescriptionFieldNames().get( pojo.getClass() ) );
+        return getProxiedValue( pojo,
+                                getPropertyDescriptionFieldNames().get( pojo.getClass() ) );
     }
 
     @Override
@@ -89,5 +92,4 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
     private Set<String> getDefinitionIds() {
         return definitionIds;
     }
-
 }

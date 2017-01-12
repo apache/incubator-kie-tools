@@ -19,12 +19,12 @@
 
 <module>
 
-     <inherits name='com.google.gwt.user.User' />
-     <inherits name="org.gwtbootstrap3.extras.notify.Notify"/>
-     <inherits name="org.gwtbootstrap3.extras.card.Card"/>
-     <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
-     <inherits name="org.kie.workbench.common.stunner.StunnerLienzoExtensions"/>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="org.gwtbootstrap3.extras.notify.Notify"/>
+  <inherits name="org.gwtbootstrap3.extras.card.Card"/>
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
+  <inherits name="org.kie.workbench.common.stunner.StunnerLienzoExtensions"/>
 
-     <source path="lienzo"/>
+  <source path="lienzo"/>
 
 </module>

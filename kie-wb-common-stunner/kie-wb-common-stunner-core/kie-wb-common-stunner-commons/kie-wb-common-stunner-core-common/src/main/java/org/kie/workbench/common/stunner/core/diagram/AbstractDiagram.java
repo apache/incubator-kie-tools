@@ -25,15 +25,15 @@ public abstract class AbstractDiagram<G extends Graph, S extends Metadata> imple
     private final S metadata;
     private G graph;
 
-    public AbstractDiagram( @MapsTo( "name" ) String name,
-                            @MapsTo( "metadata" ) S metadata ) {
+    public AbstractDiagram( final @MapsTo( "name" ) String name,
+                            final @MapsTo( "metadata" ) S metadata ) {
         this.name = name;
         this.metadata = metadata;
     }
 
-    public AbstractDiagram( @MapsTo( "name" ) String name,
-                            @MapsTo( "graph" ) G graph,
-                            @MapsTo( "metadata" ) S metadata ) {
+    public AbstractDiagram( final @MapsTo( "name" ) String name,
+                            final @MapsTo( "graph" ) G graph,
+                            final @MapsTo( "metadata" ) S metadata ) {
         this.name = name;
         this.metadata = metadata;
         this.graph = graph;

@@ -38,5 +38,4 @@ public abstract class AbstractWrappedRuleManager<R extends Rule, M extends RuleM
         getWrapped().clearRules();
         return this;
     }
-
 }

@@ -16,6 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
@@ -31,16 +41,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickH
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.kie.workbench.common.stunner.core.graph.Element;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -82,17 +82,20 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
                 }
             }
         };
-        layer.addHandler( ViewEventType.MOUSE_CLICK, clickHandler );
+        layer.addHandler( ViewEventType.MOUSE_CLICK,
+                          clickHandler );
         this.layerClickHandler = clickHandler;
     }
 
-    protected abstract void register( Element element, Shape<?> shape );
+    protected abstract void register( final Element element,
+                                      final Shape<?> shape );
 
     @Override
     public void register( final Element element ) {
         final Shape<?> shape = getCanvas().getShape( element.getUUID() );
         if ( null != shape ) {
-            register( element, shape );
+            register( element,
+                      shape );
         }
     }
 
@@ -103,10 +106,12 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
             clearSelection();
         }
         if ( selected ) {
-            log( Level.FINE, "Deselect [element=" + element.getUUID() + "]" );
+            log( Level.FINE,
+                 "Deselect [element=" + element.getUUID() + "]" );
             deselect( element );
         } else {
-            log( Level.FINE, "Select [element=" + element.getUUID() + "]" );
+            log( Level.FINE,
+                 "Select [element=" + element.getUUID() + "]" );
             select( element );
         }
     }
@@ -117,7 +122,8 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         }
         final String canvasRootUUID = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
         if ( null != canvasRootUUID ) {
-            elementSelectedEventEvent.fire( new CanvasElementSelectedEvent( canvasHandler, canvasRootUUID ) );
+            elementSelectedEventEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
+                                                                            canvasRootUUID ) );
         } else {
             clearSelectionEventEvent.fire( new CanvasClearSelectionEvent( canvasHandler ) );
         }
@@ -139,7 +145,7 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
     }
 
     @Override
-    public void deregister( String uuid ) {
+    public void deregister( final String uuid ) {
         selectedElements.remove( uuid );
     }
 
@@ -181,19 +187,22 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         selectedElements.add( uuid );
         updateViewShapesState();
         if ( fireEvent ) {
-            elementSelectedEventEvent.fire( new CanvasElementSelectedEvent( canvasHandler, uuid ) );
+            elementSelectedEventEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
+                                                                            uuid ) );
         }
         return this;
     }
 
     @Override
     public SelectionControl<AbstractCanvasHandler, Element> select( final Element element ) {
-        return select( element, true );
+        return select( element,
+                       true );
     }
 
     public SelectionControl<AbstractCanvasHandler, Element> select( final Element element,
                                                                     final boolean fireEvent ) {
-        this.select( element.getUUID(), fireEvent );
+        this.select( element.getUUID(),
+                     fireEvent );
         return this;
     }
 
@@ -210,12 +219,14 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
 
     @Override
     public SelectionControl<AbstractCanvasHandler, Element> deselect( final Element element ) {
-        return deselect( element, true );
+        return deselect( element,
+                         true );
     }
 
     public SelectionControl<AbstractCanvasHandler, Element> deselect( final Element element,
                                                                       final boolean fireEvent ) {
-        return this.deselect( element.getUUID(), fireEvent );
+        return this.deselect( element.getUUID(),
+                              fireEvent );
     }
 
     protected boolean isSelected( final String uuid ) {
@@ -256,18 +267,21 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         return this;
     }
 
-    void onShapeRemovedEvent( @Observes CanvasShapeRemovedEvent shapeRemovedEvent ) {
-        checkNotNull( "shapeRemovedEvent", shapeRemovedEvent );
+    void onShapeRemovedEvent( final @Observes CanvasShapeRemovedEvent shapeRemovedEvent ) {
+        checkNotNull( "shapeRemovedEvent",
+                      shapeRemovedEvent );
         if ( null != getCanvas() && getCanvas().equals( shapeRemovedEvent.getCanvas() ) ) {
             final Shape<?> shape = shapeRemovedEvent.getShape();
             if ( selectedElements.contains( shape.getUUID() ) ) {
-                this.deselect( shape.getUUID(), false );
+                this.deselect( shape.getUUID(),
+                               false );
             }
         }
     }
 
-    void onCanvasElementSelectedEvent( @Observes CanvasElementSelectedEvent event ) {
-        checkNotNull( "event", event );
+    void onCanvasElementSelectedEvent( final @Observes CanvasElementSelectedEvent event ) {
+        checkNotNull( "event",
+                      event );
         final String uuid = event.getElementUUID();
         if ( null != canvasHandler && canvasHandler.equals( event.getCanvasHandler() ) ) {
             doSelect( uuid );
@@ -277,12 +291,14 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
     private void doSelect( final String uuid ) {
         if ( !isSelected( uuid ) ) {
             this.clearSelection( false );
-            this.select( uuid, false );
+            this.select( uuid,
+                         false );
         }
     }
 
-    void CanvasClearSelectionEvent( @Observes CanvasClearSelectionEvent event ) {
-        checkNotNull( "event", event );
+    void CanvasClearSelectionEvent( final @Observes CanvasClearSelectionEvent event ) {
+        checkNotNull( "event",
+                      event );
         if ( null != canvasHandler && canvasHandler.equals( event.getCanvasHandler() ) ) {
             this.clearSelection( false );
         }
@@ -296,9 +312,11 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         return null != canvasHandler ? canvasHandler.getCanvas() : null;
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

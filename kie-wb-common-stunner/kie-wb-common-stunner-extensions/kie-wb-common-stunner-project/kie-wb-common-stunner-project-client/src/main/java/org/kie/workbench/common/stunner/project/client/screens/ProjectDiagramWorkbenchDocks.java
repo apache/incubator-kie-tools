@@ -16,18 +16,18 @@
 
 package org.kie.workbench.common.stunner.project.client.screens;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 // TODO: i18n.
 @Dependent
@@ -60,17 +60,21 @@ public class ProjectDiagramWorkbenchDocks {
 
     public void enableDocks() {
         if ( !isEnabled() ) {
-            log( Level.INFO, "Enabling docks" );
-            uberfireDocks.enable( POSITION, perspectiveId );
+            log( Level.INFO,
+                 "Enabling docks" );
+            uberfireDocks.enable( POSITION,
+                                  perspectiveId );
             this.enabled = true;
         }
     }
 
     public void disableDocks() {
         if ( isEnabled() ) {
-            log( Level.INFO, "Disabling docks" );
+            log( Level.INFO,
+                 "Disabling docks" );
             // TODO: Ask to walter - uberfireDocks.disable( POSITION, perspectiveId );
-            uberfireDocks.disable( POSITION, perspectiveId );
+            uberfireDocks.disable( POSITION,
+                                   perspectiveId );
             this.enabled = false;
         }
     }
@@ -87,7 +91,8 @@ public class ProjectDiagramWorkbenchDocks {
             explorerDock = createExplorerDock( perspectiveId );
         }
         if ( !attached ) {
-            log( Level.INFO, "Attaching docks" );
+            log( Level.INFO,
+                 "Attaching docks" );
             uberfireDocks.add( propertiesDock );
             uberfireDocks.add( explorerDock );
             attached = true;
@@ -96,7 +101,8 @@ public class ProjectDiagramWorkbenchDocks {
 
     private void detachDocks() {
         if ( attached ) {
-            log( Level.INFO, "Detaching docks" );
+            log( Level.INFO,
+                 "Detaching docks" );
             if ( null != propertiesDock ) {
                 uberfireDocks.remove( propertiesDock );
             }
@@ -117,22 +123,28 @@ public class ProjectDiagramWorkbenchDocks {
     }
 
     private UberfireDock createPropertiesDock( final String perspectiveId ) {
-        return new UberfireDock( POSITION, "PENCIL_SQUARE_O",
-                new DefaultPlaceRequest( ProjectDiagramPropertiesScreen.SCREEN_ID ), perspectiveId )
+        return new UberfireDock( POSITION,
+                                 "PENCIL_SQUARE_O",
+                                 new DefaultPlaceRequest( ProjectDiagramPropertiesScreen.SCREEN_ID ),
+                                 perspectiveId )
                 .withSize( 450 )
                 .withLabel( "Properties" );
     }
 
     private UberfireDock createExplorerDock( final String perspectiveId ) {
-        return new UberfireDock( POSITION, "LIST_UL",
-                new DefaultPlaceRequest( ProjectDiagramExplorerScreen.SCREEN_ID ), perspectiveId )
+        return new UberfireDock( POSITION,
+                                 "LIST_UL",
+                                 new DefaultPlaceRequest( ProjectDiagramExplorerScreen.SCREEN_ID ),
+                                 perspectiveId )
                 .withSize( 450 )
                 .withLabel( "Explorer" );
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

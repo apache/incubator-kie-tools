@@ -20,14 +20,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.platform.PlatformManager;
-import org.kie.workbench.common.stunner.core.client.session.event.*;
+import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramWorkbenchDocks;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class ClientProjectSessionManagerTest {
@@ -53,30 +56,39 @@ public class ClientProjectSessionManagerTest {
 
     @Before
     public void setup() throws Exception {
-        this.tested = new ClientProjectSessionManager( editorDocks, platformManager,
-                sessionOpenedEvent, sessionDisposedEvent, sessionPausedEvent,
-                sessionResumedEvent, sessionErrorEvent );
+        this.tested = new ClientProjectSessionManager( editorDocks,
+                                                       platformManager,
+                                                       sessionOpenedEvent,
+                                                       sessionDisposedEvent,
+                                                       sessionPausedEvent,
+                                                       sessionResumedEvent,
+                                                       sessionErrorEvent );
     }
 
     @Test
     public void testOpen() {
         tested.open( session );
-        verify( editorDocks, times( 1 ) ).enableDocks();
-        verify( editorDocks, times( 0 ) ).disableDocks();
+        verify( editorDocks,
+                times( 1 ) ).enableDocks();
+        verify( editorDocks,
+                times( 0 ) ).disableDocks();
     }
 
     @Test
     public void testResume() {
         tested.resume( session );
-        verify( editorDocks, times( 1 ) ).enableDocks();
-        verify( editorDocks, times( 0 ) ).disableDocks();
+        verify( editorDocks,
+                times( 1 ) ).enableDocks();
+        verify( editorDocks,
+                times( 0 ) ).disableDocks();
     }
 
     @Test
     public void testDispose() {
         tested.postDispose();
-        verify( editorDocks, times( 0 ) ).enableDocks();
-        verify( editorDocks, times( 1 ) ).disableDocks();
+        verify( editorDocks,
+                times( 0 ) ).enableDocks();
+        verify( editorDocks,
+                times( 1 ) ).disableDocks();
     }
-
 }

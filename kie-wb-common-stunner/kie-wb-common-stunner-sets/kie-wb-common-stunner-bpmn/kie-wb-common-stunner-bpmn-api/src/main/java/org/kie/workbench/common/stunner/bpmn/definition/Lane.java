@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -41,11 +45,7 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
 @Portable
 @Bindable
@@ -66,7 +66,7 @@ public class Lane implements BPMNDefinition {
             "Lanes sub-divide pools or other lanes hierarchically.";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0)
+    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
     @Valid
     protected BPMNGeneralSet general;
 
@@ -103,9 +103,15 @@ public class Lane implements BPMNDefinition {
         @Override
         public Lane build() {
             return new Lane( new BPMNGeneralSet( "Lane" ),
-                    new BackgroundSet( COLOR, BORDER_COLOR, BORDER_SIZE ),
-                    new FontSet( FontFamily.defaultValue, FontColor.defaultValue, 14d, FontBorderSize.defaultValue ),
-                    new RectangleDimensionsSet( WIDTH, HEIGHT ) );
+                             new BackgroundSet( COLOR,
+                                                BORDER_COLOR,
+                                                BORDER_SIZE ),
+                             new FontSet( FontFamily.defaultValue,
+                                          FontColor.defaultValue,
+                                          14d,
+                                          FontBorderSize.defaultValue ),
+                             new RectangleDimensionsSet( WIDTH,
+                                                         HEIGHT ) );
         }
     }
 

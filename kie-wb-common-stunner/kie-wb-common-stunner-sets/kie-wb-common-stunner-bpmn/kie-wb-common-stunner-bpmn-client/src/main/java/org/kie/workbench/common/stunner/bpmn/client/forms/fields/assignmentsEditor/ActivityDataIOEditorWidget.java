@@ -89,7 +89,8 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         this.variableType = variableType;
     }
 
-    public void setAllowDuplicateNames( boolean allowDuplicateNames, String duplicateNameErrorMessage ) {
+    public void setAllowDuplicateNames( boolean allowDuplicateNames,
+                                        String duplicateNameErrorMessage ) {
         this.allowDuplicateNames = allowDuplicateNames;
         this.duplicateNameErrorMessage = duplicateNameErrorMessage;
     }
@@ -110,8 +111,10 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         widget.setDataTypes( dataTypeListBoxValues );
         widget.setProcessVariables( processVarListBoxValues );
         widget.setShowConstants( getShowConstants() );
-        widget.setDisallowedNames( disallowedNames, disallowedNameErrorMessage );
-        widget.setAllowDuplicateNames( allowDuplicateNames, duplicateNameErrorMessage );
+        widget.setDisallowedNames( disallowedNames,
+                                   disallowedNameErrorMessage );
+        widget.setAllowDuplicateNames( allowDuplicateNames,
+                                       duplicateNameErrorMessage );
         widget.setParentWidget( this );
     }
 
@@ -131,7 +134,8 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
                 if ( row.getName() != null && !row.getName().isEmpty() ) {
                     if ( disallowedNames.contains( row.getName().toLowerCase() ) ) {
                         assignmentRows.remove( i );
-                        hiddenPropertyRows.add( 0, row );
+                        hiddenPropertyRows.add( 0,
+                                                row );
                     }
                 }
             }
@@ -144,8 +148,10 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         view.setAssignmentRows( assignmentRows );
         for ( int i = 0; i < assignmentRows.size(); i++ ) {
             view.getAssignmentWidget( i ).setParentWidget( this );
-            view.getAssignmentWidget( i ).setDisallowedNames( disallowedNames, disallowedNameErrorMessage );
-            view.getAssignmentWidget( i ).setAllowDuplicateNames( allowDuplicateNames, duplicateNameErrorMessage );
+            view.getAssignmentWidget( i ).setDisallowedNames( disallowedNames,
+                                                              disallowedNameErrorMessage );
+            view.getAssignmentWidget( i ).setAllowDuplicateNames( allowDuplicateNames,
+                                                                  duplicateNameErrorMessage );
         }
     }
 
@@ -180,17 +186,18 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         }
     }
 
-    public void setDisallowedNames( Set<String> disallowedNames, String disallowedNameErrorMessage ) {
+    public void setDisallowedNames( Set<String> disallowedNames,
+                                    String disallowedNameErrorMessage ) {
         this.disallowedNames = disallowedNames;
         this.disallowedNameErrorMessage = disallowedNameErrorMessage;
         for ( int i = 0; i < view.getAssignmentsCount(); i++ ) {
-            view.getAssignmentWidget( i ).setDisallowedNames( disallowedNames, disallowedNameErrorMessage );
+            view.getAssignmentWidget( i ).setDisallowedNames( disallowedNames,
+                                                              disallowedNameErrorMessage );
         }
     }
 
     /**
      * Tests whether a Row name occurs more than once in the list of rows
-     *
      * @param name
      * @return
      */

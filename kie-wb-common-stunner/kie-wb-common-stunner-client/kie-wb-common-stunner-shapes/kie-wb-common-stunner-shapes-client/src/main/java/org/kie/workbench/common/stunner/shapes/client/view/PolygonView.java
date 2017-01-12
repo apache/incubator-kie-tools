@@ -30,13 +30,19 @@ public class PolygonView extends BasicShapeView<PolygonView>
     public PolygonView( final double radius,
                         final String fillColor ) {
         super( BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
-                create( new MultiPath(), SIDES, radius, CORNER ) );
+               create( new MultiPath(),
+                       SIDES,
+                       radius,
+                       CORNER ) );
         super.setResizable( false );
     }
 
     @Override
     public PolygonView setRadius( final double radius ) {
-        create( getPath().clear(), SIDES, radius, CORNER );
+        create( getPath().clear(),
+                SIDES,
+                radius,
+                CORNER );
         return this;
     }
 
@@ -48,23 +54,29 @@ public class PolygonView extends BasicShapeView<PolygonView>
         final double ix = radius;
         final double iy = radius;
         if ( ( sides > 2 ) && ( radius > 0 ) ) {
-            result.M( ix, iy - radius );
+            result.M( ix,
+                      iy - radius );
             if ( cornerRadius <= 0 ) {
                 for ( int n = 1; n < sides; n++ ) {
                     final double theta = ( n * 2 * Math.PI / sides );
-                    result.L( ix + ( radius * Math.sin( theta ) ), iy + ( -1 * radius * Math.cos( theta ) ) );
+                    result.L( ix + ( radius * Math.sin( theta ) ),
+                              iy + ( -1 * radius * Math.cos( theta ) ) );
                 }
                 result.Z();
             } else {
-                final Point2DArray list = new Point2DArray( ix, iy - radius );
+                final Point2DArray list = new Point2DArray( ix,
+                                                            iy - radius );
                 for ( int n = 1; n < sides; n++ ) {
                     final double theta = ( n * 2 * Math.PI / sides );
-                    list.push( ix + ( radius * Math.sin( theta ) ), iy + ( -1 * radius * Math.cos( theta ) ) );
+                    list.push( ix + ( radius * Math.sin( theta ) ),
+                               iy + ( -1 * radius * Math.cos( theta ) ) );
                 }
-                Geometry.drawArcJoinedLines( result.getPathPartList(), list.push( ix, iy - radius ), cornerRadius );
+                Geometry.drawArcJoinedLines( result.getPathPartList(),
+                                             list.push( ix,
+                                                        iy - radius ),
+                                             cornerRadius );
             }
         }
         return result;
     }
-
 }

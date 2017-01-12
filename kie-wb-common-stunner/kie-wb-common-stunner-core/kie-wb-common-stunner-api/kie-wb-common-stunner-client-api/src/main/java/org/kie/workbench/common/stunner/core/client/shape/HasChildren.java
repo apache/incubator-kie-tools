@@ -26,10 +26,10 @@ public interface HasChildren<T> {
         RIGHT
     }
 
-    void addChild( T child, Layout layout );
+    void addChild( final T child,
+                   final Layout layout );
 
-    void removeChild( T child );
+    void removeChild( final T child );
 
     Iterable<T> getChildren();
-
 }

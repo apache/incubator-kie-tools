@@ -104,8 +104,10 @@ public class VariableListItemWidgetViewImplTest {
         doCallRealMethod().when( view ).getModel();
         doCallRealMethod().when( view ).setModel( any( VariableRow.class ) );
         doCallRealMethod().when( view ).getModelValue( any( ValueListBox.class ) );
-        doCallRealMethod().when( view ).setTextBoxModelValue( any( TextBox.class ), anyString() );
-        doCallRealMethod().when( view ).setListBoxModelValue( any( ValueListBox.class ), anyString() );
+        doCallRealMethod().when( view ).setTextBoxModelValue( any( TextBox.class ),
+                                                              anyString() );
+        doCallRealMethod().when( view ).setListBoxModelValue( any( ValueListBox.class ),
+                                                              anyString() );
         doCallRealMethod().when( view ).getDataTypeDisplayName();
         doCallRealMethod().when( view ).setDataTypeDisplayName( anyString() );
         doCallRealMethod().when( view ).getVariableType();
@@ -125,10 +127,14 @@ public class VariableListItemWidgetViewImplTest {
         row.setVariableType( Variable.VariableType.PROCESS );
         doReturn( row ).when( variableRow ).getModel();
         view.setModel( row );
-        verify( variableRow, times( 1 ) ).setModel( row );
-        verify( deleteButton, times( 1 ) ).setIcon( IconType.TRASH );
-        verify( customDataType, times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
-        verify( dataType, times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
+        verify( variableRow,
+                times( 1 ) ).setModel( row );
+        verify( deleteButton,
+                times( 1 ) ).setIcon( IconType.TRASH );
+        verify( customDataType,
+                times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
+        verify( dataType,
+                times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
     }
 
     @Test
@@ -140,47 +146,61 @@ public class VariableListItemWidgetViewImplTest {
         row.setVariableType( Variable.VariableType.PROCESS );
         doReturn( row ).when( variableRow ).getModel();
         view.setModel( row );
-        verify( variableRow, times( 1 ) ).setModel( row );
-        verify( deleteButton, times( 1 ) ).setIcon( IconType.TRASH );
-        verify( customDataType, never() ).setValue( DATA_TYPE_NAME );
-        verify( dataType, times( 1 ) ).setValue( DATA_TYPE_NAME );
+        verify( variableRow,
+                times( 1 ) ).setModel( row );
+        verify( deleteButton,
+                times( 1 ) ).setIcon( IconType.TRASH );
+        verify( customDataType,
+                never() ).setValue( DATA_TYPE_NAME );
+        verify( dataType,
+                times( 1 ) ).setValue( DATA_TYPE_NAME );
     }
 
     @Test
     public void testSetTextBoxModelValueCustomDataType() {
         assertNull( view.getModel().getCustomDataType() );
-        view.setTextBoxModelValue( customDataType, "abc" );
-        assertEquals( "abc", view.getModel().getCustomDataType() );
-        assertEquals( "abc", view.getModelValue( dataType ) );
+        view.setTextBoxModelValue( customDataType,
+                                   "abc" );
+        assertEquals( "abc",
+                      view.getModel().getCustomDataType() );
+        assertEquals( "abc",
+                      view.getModelValue( dataType ) );
     }
 
     @Test
     public void testSetListBoxModelValueDataType() {
         assertNull( view.getModel().getDataTypeDisplayName() );
-        view.setListBoxModelValue( dataType, "abc" );
-        assertEquals( "abc", view.getModel().getDataTypeDisplayName() );
+        view.setListBoxModelValue( dataType,
+                                   "abc" );
+        assertEquals( "abc",
+                      view.getModel().getDataTypeDisplayName() );
         assertNull( view.getModel().getCustomDataType() );
-        assertEquals( "abc", view.getModelValue( dataType ) );
+        assertEquals( "abc",
+                      view.getModelValue( dataType ) );
     }
 
     @Test
     public void testDataTypeHandlerSpace() {
         view.init();
-        verify( customDataType, times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify( customDataType,
+                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
         doReturn( Integer.valueOf( ' ' ) ).when( keyDownEvent ).getNativeKeyCode();
         handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent, times( 1 ) ).preventDefault();
+        verify( keyDownEvent,
+                times( 1 ) ).preventDefault();
     }
 
     @Test
     public void testDataTypeHandlerAlphabetical() {
         view.init();
-        verify( customDataType, times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify( customDataType,
+                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
         doReturn( Integer.valueOf( 'a' ) ).when( keyDownEvent ).getNativeKeyCode();
         handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent, never() ).preventDefault();
+        verify( keyDownEvent,
+                never() ).preventDefault();
     }
 
     @Test
@@ -190,12 +210,17 @@ public class VariableListItemWidgetViewImplTest {
         doReturn( "anyName" ).when( name ).getText();
         view.setParentWidget( parent );
         view.init();
-        verify( name, times( 1 ) ).addBlurHandler( blurHandlerCaptor.capture() );
+        verify( name,
+                times( 1 ) ).addBlurHandler( blurHandlerCaptor.capture() );
         BlurHandler handler = blurHandlerCaptor.getValue();
         handler.onBlur( mock( BlurEvent.class ) );
-        verify( parent, times( 1 ) ).isDuplicateName( "anyName" );
-        verify( notification, times( 1 ) ).fire( new NotificationEvent( null, NotificationEvent.NotificationType.ERROR ) );
-        verify( name, times( 1 ) ).setValue( "" );
+        verify( parent,
+                times( 1 ) ).isDuplicateName( "anyName" );
+        verify( notification,
+                times( 1 ) ).fire( new NotificationEvent( null,
+                                                          NotificationEvent.NotificationType.ERROR ) );
+        verify( name,
+                times( 1 ) ).setValue( "" );
     }
 
     @Test

@@ -16,6 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.widgets.navigation.navigator.diagrams;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -31,14 +39,6 @@ import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequestImpl;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Dependent
 public class DiagramsNavigatorImpl implements DiagramsNavigator {
@@ -73,7 +73,8 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
     }
 
     @Override
-    public Navigator<DiagramRepresentation> setItemPxSize( int width, int height ) {
+    public Navigator<DiagramRepresentation> setItemPxSize( final int width,
+                                                           final int height ) {
         this.width = width;
         this.height = height;
         return this;
@@ -84,24 +85,25 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
         fireProcessingStarted();
         clear();
         final DiagramLookupRequest request = new DiagramLookupRequestImpl.Builder().build();
-        clientDiagramServices.lookup( request, new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
-            @Override
-            public void onSuccess( final LookupManager.LookupResponse<DiagramRepresentation> response ) {
-                final List<DiagramRepresentation> items = response.getResults();
-                if ( null != items && !items.isEmpty() ) {
-                    for ( final DiagramRepresentation diagram : items ) {
-                        addEntry( diagram );
-                    }
-                }
-                // Notify some processing ends.
-                fireProcessingCompleted();
-            }
+        clientDiagramServices.lookup( request,
+                                      new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
+                                          @Override
+                                          public void onSuccess( final LookupManager.LookupResponse<DiagramRepresentation> response ) {
+                                              final List<DiagramRepresentation> items = response.getResults();
+                                              if ( null != items && !items.isEmpty() ) {
+                                                  for ( final DiagramRepresentation diagram : items ) {
+                                                      addEntry( diagram );
+                                                  }
+                                              }
+                                              // Notify some processing ends.
+                                              fireProcessingCompleted();
+                                          }
 
-            @Override
-            public void onError( final ClientRuntimeError error ) {
-                showError( error );
-            }
-        } );
+                                          @Override
+                                          public void onError( final ClientRuntimeError error ) {
+                                              showError( error );
+                                          }
+                                      } );
         return this;
     }
 
@@ -126,17 +128,16 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
         view.add( item.getView() );
         items.add( item );
         item.show( diagramRepresentation,
-                width,
-                height,
-                () -> {
-                    fireLoadDiagram( diagramRepresentation );
-                } );
+                   width,
+                   height,
+                   () -> fireLoadDiagram( diagramRepresentation ) );
     }
 
     private void fireLoadDiagram( final DiagramRepresentation diagramRepresentation ) {
         final String name = diagramRepresentation.getName();
         final String path = diagramRepresentation.getPath().toURI();
-        loadDiagramEventEvent.fire( new LoadDiagramEvent( path, name ) );
+        loadDiagramEventEvent.fire( new LoadDiagramEvent( path,
+                                                          name ) );
     }
 
     private void fireProcessingStarted() {
@@ -154,12 +155,15 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     private void showError( final String error ) {
         fireProcessingCompleted();
-        log( Level.SEVERE, error );
+        log( Level.SEVERE,
+             error );
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

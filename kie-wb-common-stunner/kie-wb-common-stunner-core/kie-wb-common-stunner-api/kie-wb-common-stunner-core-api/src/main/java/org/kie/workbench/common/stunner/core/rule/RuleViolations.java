@@ -20,6 +20,5 @@ public interface RuleViolations {
 
     Iterable<RuleViolation> violations();
 
-    Iterable<RuleViolation> violations( RuleViolation.Type violationType );
-
+    Iterable<RuleViolation> violations( final RuleViolation.Type violationType );
 }

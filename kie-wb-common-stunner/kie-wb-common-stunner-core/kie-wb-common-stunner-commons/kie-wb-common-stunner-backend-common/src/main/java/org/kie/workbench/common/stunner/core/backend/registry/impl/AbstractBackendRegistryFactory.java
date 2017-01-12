@@ -31,5 +31,4 @@ public abstract class AbstractBackendRegistryFactory extends AbstractRegistryFac
     public <T extends Diagram> DiagramRegistry<T> newDiagramSynchronizedRegistry() {
         return new SyncDiagramListRegistry<T>();
     }
-
 }

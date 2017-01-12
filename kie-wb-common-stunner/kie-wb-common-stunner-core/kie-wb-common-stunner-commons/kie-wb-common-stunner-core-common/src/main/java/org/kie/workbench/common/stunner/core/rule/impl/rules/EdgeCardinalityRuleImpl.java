@@ -30,20 +30,20 @@ public class EdgeCardinalityRuleImpl implements EdgeCardinalityRule {
     private Integer minOccurrences = 0;
     private Integer maxOccurrences = 0;
 
-    public EdgeCardinalityRuleImpl( @MapsTo( "id" ) String id,
-                                    @MapsTo( "name" ) String name,
-                                    @MapsTo( "role" ) String role,
-                                    @MapsTo( "type" ) Type type,
-                                    @MapsTo( "minOccurrences" ) Integer minOccurrences,
-                                    @MapsTo( "maxOccurrences" ) Integer maxOccurrences ) {
+    public EdgeCardinalityRuleImpl( final @MapsTo( "id" ) String id,
+                                    final @MapsTo( "name" ) String name,
+                                    final @MapsTo( "role" ) String role,
+                                    final @MapsTo( "type" ) Type type,
+                                    final @MapsTo( "minOccurrences" ) Integer minOccurrences,
+                                    final @MapsTo( "maxOccurrences" ) Integer maxOccurrences ) {
         this.role = PortablePreconditions.checkNotNull( "id",
-                id );
+                                                        id );
         this.name = PortablePreconditions.checkNotNull( "name",
-                name );
+                                                        name );
         this.role = PortablePreconditions.checkNotNull( "role",
-                role );
+                                                        role );
         this.type = PortablePreconditions.checkNotNull( "type",
-                type );
+                                                        type );
         if ( minOccurrences < 0 ) {
             throw new IllegalArgumentException( "minOccurrences cannot be less than 0." );
         }
@@ -52,7 +52,6 @@ public class EdgeCardinalityRuleImpl implements EdgeCardinalityRule {
             throw new IllegalArgumentException( "maxOccurrences cannot be less than minOccurrences." );
         }
         this.maxOccurrences = maxOccurrences;
-
     }
 
     @Override

@@ -20,13 +20,13 @@
 >
 
   <ui:style>
-   
+
   </ui:style>
 
   <g:FlowPanel>
-    
+
     <g:Tree ui:field="tree"/>
-    
+
   </g:FlowPanel>
 
 </ui:UiBinder>

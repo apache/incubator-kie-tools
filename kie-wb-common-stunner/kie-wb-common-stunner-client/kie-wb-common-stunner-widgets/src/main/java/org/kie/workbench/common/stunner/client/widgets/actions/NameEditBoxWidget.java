@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.actions;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
@@ -29,16 +33,12 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.client.mvp.UberView;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 @Dependent
 public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
 
     public interface View extends UberView<NameEditBoxWidget> {
 
-        View show( String name );
+        View show( final String name );
 
         View hide();
     }
@@ -99,8 +99,11 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
             final Object def = element.getContent().getDefinition();
             final String nameId = definitionUtils.getNameIdentifier( def );
             if ( null != nameId ) {
-                UpdateElementPropertyCommand command = canvasCommandFactory.updatePropertyValue( element, nameId, this.nameValue );
-                canvasCommandManager.execute( canvasHandler, command );
+                UpdateElementPropertyCommand command = canvasCommandFactory.updatePropertyValue( element,
+                                                                                                 nameId,
+                                                                                                 this.nameValue );
+                canvasCommandManager.execute( canvasHandler,
+                                              command );
             }
         }
         view.hide();
@@ -109,12 +112,14 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
 
     void onKeyPress( final int keyCode,
                      final String value ) {
-        processKey( keyCode, value );
+        processKey( keyCode,
+                    value );
     }
 
     void onKeyDown( final int keyCode,
                     final String value ) {
-        processKey( keyCode, value );
+        processKey( keyCode,
+                    value );
     }
 
     void onClose() {

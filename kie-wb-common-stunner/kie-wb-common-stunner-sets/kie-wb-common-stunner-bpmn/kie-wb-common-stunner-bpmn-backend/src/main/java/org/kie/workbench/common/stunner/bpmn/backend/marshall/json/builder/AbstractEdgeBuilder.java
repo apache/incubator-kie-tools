@@ -47,19 +47,25 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
     protected T doBuild( BuilderContext context ) {
         FactoryManager factoryManager = context.getFactoryManager();
         String definitionId = context.getOryxManager().getMappingsManager().getDefinitionId( definitionClass );
-        T result = ( T ) factoryManager.newElement( this.nodeId, definitionId );
-        setProperties( context, ( BPMNDefinition ) result.getContent().getDefinition() );
-        addEdgeIntoIndex( context, result );
-        afterEdgeBuild( context, result );
+        T result = ( T ) factoryManager.newElement( this.nodeId,
+                                                    definitionId );
+        setProperties( context,
+                       ( BPMNDefinition ) result.getContent().getDefinition() );
+        addEdgeIntoIndex( context,
+                          result );
+        afterEdgeBuild( context,
+                        result );
         return result;
     }
 
     @SuppressWarnings( "unchecked" )
-    protected void afterEdgeBuild( BuilderContext context, T edge ) {
+    protected void afterEdgeBuild( BuilderContext context,
+                                   T edge ) {
         // Outgoing connections.
         if ( outgoingResourceIds != null && !outgoingResourceIds.isEmpty() ) {
             for ( String outgoingNodeId : outgoingResourceIds ) {
-                GraphObjectBuilder<?, ?> outgoingNodeBuilder = getBuilder( context, outgoingNodeId );
+                GraphObjectBuilder<?, ?> outgoingNodeBuilder = getBuilder( context,
+                                                                           outgoingNodeId );
                 if ( outgoingNodeBuilder == null ) {
                     throw new RuntimeException( "No edge for " + outgoingNodeId );
                 }
@@ -67,8 +73,12 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
                 // Command - Add the node into the graph store.
                 AddNodeCommand addNodeCommand = context.getCommandFactory().addNode( node );
                 // Command - Set the edge connection's target node.
-                int magnetIdx = ( ( AbstractNodeBuilder ) outgoingNodeBuilder ).getTargetConnectionMagnetIndex( context, node, edge );
-                SetConnectionTargetNodeCommand setTargetNodeCommand = context.getCommandFactory().setTargetNode( node, edge, magnetIdx );
+                int magnetIdx = ( ( AbstractNodeBuilder ) outgoingNodeBuilder ).getTargetConnectionMagnetIndex( context,
+                                                                                                                node,
+                                                                                                                edge );
+                SetConnectionTargetNodeCommand setTargetNodeCommand = context.getCommandFactory().setTargetNode( node,
+                                                                                                                 edge,
+                                                                                                                 magnetIdx );
                 CommandResult<RuleViolation> results1 = context.execute( addNodeCommand );
                 if ( hasErrors( results1 ) ) {
                     throw new RuntimeException( "Error building BPMN graph. Command 'addNodeCommand' execution failed." );
@@ -82,7 +92,8 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
     }
 
     @SuppressWarnings( "unchecked" )
-    protected void addEdgeIntoIndex( BuilderContext context, T edge ) {
+    protected void addEdgeIntoIndex( BuilderContext context,
+                                     T edge ) {
         MutableIndex<Node, Edge> index = ( MutableIndex<Node, Edge> ) context.getIndex();
         index.addEdge( edge );
     }

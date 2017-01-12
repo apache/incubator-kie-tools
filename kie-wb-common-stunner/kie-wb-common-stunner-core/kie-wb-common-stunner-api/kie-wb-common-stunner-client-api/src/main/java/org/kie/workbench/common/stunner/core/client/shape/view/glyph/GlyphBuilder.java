@@ -22,16 +22,15 @@ public interface GlyphBuilder<G, D extends GlyphDef<?>> {
 
     Class<?> getType();
 
-    GlyphBuilder<G, D> definitionType( Class<?> type );
+    GlyphBuilder<G, D> definitionType( final Class<?> type );
 
-    GlyphBuilder<G, D> glyphDef( D glyphDef );
+    GlyphBuilder<G, D> glyphDef( final D glyphDef );
 
-    GlyphBuilder<G, D> factory( ShapeFactory factory );
+    GlyphBuilder<G, D> factory( final ShapeFactory factory );
 
-    GlyphBuilder<G, D> width( double width );
+    GlyphBuilder<G, D> width( final double width );
 
-    GlyphBuilder<G, D> height( double height );
+    GlyphBuilder<G, D> height( final double height );
 
     Glyph<G> build();
-
 }

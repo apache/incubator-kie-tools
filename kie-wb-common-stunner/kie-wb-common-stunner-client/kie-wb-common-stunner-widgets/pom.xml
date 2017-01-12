@@ -67,7 +67,7 @@
       <artifactId>kie-wb-common-stunner-lienzo-extensions</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- GWT and GWT Extensions -->
 
     <dependency>
@@ -87,7 +87,7 @@
       <artifactId>gwtbootstrap3-extras</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Uberfire & Errai. -->
 
     <dependency>
@@ -109,7 +109,7 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-all</artifactId>

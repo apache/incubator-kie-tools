@@ -34,7 +34,9 @@ public class GraphCommandExecutionContextImpl extends AbstractGraphCommandExecut
                                              final GraphRulesManager rulesManager,
                                              final Index<?, ?> graphIndex,
                                              final GraphUtils graphUtils ) {
-        super( definitionManager, factoryManager, graphIndex );
+        super( definitionManager,
+               factoryManager,
+               graphIndex );
         this.rulesManager = rulesManager;
         this.graphUtils = graphUtils;
     }
@@ -47,5 +49,4 @@ public class GraphCommandExecutionContextImpl extends AbstractGraphCommandExecut
     public GraphRulesManager getRulesManager() {
         return rulesManager;
     }
-
 }

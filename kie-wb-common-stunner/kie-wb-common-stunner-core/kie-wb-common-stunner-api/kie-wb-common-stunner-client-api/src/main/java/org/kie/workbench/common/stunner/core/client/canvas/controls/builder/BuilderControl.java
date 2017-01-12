@@ -24,14 +24,13 @@ public interface BuilderControl<C extends CanvasHandler, R extends BuildRequest>
 
     interface BuildCallback {
 
-        void onSuccess( String uuid );
+        void onSuccess( final String uuid );
 
         void onError( final ClientRuntimeError error );
-
     }
 
-    boolean allows( R request );
+    boolean allows( final R request );
 
-    void build( R request, BuildCallback callback );
-
+    void build( final R request,
+                final BuildCallback callback );
 }

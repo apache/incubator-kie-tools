@@ -16,19 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-
 import java.util.Map;
+
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 
 public interface BindablePropertyAdapter<T, V> extends PropertyAdapter<T, V> {
 
-    void setBindings( Map<Class, String> propertyTypeFieldNames,
-                      Map<Class, String> propertyCaptionFieldNames,
-                      Map<Class, String> propertyDescriptionFieldNames,
-                      Map<Class, String> propertyReadOnlyFieldNames,
-                      Map<Class, String> propertyOptionalFieldNames,
-                      Map<Class, String> propertyValueFieldNames,
-                      Map<Class, String> propertyDefaultValueFieldNames,
-                      Map<Class, String> propertyAllowedValuesFieldNames );
-
+    void setBindings( final Map<Class, String> propertyTypeFieldNames,
+                      final Map<Class, String> propertyCaptionFieldNames,
+                      final Map<Class, String> propertyDescriptionFieldNames,
+                      final Map<Class, String> propertyReadOnlyFieldNames,
+                      final Map<Class, String> propertyOptionalFieldNames,
+                      final Map<Class, String> propertyValueFieldNames,
+                      final Map<Class, String> propertyDefaultValueFieldNames,
+                      final Map<Class, String> propertyAllowedValuesFieldNames );
 }

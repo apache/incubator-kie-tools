@@ -28,24 +28,30 @@ public final class PictureGlyph extends AbstractLienzoShapeGlyph {
     public PictureGlyph( final String uri,
                          final double width,
                          final double height ) {
-        super( new Group(), width, height );
-        build( uri, width, height );
+        super( new Group(),
+               width,
+               height );
+        build( uri,
+               width,
+               height );
     }
 
     private void build( final String uri,
                         final double width,
                         final double height ) {
-        final Rectangle decorator = new Rectangle( width, height )
+        final Rectangle decorator = new Rectangle( width,
+                                                   height )
                 .setCornerRadius( 5 )
                 .setFillColor( ColorName.LIGHTGREY )
                 .setFillAlpha( 0.2d );
-        new Picture( uri, picture -> {
-            scalePicture( picture, width, height );
-            group.remove( decorator );
-            group.add( picture );
-
-        } );
+        new Picture( uri,
+                     picture -> {
+                         scalePicture( picture,
+                                       width,
+                                       height );
+                         group.remove( decorator );
+                         group.add( picture );
+                     } );
         group.add( decorator );
     }
-
 }

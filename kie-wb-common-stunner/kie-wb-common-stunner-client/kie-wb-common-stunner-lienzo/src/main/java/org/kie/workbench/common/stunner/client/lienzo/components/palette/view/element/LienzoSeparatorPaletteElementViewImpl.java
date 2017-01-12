@@ -27,12 +27,12 @@ public final class LienzoSeparatorPaletteElementViewImpl
 
     public LienzoSeparatorPaletteElementViewImpl( final double height,
                                                   final double width ) {
-        this.view = new Rectangle( width, height ).setAlpha( 0.1d ).setStrokeAlpha( 0 - 1d );
+        this.view = new Rectangle( width,
+                                   height ).setAlpha( 0.1d ).setStrokeAlpha( 0 - 1d );
     }
 
     @Override
     public IPrimitive<?> getView() {
         return view;
     }
-
 }

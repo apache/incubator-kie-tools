@@ -15,34 +15,30 @@
 
 package org.kie.workbench.common.stunner.core.definition.service;
 
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
-
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+
 /**
  * Provides marshalling and unmarshalling services for the diagram's metadata.
- *
  * @param <M> The type of the metadata.
  */
 public interface DiagramMetadataMarshaller<M extends Metadata> {
 
     /**
      * Constructs a metadata instance of type <code>M</code> by consuming the input stream.
-     *
      * @param input The input stream that contains metadata's raw data.
      * @return A metadata instance of type <code>M</code.
      * @throws IOException System I/O error.
      */
-    M unmarshall( InputStream input ) throws IOException;
+    M unmarshall( final InputStream input ) throws IOException;
 
     /**
      * Serializes a metadata instance of type <code>M</code> as string.
-     *
      * @param metadata The metadata instance.
      * @return The serialized metadata's raw value.
      * @throws IOException System I/O error.
      */
-    String marshall( M metadata ) throws IOException;
-
+    String marshall( final M metadata ) throws IOException;
 }

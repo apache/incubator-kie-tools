@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.lienzo.toolbox;
 
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
@@ -24,8 +26,6 @@ import com.ait.lienzo.shared.core.types.Direction;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.stunner.lienzo.toolbox.builder.AbstractBuilder;
 import org.kie.workbench.common.stunner.lienzo.toolbox.grid.GridToolbox;
-
-import java.util.List;
 
 public class HoverToolbox extends AbstractToolbox {
 
@@ -55,7 +55,6 @@ public class HoverToolbox extends AbstractToolbox {
         HandlerRegistration hr2 = button.getDecorator().addNodeMouseExitHandler( hoverTimer );
         handlerRegistrationManager.register( hr1 );
         handlerRegistrationManager.register( hr2 );
-
     }
 
     @Override
@@ -64,7 +63,6 @@ public class HoverToolbox extends AbstractToolbox {
             super.show();
             showing = true;
         }
-
     }
 
     @Override
@@ -73,7 +71,6 @@ public class HoverToolbox extends AbstractToolbox {
             super.hide();
             showing = false;
         }
-
     }
 
     private HoverToolbox( final Layer layer,
@@ -86,7 +83,16 @@ public class HoverToolbox extends AbstractToolbox {
                           final int padding,
                           final int iconSize,
                           final List<ToolboxButton> buttons ) {
-        super( layer, shape, attachTo, anchor, towards, rows, cols, padding, iconSize, buttons );
+        super( layer,
+               shape,
+               attachTo,
+               anchor,
+               towards,
+               rows,
+               cols,
+               padding,
+               iconSize,
+               buttons );
     }
 
     @Override
@@ -100,16 +106,24 @@ public class HoverToolbox extends AbstractToolbox {
 
     public static class HoverToolboxBuilder extends AbstractBuilder {
 
-        public HoverToolboxBuilder( Layer layer, WiresShape shape ) {
-            super( layer,shape );
+        public HoverToolboxBuilder( Layer layer,
+                                    WiresShape shape ) {
+            super( layer,
+                   shape );
         }
 
         @Override
         public GridToolbox register() {
-            return new HoverToolbox( this.layer, this.shape, this.attachTo, this.anchor, this.towards, this.rows, this.cols,
-                    this.padding, this.iconSize, this.buttons );
+            return new HoverToolbox( this.layer,
+                                     this.shape,
+                                     this.attachTo,
+                                     this.anchor,
+                                     this.towards,
+                                     this.rows,
+                                     this.cols,
+                                     this.padding,
+                                     this.iconSize,
+                                     this.buttons );
         }
-
     }
-
 }

@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuildRequest;
@@ -36,10 +40,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.uberfire.mvp.Command;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 @Dependent
 public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
 
@@ -49,7 +49,12 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
     private String edgeId;
 
     protected NewConnectorCommand() {
-        this( null, null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -59,10 +64,12 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
                                 final GraphBoundsIndexer graphBoundsIndexer,
                                 final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
                                 final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl ) {
-        super( clientFactoryServices, shapeManager, glyphTooltip, graphBoundsIndexer );
+        super( clientFactoryServices,
+               shapeManager,
+               glyphTooltip,
+               graphBoundsIndexer );
         this.connectorDragProxyFactory = connectorDragProxyFactory;
         this.edgeBuilderControl = edgeBuilderControl;
-
     }
 
     // TODO: i18n.
@@ -92,10 +99,13 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
     }
 
     @Override
-    public void click( Context<AbstractCanvasHandler> context, Element element ) {
-        super.click( context, element );
+    public void click( final Context<AbstractCanvasHandler> context,
+                       Element element ) {
+        super.click( context,
+                     element );
         // Same behavior as when mouse down, so use of the drag handler.
-        this.mouseDown( context, element );
+        this.mouseDown( context,
+                        element );
     }
 
     @Override
@@ -147,7 +157,10 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
         final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
         final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
         edge.setSourceNode( sourceNode );
-        NewConnectorCommand.super.onDefinitionInstanceBuilt( context, source, newElement, callback );
+        NewConnectorCommand.super.onDefinitionInstanceBuilt( context,
+                                                             source,
+                                                             newElement,
+                                                             callback );
     }
 
     @Override
@@ -160,9 +173,12 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
         final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
         final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
         if ( null != targetNode ) {
-            final EdgeBuildRequest request = new EdgeBuildRequestImpl( x, y, edge, sourceNode, targetNode );
+            final EdgeBuildRequest request = new EdgeBuildRequestImpl( x,
+                                                                       y,
+                                                                       edge,
+                                                                       sourceNode,
+                                                                       targetNode );
             return edgeBuilderControl.allows( request );
-
         }
         return false;
     }
@@ -176,12 +192,15 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
                                                final Node targetNode ) {
         final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
         final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        return new EdgeBuildRequestImpl( x, y, edge, sourceNode, targetNode );
+        return new EdgeBuildRequestImpl( x,
+                                         y,
+                                         edge,
+                                         sourceNode,
+                                         targetNode );
     }
 
     @Override
     public void destroy() {
         super.destroy();
     }
-
 }

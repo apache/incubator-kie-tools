@@ -60,7 +60,7 @@ public class TaskName implements BPMNProperty {
     @Value
     @NotNull
     @NotEmpty
-    @Pattern(regexp = "[a-zA-Z0-9._-]+")
+    @Pattern( regexp = "[a-zA-Z0-9._-]+" )
     private String value = defaultValue;
 
     public TaskName() {
@@ -101,5 +101,4 @@ public class TaskName implements BPMNProperty {
     public void setValue( String value ) {
         this.value = value;
     }
-
 }

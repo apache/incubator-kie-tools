@@ -38,5 +38,4 @@ public abstract class AbstractBuildRequest implements BuildRequest {
     public double getY() {
         return y;
     }
-
 }

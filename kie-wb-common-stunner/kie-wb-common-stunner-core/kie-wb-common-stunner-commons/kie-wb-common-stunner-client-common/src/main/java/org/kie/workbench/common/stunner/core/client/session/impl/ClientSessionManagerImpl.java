@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.api.platform.ClientPlatform;
 import org.kie.workbench.common.stunner.core.client.api.platform.PlatformManager;
@@ -24,14 +30,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.session.event.*;
+import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @ApplicationScoped
 public class ClientSessionManagerImpl extends AbstractClientSessionManager {
@@ -46,7 +50,12 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
     private final Event<OnSessionErrorEvent> sessionErrorEvent;
 
     protected ClientSessionManagerImpl() {
-        this( null, null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -88,7 +97,6 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
         if ( platform instanceof AbstractClientSessionProducer ) {
             final AbstractClientSessionProducer sessionProducer = ( AbstractClientSessionProducer ) platform;
             session = sessionProducer.newReadOnlySession();
-
         }
         return session;
     }
@@ -101,7 +109,6 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
         if ( platform instanceof AbstractClientSessionProducer ) {
             final AbstractClientSessionProducer sessionProducer = ( AbstractClientSessionProducer ) platform;
             session = sessionProducer.newFullSession();
-
         }
         return session;
     }
@@ -110,24 +117,26 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
     public void handleCommandError( final CommandException ce ) {
         super.handleCommandError( ce );
         sessionErrorEvent.fire( new OnSessionErrorEvent( current,
-                new ClientRuntimeError( "Error while executing command.", ce ) ) );
+                                                         new ClientRuntimeError( "Error while executing command.",
+                                                                                 ce ) ) );
     }
 
     @Override
     public void handleClientError( final ClientRuntimeError error ) {
         super.handleClientError( error );
-        sessionErrorEvent.fire( new OnSessionErrorEvent( current, error ) );
+        sessionErrorEvent.fire( new OnSessionErrorEvent( current,
+                                                         error ) );
     }
 
     protected ClientPlatform getPlatform() {
         return platformManager.getCurrentPlatform();
-
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
-
 }

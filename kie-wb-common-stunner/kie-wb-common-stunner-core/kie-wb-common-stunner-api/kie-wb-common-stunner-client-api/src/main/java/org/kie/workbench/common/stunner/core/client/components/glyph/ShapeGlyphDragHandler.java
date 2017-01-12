@@ -22,12 +22,15 @@ public interface ShapeGlyphDragHandler<G> {
 
     interface Callback {
 
-        void onMove( double x, double y );
+        void onMove( final double x,
+                     final double y );
 
-        void onComplete( double x, double y );
-
+        void onComplete( final double x,
+                         final double y );
     }
 
-    void show( Glyph<G> shapeGlyph, double x, double y, Callback callback );
-
+    void show( final Glyph<G> shapeGlyph,
+               final double x,
+               final double y,
+               final Callback callback );
 }

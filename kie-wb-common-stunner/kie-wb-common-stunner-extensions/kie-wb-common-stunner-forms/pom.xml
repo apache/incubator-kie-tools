@@ -18,39 +18,39 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>kie-wb-common-stunner-extensions</artifactId>
-        <groupId>org.kie.workbench.stunner</groupId>
-        <version>7.0.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>kie-wb-common-stunner-extensions</artifactId>
+    <groupId>org.kie.workbench.stunner</groupId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kie-wb-common-stunner-forms</artifactId>
-    <packaging>pom</packaging>
-    <name>Kie Workbench - Common - Stunner - Forms</name>
-    <description>Kie Workbench - Common - Stunner - Forms</description>
+  <artifactId>kie-wb-common-stunner-forms</artifactId>
+  <packaging>pom</packaging>
+  <name>Kie Workbench - Common - Stunner - Forms</name>
+  <description>Kie Workbench - Common - Stunner - Forms</description>
 
-    <modules>
-        <module>kie-wb-common-stunner-forms-api</module>
-        <module>kie-wb-common-stunner-forms-backend</module>
-        <module>kie-wb-common-stunner-forms-client</module>
-    </modules>
+  <modules>
+    <module>kie-wb-common-stunner-forms-api</module>
+    <module>kie-wb-common-stunner-forms-backend</module>
+    <module>kie-wb-common-stunner-forms-client</module>
+  </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt.gwtmockito</groupId>
-            <artifactId>gwtmockito</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-testing-utils</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

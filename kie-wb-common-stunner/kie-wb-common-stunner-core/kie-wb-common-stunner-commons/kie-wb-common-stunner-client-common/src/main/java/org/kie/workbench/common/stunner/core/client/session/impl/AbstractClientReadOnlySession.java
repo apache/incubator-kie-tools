@@ -42,7 +42,8 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
                                           final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
                                           final ZoomControl<AbstractCanvas> zoomControl,
                                           final PanControl<AbstractCanvas> panControl ) {
-        super( canvas, canvasHandler );
+        super( canvas,
+               canvasHandler );
         this.selectionControl = selectionControl;
         this.zoomControl = zoomControl;
         this.panControl = panControl;
@@ -93,21 +94,17 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
             @Override
             public void register( final Shape item ) {
                 onRegisterShape( item );
-
             }
 
             @Override
             public void deregister( final Shape item ) {
                 onDeregisterShape( item );
-
             }
 
             @Override
             public void clear() {
                 onClear();
-
             }
-
         };
         canvas.addRegistrationListener( shapeListener );
         // Canvas handler listeners.
@@ -115,28 +112,25 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
 
             @Override
             public void update( final Element item ) {
-                onElementRegistration( item, false, true );
-
+                onElementRegistration( item,
+                                       false,
+                                       true );
             }
 
             @Override
             public void register( final Element item ) {
                 onRegisterElement( item );
-
             }
 
             @Override
             public void deregister( final Element item ) {
                 onDeregisterElement( item );
-
             }
 
             @Override
             public void clear() {
                 onClear();
-
             }
-
         };
         getCanvasHandler().addRegistrationListener( elementListener );
     }
@@ -151,41 +145,48 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
     }
 
     private void onRegisterShape( final Shape shape ) {
-        onShapeRegistration( shape, true );
-
+        onShapeRegistration( shape,
+                             true );
     }
 
     private void onDeregisterShape( final Shape shape ) {
-        onShapeRegistration( shape, false );
-
+        onShapeRegistration( shape,
+                             false );
     }
 
     private void onRegisterElement( final Element element ) {
-        onElementRegistration( element, true, false );
-
+        onElementRegistration( element,
+                               true,
+                               false );
     }
 
     private void onDeregisterElement( final Element element ) {
-        onElementRegistration( element, false, false );
-
+        onElementRegistration( element,
+                               false,
+                               false );
     }
 
     protected void onElementRegistration( final Element element,
                                           final boolean add,
                                           final boolean update ) {
         if ( update ) {
-            fireRegistrationUpdateListeners( getSelectionControl(), element );
+            fireRegistrationUpdateListeners( getSelectionControl(),
+                                             element );
         } else {
-            fireRegistrationListeners( getSelectionControl(), element, add );
+            fireRegistrationListeners( getSelectionControl(),
+                                       element,
+                                       add );
         }
-
     }
 
     protected void onShapeRegistration( final Shape shape,
                                         final boolean add ) {
-        fireRegistrationListeners( getZoomControl(), shape, add );
-        fireRegistrationListeners( getPanControl(), shape, add );
-
+        fireRegistrationListeners( getZoomControl(),
+                                   shape,
+                                   add );
+        fireRegistrationListeners( getPanControl(),
+                                   shape,
+                                   add );
     }
 
     protected void onClear() {
@@ -193,9 +194,12 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
     }
 
     protected void enableControls() {
-        enableControl( getSelectionControl(), getCanvasHandler() );
-        enableControl( getZoomControl(), getCanvas() );
-        enableControl( getPanControl(), getCanvas() );
+        enableControl( getSelectionControl(),
+                       getCanvasHandler() );
+        enableControl( getZoomControl(),
+                       getCanvas() );
+        enableControl( getPanControl(),
+                       getCanvas() );
     }
 
     protected void disableControls() {
@@ -209,5 +213,4 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
             getPanControl().disable();
         }
     }
-
 }

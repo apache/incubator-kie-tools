@@ -99,5 +99,4 @@ public final class CaseManagementDiagramShapeDef
     public double getCornerRadius( final CaseManagementDiagram element ) {
         return 0;
     }
-
 }

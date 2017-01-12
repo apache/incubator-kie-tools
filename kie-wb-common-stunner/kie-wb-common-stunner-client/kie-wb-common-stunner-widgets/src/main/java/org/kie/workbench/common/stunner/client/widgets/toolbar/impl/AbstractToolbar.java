@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,12 +34,8 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.item.AbstractTool
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.mvp.Command;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-public abstract class AbstractToolbar<S extends ClientSession> implements Toolbar<S>, IsWidget {
+public abstract class AbstractToolbar<S extends ClientSession> implements Toolbar<S>,
+                                                                          IsWidget {
 
     private static Logger LOGGER = Logger.getLogger( AbstractToolbar.class.getName() );
 
@@ -59,7 +60,8 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
         commands.add( item );
     }
 
-    public void initialize( final S session, final ToolbarCommandCallback<?> callback ) {
+    public void initialize( final S session,
+                            final ToolbarCommandCallback<?> callback ) {
         this.session = session;
         for ( final ToolbarCommand<S> command : commands ) {
             final Command clickHandler = () -> command.execute( callback );
@@ -67,7 +69,10 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
             toolbarItem.setUUID( ( ( AbstractToolbarSessionCommand ) command ).getUuid() );
             view.addItem( toolbarItem.asWidget() );
             items.add( toolbarItem );
-            toolbarItem.show( this, session, command, clickHandler );
+            toolbarItem.show( this,
+                              session,
+                              command,
+                              clickHandler );
         }
         afterDraw();
         show();
@@ -135,9 +140,11 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
         return null;
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

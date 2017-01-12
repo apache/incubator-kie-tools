@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.menu.dev;
 
+import java.util.Collection;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -30,10 +34,6 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Collection;
-
 /**
  * The menu builder that provides a dropdown menu item in order to create new diagrams.
  */
@@ -43,6 +43,7 @@ public class ShapeSetsMenuItemsBuilder {
     private final ShapeManager shapeManager;
 
     public interface Callback {
+
         void onClick( ShapeSet shapeSet );
     }
 
@@ -97,5 +98,4 @@ public class ShapeSetsMenuItemsBuilder {
             }
         }.build();
     }
-
 }

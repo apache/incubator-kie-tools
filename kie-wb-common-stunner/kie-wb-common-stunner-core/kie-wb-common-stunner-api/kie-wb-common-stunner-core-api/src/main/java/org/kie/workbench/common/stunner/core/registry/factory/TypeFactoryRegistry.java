@@ -21,6 +21,5 @@ import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactor
 
 public interface TypeFactoryRegistry<F extends Factory<?>> extends FactoryRegistry<F> {
 
-    DefinitionFactory<?> getDefinitionFactory( Class<?> type );
-
+    DefinitionFactory<?> getDefinitionFactory( final Class<?> type );
 }

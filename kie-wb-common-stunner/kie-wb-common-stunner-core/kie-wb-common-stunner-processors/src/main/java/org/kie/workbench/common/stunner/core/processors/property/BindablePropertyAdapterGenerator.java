@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.processors.property;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.processing.Messager;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapterProxy;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingPropertyAnnotations;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BindablePropertyAdapterGenerator extends AbstractBindableAdapterGenerator {
 
@@ -33,29 +33,50 @@ public class BindablePropertyAdapterGenerator extends AbstractBindableAdapterGen
         return "BindablePropertyAdapter.ftl";
     }
 
-    public StringBuffer generate( String packageName, String className,
-                                  ProcessingPropertyAnnotations processingPropertyAnnotations,
-                                  Messager messager ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final String className,
+                                  final ProcessingPropertyAnnotations processingPropertyAnnotations,
+                                  final Messager messager ) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
-                packageName );
+                  packageName );
         root.put( "className",
-                className );
+                  className );
         root.put( "parentAdapterClassName",
-                BindablePropertyAdapterProxy.class.getName() );
-        root.put( "adapterFactoryClassName", BindableAdapterFactory.class.getName() );
+                  BindablePropertyAdapterProxy.class.getName() );
+        root.put( "adapterFactoryClassName",
+                  BindableAdapterFactory.class.getName() );
         root.put( "generatedByClassName",
-                BindablePropertyAdapterGenerator.class.getName() );
-        addFields( "valuePropNames", root, processingPropertyAnnotations.getValueFieldNames() );
-        addFields( "defaultValuePropNames", root, processingPropertyAnnotations.getDefaultValueFieldNames() );
-        addFields( "captionPropNames", root, processingPropertyAnnotations.getCaptionFieldNames() );
-        addFields( "descriptionPropNames", root, processingPropertyAnnotations.getDescriptionFieldNames() );
-        addFields( "propTypePropNames", root, processingPropertyAnnotations.getTypeFieldNames() );
-        addFields( "readOnlyPropNames", root, processingPropertyAnnotations.getReadOnlyFieldNames() );
-        addFields( "optionalPropNames", root, processingPropertyAnnotations.getOptionalFieldNames() );
-        addFields( "allowedValuesPropNames", root, processingPropertyAnnotations.getAllowedValuesFieldNames() );
-        //Generate code
-        return writeTemplate( packageName, className, root, messager );
-    }
+                  BindablePropertyAdapterGenerator.class.getName() );
+        addFields( "valuePropNames",
+                   root,
+                   processingPropertyAnnotations.getValueFieldNames() );
+        addFields( "defaultValuePropNames",
+                   root,
+                   processingPropertyAnnotations.getDefaultValueFieldNames() );
+        addFields( "captionPropNames",
+                   root,
+                   processingPropertyAnnotations.getCaptionFieldNames() );
+        addFields( "descriptionPropNames",
+                   root,
+                   processingPropertyAnnotations.getDescriptionFieldNames() );
+        addFields( "propTypePropNames",
+                   root,
+                   processingPropertyAnnotations.getTypeFieldNames() );
+        addFields( "readOnlyPropNames",
+                   root,
+                   processingPropertyAnnotations.getReadOnlyFieldNames() );
+        addFields( "optionalPropNames",
+                   root,
+                   processingPropertyAnnotations.getOptionalFieldNames() );
+        addFields( "allowedValuesPropNames",
+                   root,
+                   processingPropertyAnnotations.getAllowedValuesFieldNames() );
 
+        //Generate code
+        return writeTemplate( packageName,
+                              className,
+                              root,
+                              messager );
+    }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.diagram;
 
+import java.util.Collection;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -24,15 +26,13 @@ import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.uberfire.backend.vfs.Path;
 
-import java.util.Collection;
-
 @Portable
 public final class MetadataImpl extends AbstractMetadata {
 
     public MetadataImpl() {
     }
 
-    private MetadataImpl( @MapsTo( "definitionSetId" ) String definitionSetId ) {
+    private MetadataImpl( final @MapsTo( "definitionSetId" ) String definitionSetId ) {
         super( definitionSetId );
     }
 
@@ -52,12 +52,15 @@ public final class MetadataImpl extends AbstractMetadata {
         private Path path;
 
         public MetadataImplBuilder( final String defSetId ) {
-            this( defSetId, null );
+            this( defSetId,
+                  null );
         }
 
         public MetadataImplBuilder( final String defSetId,
                                     final DefinitionManager definitionManager ) {
-            this( defSetId, definitionManager, null );
+            this( defSetId,
+                  definitionManager,
+                  null );
         }
 
         public MetadataImplBuilder( final String defSetId,
@@ -90,7 +93,7 @@ public final class MetadataImpl extends AbstractMetadata {
                 final Object defSet = definitionManager.definitionSets().getDefinitionSetById( defSetId );
                 if ( null != defSet ) {
                     result.setTitle( null != title ? title :
-                            definitionManager.adapters().forDefinitionSet().getDescription( defSet ) );
+                                             definitionManager.adapters().forDefinitionSet().getDescription( defSet ) );
                     final String s = null != ssid ? ssid : ( null != getShapeSet() ? getShapeSet().getId() : null );
                     if ( null != s ) {
                         result.setShapeSetId( s );
@@ -111,9 +114,7 @@ public final class MetadataImpl extends AbstractMetadata {
                     }
                 }
             }
-
             return null;
         }
-
     }
 }

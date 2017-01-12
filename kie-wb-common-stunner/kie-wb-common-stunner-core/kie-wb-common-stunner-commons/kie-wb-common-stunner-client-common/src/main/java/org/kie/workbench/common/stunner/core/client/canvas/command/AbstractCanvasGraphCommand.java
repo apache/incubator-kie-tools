@@ -51,12 +51,12 @@ public abstract class AbstractCanvasGraphCommand
     /**
      * Creates a new command instance for the graph context.
      */
-    protected abstract Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( AbstractCanvasHandler context );
+    protected abstract Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context );
 
     /**
      * Creates a new command instance for the canvas context.
      */
-    protected abstract Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand( AbstractCanvasHandler context );
+    protected abstract Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand( final AbstractCanvasHandler context );
 
     @Override
     public Command<GraphCommandExecutionContext, RuleViolation> getGraphCommand( final AbstractCanvasHandler context ) {
@@ -78,7 +78,8 @@ public abstract class AbstractCanvasGraphCommand
         // Ensure the canvas command is initialized before updating the element on the graph side.
         getCanvasCommand( context );
         final CommandResult<CanvasViolation> canvasResult =
-                performOperationOnGraph( context, CommandOperation.ALLOW );
+                performOperationOnGraph( context,
+                                         CommandOperation.ALLOW );
         if ( !CommandUtils.isError( canvasResult ) ) {
             return getCanvasCommand( context ).allow( context );
         }
@@ -90,7 +91,8 @@ public abstract class AbstractCanvasGraphCommand
         // Ensure the canvas command is initialized before updating the element on the graph side.
         getCanvasCommand( context );
         final CommandResult<CanvasViolation> canvasResult =
-                performOperationOnGraph( context, CommandOperation.EXECUTE );
+                performOperationOnGraph( context,
+                                         CommandOperation.EXECUTE );
         if ( !CommandUtils.isError( canvasResult ) ) {
             return getCanvasCommand( context ).execute( context );
         }
@@ -98,11 +100,12 @@ public abstract class AbstractCanvasGraphCommand
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
         // Ensure the canvas command is initialized before updating the element on the graph side.
         getCanvasCommand( context );
         final CommandResult<CanvasViolation> canvasResult =
-                performOperationOnGraph( context, CommandOperation.UNDO );
+                performOperationOnGraph( context,
+                                         CommandOperation.UNDO );
         if ( !CommandUtils.isError( canvasResult ) ) {
             return getCanvasCommand( context ).undo( context );
         }
@@ -110,14 +113,15 @@ public abstract class AbstractCanvasGraphCommand
     }
 
     @SuppressWarnings( "unchecked" )
-    protected Node<?, Edge> getNode( final AbstractCanvasHandler context, final String uuid ) {
+    protected Node<?, Edge> getNode( final AbstractCanvasHandler context,
+                                     final String uuid ) {
         return context.getGraphIndex().getNode( uuid );
     }
 
     private enum CommandOperation {
         ALLOW,
         EXECUTE,
-        UNDO;
+        UNDO
     }
 
     /**
@@ -144,8 +148,10 @@ public abstract class AbstractCanvasGraphCommand
 
     private GraphCommandExecutionContext getGraphCommandExecutionContext( final AbstractCanvasHandler context ) {
         return new GraphCommandExecutionContextImpl( context.getClientDefinitionManager(),
-                context.getClientFactoryServices().getClientFactoryManager(), context.getGraphRulesManager(),
-                context.getGraphIndex(), context.getGraphUtils() );
+                                                     context.getClientFactoryServices().getClientFactoryManager(),
+                                                     context.getGraphRulesManager(),
+                                                     context.getGraphIndex(),
+                                                     context.getGraphUtils() );
     }
 
     @Override

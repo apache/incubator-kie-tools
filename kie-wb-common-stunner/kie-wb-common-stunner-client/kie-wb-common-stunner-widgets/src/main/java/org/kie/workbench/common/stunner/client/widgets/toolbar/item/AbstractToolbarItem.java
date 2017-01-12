@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.item;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -28,32 +32,27 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public abstract class AbstractToolbarItem<S extends ClientSession> implements IsWidget {
 
     private static Logger LOGGER = Logger.getLogger( AbstractToolbarItem.class.getName() );
 
     public interface View extends UberView<AbstractToolbarItem> {
 
-        View setIcon( IconType icon );
+        View setIcon( final IconType icon );
 
-        View setIconRotate( IconRotate rotate );
+        View setIconRotate( final IconRotate rotate );
 
-        View setIconSize( IconSize size );
+        View setIconSize( final IconSize size );
 
-        View setCaption( String caption );
+        View setCaption( final String caption );
 
-        View setTooltip( String tooltip );
+        View setTooltip( final String tooltip );
 
-        View setClickHandler( Command command );
+        View setClickHandler( final Command command );
 
-        View setEnabled( boolean enabled );
+        View setEnabled( final boolean enabled );
 
         void destroy();
-
     }
 
     View view;
@@ -87,7 +86,8 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
                       final ToolbarCommand<S> command,
                       final Command clickHandler ) {
         // Initialize the command with the current session.
-        command.initialize( toolbar, session );
+        command.initialize( toolbar,
+                            session );
         final IconType icon = command.getIcon();
         final String caption = command.getCaption();
         if ( icon != null ) {
@@ -98,7 +98,6 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
         }
         view.setTooltip( command.getTooltip() );
         view.setClickHandler( clickHandler );
-
     }
 
     public void setIconSize( final IconSize size ) {
@@ -111,17 +110,17 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
 
     public void disable() {
         view.setEnabled( false );
-
     }
 
     public void destroy() {
         view.destroy();
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
-
 }

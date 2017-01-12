@@ -23,6 +23,8 @@ public interface RuleViolation {
     Type getViolationType();
 
     enum Type {
-        ERROR, WARNING, INFO
+        ERROR,
+        WARNING,
+        INFO
     }
 }

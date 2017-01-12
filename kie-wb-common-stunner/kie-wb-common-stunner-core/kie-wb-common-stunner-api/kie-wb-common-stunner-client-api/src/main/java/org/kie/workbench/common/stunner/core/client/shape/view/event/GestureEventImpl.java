@@ -26,7 +26,6 @@ public final class GestureEventImpl extends AbstractViewEvent
                              final double rotation ) {
         this.scale = scale;
         this.rotation = rotation;
-
     }
 
     public double getScale() {
@@ -36,5 +35,4 @@ public final class GestureEventImpl extends AbstractViewEvent
     public double getRotation() {
         return rotation;
     }
-
 }

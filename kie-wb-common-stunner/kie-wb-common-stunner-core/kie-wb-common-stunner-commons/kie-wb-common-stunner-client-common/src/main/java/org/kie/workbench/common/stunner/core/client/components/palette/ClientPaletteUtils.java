@@ -16,25 +16,22 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette;
 
-import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
-
 import java.util.List;
+
+import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
 
 public class ClientPaletteUtils {
 
     public static String getLongestText( final List<GlyphPaletteItem> paletteItems ) {
         if ( null == paletteItems || paletteItems.isEmpty() ) {
             return null;
-
         }
         String longestTitle = "";
         for ( final GlyphPaletteItem item : paletteItems ) {
             final String iTitle = item.getTitle();
             if ( null != iTitle && iTitle.length() > longestTitle.length() ) {
                 longestTitle = iTitle;
-
             }
-
         }
         return longestTitle.length() > 0 ? longestTitle : null;
     }
@@ -43,16 +40,22 @@ public class ClientPaletteUtils {
                                                          final int iconSize,
                                                          final int padding,
                                                          final int textLength ) {
-        return computeSizeForLayout( itemsSize, iconSize, padding, textLength, true );
-
+        return computeSizeForLayout( itemsSize,
+                                     iconSize,
+                                     padding,
+                                     textLength,
+                                     true );
     }
 
     public static double[] computeSizeForHorizontalLayout( final int itemsSize,
                                                            final int iconSize,
                                                            final int padding,
                                                            final int textLength ) {
-        return computeSizeForLayout( itemsSize, iconSize, padding, textLength, false );
-
+        return computeSizeForLayout( itemsSize,
+                                     iconSize,
+                                     padding,
+                                     textLength,
+                                     false );
     }
 
     public static double computeFontSize( final double width,
@@ -60,14 +63,12 @@ public class ClientPaletteUtils {
                                           final int textLength ) {
         // TODO
         return 10;
-
     }
 
     public static double[] computeFontBoundingBoxSize( final double fontSize,
                                                        final int textLength ) {
         // TODO
         return new double[]{ 100, 50 };
-
     }
 
     private static double[] computeSizeForLayout( final int itemsSize,
@@ -82,13 +83,14 @@ public class ClientPaletteUtils {
         width = verticalLayout ? fixedSize : dynSize;
         height = verticalLayout ? dynSize : fixedSize;
         if ( textLength > 0 ) {
-            final double fontSize = computeFontSize( fixedSize, fixedSize, textLength );
-            final double[] fontBBSize = computeFontBoundingBoxSize( fontSize, textLength );
+            final double fontSize = computeFontSize( fixedSize,
+                                                     fixedSize,
+                                                     textLength );
+            final double[] fontBBSize = computeFontBoundingBoxSize( fontSize,
+                                                                    textLength );
             width += verticalLayout ? fontBBSize[ 0 ] : 0;
             height += !verticalLayout ? fontBBSize[ 1 ] : 0;
-
         }
         return new double[]{ width, height };
     }
-
 }

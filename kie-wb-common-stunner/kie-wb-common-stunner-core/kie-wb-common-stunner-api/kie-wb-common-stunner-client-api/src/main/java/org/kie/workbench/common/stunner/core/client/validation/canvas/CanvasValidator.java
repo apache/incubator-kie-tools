@@ -22,6 +22,5 @@ import org.kie.workbench.common.stunner.core.validation.Validator;
 
 public interface CanvasValidator extends Validator<CanvasHandler, CanvasValidatorCallback> {
 
-    CanvasValidator withRulesManager( GraphRulesManager rulesManager );
-
+    CanvasValidator withRulesManager( final GraphRulesManager rulesManager );
 }

@@ -16,18 +16,19 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
-
 import java.util.Collection;
 import java.util.List;
+
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
 
 public abstract class AbstractDiagramListRegistry<D extends Diagram>
         extends AbstractDynamicRegistryWrapper<D, ListRegistry<D>>
         implements DiagramRegistry<D> {
 
     public AbstractDiagramListRegistry( final List<D> items ) {
-        super( new ListRegistry<>( Diagram::getName, items ) );
+        super( new ListRegistry<>( Diagram::getName,
+                                   items ) );
     }
 
     @Override
@@ -41,14 +42,12 @@ public abstract class AbstractDiagramListRegistry<D extends Diagram>
         if ( index != -1 ) {
             final boolean isRemoved = remove( diagram );
             if ( isRemoved ) {
-                getWrapped().add( index, diagram );
+                getWrapped().add( index,
+                                  diagram );
             }
-
         } else {
             throw new RuntimeException( "Diagram with uuid [" + diagram.getName() + "] cannot be updated as it does not exist." );
-
         }
-
     }
 
     public Collection<D> getItems() {
@@ -58,5 +57,4 @@ public abstract class AbstractDiagramListRegistry<D extends Diagram>
     public void clear() {
         getWrapped().clear();
     }
-
 }

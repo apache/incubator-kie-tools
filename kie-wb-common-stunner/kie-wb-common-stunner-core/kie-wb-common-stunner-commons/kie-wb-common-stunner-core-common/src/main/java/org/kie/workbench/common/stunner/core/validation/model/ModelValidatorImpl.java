@@ -26,7 +26,5 @@ public class ModelValidatorImpl implements ModelValidator {
     public void validate( final Object item,
                           final ModelValidatorCallback callback ) {
         callback.onSuccess();
-
     }
-
 }

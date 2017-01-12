@@ -16,7 +16,19 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl;
 
-import org.kie.workbench.common.stunner.core.rule.*;
+import org.kie.workbench.common.stunner.core.rule.CardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.CardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.ConnectionRule;
+import org.kie.workbench.common.stunner.core.rule.ConnectionRuleManager;
+import org.kie.workbench.common.stunner.core.rule.ContainmentRule;
+import org.kie.workbench.common.stunner.core.rule.ContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.DockingRule;
+import org.kie.workbench.common.stunner.core.rule.DockingRuleManager;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRuleManager;
+import org.kie.workbench.common.stunner.core.rule.Rule;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RulesManager;
 
 public abstract class AbstractRulesManager<C extends ContainmentRuleManager,
         L extends ConnectionRuleManager,
@@ -56,19 +68,14 @@ public abstract class AbstractRulesManager<C extends ContainmentRuleManager,
     public RuleManager addRule( final Rule rule ) {
         if ( connectionRuleManager.supports( rule ) ) {
             connectionRuleManager.addRule( ( ConnectionRule ) rule );
-
         } else if ( containmentRuleManager.supports( rule ) ) {
             containmentRuleManager.addRule( ( ContainmentRule ) rule );
-
         } else if ( cardinalityRuleManager.supports( rule ) ) {
             cardinalityRuleManager.addRule( ( CardinalityRule ) rule );
-
         } else if ( edgeCardinalityRuleManager.supports( rule ) ) {
             edgeCardinalityRuleManager.addRule( ( EdgeCardinalityRule ) rule );
-
         } else if ( dockingRuleManager.supports( rule ) ) {
             dockingRuleManager.addRule( ( DockingRule ) rule );
-
         }
         return this;
     }
@@ -107,5 +114,4 @@ public abstract class AbstractRulesManager<C extends ContainmentRuleManager,
     public D docking() {
         return dockingRuleManager;
     }
-
 }

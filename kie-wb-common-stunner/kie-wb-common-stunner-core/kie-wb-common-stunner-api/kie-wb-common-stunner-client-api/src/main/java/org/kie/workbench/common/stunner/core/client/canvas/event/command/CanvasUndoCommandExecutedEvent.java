@@ -26,7 +26,8 @@ public final class CanvasUndoCommandExecutedEvent<H extends CanvasHandler> exten
     public CanvasUndoCommandExecutedEvent( final H canvasHandler,
                                            final Command<H, CanvasViolation> command,
                                            final CommandResult<CanvasViolation> violation ) {
-        super( canvasHandler, command, violation );
+        super( canvasHandler,
+               command,
+               violation );
     }
-
 }

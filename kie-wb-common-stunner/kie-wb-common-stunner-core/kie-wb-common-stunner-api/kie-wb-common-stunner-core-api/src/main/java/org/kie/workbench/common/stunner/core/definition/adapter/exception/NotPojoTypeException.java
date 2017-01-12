@@ -20,7 +20,7 @@ public class NotPojoTypeException extends RuntimeException {
 
     private final Class<?> type;
 
-    public NotPojoTypeException( Class<?> type ) {
+    public NotPojoTypeException( final Class<?> type ) {
         this.type = type;
     }
 

@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.toolbox.command.palette;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.ait.lienzo.client.core.shape.Shape;
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.AbstractLienzoGlyphItemsPalette;
@@ -43,11 +48,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.Graph
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 @Dependent
 public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphCommand<Shape<?>> {
 
@@ -67,10 +67,19 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
                                              final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
                                              final GraphBoundsIndexer graphBoundsIndexer,
                                              final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
-        super( definitionUtils, commandFactory, canvasCommandManager, clientFactoryServices,
-                commonLookups, shapeManager, definitionsPaletteBuilder, palette, nodeDragProxyFactory,
-                nodeBuilderControl, graphBoundsIndexer, SVGUtils.createSVGIcon( SVGUtils.getGearIcon() ),
-                elementSelectedEvent );
+        super( definitionUtils,
+               commandFactory,
+               canvasCommandManager,
+               clientFactoryServices,
+               commonLookups,
+               shapeManager,
+               definitionsPaletteBuilder,
+               palette,
+               nodeDragProxyFactory,
+               nodeBuilderControl,
+               graphBoundsIndexer,
+               SVGUtils.createSVGIcon( SVGUtils.getGearIcon() ),
+               elementSelectedEvent );
     }
 
     @PostConstruct
@@ -85,18 +94,23 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
         // Set the prefix to use on tooltips.
         ( ( AbstractLienzoGlyphItemsPalette ) getLienzoPalette() ).getDefinitionGlyphTooltip().setPrefix( "Convert to " );
         // Show the tooltip at the right coordinates..
-        getLienzoPalette().onShowGlyTooltip( ( glyphTooltip, item, mouseX, mouseY, itemX, itemY ) -> {
+        getLienzoPalette().onShowGlyTooltip( ( glyphTooltip,
+                                               item,
+                                               mouseX,
+                                               mouseY,
+                                               itemX, itemY ) -> {
             final Transform transform = canvasHandler.getCanvas().getLayer().getTransform();
             final double ax = canvasHandler.getCanvas().getAbsoluteX();
             final double ay = canvasHandler.getCanvas().getAbsoluteY();
             // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
             // using current transform attributes to obtain the right absolute position on the screen.
-            final Point2D t = transform.transform( getPaletteView().getX(), getPaletteView().getY() );
+            final Point2D t = transform.transform( getPaletteView().getX(),
+                                                   getPaletteView().getY() );
             glyphTooltip
                     .showTooltip( item.getDefinitionId(),
-                            ax + t.getX() + itemX,
-                            ay + t.getY() + itemY + ICON_SIZE + ( PADDING / 2 ),
-                            GlyphTooltip.Direction.NORTH );
+                                  ax + t.getX() + itemX,
+                                  ay + t.getY() + itemY + ICON_SIZE + ( PADDING / 2 ),
+                                  GlyphTooltip.Direction.NORTH );
             return false;
         } );
     }
@@ -104,15 +118,18 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
     @Override
     protected void beforeBindPalette( final DefinitionsPalette paletteDefinition,
                                       final Context<AbstractCanvasHandler> context ) {
-        super.beforeBindPalette( paletteDefinition, context );
+        super.beforeBindPalette( paletteDefinition,
+                                 context );
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
         getLienzoPalette().setShapeSetId( ssid );
     }
 
     @Override
-    protected void showPaletteViewAt( final double x, final double y ) {
+    protected void showPaletteViewAt( final double x,
+                                      final double y ) {
         // Adjust the palette view taking into account the lienzo shape size used as icon.
-        super.showPaletteViewAt( x - ICON_SIZE + PADDING, y + ICON_SIZE );
+        super.showPaletteViewAt( x - ICON_SIZE + PADDING,
+                                 y + ICON_SIZE );
     }
 
     @Override

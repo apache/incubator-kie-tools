@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.ArrayParser;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.IntegerFieldParser;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.ObjectParser;
@@ -28,15 +31,14 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class NodeParser extends ElementParser<Node<View, Edge>> {
 
     private final List<Parser> children = new LinkedList<>();
 
-    public NodeParser( String name, Node<View, Edge> element ) {
-        super( name, element );
+    public NodeParser( String name,
+                       Node<View, Edge> element ) {
+        super( name,
+               element );
     }
 
     public NodeParser addChild( Parser parser ) {
@@ -66,7 +68,6 @@ public class NodeParser extends ElementParser<Node<View, Edge>> {
                 if ( isViewEdge( edge ) ) {
                     // View connectors, such as sequence flows.
                     outId = edge.getUUID();
-
                 } else if ( isDockEdge( edge ) ) {
                     // Docked nodes. Oryx marshallers do not expect an outgoing sequence flow id here, it expects the
                     // id of the docked node.
@@ -74,33 +75,32 @@ public class NodeParser extends ElementParser<Node<View, Edge>> {
                     outId = docked.getUUID();
                 }
                 if ( null != outId ) {
-                    outgoingParser.addParser( new ObjectParser( "" ).addParser( new StringFieldParser( "resourceId", outId ) ) );
-
+                    outgoingParser.addParser( new ObjectParser( "" ).addParser( new StringFieldParser( "resourceId",
+                                                                                                       outId ) ) );
                 }
-
             }
-
         }
         // Dockers - Only use if this node is docked.
         if ( isDocked( element ) ) {
             Bounds.Bound ul = element.getContent().getBounds().getUpperLeft();
             ObjectParser docker1ObjParser = new ObjectParser( "" )
-                    .addParser( new IntegerFieldParser( "x", ul.getX().intValue() ) )
-                    .addParser( new IntegerFieldParser( "y", ul.getY().intValue() ) );
+                    .addParser( new IntegerFieldParser( "x",
+                                                        ul.getX().intValue() ) )
+                    .addParser( new IntegerFieldParser( "y",
+                                                        ul.getY().intValue() ) );
             ArrayParser dockersParser = new ArrayParser( "dockers" )
                     .addParser( docker1ObjParser );
             super.addParser( dockersParser );
-
         }
-
     }
 
     @Override
-    protected void parseBounds( Bounds.Bound ul, Bounds.Bound lr ) {
+    protected void parseBounds( Bounds.Bound ul,
+                                Bounds.Bound lr ) {
         Node<View, Edge> dockSource = getDockSourceNode( element );
         if ( null == dockSource ) {
-            super.parseBounds( ul, lr );
-
+            super.parseBounds( ul,
+                               lr );
         } else {
             Bounds.Bound parentUl = dockSource.getContent().getBounds().getUpperLeft();
             Bounds.Bound parentLr = dockSource.getContent().getBounds().getLowerRight();
@@ -110,12 +110,13 @@ public class NodeParser extends ElementParser<Node<View, Edge>> {
             double uly = parentUl.getY() + ul.getY() - ( bbH / 2 );
             double lrx = ulx + ( bbW / 2 );
             double lry = uly + ( bbH / 2 );
-            Bounds.Bound newUl = new BoundImpl( ulx, uly );
-            Bounds.Bound newLr = new BoundImpl( lrx, lry );
-            super.parseBounds( newUl, newLr );
-
+            Bounds.Bound newUl = new BoundImpl( ulx,
+                                                uly );
+            Bounds.Bound newLr = new BoundImpl( lrx,
+                                                lry );
+            super.parseBounds( newUl,
+                               newLr );
         }
-
     }
 
     private boolean isDocked( Node<View, Edge> node ) {
@@ -142,5 +143,4 @@ public class NodeParser extends ElementParser<Node<View, Edge>> {
     private boolean isDockEdge( Edge edge ) {
         return edge.getContent() instanceof Dock;
     }
-
 }

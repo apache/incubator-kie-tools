@@ -30,32 +30,40 @@ public abstract class BasicShapeWithTitle<W, V extends BasicShapeView>
     }
 
     @Override
-    public void applyProperties( Node<View<W>, Edge> element, final MutationContext mutationContext ) {
-        super.applyProperties( element, mutationContext );
+    public void applyProperties( final Node<View<W>, Edge> element,
+                                 final MutationContext mutationContext ) {
+        super.applyProperties( element,
+                               mutationContext );
         // Apply font styles.
-        _applyFont( element, mutationContext );
+        _applyFont( element,
+                    mutationContext );
     }
 
-    protected abstract String getFontFamily( Node<View<W>, Edge> element );
+    protected abstract String getFontFamily( final Node<View<W>, Edge> element );
 
-    protected abstract String getFontColor( Node<View<W>, Edge> element );
+    protected abstract String getFontColor( final Node<View<W>, Edge> element );
 
-    protected abstract Double getFontSize( Node<View<W>, Edge> element );
+    protected abstract Double getFontSize( final Node<View<W>, Edge> element );
 
-    protected abstract Double getFontBorderSize( Node<View<W>, Edge> element );
+    protected abstract Double getFontBorderSize( final Node<View<W>, Edge> element );
 
-    protected Double getFontAlpha( Node<View<W>, Edge> element ) {
+    protected Double getFontAlpha( final Node<View<W>, Edge> element ) {
         return 1d;
     }
 
-    protected BasicShapeWithTitle<W, V> _applyFont( final Node<View<W>, Edge> element, final MutationContext mutationContext ) {
+    protected BasicShapeWithTitle<W, V> _applyFont( final Node<View<W>, Edge> element,
+                                                    final MutationContext mutationContext ) {
         final String family = getFontFamily( element );
         final String color = getFontColor( element );
         final Double size = getFontSize( element );
         final Double borderSize = getFontBorderSize( element );
         final Double alpha = getFontAlpha( element );
-        super.applyFont( family, color, size, borderSize, alpha, mutationContext );
+        super.applyFont( family,
+                         color,
+                         size,
+                         borderSize,
+                         alpha,
+                         mutationContext );
         return this;
     }
-
 }

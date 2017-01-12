@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-
-import java.util.Set;
 
 public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>> implements DefinitionAdapter<T> {
 
@@ -74,8 +74,10 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     }
 
     @Override
-    public Object getMetaProperty( final PropertyMetaTypes metaType, final T pojo ) {
-        return adapter.getMetaProperty( metaType, pojo );
+    public Object getMetaProperty( final PropertyMetaTypes metaType,
+                                   final T pojo ) {
+        return adapter.getMetaProperty( metaType,
+                                        pojo );
     }
 
     @Override

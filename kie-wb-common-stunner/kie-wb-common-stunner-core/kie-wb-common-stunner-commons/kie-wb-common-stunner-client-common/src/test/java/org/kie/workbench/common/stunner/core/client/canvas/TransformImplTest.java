@@ -20,41 +20,55 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class TransformImplTest {
 
-    private static final Point2D translate = new Point2D( 10, 20 );
-    private static final Point2D scale = new Point2D( 2, 5 );
+    private static final Point2D translate = new Point2D( 10,
+                                                          20 );
+    private static final Point2D scale = new Point2D( 2,
+                                                      5 );
 
     private TransformImpl tested;
 
     @Before
     public void setup() throws Exception {
-        this.tested = new TransformImpl( translate, scale );
+        this.tested = new TransformImpl( translate,
+                                         scale );
     }
 
     @Test
     public void testGetTranslate() {
         final Point2D t = tested.getTranslate();
-        assertEquals( translate, t );
+        assertEquals( translate,
+                      t );
     }
 
     @Test
     public void testGetScale() {
         final Point2D s = tested.getScale();
-        assertEquals( scale, s );
+        assertEquals( scale,
+                      s );
     }
 
     @Test
     public void testTranform() {
-        final Point2D t = tested.transform( 1, 1 );
-        assertEquals( 12, t.getX(), 0 );
-        assertEquals( 25, t.getY(), 0 );
-        final Point2D t1 = tested.transform( 2, 2 );
-        assertEquals( 14, t1.getX(), 0 );
-        assertEquals( 30, t1.getY(), 0 );
+        final Point2D t = tested.transform( 1,
+                                            1 );
+        assertEquals( 12,
+                      t.getX(),
+                      0 );
+        assertEquals( 25,
+                      t.getY(),
+                      0 );
+        final Point2D t1 = tested.transform( 2,
+                                             2 );
+        assertEquals( 14,
+                      t1.getX(),
+                      0 );
+        assertEquals( 30,
+                      t1.getY(),
+                      0 );
     }
-
 }

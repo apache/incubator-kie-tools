@@ -20,7 +20,12 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.*;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Optional;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 
@@ -28,6 +33,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @Bindable
 @Property
 public class ConditionExpression implements BPMNProperty {
+
     @Caption
     public static final transient String caption = "Condition Expression";
 

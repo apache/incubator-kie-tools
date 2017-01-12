@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.drag;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
@@ -27,9 +30,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.lienzo.primitive.AbstractDragProxy;
 import org.kie.workbench.common.stunner.lienzo.primitive.WiresConnectorDragProxy;
 import org.kie.workbench.common.stunner.lienzo.primitive.WiresShapeDragProxy;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class ShapeViewDragProxyImpl implements ShapeViewDragProxy<AbstractCanvas> {
@@ -57,29 +57,40 @@ public class ShapeViewDragProxyImpl implements ShapeViewDragProxy<AbstractCanvas
             @Override
             public void onStart( final int x,
                                  final int y ) {
-                callback.onStart( x, y );
+                callback.onStart( x,
+                                  y );
             }
 
             @Override
-            public void onMove( final int x, final int y ) {
-                callback.onMove( x, y );
+            public void onMove( final int x,
+                                final int y ) {
+                callback.onMove( x,
+                                 y );
             }
 
             @Override
-            public void onComplete( final int x, final int y ) {
-                callback.onComplete( x, y );
-
+            public void onComplete( final int x,
+                                    final int y ) {
+                callback.onComplete( x,
+                                     y );
             }
-
         };
         if ( item instanceof WiresShape ) {
             final WiresShape wiresShape = ( WiresShape ) item;
-            this.proxy = new WiresShapeDragProxy( getLayer().getLienzoLayer(), wiresShape, x, y, 100, c );
-
+            this.proxy = new WiresShapeDragProxy( getLayer().getLienzoLayer(),
+                                                  wiresShape,
+                                                  x,
+                                                  y,
+                                                  100,
+                                                  c );
         } else if ( item instanceof WiresConnector ) {
             final WiresConnector wiresConnector = ( WiresConnector ) item;
-            this.proxy = new WiresConnectorDragProxy( getLayer().getLienzoLayer(), wiresConnector, x, y, 100, c );
-
+            this.proxy = new WiresConnectorDragProxy( getLayer().getLienzoLayer(),
+                                                      wiresConnector,
+                                                      x,
+                                                      y,
+                                                      100,
+                                                      c );
         }
         return this;
     }
@@ -103,5 +114,4 @@ public class ShapeViewDragProxyImpl implements ShapeViewDragProxy<AbstractCanvas
     private LienzoLayer getLayer() {
         return layer;
     }
-
 }

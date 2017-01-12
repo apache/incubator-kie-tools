@@ -16,25 +16,25 @@
 
 package org.kie.workbench.common.stunner.backend.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.errai.marshalling.server.ServerMarshalling;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.io.IOException;
-import java.io.InputStream;
 
 @ApplicationScoped
 public class ErraiDiagramMetadataMarshaller implements DiagramMetadataMarshaller<Metadata> {
 
     @Override
-    public Metadata unmarshall( InputStream input ) throws IOException {
+    public Metadata unmarshall( final InputStream input ) throws IOException {
         Metadata result = ( Metadata ) ServerMarshalling.fromJSON( input );
         return result;
     }
 
     @Override
-    public String marshall( Metadata metadata ) throws IOException {
+    public String marshall( final Metadata metadata ) throws IOException {
         String result = ServerMarshalling.toJSON( metadata );
         return result;
     }

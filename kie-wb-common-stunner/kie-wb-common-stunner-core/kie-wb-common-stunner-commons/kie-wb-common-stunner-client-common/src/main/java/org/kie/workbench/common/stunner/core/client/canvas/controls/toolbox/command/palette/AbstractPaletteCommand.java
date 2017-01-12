@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.palette;
 
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -40,10 +44,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
-
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I> {
 
@@ -94,7 +94,9 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                                             final double y );
 
     @Override
-    public I getIcon( final AbstractCanvasHandler context, final double width, final double height ) {
+    public I getIcon( final AbstractCanvasHandler context,
+                      final double width,
+                      final double height ) {
         return icon;
     }
 
@@ -108,18 +110,22 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
     @SuppressWarnings( "unchecked" )
     public void mouseEnter( final Context<AbstractCanvasHandler> context,
                             final Element element ) {
-        super.mouseEnter( context, element );
-        showPalette( context, element );
+        super.mouseEnter( context,
+                          element );
+        showPalette( context,
+                     element );
     }
 
     @Override
     public void click( final Context<AbstractCanvasHandler> context,
                        final Element element ) {
-        super.click( context, element );
+        super.click( context,
+                     element );
         if ( paletteVisible ) {
             clear();
         } else {
-            showPalette( context, element );
+            showPalette( context,
+                         element );
         }
     }
 
@@ -132,22 +138,24 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
         this.sourceNode = ( Node<? extends Definition<Object>, ? extends Edge> ) element;
         this.graphBoundsIndexer.setRootUUID( canvasHandler.getDiagram().getMetadata().getCanvasRootUUID() );
         final Set<String> allowedDefinitions = getDefinitions();
-        log( Level.FINE, "Allowed Definitions -> " + allowedDefinitions );
+        log( Level.FINE,
+             "Allowed Definitions -> " + allowedDefinitions );
         if ( null != allowedDefinitions && !allowedDefinitions.isEmpty() ) {
-            definitionsPaletteBuilder
-                    .build( allowedDefinitions, new PaletteDefinitionBuilder.Callback<DefinitionsPalette, ClientRuntimeError>() {
+            definitionsPaletteBuilder.build( allowedDefinitions,
+                                             new PaletteDefinitionBuilder.Callback<DefinitionsPalette, ClientRuntimeError>() {
 
-                        @Override
-                        public void onSuccess( final DefinitionsPalette paletteDefinition ) {
-                            initializeView( paletteDefinition, context );
-                        }
+                                                 @Override
+                                                 public void onSuccess( final DefinitionsPalette paletteDefinition ) {
+                                                     initializeView( paletteDefinition,
+                                                                     context );
+                                                 }
 
-                        @Override
-                        public void onError( final ClientRuntimeError error ) {
-                            log( Level.SEVERE, error.toString() );
-                        }
-
-                    } );
+                                                 @Override
+                                                 public void onError( final ClientRuntimeError error ) {
+                                                     log( Level.SEVERE,
+                                                          error.toString() );
+                                                 }
+                                             } );
         }
     }
 
@@ -155,20 +163,21 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
 
     @SuppressWarnings( "unchecked" )
     private void initializeView( final DefinitionsPalette paletteDefinition,
-                                 Context<AbstractCanvasHandler> context ) {
-        beforeBindPalette( paletteDefinition, context );
-        palette
-                .bind( paletteDefinition )
+                                 final Context<AbstractCanvasHandler> context ) {
+        beforeBindPalette( paletteDefinition,
+                           context );
+        palette.bind( paletteDefinition )
                 .onItemHover( AbstractPaletteCommand.this::_onItemHover )
                 .onItemOut( AbstractPaletteCommand.this::_onItemOut )
                 .onItemClick( AbstractPaletteCommand.this::_onItemClick )
                 .onItemMouseDown( AbstractPaletteCommand.this::_onItemMouseDown );
         // Use the relative coordinates (x/y) as palette gets added into same canvas' layer as the toolbox.
-        showPaletteViewAt( context.getX(), context.getY() );
+        showPaletteViewAt( context.getX(),
+                           context.getY() );
     }
 
     protected void beforeBindPalette( final DefinitionsPalette paletteDefinition,
-                                      Context<AbstractCanvasHandler> context ) {
+                                      final Context<AbstractCanvasHandler> context ) {
         // Nothing to do by default.
     }
 
@@ -215,7 +224,9 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
                                       final double mouseY,
                                       final double itemX,
                                       final double itemY ) {
-        onItemSelected( id, mouseX, mouseY );
+        onItemSelected( id,
+                        mouseX,
+                        mouseY );
         return true;
     }
 
@@ -233,10 +244,11 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
 
     protected abstract PaletteView getPaletteView();
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
-
 }

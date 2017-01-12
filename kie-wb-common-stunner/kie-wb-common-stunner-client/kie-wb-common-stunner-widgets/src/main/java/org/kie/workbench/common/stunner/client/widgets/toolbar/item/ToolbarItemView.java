@@ -45,7 +45,8 @@ public class ToolbarItemView extends Composite implements ToolbarItem.View {
     public void init( final AbstractToolbarItem presenter ) {
         this.presenter = presenter;
         initWidget( uiBinder.createAndBindUi( this ) );
-        button.getElement().getStyle().setMargin( 5, Style.Unit.PX );
+        button.getElement().getStyle().setMargin( 5,
+                                                  Style.Unit.PX );
     }
 
     @Override
@@ -94,5 +95,4 @@ public class ToolbarItemView extends Composite implements ToolbarItem.View {
     public void destroy() {
         this.removeFromParent();
     }
-
 }

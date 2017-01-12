@@ -62,5 +62,4 @@ public abstract class BaseOryxManager implements OryxManager {
     public List<Class<?>> getDefinitions() {
         return definitions;
     }
-
 }

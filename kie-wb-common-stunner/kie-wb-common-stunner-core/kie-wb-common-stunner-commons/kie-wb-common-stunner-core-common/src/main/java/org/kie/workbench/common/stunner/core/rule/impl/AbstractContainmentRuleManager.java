@@ -26,5 +26,4 @@ public abstract class AbstractContainmentRuleManager extends AbstractRuleManager
     public boolean supports( final Rule rule ) {
         return rule instanceof ContainmentRule;
     }
-
 }

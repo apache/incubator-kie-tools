@@ -21,7 +21,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.platform.PlatformManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.event.*;
+import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
@@ -32,76 +36,112 @@ import static org.mockito.Mockito.*;
 @RunWith( GwtMockitoTestRunner.class )
 public class ClientSessionManagerImplTest {
 
-    @Mock PlatformManager platformManager;
-    @Mock EventSourceMock<SessionOpenedEvent> sessionOpenedEventMock;
-    @Mock EventSourceMock<SessionPausedEvent> sessionPausedEventMock;
-    @Mock EventSourceMock<SessionResumedEvent> sessionResumedEventMock;
-    @Mock EventSourceMock<SessionDisposedEvent> sessionDisposedEventMock;
-    @Mock EventSourceMock<OnSessionErrorEvent> sessionErrorEventMock;
-    @Mock AbstractClientSession session;
-    @Mock AbstractClientSession session1;
+    @Mock
+    PlatformManager platformManager;
+    @Mock
+    EventSourceMock<SessionOpenedEvent> sessionOpenedEventMock;
+    @Mock
+    EventSourceMock<SessionPausedEvent> sessionPausedEventMock;
+    @Mock
+    EventSourceMock<SessionResumedEvent> sessionResumedEventMock;
+    @Mock
+    EventSourceMock<SessionDisposedEvent> sessionDisposedEventMock;
+    @Mock
+    EventSourceMock<OnSessionErrorEvent> sessionErrorEventMock;
+    @Mock
+    AbstractClientSession session;
+    @Mock
+    AbstractClientSession session1;
 
     private ClientSessionManagerImpl tested;
 
     @Before
     public void setup() throws Exception {
-        this.tested = new ClientSessionManagerImpl( platformManager, sessionOpenedEventMock,
-                sessionDisposedEventMock, sessionPausedEventMock, sessionResumedEventMock,
-                sessionErrorEventMock );
+        this.tested = new ClientSessionManagerImpl( platformManager,
+                                                    sessionOpenedEventMock,
+                                                    sessionDisposedEventMock,
+                                                    sessionPausedEventMock,
+                                                    sessionResumedEventMock,
+                                                    sessionErrorEventMock );
     }
 
     @Test
     public void testPostOpen() {
         tested.open( session );
-        verify( sessionOpenedEventMock, times( 1 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock, times( 0 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        verify( sessionOpenedEventMock,
+                times( 1 ) ).fire( any( SessionOpenedEvent.class ) );
+        verify( sessionPausedEventMock,
+                times( 0 ) ).fire( any( SessionPausedEvent.class ) );
+        verify( sessionResumedEventMock,
+                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock,
+                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
+        verify( sessionDisposedEventMock,
+                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
     @Test
     public void testPostOpenAnotherSession() {
         tested.current = session;
         tested.open( session1 );
-        verify( sessionOpenedEventMock, times( 1 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock, times( 1 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        verify( sessionOpenedEventMock,
+                times( 1 ) ).fire( any( SessionOpenedEvent.class ) );
+        verify( sessionPausedEventMock,
+                times( 1 ) ).fire( any( SessionPausedEvent.class ) );
+        verify( sessionResumedEventMock,
+                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock,
+                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
+        verify( sessionDisposedEventMock,
+                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
     @Test
     public void testPostPause() {
         tested.current = session;
         tested.pause();
-        verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock, times( 1 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        verify( sessionOpenedEventMock,
+                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
+        verify( sessionPausedEventMock,
+                times( 1 ) ).fire( any( SessionPausedEvent.class ) );
+        verify( sessionResumedEventMock,
+                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock,
+                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
+        verify( sessionDisposedEventMock,
+                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
     @Test
     public void testPostResume() {
         tested.current = session1;
         tested.resume( session );
-        verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock, times( 1 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock, times( 1 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        verify( sessionOpenedEventMock,
+                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
+        verify( sessionPausedEventMock,
+                times( 1 ) ).fire( any( SessionPausedEvent.class ) );
+        verify( sessionResumedEventMock,
+                times( 1 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock,
+                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
+        verify( sessionDisposedEventMock,
+                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
     @Test
     public void testPostDispose() {
         tested.current = session;
         tested.dispose();
-        verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock, times( 0 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock, times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock, times( 1 ) ).fire( any( SessionDisposedEvent.class ) );
+        verify( sessionOpenedEventMock,
+                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
+        verify( sessionPausedEventMock,
+                times( 0 ) ).fire( any( SessionPausedEvent.class ) );
+        verify( sessionResumedEventMock,
+                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock,
+                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
+        verify( sessionDisposedEventMock,
+                times( 1 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
     @Test
@@ -109,11 +149,16 @@ public class ClientSessionManagerImplTest {
         tested.current = session;
         ClientRuntimeError error = mock( ClientRuntimeError.class );
         tested.handleClientError( error );
-        verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock, times( 0 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock, times( 1 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        verify( sessionOpenedEventMock,
+                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
+        verify( sessionPausedEventMock,
+                times( 0 ) ).fire( any( SessionPausedEvent.class ) );
+        verify( sessionResumedEventMock,
+                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock,
+                times( 1 ) ).fire( any( OnSessionErrorEvent.class ) );
+        verify( sessionDisposedEventMock,
+                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
 
     @Test
@@ -121,11 +166,15 @@ public class ClientSessionManagerImplTest {
         tested.current = session;
         CommandException error = mock( CommandException.class );
         tested.handleCommandError( error );
-        verify( sessionOpenedEventMock, times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock, times( 0 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock, times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock, times( 1 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock, times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        verify( sessionOpenedEventMock,
+                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
+        verify( sessionPausedEventMock,
+                times( 0 ) ).fire( any( SessionPausedEvent.class ) );
+        verify( sessionResumedEventMock,
+                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
+        verify( sessionErrorEventMock,
+                times( 1 ) ).fire( any( OnSessionErrorEvent.class ) );
+        verify( sessionDisposedEventMock,
+                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
     }
-
 }

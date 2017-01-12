@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.backend.definition.factory;
 
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.backend.util.BackendBindableDefinitionUtils;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.definition.AbstractTypeDefinitionFactory;
-
-import java.util.Set;
 
 /**
  * Model factory for annotated modelsfor using  on test scope.
@@ -54,15 +54,11 @@ public class TestScopeModelFactory extends AbstractTypeDefinitionFactory<Object>
         if ( null != builderClass ) {
             try {
                 return builderClass.newInstance();
-
             } catch ( InstantiationException e ) {
                 e.printStackTrace();
-
             } catch ( IllegalAccessException e ) {
                 e.printStackTrace();
-
             }
-
         }
         throw new RuntimeException( "No annotated builder found for Definition [" + definitionClass.getName() + "]" );
     }
@@ -72,10 +68,8 @@ public class TestScopeModelFactory extends AbstractTypeDefinitionFactory<Object>
             Definition annotation = definitionClass.getAnnotation( Definition.class );
             if ( null != annotation ) {
                 return annotation.builder();
-
             }
         }
         return null;
     }
-
 }

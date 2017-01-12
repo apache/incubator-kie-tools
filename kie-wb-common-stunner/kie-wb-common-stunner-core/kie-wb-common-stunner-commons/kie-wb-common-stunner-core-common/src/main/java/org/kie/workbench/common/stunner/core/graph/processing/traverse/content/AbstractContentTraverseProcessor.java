@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.traverse.content;
 
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-
-import javax.inject.Inject;
 
 public abstract class AbstractContentTraverseProcessor<C, N extends Node<View, Edge>, E extends Edge<C, Node>, K extends ContentTraverseCallback<C, N, E>>
         implements ContentTraverseProcessor<C, N, E, K> {
@@ -43,10 +43,8 @@ public abstract class AbstractContentTraverseProcessor<C, N extends Node<View, E
         if ( accepts( edge ) ) {
             callback.startEdgeTraversal( ( E ) edge );
             return true;
-
         }
         return false;
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -55,10 +53,8 @@ public abstract class AbstractContentTraverseProcessor<C, N extends Node<View, E
         if ( accepts( edge ) ) {
             callback.endEdgeTraversal( ( E ) edge );
             return true;
-
         }
         return false;
-
     }
 
     protected boolean accepts( final Edge edge ) {
@@ -70,9 +66,7 @@ public abstract class AbstractContentTraverseProcessor<C, N extends Node<View, E
                                           final K callback ) {
         if ( graph.getContent() instanceof View ) {
             callback.startGraphTraversal( graph );
-
         }
-
     }
 
     @SuppressWarnings( "unchecked" )
@@ -81,7 +75,6 @@ public abstract class AbstractContentTraverseProcessor<C, N extends Node<View, E
         if ( node.getContent() instanceof View ) {
             callback.startNodeTraversal( ( N ) node );
             return true;
-
         }
         return false;
     }
@@ -91,15 +84,12 @@ public abstract class AbstractContentTraverseProcessor<C, N extends Node<View, E
                                        final K callback ) {
         if ( node.getContent() instanceof View ) {
             callback.endNodeTraversal( ( N ) node );
-
         }
-
     }
 
     protected void doEndGraphTraversal( final Graph graph,
                                         final K callback ) {
         callback.endGraphTraversal();
-
     }
 
     @Override
@@ -107,39 +97,44 @@ public abstract class AbstractContentTraverseProcessor<C, N extends Node<View, E
                           final K callback ) {
         treeWalkTraverseProcessor
                 .useEdgeVisitorPolicy( getPolicy() )
-                .traverse( graph, new TreeTraverseCallback<Graph, Node, Edge>() {
+                .traverse( graph,
+                           new TreeTraverseCallback<Graph, Node, Edge>() {
 
-                    @Override
-                    public void startGraphTraversal( final Graph graph ) {
-                        AbstractContentTraverseProcessor.this.doStartGraphTraversal( graph, callback );
-                    }
+                               @Override
+                               public void startGraphTraversal( final Graph graph ) {
+                                   AbstractContentTraverseProcessor.this.doStartGraphTraversal( graph,
+                                                                                                callback );
+                               }
 
-                    @Override
-                    public boolean startNodeTraversal( final Node node ) {
-                        return AbstractContentTraverseProcessor.this.doStartNodeTraversal( node, callback );
-                    }
+                               @Override
+                               public boolean startNodeTraversal( final Node node ) {
+                                   return AbstractContentTraverseProcessor.this.doStartNodeTraversal( node,
+                                                                                                      callback );
+                               }
 
-                    @Override
-                    public boolean startEdgeTraversal( final Edge edge ) {
-                        return AbstractContentTraverseProcessor.this.doStartEdgeTraversal( edge, callback );
-                    }
+                               @Override
+                               public boolean startEdgeTraversal( final Edge edge ) {
+                                   return AbstractContentTraverseProcessor.this.doStartEdgeTraversal( edge,
+                                                                                                      callback );
+                               }
 
-                    @Override
-                    public void endNodeTraversal( final Node node ) {
-                        AbstractContentTraverseProcessor.this.doEndNodeTraversal( node, callback );
-                    }
+                               @Override
+                               public void endNodeTraversal( final Node node ) {
+                                   AbstractContentTraverseProcessor.this.doEndNodeTraversal( node,
+                                                                                             callback );
+                               }
 
-                    @Override
-                    public void endEdgeTraversal( final Edge edge ) {
-                        AbstractContentTraverseProcessor.this.doEndEdgeTraversal( edge, callback );
-                    }
+                               @Override
+                               public void endEdgeTraversal( final Edge edge ) {
+                                   AbstractContentTraverseProcessor.this.doEndEdgeTraversal( edge,
+                                                                                             callback );
+                               }
 
-                    @Override
-                    public void endGraphTraversal() {
-                        AbstractContentTraverseProcessor.this.doEndGraphTraversal( graph, callback );
-                    }
-                } );
-
+                               @Override
+                               public void endGraphTraversal() {
+                                   AbstractContentTraverseProcessor.this.doEndGraphTraversal( graph,
+                                                                                              callback );
+                               }
+                           } );
     }
-
 }

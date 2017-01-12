@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -27,12 +33,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Has
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extends Palette<I>>
         implements PaletteFactory<I, P> {
@@ -78,30 +78,35 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
     @Override
     @SuppressWarnings( "unchecked" )
     public P newPalette( final String shapeSetId ) {
-        return newPalette( shapeSetId, null );
+        return newPalette( shapeSetId,
+                           null );
     }
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public P newPalette( final String shapeSetId, final PaletteGrid grid ) {
+    public P newPalette( final String shapeSetId,
+                         final PaletteGrid grid ) {
         final String defSetId = getShapeSet( shapeSetId ).getDefinitionSetId();
         final PaletteDefinitionFactory<PaletteDefinitionBuilder<Object, I, ClientRuntimeError>> paletteDefinitionFactory = getPaletteDefinitionFactory( defSetId );
         final PaletteDefinitionBuilder<Object, I, ClientRuntimeError> paletteDefinitionBuilder = paletteDefinitionFactory.newBuilder( defSetId );
-        paletteDefinitionBuilder.build( defSetId, new PaletteDefinitionBuilder.Callback<I, ClientRuntimeError>() {
+        paletteDefinitionBuilder.build( defSetId,
+                                        new PaletteDefinitionBuilder.Callback<I, ClientRuntimeError>() {
 
-            @Override
-            public void onSuccess( final I paletteDefinition ) {
-                applyGrid( grid );
-                beforeBindPalette( paletteDefinition, shapeSetId );
-                palette.bind( paletteDefinition );
-                afterBindPalette( paletteDefinition, shapeSetId );
-            }
+                                            @Override
+                                            public void onSuccess( final I paletteDefinition ) {
+                                                applyGrid( grid );
+                                                beforeBindPalette( paletteDefinition,
+                                                                   shapeSetId );
+                                                palette.bind( paletteDefinition );
+                                                afterBindPalette( paletteDefinition,
+                                                                  shapeSetId );
+                                            }
 
-            @Override
-            public void onError( final ClientRuntimeError error ) {
-                logError( error );
-            }
-        } );
+                                            @Override
+                                            public void onError( final ClientRuntimeError error ) {
+                                                logError( error );
+                                            }
+                                        } );
         return palette;
     }
 
@@ -124,7 +129,8 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
 
     private void logError( final ClientRuntimeError error ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( Level.SEVERE, error.toString() );
+            LOGGER.log( Level.SEVERE,
+                        error.toString() );
         }
     }
 }

@@ -52,9 +52,11 @@ public class Bpmn2Marshaller extends Bpmn2JsonUnmarshaller {
         DroolsFactoryImpl.init();
         BpsimFactoryImpl.init();
         BPMN2JsonParser parser = createParser( diagram );
-        JBPMBpmn2ResourceImpl res = (JBPMBpmn2ResourceImpl) super.unmarshall( parser, null );
+        JBPMBpmn2ResourceImpl res = ( JBPMBpmn2ResourceImpl ) super.unmarshall( parser,
+                                                                                null );
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        res.save( outputStream, new HashMap<>() );
+        res.save( outputStream,
+                  new HashMap<>() );
         return StringEscapeUtils.unescapeHtml4( outputStream.toString( "UTF-8" ) );
     }
 

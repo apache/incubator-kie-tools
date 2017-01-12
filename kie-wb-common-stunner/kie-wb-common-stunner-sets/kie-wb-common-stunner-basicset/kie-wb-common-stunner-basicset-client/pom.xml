@@ -18,85 +18,85 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.kie.workbench.stunner</groupId>
-        <artifactId>kie-wb-common-stunner-basicset</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.workbench.stunner</groupId>
+    <artifactId>kie-wb-common-stunner-basicset</artifactId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kie-wb-common-stunner-basicset-client</artifactId>
-    <name>Kie Workbench - Common - Stunner - Basic Definition Set - Client</name>
-    <description>Kie Workbench - Common - Stunner - Basic Definition Set - Client</description>
-    <packaging>jar</packaging>
+  <artifactId>kie-wb-common-stunner-basicset-client</artifactId>
+  <name>Kie Workbench - Common - Stunner - Basic Definition Set - Client</name>
+  <description>Kie Workbench - Common - Stunner - Basic Definition Set - Client</description>
+  <packaging>jar</packaging>
 
-    <dependencies>
+  <dependencies>
 
-        <!-- Stunner. -->
+    <!-- Stunner. -->
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-core-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-core-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-client-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-client-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-core-common</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-core-common</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-processors</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-processors</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-shapes-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-shapes-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-basicset-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-basicset-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-client-common</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-widgets</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-widgets</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-shapes-client</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-shapes-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <!-- GWT and GWT Extensions -->
+    <!-- GWT and GWT Extensions -->
 
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.gwtbootstrap3</groupId>
-            <artifactId>gwtbootstrap3</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>

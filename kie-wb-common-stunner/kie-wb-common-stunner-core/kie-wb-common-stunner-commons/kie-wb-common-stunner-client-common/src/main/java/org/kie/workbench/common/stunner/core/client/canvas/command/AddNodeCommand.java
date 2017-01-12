@@ -30,7 +30,8 @@ public final class AddNodeCommand extends AbstractCanvasGraphCommand {
     private final Node candidate;
     private final String shapeSetId;
 
-    public AddNodeCommand( final Node candidate, final String shapeSetId ) {
+    public AddNodeCommand( final Node candidate,
+                           final String shapeSetId ) {
         this.candidate = candidate;
         this.shapeSetId = shapeSetId;
     }
@@ -42,7 +43,7 @@ public final class AddNodeCommand extends AbstractCanvasGraphCommand {
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new AddCanvasNodeCommand( candidate, shapeSetId );
+        return new AddCanvasNodeCommand( candidate,
+                                         shapeSetId );
     }
-
 }

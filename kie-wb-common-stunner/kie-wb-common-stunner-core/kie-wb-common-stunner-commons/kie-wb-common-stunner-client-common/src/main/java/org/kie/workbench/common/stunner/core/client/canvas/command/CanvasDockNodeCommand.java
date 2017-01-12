@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 public final class CanvasDockNodeCommand extends AbstractCanvasCommand {
 
     private final Node parent;
-    private final  Node candidate;
+    private final Node candidate;
 
     public CanvasDockNodeCommand( final Node parent,
                                   final Node candidate ) {
@@ -36,17 +36,20 @@ public final class CanvasDockNodeCommand extends AbstractCanvasCommand {
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( AbstractCanvasHandler context ) {
-        context.dock( parent, candidate );
-        context.applyElementMutation( parent, MutationContext.STATIC );
-        context.applyElementMutation( candidate, MutationContext.STATIC );
+    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
+        context.dock( parent,
+                      candidate );
+        context.applyElementMutation( parent,
+                                      MutationContext.STATIC );
+        context.applyElementMutation( candidate,
+                                      MutationContext.STATIC );
         return buildResult();
     }
 
     @Override
     public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return new CanvasUndockNodeCommand( parent, candidate )
-                .execute( context );
+        return new CanvasUndockNodeCommand( parent,
+                                            candidate ).execute( context );
     }
 
     public Node getParent() {

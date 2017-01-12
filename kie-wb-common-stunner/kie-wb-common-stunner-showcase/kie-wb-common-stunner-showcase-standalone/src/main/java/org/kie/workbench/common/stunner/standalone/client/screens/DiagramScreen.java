@@ -16,6 +16,14 @@
 
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
@@ -48,22 +56,22 @@ import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.WorkbenchContextId;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.lifecycle.*;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnFocus;
+import org.uberfire.lifecycle.OnLostFocus;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static java.util.logging.Level.FINE;
 
@@ -130,21 +138,24 @@ public class DiagramScreen {
         // Initialize the session presenter.
         clientSessionPresenter
                 .setDisplayErrors( true )
-                .initialize( session, 1400, 650 );
+                .initialize( session,
+                             1400,
+                             650 );
         // Configure toolbar.
         this.toolbar = buildToolbar();
         screenPanelView.setWidget( clientSessionPresenter.getView() );
         clientSessionPresenter.getView().setToolbar( toolbar.getView() );
-        toolbar.initialize( session, new ToolbarCommandCallback<Object>() {
-            @Override
-            public void onCommandExecuted( final Object result ) {
-            }
+        toolbar.initialize( session,
+                            new ToolbarCommandCallback<Object>() {
+                                @Override
+                                public void onCommandExecuted( final Object result ) {
+                                }
 
-            @Override
-            public void onError( final ClientRuntimeError error ) {
-                showError( error );
-            }
-        } );
+                                @Override
+                                public void onError( final ClientRuntimeError error ) {
+                                    showError( error );
+                                }
+                            } );
     }
 
     private Toolbar<AbstractClientFullSession> buildToolbar() {
@@ -165,7 +176,8 @@ public class DiagramScreen {
     public void onStartup( final PlaceRequest placeRequest ) {
         this.placeRequest = placeRequest;
         this.menu = makeMenuBar();
-        final String name = placeRequest.getParameter( "name", "" );
+        final String name = placeRequest.getParameter( "name",
+                                                       "" );
         final boolean isCreate = name == null || name.trim().length() == 0;
         final Command callback = () -> {
             final Diagram diagram = clientSessionPresenter.getCanvasHandler().getDiagram();
@@ -175,14 +187,22 @@ public class DiagramScreen {
             }
         };
         if ( isCreate ) {
-            final String defSetId = placeRequest.getParameter( "defSetId", "" );
-            final String shapeSetd = placeRequest.getParameter( "shapeSetId", "" );
-            final String title = placeRequest.getParameter( "title", "" );
+            final String defSetId = placeRequest.getParameter( "defSetId",
+                                                               "" );
+            final String shapeSetd = placeRequest.getParameter( "shapeSetId",
+                                                                "" );
+            final String title = placeRequest.getParameter( "title",
+                                                            "" );
             // Create a new diagram.
-            newDiagram( UUID.uuid(), title, defSetId, shapeSetd, callback );
+            newDiagram( UUID.uuid(),
+                        title,
+                        defSetId,
+                        shapeSetd,
+                        callback );
         } else {
             // Load an existing diagram.
-            load( name, callback );
+            load( name,
+                  callback );
         }
     }
 
@@ -217,7 +237,8 @@ public class DiagramScreen {
                 doSave( new ServiceCallback<Diagram<Graph, Metadata>>() {
                     @Override
                     public void onSuccess( Diagram<Graph, Metadata> item ) {
-                        log( Level.INFO, "Save operation finished for diagram [" + item.getName() + "]." );
+                        log( Level.INFO,
+                             "Save operation finished for diagram [" + item.getName() + "]." );
                     }
 
                     @Override
@@ -229,7 +250,8 @@ public class DiagramScreen {
 
             @Override
             public void onFail( Iterable<CanvasValidationViolation> violations ) {
-                log( Level.WARNING, "Validation failed [violations=" + violations.toString() + "]." );
+                log( Level.WARNING,
+                     "Validation failed [violations=" + violations.toString() + "]." );
             }
         } );
     }
@@ -242,7 +264,8 @@ public class DiagramScreen {
         final Diagram diagram = canvasHandler.getDiagram();
         diagram.getMetadata().setThumbData( thumbData );
         // Perform update operation remote call.
-        clientDiagramServices.saveOrUpdate( diagram, diagramServiceCallback );
+        clientDiagramServices.saveOrUpdate( diagram,
+                                            diagramServiceCallback );
     }
 
     private void newDiagram( final String uuid,
@@ -250,28 +273,35 @@ public class DiagramScreen {
                              final String definitionSetId,
                              final String shapeSetId,
                              final Command callback ) {
-        final Metadata metadata = buildMetadata( definitionSetId, shapeSetId, title );
-        clientFactoryServices.newDiagram( uuid, definitionSetId, metadata, new ServiceCallback<Diagram>() {
-            @Override
-            public void onSuccess( final Diagram diagram ) {
-                final Metadata metadata = diagram.getMetadata();
-                metadata.setShapeSetId( shapeSetId );
-                metadata.setTitle( title );
-                open( diagram, callback );
-            }
+        final Metadata metadata = buildMetadata( definitionSetId,
+                                                 shapeSetId,
+                                                 title );
+        clientFactoryServices.newDiagram( uuid,
+                                          definitionSetId,
+                                          metadata,
+                                          new ServiceCallback<Diagram>() {
+                                              @Override
+                                              public void onSuccess( final Diagram diagram ) {
+                                                  final Metadata metadata = diagram.getMetadata();
+                                                  metadata.setShapeSetId( shapeSetId );
+                                                  metadata.setTitle( title );
+                                                  open( diagram,
+                                                        callback );
+                                              }
 
-            @Override
-            public void onError( final ClientRuntimeError error ) {
-                showError( error );
-                callback.execute();
-            }
-        } );
+                                              @Override
+                                              public void onError( final ClientRuntimeError error ) {
+                                                  showError( error );
+                                                  callback.execute();
+                                              }
+                                          } );
     }
 
     private Metadata buildMetadata( final String defSetId,
                                     final String shapeSetId,
                                     final String title ) {
-        return new MetadataImpl.MetadataImplBuilder( defSetId, definitionManager )
+        return new MetadataImpl.MetadataImplBuilder( defSetId,
+                                                     definitionManager )
                 .setTitle( title )
                 .setShapeSetId( shapeSetId )
                 .build();
@@ -280,48 +310,55 @@ public class DiagramScreen {
     private void load( final String name,
                        final Command callback ) {
         final DiagramLookupRequest request = new DiagramLookupRequestImpl.Builder().withName( name ).build();
-        clientDiagramServices.lookup( request, new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
-            @Override
-            public void onSuccess( LookupManager.LookupResponse<DiagramRepresentation> diagramRepresentations ) {
-                if ( null != diagramRepresentations && !diagramRepresentations.getResults().isEmpty() ) {
-                    final Path path = diagramRepresentations.getResults().get( 0 ).getPath();
-                    loadByPath( path, callback );
-                }
-            }
+        clientDiagramServices.lookup( request,
+                                      new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
+                                          @Override
+                                          public void onSuccess( LookupManager.LookupResponse<DiagramRepresentation> diagramRepresentations ) {
+                                              if ( null != diagramRepresentations && !diagramRepresentations.getResults().isEmpty() ) {
+                                                  final Path path = diagramRepresentations.getResults().get( 0 ).getPath();
+                                                  loadByPath( path,
+                                                              callback );
+                                              }
+                                          }
 
-            @Override
-            public void onError( ClientRuntimeError error ) {
-                showError( error );
-                callback.execute();
-            }
-        } );
+                                          @Override
+                                          public void onError( ClientRuntimeError error ) {
+                                              showError( error );
+                                              callback.execute();
+                                          }
+                                      } );
     }
 
-    private void loadByPath( final Path path, final Command callback ) {
-        clientDiagramServices.getByPath( path, new ServiceCallback<Diagram<Graph, Metadata>>() {
-            @Override
-            public void onSuccess( final Diagram<Graph, Metadata> diagram ) {
-                open( diagram, callback );
-            }
+    private void loadByPath( final Path path,
+                             final Command callback ) {
+        clientDiagramServices.getByPath( path,
+                                         new ServiceCallback<Diagram<Graph, Metadata>>() {
+                                             @Override
+                                             public void onSuccess( final Diagram<Graph, Metadata> diagram ) {
+                                                 open( diagram,
+                                                       callback );
+                                             }
 
-            @Override
-            public void onError( final ClientRuntimeError error ) {
-                showError( error );
-                callback.execute();
-            }
-        } );
+                                             @Override
+                                             public void onError( final ClientRuntimeError error ) {
+                                                 showError( error );
+                                                 callback.execute();
+                                             }
+                                         } );
     }
 
     private void open( final Diagram diagram,
                        final Command callback ) {
         screenPanelView.setWidget( clientSessionPresenter.getView() );
-        clientSessionPresenter.open( diagram, callback );
+        clientSessionPresenter.open( diagram,
+                                     callback );
     }
 
     private void updateTitle( final String title ) {
         // Change screen title.
         DiagramScreen.this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest, this.title ) );
+        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                       this.title ) );
     }
 
     @OnOpen
@@ -334,7 +371,8 @@ public class DiagramScreen {
         if ( !isSameSession( canvasSessionManager.getCurrentSession() ) ) {
             canvasSessionManager.open( session );
         } else {
-            log( FINE, "Session already active, no action." );
+            log( FINE,
+                 "Session already active, no action." );
         }
     }
 
@@ -390,7 +428,8 @@ public class DiagramScreen {
     private void showError( final ClientRuntimeError error ) {
         screenErrorView.showError( error );
         screenPanelView.setWidget( screenErrorView.asWidget() );
-        log( Level.SEVERE, error.toString() );
+        log( Level.SEVERE,
+             error.toString() );
     }
 
     void onSessionErrorEvent( @Observes OnSessionErrorEvent errorEvent ) {
@@ -401,9 +440,11 @@ public class DiagramScreen {
         }
     }
 
-    private void log( final Level level, final String message ) {
+    private void log( final Level level,
+                      final String message ) {
         if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level, message );
+            LOGGER.log( level,
+                        message );
         }
     }
 }

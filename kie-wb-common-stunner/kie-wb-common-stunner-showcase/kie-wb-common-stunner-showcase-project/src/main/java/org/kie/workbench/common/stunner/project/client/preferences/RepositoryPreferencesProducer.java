@@ -15,10 +15,10 @@
 
 package org.kie.workbench.common.stunner.project.client.preferences;
 
-import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+
+import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 
 @ApplicationScoped
 public class RepositoryPreferencesProducer {
@@ -29,5 +29,4 @@ public class RepositoryPreferencesProducer {
     public RepositoryPreferences getRepositoryPreferences() {
         return repositoryPreferences;
     }
-
 }

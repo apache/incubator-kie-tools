@@ -33,7 +33,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.view.Pale
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDoubleClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDoubleClickHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
@@ -83,18 +82,15 @@ public abstract class AbstractCanvasPaletteControl
             public void handle( final MouseDoubleClickEvent event ) {
                 if ( isPaletteVisible() ) {
                     hide();
-
                 } else {
-                    AbstractCanvasPaletteControl.this.show( event.getX(), event.getY() );
-
+                    AbstractCanvasPaletteControl.this.show( event.getX(),
+                                                            event.getY() );
                 }
-
             }
-
         };
-        layer.addHandler( ViewEventType.MOUSE_DBL_CLICK, doubleClickHandler );
+        layer.addHandler( ViewEventType.MOUSE_DBL_CLICK,
+                          doubleClickHandler );
         this.layerClickHandler = doubleClickHandler;
-
     }
 
     @Override
@@ -102,7 +98,6 @@ public abstract class AbstractCanvasPaletteControl
         if ( null != this.elementBuilderControl ) {
             this.elementBuilderControl.disable();
             this.elementBuilderControl = null;
-
         }
         hide();
         this.palette = null;
@@ -110,23 +105,20 @@ public abstract class AbstractCanvasPaletteControl
             canvasHandler.getCanvas().getLayer().removeHandler( layerClickHandler );
             this.layerClickHandler = null;
         }
-
     }
 
     private void initializePalette() {
         if ( null == palette ) {
             final String ssid = getShapeSetId( canvasHandler.getDiagram().getMetadata() );
-            this.palette = paletteFactory.newPalette( ssid, getGrid() );
+            this.palette = paletteFactory.newPalette( ssid,
+                                                      getGrid() );
             this.palette.onItemClick( AbstractCanvasPaletteControl.this::_onItemClick );
             this.palette.onClose( () -> {
                 hide();
                 return true;
-
             } );
             attachPaletteView();
-
         }
-
     }
 
     private String getShapeSetId( final Metadata metadata ) {
@@ -154,7 +146,6 @@ public abstract class AbstractCanvasPaletteControl
         this.paletteVisible = false;
         if ( null != getPaletteView() ) {
             getPaletteView().hide();
-
         }
         return this;
     }
@@ -164,43 +155,40 @@ public abstract class AbstractCanvasPaletteControl
                                   final double mouseY,
                                   final double itemX,
                                   final double itemY ) {
-        factoryServices.newDefinition( id, new ServiceCallback<java.lang.Object>() {
+        factoryServices.newDefinition( id,
+                                       new ServiceCallback<java.lang.Object>() {
 
-            @Override
-            public void onSuccess( final java.lang.Object def ) {
-                final ElementBuildRequest<AbstractCanvasHandler> request =
-                        new ElementBuildRequestImpl( itemX, itemY, def );
-                elementBuilderControl.build( request, new BuilderControl.BuildCallback() {
+                                           @Override
+                                           public void onSuccess( final java.lang.Object def ) {
+                                               final ElementBuildRequest<AbstractCanvasHandler> request = new ElementBuildRequestImpl( itemX,
+                                                                                                                                       itemY,
+                                                                                                                                       def );
+                                               elementBuilderControl.build( request,
+                                                                            new BuilderControl.BuildCallback() {
 
-                    @Override
-                    public void onSuccess( final String uuid ) {
-                        onItemBuilt( uuid );
+                                                                                @Override
+                                                                                public void onSuccess( final String uuid ) {
+                                                                                    onItemBuilt( uuid );
+                                                                                }
 
-                    }
+                                                                                @Override
+                                                                                public void onError( final ClientRuntimeError error ) {
+                                                                                    AbstractCanvasPaletteControl.this.onError( error );
+                                                                                }
+                                                                            } );
+                                           }
 
-                    @Override
-                    public void onError( final ClientRuntimeError error ) {
-                        AbstractCanvasPaletteControl.this.onError( error );
+                                           @Override
+                                           public void onError( final ClientRuntimeError error ) {
+                                               AbstractCanvasPaletteControl.this.onError( error );
+                                           }
+                                       } );
 
-                    }
-
-                } );
-
-            }
-
-            @Override
-            public void onError( final ClientRuntimeError error ) {
-                AbstractCanvasPaletteControl.this.onError( error );
-            }
-
-        } );
         return true;
-
     }
 
     protected void onItemBuilt( final String uuid ) {
         hide();
-
     }
 
     private void onError( final ClientRuntimeError error ) {
@@ -210,5 +198,4 @@ public abstract class AbstractCanvasPaletteControl
     private boolean isPaletteVisible() {
         return this.paletteVisible;
     }
-
 }

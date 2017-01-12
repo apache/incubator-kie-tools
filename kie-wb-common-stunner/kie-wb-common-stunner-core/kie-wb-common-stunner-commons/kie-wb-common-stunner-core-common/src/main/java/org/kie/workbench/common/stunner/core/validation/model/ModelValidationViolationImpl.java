@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.validation.model;
 
-import org.kie.workbench.common.stunner.core.validation.AbstractValidationViolation;
-
 import javax.validation.ConstraintViolation;
+
+import org.kie.workbench.common.stunner.core.validation.AbstractValidationViolation;
 
 public final class ModelValidationViolationImpl
         extends AbstractValidationViolation<Object>
@@ -41,5 +41,4 @@ public final class ModelValidationViolationImpl
     public ConstraintViolation<Object> getConstraintViolation() {
         return violation;
     }
-
 }

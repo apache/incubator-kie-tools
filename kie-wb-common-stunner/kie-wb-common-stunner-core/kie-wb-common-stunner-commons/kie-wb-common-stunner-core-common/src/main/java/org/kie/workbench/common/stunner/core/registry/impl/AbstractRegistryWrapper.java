@@ -18,8 +18,6 @@ package org.kie.workbench.common.stunner.core.registry.impl;
 
 import org.kie.workbench.common.stunner.core.registry.Registry;
 
-import java.util.Collection;
-
 public abstract class AbstractRegistryWrapper<T, R extends Registry<T>> implements Registry<T> {
 
     private final R wrapped;
@@ -41,5 +39,4 @@ public abstract class AbstractRegistryWrapper<T, R extends Registry<T>> implemen
     protected R getWrapped() {
         return wrapped;
     }
-
 }

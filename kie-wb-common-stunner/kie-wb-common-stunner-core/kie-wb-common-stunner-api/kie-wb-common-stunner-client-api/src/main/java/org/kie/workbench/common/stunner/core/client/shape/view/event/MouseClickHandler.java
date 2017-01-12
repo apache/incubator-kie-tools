@@ -22,5 +22,4 @@ public abstract class MouseClickHandler extends AbstractViewHandler<MouseClickEv
     public ViewEventType getType() {
         return ViewEventType.MOUSE_CLICK;
     }
-
 }

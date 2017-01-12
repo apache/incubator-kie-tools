@@ -16,10 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.processors;
 
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.*;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -27,10 +34,8 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+
+import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 public class GeneratorUtils extends org.uberfire.annotations.processors.GeneratorUtils {
 
@@ -43,9 +48,9 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
                                              final ProcessingEnvironment processingEnvironment ) {
         final Elements elementUtils = processingEnvironment.getElementUtils();
         return getMethodName( classElement,
-                processingEnvironment,
-                elementUtils.getTypeElement( returnTypeName ).asType(),
-                annName );
+                              processingEnvironment,
+                              elementUtils.getTypeElement( returnTypeName ).asType(),
+                              annName );
     }
 
     public static String getStringMethodName( final TypeElement classElement,
@@ -53,9 +58,9 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
                                               final ProcessingEnvironment processingEnvironment ) {
         final Elements elementUtils = processingEnvironment.getElementUtils();
         return getMethodName( classElement,
-                processingEnvironment,
-                elementUtils.getTypeElement( String.class.getName() ).asType(),
-                annName );
+                              processingEnvironment,
+                              elementUtils.getTypeElement( String.class.getName() ).asType(),
+                              annName );
     }
 
     private static String getMethodName( final TypeElement classElement,
@@ -63,10 +68,10 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
                                          final TypeMirror mirror,
                                          final String annotationName ) {
         ExecutableElement match = getUniqueAnnotatedMethod( classElement,
-                processingEnvironment,
-                annotationName,
-                mirror,
-                NO_PARAMS );
+                                                            processingEnvironment,
+                                                            annotationName,
+                                                            mirror,
+                                                            NO_PARAMS );
         if ( match == null ) {
             return null;
         }
@@ -83,9 +88,9 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
                                                                     final String annotClassName,
                                                                     final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getExecutableElementMethodName( classElement,
-                processingEnvironment,
-                returnClassName,
-                annotClassName );
+                                               processingEnvironment,
+                                               returnClassName,
+                                               annotClassName );
     }
 
     private static ExecutableElement getExecutableElementMethodName( final TypeElement originalClassElement,
@@ -94,11 +99,11 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
                                                                      final String annotationName ) throws GenerationException {
         final Elements elementUtils = processingEnvironment.getElementUtils();
         return getUniqueAnnotatedMethod( originalClassElement,
-                processingEnvironment,
-                annotationName,
-                // elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType(),
-                elementUtils.getTypeElement( returnClassName ).asType(),
-                NO_PARAMS );
+                                         processingEnvironment,
+                                         annotationName,
+                                         // elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType(),
+                                         elementUtils.getTypeElement( returnClassName ).asType(),
+                                         NO_PARAMS );
     }
 
     private static ExecutableElement getUniqueAnnotatedMethod( final TypeElement originalClassElement,
@@ -106,8 +111,11 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
                                                                final String annotationName,
                                                                final TypeMirror requiredReturnType,
                                                                final String[] requiredParameterTypes ) {
-        List<ExecutableElement> matches = getAnnotatedMethods(
-                originalClassElement, processingEnvironment, annotationName, requiredReturnType, requiredParameterTypes );
+        List<ExecutableElement> matches = getAnnotatedMethods( originalClassElement,
+                                                               processingEnvironment,
+                                                               annotationName,
+                                                               requiredReturnType,
+                                                               requiredParameterTypes );
         if ( matches.size() == 1 ) {
             return matches.get( 0 );
         } else if ( matches.size() > 1 ) {
@@ -134,14 +142,20 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
             List<ExecutableElement> matches = new ArrayList<ExecutableElement>();
             for ( ExecutableElement e : methods ) {
                 final TypeMirror actualReturnType = e.getReturnType();
-                if ( getAnnotation( elementUtils, e, annotationName ) == null ) {
+                if ( getAnnotation( elementUtils,
+                                    e,
+                                    annotationName ) == null ) {
                     continue;
                 }
                 List<String> problems = new ArrayList<String>();
-                if ( !typeUtils.isAssignable( actualReturnType, requiredReturnType ) ) {
+                if ( !typeUtils.isAssignable( actualReturnType,
+                                              requiredReturnType ) ) {
                     problems.add( "return " + requiredReturnType );
                 }
-                if ( !doParametersMatch( typeUtils, elementUtils, e, requiredParameterTypes ) ) {
+                if ( !doParametersMatch( typeUtils,
+                                         elementUtils,
+                                         e,
+                                         requiredParameterTypes ) ) {
                     if ( requiredParameterTypes.length == 0 ) {
                         problems.add( "take no parameters" );
                     } else {
@@ -170,8 +184,10 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
                 if ( problems.isEmpty() ) {
                     matches.add( e );
                 } else {
-                    processingEnvironment.getMessager().printMessage(
-                            Diagnostic.Kind.ERROR, formatProblemsList( annotationName, problems ), e );
+                    processingEnvironment.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                                      formatProblemsList( annotationName,
+                                                                                          problems ),
+                                                                      e );
                 }
             }
             if ( !matches.isEmpty() ) {
@@ -187,7 +203,9 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
         return Collections.emptyList();
     }
 
-    public static AnnotationMirror getAnnotation( Elements elementUtils, Element annotationTarget, String annotationName ) {
+    public static AnnotationMirror getAnnotation( final Elements elementUtils,
+                                                  final Element annotationTarget,
+                                                  final String annotationName ) {
         Iterator i$ = elementUtils.getAllAnnotationMirrors( annotationTarget ).iterator();
         AnnotationMirror annotation;
         do {
@@ -199,7 +217,10 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
         return annotation;
     }
 
-    private static boolean doParametersMatch( Types typeUtils, Elements elementUtils, ExecutableElement e, String[] requiredParameterTypes ) {
+    private static boolean doParametersMatch( final Types typeUtils,
+                                              final Elements elementUtils,
+                                              final ExecutableElement e,
+                                              final String[] requiredParameterTypes ) {
         if ( requiredParameterTypes == ANY_PARAMS ) {
             return true;
         } else if ( e.getParameters().size() != requiredParameterTypes.length ) {
@@ -215,7 +236,8 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
             for ( int var9 = 0; var9 < requiredTypes.size(); ++var9 ) {
                 TypeMirror var10 = ( ( VariableElement ) e.getParameters().get( var9 ) ).asType();
                 TypeMirror var11 = ( TypeMirror ) requiredTypes.get( var9 );
-                if ( !typeUtils.isAssignable( var10, var11 ) ) {
+                if ( !typeUtils.isAssignable( var10,
+                                              var11 ) ) {
                     return false;
                 }
             }
@@ -223,7 +245,7 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
         }
     }
 
-    public static String getTypeMirrorDeclaredName( TypeMirror typeMirror ) {
+    public static String getTypeMirrorDeclaredName( final TypeMirror typeMirror ) {
         TypeKind returnKind = typeMirror.getKind();
         if ( returnKind == TypeKind.DECLARED ) {
             DeclaredType declaredReturnType = ( DeclaredType ) typeMirror;
@@ -232,12 +254,13 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
         return null;
     }
 
-    private static String fqcnToSimpleName( String fqcn ) {
+    private static String fqcnToSimpleName( final String fqcn ) {
         int lastIndexOfDot = fqcn.lastIndexOf( 46 );
         return lastIndexOfDot != -1 ? fqcn.substring( lastIndexOfDot + 1 ) : fqcn;
     }
 
-    static String formatProblemsList( String annotationFqcn, List<String> problems ) {
+    static String formatProblemsList( final String annotationFqcn,
+                                      final List<String> problems ) {
         StringBuilder msg = new StringBuilder();
         msg.append( "Methods annotated with @" ).append( fqcnToSimpleName( annotationFqcn ) ).append( " must " );
         for ( int i = 0; i < problems.size(); ++i ) {
@@ -254,5 +277,4 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
         }
         return msg.toString();
     }
-
 }

@@ -48,9 +48,9 @@ public final class CanvasViolationImpl implements CanvasViolation {
         }
 
         public CanvasViolation build() {
-            return new CanvasViolationImpl( ruleViolation.getMessage(), ruleViolation.getViolationType() );
+            return new CanvasViolationImpl( ruleViolation.getMessage(),
+                                            ruleViolation.getViolationType() );
         }
-
     }
 
     @Override

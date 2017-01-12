@@ -15,22 +15,26 @@
 
 package org.kie.workbench.common.stunner.project.client.screens;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.WorkbenchContextId;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 @Dependent
 @WorkbenchScreen( identifier = ProjectDiagramExplorerScreen.SCREEN_ID )
@@ -47,7 +51,9 @@ public class ProjectDiagramExplorerScreen {
     private String title = TITLE;
 
     protected ProjectDiagramExplorerScreen() {
-        this( null, null, null );
+        this( null,
+              null,
+              null );
     }
 
     @Inject
@@ -118,7 +124,7 @@ public class ProjectDiagramExplorerScreen {
     private void doUpdateTitle( final String title ) {
         // Change screen title.
         ProjectDiagramExplorerScreen.this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest, this.title ) );
+        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                       this.title ) );
     }
-
 }

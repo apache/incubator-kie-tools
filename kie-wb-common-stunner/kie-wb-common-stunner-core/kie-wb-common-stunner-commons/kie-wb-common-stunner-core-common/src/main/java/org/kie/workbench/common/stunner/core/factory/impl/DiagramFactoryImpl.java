@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.kie.workbench.common.stunner.core.diagram.AbstractDiagram;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
@@ -23,8 +25,6 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-
-import javax.enterprise.context.ApplicationScoped;
 
 /**
  * The default factory for generic Diagrams.
@@ -39,14 +39,17 @@ public class DiagramFactoryImpl
     }
 
     @Override
-    public Diagram<Graph, Metadata> build( String name, Metadata metadata, Graph<DefinitionSet, ?> graph ) {
-        final AbstractDiagram<Graph, Metadata> result = new DiagramImpl( name, metadata );
+    public Diagram<Graph, Metadata> build( final String name,
+                                           final Metadata metadata,
+                                           final Graph<DefinitionSet, ?> graph ) {
+        final AbstractDiagram<Graph, Metadata> result = new DiagramImpl( name,
+                                                                         metadata );
         result.setGraph( graph );
         return result;
     }
 
     @Override
-    public boolean accepts( String source ) {
+    public boolean accepts( final String source ) {
         return true;
     }
 

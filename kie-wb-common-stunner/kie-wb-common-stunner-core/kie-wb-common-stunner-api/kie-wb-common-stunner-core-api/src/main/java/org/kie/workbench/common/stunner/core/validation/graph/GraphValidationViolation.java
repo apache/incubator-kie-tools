@@ -23,5 +23,4 @@ import org.kie.workbench.common.stunner.core.validation.ValidationViolation;
 public interface GraphValidationViolation extends ValidationViolation<Element<?>> {
 
     RuleViolation getRuleViolation();
-
 }

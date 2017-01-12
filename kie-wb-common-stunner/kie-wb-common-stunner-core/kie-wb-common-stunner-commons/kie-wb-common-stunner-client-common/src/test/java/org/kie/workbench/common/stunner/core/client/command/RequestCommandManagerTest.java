@@ -83,13 +83,18 @@ public class RequestCommandManagerTest {
     public void testSingleExecuteSuccess() {
         when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
         tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.execute( canvasHandler, command );
+        tested.execute( canvasHandler,
+                        command );
         tested.onCanvasMouseUpEvent( mouseUpEvent );
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-        verify( commandRegistry, times( 1 ) ).register( commandArgumentCaptor.capture() );
-        verify( commandRegistry, times( 0 ) ).peek();
-        verify( commandRegistry, times( 0 ) ).pop();
-        assertCompositeCommand( commandArgumentCaptor.getValue(), 1 );
+        verify( commandRegistry,
+                times( 1 ) ).register( commandArgumentCaptor.capture() );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 0 ) ).pop();
+        assertCompositeCommand( commandArgumentCaptor.getValue(),
+                                1 );
     }
 
     @Test
@@ -99,15 +104,22 @@ public class RequestCommandManagerTest {
         when( command1.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
         when( command2.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
         tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.execute( canvasHandler, command );
-        tested.execute( canvasHandler, command1 );
-        tested.execute( canvasHandler, command2 );
+        tested.execute( canvasHandler,
+                        command );
+        tested.execute( canvasHandler,
+                        command1 );
+        tested.execute( canvasHandler,
+                        command2 );
         tested.onCanvasMouseUpEvent( mouseUpEvent );
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-        verify( commandRegistry, times( 1 ) ).register( commandArgumentCaptor.capture() );
-        verify( commandRegistry, times( 0 ) ).peek();
-        verify( commandRegistry, times( 0 ) ).pop();
-        assertCompositeCommand( commandArgumentCaptor.getValue(), 3 );
+        verify( commandRegistry,
+                times( 1 ) ).register( commandArgumentCaptor.capture() );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 0 ) ).pop();
+        assertCompositeCommand( commandArgumentCaptor.getValue(),
+                                3 );
     }
 
     @Test
@@ -115,11 +127,15 @@ public class RequestCommandManagerTest {
     public void testSingleExecuteFailed() {
         when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.FAILED );
         tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.execute( canvasHandler, command );
+        tested.execute( canvasHandler,
+                        command );
         tested.onCanvasMouseUpEvent( mouseUpEvent );
-        verify( commandRegistry, times( 0 ) ).register( command );
-        verify( commandRegistry, times( 0 ) ).peek();
-        verify( commandRegistry, times( 0 ) ).pop();
+        verify( commandRegistry,
+                times( 0 ) ).register( command );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 0 ) ).pop();
     }
 
     @Test
@@ -127,11 +143,15 @@ public class RequestCommandManagerTest {
     public void testSingleUndoSuccess() {
         when( command.undo( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
         tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.undo( canvasHandler, command );
+        tested.undo( canvasHandler,
+                     command );
         tested.onCanvasMouseUpEvent( mouseUpEvent );
-        verify( commandRegistry, times( 1 ) ).pop();
-        verify( commandRegistry, times( 0 ) ).register( command );
-        verify( commandRegistry, times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 1 ) ).pop();
+        verify( commandRegistry,
+                times( 0 ) ).register( command );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
     }
 
     @Test
@@ -139,18 +159,23 @@ public class RequestCommandManagerTest {
     public void testSingleUndoFailed() {
         when( command.undo( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.FAILED );
         tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.undo( canvasHandler, command );
+        tested.undo( canvasHandler,
+                     command );
         tested.onCanvasMouseUpEvent( mouseUpEvent );
-        verify( commandRegistry, times( 0 ) ).pop();
-        verify( commandRegistry, times( 0 ) ).register( command );
-        verify( commandRegistry, times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 0 ) ).pop();
+        verify( commandRegistry,
+                times( 0 ) ).register( command );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
     }
 
     @Test( expected = IllegalStateException.class )
     @SuppressWarnings( "unchecked" )
     public void testNoRequestStarted() {
         when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        tested.execute( canvasHandler, command );
+        tested.execute( canvasHandler,
+                        command );
         tested.onCanvasMouseUpEvent( mouseUpEvent );
     }
 
@@ -159,16 +184,21 @@ public class RequestCommandManagerTest {
     public void testNoRequestComleted() {
         when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
         tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.execute( canvasHandler, command );
-        verify( commandRegistry, times( 0 ) ).register( any( Command.class ) );
-        verify( commandRegistry, times( 0 ) ).peek();
-        verify( commandRegistry, times( 0 ) ).pop();
+        tested.execute( canvasHandler,
+                        command );
+        verify( commandRegistry,
+                times( 0 ) ).register( any( Command.class ) );
+        verify( commandRegistry,
+                times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 0 ) ).pop();
     }
 
-    private void assertCompositeCommand( Command captured, int size ) {
+    private void assertCompositeCommand( Command captured,
+                                         int size ) {
         assertNotNull( captured );
         assertTrue( captured instanceof CompositeCommand );
-        assertEquals( size, ( ( CompositeCommand ) captured ).size() );
+        assertEquals( size,
+                      ( ( CompositeCommand ) captured ).size() );
     }
-
 }

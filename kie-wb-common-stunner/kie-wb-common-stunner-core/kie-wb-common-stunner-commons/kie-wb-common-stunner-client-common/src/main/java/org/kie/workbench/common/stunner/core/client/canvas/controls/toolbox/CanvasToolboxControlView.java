@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
-import javax.enterprise.context.Dependent;
 
 @Dependent
 public class CanvasToolboxControlView implements CanvasToolboxControl.View {

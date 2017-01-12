@@ -38,7 +38,9 @@ public class CommandRegistryListenerTest {
         }
 
         @Override
-        public void onAllow( Object context, Command command, CommandResult result ) {
+        public void onAllow( Object context,
+                             Command command,
+                             CommandResult result ) {
         }
     }
 
@@ -58,10 +60,15 @@ public class CommandRegistryListenerTest {
         Command command = mock( Command.class );
         CommandResult result = mock( CommandResult.class );
         when( result.getType() ).thenReturn( CommandResult.Type.INFO );
-        tested.onExecute( context, command, result );
-        verify( commandRegistry, times( 1 ) ).register( eq( command ) );
-        verify( commandRegistry, times( 0 ) ).pop();
-        verify( commandRegistry, times( 0 ) ).peek();
+        tested.onExecute( context,
+                          command,
+                          result );
+        verify( commandRegistry,
+                times( 1 ) ).register( eq( command ) );
+        verify( commandRegistry,
+                times( 0 ) ).pop();
+        verify( commandRegistry,
+                times( 0 ) ).peek();
     }
 
     @Test
@@ -71,10 +78,15 @@ public class CommandRegistryListenerTest {
         Command command = mock( Command.class );
         CommandResult result = mock( CommandResult.class );
         when( result.getType() ).thenReturn( CommandResult.Type.ERROR );
-        tested.onExecute( context, command, result );
-        verify( commandRegistry, times( 0 ) ).register( eq( command ) );
-        verify( commandRegistry, times( 0 ) ).pop();
-        verify( commandRegistry, times( 0 ) ).peek();
+        tested.onExecute( context,
+                          command,
+                          result );
+        verify( commandRegistry,
+                times( 0 ) ).register( eq( command ) );
+        verify( commandRegistry,
+                times( 0 ) ).pop();
+        verify( commandRegistry,
+                times( 0 ) ).peek();
     }
 
     @Test
@@ -84,10 +96,15 @@ public class CommandRegistryListenerTest {
         Command command = mock( Command.class );
         CommandResult result = mock( CommandResult.class );
         when( result.getType() ).thenReturn( CommandResult.Type.INFO );
-        tested.onUndo( context, command, result );
-        verify( commandRegistry, times( 1 ) ).pop();
-        verify( commandRegistry, times( 0 ) ).peek();
-        verify( commandRegistry, times( 0 ) ).register( any( Command.class ) );
+        tested.onUndo( context,
+                       command,
+                       result );
+        verify( commandRegistry,
+                times( 1 ) ).pop();
+        verify( commandRegistry,
+                times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 0 ) ).register( any( Command.class ) );
     }
 
     @Test
@@ -97,10 +114,14 @@ public class CommandRegistryListenerTest {
         Command command = mock( Command.class );
         CommandResult result = mock( CommandResult.class );
         when( result.getType() ).thenReturn( CommandResult.Type.ERROR );
-        tested.onUndo( context, command, result );
-        verify( commandRegistry, times( 0 ) ).pop();
-        verify( commandRegistry, times( 0 ) ).peek();
-        verify( commandRegistry, times( 0 ) ).register( any( Command.class ) );
+        tested.onUndo( context,
+                       command,
+                       result );
+        verify( commandRegistry,
+                times( 0 ) ).pop();
+        verify( commandRegistry,
+                times( 0 ) ).peek();
+        verify( commandRegistry,
+                times( 0 ) ).register( any( Command.class ) );
     }
-
 }

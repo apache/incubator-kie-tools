@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.project.backend.service;
 
+import java.io.InputStream;
+import java.util.Map;
+import javax.enterprise.inject.Instance;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramService;
@@ -33,10 +37,6 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 
-import javax.enterprise.inject.Instance;
-import java.io.InputStream;
-import java.util.Map;
-
 class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectMetadata, ProjectDiagram> {
 
     private static final Logger LOG =
@@ -47,7 +47,11 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                                      final Instance<DefinitionSetService> definitionSetServiceInstances,
                                      final IOService ioService,
                                      final BackendRegistryFactory registryFactory ) {
-        super( definitionManager, factoryManager, definitionSetServiceInstances, ioService, registryFactory );
+        super( definitionManager,
+               factoryManager,
+               definitionSetServiceInstances,
+               ioService,
+               registryFactory );
     }
 
     @Override
@@ -62,22 +66,49 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
     }
 
     @Override
-    public Path create( Path path, String name, String defSetId ) {
-        return create( path, name, defSetId, null, null );
+    public Path create( Path path,
+                        String name,
+                        String defSetId ) {
+        return create( path,
+                       name,
+                       defSetId,
+                       null,
+                       null );
     }
 
-    public Path create( Path path, String name, String defSetId, String projName, String projPkg ) {
-        ProjectMetadata metadata = buildProjectMetadataInstance( path, name, defSetId, projName, projPkg );
-        return this.create( path, name, defSetId, metadata );
+    public Path create( Path path,
+                        String name,
+                        String defSetId,
+                        String projName,
+                        String projPkg ) {
+        ProjectMetadata metadata = buildProjectMetadataInstance( path,
+                                                                 name,
+                                                                 defSetId,
+                                                                 projName,
+                                                                 projPkg );
+        return this.create( path,
+                            name,
+                            defSetId,
+                            metadata );
     }
 
     // TODO: Jeremy - set project name and package values when loading a diagram.
     @Override
-    protected ProjectMetadata buildMetadataInstance( org.uberfire.backend.vfs.Path path, String defSetId, String title ) {
-        return buildProjectMetadataInstance( path, title, defSetId, null, null );
+    protected ProjectMetadata buildMetadataInstance( org.uberfire.backend.vfs.Path path,
+                                                     String defSetId,
+                                                     String title ) {
+        return buildProjectMetadataInstance( path,
+                                             title,
+                                             defSetId,
+                                             null,
+                                             null );
     }
 
-    private ProjectMetadata buildProjectMetadataInstance( Path path, String name, String defSetId, String projName, String projPkg ) {
+    private ProjectMetadata buildProjectMetadataInstance( Path path,
+                                                          String name,
+                                                          String defSetId,
+                                                          String projName,
+                                                          String projPkg ) {
         return new ProjectMetadataImpl.ProjectMetadataBuilder()
                 .forDefinitionSetId( defSetId )
                 .forProjectName( projName )
@@ -98,16 +129,22 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                       OpenOption... comment ) {
         try {
             String[] raw = serizalize( diagram );
-            getIoService().write( Paths.convert( path ), raw[ 0 ], attributes, comment );
+            getIoService().write( Paths.convert( path ),
+                                  raw[ 0 ],
+                                  attributes,
+                                  comment );
         } catch ( Exception e ) {
-            LOG.error( "Error while saving diagram with UUID [" + diagram.getName() + "].", e );
+            LOG.error( "Error while saving diagram with UUID [" + diagram.getName() + "].",
+                       e );
             throw new RuntimeException( e );
         }
         return path;
     }
 
     @Override
-    protected ProjectMetadata doSave( ProjectDiagram diagram, String raw, String metadata ) {
+    protected ProjectMetadata doSave( ProjectDiagram diagram,
+                                      String raw,
+                                      String metadata ) {
         try {
             Path _path = diagram.getMetadata().getPath();
             org.uberfire.java.nio.file.Path path = Paths.convert( _path );
@@ -116,22 +153,27 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                 final String fileName = path.getFileName().toString();
                 path = parent.resolve( fileName );
             }
-            getIoService().write( path, raw );
+            getIoService().write( path,
+                                  raw );
         } catch ( Exception e ) {
-            LOG.error( "Error while saving diagram with UUID [" + diagram.getName() + "].", e );
+            LOG.error( "Error while saving diagram with UUID [" + diagram.getName() + "].",
+                       e );
             throw new RuntimeException( e );
         }
         return diagram.getMetadata();
     }
 
     // TODO: Use commit message.
-    public boolean delete( Path _path, String message ) {
+    public boolean delete( Path _path,
+                           String message ) {
         final org.uberfire.java.nio.file.Path path = Paths.convert( _path );
-        return getIoService().deleteIfExists( path, StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+        return getIoService().deleteIfExists( path,
+                                              StandardDeleteOption.NON_EMPTY_DIRECTORIES );
     }
 
     @Override
     protected boolean doDelete( Path path ) {
-        return delete( path, "" );
+        return delete( path,
+                       "" );
     }
 }

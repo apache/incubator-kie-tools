@@ -16,13 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.traverse.tree;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-
-import javax.enterprise.context.Dependent;
-import java.util.*;
 
 @Dependent
 public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProcessor {
@@ -65,7 +70,9 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
     @Override
     public void traverse( final Graph graph,
                           final TreeTraverseCallback<Graph, Node, Edge> callback ) {
-        this.traverse( graph, null, callback );
+        this.traverse( graph,
+                       null,
+                       callback );
     }
 
     private void startTraverse( final Node startNode ) {

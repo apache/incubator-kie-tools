@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * The client scope for session components.
- * <p>
+ * <p/>
  * A client session starts once a diagram is being opened and ends
  * once the screen gets closed/destroyed.
  */

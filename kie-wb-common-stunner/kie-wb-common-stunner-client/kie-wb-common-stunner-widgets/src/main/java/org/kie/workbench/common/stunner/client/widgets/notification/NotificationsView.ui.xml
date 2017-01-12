@@ -31,14 +31,14 @@
   <b:Container fluid="true">
 
     <b:Row ui:field="logsRow">
-      <b:Column size="MD_12" >
+      <b:Column size="MD_12">
         <g:VerticalPanel>
           <bgwt:CellTable ui:field="logsGrid" bordered="true" condensed="true" striped="true" hover="true" addStyleNames="{style.logsGrid}"/>
-          <gcell:SimplePager ui:field="logsGridPager" />
+          <gcell:SimplePager ui:field="logsGridPager"/>
         </g:VerticalPanel>
       </b:Column>
     </b:Row>
-    
+
   </b:Container>
 
 </ui:UiBinder>

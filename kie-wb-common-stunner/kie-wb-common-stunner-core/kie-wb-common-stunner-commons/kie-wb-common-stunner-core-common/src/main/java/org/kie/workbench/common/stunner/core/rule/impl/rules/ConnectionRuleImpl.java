@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.stunner.core.rule.impl.rules;
 
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.rule.ConnectionRule;
 import org.uberfire.commons.validation.PortablePreconditions;
-
-import java.util.Set;
 
 @Portable
 public class ConnectionRuleImpl implements ConnectionRule {
@@ -29,15 +29,15 @@ public class ConnectionRuleImpl implements ConnectionRule {
     private String id;
     private Set<PermittedConnection> permittedConnections;
 
-    public ConnectionRuleImpl( @MapsTo( "name" ) final String name,
-                               @MapsTo( "id" ) final String id,
-                               @MapsTo( "permittedConnections" ) final Set<PermittedConnection> permittedConnections ) {
+    public ConnectionRuleImpl( final @MapsTo( "name" ) String name,
+                               final @MapsTo( "id" ) String id,
+                               final @MapsTo( "permittedConnections" ) Set<PermittedConnection> permittedConnections ) {
         this.name = PortablePreconditions.checkNotNull( "name",
-                name );
+                                                        name );
         this.id = PortablePreconditions.checkNotNull( "id",
-                id );
+                                                      id );
         this.permittedConnections = PortablePreconditions.checkNotNull( "permittedConnections",
-                permittedConnections );
+                                                                        permittedConnections );
     }
 
     @Override
@@ -54,5 +54,4 @@ public class ConnectionRuleImpl implements ConnectionRule {
     public Set<PermittedConnection> getPermittedConnections() {
         return permittedConnections;
     }
-
 }

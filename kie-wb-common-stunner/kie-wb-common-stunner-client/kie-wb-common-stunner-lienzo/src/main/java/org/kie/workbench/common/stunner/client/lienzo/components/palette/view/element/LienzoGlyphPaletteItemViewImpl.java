@@ -36,7 +36,8 @@ public final class LienzoGlyphPaletteItemViewImpl
     public LienzoGlyphPaletteItemViewImpl( final GlyphPaletteItem item,
                                            final LienzoPaletteView paletteView,
                                            final Glyph<Group> glyph ) {
-        super( item, paletteView );
+        super( item,
+               paletteView );
         this.glyph = glyph;
         init();
     }
@@ -58,7 +59,9 @@ public final class LienzoGlyphPaletteItemViewImpl
         final String title = item.getTitle();
         final double glyphWidth = glyph.getWidth();
         final double glyphHeight = glyph.getHeight();
-        final double fontSize = ClientPaletteUtils.computeFontSize( glyphWidth, glyphHeight, title.length() );
+        final double fontSize = ClientPaletteUtils.computeFontSize( glyphWidth,
+                                                                    glyphHeight,
+                                                                    title.length() );
         text = new Text( title )
                 .setX( glyphWidth + 10 )
                 .setY( glyphWidth / 2 )
@@ -66,7 +69,5 @@ public final class LienzoGlyphPaletteItemViewImpl
                 .setFontSize( fontSize )
                 .setStrokeWidth( 1 );
         view.add( glyph.getGroup() );
-
     }
-
 }

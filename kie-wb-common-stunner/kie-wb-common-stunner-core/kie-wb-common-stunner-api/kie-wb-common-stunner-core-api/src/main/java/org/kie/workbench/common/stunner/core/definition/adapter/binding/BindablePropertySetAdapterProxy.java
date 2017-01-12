@@ -35,5 +35,4 @@ public abstract class BindablePropertySetAdapterProxy<T> extends PropertySetAdap
     public boolean isPojoModel() {
         return true;
     }
-
 }

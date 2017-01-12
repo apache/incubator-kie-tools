@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.basicset.util;
 
 public final class FieldDefLabelConstants {
+
     public static final String FIELDDEF_NAME = "Name";
     public static final String FIELDDEF_BACKGROUND_AND_BORDERS = "Background and Borders";
     public static final String FIELDDEF_FONT = "Font";
@@ -57,5 +58,4 @@ public final class FieldDefLabelConstants {
     public static final String FIELDDEF_FONT_COLOR = "Font Color";
     public static final String FIELDDEF_FONT_SIZE = "Font Size";
     public static final String FIELDDEF_FONT_BORDER_SIZE = "Font Border Size";
-
 }

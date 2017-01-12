@@ -16,9 +16,38 @@
 
 package org.kie.workbench.common.stunner.core.processors;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.MirroredTypesException;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
+
 import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-import org.kie.workbench.common.stunner.core.definition.annotation.*;
+import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.stunner.core.definition.annotation.Shape;
+import org.kie.workbench.common.stunner.core.definition.annotation.ShapeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphProperty;
@@ -33,26 +62,16 @@ import org.kie.workbench.common.stunner.core.processors.morph.MorphDefinitionPro
 import org.kie.workbench.common.stunner.core.processors.morph.MorphPropertyDefinitionGenerator;
 import org.kie.workbench.common.stunner.core.processors.property.BindablePropertyAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.propertyset.BindablePropertySetAdapterGenerator;
-import org.kie.workbench.common.stunner.core.processors.rule.*;
+import org.kie.workbench.common.stunner.core.processors.rule.BindableDefinitionSetRuleAdapterGenerator;
+import org.kie.workbench.common.stunner.core.processors.rule.CardinalityRuleGenerator;
+import org.kie.workbench.common.stunner.core.processors.rule.ConnectionRuleGenerator;
+import org.kie.workbench.common.stunner.core.processors.rule.ContainmentRuleGenerator;
+import org.kie.workbench.common.stunner.core.processors.rule.DockingRuleGenerator;
+import org.kie.workbench.common.stunner.core.processors.rule.EdgeCardinalityRuleGenerator;
 import org.kie.workbench.common.stunner.core.processors.shape.BindableShapeFactoryGenerator;
 import org.kie.workbench.common.stunner.core.processors.shape.BindableShapeSetGenerator;
 import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.*;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.MirroredTypeException;
-import javax.lang.model.type.MirroredTypesException;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic;
-import java.util.*;
 
 @SupportedAnnotationTypes( {
         MainProcessor.ANNOTATION_DEFINITION_SET,
@@ -211,21 +230,23 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         this.shapeFactoryGenerator = shapeFactoryGenerator;
     }
 
-    public static String toValidId( String id ) {
+    public static String toValidId( final String id ) {
         return StringUtils.uncapitalize( id );
     }
 
-    public static String toClassMemberId( String className ) {
+    public static String toClassMemberId( final String className ) {
         int i = className.lastIndexOf( "." );
-        String s = i > -1 ? className.substring( i + 1, className.length() ) : className;
+        String s = i > -1 ? className.substring( i + 1,
+                                                 className.length() ) : className;
         return toValidId( s );
     }
 
     @Override
-    protected boolean processWithExceptions( Set<? extends TypeElement> set,
-                                             RoundEnvironment roundEnv ) throws Exception {
+    protected boolean processWithExceptions( final Set<? extends TypeElement> set,
+                                             final RoundEnvironment roundEnv ) throws Exception {
         if ( roundEnv.processingOver() ) {
-            return processLastRound( set, roundEnv );
+            return processLastRound( set,
+                                     roundEnv );
         }
         //If prior processing threw an error exit
         if ( roundEnv.errorRaised() ) {
@@ -234,11 +255,15 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         final Elements elementUtils = processingEnv.getElementUtils();
         // Process Definition Sets types found on the processing environment.
         for ( Element e : roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_DEFINITION_SET ) ) ) {
-            processDefinitionSets( set, e, roundEnv );
+            processDefinitionSets( set,
+                                   e,
+                                   roundEnv );
         }
         // Process Definition types found on the processing environment.
         for ( Element e : roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_DEFINITION ) ) ) {
-            processDefinitions( set, e, roundEnv );
+            processDefinitions( set,
+                                e,
+                                roundEnv );
         }
         // Process Property Sets types found on the processing environment
         // AND
@@ -250,7 +275,9 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             addAll( processingContext.getPropertySetElements() );
         }};
         for ( Element e : propertySetElements ) {
-            processPropertySets( set, e, roundEnv );
+            processPropertySets( set,
+                                 e,
+                                 roundEnv );
         }
         // Process Property types found on the processing environment
         // AND
@@ -262,57 +289,71 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             addAll( processingContext.getPropertyElements() );
         }};
         for ( Element e : propertyElements ) {
-            processProperties( set, e, roundEnv );
+            processProperties( set,
+                               e,
+                               roundEnv );
         }
         for ( Element e : roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_RULE_CAN_CONTAIN ) ) ) {
-            processContainmentRules( set, e, roundEnv );
+            processContainmentRules( set,
+                                     e,
+                                     roundEnv );
         }
         for ( Element e : roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_RULE_CAN_DOCK ) ) ) {
-            processDockingRules( set, e, roundEnv );
+            processDockingRules( set,
+                                 e,
+                                 roundEnv );
         }
         final Set<? extends Element> occRules = new LinkedHashSet<Element>() {{
             addAll( roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_RULE_ALLOWED_OCCS ) ) );
             addAll( roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_RULE_OCCS ) ) );
         }};
         for ( Element e : occRules ) {
-            processCardinalityRules( set, e, roundEnv );
+            processCardinalityRules( set,
+                                     e,
+                                     roundEnv );
         }
         final Set<? extends Element> edgeOccRules = new LinkedHashSet<Element>() {{
             addAll( roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_RULE_ALLOWED_EDGE_OCCURRS ) ) );
             addAll( roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_RULE_EDGE_OCCS ) ) );
         }};
         for ( Element e : edgeOccRules ) {
-            processEdgeCardinalityRules( set, e, roundEnv );
+            processEdgeCardinalityRules( set,
+                                         e,
+                                         roundEnv );
         }
         final Set<? extends Element> cRules = new LinkedHashSet<Element>() {{
             addAll( roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_RULE_ALLOWED_CONNECTION ) ) );
             addAll( roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ANNOTATION_RULE_CAN_CONNECT ) ) );
         }};
         for ( Element e : cRules ) {
-            processConnectionRules( set, e, roundEnv );
+            processConnectionRules( set,
+                                    e,
+                                    roundEnv );
         }
         return true;
     }
 
-    private boolean processDefinitionSets( Set<? extends TypeElement> set,
-                                           Element e,
-                                           RoundEnvironment roundEnv ) throws Exception {
+    private boolean processDefinitionSets( final Set<? extends TypeElement> set,
+                                           final Element e,
+                                           final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         final boolean isClass = e.getKind() == ElementKind.CLASS;
         if ( isClass ) {
             TypeElement classElement = ( TypeElement ) e;
             PackageElement packageElement = ( PackageElement ) classElement.getEnclosingElement();
-            messager.printMessage( Diagnostic.Kind.NOTE, "Discovered definition set class [" + classElement.getSimpleName() + "]" );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Discovered definition set class [" + classElement.getSimpleName() + "]" );
             final String packageName = packageElement.getQualifiedName().toString();
             final String className = classElement.getSimpleName().toString();
-            processingContext.setDefinitionSet( packageName, className );
+            processingContext.setDefinitionSet( packageName,
+                                                className );
             String propertyClassName = packageName + "." + className;
             // Description fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_DESCRIPTION,
-                    processingContext.getDefSetAnnotations().getDescriptionFieldNames(),
-                    true );
+                              propertyClassName,
+                              ANNOTATION_DESCRIPTION,
+                              processingContext.getDefSetAnnotations().getDescriptionFieldNames(),
+                              true );
             // Definitions identifiers.
             DefinitionSet definitionSetAnn = e.getAnnotation( DefinitionSet.class );
             List<? extends TypeMirror> mirrors = null;
@@ -332,8 +373,9 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             }
             processingContext.getDefSetAnnotations().getDefinitionIds().addAll( defIds );
             // Builder class.
-            processDefinitionSetModelBuilder( e, propertyClassName,
-                    processingContext.getDefSetAnnotations().getBuilderFieldNames() );
+            processDefinitionSetModelBuilder( e,
+                                              propertyClassName,
+                                              processingContext.getDefSetAnnotations().getBuilderFieldNames() );
             // Graph factory type.
             TypeMirror mirror = null;
             try {
@@ -345,7 +387,8 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 throw new RuntimeException( "No graph factory class specifyed for the @DefinitionSet." );
             }
             String fqcn = mirror.toString();
-            processingContext.getDefSetAnnotations().getGraphFactoryTypes().put( propertyClassName, fqcn );
+            processingContext.getDefSetAnnotations().getGraphFactoryTypes().put( propertyClassName,
+                                                                                 fqcn );
             ShapeSet shapeSetAnn = e.getAnnotation( ShapeSet.class );
             if ( null != shapeSetAnn ) {
                 processingContext.getDefSetAnnotations().setHasShapeSet( true );
@@ -354,9 +397,9 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         return true;
     }
 
-    private boolean processDefinitions( Set<? extends TypeElement> set,
-                                        Element e,
-                                        RoundEnvironment roundEnv ) throws Exception {
+    private boolean processDefinitions( final Set<? extends TypeElement> set,
+                                        final Element e,
+                                        final RoundEnvironment roundEnv ) throws Exception {
         final boolean isClass = e.getKind() == ElementKind.CLASS;
         if ( isClass ) {
             TypeElement classElement = ( TypeElement ) e;
@@ -367,35 +410,37 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             if ( null != parentElement && !baseTypes.containsKey( defintionClassName ) ) {
                 PackageElement basePackageElement = ( PackageElement ) parentElement.getEnclosingElement();
                 String baseClassName = basePackageElement.getQualifiedName().toString() + "." + parentElement.getSimpleName();
-                baseTypes.put( defintionClassName, baseClassName );
+                baseTypes.put( defintionClassName,
+                               baseClassName );
             }
             // Category fields.
             processFieldName( classElement,
-                    defintionClassName,
-                    ANNOTATION_DEFINITION_CATEGORY,
-                    processingContext.getDefinitionAnnotations().getCategoryFieldNames(),
-                    true );
+                              defintionClassName,
+                              ANNOTATION_DEFINITION_CATEGORY,
+                              processingContext.getDefinitionAnnotations().getCategoryFieldNames(),
+                              true );
             // Title fields.
             processFieldName( classElement,
-                    defintionClassName,
-                    ANNOTATION_DEFINITION_TITLE,
-                    processingContext.getDefinitionAnnotations().getTitleFieldNames(),
-                    true );
+                              defintionClassName,
+                              ANNOTATION_DEFINITION_TITLE,
+                              processingContext.getDefinitionAnnotations().getTitleFieldNames(),
+                              true );
             // Description fields.
             processFieldName( classElement,
-                    defintionClassName,
-                    ANNOTATION_DESCRIPTION,
-                    processingContext.getDefinitionAnnotations().getDescriptionFieldNames(),
-                    true );
+                              defintionClassName,
+                              ANNOTATION_DESCRIPTION,
+                              processingContext.getDefinitionAnnotations().getDescriptionFieldNames(),
+                              true );
             // Labels fields.
             processFieldName( classElement,
-                    defintionClassName,
-                    ANNOTATION_DEFINITION_LABELS,
-                    processingContext.getDefinitionAnnotations().getLabelsFieldNames(),
-                    true );
+                              defintionClassName,
+                              ANNOTATION_DEFINITION_LABELS,
+                              processingContext.getDefinitionAnnotations().getLabelsFieldNames(),
+                              true );
             // Builder class.
-            processDefinitionModelBuilder( e, defintionClassName,
-                    processingContext.getDefinitionAnnotations().getBuilderFieldNames() );
+            processDefinitionModelBuilder( e,
+                                           defintionClassName,
+                                           processingContext.getDefinitionAnnotations().getBuilderFieldNames() );
             // Graph element.
             Definition definitionAnn = e.getAnnotation( Definition.class );
             TypeMirror mirror = null;
@@ -408,21 +453,25 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 throw new RuntimeException( "No graph factory class specified for the @Definition." );
             }
             String fqcn = mirror.toString();
-            processingContext.getDefinitionAnnotations().getGraphFactoryFieldNames().put( defintionClassName, fqcn );
+            processingContext.getDefinitionAnnotations().getGraphFactoryFieldNames().put( defintionClassName,
+                                                                                          fqcn );
             // PropertySets fields.
-            Map<String, Element> propertySetElements = getFieldNames( classElement, ANNOTATION_PROPERTY_SET );
+            Map<String, Element> propertySetElements = getFieldNames( classElement,
+                                                                      ANNOTATION_PROPERTY_SET );
             if ( null != propertySetElements && !propertySetElements.isEmpty() ) {
                 processingContext.getPropertySetElements().addAll( propertySetElements.values() );
-                processingContext.getDefinitionAnnotations().getPropertySetFieldNames().put( defintionClassName, new LinkedHashSet<>( propertySetElements.keySet() ) );
+                processingContext.getDefinitionAnnotations().getPropertySetFieldNames().put( defintionClassName,
+                                                                                             new LinkedHashSet<>( propertySetElements.keySet() ) );
             } else {
                 note( "Definition for tye [" + defintionClassName + "] have no Property Set members." );
             }
             // Properties fields.
-            Map<String, Element> propertyElements =
-                    getFieldNames( classElement, ANNOTATION_PROPERTY );
+            Map<String, Element> propertyElements = getFieldNames( classElement,
+                                                                   ANNOTATION_PROPERTY );
             if ( null != propertyElements && !propertyElements.isEmpty() ) {
                 processingContext.getPropertyElements().addAll( propertyElements.values() );
-                processingContext.getDefinitionAnnotations().getPropertyFieldNames().put( defintionClassName, new LinkedHashSet<>( propertyElements.keySet() ) );
+                processingContext.getDefinitionAnnotations().getPropertyFieldNames().put( defintionClassName,
+                                                                                          new LinkedHashSet<>( propertyElements.keySet() ) );
             } else {
                 note( "Definition for tye [" + defintionClassName + "] have no Property members." );
             }
@@ -430,7 +479,8 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             // MorphBase - defaultType
             MorphBase morphBaseAnn = e.getAnnotation( MorphBase.class );
             if ( null != morphBaseAnn ) {
-                TypeElement superElement = getAnnotationInTypeInheritance( classElement, MorphBase.class.getName() );
+                TypeElement superElement = getAnnotationInTypeInheritance( classElement,
+                                                                           MorphBase.class.getName() );
                 final String packageName = packageElement.getQualifiedName().toString();
                 String morphBaseClassName = packageName + "." + superElement.getSimpleName().toString();
                 Map<String, String> defaultTypesMap = processingContext.getMorphingAnnotations().getBaseDefaultTypes();
@@ -445,7 +495,8 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                         throw new RuntimeException( "No default type class specifyed for the @MorphBase." );
                     }
                     String morphDefaultTypeClassName = morphDefaultTypeMirror.toString();
-                    processingContext.getMorphingAnnotations().getBaseDefaultTypes().put( morphBaseClassName, morphDefaultTypeClassName );
+                    processingContext.getMorphingAnnotations().getBaseDefaultTypes().put( morphBaseClassName,
+                                                                                          morphDefaultTypeClassName );
                     // MorphBase - targets
                     List<? extends TypeMirror> morphTargetMirrors = null;
                     try {
@@ -459,10 +510,12 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                             String morphTargetMirrorClassName = morphTargetMirror.toString();
                             morphTargetMirrorClasses.add( morphTargetMirrorClassName );
                         }
-                        processingContext.getMorphingAnnotations().getBaseTargets().put( morphBaseClassName, morphTargetMirrorClasses );
+                        processingContext.getMorphingAnnotations().getBaseTargets().put( morphBaseClassName,
+                                                                                         morphTargetMirrorClasses );
                     }
                     // Morph Properties.
-                    processMorphProperties( superElement, morphBaseClassName );
+                    processMorphProperties( superElement,
+                                            morphBaseClassName );
                 }
             }
             // Morph - baseType
@@ -481,7 +534,8 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 Set<String> currentTargets = processingContext.getMorphingAnnotations().getBaseTargets().get( morphBaseTypeClassName );
                 if ( null == currentTargets ) {
                     currentTargets = new LinkedHashSet<>();
-                    processingContext.getMorphingAnnotations().getBaseTargets().put( morphBaseTypeClassName, currentTargets );
+                    processingContext.getMorphingAnnotations().getBaseTargets().put( morphBaseTypeClassName,
+                                                                                     currentTargets );
                 }
                 currentTargets.add( defintionClassName );
             }
@@ -496,7 +550,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 }
                 if ( null == sfm ) {
                     throw new RuntimeException( "No ShapeDef Factory class class specifyed for the Definition ["
-                            + defintionClassName + "]" );
+                                                        + defintionClassName + "]" );
                 }
                 String sfmfqcn = sfm.toString();
                 TypeMirror sm = null;
@@ -511,33 +565,35 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 String smfqcn = sm.toString();
                 if ( !processingContext.getDefinitionAnnotations().getShapeDefinitions().containsKey( defintionClassName ) ) {
                     processingContext.getDefinitionAnnotations()
-                            .getShapeDefinitions().put( defintionClassName, new String[]{ sfmfqcn, smfqcn } );
+                            .getShapeDefinitions().put( defintionClassName,
+                                                        new String[]{ sfmfqcn, smfqcn } );
                 }
             }
         }
         return false;
     }
 
-    private String getTypeName( Element e ) {
+    private String getTypeName( final Element e ) {
         TypeElement classElement = ( TypeElement ) e;
         PackageElement packageElement = ( PackageElement ) classElement.getEnclosingElement();
         return packageElement.getQualifiedName().toString() + "." + classElement.getSimpleName();
     }
 
-    private TypeElement getAnnotationInTypeInheritance( TypeElement classElement, String annotation ) {
+    private TypeElement getAnnotationInTypeInheritance( final TypeElement classElement,
+                                                        final String annotation ) {
         TypeElement c = classElement;
         while ( null != c &&
-                !hasAnnotation( c, annotation ) &&
+                !hasAnnotation( c,
+                                annotation ) &&
                 !classElement.getQualifiedName().toString().equals( Object.class.getName() ) ) {
             c = getParent( c );
         }
         return c;
     }
 
-    private boolean hasAnnotation( TypeElement classElement,
-                                   String annotation ) {
-        Element actionElement = processingEnv.getElementUtils().getTypeElement(
-                annotation );
+    private boolean hasAnnotation( final TypeElement classElement,
+                                   final String annotation ) {
+        Element actionElement = processingEnv.getElementUtils().getTypeElement( annotation );
         TypeMirror actionType = actionElement.asType();
         if ( null != classElement ) {
             List<? extends AnnotationMirror> mirrors = classElement.getAnnotationMirrors();
@@ -552,20 +608,23 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         return false;
     }
 
-    private void processMorphProperties( TypeElement classElement,
-                                         String definitionClassName ) {
+    private void processMorphProperties( final TypeElement classElement,
+                                         final String definitionClassName ) {
         final Messager messager = processingEnv.getMessager();
         final Elements elementUtils = processingEnv.getElementUtils();
         List<VariableElement> variableElements = ElementFilter.fieldsIn( classElement.getEnclosedElements() );
         for ( VariableElement variableElement : variableElements ) {
-            if ( GeneratorUtils.getAnnotation( elementUtils, variableElement, ANNOTATION_MORPH_PROPERTY ) != null ) {
+            if ( GeneratorUtils.getAnnotation( elementUtils,
+                                               variableElement,
+                                               ANNOTATION_MORPH_PROPERTY ) != null ) {
                 final TypeMirror fieldReturnType = variableElement.asType();
                 final String fieldReturnTypeName = GeneratorUtils.getTypeMirrorDeclaredName( fieldReturnType );
                 final String fieldName = variableElement.getSimpleName().toString();
-                messager.printMessage( Diagnostic.Kind.NOTE, "Discovered Morph Property " +
-                        "for class [" + classElement.getSimpleName() + "] " +
-                        "at field [" + fieldName + "] " +
-                        "of return type [" + fieldReturnTypeName + "]" );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Discovered Morph Property " +
+                                               "for class [" + classElement.getSimpleName() + "] " +
+                                               "at field [" + fieldName + "] " +
+                                               "of return type [" + fieldReturnTypeName + "]" );
                 // MorphBase - defaultType
                 MorphProperty morphBaseAnn = variableElement.getAnnotation( MorphProperty.class );
                 TypeMirror morphDefaultTypeMirror = null;
@@ -578,13 +637,14 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                     throw new RuntimeException( "No binder class specifyed for the @MorphProperty." );
                 }
                 String binderClassName = morphDefaultTypeMirror.toString();
-                ProcessingMorphProperty morphProperty =
-                        new ProcessingMorphProperty( fieldReturnTypeName, StringUtils.capitalize( fieldName ), binderClassName );
-                List<ProcessingMorphProperty> morphProperties =
-                        processingContext.getMorphingAnnotations().getBaseMorphProperties().get( definitionClassName );
+                ProcessingMorphProperty morphProperty = new ProcessingMorphProperty( fieldReturnTypeName,
+                                                                                     StringUtils.capitalize( fieldName ),
+                                                                                     binderClassName );
+                List<ProcessingMorphProperty> morphProperties = processingContext.getMorphingAnnotations().getBaseMorphProperties().get( definitionClassName );
                 if ( null == morphProperties ) {
                     morphProperties = new LinkedList<>();
-                    processingContext.getMorphingAnnotations().getBaseMorphProperties().put( definitionClassName, morphProperties );
+                    processingContext.getMorphingAnnotations().getBaseMorphProperties().put( definitionClassName,
+                                                                                             morphProperties );
                 }
                 morphProperties.add( morphProperty );
             }
@@ -598,7 +658,9 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             List<VariableElement> variableElements = ElementFilter.fieldsIn( classElement.getEnclosedElements() );
             for ( VariableElement variableElement : variableElements ) {
                 for ( String annotation : DEFINITION_ANNOTATIONS ) {
-                    if ( GeneratorUtils.getAnnotation( elementUtils, variableElement, annotation ) != null ) {
+                    if ( GeneratorUtils.getAnnotation( elementUtils,
+                                                       variableElement,
+                                                       annotation ) != null ) {
                         return classElement;
                     }
                 }
@@ -608,13 +670,13 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         return null;
     }
 
-    private TypeElement getParent( TypeElement classElement ) {
+    private TypeElement getParent( final TypeElement classElement ) {
         return ( TypeElement ) processingEnv.getTypeUtils().asElement( classElement.getSuperclass() );
     }
 
-    private void processDefinitionModelBuilder( Element e,
-                                                String className,
-                                                Map<String, String> processingContextMap ) {
+    private void processDefinitionModelBuilder( final Element e,
+                                                final String className,
+                                                final Map<String, String> processingContextMap ) {
         Definition definitionAnn = e.getAnnotation( Definition.class );
         TypeMirror bMirror = null;
         try {
@@ -624,13 +686,14 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         }
         if ( null != bMirror && !VoidBuilder.class.getName().equals( bMirror.toString() ) ) {
             String fqcn = bMirror.toString();
-            processingContextMap.put( className, fqcn );
+            processingContextMap.put( className,
+                                      fqcn );
         }
     }
 
-    private void processDefinitionSetModelBuilder( Element e,
-                                                   String className,
-                                                   Map<String, String> processingContextMap ) {
+    private void processDefinitionSetModelBuilder( final Element e,
+                                                   final String className,
+                                                   final Map<String, String> processingContextMap ) {
         DefinitionSet definitionAnn = e.getAnnotation( DefinitionSet.class );
         TypeMirror bMirror = null;
         try {
@@ -640,13 +703,14 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         }
         if ( null != bMirror && !VoidBuilder.class.getName().equals( bMirror.toString() ) ) {
             String fqcn = bMirror.toString();
-            processingContextMap.put( className, fqcn );
+            processingContextMap.put( className,
+                                      fqcn );
         }
     }
 
-    private boolean processPropertySets( Set<? extends TypeElement> set,
-                                         Element e,
-                                         RoundEnvironment roundEnv ) throws Exception {
+    private boolean processPropertySets( final Set<? extends TypeElement> set,
+                                         final Element e,
+                                         final RoundEnvironment roundEnv ) throws Exception {
         final boolean isClass = e.getKind() == ElementKind.CLASS;
         if ( isClass ) {
             TypeElement classElement = ( TypeElement ) e;
@@ -655,16 +719,17 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
 
             // Name fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_NAME,
-                    processingContext.getPropertySetAnnotations().getNameFieldNames(),
-                    true );
+                              propertyClassName,
+                              ANNOTATION_NAME,
+                              processingContext.getPropertySetAnnotations().getNameFieldNames(),
+                              true );
             // Properties fields.
-            Map<String, Element> propertyElements =
-                    getFieldNames( classElement, ANNOTATION_PROPERTY );
+            Map<String, Element> propertyElements = getFieldNames( classElement,
+                                                                   ANNOTATION_PROPERTY );
             if ( null != propertyElements ) {
                 processingContext.getPropertyElements().addAll( propertyElements.values() );
-                processingContext.getPropertySetAnnotations().getPropertiesFieldNames().put( propertyClassName, new LinkedHashSet<>( propertyElements.keySet() ) );
+                processingContext.getPropertySetAnnotations().getPropertiesFieldNames().put( propertyClassName,
+                                                                                             new LinkedHashSet<>( propertyElements.keySet() ) );
                 if ( propertyElements.isEmpty() ) {
                     note( "Property Set for tye [" + propertyClassName + "] have no Property members." );
                 }
@@ -673,9 +738,9 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         return false;
     }
 
-    private boolean processProperties( Set<? extends TypeElement> set,
-                                       Element e,
-                                       RoundEnvironment roundEnv ) throws Exception {
+    private boolean processProperties( final Set<? extends TypeElement> set,
+                                       final Element e,
+                                       final RoundEnvironment roundEnv ) throws Exception {
         final boolean isClass = e.getKind() == ElementKind.CLASS;
         if ( isClass ) {
             TypeElement classElement = ( TypeElement ) e;
@@ -686,73 +751,76 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             if ( null != metaProperty ) {
                 PropertyMetaTypes type = metaProperty.meta();
                 if ( !PropertyMetaTypes.NONE.equals( type ) ) {
-                    processingContext.getMetaPropertyTypes().put( type, propertyClassName + ".class" );
+                    processingContext.getMetaPropertyTypes().put( type,
+                                                                  propertyClassName + ".class" );
                 }
             }
             // Value fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_PROPERTY_VALUE,
-                    processingContext.getPropertyAnnotations().getValueFieldNames(),
-                    true );
+                              propertyClassName,
+                              ANNOTATION_PROPERTY_VALUE,
+                              processingContext.getPropertyAnnotations().getValueFieldNames(),
+                              true );
             // Default Value fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_PROPERTY_DEFAULT_VALUE,
-                    processingContext.getPropertyAnnotations().getDefaultValueFieldNames(),
-                    true );
+                              propertyClassName,
+                              ANNOTATION_PROPERTY_DEFAULT_VALUE,
+                              processingContext.getPropertyAnnotations().getDefaultValueFieldNames(),
+                              true );
             // Allowed Values fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_PROPERTY_ALLOWED_VALUES,
-                    processingContext.getPropertyAnnotations().getAllowedValuesFieldNames(),
-                    false );
+                              propertyClassName,
+                              ANNOTATION_PROPERTY_ALLOWED_VALUES,
+                              processingContext.getPropertyAnnotations().getAllowedValuesFieldNames(),
+                              false );
             // Caption fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_PROPERTY_CAPTION,
-                    processingContext.getPropertyAnnotations().getCaptionFieldNames(),
-                    true );
+                              propertyClassName,
+                              ANNOTATION_PROPERTY_CAPTION,
+                              processingContext.getPropertyAnnotations().getCaptionFieldNames(),
+                              true );
             // Description fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_DESCRIPTION,
-                    processingContext.getPropertyAnnotations().getDescriptionFieldNames(),
-                    true );
+                              propertyClassName,
+                              ANNOTATION_DESCRIPTION,
+                              processingContext.getPropertyAnnotations().getDescriptionFieldNames(),
+                              true );
             // Type fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_PROPERTY_TYPE,
-                    processingContext.getPropertyAnnotations().getTypeFieldNames(),
-                    true );
+                              propertyClassName,
+                              ANNOTATION_PROPERTY_TYPE,
+                              processingContext.getPropertyAnnotations().getTypeFieldNames(),
+                              true );
             // Read only fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_PROPERTY_READONLY,
-                    processingContext.getPropertyAnnotations().getReadOnlyFieldNames(),
-                    true );
+                              propertyClassName,
+                              ANNOTATION_PROPERTY_READONLY,
+                              processingContext.getPropertyAnnotations().getReadOnlyFieldNames(),
+                              true );
             // Optional fields.
             processFieldName( classElement,
-                    propertyClassName,
-                    ANNOTATION_PROPERTY_OPTIONAL,
-                    processingContext.getPropertyAnnotations().getOptionalFieldNames(),
-                    true );
+                              propertyClassName,
+                              ANNOTATION_PROPERTY_OPTIONAL,
+                              processingContext.getPropertyAnnotations().getOptionalFieldNames(),
+                              true );
         }
         return false;
     }
 
-    private void processFieldName( TypeElement classElement,
-                                   String propertyClassName,
-                                   String annotation,
-                                   Map<String, String> ctxMap,
-                                   boolean mandatory ) {
-        Map<String, Element> fieldNames = getFieldNames( classElement, annotation );
+    private void processFieldName( final TypeElement classElement,
+                                   final String propertyClassName,
+                                   final String annotation,
+                                   final Map<String, String> ctxMap,
+                                   final boolean mandatory ) {
+        Map<String, Element> fieldNames = getFieldNames( classElement,
+                                                         annotation );
         boolean empty = fieldNames.isEmpty();
         if ( mandatory && empty ) {
             throw new RuntimeException( "No annotation of type [" + annotation + "] for Property of class [" + classElement + "]" );
         }
         if ( !empty ) {
-            ctxMap.put( propertyClassName, fieldNames.keySet().iterator().next() );
+            ctxMap.put( propertyClassName,
+                        fieldNames.keySet().iterator().next() );
         }
     }
 
@@ -764,16 +832,20 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         while ( !classElement.toString().equals( Object.class.getName() ) ) {
             List<VariableElement> variableElements = ElementFilter.fieldsIn( classElement.getEnclosedElements() );
             for ( VariableElement variableElement : variableElements ) {
-                if ( GeneratorUtils.getAnnotation( elementUtils, variableElement, annotation ) != null ) {
+                if ( GeneratorUtils.getAnnotation( elementUtils,
+                                                   variableElement,
+                                                   annotation ) != null ) {
                     final TypeMirror fieldReturnType = variableElement.asType();
                     final TypeElement t = ( TypeElement ) ( ( DeclaredType ) fieldReturnType ).asElement();
                     final String fieldReturnTypeName = GeneratorUtils.getTypeMirrorDeclaredName( fieldReturnType );
                     final String fieldName = variableElement.getSimpleName().toString();
-                    result.put( fieldName, t );
-                    messager.printMessage( Diagnostic.Kind.NOTE, "Discovered property value " +
-                            "for class [" + classElement.getSimpleName() + "] " +
-                            "at field [" + fieldName + "] " +
-                            "of return type [" + fieldReturnTypeName + "]" );
+                    result.put( fieldName,
+                                t );
+                    messager.printMessage( Diagnostic.Kind.NOTE,
+                                           "Discovered property value " +
+                                                   "for class [" + classElement.getSimpleName() + "] " +
+                                                   "at field [" + fieldName + "] " +
+                                                   "of return type [" + fieldReturnTypeName + "]" );
                 }
             }
             classElement = getParent( classElement );
@@ -793,11 +865,13 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                     final TypeMirror fieldReturnType = variableElement.asType();
                     final TypeElement t = ( TypeElement ) ( ( DeclaredType ) fieldReturnType ).asElement();
                     final String fieldName = variableElement.getSimpleName().toString();
-                    result.put( fieldName, t );
-                    messager.printMessage( Diagnostic.Kind.NOTE, "Discovered meta property value " +
-                            "for class [" + classElement.getSimpleName() + "] " +
-                            "at field [" + fieldName + "] " +
-                            "of return type [" + fieldReturnType + "]" );
+                    result.put( fieldName,
+                                t );
+                    messager.printMessage( Diagnostic.Kind.NOTE,
+                                           "Discovered meta property value " +
+                                                   "for class [" + classElement.getSimpleName() + "] " +
+                                                   "at field [" + fieldName + "] " +
+                                                   "of return type [" + fieldReturnType + "]" );
                 }
             }
             classElement = getParent( classElement );
@@ -805,162 +879,191 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         return result;
     }
 
-    private boolean processContainmentRules( Set<? extends TypeElement> set,
-                                             Element e,
-                                             RoundEnvironment roundEnv ) throws Exception {
+    private boolean processContainmentRules( final Set<? extends TypeElement> set,
+                                             final Element e,
+                                             final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         final boolean isIface = e.getKind() == ElementKind.INTERFACE;
         final boolean isClass = e.getKind() == ElementKind.CLASS;
         if ( isIface || isClass ) {
             TypeElement classElement = ( TypeElement ) e;
             PackageElement packageElement = ( PackageElement ) classElement.getEnclosingElement();
-            messager.printMessage( Diagnostic.Kind.NOTE, "Discovered containment rule for class [" + classElement.getSimpleName() + "]" );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Discovered containment rule for class [" + classElement.getSimpleName() + "]" );
             final String packageName = packageElement.getQualifiedName().toString();
             final String classNameActivity = classElement.getSimpleName() + RULE_CONTAINMENT_SUFFIX_CLASSNAME;
             try {
                 //Try generating code for each required class
-                messager.printMessage( Diagnostic.Kind.NOTE, "Generating code for [" + classNameActivity + "]" );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Generating code for [" + classNameActivity + "]" );
                 containmentRuleGenerator.generate( packageName,
-                        packageElement,
-                        classNameActivity,
-                        classElement,
-                        processingEnv );
+                                                   packageElement,
+                                                   classNameActivity,
+                                                   classElement,
+                                                   processingEnv );
             } catch ( GenerationException ge ) {
                 final String msg = ge.getMessage();
-                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg, classElement );
+                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                          msg,
+                                                          classElement );
             }
         }
         return true;
     }
 
-    private boolean processDockingRules( Set<? extends TypeElement> set,
-                                         Element e,
-                                         RoundEnvironment roundEnv ) throws Exception {
+    private boolean processDockingRules( final Set<? extends TypeElement> set,
+                                         final Element e,
+                                         final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         final boolean isIface = e.getKind() == ElementKind.INTERFACE;
         final boolean isClass = e.getKind() == ElementKind.CLASS;
         if ( isIface || isClass ) {
             TypeElement classElement = ( TypeElement ) e;
             PackageElement packageElement = ( PackageElement ) classElement.getEnclosingElement();
-            messager.printMessage( Diagnostic.Kind.NOTE, "Discovered docking rule for class [" + classElement.getSimpleName() + "]" );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Discovered docking rule for class [" + classElement.getSimpleName() + "]" );
             final String packageName = packageElement.getQualifiedName().toString();
             final String classNameActivity = classElement.getSimpleName() + RULE_DOCKING_SUFFIX_CLASSNAME;
             try {
                 //Try generating code for each required class
-                messager.printMessage( Diagnostic.Kind.NOTE, "Generating code for [" + classNameActivity + "]" );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Generating code for [" + classNameActivity + "]" );
                 dockingRuleGenerator.generate( packageName,
-                        packageElement,
-                        classNameActivity,
-                        classElement,
-                        processingEnv );
+                                               packageElement,
+                                               classNameActivity,
+                                               classElement,
+                                               processingEnv );
             } catch ( GenerationException ge ) {
                 final String msg = ge.getMessage();
-                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg, classElement );
+                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                          msg,
+                                                          classElement );
             }
         }
         return true;
     }
 
-    private boolean processEdgeCardinalityRules( Set<? extends TypeElement> set,
-                                                 Element e,
-                                                 RoundEnvironment roundEnv ) throws Exception {
+    private boolean processEdgeCardinalityRules( final Set<? extends TypeElement> set,
+                                                 final Element e,
+                                                 final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         final boolean isIface = e.getKind() == ElementKind.INTERFACE;
         final boolean isClass = e.getKind() == ElementKind.CLASS;
         if ( isIface || isClass ) {
             TypeElement classElement = ( TypeElement ) e;
             PackageElement packageElement = ( PackageElement ) classElement.getEnclosingElement();
-            messager.printMessage( Diagnostic.Kind.NOTE, "Discovered edge cardinality rule for class [" + classElement.getSimpleName() + "]" );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Discovered edge cardinality rule for class [" + classElement.getSimpleName() + "]" );
             final String packageName = packageElement.getQualifiedName().toString();
             final String classNameActivity = classElement.getSimpleName() + RULE_EDGE_CARDINALITY_SUFFIX_CLASSNAME;
             try {
                 //Try generating code for each required class
-                messager.printMessage( Diagnostic.Kind.NOTE, "Generating code for [" + classNameActivity + "]" );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Generating code for [" + classNameActivity + "]" );
                 edgeCardinalityRuleGenerator.generate( packageName,
-                        packageElement,
-                        classNameActivity,
-                        classElement,
-                        processingEnv );
+                                                       packageElement,
+                                                       classNameActivity,
+                                                       classElement,
+                                                       processingEnv );
             } catch ( GenerationException ge ) {
                 final String msg = ge.getMessage();
-                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg, classElement );
+                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                          msg,
+                                                          classElement );
             }
         }
         return true;
     }
 
-    private boolean processCardinalityRules( Set<? extends TypeElement> set,
-                                             Element e,
-                                             RoundEnvironment roundEnv ) throws Exception {
+    private boolean processCardinalityRules( final Set<? extends TypeElement> set,
+                                             final Element e,
+                                             final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         final boolean isIface = e.getKind() == ElementKind.INTERFACE;
         final boolean isClass = e.getKind() == ElementKind.CLASS;
         if ( isIface || isClass ) {
             TypeElement classElement = ( TypeElement ) e;
             PackageElement packageElement = ( PackageElement ) classElement.getEnclosingElement();
-            messager.printMessage( Diagnostic.Kind.NOTE, "Discovered cardinality rule for class [" + classElement.getSimpleName() + "]" );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Discovered cardinality rule for class [" + classElement.getSimpleName() + "]" );
             final String packageName = packageElement.getQualifiedName().toString();
             final String classNameActivity = classElement.getSimpleName() + RULE_CARDINALITY_SUFFIX_CLASSNAME;
             try {
                 //Try generating code for each required class
-                messager.printMessage( Diagnostic.Kind.NOTE, "Generating code for [" + classNameActivity + "]" );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Generating code for [" + classNameActivity + "]" );
                 cardinalityRuleGenerator.generate( packageName,
-                        packageElement,
-                        classNameActivity,
-                        classElement,
-                        processingEnv );
+                                                   packageElement,
+                                                   classNameActivity,
+                                                   classElement,
+                                                   processingEnv );
             } catch ( GenerationException ge ) {
                 final String msg = ge.getMessage();
-                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg, classElement );
+                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                          msg,
+                                                          classElement );
             }
         }
         return true;
     }
 
-    private boolean processConnectionRules( Set<? extends TypeElement> set,
-                                            Element element,
-                                            RoundEnvironment roundEnv ) throws Exception {
+    private boolean processConnectionRules( final Set<? extends TypeElement> set,
+                                            final Element element,
+                                            final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         final boolean isIface = element.getKind() == ElementKind.INTERFACE;
         final boolean isClass = element.getKind() == ElementKind.CLASS;
         if ( isIface || isClass ) {
             TypeElement classElement = ( TypeElement ) element;
             PackageElement packageElement = ( PackageElement ) classElement.getEnclosingElement();
-            messager.printMessage( Diagnostic.Kind.NOTE, "Discovered connection rule for class [" + classElement.getSimpleName() + "]" );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Discovered connection rule for class [" + classElement.getSimpleName() + "]" );
             final String packageName = packageElement.getQualifiedName().toString();
             final String classNameActivity = classElement.getSimpleName() + RULE_CONNECTION_SUFFIX_CLASSNAME;
             try {
                 //Try generating code for each required class
-                messager.printMessage( Diagnostic.Kind.NOTE, "Generating code for [" + classNameActivity + "]" );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Generating code for [" + classNameActivity + "]" );
                 connectionRuleGenerator.generate( packageName,
-                        packageElement,
-                        classNameActivity,
-                        classElement,
-                        processingEnv );
+                                                  packageElement,
+                                                  classNameActivity,
+                                                  classElement,
+                                                  processingEnv );
             } catch ( GenerationException ge ) {
                 final String msg = ge.getMessage();
-                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg, classElement );
+                processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                          msg,
+                                                          classElement );
             }
         }
         return true;
     }
 
-    private boolean processLastRound( Set<? extends TypeElement> set,
-                                      RoundEnvironment roundEnv ) throws Exception {
-        processLastRoundDefinitionSetProxyAdapter( set, roundEnv );
-        processLastRoundDefinitionSetAdapter( set, roundEnv );
-        processLastRoundPropertySetAdapter( set, roundEnv );
-        processLastRoundDefinitionFactory( set, roundEnv );
-        processLastRoundDefinitionAdapter( set, roundEnv );
-        processLastRoundPropertyAdapter( set, roundEnv );
-        processLastRoundRuleAdapter( set, roundEnv );
-        processLastRoundMorphing( set, roundEnv );
-        processLastRoundShapesStuffGenerator( set, roundEnv );
+    private boolean processLastRound( final Set<? extends TypeElement> set,
+                                      final RoundEnvironment roundEnv ) throws Exception {
+        processLastRoundDefinitionSetProxyAdapter( set,
+                                                   roundEnv );
+        processLastRoundDefinitionSetAdapter( set,
+                                              roundEnv );
+        processLastRoundPropertySetAdapter( set,
+                                            roundEnv );
+        processLastRoundDefinitionFactory( set,
+                                           roundEnv );
+        processLastRoundDefinitionAdapter( set,
+                                           roundEnv );
+        processLastRoundPropertyAdapter( set,
+                                         roundEnv );
+        processLastRoundRuleAdapter( set,
+                                     roundEnv );
+        processLastRoundMorphing( set,
+                                  roundEnv );
+        processLastRoundShapesStuffGenerator( set,
+                                              roundEnv );
         return true;
     }
 
-    private boolean processLastRoundMorphing( Set<? extends TypeElement> set,
-                                              RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundMorphing( final Set<? extends TypeElement> set,
+                                              final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
             // Ensure visible on both backend and client sides.
@@ -972,34 +1075,51 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 for ( Map.Entry<String, Set<String>> entry : baseTargets.entrySet() ) {
                     String baseType = entry.getKey();
                     Set<String> targets = entry.getValue();
-                    final String className = getMorphDefinitionClassName( packageName, baseType, MORPH_DEFINITION_CLASSNAME )[ 0 ];
-                    final String classFQName = getMorphDefinitionClassName( packageName, baseType, MORPH_DEFINITION_CLASSNAME )[ 1 ];
+                    final String className = getMorphDefinitionClassName( packageName,
+                                                                          baseType,
+                                                                          MORPH_DEFINITION_CLASSNAME )[ 0 ];
+                    final String classFQName = getMorphDefinitionClassName( packageName,
+                                                                            baseType,
+                                                                            MORPH_DEFINITION_CLASSNAME )[ 1 ];
                     String defaultType = processingContext.getMorphingAnnotations().getBaseDefaultTypes().get( baseType );
-                    messager.printMessage( Diagnostic.Kind.NOTE, "Starting MorphDefinition generation for class named " + classFQName );
-                    final StringBuffer ruleClassCode = morphDefinitionGenerator.generate( packageName, className,
-                            baseType, targets, defaultType, messager );
+                    messager.printMessage( Diagnostic.Kind.NOTE,
+                                           "Starting MorphDefinition generation for class named " + classFQName );
+                    final StringBuffer ruleClassCode = morphDefinitionGenerator.generate( packageName,
+                                                                                          className,
+                                                                                          baseType,
+                                                                                          targets,
+                                                                                          defaultType,
+                                                                                          messager );
                     writeCode( packageName,
-                            className,
-                            ruleClassCode );
+                               className,
+                               ruleClassCode );
                     generatedDefinitionClasses.add( classFQName );
                 }
             }
             // MORPH PROPERTY DEFINITIONS GENERATION.
-            Map<String, List<ProcessingMorphProperty>> morphProperties =
-                    processingContext.getMorphingAnnotations().getBaseMorphProperties();
+            Map<String, List<ProcessingMorphProperty>> morphProperties = processingContext.getMorphingAnnotations().getBaseMorphProperties();
             if ( null != morphProperties && !morphProperties.isEmpty() ) {
                 for ( Map.Entry<String, List<ProcessingMorphProperty>> entry : morphProperties.entrySet() ) {
                     String baseType = entry.getKey();
                     List<ProcessingMorphProperty> properties = entry.getValue();
-                    final String className = getMorphDefinitionClassName( packageName, baseType, MORPH_PROPERTY_DEFINITION_CLASSNAME )[ 0 ];
-                    final String classFQName = getMorphDefinitionClassName( packageName, baseType, MORPH_PROPERTY_DEFINITION_CLASSNAME )[ 1 ];
+                    final String className = getMorphDefinitionClassName( packageName,
+                                                                          baseType,
+                                                                          MORPH_PROPERTY_DEFINITION_CLASSNAME )[ 0 ];
+                    final String classFQName = getMorphDefinitionClassName( packageName,
+                                                                            baseType,
+                                                                            MORPH_PROPERTY_DEFINITION_CLASSNAME )[ 1 ];
                     String defaultType = processingContext.getMorphingAnnotations().getBaseDefaultTypes().get( baseType );
-                    messager.printMessage( Diagnostic.Kind.NOTE, "Starting MorphPropertyDefinition generation for class named " + classFQName );
-                    final StringBuffer ruleClassCode = morphPropertyDefinitionGenerator.generate( packageName, className,
-                            baseType, properties, defaultType, messager );
+                    messager.printMessage( Diagnostic.Kind.NOTE,
+                                           "Starting MorphPropertyDefinition generation for class named " + classFQName );
+                    final StringBuffer ruleClassCode = morphPropertyDefinitionGenerator.generate( packageName,
+                                                                                                  className,
+                                                                                                  baseType,
+                                                                                                  properties,
+                                                                                                  defaultType,
+                                                                                                  messager );
                     writeCode( packageName,
-                            className,
-                            ruleClassCode );
+                               className,
+                               ruleClassCode );
                     generatedDefinitionClasses.add( classFQName );
                 }
             }
@@ -1007,119 +1127,138 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             if ( !generatedDefinitionClasses.isEmpty() ) {
                 final String className = getSetClassPrefix() + MORPH_PROVIDER_CLASSNAME;
                 final String classFQName = packageName + "." + className;
-                messager.printMessage( Diagnostic.Kind.NOTE, "Starting MorphDefinitionProvider generation for class named " + classFQName );
-                final StringBuffer ruleClassCode = morphDefinitionProviderGenerator.generate( packageName, className,
-                        generatedDefinitionClasses, messager );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Starting MorphDefinitionProvider generation for class named " + classFQName );
+                final StringBuffer ruleClassCode = morphDefinitionProviderGenerator.generate( packageName,
+                                                                                              className,
+                                                                                              generatedDefinitionClasses,
+                                                                                              messager );
                 writeCode( packageName,
-                        className,
-                        ruleClassCode );
+                           className,
+                           ruleClassCode );
             }
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
+            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                      msg );
         }
         return true;
     }
 
-    private String[] getMorphDefinitionClassName( String packageName,
-                                                  String baseType,
-                                                  String suffix ) {
-        String baseTypeName = baseType.substring( baseType.lastIndexOf( "." ) + 1, baseType.length() );
+    private String[] getMorphDefinitionClassName( final String packageName,
+                                                  final String baseType,
+                                                  final String suffix ) {
+        String baseTypeName = baseType.substring( baseType.lastIndexOf( "." ) + 1,
+                                                  baseType.length() );
         final String className = baseTypeName + suffix;
         String fqcn = packageName + "." + className;
         return new String[]{ className, fqcn };
     }
 
-    private boolean processLastRoundRuleAdapter( Set<? extends TypeElement> set,
-                                                 RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundRuleAdapter( final Set<? extends TypeElement> set,
+                                                 final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
             // Ensure visible on both backend and client sides.
             final String packageName = getGeneratedPackageName() + ".definition.adapter.binding";
             final String className = getSetClassPrefix() + RULE_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
-            messager.printMessage( Diagnostic.Kind.NOTE, "Starting RuleAdapter generation for class named " + classFQName );
-            final StringBuffer ruleClassCode = ruleAdapterGenerator.generate( packageName, className,
-                    processingContext.getDefinitionSet().getClassName(), processingContext.getRules(), messager );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Starting RuleAdapter generation for class named " + classFQName );
+            final StringBuffer ruleClassCode = ruleAdapterGenerator.generate( packageName,
+                                                                              className,
+                                                                              processingContext.getDefinitionSet().getClassName(),
+                                                                              processingContext.getRules(),
+                                                                              messager );
             writeCode( packageName,
-                    className,
-                    ruleClassCode );
+                       className,
+                       ruleClassCode );
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
+            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                      msg );
         }
         return true;
     }
 
-    private boolean processLastRoundDefinitionSetAdapter( Set<? extends TypeElement> set,
-                                                          RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundDefinitionSetAdapter( final Set<? extends TypeElement> set,
+                                                          final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
             // Ensure visible on both backend and client sides.
             final String packageName = getGeneratedPackageName() + ".definition.adapter.binding";
             final String className = getSetClassPrefix() + DEFINITIONSET_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
-            messager.printMessage( Diagnostic.Kind.NOTE, "Starting ErraiBinderAdapter generation named " + classFQName );
-            final StringBuffer ruleClassCode = definitionSetAdapterGenerator.generate( packageName, className,
-                    processingContext.getDefSetAnnotations(), messager );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Starting ErraiBinderAdapter generation named " + classFQName );
+            final StringBuffer ruleClassCode = definitionSetAdapterGenerator.generate( packageName,
+                                                                                       className,
+                                                                                       processingContext.getDefSetAnnotations(),
+                                                                                       messager );
             writeCode( packageName,
-                    className,
-                    ruleClassCode );
+                       className,
+                       ruleClassCode );
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
+            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                      msg );
         }
         return true;
     }
 
-    private boolean processLastRoundDefinitionSetProxyAdapter( Set<? extends TypeElement> set,
-                                                               RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundDefinitionSetProxyAdapter( final Set<? extends TypeElement> set,
+                                                               final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
             // Ensure visible on both backend and client sides.
             final String packageName = getGeneratedPackageName() + ".definition.adapter.binding";
             final String className = getSetClassPrefix() + DEFINITIONSET_PROXY_CLASSNAME;
             final String classFQName = packageName + "." + className;
-            messager.printMessage( Diagnostic.Kind.NOTE, "Starting DefinitionSetProxyAdapter generation for class named " + classFQName );
-            final StringBuffer ruleClassCode = definitionSetProxyGenerator.
-                    generate( packageName,
-                            className,
-                            processingContext.getDefinitionSet(),
-                            processingContext.getDefSetAnnotations().getBuilderFieldNames(),
-                            messager );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Starting DefinitionSetProxyAdapter generation for class named " + classFQName );
+            final StringBuffer ruleClassCode = definitionSetProxyGenerator.generate( packageName,
+                                                                                     className,
+                                                                                     processingContext.getDefinitionSet(),
+                                                                                     processingContext.getDefSetAnnotations().getBuilderFieldNames(),
+                                                                                     messager );
             writeCode( packageName,
-                    className,
-                    ruleClassCode );
+                       className,
+                       ruleClassCode );
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
+            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                      msg );
         }
         return true;
     }
 
-    private boolean processLastRoundPropertySetAdapter( Set<? extends TypeElement> set,
-                                                        RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundPropertySetAdapter( final Set<? extends TypeElement> set,
+                                                        final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
             // Ensure visible on both backend and client sides.
             final String packageName = getGeneratedPackageName() + ".definition.adapter.binding";
             final String className = getSetClassPrefix() + PROPERTYSET_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
-            messager.printMessage( Diagnostic.Kind.NOTE, "Starting ErraiBinderAdapter generation named " + classFQName );
-            final StringBuffer ruleClassCode = propertySetAdapterGenerator.generate( packageName, className,
-                    processingContext.getPropertySetAnnotations(), messager );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Starting ErraiBinderAdapter generation named " + classFQName );
+            final StringBuffer ruleClassCode = propertySetAdapterGenerator.generate( packageName,
+                                                                                     className,
+                                                                                     processingContext.getPropertySetAnnotations(),
+                                                                                     messager );
             writeCode( packageName,
-                    className,
-                    ruleClassCode );
+                       className,
+                       ruleClassCode );
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
+            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                      msg );
         }
         return true;
     }
 
-    private boolean processLastRoundDefinitionFactory( Set<? extends TypeElement> set,
-                                                       RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundDefinitionFactory( final Set<? extends TypeElement> set,
+                                                       final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
             final int size = processingContext.getDefinitionAnnotations().getBuilderFieldNames().size() +
@@ -1136,66 +1275,76 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 final String packageName = getGeneratedPackageName() + ".definition.factory";
                 final String className = getSetClassPrefix() + DEFINITION_FACTORY_CLASSNAME;
                 final String classFQName = packageName + "." + className;
-                messager.printMessage( Diagnostic.Kind.NOTE, "Starting ModelFactory generation for class named " + classFQName );
-                final StringBuffer ruleClassCode = generatedDefinitionFactoryGenerator.
-                        generate( packageName,
-                                className,
-                                buildersMap,
-                                messager );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Starting ModelFactory generation for class named " + classFQName );
+                final StringBuffer ruleClassCode = generatedDefinitionFactoryGenerator.generate( packageName,
+                                                                                                 className,
+                                                                                                 buildersMap,
+                                                                                                 messager );
                 writeCode( packageName,
-                        className,
-                        ruleClassCode );
+                           className,
+                           ruleClassCode );
             }
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
+            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                      msg );
         }
         return true;
     }
 
-    private boolean processLastRoundDefinitionAdapter( Set<? extends TypeElement> set, RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundDefinitionAdapter( final Set<? extends TypeElement> set,
+                                                       final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
             // Ensure visible on both backend and client sides.
             final String packageName = getGeneratedPackageName() + ".definition.adapter.binding";
             final String className = getSetClassPrefix() + DEFINITION_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
-            messager.printMessage( Diagnostic.Kind.NOTE, "Starting ErraiBinderAdapter generation named " + classFQName );
-            final StringBuffer ruleClassCode = definitionAdapterGenerator.generate( packageName, className,
-                    processingContext, messager );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Starting ErraiBinderAdapter generation named " + classFQName );
+            final StringBuffer ruleClassCode = definitionAdapterGenerator.generate( packageName,
+                                                                                    className,
+                                                                                    processingContext,
+                                                                                    messager );
             writeCode( packageName,
-                    className,
-                    ruleClassCode );
+                       className,
+                       ruleClassCode );
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
+            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                      msg );
         }
         return true;
     }
 
-    private boolean processLastRoundPropertyAdapter( Set<? extends TypeElement> set,
-                                                     RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundPropertyAdapter( final Set<? extends TypeElement> set,
+                                                     final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
             // Ensure visible on both backend and client sides.
             final String packageName = getGeneratedPackageName() + ".definition.adapter.binding";
             final String className = getSetClassPrefix() + PROPERTY_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
-            messager.printMessage( Diagnostic.Kind.NOTE, "Starting ErraiBinderAdapter generation named " + classFQName );
-            final StringBuffer ruleClassCode = propertyAdapterGenerator.generate( packageName, className,
-                    processingContext.getPropertyAnnotations(), messager );
+            messager.printMessage( Diagnostic.Kind.NOTE,
+                                   "Starting ErraiBinderAdapter generation named " + classFQName );
+            final StringBuffer ruleClassCode = propertyAdapterGenerator.generate( packageName,
+                                                                                  className,
+                                                                                  processingContext.getPropertyAnnotations(),
+                                                                                  messager );
             writeCode( packageName,
-                    className,
-                    ruleClassCode );
+                       className,
+                       ruleClassCode );
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
+            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                      msg );
         }
         return true;
     }
 
-    private boolean processLastRoundShapesStuffGenerator( Set<? extends TypeElement> set,
-                                                          RoundEnvironment roundEnv ) throws Exception {
+    private boolean processLastRoundShapesStuffGenerator( final Set<? extends TypeElement> set,
+                                                          final RoundEnvironment roundEnv ) throws Exception {
         final Messager messager = processingEnv.getMessager();
         try {
             String shapeFactoryClassname = null;
@@ -1206,44 +1355,45 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 final String packageName = getGeneratedPackageName() + ".client.shape";
                 final String className = getSetClassPrefix() + SHAPE_FACTORY_CLASSNAME;
                 shapeFactoryClassname = packageName + "." + className;
-                messager.printMessage( Diagnostic.Kind.NOTE, "Starting Shape Factory bean generation " +
-                        "[" + shapeFactoryClassname + "]" );
-                final StringBuffer sfClassCode =
-                        shapeFactoryGenerator.generate(
-                                packageName,
-                                className,
-                                processingContext.getDefinitionAnnotations(),
-                                messager );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Starting Shape Factory bean generation " +
+                                               "[" + shapeFactoryClassname + "]" );
+                final StringBuffer sfClassCode = shapeFactoryGenerator.generate( packageName,
+                                                                                 className,
+                                                                                 processingContext.getDefinitionAnnotations(),
+                                                                                 messager );
                 writeCode( packageName,
-                        className,
-                        sfClassCode );
+                           className,
+                           sfClassCode );
                 // Generate the Shape Set if annotation present ( Ensure only visible on client side. ).
                 final String packageName2 = getGeneratedPackageName() + ".client.shape";
                 final String className2 = getSetClassPrefix() + BindableAdapterUtils.SHAPE_SET_SUFFIX;
                 final String classFQName2 = packageName2 + "." + className2;
-                messager.printMessage( Diagnostic.Kind.NOTE, "Starting Shape Set bean generation " +
-                        "[" + classFQName2 + "]" );
+                messager.printMessage( Diagnostic.Kind.NOTE,
+                                       "Starting Shape Set bean generation " +
+                                               "[" + classFQName2 + "]" );
                 final String defSetClassName = processingContext.getDefinitionSet().getClassName();
-                final StringBuffer ssClassCode = shapeSetGenerator.generate(
-                        packageName2,
-                        className2,
-                        defSetClassName,
-                        shapeFactoryClassname,
-                        messager );
+                final StringBuffer ssClassCode = shapeSetGenerator.generate( packageName2,
+                                                                             className2,
+                                                                             defSetClassName,
+                                                                             shapeFactoryClassname,
+                                                                             messager );
                 writeCode( packageName2,
-                        className2,
-                        ssClassCode );
+                           className2,
+                           ssClassCode );
             }
         } catch ( GenerationException ge ) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg );
+            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,
+                                                      msg );
         }
         return true;
     }
 
     private String getGeneratedPackageName() {
         final String s = processingContext.getDefinitionSet().getClassName();
-        return s.substring( 0, s.lastIndexOf( "." ) );
+        return s.substring( 0,
+                            s.lastIndexOf( "." ) );
     }
 
     private String getSetClassPrefix() {
@@ -1251,20 +1401,24 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
     }
 
     private void note( String message ) {
-        log( Diagnostic.Kind.NOTE, message );
+        log( Diagnostic.Kind.NOTE,
+             message );
     }
 
     private void warn( String message ) {
-        log( Diagnostic.Kind.WARNING, message );
+        log( Diagnostic.Kind.WARNING,
+             message );
     }
 
     private void error( String message ) {
-        log( Diagnostic.Kind.ERROR, message );
+        log( Diagnostic.Kind.ERROR,
+             message );
     }
 
     private void log( Diagnostic.Kind kind,
                       String message ) {
         final Messager messager = processingEnv.getMessager();
-        messager.printMessage( kind, message );
+        messager.printMessage( kind,
+                               message );
     }
 }

@@ -15,6 +15,9 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +27,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class ModelConnectionRuleManagerImplTest {
@@ -39,10 +39,12 @@ public class ModelConnectionRuleManagerImplTest {
     private final static String P2_S1 = "p2s1";
     private final static String P2_E1 = "p2e1";
 
-
-    @Mock ConnectionRule rule;
-    @Mock ConnectionRule.PermittedConnection p1;
-    @Mock ConnectionRule.PermittedConnection p2;
+    @Mock
+    ConnectionRule rule;
+    @Mock
+    ConnectionRule.PermittedConnection p1;
+    @Mock
+    ConnectionRule.PermittedConnection p2;
 
     private ModelConnectionRuleManagerImpl tested;
     private Set<ConnectionRule.PermittedConnection> p = new HashSet<>( 2 );
@@ -69,7 +71,9 @@ public class ModelConnectionRuleManagerImplTest {
         final Set<String> o1 = new HashSet<String>( 1 ) {{
             add( P1_S1 );
         }};
-        final RuleViolations violations = tested.evaluate( EDGE_ID, o1, i1 );
+        final RuleViolations violations = tested.evaluate( EDGE_ID,
+                                                           o1,
+                                                           i1 );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -82,7 +86,9 @@ public class ModelConnectionRuleManagerImplTest {
         final Set<String> o1 = new HashSet<String>( 1 ) {{
             add( "p1s2" );
         }};
-        final RuleViolations violations = tested.evaluate( EDGE_ID, o1, i1 );
+        final RuleViolations violations = tested.evaluate( EDGE_ID,
+                                                           o1,
+                                                           i1 );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -95,7 +101,9 @@ public class ModelConnectionRuleManagerImplTest {
         final Set<String> o1 = new HashSet<String>( 1 ) {{
             add( P2_S1 );
         }};
-        final RuleViolations violations = tested.evaluate( EDGE_ID, o1, i1 );
+        final RuleViolations violations = tested.evaluate( EDGE_ID,
+                                                           o1,
+                                                           i1 );
         assertNotNull( violations );
         assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
@@ -108,9 +116,10 @@ public class ModelConnectionRuleManagerImplTest {
         final Set<String> o1 = new HashSet<String>( 1 ) {{
             add( "p2s2" );
         }};
-        final RuleViolations violations = tested.evaluate( EDGE_ID, o1, i1 );
+        final RuleViolations violations = tested.evaluate( EDGE_ID,
+                                                           o1,
+                                                           i1 );
         assertNotNull( violations );
         assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
     }
-
 }

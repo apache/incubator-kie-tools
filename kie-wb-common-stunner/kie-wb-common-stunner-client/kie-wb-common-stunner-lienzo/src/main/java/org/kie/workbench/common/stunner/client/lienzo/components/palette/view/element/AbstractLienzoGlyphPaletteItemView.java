@@ -26,12 +26,12 @@ public abstract class AbstractLienzoGlyphPaletteItemView
 
     public AbstractLienzoGlyphPaletteItemView( final GlyphPaletteItem item,
                                                final LienzoPaletteView paletteView ) {
-        super( item, paletteView );
+        super( item,
+               paletteView );
     }
 
     @Override
     public Decorator getDecorator() {
         return Decorator.DEFAULT;
     }
-
 }

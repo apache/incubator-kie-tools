@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseUpEvent;
@@ -29,12 +35,6 @@ import org.kie.workbench.common.stunner.core.command.impl.CommandRegistryListene
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -104,37 +104,40 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                                        final Command<AbstractCanvasHandler, CanvasViolation> command,
                                        final CommandResult<CanvasViolation> result ) {
                     if ( !CommandUtils.isError( result ) ) {
-                        LOGGER.log( Level.FINE, "Adding command [" + command + "] into current request command builder." );
+                        LOGGER.log( Level.FINE,
+                                    "Adding command [" + command + "] into current request command builder." );
                         currentCommandBuilder.addCommand( command );
                     }
                 }
-
             };
 
     /**
      * Listens to canvas mouse down event. It produces a new client request to start.
      */
-    void onCanvasMouseDownEvent( @Observes CanvasMouseDownEvent mouseDownEvent ) {
-        checkNotNull( "mouseDownEvent", mouseDownEvent );
+    void onCanvasMouseDownEvent( final @Observes CanvasMouseDownEvent mouseDownEvent ) {
+        checkNotNull( "mouseDownEvent",
+                      mouseDownEvent );
         start();
     }
 
     /**
      * Listens to canvas up down event. It produces the current client request to complete.
      */
-    void onCanvasMouseUpEvent( @Observes CanvasMouseUpEvent mouseUpEvent ) {
-        checkNotNull( "mouseUpEvent", mouseUpEvent );
+    void onCanvasMouseUpEvent( final @Observes CanvasMouseUpEvent mouseUpEvent ) {
+        checkNotNull( "mouseUpEvent",
+                      mouseUpEvent );
         complete();
     }
 
     /**
      * Checks that once opening a new client session, no pending requests are present.
      */
-    void onCanvasSessionOpened( @Observes SessionOpenedEvent sessionOpenedEvent ) {
-        checkNotNull( "sessionOpenedEvent", sessionOpenedEvent );
+    void onCanvasSessionOpened( final @Observes SessionOpenedEvent sessionOpenedEvent ) {
+        checkNotNull( "sessionOpenedEvent",
+                      sessionOpenedEvent );
         if ( isRequestStarted() ) {
-            LOGGER.log( Level.WARNING, "New session opened but the request has not been completed. " +
-                    "Unexpected behaviors can occur." );
+            LOGGER.log( Level.WARNING,
+                        "New session opened but the request has not been completed. Unexpected behaviors can occur." );
             clear();
         }
     }
@@ -142,10 +145,12 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     /**
      * Checks that once disposing a client session, no pending requests are present.
      */
-    void onCanvasSessionDisposed( @Observes SessionDisposedEvent sessionDisposedEvent ) {
-        checkNotNull( "sessionDisposedEvent", sessionDisposedEvent );
+    void onCanvasSessionDisposed( final @Observes SessionDisposedEvent sessionDisposedEvent ) {
+        checkNotNull( "sessionDisposedEvent",
+                      sessionDisposedEvent );
         if ( isRequestStarted() ) {
-            LOGGER.log( Level.WARNING, "Current client request has not been completed yet." );
+            LOGGER.log( Level.WARNING,
+                        "Current client request has not been completed yet." );
         }
     }
 
@@ -155,13 +160,13 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     private void start() {
         if ( isRequestStarted() ) {
             throw new IllegalStateException( "Current client request has not been completed yet. " +
-                    "A new client request cannot be started!" );
+                                                     "A new client request cannot be started!" );
         }
-        LOGGER.log( Level.INFO, "New client request started." );
-        currentCommandBuilder =
-                new CompositeCommandImpl.
-                        CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
-                        .forward();
+        LOGGER.log( Level.INFO,
+                    "New client request started." );
+        currentCommandBuilder = new CompositeCommandImpl
+                .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+                .forward();
     }
 
     /**
@@ -169,16 +174,18 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
      * session's registry.
      */
     private void complete() {
-        LOGGER.log( Level.INFO, "Checking if current client request has been completed..." );
+        LOGGER.log( Level.INFO,
+                    "Checking if current client request has been completed..." );
         checkRequestStarted();
         // If any commands have been aggregated, let's execute those.
         if ( currentCommandBuilder.size() > 0 ) {
-            LOGGER.log( Level.FINE, "Adding commands for current request into registry [size=" +
-                    currentCommandBuilder.size() + "]" );
+            LOGGER.log( Level.FINE,
+                        "Adding commands for current request into registry [size=" + currentCommandBuilder.size() + "]" );
             getRegistry().register( currentCommandBuilder.build() );
         }
         clear();
-        LOGGER.log( Level.INFO, "Current client request completed." );
+        LOGGER.log( Level.INFO,
+                    "Current client request completed." );
     }
 
     private void checkRequestStarted() {
@@ -194,5 +201,4 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     private void clear() {
         currentCommandBuilder = null;
     }
-
 }

@@ -20,6 +20,5 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface ScreenPanelView extends IsWidget {
 
-    ScreenPanelView setWidget( IsWidget widget );
-
+    ScreenPanelView setWidget( final IsWidget widget );
 }

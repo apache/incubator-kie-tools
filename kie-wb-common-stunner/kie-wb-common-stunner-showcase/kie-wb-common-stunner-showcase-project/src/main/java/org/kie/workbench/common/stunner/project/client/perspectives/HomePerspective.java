@@ -15,6 +15,10 @@
 
 package org.kie.workbench.common.stunner.project.client.perspectives;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.projecteditor.client.menu.ProjectMenu;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramWorkbenchDocks;
@@ -37,12 +41,8 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 @ApplicationScoped
-@WorkbenchPerspective(identifier = PerspectiveIds.HOME, isDefault = true)
+@WorkbenchPerspective( identifier = PerspectiveIds.HOME, isDefault = true )
 public class HomePerspective {
 
     @Inject
@@ -94,7 +94,7 @@ public class HomePerspective {
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "org.kie.guvnor.explorer" ) ) );
 
         this.perspective.getRoot().insertChild( CompassPosition.WEST,
-                                           west );
+                                                west );
     }
 
     private void buildDocks() {
@@ -104,18 +104,17 @@ public class HomePerspective {
     private void buildMenuBar() {
         this.menus = MenuFactory
                 .newTopLevelMenu( "Projects" )
-                .respondsWith( () -> placeManager.goTo("org.kie.guvnor.explorer") )
+                .respondsWith( () -> placeManager.goTo( "org.kie.guvnor.explorer" ) )
                 .endMenu()
 
-                .newTopLevelMenu("New")
-                .withItems(newResourcesMenu.getMenuItems())
+                .newTopLevelMenu( "New" )
+                .withItems( newResourcesMenu.getMenuItems() )
                 .endMenu()
 
-                .newTopLevelMenu("Tools")
-                .withItems(projectMenu.getMenuItems())
+                .newTopLevelMenu( "Tools" )
+                .withItems( projectMenu.getMenuItems() )
                 .endMenu()
 
                 .build();
     }
-
 }

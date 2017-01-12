@@ -16,24 +16,26 @@
 
 package org.kie.workbench.common.stunner.core.lookup.definition;
 
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequestBuilder;
 
-import java.util.Set;
-
 @Portable
 public final class DefinitionLookupRequestImpl extends AbstractLookupRequest implements DefinitionLookupRequest {
 
     private final String definitionSetId;
 
-    public DefinitionLookupRequestImpl( @MapsTo( "criteria" ) String criteria,
-                                        @MapsTo( "page" ) int page,
-                                        @MapsTo( "pageSize" ) int pageSize,
-                                        @MapsTo( "definitionSetId" ) String definitionSetId ) {
-        super( criteria, page, pageSize );
+    public DefinitionLookupRequestImpl( final @MapsTo( "criteria" ) String criteria,
+                                        final @MapsTo( "page" ) int page,
+                                        final @MapsTo( "pageSize" ) int pageSize,
+                                        final @MapsTo( "definitionSetId" ) String definitionSetId ) {
+        super( criteria,
+               page,
+               pageSize );
         this.definitionSetId = definitionSetId;
     }
 
@@ -46,7 +48,8 @@ public final class DefinitionLookupRequestImpl extends AbstractLookupRequest imp
     public static class Builder extends AbstractLookupRequestBuilder<Builder> {
 
         enum Type {
-            NODE, EDGE;
+            NODE,
+            EDGE;
         }
 
         private String defSetId;
@@ -73,8 +76,10 @@ public final class DefinitionLookupRequestImpl extends AbstractLookupRequest imp
         }
 
         public DefinitionLookupRequest build() {
-            return new DefinitionLookupRequestImpl( criteria.toString(), page, pageSize, defSetId );
+            return new DefinitionLookupRequestImpl( criteria.toString(),
+                                                    page,
+                                                    pageSize,
+                                                    defSetId );
         }
-
     }
 }

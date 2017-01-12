@@ -34,5 +34,4 @@ public class Dock implements Relationship {
     public String getName() {
         return RELATIONSHIP;
     }
-
 }

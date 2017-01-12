@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonToken;
-import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.Parser;
-
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonToken;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.Parser;
 
 public abstract class CompositeParser<T> extends AbstractParser {
 
@@ -34,7 +34,8 @@ public abstract class CompositeParser<T> extends AbstractParser {
         this.name = name;
     }
 
-    public CompositeParser( String name, Queue<Parser> _parsers ) {
+    public CompositeParser( String name,
+                            Queue<Parser> _parsers ) {
         this.name = name;
         this.parsers.addAll( _parsers );
     }
@@ -52,7 +53,6 @@ public abstract class CompositeParser<T> extends AbstractParser {
     protected JsonToken next() throws IOException, JsonParseException {
         if ( this.tokenCount == 0 && hasName() ) {
             return JsonToken.FIELD_NAME;
-
         } else {
             if ( ( tokenCount == 1 && hasName() ) || ( tokenCount == 0 && !hasName() ) ) {
                 if ( !parsers.isEmpty() ) {
@@ -62,16 +62,13 @@ public abstract class CompositeParser<T> extends AbstractParser {
             }
             if ( null != current && !this.current.isConsumed() ) {
                 return this.current.nextToken();
-
             } else if ( null != current && this.current.isConsumed() && !this.parsers.isEmpty() ) {
                 setCurrentParser( this.parsers.remove() );
                 return this.current.nextToken();
-
             } else {
                 // Finished.
                 setCurrentParser( null );
                 return getEndToken();
-
             }
         }
         // throw new RuntimeException("Invalid token count for this object parser.");
@@ -88,7 +85,6 @@ public abstract class CompositeParser<T> extends AbstractParser {
         } else {
             return this.current.getCurrentName();
         }
-
     }
 
     @Override

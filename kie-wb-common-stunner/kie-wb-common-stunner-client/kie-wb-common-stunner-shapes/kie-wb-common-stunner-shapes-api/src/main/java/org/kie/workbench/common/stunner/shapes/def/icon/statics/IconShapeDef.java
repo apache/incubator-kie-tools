@@ -21,6 +21,5 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 public interface IconShapeDef<W>
         extends ShapeDef<W> {
 
-    Icons getIcon( W element );
-
+    Icons getIcon( final W element );
 }

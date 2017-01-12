@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.widgets.palette.bs3.factory;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -24,20 +29,20 @@ import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BindableBS3PaletteGlyphViewFactory;
 import org.kie.workbench.common.stunner.core.client.ShapeManager;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-
 @ApplicationScoped
 public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory<Icon> {
 
     private final static Map<String, Icon> CATEGORY_VIEWS = new HashMap<String, Icon>() {{
-        put( Categories.ACTIVITIES, getIcon( IconType.SQUARE ) );
-        put( Categories.LANES, getIcon( IconType.COPY ) );
-        put( Categories.GATEWAYS, getIcon( IconType.ASTERISK ) );
-        put( Categories.EVENTS, getIcon( IconType.CIRCLE ) );
-        put( Categories.CONNECTING_OBJECTS, getIcon( IconType.LONG_ARROW_RIGHT ) );
+        put( Categories.ACTIVITIES,
+             getIcon( IconType.SQUARE ) );
+        put( Categories.LANES,
+             getIcon( IconType.COPY ) );
+        put( Categories.GATEWAYS,
+             getIcon( IconType.ASTERISK ) );
+        put( Categories.EVENTS,
+             getIcon( IconType.CIRCLE ) );
+        put( Categories.CONNECTING_OBJECTS,
+             getIcon( IconType.LONG_ARROW_RIGHT ) );
     }};
 
     protected BpmnBS3PaletteViewFactory() {
@@ -76,5 +81,4 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
     private static Icon getIcon( final IconType iconType ) {
         return new Icon( iconType );
     }
-
 }

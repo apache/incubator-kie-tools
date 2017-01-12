@@ -24,5 +24,4 @@ public interface GraphFactory extends ElementFactory<String, DefinitionSet, Grap
 
     double DEFAULT_WIDTH = 1400d;
     double DEFAULT_HEIGHT = 600d;
-
 }

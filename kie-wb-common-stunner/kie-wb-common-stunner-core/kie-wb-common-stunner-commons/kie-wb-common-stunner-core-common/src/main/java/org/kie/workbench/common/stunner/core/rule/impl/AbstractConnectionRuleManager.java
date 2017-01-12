@@ -26,5 +26,4 @@ public abstract class AbstractConnectionRuleManager extends AbstractRuleManager<
     public boolean supports( final Rule rule ) {
         return rule instanceof ConnectionRule;
     }
-
 }

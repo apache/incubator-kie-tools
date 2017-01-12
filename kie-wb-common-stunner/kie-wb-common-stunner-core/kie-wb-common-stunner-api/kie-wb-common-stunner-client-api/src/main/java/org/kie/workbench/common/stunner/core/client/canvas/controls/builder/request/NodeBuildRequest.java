@@ -30,5 +30,4 @@ public interface NodeBuildRequest extends BuildRequest {
     int getSourceManger();
 
     int getTargetMagnet();
-
 }

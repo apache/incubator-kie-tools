@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.processors.definitionset;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.processing.Messager;
+
 import org.kie.workbench.common.stunner.core.definition.DefinitionSetProxy;
 import org.kie.workbench.common.stunner.core.processors.AbstractAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingEntity;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DefinitionSetProxyGenerator extends AbstractAdapterGenerator {
 
@@ -32,35 +32,39 @@ public class DefinitionSetProxyGenerator extends AbstractAdapterGenerator {
         return "DefinitionSetProxy.ftl";
     }
 
-    public StringBuffer generate( String packageName, String className,
-                                  ProcessingEntity definitionSetProcessedEntity,
-                                  Map<String, String> buildersMap,
-                                  Messager messager ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final String className,
+                                  final ProcessingEntity definitionSetProcessedEntity,
+                                  final Map<String, String> buildersMap,
+                                  final Messager messager ) throws GenerationException {
         String defSetClassName = definitionSetProcessedEntity.getClassName();
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
-                packageName );
+                  packageName );
         root.put( "className",
-                className );
+                  className );
         root.put( "generatedByClassName",
-                DefinitionSetProxyGenerator.class.getName() );
+                  DefinitionSetProxyGenerator.class.getName() );
         root.put( "parentFQCName",
-                DefinitionSetProxy.class.getName() );
+                  DefinitionSetProxy.class.getName() );
         root.put( "defSetFQCName",
-                defSetClassName );
+                  defSetClassName );
         String builder = "new " + defSetClassName + "()";
         if ( null != buildersMap && !buildersMap.isEmpty() ) {
             String builderClass = buildersMap.get( defSetClassName );
             if ( null != builderClass && builderClass.trim().length() > 0 ) {
                 builder = "new " + builderClass + "().build()";
             }
-
         }
+
         // Builder.
         root.put( "builder",
-                builder );
-        //Generate code
-        return writeTemplate( packageName, className, root, messager );
-    }
+                  builder );
 
+        //Generate code
+        return writeTemplate( packageName,
+                              className,
+                              root,
+                              messager );
+    }
 }

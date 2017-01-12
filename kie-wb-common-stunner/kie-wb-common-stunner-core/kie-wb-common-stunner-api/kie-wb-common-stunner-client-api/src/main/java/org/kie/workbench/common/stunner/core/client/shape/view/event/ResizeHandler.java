@@ -23,7 +23,7 @@ public abstract class ResizeHandler extends AbstractViewHandler<ResizeEvent> {
         return ViewEventType.RESIZE;
     }
 
-    public abstract void start( ResizeEvent event );
+    public abstract void start( final ResizeEvent event );
 
-    public abstract void end( ResizeEvent event );
+    public abstract void end( final ResizeEvent event );
 }

@@ -15,12 +15,11 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * An interface for other bundles to grab and register plugins.
- *
  * @author Antoine Toulme
  */
 public interface IDiagramPluginFactory {
@@ -30,5 +29,4 @@ public interface IDiagramPluginFactory {
      * @return a set of created plugins.
      */
     public Set<IDiagramPlugin> getPlugins( HttpServletRequest request );
-
 }

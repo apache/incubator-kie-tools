@@ -31,5 +31,4 @@ public abstract class AbstractValidationFailEvent<E, V extends ValidationViolati
     public Iterable<V> getViolations() {
         return violations;
     }
-
 }

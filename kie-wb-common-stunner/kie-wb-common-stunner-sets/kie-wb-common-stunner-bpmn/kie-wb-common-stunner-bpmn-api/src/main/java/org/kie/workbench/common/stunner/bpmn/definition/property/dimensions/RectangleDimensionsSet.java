@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.dimensions;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -25,9 +27,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import javax.validation.Valid;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_HEIGHT;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_WIDTH;
 
 @Portable
 @Bindable
@@ -50,11 +51,14 @@ public class RectangleDimensionsSet implements BPMNPropertySet {
     protected Height height;
 
     public RectangleDimensionsSet() {
-        this( new Width( Width.defaultValue ), new Height( Height.defaultValue ) );
+        this( new Width( Width.defaultValue ),
+              new Height( Height.defaultValue ) );
     }
 
-    public RectangleDimensionsSet( Double width, Double height ) {
-        this( new Width( width ), new Height( height ) );
+    public RectangleDimensionsSet( Double width,
+                                   Double height ) {
+        this( new Width( width ),
+              new Height( height ) );
     }
 
     public RectangleDimensionsSet( @MapsTo( "width" ) Width width,

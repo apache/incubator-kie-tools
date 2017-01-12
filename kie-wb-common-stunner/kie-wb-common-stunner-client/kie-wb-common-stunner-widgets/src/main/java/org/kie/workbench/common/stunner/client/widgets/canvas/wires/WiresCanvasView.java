@@ -15,7 +15,12 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.canvas.wires;
 
-import com.ait.lienzo.client.core.shape.wires.*;
+import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
+import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
+import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
+import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;

@@ -30,5 +30,4 @@ public abstract class AbstractSessionEvent implements UberFireEvent {
     public ClientSession getSession() {
         return session;
     }
-
 }

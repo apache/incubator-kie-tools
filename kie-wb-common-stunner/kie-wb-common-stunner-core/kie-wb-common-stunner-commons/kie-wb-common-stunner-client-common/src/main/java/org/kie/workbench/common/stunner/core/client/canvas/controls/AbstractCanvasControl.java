@@ -34,5 +34,4 @@ public abstract class AbstractCanvasControl implements CanvasControl<AbstractCan
         doDisable();
         this.canvas = null;
     }
-
 }

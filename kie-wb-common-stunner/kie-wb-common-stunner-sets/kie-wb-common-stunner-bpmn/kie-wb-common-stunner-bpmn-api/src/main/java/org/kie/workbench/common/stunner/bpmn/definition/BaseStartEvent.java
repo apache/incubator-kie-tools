@@ -16,12 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -32,17 +36,15 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
-import java.util.HashSet;
-import java.util.Set;
-import javax.validation.Valid;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.*;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TASK_DATA;
 
 @MorphBase( defaultType = StartNoneEvent.class
         /* TODO: Disabled morphing from start to end events for M1
         targets = { BaseEndEvent.class } */
 )
-public abstract class BaseStartEvent implements BPMNDefinition, DataIOModel {
+public abstract class BaseStartEvent implements BPMNDefinition,
+                                                DataIOModel {
 
     @Category
     public static final transient String category = Categories.EVENTS;
@@ -91,7 +93,6 @@ public abstract class BaseStartEvent implements BPMNDefinition, DataIOModel {
         public static final Double BORDER_SIZE = 1.5d;
         public static final String BORDER_COLOR = "#000000";
         public static final Double RADIUS = 15d;
-
     }
 
     public BaseStartEvent() {
@@ -127,7 +128,7 @@ public abstract class BaseStartEvent implements BPMNDefinition, DataIOModel {
     }
 
     @Override
-    public boolean isSingleOutputVar(){
+    public boolean isSingleOutputVar() {
         return true;
     }
 

@@ -30,7 +30,7 @@ public abstract class AbstractAnimation<S> implements Animation<S> {
     }
 
     @Override
-    public AbstractAnimation setDuration( long duration ) {
+    public AbstractAnimation setDuration( final long duration ) {
         this.duration = duration;
         return this;
     }
@@ -42,5 +42,4 @@ public abstract class AbstractAnimation<S> implements Animation<S> {
     public long getDuration() {
         return duration;
     }
-
 }

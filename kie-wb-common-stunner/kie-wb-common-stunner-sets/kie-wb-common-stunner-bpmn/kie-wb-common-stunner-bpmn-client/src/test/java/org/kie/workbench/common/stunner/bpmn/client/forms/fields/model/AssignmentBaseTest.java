@@ -42,8 +42,10 @@ public class AssignmentBaseTest {
                 return invocation.getMethod().getName();
             }
         };
-        final StunnerFormsClientFieldsConstants constants = PowerMockito.mock( StunnerFormsClientFieldsConstants.class, answer );
-        setFinalStaticField( StunnerFormsClientFieldsConstants.class.getDeclaredField( "INSTANCE" ), constants );
+        final StunnerFormsClientFieldsConstants constants = PowerMockito.mock( StunnerFormsClientFieldsConstants.class,
+                                                                               answer );
+        setFinalStaticField( StunnerFormsClientFieldsConstants.class.getDeclaredField( "INSTANCE" ),
+                             constants );
         // Mock StringUtils URL Encoding methods
         PowerMockito.mockStatic( StringUtils.class );
         PowerMockito.when( StringUtils.urlEncode( Mockito.anyString() ) ).thenAnswer( new Answer<Object>() {
@@ -71,7 +73,6 @@ public class AssignmentBaseTest {
 
     /**
      * Implementation of urlEncode for PowerMocked StringUtils
-     *
      * @param s
      * @return
      */
@@ -80,7 +81,8 @@ public class AssignmentBaseTest {
             return s;
         }
         try {
-            return URLEncoder.encode( s, "UTF-8" );
+            return URLEncoder.encode( s,
+                                      "UTF-8" );
         } catch ( UnsupportedEncodingException e ) {
             return s;
         }
@@ -88,7 +90,6 @@ public class AssignmentBaseTest {
 
     /**
      * Implementation of urlDecode for PowerMocked StringUtils
-     *
      * @param s
      * @return
      */
@@ -97,18 +98,21 @@ public class AssignmentBaseTest {
             return s;
         }
         try {
-            return URLDecoder.decode( s, "UTF-8" );
+            return URLDecoder.decode( s,
+                                      "UTF-8" );
         } catch ( UnsupportedEncodingException e ) {
             return s;
         }
     }
 
-    private void setFinalStaticField( Field field, Object newValue ) throws Exception {
+    private void setFinalStaticField( Field field,
+                                      Object newValue ) throws Exception {
         field.setAccessible( true );
         Field modifiersField = Field.class.getDeclaredField( "modifiers" );
         modifiersField.setAccessible( true );
-        modifiersField.setInt( field, field.getModifiers() & ~Modifier.FINAL );
-        field.set( null, newValue );
+        modifiersField.setInt( field,
+                               field.getModifiers() & ~Modifier.FINAL );
+        field.set( null,
+                   newValue );
     }
-
 }

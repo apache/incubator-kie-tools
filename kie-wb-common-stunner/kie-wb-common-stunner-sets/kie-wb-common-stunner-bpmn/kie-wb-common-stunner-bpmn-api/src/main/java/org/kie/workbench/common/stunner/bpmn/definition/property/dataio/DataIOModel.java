@@ -17,8 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.dataio;
 
 public interface DataIOModel {
+
     boolean hasInputVars();
+
     boolean isSingleInputVar();
+
     boolean hasOutputVars();
+
     boolean isSingleOutputVar();
 }

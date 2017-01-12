@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -36,8 +36,10 @@ public class DeleteCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     private static final String C_ID = "c1";
     private static final String P_ID = "p1";
 
-    @Mock private Node candidate;
-    @Mock private Node parent;
+    @Mock
+    private Node candidate;
+    @Mock
+    private Node parent;
 
     private DeleteCanvasNodeCommand tested;
 
@@ -46,17 +48,23 @@ public class DeleteCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         super.setup();
         when( candidate.getUUID() ).thenReturn( C_ID );
         when( parent.getUUID() ).thenReturn( P_ID );
-        this.tested = new DeleteCanvasNodeCommand( candidate, parent );
+        this.tested = new DeleteCanvasNodeCommand( candidate,
+                                                   parent );
     }
 
     @Test
     @SuppressWarnings( "unchecked" )
     public void testExecute() {
         final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR, result.getType() );
-        verify( canvasHandler, times( 1 ) ).removeChild( eq( P_ID ), eq( C_ID ) );
-        verify( canvasHandler, times( 1 ) ).deregister( eq( candidate ) );
-        verify( canvasHandler, times( 1 ) ).applyElementMutation( eq( parent ), any( MutationContext.class ) );
+        assertNotEquals( CommandResult.Type.ERROR,
+                         result.getType() );
+        verify( canvasHandler,
+                times( 1 ) ).removeChild( eq( P_ID ),
+                                          eq( C_ID ) );
+        verify( canvasHandler,
+                times( 1 ) ).deregister( eq( candidate ) );
+        verify( canvasHandler,
+                times( 1 ) ).applyElementMutation( eq( parent ),
+                                                   any( MutationContext.class ) );
     }
-
 }

@@ -37,15 +37,19 @@ public final class CanvasUndockNodeCommand extends AbstractCanvasCommand {
 
     @Override
     public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.undock( parent.getUUID(), child.getUUID() );
-        context.applyElementMutation( parent, MutationContext.STATIC );
-        context.applyElementMutation( child, MutationContext.STATIC );
+        context.undock( parent.getUUID(),
+                        child.getUUID() );
+        context.applyElementMutation( parent,
+                                      MutationContext.STATIC );
+        context.applyElementMutation( child,
+                                      MutationContext.STATIC );
         return buildResult();
     }
 
     @Override
     public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return new CanvasDockNodeCommand( parent, child ).execute( context );
+        return new CanvasDockNodeCommand( parent,
+                                          child ).execute( context );
     }
 
     public Node getParent() {

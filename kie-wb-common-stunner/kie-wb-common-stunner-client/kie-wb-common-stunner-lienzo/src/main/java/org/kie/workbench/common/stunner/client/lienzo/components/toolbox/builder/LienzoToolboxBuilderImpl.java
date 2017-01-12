@@ -26,7 +26,10 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxBu
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.lienzo.toolbox.Toolboxes;
-import org.kie.workbench.common.stunner.lienzo.toolbox.builder.*;
+import org.kie.workbench.common.stunner.lienzo.toolbox.builder.Button;
+import org.kie.workbench.common.stunner.lienzo.toolbox.builder.ButtonGrid;
+import org.kie.workbench.common.stunner.lienzo.toolbox.builder.ButtonsOrRegister;
+import org.kie.workbench.common.stunner.lienzo.toolbox.builder.On;
 import org.kie.workbench.common.stunner.lienzo.toolbox.event.ToolboxButtonEventHandler;
 
 public class LienzoToolboxBuilderImpl
@@ -47,11 +50,13 @@ public class LienzoToolboxBuilderImpl
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public LienzoToolboxBuilderImpl forView( final ShapeView<?> view ) {
         if ( view instanceof WiresShape ) {
             final LienzoLayer lienzoLayerImpl = ( LienzoLayer ) this.layer;
             final com.ait.lienzo.client.core.shape.Layer lienzoLayer = lienzoLayerImpl.getLienzoLayer();
-            on = Toolboxes.staticToolBoxFor( lienzoLayer, ( WiresShape ) view );
+            on = Toolboxes.staticToolBoxFor( lienzoLayer,
+                                             ( WiresShape ) view );
             if ( view instanceof HasEventHandlers ) {
                 final HasEventHandlers<?, Shape<?>> hasEventHandlers = ( HasEventHandlers ) view;
                 if ( null != hasEventHandlers.getAttachableShape() ) {
@@ -63,7 +68,8 @@ public class LienzoToolboxBuilderImpl
     }
 
     @Override
-    public LienzoToolboxBuilderImpl direction( final Direction ond, Direction towards ) {
+    public LienzoToolboxBuilderImpl direction( final Direction ond,
+                                               final Direction towards ) {
         final com.ait.lienzo.shared.core.types.Direction dOn = getDirection( ond );
         final com.ait.lienzo.shared.core.types.Direction dT = getDirection( towards );
         buttonGrid = on.on( dOn ).towards( dT );
@@ -74,14 +80,16 @@ public class LienzoToolboxBuilderImpl
     public LienzoToolboxBuilderImpl grid( final LienzoToolboxButtonGrid grid ) {
         this.padding = grid.getPadding();
         this.iconSize = grid.getButtonSize();
-        buttonsOrRegister = buttonGrid.grid( grid.getPadding(), grid.getButtonSize(), grid.getRows(), grid.getColumns() );
+        buttonsOrRegister = buttonGrid.grid( grid.getPadding(),
+                                             grid.getButtonSize(),
+                                             grid.getRows(),
+                                             grid.getColumns() );
         return this;
     }
 
     @Override
     public LienzoToolboxBuilderImpl add( final ToolboxButton<Shape<?>> button ) {
-        Button b = buttonsOrRegister
-                .add( button.getIcon() );
+        Button b = buttonsOrRegister.add( button.getIcon() );
         b.setIconSize( iconSize ).setPadding( padding );
         if ( null != button.getClickHandler() ) {
             b.setClickHandler( buildHandler( button.getClickHandler() ) );
@@ -131,7 +139,6 @@ public class LienzoToolboxBuilderImpl
             public int getClientY() {
                 return event.getClientY();
             }
-
         } );
     }
 
@@ -166,5 +173,4 @@ public class LienzoToolboxBuilderImpl
         }
         throw new UnsupportedOperationException( "Toolbox direction [" + direction.name() + "] not supported." );
     }
-
 }

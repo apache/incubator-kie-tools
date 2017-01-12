@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.tooltip;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -24,24 +29,28 @@ import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphToolti
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.uberfire.client.mvp.UberView;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 @Dependent
-public class GlyphTooltipImpl implements GlyphTooltip<Group>, IsWidget {
+public class GlyphTooltipImpl implements GlyphTooltip<Group>,
+                                         IsWidget {
 
     public interface View extends UberView<GlyphTooltipImpl> {
 
-        View show( String text, double x, double y, Direction direction );
+        View show( final String text,
+                   final double x,
+                   final double y,
+                   final Direction direction );
 
-        View show( IPrimitive<?> glyph, String text, double x, double y, double width, double height, Direction direction );
+        View show( final IPrimitive<?> glyph,
+                   final String text,
+                   final double x,
+                   final double y,
+                   final double width,
+                   final double height,
+                   final Direction direction );
 
         View hide();
 
         View remove();
-
     }
 
     View view;
@@ -71,12 +80,25 @@ public class GlyphTooltipImpl implements GlyphTooltip<Group>, IsWidget {
                       final double x,
                       final double y,
                       final Direction direction ) {
-        view.show( text, x, y, direction );
+        view.show( text,
+                   x,
+                   y,
+                   direction );
     }
 
     @Override
-    public void show( final Glyph<Group> glyph, final String text, final double x, final double y, final Direction direction ) {
-        view.show( glyph.getGroup(), text, x, y, glyph.getWidth(), glyph.getHeight(), direction );
+    public void show( final Glyph<Group> glyph,
+                      final String text,
+                      final double x,
+                      final double y,
+                      final Direction direction ) {
+        view.show( glyph.getGroup(),
+                   text,
+                   x,
+                   y,
+                   glyph.getWidth(),
+                   glyph.getHeight(),
+                   direction );
     }
 
     @Override
@@ -88,5 +110,4 @@ public class GlyphTooltipImpl implements GlyphTooltip<Group>, IsWidget {
     public void remove() {
         view.remove();
     }
-
 }

@@ -34,5 +34,4 @@ public interface DefinitionRepresentation {
      * The collection of labels.
      */
     Set<String> getLabels();
-
 }

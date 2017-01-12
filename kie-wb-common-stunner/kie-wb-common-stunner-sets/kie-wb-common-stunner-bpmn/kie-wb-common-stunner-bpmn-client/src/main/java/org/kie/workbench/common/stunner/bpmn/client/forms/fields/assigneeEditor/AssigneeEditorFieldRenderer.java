@@ -102,7 +102,9 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     @Override
     public void setNames( List<String> names ) {
         this.names = names;
-        nameListBoxValues = new ListBoxValues( AssigneeListItemWidgetView.CUSTOM_PROMPT, "Edit" + " ", namesTester() );
+        nameListBoxValues = new ListBoxValues( AssigneeListItemWidgetView.CUSTOM_PROMPT,
+                                               "Edit" + " ",
+                                               namesTester() );
         nameListBoxValues.addValues( names );
         view.setAssigneesNames( nameListBoxValues );
     }
@@ -119,7 +121,8 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
             String[] as = s.split( "," );
             for ( String a : as ) {
                 if ( !a.isEmpty() ) {
-                    Assignee assignee = Assignee.deserialize( a, names );
+                    Assignee assignee = Assignee.deserialize( a,
+                                                              names );
                     if ( assignee != null ) {
                         assigneeRows.add( new AssigneeRow( assignee ) );
                     }
@@ -142,7 +145,6 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
 
     /**
      * Tests whether a Row name occurs more than once in the list of rows
-     *
      * @param name
      * @return
      */
@@ -178,5 +180,4 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
             }
         };
     }
-
 }

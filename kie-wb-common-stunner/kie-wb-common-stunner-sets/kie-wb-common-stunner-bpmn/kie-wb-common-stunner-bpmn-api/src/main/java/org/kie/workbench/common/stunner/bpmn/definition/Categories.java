@@ -29,5 +29,4 @@ public class Categories {
     public static final String CONNECTING_OBJECTS = "Connecting Objects";
 
     public static final String GATEWAYS = "Gateways";
-
 }

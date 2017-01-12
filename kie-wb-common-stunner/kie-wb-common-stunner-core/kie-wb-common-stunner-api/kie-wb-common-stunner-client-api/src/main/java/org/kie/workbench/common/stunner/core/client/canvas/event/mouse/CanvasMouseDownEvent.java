@@ -17,4 +17,5 @@
 package org.kie.workbench.common.stunner.core.client.canvas.event.mouse;
 
 public class CanvasMouseDownEvent {
+
 }

@@ -19,13 +19,13 @@ package org.kie.workbench.common.stunner.core.client.shape.view;
 public interface HasControlPoints<T> {
 
     enum ControlPointType {
-        RESIZE, MAGNET;
+        RESIZE,
+        MAGNET
     }
 
-    T showControlPoints( ControlPointType type );
+    T showControlPoints( final ControlPointType type );
 
     T hideControlPoints();
 
     boolean areControlsVisible();
-
 }

@@ -21,7 +21,10 @@ public final class TextOutEvent extends AbstractMouseEvent {
                          final double mouseY,
                          final double clientX,
                          final double clientY ) {
-        super( mouseX, mouseY, clientX, clientY );
+        super( mouseX,
+               mouseY,
+               clientX,
+               clientY );
     }
 
     public TextOutEvent( final double mouseX,
@@ -29,6 +32,10 @@ public final class TextOutEvent extends AbstractMouseEvent {
                          final double clientX,
                          final double clientY,
                          boolean isShiftKeyDown ) {
-        super( mouseX, mouseY, clientX, clientY, isShiftKeyDown );
+        super( mouseX,
+               mouseY,
+               clientX,
+               clientY,
+               isShiftKeyDown );
     }
 }

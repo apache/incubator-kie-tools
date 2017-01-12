@@ -50,7 +50,8 @@ public abstract class AbstractNodeDeregistrationCommand extends AbstractCanvasGr
     @Override
     @SuppressWarnings( "unchecked" )
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new SafeDeleteNodeCommand( candidate, getSafeDeleteCallback( context ) );
+        return new SafeDeleteNodeCommand( candidate,
+                                          getSafeDeleteCallback( context ) );
     }
 
     protected SafeDeleteNodeProcessor.Callback getSafeDeleteCallback( final AbstractCanvasHandler context ) {
@@ -73,7 +74,7 @@ public abstract class AbstractNodeDeregistrationCommand extends AbstractCanvasGr
     private final SafeDeleteNodeProcessor.Callback safeDeleteCallback = new SafeDeleteNodeProcessor.Callback() {
         @Override
         public void deleteChildNode( final Node<Definition<?>, Edge> node ) {
-            // No recursivity here.
+            // No recursion here.
         }
 
         @Override
@@ -85,14 +86,16 @@ public abstract class AbstractNodeDeregistrationCommand extends AbstractCanvasGr
         public void deleteInChildEdge( final Edge<Child, Node> edge ) {
             final Node parent = edge.getSourceNode();
             final Node candidate = edge.getTargetNode();
-            getCommand().addCommand( new RemoveCanvasChildCommand( parent, candidate ) );
+            getCommand().addCommand( new RemoveCanvasChildCommand( parent,
+                                                                   candidate ) );
         }
 
         @Override
         public void deleteInDockEdge( final Edge<Dock, Node> edge ) {
             final Node parent = edge.getSourceNode();
             final Node candidate = edge.getTargetNode();
-            getCommand().addCommand( new CanvasUndockNodeCommand( parent, candidate ) );
+            getCommand().addCommand( new CanvasUndockNodeCommand( parent,
+                                                                  candidate ) );
         }
 
         @Override
@@ -108,7 +111,5 @@ public abstract class AbstractNodeDeregistrationCommand extends AbstractCanvasGr
                 getCommand().addCommand( new DeleteCanvasNodeCommand( node ) );
             }
         }
-
     };
-
 }

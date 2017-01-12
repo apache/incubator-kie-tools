@@ -21,5 +21,4 @@ public interface ValidationViolation<E> {
     E getEntity();
 
     String getMessage();
-
 }

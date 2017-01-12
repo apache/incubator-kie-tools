@@ -24,12 +24,14 @@ import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 public class LienzoPanelUtils {
 
-    public static LienzoPanel newPanel( final Glyph<Group> glyph, final int width, final int height ) {
-        final com.ait.lienzo.client.widget.LienzoPanel panel = new LienzoPanel( width, height );
+    public static LienzoPanel newPanel( final Glyph<Group> glyph,
+                                        final int width,
+                                        final int height ) {
+        final com.ait.lienzo.client.widget.LienzoPanel panel = new LienzoPanel( width,
+                                                                                height );
         final Layer layer = new Layer();
         panel.add( layer.setTransformable( true ) );
         layer.add( ( IPrimitive<?> ) glyph.getGroup() );
         return panel;
     }
-
 }

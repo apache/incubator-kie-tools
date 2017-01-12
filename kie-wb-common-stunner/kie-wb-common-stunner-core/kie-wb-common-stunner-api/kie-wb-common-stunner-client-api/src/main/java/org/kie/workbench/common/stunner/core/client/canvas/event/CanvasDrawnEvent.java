@@ -29,5 +29,4 @@ public final class CanvasDrawnEvent extends AbstractCanvasEvent {
     public CanvasDrawnEvent( final Canvas canvas ) {
         super( canvas );
     }
-
 }

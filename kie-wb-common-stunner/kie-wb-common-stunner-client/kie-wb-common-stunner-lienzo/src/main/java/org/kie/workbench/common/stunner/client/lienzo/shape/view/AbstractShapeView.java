@@ -162,7 +162,10 @@ public abstract class AbstractShapeView<T> extends WiresShape
                             final double y1,
                             final double x2,
                             final double y2 ) {
-        getGroup().setDragBounds( new DragBounds( x1, y1, x2, y2 ) );
+        getGroup().setDragBounds( new DragBounds( x1,
+                                                  y1,
+                                                  x2,
+                                                  y2 ) );
         return ( T ) this;
     }
 

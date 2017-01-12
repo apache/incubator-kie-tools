@@ -16,18 +16,20 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view.event;
 
-import com.google.gwt.event.shared.HandlerRegistration;
-
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.event.shared.HandlerRegistration;
+
 public class HandlerRegistrationImpl implements HandlerRegistration {
+
     private final List<HandlerRegistration> m_list = new LinkedList<>();
 
     public HandlerRegistrationImpl() {
     }
 
-    public HandlerRegistrationImpl( HandlerRegistration handler, HandlerRegistration... handlers ) {
+    public HandlerRegistrationImpl( final HandlerRegistration handler,
+                                    final HandlerRegistration... handlers ) {
         this.register( handler );
         HandlerRegistration[] arr$ = handlers;
         int len$ = handlers.length;
@@ -35,7 +37,6 @@ public class HandlerRegistrationImpl implements HandlerRegistration {
             HandlerRegistration h = arr$[ i$ ];
             this.register( h );
         }
-
     }
 
     public final int size() {
@@ -54,18 +55,18 @@ public class HandlerRegistrationImpl implements HandlerRegistration {
         return this.clear();
     }
 
-    public final HandlerRegistration register( HandlerRegistration handler ) {
+    public final HandlerRegistration register( final HandlerRegistration handler ) {
         if ( null != handler && !this.m_list.contains( handler ) ) {
             this.m_list.add( handler );
         }
         return handler;
     }
 
-    public final boolean isRegistered( HandlerRegistration handler ) {
+    public final boolean isRegistered( final HandlerRegistration handler ) {
         return null != handler && this.size() > 0 && this.m_list.contains( handler );
     }
 
-    public final HandlerRegistrationImpl deregister( HandlerRegistration handler ) {
+    public final HandlerRegistrationImpl deregister( final HandlerRegistration handler ) {
         if ( null != handler ) {
             if ( this.size() > 0 && this.m_list.contains( handler ) ) {
                 this.m_list.remove( handler );

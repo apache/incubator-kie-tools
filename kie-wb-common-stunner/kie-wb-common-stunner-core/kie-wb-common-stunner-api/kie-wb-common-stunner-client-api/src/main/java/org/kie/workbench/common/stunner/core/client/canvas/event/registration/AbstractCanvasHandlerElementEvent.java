@@ -33,5 +33,4 @@ public abstract class AbstractCanvasHandlerElementEvent extends AbstractCanvasHa
     public Element<?> getElement() {
         return element;
     }
-
 }

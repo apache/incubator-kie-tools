@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.palette.view;
 
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.element.LienzoPaletteElementView;
 import org.kie.workbench.common.stunner.lienzo.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.lienzo.palette.Palette;
-
-import javax.enterprise.context.Dependent;
 
 @Dependent
 public class LienzoPaletteViewImpl
@@ -31,5 +31,4 @@ public class LienzoPaletteViewImpl
     protected AbstractPalette<? extends AbstractPalette> buildPalette() {
         return new Palette();
     }
-
 }

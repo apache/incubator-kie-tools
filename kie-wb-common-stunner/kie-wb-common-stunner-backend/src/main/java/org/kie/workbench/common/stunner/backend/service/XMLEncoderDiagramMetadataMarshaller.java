@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.stunner.backend.service;
 
-import org.kie.workbench.common.stunner.core.definition.service.DiagramMetadataMarshaller;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
-
-import javax.enterprise.context.ApplicationScoped;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.enterprise.context.ApplicationScoped;
+
+import org.kie.workbench.common.stunner.core.definition.service.DiagramMetadataMarshaller;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 @ApplicationScoped
 public class XMLEncoderDiagramMetadataMarshaller implements DiagramMetadataMarshaller<Metadata> {
@@ -32,13 +32,13 @@ public class XMLEncoderDiagramMetadataMarshaller implements DiagramMetadataMarsh
     private static final String CHARSET = "UTF-8";
 
     @Override
-    public Metadata unmarshall( InputStream input ) throws IOException {
+    public Metadata unmarshall( final InputStream input ) throws IOException {
         XMLDecoder decoder = new XMLDecoder( input );
         return ( Metadata ) decoder.readObject();
     }
 
     @Override
-    public String marshall( Metadata metadata ) throws IOException {
+    public String marshall( final Metadata metadata ) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         XMLEncoder encoder = new XMLEncoder( os );
         encoder.writeObject( metadata );
@@ -46,5 +46,4 @@ public class XMLEncoderDiagramMetadataMarshaller implements DiagramMetadataMarsh
         String raw = os.toString( CHARSET );
         return raw;
     }
-
 }

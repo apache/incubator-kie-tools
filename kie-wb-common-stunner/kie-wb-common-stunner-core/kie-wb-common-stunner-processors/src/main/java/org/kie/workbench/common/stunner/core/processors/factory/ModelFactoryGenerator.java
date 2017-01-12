@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.processors.factory;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.processing.Messager;
+
 import org.kie.workbench.common.stunner.core.factory.definition.AbstractTypeDefinitionFactory;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-
-import javax.annotation.processing.Messager;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ModelFactoryGenerator extends AbstractBindableAdapterGenerator {
 
@@ -31,21 +31,27 @@ public class ModelFactoryGenerator extends AbstractBindableAdapterGenerator {
         return "ModelFactory.ftl";
     }
 
-    public StringBuffer generate( String packageName, String className,
-                                  Map<String, String> buildersMap,
-                                  Messager messager ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final String className,
+                                  final Map<String, String> buildersMap,
+                                  final Messager messager ) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
-                packageName );
+                  packageName );
         root.put( "className",
-                className );
+                  className );
         root.put( "parentClassName",
-                AbstractTypeDefinitionFactory.class.getName() );
+                  AbstractTypeDefinitionFactory.class.getName() );
         root.put( "generatedByClassName",
-                ModelFactoryGenerator.class.getName() );
-        addFields( "builders", root, buildersMap );
-        //Generate code
-        return writeTemplate( packageName, className, root, messager );
-    }
+                  ModelFactoryGenerator.class.getName() );
+        addFields( "builders",
+                   root,
+                   buildersMap );
 
+        //Generate code
+        return writeTemplate( packageName,
+                              className,
+                              root,
+                              messager );
+    }
 }

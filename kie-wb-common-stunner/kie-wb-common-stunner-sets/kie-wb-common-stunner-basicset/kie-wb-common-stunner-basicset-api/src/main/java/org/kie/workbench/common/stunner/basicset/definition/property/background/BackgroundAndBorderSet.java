@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.basicset.definition.property.background;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -24,9 +26,9 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.*;
-
-import javax.validation.Valid;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BACKGROUND_COLOR;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BORDER_COLOR;
+import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BORDER_SIZE;
 
 @Portable
 @Bindable
@@ -53,8 +55,8 @@ public class BackgroundAndBorderSet {
 
     public BackgroundAndBorderSet() {
         this( new BgColor(),
-                new BorderColor(),
-                new BorderSize() );
+              new BorderColor(),
+              new BorderSize() );
     }
 
     public BackgroundAndBorderSet( @MapsTo( "bgColor" ) BgColor bgColor,

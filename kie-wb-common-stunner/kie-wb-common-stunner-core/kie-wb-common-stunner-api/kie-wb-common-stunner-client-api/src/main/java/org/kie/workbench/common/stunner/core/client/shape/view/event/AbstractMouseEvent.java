@@ -28,7 +28,11 @@ public abstract class AbstractMouseEvent extends AbstractViewEvent
                                final double mouseY,
                                final double clientX,
                                final double clientY ) {
-        this( mouseX, mouseY, clientX, clientY, false );
+        this( mouseX,
+              mouseY,
+              clientX,
+              clientY,
+              false );
     }
 
     public AbstractMouseEvent( final double mouseX,
@@ -62,5 +66,4 @@ public abstract class AbstractMouseEvent extends AbstractViewEvent
     public double getClientY() {
         return clientY;
     }
-
 }

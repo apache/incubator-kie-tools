@@ -20,7 +20,6 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 /**
  * A command manager type that provides command registry integration.
- *
  * @param <T> The command's context type.
  * @param <V> The command violation type.
  */
@@ -34,6 +33,5 @@ public interface HasCommandRegistry<T, V> {
     /**
      * Undo latest command present in the registry.
      */
-    CommandResult<V> undo( T context );
-
+    CommandResult<V> undo( final T context );
 }

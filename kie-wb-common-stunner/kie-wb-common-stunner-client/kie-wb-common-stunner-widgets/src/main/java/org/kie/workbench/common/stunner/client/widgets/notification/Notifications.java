@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.client.widgets.notification;
 
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
@@ -46,31 +52,23 @@ import org.kie.workbench.common.stunner.core.validation.event.AbstractValidation
 import org.kie.workbench.common.stunner.core.validation.event.AbstractValidationFailEvent;
 import org.uberfire.client.mvp.UberView;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.List;
-
 @Dependent
 public class Notifications implements IsWidget {
 
     public interface View extends UberView<Notifications> {
 
-        View setColumnSortHandler( ColumnSortEvent.ListHandler<Notification> sortHandler );
+        View setColumnSortHandler( final ColumnSortEvent.ListHandler<Notification> sortHandler );
 
-        View addColumn( com.google.gwt.user.cellview.client.Column<Notification, String> column,
-                        String name );
+        View addColumn( final com.google.gwt.user.cellview.client.Column<Notification, String> column,
+                        final String name );
 
-        View removeColumn( int index );
+        View removeColumn( final int index );
 
         int getColumnCount();
 
         View redraw();
 
         View clear();
-
     }
 
     View view;
@@ -102,23 +100,21 @@ public class Notifications implements IsWidget {
             showNotificationPopup( notification );
             addLogEntry( notification );
             view.redraw();
-
         }
-
     }
 
     private void showNotificationPopup( final Notification notification ) {
         if ( notification instanceof CanvasValidationSuccessNotification ) {
             final String text = getNotificationSourceMessage( notification );
-            doShowNotify( NotifyType.SUCCESS, text );
-
+            doShowNotify( NotifyType.SUCCESS,
+                          text );
         }
+
         if ( notifyErrors && Notification.Type.ERROR.equals( notification.getType() ) ) {
             final String text = getNotificationSourceMessage( notification );
-            doShowNotify( NotifyType.DANGER, text );
-
+            doShowNotify( NotifyType.DANGER,
+                          text );
         }
-
     }
 
     private void doShowNotify( final NotifyType type,
@@ -129,14 +125,13 @@ public class Notifications implements IsWidget {
         settings.setDelay( 5000 );
         settings.setTimer( 100 );
         settings.setAllowDismiss( true );
-        Notify.notify( message, settings );
-
+        Notify.notify( message,
+                       settings );
     }
 
     public void clear() {
         logsProvider.getList().clear();
         view.clear();
-
     }
     
     /*  ******************************************************************************************************
@@ -169,19 +164,21 @@ public class Notifications implements IsWidget {
         // Log's type.
         final com.google.gwt.user.cellview.client.Column<Notification, String> typeColumn = createTypeColumn( sortHandler );
         if ( typeColumn != null ) {
-            view.addColumn( typeColumn, "Type" );
+            view.addColumn( typeColumn,
+                            "Type" );
         }
         // Log element's UUID.
         final com.google.gwt.user.cellview.client.Column<Notification, String> contextColumn = createContextColumn( sortHandler );
         if ( contextColumn != null ) {
-            view.addColumn( contextColumn, "Context" );
+            view.addColumn( contextColumn,
+                            "Context" );
         }
         // Log's message.
         final com.google.gwt.user.cellview.client.Column<Notification, String> messageColumn = createMessageColumn( sortHandler );
         if ( messageColumn != null ) {
-            view.addColumn( messageColumn, "Message" );
+            view.addColumn( messageColumn,
+                            "Message" );
         }
-
     }
 
     private void addLogEntry( final Notification entry ) {
@@ -193,23 +190,22 @@ public class Notifications implements IsWidget {
     private com.google.gwt.user.cellview.client.Column<Notification, String> createTypeColumn( ColumnSortEvent.ListHandler<Notification> sortHandler ) {
         // Log type..
         final Cell<String> typeCell = new TextCell();
-        final com.google.gwt.user.cellview.client.Column<Notification, String> typeColumn = new com.google.gwt.user.cellview.client.Column<Notification, String>(
-                typeCell ) {
+        final com.google.gwt.user.cellview.client.Column<Notification, String> typeColumn = new com.google.gwt.user.cellview.client.Column<Notification, String>( typeCell ) {
             @Override
             public String getValue( final Notification object ) {
                 return getNotificationTypeMessage( object );
             }
         };
         typeColumn.setSortable( true );
-        sortHandler.setComparator( typeColumn, ( o1, o2 ) -> o1.getType().compareTo( o2.getType() ) );
+        sortHandler.setComparator( typeColumn,
+                                   ( o1, o2 ) -> o1.getType().compareTo( o2.getType() ) );
         return typeColumn;
     }
 
     private com.google.gwt.user.cellview.client.Column<Notification, String> createContextColumn( ColumnSortEvent.ListHandler<Notification> sortHandler ) {
         // Log element's context.
         final Cell<String> contextCell = new TextCell();
-        final com.google.gwt.user.cellview.client.Column<Notification, String> contextColumn = new com.google.gwt.user.cellview.client.Column<Notification, String>(
-                contextCell ) {
+        final com.google.gwt.user.cellview.client.Column<Notification, String> contextColumn = new com.google.gwt.user.cellview.client.Column<Notification, String>( contextCell ) {
             @Override
             public String getValue( final Notification object ) {
                 return getNotificationContextMessage( object );
@@ -222,8 +218,7 @@ public class Notifications implements IsWidget {
     private com.google.gwt.user.cellview.client.Column<Notification, String> createMessageColumn( ColumnSortEvent.ListHandler<Notification> sortHandler ) {
         // Log message.
         final Cell<String> messageCell = new TextCell();
-        final com.google.gwt.user.cellview.client.Column<Notification, String> messageColumn = new com.google.gwt.user.cellview.client.Column<Notification, String>(
-                messageCell ) {
+        final com.google.gwt.user.cellview.client.Column<Notification, String> messageColumn = new com.google.gwt.user.cellview.client.Column<Notification, String>( messageCell ) {
             @Override
             public String getValue( final Notification object ) {
                 return getNotificationSourceMessage( object );
@@ -237,15 +232,13 @@ public class Notifications implements IsWidget {
     private Notification translate( final AbstractCanvasCommandEvent<? extends CanvasHandler> commandExecutedEvent ) {
         if ( null != commandExecutedEvent ) {
             final CanvasHandler canvasHandler = commandExecutedEvent.getCanvasHandler();
-            final Command<CanvasHandler, CanvasViolation> command =
-                    ( Command<CanvasHandler, CanvasViolation> ) commandExecutedEvent.getCommand();
+            final Command<CanvasHandler, CanvasViolation> command = ( Command<CanvasHandler, CanvasViolation> ) commandExecutedEvent.getCommand();
             final CommandResult<CanvasViolation> result = commandExecutedEvent.getResult();
             return new CanvasCommandNotification.CanvasCommandNotificationBuilder<CanvasHandler>()
                     .canvasHander( canvasHandler )
                     .command( command )
                     .result( result )
                     .build();
-
         }
         return null;
     }
@@ -257,16 +250,18 @@ public class Notifications implements IsWidget {
             final Diagram diagram = canvasHandler.getDiagram();
             final String diagramUUID = diagram.getName();
             final String title = diagram.getMetadata().getTitle();
-            final CanvasNotificationContext context =
-                    new CanvasNotificationContext( canvasHandler.toString(), diagramUUID, title );
+            final CanvasNotificationContext context = new CanvasNotificationContext( canvasHandler.toString(),
+                                                                                     diagramUUID,
+                                                                                     title );
             if ( validationEvent instanceof AbstractValidationFailEvent ) {
                 final AbstractValidationFailEvent failEvent = ( AbstractValidationFailEvent ) validationEvent;
                 final Iterable<CanvasValidationViolation> violations = failEvent.getViolations();
-                return new CanvasValidationFailNotification( UUID.uuid(), violations, context );
-
+                return new CanvasValidationFailNotification( UUID.uuid(),
+                                                             violations,
+                                                             context );
             }
-            return new CanvasValidationSuccessNotification( UUID.uuid(), context );
-
+            return new CanvasValidationSuccessNotification( UUID.uuid(),
+                                                            context );
         }
         return null;
     }
@@ -292,19 +287,18 @@ public class Notifications implements IsWidget {
                 "-- No type --";
     }
 
-    void onGraphCommandExecuted( @Observes CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent ) {
+    void onGraphCommandExecuted( final @Observes CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent ) {
         Notification notification = translate( commandExecutedEvent );
         add( notification );
     }
 
-    void onCanvasValidationSuccessEvent( @Observes CanvasValidationSuccessEvent validationSuccessEvent ) {
+    void onCanvasValidationSuccessEvent( final @Observes CanvasValidationSuccessEvent validationSuccessEvent ) {
         Notification notification = translate( validationSuccessEvent );
         add( notification );
     }
 
-    void onCanvasValidationFailEvent( @Observes CanvasValidationFailEvent validationFailEvent ) {
+    void onCanvasValidationFailEvent( final @Observes CanvasValidationFailEvent validationFailEvent ) {
         Notification notification = translate( validationFailEvent );
         add( notification );
     }
-
 }

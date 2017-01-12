@@ -17,7 +17,7 @@ package org.kie.workbench.common.stunner.core.command;
 
 public interface CompositeCommand<T, V> extends Command<T, V> {
 
-    CompositeCommand<T, V> addCommand( Command<T, V> command );
+    CompositeCommand<T, V> addCommand( final Command<T, V> command );
 
     int size();
 }

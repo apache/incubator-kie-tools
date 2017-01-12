@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.index.bounds;
 
+import java.util.Iterator;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -26,10 +30,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Iterator;
 
 @Dependent
 public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
@@ -45,7 +45,7 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
     }
 
     @Override
-    public GraphBoundsIndexerImpl build( Graph<View, Node<View, Edge>> graph ) {
+    public GraphBoundsIndexerImpl build( final Graph<View, Node<View, Edge>> graph ) {
         this.graph = graph;
         return this;
     }
@@ -53,7 +53,8 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
     @Override
     public Node<View<?>, Edge> getAt( final double x,
                                       final double y ) {
-        return findElementAt( x, y );
+        return findElementAt( x,
+                              y );
     }
 
     @Override
@@ -61,73 +62,75 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
         final double[] result = new double[]{ Double.MAX_VALUE, Double.MAX_VALUE, 0, 0 };
         childrenTraverseProcessor
                 .setRootUUID( this.rootUUID )
-                .traverse( graph, new GraphBoundIndexerTraverseCallback( new NodeBoundsTraverseCallback() {
+                .traverse( graph,
+                           new GraphBoundIndexerTraverseCallback( new NodeBoundsTraverseCallback() {
 
-                    @Override
-                    public void onNodeTraverse( final Node<View, Edge> node,
-                                                final double parentX,
-                                                final double parentY ) {
-                        final String uuid = node.getUUID();
-                        final boolean isRoot = null != GraphBoundsIndexerImpl.this.rootUUID
-                                && GraphBoundsIndexerImpl.this.rootUUID.equals( uuid );
-                        if ( !isRoot ) {
-                            final double[] absCoords = getNodeAbsoluteCoordinates( node, parentX, parentY );
-                            final double x = absCoords[ 0 ];
-                            final double y = absCoords[ 1 ];
-                            final double w = absCoords[ 2 ];
-                            final double h = absCoords[ 3 ];
-                            if ( x < result[ 0 ] ) {
-                                result[ 0 ] = x;
-
-                            }
-                            if ( y < result[ 1 ] ) {
-                                result[ 1 ] = y;
-
-                            }
-                            if ( w > result[ 2 ] ) {
-                                result[ 2 ] = w;
-
-                            }
-                            if ( h > result[ 3 ] ) {
-                                result[ 3 ] = h;
-
-                            }
-
-                        }
-
-                    }
-
-                } ) );
+                               @Override
+                               public void onNodeTraverse( final Node<View, Edge> node,
+                                                           final double parentX,
+                                                           final double parentY ) {
+                                   final String uuid = node.getUUID();
+                                   final boolean isRoot = null != GraphBoundsIndexerImpl.this.rootUUID
+                                           && GraphBoundsIndexerImpl.this.rootUUID.equals( uuid );
+                                   if ( !isRoot ) {
+                                       final double[] absCoords = getNodeAbsoluteCoordinates( node,
+                                                                                              parentX,
+                                                                                              parentY );
+                                       final double x = absCoords[ 0 ];
+                                       final double y = absCoords[ 1 ];
+                                       final double w = absCoords[ 2 ];
+                                       final double h = absCoords[ 3 ];
+                                       if ( x < result[ 0 ] ) {
+                                           result[ 0 ] = x;
+                                       }
+                                       if ( y < result[ 1 ] ) {
+                                           result[ 1 ] = y;
+                                       }
+                                       if ( w > result[ 2 ] ) {
+                                           result[ 2 ] = w;
+                                       }
+                                       if ( h > result[ 3 ] ) {
+                                           result[ 3 ] = h;
+                                       }
+                                   }
+                               }
+                           } ) );
         return result;
-
     }
 
-    public Node<View<?>, Edge> findElementAt( final double x, final double y ) {
+    @SuppressWarnings( "unchecked" )
+    public Node<View<?>, Edge> findElementAt( final double x,
+                                              final double y ) {
         final Node[] result = new Node[ 1 ];
-        childrenTraverseProcessor.traverse( graph, new GraphBoundIndexerTraverseCallback( new NodeBoundsTraverseCallback() {
+        childrenTraverseProcessor.traverse( graph,
+                                            new GraphBoundIndexerTraverseCallback( new NodeBoundsTraverseCallback() {
 
-            @Override
-            public void onNodeTraverse( final Node<View, Edge> node,
-                                        final double parentX,
-                                        final double parentY ) {
-                if ( isNodeAt( node, parentX, parentY, x, y ) ) {
-                    result[ 0 ] = node;
-                }
-
-            }
-
-        } ) );
+                                                @Override
+                                                public void onNodeTraverse( final Node<View, Edge> node,
+                                                                            final double parentX,
+                                                                            final double parentY ) {
+                                                    if ( isNodeAt( node,
+                                                                   parentX,
+                                                                   parentY,
+                                                                   x,
+                                                                   y ) ) {
+                                                        result[ 0 ] = node;
+                                                    }
+                                                }
+                                            } ) );
         return result[ 0 ];
     }
 
     private abstract class NodeBoundsTraverseCallback {
 
-        public boolean onNodeTraverseStart( Node<View, Edge> node, Iterator<Node<View, Edge>> parents ) {
+        public boolean onNodeTraverseStart( final Node<View, Edge> node,
+                                            final Iterator<Node<View, Edge>> parents ) {
             return true;
         }
 
-        public abstract void onNodeTraverse( Node<View, Edge> node, double parentX, double parentY );
-
+        public abstract void onNodeTraverse( final Node<View, Edge> node,
+                                             final double parentX,
+                                             final double parentY );
     }
 
     private class GraphBoundIndexerTraverseCallback extends AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>> {
@@ -141,20 +144,24 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
         @Override
         public void startNodeTraversal( final Node<View, Edge> node ) {
             super.startNodeTraversal( node );
-            onStartNodeTraversal( null, node );
+            onStartNodeTraversal( null,
+                                  node );
         }
 
         @Override
         public boolean startNodeTraversal( final Iterator<Node<View, Edge>> parents,
                                            final Node<View, Edge> node ) {
-            super.startNodeTraversal( parents, node );
-            onStartNodeTraversal( parents, node );
+            super.startNodeTraversal( parents,
+                                      node );
+            onStartNodeTraversal( parents,
+                                  node );
             return true;
         }
 
         private void onStartNodeTraversal( final Iterator<Node<View, Edge>> parents,
                                            final Node<View, Edge> node ) {
-            if ( callback.onNodeTraverseStart( node, parents ) ) {
+            if ( callback.onNodeTraverseStart( node,
+                                               parents ) ) {
                 double parentX = 0;
                 double parentY = 0;
                 if ( null != parents && parents.hasNext() ) {
@@ -164,18 +171,14 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
                         if ( null != nodeCoordinates ) {
                             parentX += nodeCoordinates.getX();
                             parentY += nodeCoordinates.getY();
-
                         }
-
                     }
-
                 }
-                callback.onNodeTraverse( node, parentX, parentY );
-
+                callback.onNodeTraverse( node,
+                                         parentX,
+                                         parentY );
             }
-
         }
-
     }
 
     private Point2D getNodeCoordinates( final Node node ) {
@@ -185,7 +188,6 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
                 final View viewContent = ( View ) content;
                 return GraphUtils.getPosition( viewContent );
             }
-
         }
         return null;
     }
@@ -196,9 +198,7 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
             final String uuid = node.getUUID();
             if ( null == root || !root.equals( uuid ) ) {
                 return getNodeCoordinates( node );
-
             }
-
         }
         return null;
     }
@@ -225,7 +225,9 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
         if ( null != rootUUID && node.getUUID().equals( rootUUID ) ) {
             return true;
         }
-        final double[] absoluteCoords = getNodeAbsoluteCoordinates( node, parentX, parentY );
+        final double[] absoluteCoords = getNodeAbsoluteCoordinates( node,
+                                                                    parentX,
+                                                                    parentY );
         final double ulX = absoluteCoords[ 0 ];
         final double ulY = absoluteCoords[ 1 ];
         final double lrX = absoluteCoords[ 2 ];
@@ -249,5 +251,4 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
         this.rootUUID = null;
         this.childrenTraverseProcessor = null;
     }
-
 }

@@ -23,9 +23,7 @@ public interface RuleById extends Rule {
 
     /**
      * The identifier for which the Rule applies. All Elements with this Id will be affected by the Rule.
-     *
      * @return
      */
     String getId();
-
 }

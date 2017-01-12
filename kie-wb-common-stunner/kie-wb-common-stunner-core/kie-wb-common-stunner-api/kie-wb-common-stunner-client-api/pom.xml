@@ -36,7 +36,7 @@
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
     </dependency>
-    
+
     <!-- GWT. -->
 
     <dependency>
@@ -44,7 +44,7 @@
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Uberfire & Errai. -->
     <dependency>
       <groupId>org.jboss.errai</groupId>

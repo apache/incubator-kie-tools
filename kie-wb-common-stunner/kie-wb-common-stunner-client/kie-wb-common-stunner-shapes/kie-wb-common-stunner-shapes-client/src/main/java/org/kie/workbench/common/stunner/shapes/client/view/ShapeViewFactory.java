@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.shapes.client.view;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.shapes.client.factory.PictureProvidersManager;
 import org.kie.workbench.common.stunner.shapes.client.view.icon.dynamics.DynamicIconShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.icon.statics.StaticIconShapeView;
 import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -44,49 +44,49 @@ public class ShapeViewFactory {
     public RectangleView rectangle( final double width,
                                     final double height,
                                     final double corner_radius ) {
-        return new RectangleView( width, height, corner_radius );
-
+        return new RectangleView( width,
+                                  height,
+                                  corner_radius );
     }
 
     public DynamicIconShapeView dynamicIcon( final Icons icon,
                                              final double width,
                                              final double height ) {
-        return new DynamicIconShapeView( icon, width, height );
-
+        return new DynamicIconShapeView( icon,
+                                         width,
+                                         height );
     }
 
     public StaticIconShapeView staticIcon( final org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons icon ) {
         return new StaticIconShapeView( icon );
-
     }
 
     public PictureShapeView picture( final Object source,
                                      final double width,
                                      final double height ) {
-        checkNotNull( "source", source );
+        checkNotNull( "source",
+                      source );
         final SafeUri uri = pictureProvidersManager.getUri( source );
-        return new PictureShapeView( uri.asString(), width, height );
+        return new PictureShapeView( uri.asString(),
+                                     width,
+                                     height );
     }
 
     public CircleView circle( final double radius ) {
         return new CircleView( radius );
-
     }
 
     public RingView ring( final double outer ) {
         return new RingView( outer );
-
     }
 
     public PolygonView polygon( final double radius,
                                 final String fillColor ) {
-        return new PolygonView( radius, fillColor );
-
+        return new PolygonView( radius,
+                                fillColor );
     }
 
     public ConnectorView connector( final double... points ) {
         return new ConnectorView( points );
-
     }
-
 }

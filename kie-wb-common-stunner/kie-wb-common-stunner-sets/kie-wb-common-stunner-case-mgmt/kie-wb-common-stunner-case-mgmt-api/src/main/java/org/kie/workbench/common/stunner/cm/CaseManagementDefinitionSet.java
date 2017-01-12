@@ -37,9 +37,9 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
         },
         builder = CaseManagementDefinitionSet.CaseManagementDefinitionSetBuilder.class
 )
-@CanContain(roles = { "diagram" })
-@Occurrences(role = "Startevents_all", min = 0)
-@Occurrences(role = "Endevents_all", min = 0)
+@CanContain( roles = { "diagram" } )
+@Occurrences( role = "Startevents_all", min = 0 )
+@Occurrences( role = "Endevents_all", min = 0 )
 @ShapeSet
 public class CaseManagementDefinitionSet {
 
@@ -53,7 +53,6 @@ public class CaseManagementDefinitionSet {
         public CaseManagementDefinitionSet build() {
             return new CaseManagementDefinitionSet();
         }
-
     }
 
     public CaseManagementDefinitionSet() {
@@ -62,5 +61,4 @@ public class CaseManagementDefinitionSet {
     public String getDescription() {
         return description;
     }
-
 }

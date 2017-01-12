@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.stunner.project.backend.service;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -37,13 +44,6 @@ import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 @Service
 @ApplicationScoped
 public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
@@ -60,7 +60,16 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     private final ProjectDiagramServiceController controller;
 
     protected ProjectDiagramServiceImpl() {
-        this( null, null, null, null, null, null, null, null, null, null );
+        this( null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null );
     }
 
     @Inject
@@ -82,8 +91,10 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
         this.commentedOptionFactory = commentedOptionFactory;
         this.controller =
                 new ProjectDiagramServiceController( definitionManager,
-                        factoryManager, definitionSetServiceInstances,
-                        ioService, registryFactory );
+                                                     factoryManager,
+                                                     definitionSetServiceInstances,
+                                                     ioService,
+                                                     registryFactory );
     }
 
     @PostConstruct
@@ -102,13 +113,25 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
         return controller.accepts( path );
     }
 
-    public Path create( Path path, String name, String defSetId, String projName, String projPkg ) {
-        return controller.create( path, name, defSetId, projName, projPkg );
+    public Path create( Path path,
+                        String name,
+                        String defSetId,
+                        String projName,
+                        String projPkg ) {
+        return controller.create( path,
+                                  name,
+                                  defSetId,
+                                  projName,
+                                  projPkg );
     }
 
     @Override
-    public Path create( Path path, String name, String defSetId ) {
-        return controller.create( path, name, defSetId );
+    public Path create( Path path,
+                        String name,
+                        String defSetId ) {
+        return controller.create( path,
+                                  name,
+                                  defSetId );
     }
 
     @Override
@@ -116,7 +139,8 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                                Overview overview ) {
         ProjectDiagram diagram = getDiagramByPath( path );
         if ( null != diagram ) {
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path, sessionInfo ) );
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                               sessionInfo ) );
             return diagram;
         }
         LOG.error( "Failed to construct diagram content for path [" + path + "]." );
@@ -124,13 +148,17 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     }
 
     @Override
-    public Path save( Path path, ProjectDiagram content, Metadata metadata, String comment ) {
+    public Path save( Path path,
+                      ProjectDiagram content,
+                      Metadata metadata,
+                      String comment ) {
         LOG.warn( "Saving diagram with UUID [" + content.getName() + "] into path [" + path + "]." );
         return controller
                 .save(
                         path,
                         content,
-                        metadataService.setUpAttributes( path, metadata ),
+                        metadataService.setUpAttributes( path,
+                                                         metadata ),
                         commentedOptionFactory.makeCommentedOption( comment ) );
     }
 
@@ -145,7 +173,9 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     }
 
     @Override
-    public void delete( Path path, String comment ) {
-        controller.delete( path, comment );
+    public void delete( Path path,
+                        String comment ) {
+        controller.delete( path,
+                           comment );
     }
 }

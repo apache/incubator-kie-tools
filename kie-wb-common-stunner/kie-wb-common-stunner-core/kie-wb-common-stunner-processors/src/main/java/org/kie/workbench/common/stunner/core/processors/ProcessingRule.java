@@ -19,14 +19,20 @@ package org.kie.workbench.common.stunner.core.processors;
 public class ProcessingRule {
 
     public enum TYPE {
-        CONTAINMENT, CONNECTION, CARDINALITY, EDGE_CARDINALITY, DOCKING;
+        CONTAINMENT,
+        CONNECTION,
+        CARDINALITY,
+        EDGE_CARDINALITY,
+        DOCKING
     }
 
     private final String name;
     private final TYPE type;
     private final StringBuffer content;
 
-    public ProcessingRule( String name, TYPE type, StringBuffer content ) {
+    public ProcessingRule( final String name,
+                           final TYPE type,
+                           final StringBuffer content ) {
         this.name = name;
         this.type = type;
         this.content = content;
@@ -43,5 +49,4 @@ public class ProcessingRule {
     public String getName() {
         return name;
     }
-
 }

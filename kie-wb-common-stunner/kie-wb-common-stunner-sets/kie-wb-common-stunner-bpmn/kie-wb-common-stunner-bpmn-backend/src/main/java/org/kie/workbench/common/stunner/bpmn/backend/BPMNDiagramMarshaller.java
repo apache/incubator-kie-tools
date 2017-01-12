@@ -73,7 +73,7 @@ public class BPMNDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagram> {
     @Override
     public String getTitle( final Graph graph ) {
         final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode( graph );
-        final BPMNDiagram diagramBean = null != diagramNode ? (BPMNDiagram) ( (Definition) diagramNode.getContent() ).getDefinition() : null;
+        final BPMNDiagram diagramBean = null != diagramNode ? ( BPMNDiagram ) ( ( Definition ) diagramNode.getContent() ).getDefinition() : null;
         return getTitle( diagramBean );
     }
 
@@ -83,9 +83,8 @@ public class BPMNDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagram> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode( final Graph graph ) {
         return BPMNUtils.getFirstDiagramNode( graph );
     }
-
 }

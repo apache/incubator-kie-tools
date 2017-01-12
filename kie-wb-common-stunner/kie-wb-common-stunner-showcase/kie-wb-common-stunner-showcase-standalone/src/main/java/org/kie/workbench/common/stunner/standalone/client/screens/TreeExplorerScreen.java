@@ -15,6 +15,12 @@
 
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
@@ -24,19 +30,17 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.WorkbenchContextId;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -97,17 +101,20 @@ public class TreeExplorerScreen {
     }
 
     void onCanvasSessionOpened( @Observes SessionOpenedEvent sessionOpenedEvent ) {
-        checkNotNull( "sessionOpenedEvent", sessionOpenedEvent );
+        checkNotNull( "sessionOpenedEvent",
+                      sessionOpenedEvent );
         doOpenSession( sessionOpenedEvent.getSession() );
     }
 
     void onCanvasSessionDisposed( @Observes SessionDisposedEvent sessionDisposedEvent ) {
-        checkNotNull( "sessionDisposedEvent", sessionDisposedEvent );
+        checkNotNull( "sessionDisposedEvent",
+                      sessionDisposedEvent );
         doCloseSession();
     }
 
     void onSessionDiagramOpenedEvent( @Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent ) {
-        checkNotNull( "sessionDiagramOpenedEvent", sessionDiagramOpenedEvent );
+        checkNotNull( "sessionDiagramOpenedEvent",
+                      sessionDiagramOpenedEvent );
         if ( null != getCanvas() && getCanvas().equals( sessionDiagramOpenedEvent.getSession().getCanvas() ) ) {
             // Force to reload current session, for example, when a new diagram is just created.
             doOpenSession( session );
@@ -152,7 +159,7 @@ public class TreeExplorerScreen {
     private void doUpdateTitle( final String title ) {
         // Change screen title.
         TreeExplorerScreen.this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest, this.title ) );
+        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                       this.title ) );
     }
-
 }

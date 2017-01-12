@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.drag;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
@@ -23,9 +26,6 @@ import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCal
 import org.kie.workbench.common.stunner.core.client.components.drag.GlyphDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.PrimitiveDragProxy;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class GlyphDragProxyImpl implements GlyphDragProxy<AbstractCanvas> {
@@ -51,7 +51,10 @@ public class GlyphDragProxyImpl implements GlyphDragProxy<AbstractCanvas> {
                                                                      final int x,
                                                                      final int y,
                                                                      final DragProxyCallback callback ) {
-        primitiveDragProxyFactory.show( item.getGroup(), x, y, callback );
+        primitiveDragProxyFactory.show( item.getGroup(),
+                                        x,
+                                        y,
+                                        callback );
         return this;
     }
 
@@ -68,7 +71,5 @@ public class GlyphDragProxyImpl implements GlyphDragProxy<AbstractCanvas> {
             this.primitiveDragProxyFactory.destroy();
         }
         this.primitiveDragProxyFactory = null;
-
     }
-
 }

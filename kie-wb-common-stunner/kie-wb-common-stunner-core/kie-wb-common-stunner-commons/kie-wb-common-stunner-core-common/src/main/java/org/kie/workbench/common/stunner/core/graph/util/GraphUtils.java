@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -28,13 +35,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @ApplicationScoped
 public class GraphUtils {
@@ -55,16 +55,23 @@ public class GraphUtils {
         return ( Graph<?, Node> ) context.getGraphIndex().getGraph();
     }
 
-    public static Node<?, Edge> getNode( final GraphCommandExecutionContext context, final String uuid ) {
+    @SuppressWarnings( "unchecked" )
+    public static Node<?, Edge> getNode( final GraphCommandExecutionContext context,
+                                         final String uuid ) {
         return context.getGraphIndex().getNode( uuid );
     }
 
-    public static Edge<? extends View, Node> getViewEdge( final GraphCommandExecutionContext context, final String uuid ) {
+    @SuppressWarnings( "unchecked" )
+    public static Edge<? extends View, Node> getViewEdge( final GraphCommandExecutionContext context,
+                                                          final String uuid ) {
         return context.getGraphIndex().getEdge( uuid );
     }
 
-    public Object getProperty( final Element<? extends Definition> element, final String id ) {
-        return getProperty( definitionManager, element, id );
+    public Object getProperty( final Element<? extends Definition> element,
+                               final String id ) {
+        return getProperty( definitionManager,
+                            element,
+                            id );
     }
 
     public static Object getProperty( final DefinitionManager definitionManager,
@@ -73,13 +80,18 @@ public class GraphUtils {
         if ( null != element ) {
             final Object def = element.getContent().getDefinition();
             final Set<?> properties = definitionManager.adapters().forDefinition().getProperties( def );
-            return getProperty( definitionManager, properties, id );
+            return getProperty( definitionManager,
+                                properties,
+                                id );
         }
         return null;
     }
 
-    public Object getProperty( final Set<?> properties, final String id ) {
-        return getProperty( definitionManager, properties, id );
+    public Object getProperty( final Set<?> properties,
+                               final String id ) {
+        return getProperty( definitionManager,
+                            properties,
+                            id );
     }
 
     public static Object getProperty( final DefinitionManager definitionManager,
@@ -97,7 +109,8 @@ public class GraphUtils {
     }
 
     public static Map<String, Integer> getLabelsCount( final Graph<?, ? extends Node> target ) {
-        return getLabelsCount( target, null );
+        return getLabelsCount( target,
+                               null );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -112,7 +125,8 @@ public class GraphUtils {
                         .filter( role -> null == filter || filter.contains( role ) )
                         .forEach( role -> {
                             final Integer i = labels.get( role );
-                            labels.put( role, null != i ? i + 1 : 1 );
+                            labels.put( role,
+                                        null != i ? i + 1 : 1 );
                         } );
             }
         } );
@@ -133,7 +147,8 @@ public class GraphUtils {
     public <T> int countDefinitions( final Graph<?, ? extends Node> target,
                                      final T definition ) {
         final String id = getDefinitionId( definition );
-        return countDefinitionsById( target, id );
+        return countDefinitionsById( target,
+                                     id );
     }
 
     public int countEdges( final String edgeId,
@@ -187,7 +202,8 @@ public class GraphUtils {
         final Bounds.Bound ul = element.getBounds().getUpperLeft();
         final double x = ul.getX();
         final double y = ul.getY();
-        return new Point2D( x, y );
+        return new Point2D( x,
+                            y );
     }
 
     public static double[] getSize( final View element ) {
@@ -200,11 +216,10 @@ public class GraphUtils {
 
     /**
      * Checks that the given Bounds do not exceed graph limits.
-     *
      * @return if bounds exceed graph limits it returns <code>false</code>. Otherwise returns <code>true</code>.
      */
     @SuppressWarnings( "unchecked" )
-    public static boolean checkBounds( Graph<DefinitionSet, ? extends Node> graph,
+    public static boolean checkBounds( final Graph<DefinitionSet, ? extends Node> graph,
                                        final Bounds bounds ) {
         final Bounds graphBounds = graph.getContent().getBounds();
         if ( ( bounds.getLowerRight().getX() > graphBounds.getLowerRight().getX() )
@@ -216,9 +231,8 @@ public class GraphUtils {
 
     /**
      * Finds the first node in the graph structure for the given type.
-     *
      * @param graph The graph structure.
-     * @param type  The Definition type..
+     * @param type The Definition type..
      */
     @SuppressWarnings( "unchecked" )
     public static <C> Node<Definition<C>, ?> getFirstNode( final Graph<?, Node> graph,
@@ -228,7 +242,8 @@ public class GraphUtils {
                 final Object content = node.getContent();
                 try {
                     final Definition definitionContent = ( Definition ) content;
-                    if ( instanceOf( definitionContent.getDefinition(), type ) ) {
+                    if ( instanceOf( definitionContent.getDefinition(),
+                                     type ) ) {
                         return node;
                     }
                 } catch ( final ClassCastException e ) {
@@ -239,7 +254,8 @@ public class GraphUtils {
         return null;
     }
 
-    private static boolean instanceOf( final Object item, final Class<?> clazz ) {
+    private static boolean instanceOf( final Object item,
+                                       final Class<?> clazz ) {
         return null != item && item.getClass().equals( clazz );
     }
 }

@@ -25,5 +25,4 @@ public final class CanvasClearEvent extends AbstractCanvasEvent {
     public CanvasClearEvent( final Canvas canvas ) {
         super( canvas );
     }
-
 }

@@ -16,7 +16,22 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser;
 
-import org.codehaus.jackson.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import org.codehaus.jackson.Base64Variant;
+import org.codehaus.jackson.JsonLocation;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonStreamContext;
+import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.ObjectCodec;
 import org.codehaus.jackson.impl.JsonParserMinimalBase;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -30,11 +45,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.*;
 // See org.codehaus.jackson.impl.ReaderBasedParser
 
 public class BPMN2JsonParser extends JsonParserMinimalBase {
@@ -42,7 +52,8 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
     private Diagram<Graph, Metadata> diagram;
     private NodeParser rootParser;
 
-    public BPMN2JsonParser( Diagram<Graph, Metadata> diagram, ContextualParser.Context parsingContext ) {
+    public BPMN2JsonParser( Diagram<Graph, Metadata> diagram,
+                            ContextualParser.Context parsingContext ) {
         this.diagram = diagram;
         initialize( parsingContext );
     }
@@ -58,81 +69,80 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
         Graph graph = diagram.getGraph();
         final Map<String, EdgeParser> edgeParsers = new HashMap<>();
         new ChildrenTraverseProcessorImpl( new TreeWalkTraverseProcessorImpl() )
-                .traverse( graph, new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
+                .traverse( graph,
+                           new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
 
-                    final Stack<NodeParser> parsers = new Stack<NodeParser>();
-                    NodeParser currentParser = null;
+                               final Stack<NodeParser> parsers = new Stack<NodeParser>();
+                               NodeParser currentParser = null;
 
-                    @Override
-                    public void startGraphTraversal( Graph<DefinitionSet, Node<View, Edge>> graph ) {
-                        super.startGraphTraversal( graph );
-                    }
+                               @Override
+                               public void startGraphTraversal( Graph<DefinitionSet, Node<View, Edge>> graph ) {
+                                   super.startGraphTraversal( graph );
+                               }
 
-                    @Override
-                    public boolean startNodeTraversal( final Iterator<Node<View, Edge>> parents,
-                                                       final Node<View, Edge> node ) {
-                        super.startNodeTraversal( parents, node );
-                        onNodeTraversal( node );
-                        return true;
-                    }
+                               @Override
+                               public boolean startNodeTraversal( final Iterator<Node<View, Edge>> parents,
+                                                                  final Node<View, Edge> node ) {
+                                   super.startNodeTraversal( parents,
+                                                             node );
+                                   onNodeTraversal( node );
+                                   return true;
+                               }
 
-                    @Override
-                    public void startNodeTraversal( final Node<View, Edge> node ) {
-                        super.startNodeTraversal( node );
-                        onNodeTraversal( node );
-                    }
+                               @Override
+                               public void startNodeTraversal( final Node<View, Edge> node ) {
+                                   super.startNodeTraversal( node );
+                                   onNodeTraversal( node );
+                               }
 
-                    private void onNodeTraversal( final Node node ) {
-                        NodeParser p = new NodeParser( "", node );
-                        if ( null != currentParser ) {
-                            parsers.peek().addChild( p );
-                        } else {
-                            BPMN2JsonParser.this.rootParser = p;
+                               private void onNodeTraversal( final Node node ) {
+                                   NodeParser p = new NodeParser( "",
+                                                                  node );
+                                   if ( null != currentParser ) {
+                                       parsers.peek().addChild( p );
+                                   } else {
+                                       BPMN2JsonParser.this.rootParser = p;
+                                   }
+                                   currentParser = p;
+                                   List<Edge> outEdges = node.getOutEdges();
+                                   if ( null != outEdges && !outEdges.isEmpty() ) {
+                                       for ( Edge edge : outEdges ) {
+                                           // Only add the edges with view connector types into the resulting structure to generate the bpmn definition.
+                                           if ( edge.getContent() instanceof ViewConnector && !edgeParsers.containsKey( edge.getUUID() ) ) {
+                                               edgeParsers.put( edge.getUUID(),
+                                                                new EdgeParser( "",
+                                                                                ( Edge ) edge ) );
+                                           }
+                                       }
+                                   }
+                               }
 
-                        }
-                        currentParser = p;
-                        List<Edge> outEdges = node.getOutEdges();
-                        if ( null != outEdges && !outEdges.isEmpty() ) {
-                            for ( Edge edge : outEdges ) {
-                                // Only add the edges with view connector types into the resulting structure to generate the bpmn definition.
-                                if ( edge.getContent() instanceof ViewConnector && !edgeParsers.containsKey( edge.getUUID() ) ) {
-                                    edgeParsers.put( edge.getUUID(), new EdgeParser( "", ( Edge ) edge ) );
-                                }
-                            }
-                        }
+                               @Override
+                               public void startEdgeTraversal( Edge<Child, Node> edge ) {
+                                   super.startEdgeTraversal( edge );
+                                   parsers.push( currentParser );
+                               }
 
-                    }
+                               @Override
+                               public void endEdgeTraversal( Edge<Child, Node> edge ) {
+                                   super.endEdgeTraversal( edge );
+                                   currentParser = parsers.pop();
+                               }
 
-                    @Override
-                    public void startEdgeTraversal( Edge<Child, Node> edge ) {
-                        super.startEdgeTraversal( edge );
-                        parsers.push( currentParser );
-
-                    }
-
-                    @Override
-                    public void endEdgeTraversal( Edge<Child, Node> edge ) {
-                        super.endEdgeTraversal( edge );
-                        currentParser = parsers.pop();
-                    }
-
-                    @Override
-                    public void endGraphTraversal() {
-                        super.endGraphTraversal();
-                    }
-
-                } );
+                               @Override
+                               public void endGraphTraversal() {
+                                   super.endGraphTraversal();
+                               }
+                           } );
         // In oryx format, all edges are added into the main BPMNDiagram node.
         if ( null != rootParser && !edgeParsers.isEmpty() ) {
             for ( EdgeParser edgeParser : edgeParsers.values() ) {
                 rootParser.addChild( edgeParser );
             }
-
         }
         // Initialize all the element parsers added in the tree.
         BPMN2JsonParser.this.rootParser.initialize( parsingContext );
         System.out.println( "End of children and view traverse" );
-
     }
 
 
@@ -263,5 +273,4 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
     public JsonParser skipChildren() throws IOException, JsonParseException {
         return null;
     }
-
 }

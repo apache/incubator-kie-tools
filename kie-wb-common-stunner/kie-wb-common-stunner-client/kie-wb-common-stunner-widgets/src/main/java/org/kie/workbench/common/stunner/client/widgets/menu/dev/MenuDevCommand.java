@@ -30,5 +30,4 @@ public interface MenuDevCommand {
     IconType getIcon();
 
     void execute();
-
 }

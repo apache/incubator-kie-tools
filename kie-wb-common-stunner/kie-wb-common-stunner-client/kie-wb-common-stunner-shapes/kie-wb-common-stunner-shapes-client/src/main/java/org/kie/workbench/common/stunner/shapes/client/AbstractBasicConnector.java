@@ -61,5 +61,4 @@ public abstract class AbstractBasicConnector<W, V extends BasicConnectorView, P 
     protected W getDefinition( final Edge<ViewConnector<W>, Node> element ) {
         return element.getContent().getDefinition();
     }
-
 }

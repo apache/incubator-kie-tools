@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.docking;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -32,9 +35,6 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class DockingAcceptorControlImpl extends AbstractContainmentBasedControl<AbstractCanvasHandler>
@@ -66,36 +66,48 @@ public class DockingAcceptorControlImpl extends AbstractContainmentBasedControl<
     }
 
     @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand( final Node parent, final Node child ) {
-        return canvasCommandFactory.dockNode( parent, child );
+    protected Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand( final Node parent,
+                                                                                 final Node child ) {
+        return canvasCommandFactory.dockNode( parent,
+                                              child );
     }
 
     @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand( final Node parent, final Node child ) {
-        return canvasCommandFactory.unDockNode( parent, child );
+    protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand( final Node parent,
+                                                                                    final Node child ) {
+        return canvasCommandFactory.unDockNode( parent,
+                                                child );
     }
 
     private final IDockingAcceptor DOCKING_ACCEPTOR = new IDockingAcceptor() {
         @Override
         public boolean dockingAllowed( final WiresContainer wiresContainer,
                                        final WiresShape wiresShape ) {
-            if ( !isAccept( wiresContainer, wiresShape ) ) {
+            if ( !isAccept( wiresContainer,
+                            wiresShape ) ) {
                 return false;
             }
-            final Node childNode = WiresUtils.getNode( getCanvasHandler(), wiresShape );
-            final Node parentNode = WiresUtils.getNode( getCanvasHandler(), wiresContainer );
-            return allow( parentNode, childNode );
+            final Node childNode = WiresUtils.getNode( getCanvasHandler(),
+                                                       wiresShape );
+            final Node parentNode = WiresUtils.getNode( getCanvasHandler(),
+                                                        wiresContainer );
+            return allow( parentNode,
+                          childNode );
         }
 
         @Override
         public boolean acceptDocking( final WiresContainer wiresContainer,
                                       final WiresShape wiresShape ) {
-            if ( !isAccept( wiresContainer, wiresShape ) ) {
+            if ( !isAccept( wiresContainer,
+                            wiresShape ) ) {
                 return false;
             }
-            final Node childNode = WiresUtils.getNode( getCanvasHandler(), wiresShape );
-            final Node parentNode = WiresUtils.getNode( getCanvasHandler(), wiresContainer );
-            return accept( parentNode, childNode );
+            final Node childNode = WiresUtils.getNode( getCanvasHandler(),
+                                                       wiresShape );
+            final Node parentNode = WiresUtils.getNode( getCanvasHandler(),
+                                                        wiresContainer );
+            return accept( parentNode,
+                           childNode );
         }
 
         @Override

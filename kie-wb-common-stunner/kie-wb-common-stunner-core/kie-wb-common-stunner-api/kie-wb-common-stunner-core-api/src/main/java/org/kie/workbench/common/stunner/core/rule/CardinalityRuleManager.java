@@ -18,10 +18,10 @@ package org.kie.workbench.common.stunner.core.rule;
 
 /**
  * Base manager type for cardinality rules.
- *
+ * <p/>
  * It checks cardinality rules and evaluates if the given candidate can be added or removed
  * from the structure. Cardinality rules are role based.
- *
+ * <p/>
  * Each domain specific implementation can provide its own argument types to evaluate internally the rules.
  * See <a>org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager</a>
  * See <a>org.kie.workbench.common.stunner.core.rule.graph.GraphCardinalityRuleManager</a>

@@ -38,24 +38,38 @@ public class Assignment {
     public Assignment() {
     }
 
-    public Assignment( AssignmentData assignmentData, String variableName, Variable.VariableType variableType, String dataType, String customDataType,
-                       String processVarName, String constant ) {
+    public Assignment( AssignmentData assignmentData,
+                       String variableName,
+                       Variable.VariableType variableType,
+                       String dataType,
+                       String customDataType,
+                       String processVarName,
+                       String constant ) {
         this.assignmentData = assignmentData;
-        variable = assignmentData.findVariable( variableName, variableType );
+        variable = assignmentData.findVariable( variableName,
+                                                variableType );
         if ( variable == null ) {
-            variable = new Variable( variableName, variableType, dataType, customDataType );
+            variable = new Variable( variableName,
+                                     variableType,
+                                     dataType,
+                                     customDataType );
             assignmentData.addVariable( variable );
         }
         this.processVar = assignmentData.findProcessVariable( processVarName );
         this.constant = constant;
     }
 
-    public Assignment( AssignmentData assignmentData, String variableName, Variable.VariableType variableType, String processVarName,
+    public Assignment( AssignmentData assignmentData,
+                       String variableName,
+                       Variable.VariableType variableType,
+                       String processVarName,
                        String constant ) {
         this.assignmentData = assignmentData;
-        variable = assignmentData.findVariable( variableName, variableType );
+        variable = assignmentData.findVariable( variableName,
+                                                variableType );
         if ( variable == null ) {
-            variable = new Variable( variableName, variableType );
+            variable = new Variable( variableName,
+                                     variableType );
             assignmentData.addVariable( variable );
         }
         processVar = assignmentData.findProcessVariable( processVarName );
@@ -116,14 +130,20 @@ public class Assignment {
 
     @Override
     public boolean equals( Object o ) {
-        if ( this == o ) return true;
-        if ( !( o instanceof Assignment ) ) return false;
-        Assignment that = ( Assignment ) o;
-        if ( getVariable() != null ? !getVariable().equals( that.getVariable() ) : that.getVariable() != null )
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof Assignment ) ) {
             return false;
-        if ( processVar != null ? !processVar.equals( that.processVar ) : that.processVar != null ) return false;
+        }
+        Assignment that = ( Assignment ) o;
+        if ( getVariable() != null ? !getVariable().equals( that.getVariable() ) : that.getVariable() != null ) {
+            return false;
+        }
+        if ( processVar != null ? !processVar.equals( that.processVar ) : that.processVar != null ) {
+            return false;
+        }
         return getConstant() != null ? getConstant().equals( that.getConstant() ) : that.getConstant() == null;
-
     }
 
     @Override
@@ -137,7 +157,6 @@ public class Assignment {
     /**
      * Serializes assignment
      * e.g. e.g. [din]str1->inStr, [din]inStrConst=TheString, [dout]outStr1->str1
-     *
      * @return
      */
     @Override
@@ -165,11 +184,11 @@ public class Assignment {
     /**
      * Deserializes an assignment string
      * e.g. [din]str1->inStr, [din]inStrConst=TheString, [dout]outStr1->str1
-     *
      * @param sAssignment
      * @return Assignment
      */
-    public static Assignment deserialize( AssignmentData assignmentData, String sAssignment ) {
+    public static Assignment deserialize( AssignmentData assignmentData,
+                                          String sAssignment ) {
         if ( sAssignment == null || sAssignment.isEmpty() ) {
             return null;
         }
@@ -188,19 +207,25 @@ public class Assignment {
         if ( sAssignment.contains( ASSIGNMENT_OPERATOR_TOVARIABLE ) ) {
             int i = sAssignment.indexOf( ASSIGNMENT_OPERATOR_TOVARIABLE );
             if ( assignmentType == Variable.VariableType.INPUT ) {
-                processVariableName = sAssignment.substring( 0, i );
+                processVariableName = sAssignment.substring( 0,
+                                                             i );
                 variableName = sAssignment.substring( i + ASSIGNMENT_OPERATOR_TOVARIABLE.length() );
             } else {
-                variableName = sAssignment.substring( 0, i );
+                variableName = sAssignment.substring( 0,
+                                                      i );
                 processVariableName = sAssignment.substring( i + ASSIGNMENT_OPERATOR_TOVARIABLE.length() );
             }
         } else if ( sAssignment.contains( ASSIGNMENT_OPERATOR_TOCONSTANT ) ) {
             int i = sAssignment.indexOf( ASSIGNMENT_OPERATOR_TOCONSTANT );
-            variableName = sAssignment.substring( 0, i );
+            variableName = sAssignment.substring( 0,
+                                                  i );
             constant = StringUtils.urlDecode( sAssignment.substring( i + ASSIGNMENT_OPERATOR_TOCONSTANT.length() ) );
         }
         // Create the new assignment
-        return new Assignment( assignmentData, variableName, assignmentType, processVariableName, constant );
+        return new Assignment( assignmentData,
+                               variableName,
+                               assignmentType,
+                               processVariableName,
+                               constant );
     }
-
 }

@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 @Templated

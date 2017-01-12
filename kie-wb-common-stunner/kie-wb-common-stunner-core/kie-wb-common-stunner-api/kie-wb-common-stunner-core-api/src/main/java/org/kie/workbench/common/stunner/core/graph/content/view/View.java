@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
  * Indicates that the content of a node/edge is given by a Definition of the graphical representation.
  * The nodes/edges with View content are represented in the canvas with shapes.
  */
-public interface View<T> extends Definition<T>, HasBounds {
+public interface View<T> extends Definition<T>,
+                                 HasBounds {
 
 }

@@ -25,26 +25,46 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.glyph.AbstractL
 
 public final class ConnectorGlyph extends AbstractLienzoShapeGlyph {
 
-    public ConnectorGlyph( final String color, final double width, final double height ) {
-        super( new Group(), width, height );
-        build( width, height, color );
+    public ConnectorGlyph( final String color,
+                           final double width,
+                           final double height ) {
+        super( new Group(),
+               width,
+               height );
+        build( width,
+               height,
+               color );
     }
 
-    private void build( final double width, final double height, final String color ) {
+    private void build( final double width,
+                        final double height,
+                        final String color ) {
         group.removeAll();
-        final Arrow arrow = new Arrow( new Point2D( 0, height ), new Point2D( width, 0 ), 5, 10, 45, 45, ArrowType.AT_END )
+        final Arrow arrow = new Arrow( new Point2D( 0,
+                                                    height ),
+                                       new Point2D( width,
+                                                    0 ),
+                                       5,
+                                       10,
+                                       45,
+                                       45,
+                                       ArrowType.AT_END )
                 .setStrokeWidth( 5 ).setStrokeColor( color ).setDraggable( true );
         group.add( arrow );
-        scaleTo( group, width - arrow.getStrokeWidth(), height - arrow.getStrokeWidth() );
+        scaleTo( group,
+                 width - arrow.getStrokeWidth(),
+                 height - arrow.getStrokeWidth() );
     }
 
-    private void scaleTo( Group group, final double width, final double height ) {
+    private void scaleTo( final Group group,
+                          final double width,
+                          final double height ) {
         final BoundingBox bb = group.getBoundingBox();
         final double w = bb.getWidth();
         final double h = bb.getHeight();
         final double sw = w > 0 ? ( width / w ) : 1;
         final double sh = h > 0 ? ( height / h ) : 1;
-        group.setScale( sw, sh );
+        group.setScale( sw,
+                        sh );
     }
-
 }

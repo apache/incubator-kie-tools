@@ -16,33 +16,43 @@
 
 package org.kie.workbench.common.stunner.core.processors.rule;
 
-import org.kie.workbench.common.stunner.core.processors.MainProcessor;
-import org.kie.workbench.common.stunner.core.processors.ProcessingContext;
-import org.kie.workbench.common.stunner.core.processors.ProcessingRule;
-import org.uberfire.annotations.processors.AbstractGenerator;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.*;
-import javax.tools.Diagnostic;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
+
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import org.kie.workbench.common.stunner.core.processors.MainProcessor;
+import org.kie.workbench.common.stunner.core.processors.ProcessingContext;
+import org.kie.workbench.common.stunner.core.processors.ProcessingRule;
+import org.uberfire.annotations.processors.AbstractGenerator;
+import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 public class ContainmentRuleGenerator extends AbstractGenerator {
 
     private final ProcessingContext processingContext = ProcessingContext.getInstance();
 
     @Override
-    public StringBuffer generate( String packageName, PackageElement packageElement, String className, Element element, ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final PackageElement packageElement,
+                                  final String className,
+                                  final Element element,
+                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         final Messager messager = processingEnvironment.getMessager();
-        messager.printMessage( Diagnostic.Kind.NOTE, "Starting code generation for [" + className + "]" );
+        messager.printMessage( Diagnostic.Kind.NOTE,
+                               "Starting code generation for [" + className + "]" );
         //Extract required information
         final TypeElement classElement = ( TypeElement ) element;
         final String annotationName = MainProcessor.ANNOTATION_RULE_CAN_CONTAIN;
@@ -62,18 +72,18 @@ public class ContainmentRuleGenerator extends AbstractGenerator {
         }
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "ruleId",
-                ruleId );
+                  ruleId );
         root.put( "ruleDefinitionId",
-                ruleDefinitionId );
+                  ruleDefinitionId );
         root.put( "roles",
-                roles );
+                  roles );
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter( sw );
         try {
             final Template template = config.getTemplate( "ContainmentRule.ftl" );
             template.process( root,
-                    bw );
+                              bw );
         } catch ( IOException ioe ) {
             throw new GenerationException( ioe );
         } catch ( TemplateException te ) {
@@ -86,10 +96,11 @@ public class ContainmentRuleGenerator extends AbstractGenerator {
                 throw new GenerationException( ioe );
             }
         }
-        messager.printMessage( Diagnostic.Kind.NOTE, "Successfully generated code for [" + className + "]" );
-        processingContext.addRule( ruleId, ProcessingRule.TYPE.CONTAINMENT, sw.getBuffer() );
+        messager.printMessage( Diagnostic.Kind.NOTE,
+                               "Successfully generated code for [" + className + "]" );
+        processingContext.addRule( ruleId,
+                                   ProcessingRule.TYPE.CONTAINMENT,
+                                   sw.getBuffer() );
         return null;
-
     }
-
 }

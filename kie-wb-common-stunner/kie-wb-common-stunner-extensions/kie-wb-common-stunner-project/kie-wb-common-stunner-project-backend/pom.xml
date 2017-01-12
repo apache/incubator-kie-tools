@@ -18,138 +18,138 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>kie-wb-common-stunner-project</artifactId>
-        <groupId>org.kie.workbench.stunner</groupId>
-        <version>7.0.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>kie-wb-common-stunner-project</artifactId>
+    <groupId>org.kie.workbench.stunner</groupId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kie-wb-common-stunner-project-backend</artifactId>
-    <name>Kie Workbench - Common - Stunner - Project integration Backend</name>
-    <description>Kie Workbench - Common - Stunner - Project integration Backend</description>
+  <artifactId>kie-wb-common-stunner-project-backend</artifactId>
+  <name>Kie Workbench - Common - Stunner - Project integration Backend</name>
+  <description>Kie Workbench - Common - Stunner - Project integration Backend</description>
 
-    <dependencies>
+  <dependencies>
 
-        <!-- Stunner deps. -->
+    <!-- Stunner deps. -->
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-core-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-core-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-core-common</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-core-common</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-backend-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-backend-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-backend-common</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-backend-common</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-backend</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-backend</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.stunner</groupId>
-            <artifactId>kie-wb-common-stunner-project-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-project-api</artifactId>
+    </dependency>
 
-        <!-- Other deps. -->
+    <!-- Other deps. -->
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.jboss.errai</groupId>
-            <artifactId>errai-bus</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.jboss.errai</groupId>
-            <artifactId>errai-security-server</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-server</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-backend-server</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-io</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-nio2-model</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.guvnor</groupId>
-            <artifactId>guvnor-project-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.guvnor</groupId>
-            <artifactId>guvnor-services-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-services-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.services</groupId>
-            <artifactId>kie-wb-common-services-backend</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-backend</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.services</groupId>
-            <artifactId>kie-wb-common-services-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-api</artifactId>
+    </dependency>
 
-        <!-- Test scope. -->
+    <!-- Test scope. -->
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-testing-utils</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>

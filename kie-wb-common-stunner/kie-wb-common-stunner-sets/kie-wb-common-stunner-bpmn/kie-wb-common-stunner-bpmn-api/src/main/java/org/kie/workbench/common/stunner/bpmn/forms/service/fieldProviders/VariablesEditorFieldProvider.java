@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDef
 
 @Model
 public class VariablesEditorFieldProvider extends BasicTypeFieldProvider<VariablesEditorFieldDefinition> {
+
     @Override
     public int getPriority() {
         return 100;

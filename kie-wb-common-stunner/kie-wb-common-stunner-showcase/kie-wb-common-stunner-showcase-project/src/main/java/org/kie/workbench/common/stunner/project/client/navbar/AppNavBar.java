@@ -15,13 +15,13 @@
 
 package org.kie.workbench.common.stunner.project.client.navbar;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.Header;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import static java.lang.Integer.MAX_VALUE;
 

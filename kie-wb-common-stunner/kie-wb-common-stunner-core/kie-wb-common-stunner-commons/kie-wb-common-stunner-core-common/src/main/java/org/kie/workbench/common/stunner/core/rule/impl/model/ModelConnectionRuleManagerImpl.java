@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.rule.impl.model;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.rule.ConnectionRule;
 import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
@@ -23,10 +27,6 @@ import org.kie.workbench.common.stunner.core.rule.impl.AbstractConnectionRuleMan
 import org.kie.workbench.common.stunner.core.rule.impl.violations.ConnectionRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.model.ModelConnectionRuleManager;
 import org.uberfire.commons.data.Pair;
-
-import javax.enterprise.context.Dependent;
-import java.util.HashSet;
-import java.util.Set;
 
 @Dependent
 public class ModelConnectionRuleManagerImpl extends AbstractConnectionRuleManager implements ModelConnectionRuleManager {
@@ -50,7 +50,8 @@ public class ModelConnectionRuleManagerImpl extends AbstractConnectionRuleManage
         for ( ConnectionRule rule : rules ) {
             if ( edgeId.equals( rule.getId() ) ) {
                 for ( ConnectionRule.PermittedConnection pc : rule.getPermittedConnections() ) {
-                    couples.add( new Pair<String, String>( pc.getStartRole(), pc.getEndRole() ) );
+                    couples.add( new Pair<String, String>( pc.getStartRole(),
+                                                           pc.getEndRole() ) );
                     if ( outgoingLabels.contains( pc.getStartRole() ) ) {
                         if ( incomingLabels.contains( pc.getEndRole() ) ) {
                             return results;
@@ -59,9 +60,8 @@ public class ModelConnectionRuleManagerImpl extends AbstractConnectionRuleManage
                 }
             }
         }
-        results.addViolation( new ConnectionRuleViolation( edgeId, couples ) );
+        results.addViolation( new ConnectionRuleViolation( edgeId,
+                                                           couples ) );
         return results;
-
     }
-
 }

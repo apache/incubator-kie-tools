@@ -48,5 +48,4 @@ public class ParsingContext implements ContextualParser.Context {
     public OryxManager getOryxManager() {
         return oryxManager;
     }
-
 }

@@ -50,12 +50,12 @@
       <artifactId>kie-wb-common-stunner-backend-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
     </dependency>
-   
+
     <!-- GWT. -->
 
     <dependency>
@@ -140,5 +140,5 @@
     </dependency>
 
   </dependencies>
-  
+
 </project>

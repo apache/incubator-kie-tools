@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.logging.Logger;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -31,8 +33,6 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-
-import java.util.logging.Logger;
 
 /**
  * Base canvas command that adds a node and its children, if any, into the canvas, by aggregating
@@ -53,9 +53,9 @@ public abstract class AbstractCanvasNodeRegistrationCommand extends AbstractCanv
         this.command = null;
     }
 
-    protected abstract String getShapeSetId( AbstractCanvasHandler context );
+    protected abstract String getShapeSetId( final AbstractCanvasHandler context );
 
-    protected abstract boolean registerCandidate( AbstractCanvasHandler context );
+    protected abstract boolean registerCandidate( final AbstractCanvasHandler context );
 
     @Override
     public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
@@ -65,87 +65,93 @@ public abstract class AbstractCanvasNodeRegistrationCommand extends AbstractCanv
         // Walk throw the graph and register the shapes.
         treeWalkTraverseProcessor
                 .useEdgeVisitorPolicy( TreeWalkTraverseProcessor.EdgeVisitorPolicy.VISIT_EDGE_AFTER_TARGET_NODE )
-                .traverse( diagram.getGraph(), node, new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
+                .traverse( diagram.getGraph(),
+                           node,
+                           new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
 
-                    private CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> commandBuilder;
+                               private CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> commandBuilder;
 
-                    @Override
-                    public void startGraphTraversal( final Graph graph ) {
-                        command = null;
-                        commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder<>();
-                    }
+                               @Override
+                               public void startGraphTraversal( final Graph graph ) {
+                                   command = null;
+                                   commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder<>();
+                               }
 
-                    @Override
-                    @SuppressWarnings( "unchecked" )
-                    public boolean startNodeTraversal( final Node node ) {
-                        if ( CanvasLayoutUtils.isCanvasRoot( diagram, node ) ) {
-                            return true;
-                        }
-                        // Register the candidate node.
-                        if ( null != AbstractCanvasNodeRegistrationCommand.this.node
-                                && AbstractCanvasNodeRegistrationCommand.this.node.equals( node ) ) {
-                            return registerCandidate( context );
-                        }
-                        // Register only visible and candidate's child nodes.
-                        if ( node.getContent() instanceof View && isChild( node ) ) {
-                            commandBuilder.addCommand( new AddCanvasNodeCommand( node, shapeSetId ) );
-                            return true;
-                        }
-                        return false;
-                    }
+                               @Override
+                               @SuppressWarnings( "unchecked" )
+                               public boolean startNodeTraversal( final Node node ) {
+                                   if ( CanvasLayoutUtils.isCanvasRoot( diagram,
+                                                                        node ) ) {
+                                       return true;
+                                   }
+                                   // Register the candidate node.
+                                   if ( null != AbstractCanvasNodeRegistrationCommand.this.node
+                                           && AbstractCanvasNodeRegistrationCommand.this.node.equals( node ) ) {
+                                       return registerCandidate( context );
+                                   }
+                                   // Register only visible and candidate's child nodes.
+                                   if ( node.getContent() instanceof View && isChild( node ) ) {
+                                       commandBuilder.addCommand( new AddCanvasNodeCommand( node,
+                                                                                            shapeSetId ) );
+                                       return true;
+                                   }
+                                   return false;
+                               }
 
-                    @Override
-                    @SuppressWarnings( "unchecked" )
-                    public boolean startEdgeTraversal( final Edge edge ) {
-                        final Object content = edge.getContent();
-                        if ( content instanceof View ) {
-                            commandBuilder.addCommand( new AddCanvasConnectorCommand( edge, shapeSetId ) );
-                            return true;
-                        } else if ( content instanceof Child ) {
-                            final Node child = edge.getTargetNode();
-                            final Node parent = edge.getSourceNode();
-                            final Object childContent = child.getContent();
-                            if ( childContent instanceof View ) {
-                                commandBuilder.addCommand( new SetCanvasChildNodeCommand( parent, child ) );
-                            }
-                            return true;
-                        } else if ( content instanceof Dock ) {
-                            final Node docked = edge.getTargetNode();
-                            final Node parent = edge.getSourceNode();
-                            final Object dockedContent = docked.getContent();
-                            if ( dockedContent instanceof View ) {
-                                commandBuilder.addCommand( new CanvasDockNodeCommand( parent, docked ) );
-                            }
-                            return true;
-                        }
-                        return false;
-                    }
+                               @Override
+                               @SuppressWarnings( "unchecked" )
+                               public boolean startEdgeTraversal( final Edge edge ) {
+                                   final Object content = edge.getContent();
+                                   if ( content instanceof View ) {
+                                       commandBuilder.addCommand( new AddCanvasConnectorCommand( edge,
+                                                                                                 shapeSetId ) );
+                                       return true;
+                                   } else if ( content instanceof Child ) {
+                                       final Node child = edge.getTargetNode();
+                                       final Node parent = edge.getSourceNode();
+                                       final Object childContent = child.getContent();
+                                       if ( childContent instanceof View ) {
+                                           commandBuilder.addCommand( new SetCanvasChildNodeCommand( parent,
+                                                                                                     child ) );
+                                       }
+                                       return true;
+                                   } else if ( content instanceof Dock ) {
+                                       final Node docked = edge.getTargetNode();
+                                       final Node parent = edge.getSourceNode();
+                                       final Object dockedContent = docked.getContent();
+                                       if ( dockedContent instanceof View ) {
+                                           commandBuilder.addCommand( new CanvasDockNodeCommand( parent,
+                                                                                                 docked ) );
+                                       }
+                                       return true;
+                                   }
+                                   return false;
+                               }
 
-                    @Override
-                    public void endGraphTraversal() {
-                        super.endGraphTraversal();
-                        if ( commandBuilder.size() > 0 ) {
-                            command = commandBuilder.build();
-                        }
-                    }
+                               @Override
+                               public void endGraphTraversal() {
+                                   super.endGraphTraversal();
+                                   if ( commandBuilder.size() > 0 ) {
+                                       command = commandBuilder.build();
+                                   }
+                               }
 
-                    @SuppressWarnings( "unchecked" )
-                    private boolean isChild( final Node<?, Edge> candidate ) {
-                        return null == getCandidate() ||
-                                candidate.getInEdges().stream()
-                                        .filter( edge -> {
-                                            if ( edge.getContent() instanceof Child ) {
-                                                final Node<?, Edge> parent = edge.getSourceNode();
-                                                return null != parent &&
-                                                        ( parent.equals( getCandidate() ) || isChild( parent ) );
-                                            }
-                                            return false;
-                                        } )
-                                        .findFirst()
-                                        .isPresent();
-                    }
-
-                } );
+                               @SuppressWarnings( "unchecked" )
+                               private boolean isChild( final Node<?, Edge> candidate ) {
+                                   return null == getCandidate() ||
+                                           candidate.getInEdges().stream()
+                                                   .filter( edge -> {
+                                                       if ( edge.getContent() instanceof Child ) {
+                                                           final Node<?, Edge> parent = edge.getSourceNode();
+                                                           return null != parent &&
+                                                                   ( parent.equals( getCandidate() ) || isChild( parent ) );
+                                                       }
+                                                       return false;
+                                                   } )
+                                                   .findFirst()
+                                                   .isPresent();
+                               }
+                           } );
         if ( null != command ) {
             return command.execute( context );
         }
@@ -155,5 +161,4 @@ public abstract class AbstractCanvasNodeRegistrationCommand extends AbstractCanv
     public Node getCandidate() {
         return node;
     }
-
 }

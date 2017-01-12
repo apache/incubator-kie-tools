@@ -40,6 +40,7 @@ public abstract class BindablePropertyMorphDefinition extends BindableMorphDefin
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     protected Map<Class<?>, Collection<Class<?>>> getDomainMorphs() {
         if ( null != getBindableMorphProperties() && !getBindableMorphProperties().isEmpty() ) {
             final Map<Class<?>, Collection<Class<?>>> result = new LinkedHashMap<>();
@@ -51,18 +52,14 @@ public abstract class BindablePropertyMorphDefinition extends BindableMorphDefin
                     Collection<Class<?>> targets = result.get( sourceType );
                     if ( null == targets ) {
                         targets = new LinkedList<>();
-                        result.put( sourceType, targets );
+                        result.put( sourceType,
+                                    targets );
                     }
                     targets.addAll( morphProperty.getMorphTargetClasses().values() );
-
                 }
-
             }
             return result;
-
         }
         return null;
-
     }
-
 }

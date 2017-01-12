@@ -23,7 +23,6 @@ import org.uberfire.backend.vfs.Path;
 
 /**
  * Base service type for Diagrams of type <code>D</code>.
- *
  * @param <D> The type of the Diagram that this service suports.
  */
 public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph, M>> {
@@ -32,22 +31,23 @@ public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph,
      * Returns a Diagram by the given path in the service.
      * Implementations can throw unchecked exceptions.
      */
-    D getDiagramByPath( Path path );
+    D getDiagramByPath( final Path path );
 
     /**
      * Checks if this service accepts a given Diagram by its path.
      */
-    boolean accepts( Path path );
+    boolean accepts( final Path path );
 
     /**
      * Creates a new Diagram for the given Definition Set identifier into the given path.
      * Implementations can throw unchecked exceptions.*
-     *
-     * @param path     The path for the new diagram.
-     * @param name     The diagram's name to create.
+     * @param path The path for the new diagram.
+     * @param name The diagram's name to create.
      * @param defSetId The diagram's and graph resulting by the Definition Set identifier.
      */
-    Path create( Path path, String name, String defSetId );
+    Path create( final Path path,
+                 final String name,
+                 final String defSetId );
 
     /**
      * Saves or updates the diagram.
@@ -55,13 +55,12 @@ public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph,
      * the resulting metadata instance (eg: when diagrams are created and authored in client side).
      * Update applies if the diagram is already present on the VFS.
      */
-    M saveOrUpdate( D diagram );
+    M saveOrUpdate( final D diagram );
 
     /**
      * Deletes the diagram.
      * Implementations can throw unchecked exceptions.
-     *
      * @return <code>true</code> if the operation result is success, <code>false</code> otherwise.
      */
-    boolean delete( D diagram );
+    boolean delete( final D diagram );
 }

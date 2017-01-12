@@ -70,5 +70,4 @@ public class SVGUtils {
         icon.setStrokeWidth( 1 );
         return icon;
     }
-
 }

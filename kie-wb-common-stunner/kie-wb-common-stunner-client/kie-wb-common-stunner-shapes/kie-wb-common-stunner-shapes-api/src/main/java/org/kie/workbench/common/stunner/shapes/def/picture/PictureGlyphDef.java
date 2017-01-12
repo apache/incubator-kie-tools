@@ -22,11 +22,10 @@ import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
  */
 public abstract class PictureGlyphDef<W, S> implements GlyphDef<W> {
 
-    public abstract S getSource( Class<?> type );
+    public abstract S getSource( final Class<?> type );
 
     @Override
     public Class<?> getType() {
         return PictureGlyphDef.class;
     }
-
 }

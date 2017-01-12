@@ -95,7 +95,7 @@ public class CaseManagementProjectDiagramFactory
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     private Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode( final Graph graph ) {
         return CaseManagementUtils.getFirstDiagramNode( graph );
     }
@@ -103,5 +103,4 @@ public class CaseManagementProjectDiagramFactory
     private boolean nil( final String value ) {
         return value == null || value.isEmpty();
     }
-
 }
