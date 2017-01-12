@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.google.gwt.view.client.ListDataProvider;
@@ -150,7 +151,10 @@ public class AnalysisReportScreenTest {
         Issue issue2 = new Issue( Severity.WARNING,
                 type,
                 new HashSet<>( Arrays.asList( 2 ) ) );
-        screen.showReport( getAnalysis( issue1, issue2 ) );
+        Issue issue3 = new Issue( Severity.WARNING,
+                type,
+                new HashSet<>( Arrays.asList( 3 ) ) );
+        screen.showReport( getAnalysis( issue1, issue2, issue3 ) );
 
         verify( placeManager ).goTo( eq( "org.drools.workbench.AnalysisReportScreen" ) );
 
@@ -160,7 +164,10 @@ public class AnalysisReportScreenTest {
 
         assertEquals( Severity.WARNING, issue.getSeverity() );
         assertEquals( type, issue.getCheckType() );
-        assertEquals( new HashSet<>( Arrays.asList( 1, 2 ) ), issue.getRowNumbers() );
+        Iterator<Integer> rowNumbers = issue.getRowNumbers().iterator();
+        for( Integer rowNumber : Arrays.asList( 1, 2, 3 ) ) {
+            assertEquals( rowNumber, rowNumbers.next() );
+        }
 
         verify( view ).showIssue( issue );
     }

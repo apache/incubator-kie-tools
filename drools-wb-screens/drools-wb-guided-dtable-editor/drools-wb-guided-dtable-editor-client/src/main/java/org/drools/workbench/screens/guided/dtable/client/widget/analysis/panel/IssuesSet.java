@@ -94,6 +94,7 @@ public class IssuesSet
 
         Set<Integer> affectedRows = issuesToMerge.stream()
                                                  .flatMap( issue -> issue.getRowNumbers().stream() )
+                                                 .sorted()
                                                  .collect( Collectors.toSet() );
 
         return issuesToMerge.stream()
