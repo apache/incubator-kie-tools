@@ -33,9 +33,6 @@ import org.uberfire.ext.widgets.common.client.colorpicker.ColorPickerDialog;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-/**
- * @author Pere Fernandez <pefernan@redhat.com>
- */
 @Dependent
 @Templated
 public class ColorPickerWidget extends Composite implements HasValue<String> {
